@@ -1,12 +1,6 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
 
-import React from 'react';
+import 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,101 +8,146 @@ import {
   View,
   Text,
   StatusBar,
+  Image,
+  Platform
+
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useDispatch, useSelector } from 'react-redux'
+import { getTokenRequest } from './src/action/index';
+import Colors from './src/assests/Colors';
+import ImagePath from './src/assests/ImagePath';
+import normalise from './src/utils/helpers/Dimens';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+import Splash from './src/components/SplashComponent/Splash';
+
+import Login from './src/components/auth/Login';
+import SignUp from './src/components/auth/SignUp';
+
+import Home from './src/components/main/TabNavigator/Home';
+import Search from './src/components/main/TabNavigator/Search';
+import Add from './src/components/main/TabNavigator/Add';
+import Notification from './src/components/main/TabNavigator/Notification';
+import Contact from './src/components/main/TabNavigator/Contact';
+import { color } from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+
+const App = () => {
+
+
+  const dispatch = useDispatch();
+  const TokenReducer = useSelector(state => state.TokenReducer);
+
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(getTokenRequest())
+    }, 3000)
+  }, []);
+
+
+  const BottomTab = () => {
+    return (
+      <Tab.Navigator initialRouteName={"Home"}
+        tabBarOptions={{ activeBackgroundColor: Colors.darkerblack, inactiveBackgroundColor: Colors.darkerblack,
+        safeAreaInsets:{bottom:0}, style:{height: Platform.OS === "android" ? normalise(45) : normalise(60) }}}>
+
+        <Tab.Screen name="Home" component={Home}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image style={{ marginTop: normalise(10), height: normalize(20), width: normalize(20) }}
+                source={focused ? ImagePath.homeactive : ImagePath.homeinactive}
+                resizeMode='contain' />
+            ),
+            tabBarLabel: ""
+
+          }} />
+
+        <Tab.Screen name="Search" component={Search}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image style={{ marginTop: normalise(10), height: normalize(20), width: normalize(20) }}
+                source={focused ? ImagePath.searchactive : ImagePath.searchinactive}
+                resizeMode='contain' />
+            ),
+            tabBarLabel: ""
+
+          }} />
+
+        <Tab.Screen name="Add" component={Add}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TouchableOpacity>
+                <Image style={{ marginTop: normalise(10), height: normalize(35), width: normalize(35) }}
+                  source={focused ? ImagePath.addbtn : ImagePath.addbtn}
+                  resizeMode='contain' />
+              </TouchableOpacity>
+            ),
+            tabBarLabel: ""
+          }} />
+
+        <Tab.Screen name="Notification" component={Notification}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image style={{
+                marginTop: normalise(10), height: normalize(20), width: normalize(20),
+                marginRight: focused ? normalise(2) : null
+              }}
+                source={focused ? ImagePath.notificationactive : ImagePath.notificationinactive}
+                resizeMode='contain' />
+            ),
+            tabBarLabel: ""
+          }} />
+
+        <Tab.Screen name="Contact" component={Contact}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image style={{ marginTop: normalise(10), height: normalize(20), width: normalize(20) }}
+                source={focused ? ImagePath.boxactive : ImagePath.boxinactive}
+                resizeMode='contain' />
+            ),
+            tabBarLabel: ""
+          }} />
+
+      </Tab.Navigator>
+    )
+  }
+
+
+  if (TokenReducer.loading) {
+    return (
+      <Splash />
+    )
+
+  } else {
+    return (
+      <NavigationContainer>
+        {TokenReducer.token === null ?
+
+          <Stack.Navigator screenOptions={{ headerShown: false }}
+            initialRouteName={"Login"}>
+
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+          </Stack.Navigator>
+          :
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+            <Stack.Screen name="bottomTab" component={BottomTab} />
+          </Stack.Navigator>
+        }
+
+      </NavigationContainer>
+    );
+  }
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+
 
 export default App;
