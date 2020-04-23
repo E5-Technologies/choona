@@ -9,7 +9,7 @@ import {
   Text,
   StatusBar,
   Image,
-  Platform
+  Platform,
 
 } from 'react-native';
 
@@ -32,8 +32,11 @@ import Search from './src/components/main/TabNavigator/Search';
 import Add from './src/components/main/TabNavigator/Add';
 import Notification from './src/components/main/TabNavigator/Notification';
 import Contact from './src/components/main/TabNavigator/Contact';
-import { color } from 'react-native-reanimated';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import Profile from './src/components/main/Profile';
+import EditProfile from './src/components/main/EditProfile';
+import Followers from './src/components/main/Followers';
+import Following from './src/components/main/Following';
+import OthersProfile from './src/components/main/OthersProfile';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,12 +85,11 @@ const App = () => {
 
         <Tab.Screen name="Add" component={Add}
           options={{
-            tabBarIcon: ({ focused }) => (
-              <TouchableOpacity>
+            tabBarIcon: ({ focused }) => (  
                 <Image style={{ marginTop: normalise(10), height: normalize(35), width: normalize(35) }}
                   source={focused ? ImagePath.addbtn : ImagePath.addbtn}
                   resizeMode='contain' />
-              </TouchableOpacity>
+              
             ),
             tabBarLabel: ""
           }} />
@@ -140,6 +142,12 @@ const App = () => {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
 
             <Stack.Screen name="bottomTab" component={BottomTab} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Followers" component={Followers} />
+            <Stack.Screen name="Following" component={Following} />
+            <Stack.Screen name="OthersProfile" component={OthersProfile} />
+
           </Stack.Navigator>
         }
 

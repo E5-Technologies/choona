@@ -4,7 +4,8 @@ const Colors = {
     fadeblack: '#25262a',
     darkerblack:'#151619',
     white: '#ffffff',
-    grey: '#707173'
+    grey: '#707173',
+    darkgrey: '#959698'
 
 };
 

@@ -16,8 +16,16 @@ export default function Home(props) {
         <View style={{flex:1,  backgroundColor:Colors.black}}>
             <SafeAreaView style={{flex:1}}>
                 
-                <View style={{ alignItems:'center', justifyContent:'center'}}>
-                    <Text>Home</Text>
+                <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+                    <Text style={{color:Colors.white}}>Home</Text>
+
+                    <TouchableOpacity onPress={()=>{props.navigation.navigate("Profile")}}>
+                    <Text style={{marginTop:normalise(20),color:Colors.white}}>Go to Profile</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={()=>{props.navigation.navigate("OthersProfile")}}>
+                    <Text style={{marginTop:normalise(20),color:Colors.white}}>Go to Others Profile</Text>
+                    </TouchableOpacity>
                 </View>
 
             </SafeAreaView>
