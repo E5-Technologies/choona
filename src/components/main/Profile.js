@@ -14,6 +14,8 @@ import {
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
+import _ from 'lodash';
+
 
 const profileData = [
     {
@@ -35,6 +37,8 @@ const profileData = [
         image: ImagePath.profiletrack6
     },
 ]
+
+const profileData2 = []
 
 export default function Profile(props) {
 
@@ -66,6 +70,7 @@ export default function Profile(props) {
                     width: '90%', alignSelf: 'center', flexDirection: 'row',
                     alignItems: 'center', justifyContent: 'flex-end', marginTop: normalise(10)
                 }}>
+
                     <TouchableOpacity style={{ marginRight: normalise(10) }}
                         onPress={() => { props.navigation.navigate("EditProfile") }}>
                         <Image source={ImagePath.settings}
@@ -85,13 +90,13 @@ export default function Profile(props) {
                     width: '90%', alignSelf: 'center', flexDirection: 'row',
                     alignItems: 'center', marginTop: normalise(15)
                 }}>
+
                     <Image source={ImagePath.dp}
                         style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
-                  
                     <View style={{
                         flexDirection: 'column', alignItems: 'flex-start',
-                        marginLeft: normalise(20),
+                        marginLeft: normalise(20)
                     }}>
 
                         <Text style={{
@@ -102,34 +107,34 @@ export default function Profile(props) {
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
-
                         }}>@andyjones88</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
-
                         }}>Liverpool, UK</Text>
 
+
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
-                            
-                            <TouchableOpacity onPress={()=>{props.navigation.navigate("Following", {following: following})}}>
+
+                            <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontWeight: 'bold'
                                 }}><Text style={{ color: Colors.white }}>{following}</Text>  Following</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={()=>{props.navigation.navigate("Followers", {followers: followers})}}>
-                            <Text style={{
-                                marginLeft: normalise(10),
-                                color: Colors.darkgrey, fontSize: normalise(11),
-                                fontWeight: 'bold'
-                            }}><Text style={{ color: Colors.white }}>{followers}</Text>  Followers</Text>
+                            <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
+                                <Text style={{
+                                    marginLeft: normalise(10),
+                                    color: Colors.darkgrey, fontSize: normalise(11),
+                                    fontWeight: 'bold'
+                                }}><Text style={{ color: Colors.white }}>{followers}</Text>  Followers</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
+
 
                 <ImageBackground source={ImagePath.gradientbar}
                     style={{
@@ -137,50 +142,117 @@ export default function Profile(props) {
                         marginTop: normalise(10),
                     }}>
 
-                    <View style={{
-                        width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
-                        justifyContent: 'space-between', height: normalise(50),
-                    }}>
-                        <TouchableOpacity>
-                            <Image source={ImagePath.dp2} style={{ height: normalise(40), width: normalise(40) }} />
-                            <Image source={ImagePath.play} style={{
-                                height: normalise(25), width: normalise(25),
-                                position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
-                            }} />
-                        </TouchableOpacity>
-
-
+                    {_.isEmpty(profileData) ?              // IF DATA IS EMPTY
                         <View style={{
-                            flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(100),
+                            width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'space-between', height: normalise(50),
                         }}>
 
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(9), fontWeight: 'bold'
-                            }}>FEATURED TRACK</Text>
+                            <TouchableOpacity style={{
+                                backgroundColor: Colors.fadeblack, height: normalise(40),
+                                width: normalise(40), justifyContent: 'center', alignItems: 'center'
+                            }}>
 
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10),
-                            }}>Bongo Song</Text>
+                                <Image source={ImagePath.addicon} style={{ height: normalise(20), width: normalise(20) }} />
 
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(9),
-                            }}>Above & Beyond</Text>
+                            </TouchableOpacity>
+
+
+                            <View style={{
+                                flexDirection: 'column', alignItems: 'flex-start', marginLeft: normalise(10)
+                            }}>
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(9), fontWeight: 'bold'
+                                }}>FEATURED TRACK</Text>
+
+                                <Text style={{
+                                    width: '70%', fontWeight: '500', marginTop: normalise(2),
+                                    color: Colors.white, fontSize: normalise(10),
+                                }}>You don't currently have a featured track.let's add one</Text>
+
+
+
+
+                            </View>
+
                         </View>
 
-                        <TouchableOpacity>
-                            <Image source={ImagePath.change} style={{ height: normalise(40), width: normalise(40) }} />
-                        </TouchableOpacity>
-                    </View>
+                        // IF DATA IS NOT EMPTY
+                        : <View style={{
+                            width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'space-between', height: normalise(50),
+                        }}>
 
+                            <TouchableOpacity>
+                                <Image source={ImagePath.dp2} style={{ height: normalise(40), width: normalise(40) }} />
+                                <Image source={ImagePath.play} style={{
+                                    height: normalise(25), width: normalise(25),
+                                    position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
+                                }} />
+                            </TouchableOpacity>
+
+
+                            <View style={{
+                                flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(100),
+                            }}>
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(9), fontWeight: 'bold'
+                                }}>FEATURED TRACK</Text>
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10),
+                                }}>Bongo Song</Text>
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(9),
+                                }}>Above & Beyond</Text>
+                            </View>
+
+                            <TouchableOpacity>
+                                <Image source={ImagePath.change} style={{ height: normalise(40), width: normalise(40) }} />
+                            </TouchableOpacity>
+                        </View>}
                 </ImageBackground>
 
-                <FlatList
-                    style={{ paddingTop: normalise(10), alignSelf: 'center' }}
-                    data={profileData}
-                    renderItem={renderProfileData}
-                    keyExtractor={(item, index) => { index.toString() }}
-                    showsVerticalScrollIndicator={false}
-                    numColumns={2} />
+
+                {_.isEmpty(profileData) ?
+
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+
+                        <View style={{height:'50%', justifyContent:'flex-end', alignItems:"center",
+                         width:'50%'}}>
+                           
+                            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                                Your Profile is Empty</Text>
+
+                            <Text style={{
+                                marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
+                            }}>You haven't posted any songs yet, let's post one </Text>
+                        </View>
+
+                        <View style={{height:'50%',justifyContent:'flex-end', alignItems:"center", width: '80%'}}>
+                            <TouchableOpacity style={{ marginBottom:normalise(10),
+                                height: normalise(40), width: '100%', alignItems: 'center',
+                                justifyContent: 'center', borderRadius: normalise(20),
+                                backgroundColor: Colors.white
+                            }}>
+                                <Text style={{ color: Colors.black, fontSize: normalise(12), fontWeight: 'bold' }}>
+                                    POST YOUR FIRST SONG
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+
+                    : <FlatList
+                        style={{ paddingTop: normalise(10), alignSelf: 'center' }}
+                        data={profileData}
+                        renderItem={renderProfileData}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        showsVerticalScrollIndicator={false}
+                        numColumns={2} />   }
 
 
 

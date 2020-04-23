@@ -23,9 +23,6 @@ export default function Home(props) {
                     <Text style={{marginTop:normalise(20),color:Colors.white}}>Go to Profile</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=>{props.navigation.navigate("OthersProfile")}}>
-                    <Text style={{marginTop:normalise(20),color:Colors.white}}>Go to Others Profile</Text>
-                    </TouchableOpacity>
                 </View>
 
             </SafeAreaView>

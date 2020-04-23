@@ -26,6 +26,12 @@ function ActivityListItem(props) {
         }
     }
 
+    const onPressImage = () => {
+        if (props.onPressImage) {
+            props.onPressImage()
+        }
+    };
+    
     return (
 
         <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom, }}>
@@ -35,7 +41,7 @@ function ActivityListItem(props) {
                 justifyContent: 'space-between'
             }}>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>{onPressImage()}}>
                     <Image source={props.image}
                         style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(17) }}
                         resizeMode="contain" />
@@ -59,10 +65,10 @@ function ActivityListItem(props) {
                 </TouchableOpacity>
 
             :
-            
+            <TouchableOpacity>
             <Image source={props.image2} style={{height: normalise(35), width: normalise(35)}}
-                resizeMode='contain' /> }
-
+                resizeMode='contain' /> 
+            </TouchableOpacity>}
             </View>
 
 
@@ -87,7 +93,8 @@ ActivityListItem.propTypes = {
     onPress: PropTypes.func,
     type: PropTypes.bool,
     follow: PropTypes.bool,
-    marginBottom: PropTypes.number
+    marginBottom: PropTypes.number,
+    onPressImage: PropTypes.bool
 };
 
 ActivityListItem.defaultProps = {
@@ -97,5 +104,6 @@ ActivityListItem.defaultProps = {
     onPress: null,
     type: true,
     follow: true,
-    marginBottom: 0
+    marginBottom: 0,
+    onPressImage: null
 }

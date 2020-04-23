@@ -87,7 +87,8 @@ export default function Following(props) {
             <ActivityListItem image={data.item.picture}
                 title={data.item.title} type={true}
                 follow={data.item.type === "Follow" ? true : false}
-                marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0} />
+                marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
+                onPressImage={()=>{props.navigation.navigate("OthersProfile")}} />
         )
     }
 
