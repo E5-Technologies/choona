@@ -40,7 +40,7 @@ export default function SignUp(props) {
             }}>
 
                 <TouchableOpacity style={{
-                    marginTop: normalise(80), height: normalise(50), width: '80%', alignSelf: 'center',
+                     height: normalise(50), width: '80%', alignSelf: 'center',
                     borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
                     borderColor: Colors.grey, shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'

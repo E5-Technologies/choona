@@ -30,7 +30,13 @@ const ImagePath = {
   gradientbar: require('./images/rectanglegradien.png'),
   change: require('./images/change.png'),
   play: require('./images/play.png'),
-  searchicon: require('./images/icons-search-black.png')
+  searchicon: require('./images/icons-search-black.png'),
+  threedots: require('./images/moredots.png'),
+  unsaved: require('./images/whiteunsave.png'),
+  inbox: require('./images/inbox.png'),
+  noposts: require('./images/NoPosts.png'),
+  facebook: require('./images/facebook.png'),
+  newmessage: require('./images/Iconnewmessage.png')
 
 };
 

@@ -109,7 +109,7 @@ export default function Notification(props) {
                 
                     <Text style={{
                         fontSize: normalise(15), fontWeight: 'bold', color: Colors.white,
-                        marginTop: normalise(20), alignSelf: 'center'
+                        marginTop: normalise(10), alignSelf: 'center'
                     }}> ACTIVITY</Text>
 
                     <View style={{

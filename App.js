@@ -29,7 +29,7 @@ import SignUp from './src/components/auth/SignUp';
 
 import Home from './src/components/main/TabNavigator/Home';
 import Search from './src/components/main/TabNavigator/Search';
-import Add from './src/components/main/TabNavigator/Add';
+import AddSong from './src/components/main/TabNavigator/Add';
 import Notification from './src/components/main/TabNavigator/Notification';
 import Contact from './src/components/main/TabNavigator/Contact';
 import Profile from './src/components/main/Profile';
@@ -37,6 +37,8 @@ import EditProfile from './src/components/main/EditProfile';
 import Followers from './src/components/main/Followers';
 import Following from './src/components/main/Following';
 import OthersProfile from './src/components/main/OthersProfile';
+import CreatePost from './src/components/main/CreatePost';
+import Inbox from './src/components/main/Inbox';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -83,7 +85,7 @@ const App = () => {
 
           }} />
 
-        <Tab.Screen name="Add" component={Add}
+        <Tab.Screen name="Add" component={AddSong}
           options={{
             tabBarIcon: ({ focused }) => (  
                 <Image style={{ marginTop: normalise(10), height: normalize(35), width: normalize(35) }}
@@ -147,6 +149,8 @@ const App = () => {
             <Stack.Screen name="Followers" component={Followers} />
             <Stack.Screen name="Following" component={Following} />
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
+            <Stack.Screen name="CreatePost" component={CreatePost} />
+            <Stack.Screen name="Inbox" component={Inbox} />
 
           </Stack.Navigator>
         }

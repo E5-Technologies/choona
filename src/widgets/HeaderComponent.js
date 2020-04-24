@@ -35,7 +35,7 @@ function HeaderComponent(props) {
 
         <View style={{ width:'90%', alignSelf:'center',
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            marginTop: normalise(20),
+            marginTop: normalise(10),
         }}>
 
             {props.firstitemtext ?
@@ -49,7 +49,7 @@ function HeaderComponent(props) {
                 <TouchableOpacity style={{ left: 0, position: 'absolute' }}
                     onPress={() => {  onPressFirstItem() }}>
                     <Image source={props.imageone}
-                        style={{ height: normalise(15), width: normalise(15) }}
+                        style={{ height: props.imageoneheight, width: props.imageonewidth }}
                         resizeMode="contain"
                     />
                 </TouchableOpacity>}
@@ -68,7 +68,7 @@ function HeaderComponent(props) {
                 <TouchableOpacity style={{ right: 0, position: 'absolute' }}
                     onPress={() => { onPressThirdItem() }}>
                     <Image source={props.imagetwo}
-                        style={{ height: normalise(15), width: normalise(15) }}
+                        style={{ height: props.imagetwoheight, width: props.imagetwowidth }}
                         resizeMode="contain"
                     />
                 </TouchableOpacity>}
@@ -87,7 +87,11 @@ HeaderComponent.propTypes = {
     texttwo: PropTypes.string,
     title: PropTypes.string,
     onPressFirstItem: PropTypes.func,
-    onPressThirdItem: PropTypes.func
+    onPressThirdItem: PropTypes.func,
+    imageoneheight: PropTypes.number,
+    imageonewidth: PropTypes.number,
+    imagetwoheight: PropTypes.number,
+    imagetwowidth: PropTypes.number
 };
 
 HeaderComponent.defaultProps = {
@@ -99,5 +103,9 @@ HeaderComponent.defaultProps = {
     texttwo: "",
     title: "",
     onPressFirstItem: null,
-    onPressThirdItem: null
+    onPressThirdItem: null,
+    imageoneheight: normalise(15),
+    imageonewidth: normalise(15),
+    imagetwoheight: normalise(15),
+    imagetwowidth: normalise(15),
 }
