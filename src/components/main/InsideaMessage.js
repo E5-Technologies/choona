@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useEffect, Fragment } from 'react';
 import {
     SafeAreaView,
@@ -14,57 +10,55 @@ import {
     TextInput,
     Image
 } from 'react-native';
-import normalise from '../../../utils/helpers/Dimens';
-import Colors from '../../../assests/Colors';
-import ImagePath from '../../../assests/ImagePath';
-import HeaderComponent from '../../../widgets/HeaderComponent';
-import SavedSongsListItem from '../ListCells/SavedSongsListItem';
+import normalise from '../../utils/helpers/Dimens';
+import Colors from '../../assests/Colors';
+import ImagePath from '../../assests/ImagePath';
+import HeaderComponent from '../../widgets/HeaderComponent';
+import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 const flatlistdata = [
     {
         image: ImagePath.profiletrack1,
         title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
+        singer: "Above & Beyond",
+        comments:1
     },
     {
         image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack3,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack4,
         title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack5,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack6,
-        title: 'Firestone',
-        singer: "Kygo"
+        singer: "Dua Lipa",
+        comments:2
     },
     {
         image: ImagePath.profiletrack1,
         title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
+        singer: "Kygo",
+        comments:1
+    },
+ 
+    {
+        image:ImagePath.profiletrack2,
+        title: 'Naked feat. Justin Suissa',
+        singer: "Dua Lipa",
+        comments:1
+    },
+    {
+        image:  ImagePath.profiletrack1,
+        title: 'Naked feat. Justin Suissa',
+        singer: "Kygo",
+        comments:3
     },
     {
         image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
+        title: 'Naked feat. Justin Suissa',
+        singer: "Above & Beyond",
+        comments:2
     },
+  
 ]
 
-export default function Contact(props) {
+export default function InsideaMessage(props) {
 
         function renderItem(data) {
             return(
@@ -72,6 +66,7 @@ export default function Contact(props) {
                 image={data.item.image}
                 title={data.item.title}
                 singer={data.item.singer}
+                comments={data.item.comments}
                 marginBottom={data.index === flatlistdata.length -1 ? normalise(20) : 0} />
             )
         }
@@ -94,12 +89,18 @@ export default function Contact(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
             <SafeAreaView style={{ flex: 1 }}>
 
-                <HeaderComponent firstitemtext={true}
-                    textone={""}
-                    title={"SAVED SONGS"}
-                    thirditemtext={true}
-                    texttwo={""}
-                />
+             
+
+       <HeaderComponent firstitemtext={false}
+                    imageone={ImagePath.backicon} 
+                    imagesecond={ImagePath.dp}
+                   
+                    title={"RUSHY"}
+                    thirditemtext={false} 
+                   // imagetwo={ImagePath.newmessage} 
+                    imagetwoheight={25}
+                    imagetwowidth={25}
+                    onPressFirstItem={() => { props.navigation.goBack() }} />
 
                 <View style={{ width: '95%', alignSelf: 'center', }}>
 
@@ -142,6 +143,21 @@ export default function Contact(props) {
                disableRightSwipe={true}
             rightOpenValue={-75} />
 
+<TouchableOpacity style={{
+                            marginBottom: normalise(30),
+                            marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
+                            borderRadius: normalise(25), backgroundColor: Colors.white, borderWidth: normalise(0.5),
+                            shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
+                            shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', 
+                            justifyContent: 'center',borderColor: Colors.grey,
+                        }}  >
+
+                            <Text style={{
+                                marginLeft: normalise(10), color: Colors.gray, fontSize: normalise(14),
+                                fontWeight: 'bold'
+                            }}>ADD ANOTHER SONG</Text>
+
+                        </TouchableOpacity>
             </SafeAreaView>
         </View>
     )

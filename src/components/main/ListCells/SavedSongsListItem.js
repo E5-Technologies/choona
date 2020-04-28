@@ -71,6 +71,10 @@ function SavedSongListItem(props) {
                         fontWeight: 'bold',
                     }}  numberOfLines={1}> {props.singer} </Text>
 
+         <Text style={{
+                        color: Colors.grey, fontSize: normalise(10),
+                        fontWeight: 'bold',
+                    }}  numberOfLines={1}> {props.comments} comments </Text>
                 </View>
 
     

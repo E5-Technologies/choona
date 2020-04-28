@@ -107,6 +107,7 @@ export default function Inbox(props) {
                 title={data.item.title} 
                 description={data.item.message}
                 read={data.item.read === true ? true : false}
+                onPress={()=>props.navigation.navigate('InsideaMessage')}
                 marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
             />
         )

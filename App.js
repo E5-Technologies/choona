@@ -1,4 +1,14 @@
 
+
+
+
+
+
+
+
+
+
+
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
@@ -36,9 +46,11 @@ import Profile from './src/components/main/Profile';
 import EditProfile from './src/components/main/EditProfile';
 import Followers from './src/components/main/Followers';
 import Following from './src/components/main/Following';
+
 import OthersProfile from './src/components/main/OthersProfile';
 import CreatePost from './src/components/main/CreatePost';
 import Inbox from './src/components/main/Inbox';
+import InsideaMessage from './src/components/main/InsideaMessage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -151,7 +163,7 @@ const App = () => {
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
             <Stack.Screen name="Inbox" component={Inbox} />
-
+            <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
           </Stack.Navigator>
         }
 

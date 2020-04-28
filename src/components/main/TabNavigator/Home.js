@@ -4,7 +4,7 @@ import {
     StyleSheet,
     ScrollView,
     View,
-    Text,
+    Text,TextInput,
     StatusBar,
     TouchableOpacity,
     Image
@@ -14,10 +14,101 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import _ from 'lodash'
+import HomeItemList from '../ListCells/HomeItemList';
+import { SwipeListView } from 'react-native-swipe-list-view';
+ const flatlistdata1 = []
 
-const flatlistdata = []
 
+
+const flatlistdata = [
+    {
+        image: ImagePath.profiletrack1,
+        picture: ImagePath.dp1,
+        title: 'This girl',
+        singer: "Kungs Vs Cookins 3 burners",
+        comments:1,
+        name:'Shimshimmer',
+        reactions:11,
+        content:'Absolutely use to love this song,was an unreal banger bck in the day',
+        time:8
+    },
+    {
+        image: ImagePath.profiletrack4,
+        picture: ImagePath.dp,
+        title: 'Paradise',
+        singer: "Cold Play",
+        comments:2,
+        name:'Shimshimmer',
+        reactions:7,
+        content:'Absolutely use to love this song,was an unreal banger bck in the day',
+        time:8
+    },
+    {
+        image: ImagePath.profiletrack2,
+        picture: ImagePath.dp1,
+        title: 'Naked feat. Justin Suissa',
+        singer: "Kygo",
+        comments:1,
+        name:'Shimshimmer',
+        reactions:10,
+        content:'Absolutely use to love this song,was an unreal banger bck in the day',
+        time:8
+    },
+ 
+    {
+        image:ImagePath.profiletrack1,
+        picture: ImagePath.dp,
+        title: 'Naked feat. Justin Suissa',
+        singer: "Dua Lipa",
+        comments:1,
+        name:'Shimshimmer',
+        reactions:11,
+        content:'Absolutely use to love this song,was an unreal banger bck in the day',
+        time:8
+    },
+    {
+        image:  ImagePath.profiletrack3,
+        picture: ImagePath.dp1,
+        title: 'Naked feat. Justin Suissa',
+        singer: "Kygo",
+        comments:3,
+        name:'Shimshimmer',
+        reactions:9,
+        content:'Absolutely use to love this song,was an unreal banger bck in the day',
+        time:8
+    },
+    {
+        image: ImagePath.profiletrack4,
+        picture: ImagePath.dp,
+        title: 'Naked feat. Justin Suissa',
+        singer: "Above & Beyond",
+        comments:2,
+        name:'Shimshimmer',
+        reactions:11,
+        content:'Absolutely use to love this song,was an unreal banger bck in the day',
+        time:8
+    },
+  
+]
 export default function Home(props) {
+
+    
+    function renderItem(data) {
+        return(
+            <HomeItemList 
+            image={data.item.image}
+            picture={data.item.picture}
+            name={data.item.name}
+            comments={data.item.comments}
+            reactions={data.item.reactions}
+            content={data.item.content}
+            time={data.item.time}
+            title={data.item.title}
+            singer={data.item.singer}
+            marginBottom={data.index === flatlistdata.length -1 ? normalise(20) : 0} />
+        )
+    }
+    
     return (
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
@@ -88,7 +179,42 @@ export default function Home(props) {
 
                         </TouchableOpacity>
                     </View>
-                </View> : null }
+                </View> : 
+                
+
+
+                <View style={{ flex: 1}}>
+             
+    
+                   
+    
+                    <SwipeListView
+                    data={flatlistdata}
+                    renderItem={renderItem}
+                    showsVerticalScrollIndicator={false}
+                    renderHiddenItem={ (rowData, rowMap) => (
+                        
+                        <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
+                        alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(44),
+                         marginTop:normalise(15), position:'absolute', right:21}}
+                         onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
+                            
+                            <Image source={ImagePath.unsaved} style={{height:normalise(18), width:normalise(18),}} 
+                            resizeMode='contain' />
+                            <Text style={{fontSize:normalise(8), color:Colors.white,
+                            fontWeight:'bold'}}>UNSAVE</Text>
+    
+                        </TouchableOpacity>
+                    )}
+    
+                    keyExtractor={(item , index)=>{index.toString()}}
+                   disableRightSwipe={true}
+                rightOpenValue={-75} />
+    
+           
+            </View>
+                
+               }
 
 
             </SafeAreaView>
