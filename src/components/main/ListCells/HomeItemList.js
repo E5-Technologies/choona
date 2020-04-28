@@ -3,7 +3,7 @@ import {
     SafeAreaView,
     StyleSheet,
     ScrollView,
-    View,
+    View,Modal,
     Text,
     StatusBar,
     TouchableOpacity,
@@ -75,7 +75,7 @@ function HomeItemList(props) {
 
 
     
-                <View style={{height:normalise(40), width:normalise(45), backgroundColor:Colors.black,
+                <View style={{height:normalise(40), width:normalise(50), backgroundColor:Colors.black,
                 justifyContent:'center'}}>
                     
                     <TouchableOpacity style={{height: normalise(25), width: normalise(45), 
@@ -94,7 +94,7 @@ function HomeItemList(props) {
                     borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
                     borderColor: Colors.grey, shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
-                }}  onPress={()=>{props.navigation.navigate("SignUp")}}  >
+                }}   >
 
                 
                    <Image source={props.image}
@@ -102,7 +102,7 @@ function HomeItemList(props) {
                     resizeMode="cover" />
 
                     <Image source={ImagePath.play} 
-                    style={{height:normalise(50), width:normalise(50), position:'absolute',
+                    style={{height:normalise(60), width:normalise(60), position:'absolute',
                     marginLeft:normalise(10), marginTop:normalise(11)}} />
 
                 </TouchableOpacity>

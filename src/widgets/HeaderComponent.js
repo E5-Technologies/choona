@@ -35,9 +35,9 @@ function HeaderComponent(props) {
 
     return (
 
-        <View style={{ width:'90%', alignSelf:'center',
+        <View style={{ width:'90%', alignSelf:'center',height:normalise(30),
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            marginTop: normalise(10),
+            marginTop: normalise(8),
         }}>
 
             {props.firstitemtext ?
@@ -47,7 +47,8 @@ function HeaderComponent(props) {
                    <Text style={{ color: Colors.white, fontSize: normalise(12), fontWeight: 'bold' }}>
                        {props.textone}</Text>
                 </TouchableOpacity>:
-<View style={{ left: 0, position: 'absolute' }}>
+
+   <View style={{ left: 0, position: 'absolute' }}>
                 <TouchableOpacity style={{ left: 0, position: 'absolute' }}
                     onPress={() => {  onPressFirstItem() }}>
                     <Image source={props.imageone}
@@ -69,7 +70,8 @@ function HeaderComponent(props) {
                 </TouchableOpacity>
                 </View>}
 
-             <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>{props.title}</Text>
+             <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                 {props.title}</Text>
 
 
             {props.thirditemtext ?
