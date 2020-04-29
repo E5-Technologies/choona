@@ -118,6 +118,7 @@ return(
             time={data.item.time}
             title={data.item.title}
             singer={data.item.singer}
+            onPressSecondImage={() => { props.navigation.navigate("Profile") }}
             marginBottom={data.index === flatlistdata.length -1 ? normalise(20) : 0} />
             </TouchableOpacity>
         )
@@ -144,6 +145,7 @@ return(
                     imagetwo={ImagePath.inbox}
                     imagetwoheight={25}
                     imagetwowidth={25}
+                   
                     onPressFirstItem={() => { props.navigation.navigate("Profile") }}
                     onPressThirdItem={()=>{props.navigation.navigate("Inbox")}} />
  
@@ -214,20 +216,20 @@ return(
                     data={flatlistdata}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-                    renderHiddenItem={ (rowData, rowMap) => (
+                    // renderHiddenItem={ (rowData, rowMap) => (
                         
-                        <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
-                        alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(44),
-                         marginTop:normalise(15), position:'absolute', right:21}}
-                         onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
+                    //     <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
+                    //     alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(44),
+                    //      marginTop:normalise(15), position:'absolute', right:21}}
+                    //      onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
                             
-                            <Image source={ImagePath.unsaved} style={{height:normalise(18), width:normalise(18),}} 
-                            resizeMode='contain' />
-                            <Text style={{fontSize:normalise(8), color:Colors.white,
-                            fontWeight:'bold'}}>UNSAVE</Text>
+                    //         <Image source={ImagePath.unsaved} style={{height:normalise(18), width:normalise(18),}} 
+                    //         resizeMode='contain' />
+                    //         <Text style={{fontSize:normalise(8), color:Colors.white,
+                    //         fontWeight:'bold'}}>UNSAVE</Text>
     
-                        </TouchableOpacity>
-                    )}
+                    //     </TouchableOpacity>
+                    // )}
     
                     keyExtractor={(item , index)=>{index.toString()}}
                    disableRightSwipe={true}

@@ -129,7 +129,7 @@ function HomeItemList(props) {
                 }}>
 
                     <Text style={{
-                        color: Colors.white, fontSize: normalise(14),
+                        color: Colors.white, fontSize: normalise(13),
                         fontWeight: 'bold',
                     }} numberOfLines={1}> {props.name} </Text>
 
@@ -172,7 +172,7 @@ function HomeItemList(props) {
                   
 
                     <Text style={{
-                        marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
+                        marginLeft: normalise(10), color: Colors.white, fontSize: normalise(10),
                         fontWeight: 'bold'
                     }}>{props.comments} COMMENTS</Text>
 
@@ -190,7 +190,7 @@ function HomeItemList(props) {
                   
 
                     <Text style={{
-                        marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
+                        marginLeft: normalise(10), color: Colors.white, fontSize: normalise(10),
                         fontWeight: 'bold'
                     }}>{props.reactions} REACTIONS</Text>
 

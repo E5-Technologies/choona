@@ -126,7 +126,7 @@ export default function Contact(props) {
                 renderHiddenItem={ (rowData, rowMap) => (
                     
                     <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
-                    alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(44),
+                    alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(42),
                      marginTop:normalise(15), position:'absolute', right:21}}
                      onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
                         
