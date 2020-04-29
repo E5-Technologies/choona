@@ -71,10 +71,10 @@ function SavedSongListItem(props) {
                         fontWeight: 'bold',
                     }}  numberOfLines={1}> {props.singer} </Text>
 
-         <Text style={{
+               {props.comments ? <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
                         fontWeight: 'bold',
-                    }}  numberOfLines={1}> {props.comments} comments </Text>
+                    }}  numberOfLines={1}> {props.commentstext} comments </Text> : null }
                 </View>
 
     
@@ -119,7 +119,8 @@ SavedSongListItem.propTypes = {
     marginBottom: PropTypes.number,
     change: PropTypes.bool,
     image2: PropTypes.string,
-    onPressSecondImage: PropTypes.func
+    onPressSecondImage: PropTypes.func,
+    comments: PropTypes.bool
 };
 
 SavedSongListItem.defaultProps = {
@@ -131,5 +132,6 @@ SavedSongListItem.defaultProps = {
     marginBottom: 0,
     change: false,
     image2: "",
-    onPressSecondImage: null
+    onPressSecondImage: null,
+    comments: false
 }
