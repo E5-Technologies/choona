@@ -126,28 +126,26 @@ export default function InsideaMessage(props) {
                     data={flatlistdata}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-                    renderHiddenItem={(rowData, rowMap) => (
+                    // renderHiddenItem={ (rowData, rowMap) => (
 
-                        <TouchableOpacity style={{
-                            backgroundColor: Colors.red, flexDirection: 'column',
-                            alignItems: 'center', justifyContent: "space-evenly", height: normalise(39), width: normalise(44),
-                            marginTop: normalise(15), position: 'absolute', right: 21
-                        }}
-                            onPress={() => { rowMap[rowData.item.key].closeRow() }}>
+                    //     <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
+                    //     alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(44),
+                    //      marginTop:normalise(15), position:'absolute', right:21}}
+                    //      onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
 
-                            <Image source={ImagePath.unsaved} style={{ height: normalise(18), width: normalise(18), }}
-                                resizeMode='contain' />
-                            <Text style={{
-                                fontSize: normalise(8), color: Colors.white,
-                                fontWeight: 'bold'
-                            }}>UNSAVE</Text>
+                    //         <Image source={ImagePath.unsaved} style={{height:normalise(18), width:normalise(18),}} 
+                    //         resizeMode='contain' />
+                    //         <Text style={{fontSize:normalise(8), color:Colors.white,
+                    //         fontWeight:'bold'}}>UNSAVE</Text>
 
-                        </TouchableOpacity>
-                    )}
+                    //     </TouchableOpacity>
+                    // )}
 
                     keyExtractor={(item, index) => { index.toString() }}
                     disableRightSwipe={true}
                     rightOpenValue={-75} />
+
+                
 
                 <TouchableOpacity style={{
                     marginBottom: normalise(30),

@@ -165,7 +165,7 @@ export default function OthersProfile(props) {
 
 
                         <View style={{
-                            flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(70),
+                            flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(120),
                         }}>
 
                             <Text style={{
@@ -181,9 +181,6 @@ export default function OthersProfile(props) {
                             }}>Above & Beyond</Text>
                         </View>
 
-                        <TouchableOpacity>
-                            <Image source={ImagePath.change} style={{ height: normalise(40), width: normalise(40) }} />
-                        </TouchableOpacity>
                     </View>
 
                 </ImageBackground>

@@ -17,8 +17,8 @@ import ImagePath from '../../../assests/ImagePath';
 const today = [
     {
         picture: ImagePath.dp,
-        title: "Annie88jones started following you",
-        type: 'Following'
+        title:"Annie88jones started following you",
+        type:'Following'
     },
     {
         picture: ImagePath.dp1,

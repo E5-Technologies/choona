@@ -123,7 +123,7 @@ export default function Inbox(props) {
 
                 <HeaderComponent firstitemtext={false}
                     imageone={ImagePath.backicon} 
-                    title={`Inbox`}
+                    title={`INBOX`}
                     thirditemtext={false} 
                     imagetwo={ImagePath.newmessage} 
                     imagetwoheight={25}

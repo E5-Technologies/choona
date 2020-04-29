@@ -42,6 +42,7 @@ import Search from './src/components/main/TabNavigator/Search';
 import AddSong from './src/components/main/TabNavigator/Add';
 import Notification from './src/components/main/TabNavigator/Notification';
 import Contact from './src/components/main/TabNavigator/Contact';
+import HomeItemList from './src/components/main/ListCells/HomeItemList';
 import Profile from './src/components/main/Profile';
 import EditProfile from './src/components/main/EditProfile';
 import Followers from './src/components/main/Followers';
@@ -164,6 +165,7 @@ const App = () => {
             <Stack.Screen name="CreatePost" component={CreatePost} />
             <Stack.Screen name="Inbox" component={Inbox} />
             <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
+            <Stack.Screen name="HomeItemList" component={HomeItemList} />
           </Stack.Navigator>
         }
 
