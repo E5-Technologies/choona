@@ -5,7 +5,7 @@ import {
     ScrollView,
     View,
     Text,TextInput,
-    StatusBar,ImageBackground,
+    ImageBackground,
     TouchableOpacity,TouchableHighlight,
     Image,
     Modal
@@ -18,6 +18,9 @@ import _ from 'lodash'
 import HomeItemList from '../ListCells/HomeItemList';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { normalizeUnits } from 'moment';
+import StatusBar from '../../../utils/MyStatusBar';
+
+
  const flatlistdata1 = []
 
 
@@ -132,7 +135,7 @@ return(
 
          
  
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
             { modalVisible ? 

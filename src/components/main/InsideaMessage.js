@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     TextInput,
     Image
@@ -16,6 +15,8 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import StatusBar from '../../utils/MyStatusBar';
+
 
 const flatlistdata = [
     {
@@ -89,6 +90,9 @@ export default function InsideaMessage(props) {
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
+            
+            <StatusBar />
+
             <SafeAreaView style={{ flex: 1 }}>
 
 

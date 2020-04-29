@@ -5,18 +5,23 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
+import Colors from '../../../assests/Colors';
+import StatusBar from '../../../utils/MyStatusBar';
+
 
 export default function Search(props) {
     return (
         <Fragment>
-            <SafeAreaView style={{flex:1}}>
+
+        <StatusBar />
+
+            <SafeAreaView style={{flex:1, backgroundColor:Colors.black}}>
                 
                 <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                    <Text>Search</Text>
+                    <Text style={{color: Colors.white}}>Search</Text>
                 </View>
 
             </SafeAreaView>

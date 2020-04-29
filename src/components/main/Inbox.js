@@ -6,7 +6,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     FlatList,
     Image,
@@ -18,7 +17,7 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import InboxListItem from '../../components/main/ListCells/InboxItemList';
-
+import StatusBar from '../../utils/MyStatusBar';
 
 const followdata = [
     {
@@ -117,7 +116,7 @@ export default function Inbox(props) {
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar />
 
             <SafeAreaView style={{ flex: 1, }}>
 

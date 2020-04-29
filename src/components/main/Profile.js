@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     FlatList,
     Image,
@@ -15,7 +14,7 @@ import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
-
+import StatusBar from '../../utils/MyStatusBar';
 
 const profileData = [
     {
@@ -62,7 +61,7 @@ export default function Profile(props) {
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -78,7 +77,7 @@ export default function Profile(props) {
                             resizeMode="contain" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{props.navigation.goBack()}}>
                         <Image source={ImagePath.iconmenu}
                             style={{ height: normalise(20), width: normalise(20) }}
                             resizeMode="contain" />

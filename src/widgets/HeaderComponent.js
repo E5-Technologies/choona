@@ -20,63 +20,64 @@ import { normalizeUnits } from 'moment';
 
 function HeaderComponent(props) {
 
-   function onPressFirstItem () {
-       if(props.onPressFirstItem){
-           props.onPressFirstItem()
-       }
-   }
-
-   function onPressThirdItem () {
-    if(props.onPressThirdItem){
-        props.onPressThirdItem()
+    function onPressFirstItem() {
+        if (props.onPressFirstItem) {
+            props.onPressFirstItem()
+        }
     }
-}
+
+    function onPressThirdItem() {
+        if (props.onPressThirdItem) {
+            props.onPressThirdItem()
+        }
+    }
 
 
     return (
 
-        <View style={{ width:'90%', alignSelf:'center',height:normalise(30),
+        <View style={{
+            width: '90%', alignSelf: 'center', marginTop:normalise(10),
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            marginTop: normalise(8),
+            
         }}>
 
             {props.firstitemtext ?
 
                 <TouchableOpacity style={{ left: 0, position: 'absolute' }}
-                    onPress={() => { onPressFirstItem()}}>
-                   <Text style={{ color: Colors.white, fontSize: normalise(12), fontWeight: 'bold' }}>
-                       {props.textone}</Text>
-                </TouchableOpacity>:
+                    onPress={() => { onPressFirstItem() }}>
+                    <Text style={{ color: Colors.white, fontSize: normalise(12), fontWeight: 'bold' }}>
+                        {props.textone}</Text>
+                </TouchableOpacity> :
 
-   <View style={{ left: 0, position: 'absolute' }}>
-                <TouchableOpacity style={{ left: 0, position: 'absolute' }}
-                    onPress={() => {  onPressFirstItem() }}>
-                    <Image source={props.imageone}
-                        style={{ height: props.imageoneheight, width: props.imageonewidth ,marginTop:normalise(-10)}}
-                        resizeMode="contain"
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity style={{ left: normalize(40), position: 'absolute' ,flexDirection:'row',marginTop:normalise(-12)}}
-                    onPress={() => {  onPressFirstItem() }}>
+                <View style={{ left: 0, position: 'absolute' }}>
+                    <TouchableOpacity style={{ left: 0, position: 'absolute' }}
+                        onPress={() => { onPressFirstItem() }}>
+                        <Image source={props.imageone}
+                            style={{ height: props.imageoneheight, width: props.imageonewidth, marginTop: normalise(-8) }}
+                            resizeMode="contain"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ left: normalize(40), position: 'absolute', flexDirection: 'row', marginTop: normalise(-12) }}
+                        onPress={() => { onPressFirstItem() }}>
                         {/* <Text>Hello</Text> */}
-                    <Image source={props.imagesecond}
-                        style={{ height: normalise(25), width: normalise(25) }}
-                        resizeMode="contain"
-                    />
-                    <Image source={props.imagesecond}
-                        style={{ height: normalise(25), width: normalise(25),marginLeft:normalise(-5)}}
-                        resizeMode="contain"
-                    />
-                </TouchableOpacity>
+                        <Image source={props.imagesecond}
+                            style={{ height: normalise(25), width: normalise(25) }}
+                            resizeMode="contain"
+                        />
+                        <Image source={props.imagesecond}
+                            style={{ height: normalise(25), width: normalise(25), marginLeft: normalise(-5) }}
+                            resizeMode="contain"
+                        />
+                    </TouchableOpacity>
                 </View>}
 
-             <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
-                 {props.title}</Text>
+            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                {props.title}</Text>
 
 
             {props.thirditemtext ?
                 <TouchableOpacity style={{ right: 0, position: 'absolute' }}
-                onPress={() => { onPressThirdItem() }}>
+                    onPress={() => { onPressThirdItem() }}>
                     <Text style={{ color: Colors.white, fontSize: normalise(12), fontWeight: 'bold' }}>
                         {props.texttwo}</Text>
                 </TouchableOpacity>
@@ -96,7 +97,7 @@ function HeaderComponent(props) {
 export default HeaderComponent;
 
 HeaderComponent.propTypes = {
-    firstitemtext : PropTypes.bool,
+    firstitemtext: PropTypes.bool,
     thirditemtext: PropTypes.bool,
     imageone: PropTypes.string,
     imagetwo: PropTypes.string,
@@ -112,7 +113,7 @@ HeaderComponent.propTypes = {
 };
 
 HeaderComponent.defaultProps = {
-    firstitemtext : true,
+    firstitemtext: true,
     thirditemtext: true,
     imageone: "",
     imagetwo: "",
