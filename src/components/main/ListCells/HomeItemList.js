@@ -80,7 +80,7 @@ function HomeItemList(props) {
                     
                     <TouchableOpacity style={{height: normalise(25), width: normalise(45), 
                     borderRadius: normalise(5), alignSelf: 'center',backgroundColor: Colors.fadeblack,
-                     justifyContent: 'center',alignItems: 'center'}} onPress={() => { onPress() }} >
+                     justifyContent: 'center',alignItems: 'center'}} onPress={() => { props.onPressSecondImage()}} >
 
                         <Image source={ImagePath.threedots} style={{ height: normalise(15), width: normalise(15) }}
                             resizeMode='contain' />
