@@ -105,9 +105,9 @@ return(
     
     function renderItem(data) {
         return(
-            <TouchableOpacity  onPress={() => {
-                setModalVisible(true);
-              }}>
+            // <TouchableOpacity  onPress={() => {
+            //     setModalVisible(true);
+            //   }}>
             <HomeItemList 
             image={data.item.image}
             picture={data.item.picture}
@@ -118,9 +118,10 @@ return(
             time={data.item.time}
             title={data.item.title}
             singer={data.item.singer}
-            onPressSecondImage={() => { props.navigation.navigate("Profile") }}
+            onPressSecondImage={() => {
+              setModalVisible(true)}}
             marginBottom={data.index === flatlistdata.length -1 ? normalise(20) : 0} />
-            </TouchableOpacity>
+            // </TouchableOpacity>
         )
     }
    
@@ -134,7 +135,10 @@ return(
             <StatusBar barStyle={'light-content'} />
 
             <SafeAreaView style={{ flex: 1 }}>
-
+            { modalVisible ? 
+                    <Image source={ImagePath.homelightbg} style={{opacity:0.5,position:'relative'}}/>
+                    :null
+                }  
                 <HeaderComponent
                     firstitemtext={false}
                     imageone={ImagePath.dp}
@@ -205,10 +209,7 @@ return(
                 <View style={{ flex: 1}}>
              
 
-             { modalVisible ? 
-                    <Image source={ImagePath.homelightbg} style={{opacity:0.5,position:'relative'}}/>
-                    :null
-                }  
+            
                 
        
     
