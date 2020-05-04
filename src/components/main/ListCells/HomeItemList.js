@@ -36,6 +36,19 @@ function HomeItemList(props) {
             props.onPressSecondImage()
         }
     };
+    const    onPressCommentbox= () => {
+        if (props.onPressCommentbox) {
+            props.onPressCommentbox()
+        }
+    };
+
+
+    const    onPressReactionbox= () => {
+        if (props.onPressReactionbox) {
+            props.onPressReactionbox()
+        }
+    };
+
 
     return (
 
@@ -107,14 +120,14 @@ function HomeItemList(props) {
 
                 </TouchableOpacity>
 
-<View style={{ height: normalise(90), width: normalise(250),marginLeft:normalize(15),marginTop:normalize(20) }}>
-<View style={{
+          <View style={{ height: normalise(90), width: normalise(250),marginLeft:normalize(15),marginTop:normalize(20) }}>
+            <View style={{
                 flexDirection: 'row', alignItems: 'center',
                 justifyContent: 'space-between'
-            }}>
+              }}>
 
 
-<TouchableOpacity onPress={() => { onPressImage() }}>
+               <TouchableOpacity onPress={() => { onPressImage() }}>
                     <Image source={props.picture}
                         style={{ height: normalise(25), width: normalise(25) }}
                         resizeMode="contain" />
@@ -167,7 +180,7 @@ function HomeItemList(props) {
                     borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
                      shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
-                }}    >
+                }}   onPress={() => { props.onPressCommentbox()}} >
 
                   
 
@@ -185,7 +198,7 @@ function HomeItemList(props) {
                     borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
                     shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
-                }}    >
+                }}   onPress={() => { props.onPressReactionbox()}} >
 
                   
 
@@ -216,7 +229,9 @@ HomeItemList.propTypes = {
     marginBottom: PropTypes.number,
     change: PropTypes.bool,
     image2: PropTypes.string,
-    onPressSecondImage: PropTypes.func
+    onPressSecondImage: PropTypes.func,
+    onPressCommentbox:PropTypes.func,
+    onPressReactionbox:PropTypes.func
 };
 
 HomeItemList.defaultProps = {

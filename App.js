@@ -47,7 +47,8 @@ import Profile from './src/components/main/Profile';
 import EditProfile from './src/components/main/EditProfile';
 import Followers from './src/components/main/Followers';
 import Following from './src/components/main/Following';
-
+import HomeItemComments from './src/components/main/HomeItemComments';
+import HomeItemReactions from './src/components/main/HomeItemReactions';
 import OthersProfile from './src/components/main/OthersProfile';
 import CreatePost from './src/components/main/CreatePost';
 import Inbox from './src/components/main/Inbox';
@@ -166,6 +167,8 @@ const App = () => {
             <Stack.Screen name="Inbox" component={Inbox} />
             <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
             <Stack.Screen name="HomeItemList" component={HomeItemList} />
+            <Stack.Screen name="HomeItemComments" component={HomeItemComments} />
+            <Stack.Screen name="HomeItemReactions" component={HomeItemReactions} />
           </Stack.Navigator>
         }
 

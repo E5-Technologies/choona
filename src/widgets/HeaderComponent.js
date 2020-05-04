@@ -37,7 +37,7 @@ function HeaderComponent(props) {
 
         <View style={{ width:'90%', alignSelf:'center',height:normalise(30),
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            marginTop: normalise(8),
+            
         }}>
 
             {props.firstitemtext ?
@@ -52,7 +52,7 @@ function HeaderComponent(props) {
                 <TouchableOpacity style={{ left: 0, position: 'absolute' }}
                     onPress={() => {  onPressFirstItem() }}>
                     <Image source={props.imageone}
-                        style={{ height: props.imageoneheight, width: props.imageonewidth ,marginTop:normalise(-10)}}
+                        style={{ height: props.imageoneheight, width: props.imageonewidth ,marginTop:normalise(-8)}}
                         resizeMode="contain"
                     />
                 </TouchableOpacity>

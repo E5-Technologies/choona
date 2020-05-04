@@ -14,6 +14,7 @@ import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
+
 import _ from 'lodash'
 import HomeItemList from '../ListCells/HomeItemList';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -118,6 +119,12 @@ return(
             time={data.item.time}
             title={data.item.title}
             singer={data.item.singer}
+            onPressReactionbox={() => {
+              props.navigation.navigate('HomeItemReactions',{comments:data.item.comments,
+                time:data.item.time,title:data.item.title})}}
+            onPressCommentbox={() => {
+              props.navigation.navigate('HomeItemComments',{comments:data.item.comments,
+                time:data.item.time,title:data.item.title})}}
             onPressSecondImage={() => {
               setModalVisible(true)}}
             marginBottom={data.index === flatlistdata.length -1 ? normalise(20) : 0} />
@@ -130,15 +137,16 @@ return(
         <View style={{ flex: 1, 
         backgroundColor: Colors.black }}>
 
-         
  
             <StatusBar barStyle={'light-content'} />
 
-            <SafeAreaView style={{ flex: 1 }}>
-            { modalVisible ? 
-                    <Image source={ImagePath.homelightbg} style={{opacity:0.5,position:'relative'}}/>
+            <SafeAreaView style={{ flex: 1 ,position:'relative'}}>
+            
+    { modalVisible ? 
+                    <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>
                     :null
                 }  
+   
                 <HeaderComponent
                     firstitemtext={false}
                     imageone={ImagePath.dp}
@@ -238,7 +246,6 @@ return(
     
 
 
-   
 
     <Modal
         animationType="slide"
@@ -253,25 +260,25 @@ return(
             <Text style={{color:Colors.white,fontSize:normalise(15),fontWeight:'bold'}}>More</Text>
             <View style={{backgroundColor: Colors.grey, height: 1, }} />
   <View style={{flexDirection:'row',marginTop:normalise(10)}}>
-  <Image source={ImagePath.iconbox} style={{height:normalise(18), width:normalise(18),}} 
+  <Image source={ImagePath.boxicon} style={{height:normalise(18), width:normalise(18),}} 
                             resizeMode='contain' />
                             <Text style={{color:Colors.white,marginLeft:normalise(15),
                                 fontSize:normalise(16),fontWeight:'bold'}}>Save Song</Text>
   </View>
   <View style={{flexDirection:'row',marginTop:normalise(10)}}>
-  <Image source={ImagePath.sendiconcopy} style={{height:normalise(18), width:normalise(18),}} 
+  <Image source={ImagePath.sendicon} style={{height:normalise(18), width:normalise(18),}} 
                             resizeMode='contain' />
                             <Text style={{color:Colors.white,fontSize:normalise(16),marginLeft:normalise(15),
                                 fontWeight:'bold'}}>Send Song</Text>
   </View>
   <View style={{flexDirection:'row',marginTop:normalise(10)}}>
-  <Image source={ImagePath.sendiconcopy} style={{height:normalise(18), width:normalise(18),}} 
+  <Image source={ImagePath.sendicon} style={{height:normalise(18), width:normalise(18),}} 
                             resizeMode='contain' />
                             <Text style={{color:Colors.white,marginLeft:normalise(15),
                                 fontSize:normalise(16),fontWeight:'bold'}}>Copy Link</Text>
   </View>
   <View style={{flexDirection:'row',marginTop:normalise(10)}}>
-  <Image source={ImagePath.sendiconcopy} style={{height:normalise(18), width:normalise(18),}} 
+  <Image source={ImagePath.sendicon} style={{height:normalise(18), width:normalise(18),}} 
                             resizeMode='contain' />
                             <Text style={{color:Colors.white,marginLeft:normalise(15),
                                 fontSize:normalise(16),fontWeight:'bold'}}>Unfollow Shimshimmer</Text>
