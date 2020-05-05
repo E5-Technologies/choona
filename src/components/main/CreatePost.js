@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     TextInput,
     Image,
@@ -17,7 +16,7 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import _ from 'lodash';
-
+import StatusBar from '../../utils/MyStatusBar';
 
 const flatlistdata = [
     {
@@ -88,6 +87,9 @@ export default function AddSong(props) {
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
+
+            <StatusBar />
+            
             <SafeAreaView style={{ flex: 1 }}>
 
                 <HeaderComponent firstitemtext={true}
@@ -103,7 +105,7 @@ export default function AddSong(props) {
                     <TextInput style={{
                         width: '100%',
                         borderRadius: normalise(8), padding: normalise(10),
-                        color: Colors.white, fontWeight:'500'
+                        color: Colors.white, fontWeight: '500'
                     }} value={search}
                         multiline={true}
                         placeholder={"Add a caption..."}
@@ -123,20 +125,20 @@ export default function AddSong(props) {
 
                             <TouchableOpacity>
                                 <Image source={imgsource}
-                                    style={{ height: normalise(40), width: normalise(40), borderRadius: normalise(5)}}
+                                    style={{ height: normalise(40), width: normalise(40), borderRadius: normalise(5) }}
                                     resizeMode='contain' />
                             </TouchableOpacity>
 
-                            <View style={{alignItems:'flex-start', justifyContent:'center'}}>
+                            <View style={{ alignItems: 'flex-start', justifyContent: 'center' }}>
                                 <Text style={{
                                     marginLeft: normalise(20), color: Colors.white,
                                     fontSize: normalise(11)
-                                }}  numberOfLines={1} >{title1}</Text>
-                                
+                                }} numberOfLines={1} >{title1}</Text>
+
                                 <Text style={{
                                     marginLeft: normalise(20), color: Colors.grey,
                                     fontSize: normalise(10)
-                                }}  numberOfLines={1} >{title2}</Text>
+                                }} numberOfLines={1} >{title2}</Text>
                             </View>
 
 

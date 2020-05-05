@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     Image,
     Alert
@@ -20,6 +19,7 @@ import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
+import StatusBar from '../../utils/MyStatusBar';
 
 export default function EditProfile(props) {
 
@@ -90,7 +90,7 @@ export default function EditProfile(props) {
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
 

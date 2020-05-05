@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     FlatList
 } from 'react-native';
@@ -13,12 +12,14 @@ import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import ImagePath from '../../../assests/ImagePath';
+import StatusBar from '../../../utils/MyStatusBar';
+
 
 const today = [
     {
         picture: ImagePath.dp,
-        title: "Annie88jones started following you",
-        type: 'Following'
+        title:"Annie88jones started following you",
+        type:'Following'
     },
     {
         picture: ImagePath.dp1,
@@ -100,7 +101,7 @@ export default function Notification(props) {
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar />
             
             <SafeAreaView style={{ flex: 1 }}>
 

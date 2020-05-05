@@ -6,21 +6,22 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
+    StatusBar,
     ImageBackground,
-    Image
+    Image,
+    Platform
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
-
+import MyStatusBar from '../../utils/MyStatusBar';
 
 export default function SignUp(props) {
     return (
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
-            <StatusBar barStyle={'light-content'} />
+          {Platform.OS === 'android' ? <MyStatusBar /> : <StatusBar barStyle={'light-content'} /> }
 
             <View style={{ height: '50%' }}>
                 <Image

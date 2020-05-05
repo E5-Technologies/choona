@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     TextInput,
     Image,
@@ -18,7 +17,7 @@ import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from './../ListCells/SavedSongsListItem';
 import _ from 'lodash';
-
+import StatusBar from '../../../utils/MyStatusBar';
 
 const flatlistdata = [
     {
@@ -92,7 +91,7 @@ export default function AddSong(props) {
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
            
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
 

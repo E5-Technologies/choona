@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     Image,
     Alert
@@ -19,7 +18,7 @@ import TextInputField from '../../widgets/TextInputField';
 import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
-
+import StatusBar from '../../utils/MyStatusBar';
 
 export default function Login(props) {
 

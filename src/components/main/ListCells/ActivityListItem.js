@@ -49,8 +49,8 @@ function ActivityListItem(props) {
 
                  <Text style={{
                     color: Colors.white, fontSize: normalise(11), width: props.type ? '50%' : '70%',
-                    fontWeight: 'bold',
-                }}> {props.title} </Text>
+                    fontWeight: 'bold',  textAlign:'left',
+                }}>{props.title}</Text>
                    
 
             {props.type ?
