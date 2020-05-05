@@ -20,7 +20,7 @@ import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ActivityListItem from './ListCells/ActivityListItem';
 import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HeaderComponent';
+import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
 
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
@@ -135,7 +135,7 @@ const reaction6 = []
 const reaction7 = []
 
 
-export default function Notification(props) {
+export default function HomeItemReaction(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [modal1Visible, setModal1Visible] = useState(false);
     const [modalReact, setModalReact] = useState("");
@@ -188,7 +188,7 @@ export default function Notification(props) {
                 <SafeAreaView style={{ flex: 1 }}>
 
 
-                    <HeaderComponent firstitemtext={false}
+                    <HomeHeaderComponent firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
 
@@ -301,7 +301,7 @@ export default function Notification(props) {
                 <SafeAreaView style={{ flex: 1 }}>
 
 
-                    <HeaderComponent firstitemtext={false}
+                    <HomeHeaderComponent firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
 

@@ -13,7 +13,7 @@ import {
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
-import HeaderComponent from '../../../widgets/HeaderComponent';
+import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 
 import _ from 'lodash'
 import HomeItemList from '../ListCells/HomeItemList';
@@ -150,7 +150,7 @@ return(
                     :null
                 }  
    
-                <HeaderComponent
+                <HomeHeaderComponent
                     firstitemtext={false}
                     imageone={ImagePath.dp}
                     imageoneheight={25}
