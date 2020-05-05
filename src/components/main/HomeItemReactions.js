@@ -131,6 +131,10 @@ const reaction5 = [
     },
 
 ];
+const reaction6=[]
+const reaction7=[]
+
+
 export default function Notification(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [modal1Visible, setModal1Visible] = useState(false);
@@ -142,7 +146,7 @@ function hitreact(x){
     setModalReact(x)
     this.setTimeout( () => {
         setModalVisible(false)
-     },1500);
+     },5000);
 }
 
 function hitreact1(){
@@ -182,6 +186,114 @@ function hitreact1(){
     //     )
     // }
 
+
+  if(reaction1.length==0  && reaction2.length==0 && reaction3.length==0 && reaction4.legth==0)
+ //if(reaction6.length==0  && reaction7.length==0 )
+    {
+return(
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+
+            <StatusBar barStyle={'light-content'} />
+            
+            <SafeAreaView style={{ flex: 1 }}>
+
+   
+            <HeaderComponent firstitemtext={false}
+                     imageone={ImagePath.backicon} 
+                    //imagesecond={ImagePath.dp}
+                   
+                     title="10 REACTIONS"
+                     thirditemtext={false} 
+                    // imagetwo={ImagePath.newmessage} 
+                     imagetwoheight={25}
+                     imagetwowidth={25}
+                    onPressFirstItem={() => { props.navigation.goBack() }} /> 
+<View style={{  minHeight: normalise(35),height:normalise(15), width: normalise(300),
+                backgroundColor: Colors.fadeblack,
+        flexDirection:'row',marginLeft:normalise(10),
+                borderRadius: normalise(10), marginTop: normalise(20), paddingLeft: normalise(5),
+                color: Colors.white, paddingLeft: normalise(10)
+             }}>
+  <Image source={ImagePath.searchicon}
+                        style={{
+                            height: normalise(15), width: normalise(25),  marginTop:normalise(10),
+                            paddingLeft: normalise(10),justifyContent:'center'
+                        }} resizeMode="contain" />
+ <TextInput multiline style={{
+  width: normalise(210),
+  marginTop:normalise(7),
+    height: normalise(15),
+    minHeight:normalise(30),
+    fontSize:normalise(12), 
+    color: Colors.white, 
+}}
+    placeholder={"Search"}
+    placeholderTextColor={Colors.white}
+    onChangeText={(text) => { console.log(text) }} /> 
+
+    <TouchableOpacity style={{alignItems:'center',justifyContent:'center',width:normalise(50)}}>
+        <Text style={{fontSize:normalise(13),color:Colors.white,fontWeight:'bold'}}>
+            CLEAR
+        </Text>
+    </TouchableOpacity>
+
+</View>
+
+                <View style={{marginTop:normalise(100),marginHorizontal:normalise(50),alignItems:'center'}} >
+                <Image source={ImagePath.blankreactionbg}
+                                style={{ height: normalise(225), width: normalise(225) }}
+                                resizeMode='contain' />
+ <Text style={{fontSize:normalise(12),color:Colors.white}}>
+     No results found,please try
+ </Text>
+ <Text style={{fontSize:normalise(12),color:Colors.white}}>another name</Text>
+                </View> 
+
+
+
+
+                <View style={{position:'absolute', marginBottom: normalise(30),alignSelf:'center',marginHorizontal:normalise(15),
+                            marginTop: normalise(575), height: normalise(60), width: '85%',justifyContent:'space-between',
+                            borderRadius: normalise(35), backgroundColor: Colors.white, borderWidth: normalise(0.5),
+                            shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
+                            shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', 
+                          borderColor: Colors.grey,paddingHorizontal:normalise(10)}}>
+       <TouchableOpacity onPress={() => {
+             hitreact(react[0])}}>
+              <Text  style={{fontSize:42}}>{react[0]}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+             hitreact(react[1])}}>
+              <Text style={{fontSize:42}}>{react[1]}</Text>
+              </TouchableOpacity >
+              <TouchableOpacity onPress={() => {
+             hitreact(react[2])}}>
+              <Text style={{fontSize:42}}>{react[2]}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+             hitreact(react[3])}}>
+              <Text style={{fontSize:42}}>{react[3]}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+             hitreact1()}}>
+         <Image source={ImagePath.greyplus}
+    style={{
+        height: normalise(35), width: normalise(35),
+   
+    }} resizeMode="contain" />
+              </TouchableOpacity>
+
+  
+                </View>
+
+                </SafeAreaView>
+
+                </View>
+
+)
+    }
+
+    else{
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -455,6 +567,7 @@ function hitreact1(){
             </SafeAreaView>
         </View>
     )
+      }
 }
 
 const styles = StyleSheet.create({

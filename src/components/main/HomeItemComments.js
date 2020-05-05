@@ -197,7 +197,7 @@ export default function HomeItemComments(props) {
   width: '80%',
   marginTop:normalise(7),
     height: 'auto',
-    minHeight:normalizeUnits(30),
+    minHeight:normalise(30),
     fontSize:normalise(12), 
     color: Colors.white, 
 }}
