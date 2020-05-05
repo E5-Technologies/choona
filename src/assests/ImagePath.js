@@ -14,6 +14,7 @@ const ImagePath = {
   homelightbg:require('../assests/images/Rectangle.png'),
   iconbox:require('../assests/images/icon-box.png'),
   greyplus:require('../assests/images/greyplus.png'),
+  greycross:require('../assests/images/greycross.png'),
   searchactive: require('./images/icon-search-active.png'),
   searchinactive: require('./images/icon-search.png'),
   addbtn: require('./images/Button-Add.png'),

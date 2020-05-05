@@ -146,7 +146,7 @@ export default function HomeItemReaction(props) {
         setModalReact(x)
         this.setTimeout(() => {
             setModalVisible(false)
-        }, 5000);
+        }, 2000);
     }
 
     function hitreact1() {
@@ -174,7 +174,7 @@ export default function HomeItemReaction(props) {
         )
     }
 
-  
+
 
 
     if (reaction1.length == 0 && reaction2.length == 0 && reaction3.length == 0 && reaction4.legth == 0)
@@ -314,7 +314,7 @@ export default function HomeItemReaction(props) {
 
 
 
-                
+
 
 
 
@@ -464,16 +464,24 @@ export default function HomeItemReaction(props) {
                         <TouchableOpacity onPress={() => {
                             hitreact(react[3])
                         }}>
-                            <Text style={{ fontSize: 42 }}>{react[3]}</Text>
+                            <Text style={{ fontSize: 43 }}>{react[3]}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             hitreact1()
                         }}>
-                            <Image source={ImagePath.greyplus}
+                         { modal1Visible==true ?  
+                          <Image source={ImagePath.greycross}
                                 style={{
                                     height: normalise(35), width: normalise(35),
 
-                                }} resizeMode="contain" />
+                                }} resizeMode="contain" /> 
+                                :
+                                <Image source={ImagePath.greyplus}
+                                style={{
+                                    height: normalise(35), width: normalise(35),
+
+                                }} resizeMode="contain" /> 
+                            }
                         </TouchableOpacity>
 
 
@@ -504,23 +512,18 @@ export default function HomeItemReaction(props) {
 
                     </Modal>
 
-
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modal1Visible}
-                        onRequestClose={() => {
-                            Alert.alert("Modal has been closed.");
-                        }}
-                    >
+{ modal1Visible==true ?
+                   
                         <View style={{
+                            position:'absolute',
                             margin: 20,
                             height: normalise(225),
                             width: normalise(290), marginHorizontal: normalise(15),
                             backgroundColor: Colors.white,
                             borderRadius: 20,
                             padding: 35,
-                            marginTop: normalise(325),
+                           top:400,
+                     
                             shadowColor: "#000",
                             shadowOffset: {
                                 width: 0,
@@ -544,7 +547,8 @@ export default function HomeItemReaction(props) {
 
 
 
-                    </Modal>
+                
+                    :null}
                 </SafeAreaView>
             </View>
         )

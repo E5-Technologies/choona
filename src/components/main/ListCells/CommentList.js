@@ -50,35 +50,35 @@ function CommentList(props) {
         <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
             <View style={{
-                flexDirection: 'row', 
-             
+                flexDirection: 'row',
+
             }}>
 
                 <TouchableOpacity onPress={() => { onPressImage() }}  >
                     <Image source={props.image}
-                        style={{ height: normalise(30), width: normalise(30),borderRadius:normalise(15) }}
+                        style={{ height: normalise(30), width: normalise(30), borderRadius: normalise(15) }}
                         resizeMode="contain" />
 
-                    
-                </TouchableOpacity>
-             <View style={{marginLeft:normalise(10),}}>
-                <View  style={{flexDirection:'row'}}>
 
-                 <Text style={{width:normalise(180),color:Colors.white,fontSize:14}}>
-                      {props.name}
+                </TouchableOpacity>
+                <View style={{ marginLeft: normalise(10), }}>
+                    <View style={{ flexDirection: 'row' }}>
+
+                        <Text style={{ width: normalise(180), color: Colors.white, fontSize: 14 }}>
+                            {props.name}
+                        </Text>
+                        <Text style={{ width: normalise(70), color: Colors.white, fontSize: 12 }}>
+                            {props.time} minutes ago
                   </Text>
-                  <Text style={{width:normalise(70),color:Colors.white,fontSize:12}}>
-                     {props.time} minutes ago
-                  </Text>
-                  </View>
-                  <View>
-                  <Text style={{width:normalise(220),color:Colors.white,fontSize:12,marginTop:normalise(8)}}>
-                 {props.comment}
-                   
-                  </Text>
-                  </View>
-             </View>
-    
+                    </View>
+                    <View>
+                        <Text style={{ width: normalise(220), color: Colors.white, fontSize: 12, marginTop: normalise(8) }}>
+                            {props.comment}
+
+                        </Text>
+                    </View>
+                </View>
+
             </View>
 
             <View style={{
