@@ -538,7 +538,11 @@ export default function HomeItemReaction(props) {
                             <EmojiSelector
                                 category={Categories.symbols}
                         
-                                onEmojiSelected={emoji => console.log(emoji)}
+                                onEmojiSelected={emoji => {setModalVisible(true), setModalReact(emoji),
+                                setTimeout(()=>{
+                                    setModalVisible(false)
+                                }, 2000)
+                            }}
                             />
 
 
