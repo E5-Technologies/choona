@@ -52,6 +52,7 @@ import HomeItemReactions from './src/components/main/HomeItemReactions';
 import OthersProfile from './src/components/main/OthersProfile';
 import CreatePost from './src/components/main/CreatePost';
 import Inbox from './src/components/main/Inbox';
+import Player from './src/components/main/Player';
 import InsideaMessage from './src/components/main/InsideaMessage';
 
 const Stack = createStackNavigator();
@@ -165,6 +166,7 @@ const App = () => {
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
             <Stack.Screen name="Inbox" component={Inbox} />
+            <Stack.Screen name="Player" component={Player} />
             <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
             <Stack.Screen name="HomeItemList" component={HomeItemList} />
             <Stack.Screen name="HomeItemComments" component={HomeItemComments} />

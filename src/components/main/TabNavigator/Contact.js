@@ -132,7 +132,9 @@ export default function Contact(props) {
                     <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
                     alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(42),
                      marginTop:normalise(15), position:'absolute', right:21}}
-                     onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
+                    //  onPress={ () => { rowMap[rowData.item.key].closeRow() }}
+                    onPress={ () => { props.navigation.navigate('Player') }}
+                     >
                         
                         <Image source={ImagePath.unsaved} style={{height:normalise(18), width:normalise(18),}} 
                         resizeMode='contain' />

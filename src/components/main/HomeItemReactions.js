@@ -522,7 +522,7 @@ export default function HomeItemReaction(props) {
                             backgroundColor: Colors.white,
                             borderRadius: 20,
                             padding: 35,
-                           top:400,
+                       bottom:150,
                      
                             shadowColor: "#000",
                             shadowOffset: {
@@ -537,6 +537,7 @@ export default function HomeItemReaction(props) {
 
                             <EmojiSelector
                                 category={Categories.symbols}
+                        
                                 onEmojiSelected={emoji => console.log(emoji)}
                             />
 

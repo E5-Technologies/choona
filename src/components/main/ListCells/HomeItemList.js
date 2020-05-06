@@ -49,6 +49,12 @@ function HomeItemList(props) {
         }
     };
 
+  
+    const   onPressMusicbox= () => {
+        if (props.onPressMusicbox) {
+            props.onPressMusicbox()
+        }
+    };
 
     return (
 
@@ -102,7 +108,8 @@ function HomeItemList(props) {
                 </View>
             </View>
 
-            <TouchableOpacity style={{
+            <TouchableOpacity onPress={() => { props.onPressMusicbox()}}
+            style={{
                      height: normalise(250), width: normalise(280), alignSelf: 'center',
                     borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
                     borderColor: Colors.grey, shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
@@ -231,7 +238,8 @@ HomeItemList.propTypes = {
     image2: PropTypes.string,
     onPressSecondImage: PropTypes.func,
     onPressCommentbox:PropTypes.func,
-    onPressReactionbox:PropTypes.func
+    onPressReactionbox:PropTypes.func,
+    onPressMusicbox:PropTypes.func,
 };
 
 HomeItemList.defaultProps = {
