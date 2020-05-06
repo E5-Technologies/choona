@@ -406,44 +406,48 @@ export default function Home(props) {
 
 
 
-{ modal1Visible==true ?
-                   
-                   <View style={{
-                       position:'absolute',
-                       bottom: 50,
-                       height: normalise(225),
-                       width: normalise(290), marginHorizontal: normalise(15),
-                       backgroundColor: Colors.white,
-                       borderRadius: 20,
-                       padding: 35,
-                
-                
-                       shadowColor: "#000",
-                       shadowOffset: {
-                           width: 0,
-                           height: 2
-                       },
-                       shadowOpacity: 0.25,
-                       shadowRadius: 3.84,
-                       elevation: 5
-                   }}>
+        {modal1Visible == true ?
+
+          <View style={{
+            position: 'absolute',
+            bottom: 50,
+            height: normalise(225),
+            width: normalise(290), marginHorizontal: normalise(15),
+            backgroundColor: Colors.white,
+            borderRadius: 20,
+            padding: 35,
 
 
-                       <EmojiSelector
-                           category={Categories.symbols}
-                   
-                           onEmojiSelected={emoji => console.log(emoji)}
-                       />
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5
+          }}>
 
 
-                   </View>
+            <EmojiSelector
+              category={Categories.symbols}
+
+              onEmojiSelected={emoji => {setVisible(true), setModalReact(emoji),
+              setTimeout(()=>{
+                setVisible(false)
+              },2000)
+            }}
+            />
+
+
+          </View>
 
 
 
 
 
-           
-               :null}
+
+          : null}
 
 
       </SafeAreaView>
