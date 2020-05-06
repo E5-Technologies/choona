@@ -20,7 +20,7 @@ import HomeItemList from '../ListCells/HomeItemList';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
-
+import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
 const flatlistdata1 = []
 
@@ -98,7 +98,30 @@ const flatlistdata = [
 ]
 export default function Home(props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [modalReact, setModalReact] = useState("");
+  const [modal1Visible, setModal1Visible] = useState(false);
+
+  const react = ["🔥", "🕺", "💃", "😳", "❤️"]
   let val = 0
+
+  function hitreact(x) {
+    setVisible(true)
+    setModalReact(x)
+    this.setTimeout(() => {
+      setVisible(false)
+    }, 2000);
+  }
+  function hitreact1(modal1Visible) {
+
+    if (modal1Visible == true) {
+      setModal1Visible(false)
+    }
+    else {
+      setModal1Visible(true)
+    }
+
+  }
 
   function modal() {
 
@@ -120,6 +143,21 @@ export default function Home(props) {
         time={data.item.time}
         title={data.item.title}
         singer={data.item.singer}
+        onPressReact1={() => {
+          hitreact(react[0])
+        }}
+        onPressReact2={() => {
+          hitreact(react[1])
+        }}
+        onPressReact3={() => {
+          hitreact(react[2])
+        }}
+        onPressReact4={() => {
+          hitreact(react[3])
+        }}
+        onPressReact5={() => {
+          hitreact1(modal1Visible)
+        }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
             comments: data.item.comments,
@@ -249,6 +287,34 @@ export default function Home(props) {
 
 
 
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+              }}
+            >
+              <View style={{
+                flex: 1,
+                backgroundColor: '#ffffff',
+                opacity: 0.8,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 22
+              }}>
+
+                <Text style={{ fontSize: 220 }}>{modalReact}</Text>
+
+
+              </View>
+
+
+
+
+
+            </Modal>
+
 
             <Modal
               animationType="slide"
@@ -339,6 +405,47 @@ export default function Home(props) {
         }
 
 
+
+{ modal1Visible==true ?
+                   
+                   <View style={{
+                       position:'absolute',
+                       bottom: 50,
+                       height: normalise(225),
+                       width: normalise(290), marginHorizontal: normalise(15),
+                       backgroundColor: Colors.white,
+                       borderRadius: 20,
+                       padding: 35,
+                
+                
+                       shadowColor: "#000",
+                       shadowOffset: {
+                           width: 0,
+                           height: 2
+                       },
+                       shadowOpacity: 0.25,
+                       shadowRadius: 3.84,
+                       elevation: 5
+                   }}>
+
+
+                       <EmojiSelector
+                           category={Categories.symbols}
+                   
+                           onEmojiSelected={emoji => console.log(emoji)}
+                       />
+
+
+                   </View>
+
+
+
+
+
+           
+               :null}
+
+
       </SafeAreaView>
 
 
@@ -357,6 +464,8 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     justifyContent: "flex-end",
     alignItems: "center",
+
+
 
   },
   modalView: {
