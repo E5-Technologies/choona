@@ -92,7 +92,7 @@ export default function Player(props) {
     function renderFlatlistData(data) {
         return (
             <CommentList
-                 width={"100%"}
+                width={"100%"}
                 image={data.item.picture}
                 title={data.item.title}
                 name={data.item.name}
@@ -156,7 +156,7 @@ export default function Player(props) {
                         </View>
 
                         <FlatList
-                            style={{ height: '60%'}}
+                            style={{ height: '60%' }}
                             data={followdata}
                             renderItem={renderFlatlistData}
                             keyExtractor={(item, index) => { index.toString() }}
@@ -167,7 +167,7 @@ export default function Player(props) {
                             height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
                             borderRadius: normalise(17), marginTop: normalise(10), padding: normalise(10),
                             color: Colors.white, paddingLeft: normalise(30)
-                        }} 
+                        }}
                             placeholder={"Add a comment"}
                             placeholderTextColor={Colors.white}
                             onChangeText={(text) => { console.log(text) }} />
@@ -395,41 +395,41 @@ export default function Player(props) {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{
+                        <TouchableOpacity style={{
                             width: '90%', alignSelf: 'center', backgroundColor: Colors.white,
                             height: normalise(50), marginTop: normalise(20), alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: normalise(10), marginBottom: normalise(20),
-                        }}>
+                        }} onPress={() => { props.navigation.goBack() }}>
 
                             <View style={{
                                 width: '90%', alignSelf: 'center', flexDirection: 'row',
                                 justifyContent: 'space-between', alignItems: 'center',
                             }}>
 
-                                <TouchableOpacity onPress={()=>{props.navigation.goBack()}}>
-                                    <Image source={ImagePath.playicon}
-                                        style={{
-                                            height: normalise(12), width: normalise(12),
-                                            transform: [{ rotate: '90deg' }]
-                                        }} resizeMode='contain' />
-                                </TouchableOpacity>
+
+                                <Image source={ImagePath.playicon}
+                                    style={{
+                                        height: normalise(12), width: normalise(12),
+                                        transform: [{ rotate: '90deg' }]
+                                    }} resizeMode='contain' />
+
 
                                 <Text style={{
                                     color: Colors.darkerblack, fontSize: normalise(12),
                                     fontWeight: '500'
                                 }}>Minimize Player</Text>
 
-                                <TouchableOpacity onPress={()=>{props.navigation.goBack()}}>
-                                    <Image source={ImagePath.playicon}
-                                        style={{
-                                            height: normalise(12), width: normalise(12),
-                                            transform: [{ rotate: '90deg' }]
-                                        }} resizeMode='contain' />
-                                </TouchableOpacity>
+
+                                <Image source={ImagePath.playicon}
+                                    style={{
+                                        height: normalise(12), width: normalise(12),
+                                        transform: [{ rotate: '90deg' }]
+                                    }} resizeMode='contain' />
+
 
                             </View>
-                        </View>
+                        </TouchableOpacity>
 
                         {RbSheet()}
 
