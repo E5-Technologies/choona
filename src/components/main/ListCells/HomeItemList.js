@@ -18,7 +18,7 @@ import { normalizeUnits } from 'moment';
 
 function HomeItemList(props) {
 
-
+    const react = ["🔥", "🕺", "💃", "😳", "❤️"]
     const onPress = () => {
         if (props.onPress) {
             props.onPress()
@@ -125,6 +125,62 @@ function HomeItemList(props) {
                     style={{height:normalise(60), width:normalise(60), position:'absolute',
                     marginLeft:normalise(10), marginTop:normalise(11)}} />
 
+
+
+
+<View style={{
+                        position: 'absolute', marginBottom: normalise(30), alignSelf: 'center', marginHorizontal: normalise(15),
+                        bottom: 0, height: normalise(60), width: '85%', justifyContent: 'space-between',
+                        borderRadius: normalise(35), backgroundColor: Colors.white, borderWidth: normalise(0.5),
+                        shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
+                        shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
+                        borderColor: Colors.grey, paddingHorizontal: normalise(10)
+                    }}>
+                        <TouchableOpacity 
+                        // onPress={() => {
+                        //     hitreact(react[0])
+                        // }}
+                        >
+                            <Text style={{ fontSize: 42 }}>{react[0]}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                        // onPress={() => {
+                        //     hitreact(react[1])
+                        // }}
+                        >
+                            <Text style={{ fontSize: 42 }}>{react[1]}</Text>
+                        </TouchableOpacity >
+                        <TouchableOpacity 
+                        // onPress={() => {
+                        //     hitreact(react[2])
+                        // }}
+                        >
+                            <Text style={{ fontSize: 42 }}>{react[2]}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                        // onPress={() => {
+                        //     hitreact(react[3])
+                        // }}
+                        >
+                            <Text style={{ fontSize: 43 }}>{react[3]}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                        // onPress={() => {
+                        //     hitreact1()
+                        // }}
+                        >
+                       
+                        
+                                <Image source={ImagePath.greyplus}
+                                style={{
+                                    height: normalise(35), width: normalise(35),
+
+                                }} resizeMode="contain" /> 
+                     
+                        </TouchableOpacity>
+
+
+                    </View>
                 </TouchableOpacity>
 
           <View style={{ height: normalise(90), width: normalise(250),marginLeft:normalize(15),marginTop:normalize(20) }}>
