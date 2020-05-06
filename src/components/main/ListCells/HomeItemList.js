@@ -19,6 +19,7 @@ import { normalizeUnits } from 'moment';
 function HomeItemList(props) {
 
     const react = ["🔥", "🕺", "💃", "😳", "❤️"]
+    const [plusVisible,setPlusVisible] = useState(false);
     const onPress = () => {
         if (props.onPress) {
             props.onPress()
@@ -56,6 +57,43 @@ function HomeItemList(props) {
         }
     };
 
+
+
+
+    const   onPressReact1= () => {
+        if (props.onPressReact1) {
+            props.onPressReact1()
+        }
+    };
+    const   onPressReact2= () => {
+        if (props.onPressReact2) {
+            props.onPressReact2()
+        }
+    };
+    const onPressReact3= () => {
+        if (props.onPressReact3) {
+            props.onPressReact3()
+        }
+    };
+    const   onPressReact4= () => {
+        if (props.onPressReact4) {
+            props.onPressReact4()
+        }
+    };
+    const   onPressReact5= () => {
+       
+          if (props.onPressReact5) {
+            props.onPressReact5()
+             
+        // if (plusVisible == true) {
+        //     setPlusVisible(false)
+        //   }
+        //   else {
+        //     setPlusVisible(true)
+        //   }
+         }
+
+    };
     return (
 
         <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
@@ -129,53 +167,69 @@ function HomeItemList(props) {
 
 
 <View style={{
-                        position: 'absolute', marginBottom: normalise(30), alignSelf: 'center', marginHorizontal: normalise(15),
-                        bottom: 0, height: normalise(60), width: '85%', justifyContent: 'space-between',
-                        borderRadius: normalise(35), backgroundColor: Colors.white, borderWidth: normalise(0.5),
+                        position: 'absolute', marginBottom: normalise(10), alignSelf: 'center', marginHorizontal: normalise(10),
+                        bottom: 0, height: normalise(50), width: '85%', justifyContent: 'space-between',
+                        borderRadius: normalise(35), backgroundColor: Colors.white,opacity:0.7,
+                         borderWidth: normalise(0.5),
                         shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                         shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
                         borderColor: Colors.grey, paddingHorizontal: normalise(10)
                     }}>
                         <TouchableOpacity 
-                        // onPress={() => {
-                        //     hitreact(react[0])
-                        // }}
+                       onPress={() => { props.onPressReact1()}}
                         >
-                            <Text style={{ fontSize: 42 }}>{react[0]}</Text>
+                            <Text style={{ fontSize: 42 ,fontWeight:'bold',position:'relative'}}>{react[0]}</Text>
+                            <View style={{ backgroundColor:Colors.white,opacity:15,height:normalise(16),
+                            width:normalise(16),borderRadius:normalise(8),
+                            position:"absolute",right:0,alignItems:'center'}}>
+                                <Text>2</Text>
+                                </View>
                         </TouchableOpacity>
                         <TouchableOpacity 
-                        // onPress={() => {
-                        //     hitreact(react[1])
-                        // }}
+                      onPress={() => { props.onPressReact2()}}
                         >
-                            <Text style={{ fontSize: 42 }}>{react[1]}</Text>
+                            <Text style={{ fontSize: 42,fontWeight:'bold' }}>{react[1]}</Text>
+                            <View style={{ backgroundColor:Colors.white,opacity:15,height:normalise(16),
+                            width:normalise(16),borderRadius:normalise(8),
+                            position:"absolute",right:0,alignItems:'center'}}>
+                                <Text>5</Text>
+                                </View>
                         </TouchableOpacity >
                         <TouchableOpacity 
-                        // onPress={() => {
-                        //     hitreact(react[2])
-                        // }}
+                        onPress={() => { props.onPressReact3()}}
                         >
-                            <Text style={{ fontSize: 42 }}>{react[2]}</Text>
+                            <Text style={{ fontSize: 42,fontWeight:'bold' }}>{react[2]}</Text>
+                            <View style={{ backgroundColor:Colors.white,opacity:15,height:normalise(16),
+                            width:normalise(16),borderRadius:normalise(8),
+                            position:"absolute",right:0,alignItems:'center'}}>
+                                <Text>8</Text>
+                                </View>
                         </TouchableOpacity>
                         <TouchableOpacity 
-                        // onPress={() => {
-                        //     hitreact(react[3])
-                        // }}
+                      onPress={() => { props.onPressReact4()}}
                         >
-                            <Text style={{ fontSize: 43 }}>{react[3]}</Text>
+                            <Text style={{ fontSize: 43 ,fontWeight:'bold'}}>{react[3]}</Text>
+                            <View style={{ backgroundColor:Colors.white,opacity:15,height:normalise(16),
+                            width:normalise(16),borderRadius:normalise(8),
+                            position:"absolute",right:0,alignItems:'center'}}>
+                                <Text>0</Text>
+                                </View>
                         </TouchableOpacity>
                         <TouchableOpacity 
-                        // onPress={() => {
-                        //     hitreact1()
-                        // }}
+                            onPress={() => { props.onPressReact5(props.modal1Visible)}}
                         >
                        
-                        
+                        {/* {plusVisible==true ? */}
                                 <Image source={ImagePath.greyplus}
                                 style={{
                                     height: normalise(35), width: normalise(35),
 
                                 }} resizeMode="contain" /> 
+                                {/* :  <Image source={ImagePath.greycross}
+                                style={{
+                                    height: normalise(35), width: normalise(35),
+
+                                }} resizeMode="contain" /> } */}
                      
                         </TouchableOpacity>
 
@@ -295,7 +349,15 @@ HomeItemList.propTypes = {
     onPressSecondImage: PropTypes.func,
     onPressCommentbox:PropTypes.func,
     onPressReactionbox:PropTypes.func,
-    onPressMusicbox:PropTypes.func,
+    
+    onPressReact1:PropTypes.func,
+
+    onPressReact2:PropTypes.func,
+    onPressReact3:PropTypes.func,
+
+    onPressReact4:PropTypes.func,
+    onPressReact5:PropTypes.func
+
 };
 
 HomeItemList.defaultProps = {
