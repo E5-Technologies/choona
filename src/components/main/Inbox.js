@@ -25,7 +25,7 @@ const followdata = [
         title: "DanVermon98",
         message: "Remember we use to play this in office ?",
         read: false
-        
+
     },
 
     {
@@ -33,29 +33,29 @@ const followdata = [
         title: "Bigbird883",
         message: "Here's a blast from past?",
         read: false
-        
+
     },
     {
         picture: ImagePath.dp,
         title: "Annie88jones ",
         message: "Here's a blast from past?",
         read: true
-        
-        
+
+
     },
     {
         picture: ImagePath.dp1,
         title: "RonnyJ ",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
     {
         picture: ImagePath.dp,
         title: "DanVermon98",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
 
     {
@@ -63,28 +63,28 @@ const followdata = [
         title: "Bigbird883",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
     {
         picture: ImagePath.dp,
         title: "Annie88j",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
     {
         picture: ImagePath.dp1,
         title: "RonnyJ",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
     {
         picture: ImagePath.dp,
         title: "DanVermon98",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
 
     {
@@ -92,21 +92,21 @@ const followdata = [
         title: "Bigbird883",
         message: "Here's a blast from past?",
         read: true
-        
+
     },
 ]
 
 export default function Inbox(props) {
 
-    
+
 
     function renderInboxItem(data) {
         return (
             <InboxListItem image={data.item.picture}
-                title={data.item.title} 
+                title={data.item.title}
                 description={data.item.message}
                 read={data.item.read === true ? true : false}
-                onPress={()=>props.navigation.navigate('InsideaMessage')}
+                onPress={() => props.navigation.navigate('InsideaMessage')}
                 marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
             />
         )
@@ -121,15 +121,19 @@ export default function Inbox(props) {
             <SafeAreaView style={{ flex: 1, }}>
 
                 <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon} 
+                    imageone={ImagePath.backicon}
                     title={`INBOX`}
-                    thirditemtext={false} 
-                    imagetwo={ImagePath.newmessage} 
+                    thirditemtext={false}
+                    imagetwo={ImagePath.newmessage}
                     imagetwoheight={25}
                     imagetwowidth={25}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                    onPressFirstItem={() => { props.navigation.goBack() }}
+                    onPressThirdItem={() => {
+                        props.navigation.navigate('AddSongsInMessage')
+                    }}
+                />
 
-                <View style={{ width: '95%', alignSelf: 'center',}}>
+                <View style={{ width: '95%', alignSelf: 'center', }}>
 
                     <TextInput style={{
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
@@ -148,10 +152,10 @@ export default function Inbox(props) {
                 </View>
 
                 <FlatList
-                data={followdata}
-                renderItem={renderInboxItem}
-                keyExtractor={(item , index)=>{index.toString()}}
-                showsVerticalScrollIndicator={false} />
+                    data={followdata}
+                    renderItem={renderInboxItem}
+                    keyExtractor={(item, index) => { index.toString() }}
+                    showsVerticalScrollIndicator={false} />
 
 
 

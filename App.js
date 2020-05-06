@@ -54,6 +54,8 @@ import CreatePost from './src/components/main/CreatePost';
 import Inbox from './src/components/main/Inbox';
 import Player from './src/components/main/Player';
 import InsideaMessage from './src/components/main/InsideaMessage';
+import AddSongsInMessage from './src/components/main/AddSongsInMessage'
+import SendSongInMessageFinal from './src/components/main/SendSongInMessageFinal'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -171,6 +173,9 @@ const App = () => {
             <Stack.Screen name="HomeItemList" component={HomeItemList} />
             <Stack.Screen name="HomeItemComments" component={HomeItemComments} />
             <Stack.Screen name="HomeItemReactions" component={HomeItemReactions} />
+            <Stack.Screen name="AddSongsInMessage" component={AddSongsInMessage} />
+            <Stack.Screen name="SendSongInMessageFinal" component={SendSongInMessageFinal} />
+            
           </Stack.Navigator>
         }
 

@@ -77,12 +77,16 @@ export default function AddSong(props) {
                 marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
                 change={true}
                 image2={ImagePath.addicon}
-                onPressSecondImage={()=>{props.navigation.navigate("CreatePost", {image: data.item.image,
-                title: data.item.title, title2:data.item.singer}) }} />
+                onPressSecondImage={() => {
+                    props.navigation.navigate("CreatePost", {
+                        image: data.item.image,
+                        title: data.item.title, title2: data.item.singer
+                    })
+                }} />
         )
     }
 
-    if(search !== ""){
+    if (search !== "") {
         flatlistdata1 = [...flatlistdata]
     }
 
@@ -90,7 +94,7 @@ export default function AddSong(props) {
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
-           
+
             <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
@@ -108,7 +112,7 @@ export default function AddSong(props) {
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
                         borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
                         color: Colors.white, paddingLeft: normalise(30)
-                    }}  value={search}
+                    }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.white}
                         onChangeText={(text) => { setSearch(text) }} />
@@ -119,18 +123,18 @@ export default function AddSong(props) {
                             paddingLeft: normalise(30)
                         }} resizeMode="contain" />
 
-                {search === "" ? null : 
-                 <TouchableOpacity onPress={()=>{setSearch(""), flatlistdata1=[]}}
-                        style={{
-                        position: 'absolute', right: 0, 
-                        bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                        paddingRight: normalise(10)
-                    }}>
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                        }}>CLEAR</Text>
+                    {search === "" ? null :
+                        <TouchableOpacity onPress={() => { setSearch(""), flatlistdata1 = [] }}
+                            style={{
+                                position: 'absolute', right: 0,
+                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                paddingRight: normalise(10)
+                            }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                            }}>CLEAR</Text>
 
-                    </TouchableOpacity> }
+                        </TouchableOpacity>}
 
                 </View>
 
@@ -152,12 +156,14 @@ export default function AddSong(props) {
 
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
-                        <Image source={ImagePath.searchicon} style={{height:normalise(25), width:normalise(25)}}/>
+                        <Image source={ImagePath.searchicon} style={{ height: normalise(25), width: normalise(25) }} />
 
-                         <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
-                        marginTop:normalise(20), width:'60%', textAlign:'center' }}>
-                                Seach for the song you want to share above </Text>
-                        
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
+                            marginTop: normalise(20), width: '60%', textAlign: 'center'
+                        }}>
+                            Seach for the song you want to share above </Text>
+
                     </View>
 
                     : <FlatList
