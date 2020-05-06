@@ -41,7 +41,7 @@ const flatlistdata = [
         name: "andy88Jones",
  
         reactions:7,
-        content:' Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        content:'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         time:8
     },
     {
@@ -64,7 +64,7 @@ const flatlistdata = [
         comments:1,
     
         reactions:11,
-        content:'   Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        content:'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         time:8
     },
   

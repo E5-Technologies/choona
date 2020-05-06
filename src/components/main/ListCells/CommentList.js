@@ -47,7 +47,7 @@ function CommentList(props) {
 
     return (
 
-        <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
+        <View style={{ width: props.width, alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
             <View style={{
                 flexDirection: 'row',
@@ -62,20 +62,17 @@ function CommentList(props) {
 
                 </TouchableOpacity>
                 <View style={{ marginLeft: normalise(10), }}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row'}}>
 
                         <Text style={{ width: normalise(180), color: Colors.white, fontSize: 14 }}>
                             {props.name}
                         </Text>
-                        <Text style={{ width: normalise(70), color: Colors.white, fontSize: 12 }}>
-                            {props.time} minutes ago
-                  </Text>
+                        <Text style={{ width: normalise(70), color: Colors.white, fontSize: 12, }}>
+                            {props.time} minutes ago</Text>
                     </View>
                     <View>
-                        <Text style={{ width: normalise(220), color: Colors.white, fontSize: 12, marginTop: normalise(8) }}>
-                            {props.comment}
-
-                        </Text>
+                        <Text style={{ width: normalise(220), color: Colors.white, fontSize: 12, marginTop: normalise(2) }}>
+                            {props.comment}</Text>
                     </View>
                 </View>
 
@@ -103,7 +100,8 @@ CommentList.propTypes = {
     change: PropTypes.bool,
     image2: PropTypes.string,
     onPressSecondImage: PropTypes.func,
-    comments: PropTypes.bool
+    comments: PropTypes.bool,
+    width: PropTypes.string
 };
 CommentList.defaultProps = {
     image: "",
@@ -115,5 +113,6 @@ CommentList.defaultProps = {
     change: false,
     image2: "",
     onPressSecondImage: null,
-    comments: false
+    comments: false,
+    width: '90%'
 }
