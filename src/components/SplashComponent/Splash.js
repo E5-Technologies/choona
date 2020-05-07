@@ -22,7 +22,7 @@ export default function Splash(props) {
 
     useEffect(() => {
         requestAllpermissions()
-    },[]);
+    }, []);
 
 
     //REQUEST CAMERA PERMISSION
@@ -70,10 +70,10 @@ export default function Splash(props) {
             console.log(error)
         }
     };
-    
+
 
     //MERGING FUNCTIONS
-    async function requestAllpermissions()  { 
+    async function requestAllpermissions() {
         await requestCameraPermission()
         await requestExternalReadPermission()
     };
@@ -84,15 +84,18 @@ export default function Splash(props) {
         <ImageBackground source={ImagePath.Splash}
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
-            <Image source={ImagePath.applogo}
+            {/* <Image source={ImagePath.applogo}
                 style={{ height: normalise(60), width: '60%' }}
-                resizeMode='contain' />
+                resizeMode='contain' /> */}
 
             <Text style={{
-                color: Colors.white, fontSize: normalise(10),
-                position: 'absolute', bottom: 20
+                color: Colors.white, 
+                fontSize: normalise(12),
+                position: 'absolute', 
+                fontFamily: 'ProximaNova-Bold',
+                bottom: 20
             }} >
-                COPYRIGHT © 2020 CHOONA
+                Copyright ©2020 CHOONA
                         </Text>
 
         </ImageBackground>

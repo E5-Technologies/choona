@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* ChoonaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChoonaTests.m */; };
+		0FC1110311B440AB87A2B550 /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -18,8 +19,15 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* ChoonaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChoonaTests.m */; };
+		328F818FF77F4813887EC302 /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */; };
+		61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */; };
 		6F57B09187C069737E244288 /* libPods-Choona-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCB8C13D9FA5318ADC9237D1 /* libPods-Choona-tvOS.a */; };
+		8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
+		8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */; };
+		C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */; };
+		C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */; };
 		CD761EDCF2B2DDE7EB8477B0 /* libPods-Choona-ChoonaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6BE01F47B7588F5004F2D9F /* libPods-Choona-ChoonaTests.a */; };
+		F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,22 +59,30 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Choona/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Choona/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Choona/main.m; sourceTree = "<group>"; };
+		1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Light.otf"; path = "../assets/fonts/ProximaNovaA-Light.otf"; sourceTree = "<group>"; };
 		24F9CF820654EE3919DE075E /* Pods-Choona-ChoonaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		259D47194D3A585ED3EA6146 /* Pods-Choona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.debug.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Choona-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Choona-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Choona-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Choona-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5505DA8F6A617D6D6EC1DB09 /* Pods-Choona-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Choona-tvOS/Pods-Choona-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Bold.otf"; path = "../assets/fonts/ProximaNovaA-Bold.otf"; sourceTree = "<group>"; };
+		64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Bold.otf"; path = "../assets/fonts/ProximaNova-Bold.otf"; sourceTree = "<group>"; };
 		7454185DA8D6720E0B230066 /* libPods-Choona.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		785067749B632811726B9E7F /* libPods-Choona-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96AB5522CDD045CFD8C171AD /* Pods-Choona-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Choona-tvOS/Pods-Choona-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		A870E4390F3473A9D4979645 /* Pods-Choona.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.release.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.release.xcconfig"; sourceTree = "<group>"; };
 		AB6EEC0CC520EB6DC2BCCB47 /* Pods-Choona-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-tvOSTests/Pods-Choona-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AE764F6DC7B347027A542609 /* Pods-Choona-ChoonaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.release.xcconfig"; sourceTree = "<group>"; };
+		BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Thin.otf"; path = "../assets/fonts/ProximaNovaA-Thin.otf"; sourceTree = "<group>"; };
 		D6BE01F47B7588F5004F2D9F /* libPods-Choona-ChoonaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-ChoonaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCB8C13D9FA5318ADC9237D1 /* libPods-Choona-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Regular.otf"; path = "../assets/fonts/ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaT-Thin.otf"; path = "../assets/fonts/ProximaNovaT-Thin.otf"; sourceTree = "<group>"; };
+		ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Black.otf"; path = "../assets/fonts/ProximaNova-Black.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		FAB19EAB9ECC253B46DA1AEE /* Pods-Choona-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-tvOSTests/Pods-Choona-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Extrabld.otf"; path = "../assets/fonts/ProximaNova-Extrabld.otf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +165,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		7FAA34B6666743988984D1E1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */,
+				FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */,
+				ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */,
+				64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */,
+				628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */,
+				1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */,
+				BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */,
+				EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +196,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				8C5D407D7342997D2EA7F320 /* Pods */,
+				7FAA34B6666743988984D1E1 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -343,6 +375,14 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */,
+				0FC1110311B440AB87A2B550 /* ProximaNova-Extrabld.otf in Resources */,
+				C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */,
+				C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */,
+				F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */,
+				8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */,
+				328F818FF77F4813887EC302 /* ProximaNovaA-Thin.otf in Resources */,
+				61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
