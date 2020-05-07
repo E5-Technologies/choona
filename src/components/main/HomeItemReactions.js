@@ -469,18 +469,18 @@ export default function HomeItemReaction(props) {
                         <TouchableOpacity onPress={() => {
                             hitreact1()
                         }}>
-                         { modal1Visible==true ?  
-                          <Image source={ImagePath.greycross}
-                                style={{
-                                    height: normalise(35), width: normalise(35),
+                            {modal1Visible == true ?
+                                <Image source={ImagePath.greycross}
+                                    style={{
+                                        height: normalise(35), width: normalise(35),
 
-                                }} resizeMode="contain" /> 
+                                    }} resizeMode="contain" />
                                 :
                                 <Image source={ImagePath.greyplus}
-                                style={{
-                                    height: normalise(35), width: normalise(35),
+                                    style={{
+                                        height: normalise(35), width: normalise(35),
 
-                                }} resizeMode="contain" /> 
+                                    }} resizeMode="contain" />
                             }
                         </TouchableOpacity>
 
@@ -512,18 +512,18 @@ export default function HomeItemReaction(props) {
 
                     </Modal>
 
-{ modal1Visible==true ?
-                   
+                    {modal1Visible == true ?
+
                         <View style={{
-                            position:'absolute',
+                            position: 'absolute',
                             margin: 20,
                             height: normalise(225),
                             width: normalise(290), marginHorizontal: normalise(15),
                             backgroundColor: Colors.white,
                             borderRadius: 20,
                             padding: 35,
-                       bottom:150,
-                     
+                            bottom: 150,
+
                             shadowColor: "#000",
                             shadowOffset: {
                                 width: 0,
@@ -537,12 +537,13 @@ export default function HomeItemReaction(props) {
 
                             <EmojiSelector
                                 category={Categories.symbols}
-                        
-                                onEmojiSelected={emoji => {setModalVisible(true), setModalReact(emoji),
-                                setTimeout(()=>{
-                                    setModalVisible(false)
-                                }, 2000)
-                            }}
+
+                                onEmojiSelected={emoji => {
+                                setModalVisible(true), setModalReact(emoji),
+                                    setTimeout(() => {
+                                        setModalVisible(false)
+                                    }, 2000)
+                                }}
                             />
 
 
@@ -552,8 +553,8 @@ export default function HomeItemReaction(props) {
 
 
 
-                
-                    :null}
+
+                        : null}
                 </SafeAreaView>
             </View>
         )
@@ -563,7 +564,7 @@ export default function HomeItemReaction(props) {
 const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#000000',
         opacity: 0.8,
         justifyContent: "center",
         alignItems: "center",
