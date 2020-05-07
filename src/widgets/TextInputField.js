@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Platform, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import PropTypes from "prop-types";
 import normalize from "../utils/helpers/Dimens";
 import Colors from "../assests/Colors";
+import ImagePath from "../assests/ImagePath";
 
 function TextInputField(props) {
+
+    const [focused, setFocused] = useState(false)
 
     function onChangeText(text) {
         if (props.onChangeText) {
@@ -16,17 +19,32 @@ function TextInputField(props) {
         <View style={{ width: '100%', marginTop: normalize(props.marginTop), marginBottom: normalize(props.marginBottom) }}>
 
 
-            <Text style={{ fontSize: normalize(10), color: Colors.white, fontWeight: 'bold' }}>{props.text}</Text>
+            <Text style={{
+                fontSize: normalize(12),
+                color: Colors.white,
+                fontFamily: 'ProximaNova-Bold',
+
+            }}>{props.text}</Text>
 
             <TextInput
 
-                style={{ width:'100%',
-                    marginTop: normalize(10), fontWeight: '400', fontSize: normalize(12),
-                    backgroundColor: Colors.fadeblack, height: normalize(45), borderRadius: normalize(10),
-                    borderWidth: normalize(1), padding: normalize(5), paddingLeft: normalize(20),
-                    borderColor: props.borderColor, color: Colors.white,
+                style={{
+                    width: '100%',
+                    marginTop: normalize(10),
+                    fontFamily: 'ProximaNova-Regular',
+                    fontWeight: '600',
+                    fontSize: normalize(12),
+                    backgroundColor: Colors.fadeblack,
+                    height: normalize(45),
+                    borderRadius: normalize(5),
+                    borderWidth: normalize(1),
+                    padding: normalize(5),
+                    paddingLeft: normalize(20),
+                    borderColor: focused ? Colors.white : Colors.grey,
+                    color: Colors.white,
                 }}
-
+                onFocus={() => { setFocused(true) }}
+                onBlur={() => setFocused(false)}
                 placeholder={props.placeholder}
                 maxLength={props.maxLength}
                 autoCapitalize={props.autoCapitalize}
@@ -36,6 +54,16 @@ function TextInputField(props) {
                 onChangeText={(text) => { onChangeText(text) }}
 
             />
+            {props.tick_req && props.tick_visible ? <Image
+                source={ImagePath.green_tick}
+                style={{
+                    position: 'absolute',
+                    height: normalize(20),
+                    width: normalize(20),
+                    top: normalize(38),
+                    right: normalize(10)
+                }} /> : null}
+
 
         </View>
 
@@ -56,7 +84,9 @@ TextInputField.propTypes = {
     marginTop: PropTypes.number,
     text: PropTypes.string,
     marginBottom: PropTypes.number,
-    borderColor: PropTypes.string
+    borderColor: PropTypes.string,
+    tick_req: PropTypes.bool,
+    tick_visible: PropTypes.bool,
 }
 
 TextInputField.defaultProps = {
@@ -70,5 +100,7 @@ TextInputField.defaultProps = {
     marginTop: normalize(12),
     text: "",
     marginBottom: normalize(0),
-    borderColor: Colors.grey
+    borderColor: Colors.grey,
+    tick_req: false,
+    tick_visible: false,
 }

@@ -5,7 +5,6 @@ import {
     ScrollView,
     View,
     Text,
-    StatusBar,
     TouchableOpacity,
     ImageBackground,
     Image,
@@ -16,6 +15,7 @@ import { tokenRequest } from '../../action/index';
 import { useDispatch, useSelector } from 'react-redux';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
+import StatusBar from '../../utils/MyStatusBar';
 
 
 export default function Splash(props) {
@@ -81,8 +81,11 @@ export default function Splash(props) {
 
     //VIEW
     return (
+        
         <ImageBackground source={ImagePath.Splash}
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <StatusBar 
+                backgroundColor={'#186e85'} />
 
             {/* <Image source={ImagePath.applogo}
                 style={{ height: normalise(60), width: '60%' }}
@@ -90,7 +93,7 @@ export default function Splash(props) {
 
             <Text style={{
                 color: Colors.white, 
-                fontSize: normalise(12),
+                fontSize: normalise(15),
                 position: 'absolute', 
                 fontFamily: 'ProximaNova-Bold',
                 bottom: 20

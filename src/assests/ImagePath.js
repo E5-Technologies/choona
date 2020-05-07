@@ -51,7 +51,8 @@ const ImagePath = {
   inbox: require('./images/inbox.png'),
   noposts: require('./images/NoPosts.png'),
   facebook: require('./images/facebook.png'),
-  newmessage: require('./images/Iconnewmessage.png')
+  newmessage: require('./images/Iconnewmessage.png'),
+  green_tick: require('./images/green_tick.png'),
 
 };
 

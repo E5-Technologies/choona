@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
-    StyleSheet,
+    KeyboardAvoidingView,
     ScrollView,
     View,
     Text,
@@ -20,6 +20,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import StatusBar from '../../utils/MyStatusBar';
 
+
 export default function Login(props) {
 
     const dispatch = useDispatch()
@@ -30,13 +31,13 @@ export default function Login(props) {
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState("")
 
-  
+
     // IMAGE PICKER OPTIONS
     const showPickerOptions = () => {
         Alert.alert(
             "Choose Profile Image", "Select from where you want to choose the image",
             [
-                { text: 'CAMERA', onPress: () => { pickImagewithCamera()} },
+                { text: 'CAMERA', onPress: () => { pickImagewithCamera() } },
                 { text: 'GALLERY', onPress: () => { pickImagefromGallery() } }
             ],
             { cancelable: true }
@@ -79,16 +80,19 @@ export default function Login(props) {
                 setPicture(true)
                 setProfilePic(image.path)
             })
-            .catch((err)=>{
+            .catch((err) => {
                 console.log(err)
             })
     }
 
-   
+
     //VIEW BEGINS
     return (
 
-        <View style={{ flex: 1, backgroundColor: Colors.black }}>
+        <KeyboardAvoidingView
+            style={{ flex: 1, backgroundColor: Colors.black, }}
+            behavior="height"
+        >
 
             <StatusBar barStyle={'light-content'} />
 
@@ -98,9 +102,9 @@ export default function Login(props) {
 
                     <View style={{
                         flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-                        marginTop: normalise(20)
+                        marginTop: normalise(25)
                     }}>
-                        <TouchableOpacity style={{ left: 10, position: 'absolute' }}
+                        <TouchableOpacity style={{ left: normalise(-2), position: 'absolute' }}
                             onPress={() => { props.navigation.goBack() }}>
                             <Image source={ImagePath.backicon}
                                 style={{ height: normalise(15), width: normalise(15) }}
@@ -108,11 +112,17 @@ export default function Login(props) {
                             />
                         </TouchableOpacity>
 
-                        <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>CREATE PROFILE</Text>
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: normalise(15),
+                            fontFamily: 'ProximaNova-Black'
+                        }}>CREATE PROFILE</Text>
                     </View>
 
                     <View style={{
-                        height: normalise(120), width: normalise(120), borderRadius: normalise(60),
+                        height: normalise(120),
+                        width: normalise(120),
+                        borderRadius: normalise(60),
                         backgroundColor: Colors.fadeblack, alignSelf: 'center', marginTop: normalise(40),
                         justifyContent: 'center', alignItems: 'center'
                     }}>
@@ -131,41 +141,47 @@ export default function Login(props) {
                         }
                     </View>
 
-                    <TouchableOpacity style={{ marginTop: normalise(10) }} onPress={() => { showPickerOptions() }}>
-                    {picture ?
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(12),
-                            alignSelf: 'center', fontWeight: 'bold', textDecorationLine: 'underline'
-                        }}>
-                             CHANGE PROFILE PIC
-                    </Text>
+                    <TouchableOpacity style={{ marginTop: normalise(10) }}
+                        onPress={() => { showPickerOptions() }}>
+                        {picture ?
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(14),
+                                alignSelf: 'center',
+                                fontFamily: 'ProximaNova-Bold',
+                                textDecorationLine: 'underline'
+                            }}>
+                                CHANGE PROFILE PIC
+                            </Text>
 
-                       : <Text style={{
-                            color: Colors.white, fontSize: normalise(12),
-                            alignSelf: 'center', fontWeight: 'bold', textDecorationLine: 'underline'
-                        }}>
-                             UPLOAD PROFILE PIC
-                    </Text> }
+                            : <Text style={{
+                                color: Colors.white, fontSize: normalise(14),
+                                alignSelf: 'center',
+                                fontFamily: 'ProximaNova-Bold',
+                                textDecorationLine: 'underline',
+
+                            }}>
+                                UPLOAD PROFILE PIC
+                    </Text>}
                     </TouchableOpacity>
 
                     <TextInputField text={"CHOOSE USERNAME"}
                         placeholder={"Enter Username"}
                         placeholderTextColor={Colors.grey}
                         marginTop={normalise(30)}
+                        tick_req={true}
+                        tick_visible={username}
                         onChangeText={(text) => { setUsername(text) }}
-                        borderColor={username === "" ? Colors.grey : Colors.white} />
+                    />
 
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}
                         placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setFullname(text) }}
-                        borderColor={fullname === "" ? Colors.grey : Colors.white} />
+                        onChangeText={(text) => { setFullname(text) }} />
 
                     <TextInputField text={"ENTER LOCATION"}
                         placeholder={"Type Location"}
                         placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setLocation(text) }}
-                        borderColor={location === "" ? Colors.grey : Colors.white} />
+                        onChangeText={(text) => { setLocation(text) }} />
 
 
                     <View style={{
@@ -178,7 +194,12 @@ export default function Login(props) {
                             style={{ height: normalise(22), width: normalise(22), position: 'absolute', left: 20 }}
                             resizeMode="contain" />
 
-                        <Text style={{ color: Colors.white, fontSize: normalise(12), fontWeight: '500' }}>
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: normalise(12),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '600'
+                        }}>
                             Spotify Username : andy88jones
                 </Text>
                     </View>
@@ -186,12 +207,13 @@ export default function Login(props) {
                     <Button title={"COMPLETE PROFILE"}
                         marginTop={normalise(40)}
                         marginBottom={normalise(40)}
+                        fontSize={normalise(15)}
                         onPress={() => { dispatch(tokenRequest('QWERTY')) }} />
 
 
                 </ScrollView>
 
             </SafeAreaView>
-        </View>
+        </KeyboardAvoidingView>
     )
 }

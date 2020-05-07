@@ -46,9 +46,10 @@ export default function ButtonComponent(props) {
 
             <Text
                 style={{
-                    fontWeight: 'bold',
                     color: props.textcolor,
-                    textAlign: 'center', fontSize: props.fontSize,
+                    textAlign: 'center',
+                    fontFamily: 'ProximaNova-Extrabld',
+                    fontSize: props.fontSize,
                 }} >{props.title}
             </Text>
         </TouchableOpacity>
@@ -77,7 +78,7 @@ ButtonComponent.propTypes = {
 ButtonComponent.defaultProps = {
     textcolor: Colors.black,
     marginTop: normalize(20),
-    marginBottom:null,
+    marginBottom: null,
     title: "",
     onPress: null,
     activeOpacity: null,

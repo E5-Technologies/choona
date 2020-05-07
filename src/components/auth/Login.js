@@ -55,15 +55,14 @@ export default function SignUp(props) {
                         marginLeft: normalise(10),
                         color: Colors.white,
                         fontSize: normalise(12),
-                        fontFamily: 'ProximaNova-Regular',
-                        fontWeight: '700'
+                        fontFamily: 'ProximaNova-Extrabld',
                     }}>LOGIN WITH SPOTIFY</Text>
 
                 </TouchableOpacity>
 
 
                 <TouchableOpacity style={{
-                    marginBottom: normalise(30),
+                    marginBottom: normalise(40),
                     marginTop: normalise(20), height: normalise(50), width: '80%', alignSelf: 'center',
                     borderRadius: normalise(25), backgroundColor: Colors.white, borderWidth: normalise(0.5),
                     shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
@@ -78,6 +77,7 @@ export default function SignUp(props) {
                         marginLeft: normalise(10), 
                         color: Colors.black, 
                         fontSize: normalise(12),
+                        
                         fontFamily: 'ProximaNova-Extrabld',
                     }}>LOGIN WITH APPLE MUSIC</Text>
 
