@@ -59,7 +59,7 @@ let songsdata = [
     {
         image: ImagePath.profiletrack1,
         picture: ImagePath.dp1,
-        title: 'This girl',
+        title: 'This Girl',
         singer: "Kungs Vs Cookins 3 burners",
         comments: 1,
         name: 'Shimshimmer',
@@ -206,7 +206,7 @@ export default function Search(props) {
                     console.log('Coming Soon...')
                 }}
                 onPressReact5={() => {
-                   console.log('Coming Soon...')
+                    console.log('Coming Soon...')
                 }}
                 onPressMusicbox={() => {
                     props.navigation.navigate('Player', {
@@ -231,20 +231,26 @@ export default function Search(props) {
         )
     };
 
-    
+
     function renderGenreData(data) {
-        return(
-            <TouchableOpacity style={{width:'88%', alignSelf:'center', flexDirection:'row',
-            alignItems:'center', justifyContent:'space-between', paddingTop:normalise(20), 
-            paddingBottom:normalise(20),
-            marginBottom: data.index === genreData.length - 1 ? normalise(30): normalise(0),
-            borderBottomWidth: 0.5, borderBottomColor:Colors.grey}}>
+        return (
+            <TouchableOpacity style={{
+                width: '88%', alignSelf: 'center', flexDirection: 'row',
+                alignItems: 'center', justifyContent: 'space-between', paddingTop: normalise(20),
+                paddingBottom: normalise(20),
+                marginBottom: data.index === genreData.length - 1 ? normalise(30) : normalise(0),
+                borderBottomWidth: 0.5, borderBottomColor: Colors.grey
+            }}>
 
-                <Text style={{fontFamily:'ProximaNova-Regular', fontWeight:'600',
-            fontSize:normalise(15), color:Colors.white, marginLeft:normalise(5)}}>{data.item.title}</Text>
+                <Text style={{
+                    fontFamily: 'ProximaNova-Regular', fontWeight: '600',
+                    fontSize: normalise(15), color: Colors.white, marginLeft: normalise(5)
+                }}>{data.item.title}</Text>
 
-            <Image source={ImagePath.backicon} style={{height:normalise(10), width:normalise(10),
-            transform:[{rotate: '180deg'},], marginRight:normalise(5)}} resizeMode='contain' />
+                <Image source={ImagePath.backicon} style={{
+                    height: normalise(10), width: normalise(10),
+                    transform: [{ rotate: '180deg' },], marginRight: normalise(5)
+                }} resizeMode='contain' />
             </TouchableOpacity>
         )
     };

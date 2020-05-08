@@ -290,14 +290,14 @@ export default function Home(props) {
             >
               <View style={{
                 flex: 1,
-                backgroundColor: '#ffffff',
+                backgroundColor: '#000000',
                 opacity: 0.8,
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: 22
               }}>
 
-                <Text style={{ fontSize: 220 }}>{modalReact}</Text>
+                <Text style={{ fontSize: 220}}>{modalReact}</Text>
 
 
               </View>
