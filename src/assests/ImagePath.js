@@ -61,7 +61,10 @@ const ImagePath = {
   headerShadow: require('./images/headerShadow.png'),
   add_white: require('./images/add_white.png'),
   searchicongrey: require('./images/searchIcongrey.png'),
-  user: require('./images/user.png')
+  user: require('./images/user.png'),
+  genretrack: require('./images/img1.png'),
+  genretrack2: require('./images/img2.png'),
+  genretrack3: require('./images/img3.png'),
 
 
 

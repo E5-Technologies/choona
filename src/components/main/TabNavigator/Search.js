@@ -240,7 +240,7 @@ export default function Search(props) {
                 paddingBottom: normalise(20),
                 marginBottom: data.index === genreData.length - 1 ? normalise(30) : normalise(0),
                 borderBottomWidth: 0.5, borderBottomColor: Colors.grey
-            }}>
+            }} onPress={()=>{props.navigation.navigate("GenreClicked", {data: data.item.title} )}}>
 
                 <Text style={{
                     fontFamily: 'ProximaNova-Regular', fontWeight: '600',
