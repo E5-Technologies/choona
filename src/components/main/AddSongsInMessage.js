@@ -194,12 +194,15 @@ export default function AddSongsInMessage(props) {
                     duration={250}
                     customStyles={{
                         container: {
-                            backgroundColor: 'black'
+                            backgroundColor: 'black',
+                            borderTopEndRadius: normalise(8),
+                            borderTopStartRadius: normalise(8),
                         },
                         // wrapper: {
                         //     backgroundColor: 'rgba(87,97,145,0.5)'
 
                         // },
+                        draggableIcon:{backgroundColor:"#000"}
 
                     }}
                 >

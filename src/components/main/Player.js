@@ -116,11 +116,11 @@ export default function Player(props) {
                 keyboardAvoidingViewEnabled={true}
                 customStyles={{
                     container: {
-                        minHeight: Dimensions.get('window').height / 2.2
+                        minHeight: Dimensions.get('window').height / 2.2,
+                        borderTopEndRadius: normalise(8),
+                        borderTopStartRadius: normalise(8),
                     },
-                    wrapper: {
-                        backgroundColor: 'rgba(87,97,145,0.5)'
-                    }
+                    
                 }}>
 
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -142,7 +142,9 @@ export default function Player(props) {
 
                             <Text style={{
                                 fontSize: normalise(12), color: Colors.white,
-                                fontWeight: '500', marginBottom: normalise(10)
+                                fontWeight: '500', 
+                                fontFamily:'ProximaNova-Regular',
+                                marginBottom: normalise(10)
                             }}>3 COMMENTS</Text>
 
                             <TouchableOpacity onPress={() => { if (RbSheetRef) { RbSheetRef.close() } }}>
