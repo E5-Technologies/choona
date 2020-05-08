@@ -156,7 +156,6 @@ let genreData = [
 
 ];
 
-let genreDataEmpty = [];
 
 
 export default function Search(props) {
@@ -238,7 +237,7 @@ export default function Search(props) {
             <TouchableOpacity style={{width:'88%', alignSelf:'center', flexDirection:'row',
             alignItems:'center', justifyContent:'space-between', paddingTop:normalise(20), 
             paddingBottom:normalise(20),
-            marginBottom: data.index === genreDataEmpty.length - 1 ? normalise(30): normalise(0),
+            marginBottom: data.index === genreData.length - 1 ? normalise(30): normalise(0),
             borderBottomWidth: 0.5, borderBottomColor:Colors.grey}}>
 
                 <Text style={{fontFamily:'ProximaNova-Regular', fontWeight:'600',
@@ -517,7 +516,7 @@ export default function Search(props) {
                         <TouchableOpacity onPress={() => {
                             usersSearch ? setUsersSearchText("") : genreSearch ? setGenreSearchText("") :
                                 setSongSearchText("")
-                            usersSearch ? userdataEmpty = [] : genreSearch ? genreDataEmpty=[] : songDataEmpty = []
+                            usersSearch ? userdataEmpty = [] : genreSearch ? null : songDataEmpty = []
 
                         }}
                             style={{
@@ -622,7 +621,7 @@ export default function Search(props) {
 
                     <FlatList
                         style={{ height: '70%' }}
-                        data={genreDataEmpty}
+                        data={genreData}
                         renderItem={renderGenreData}
                         keyExtractor={(item, index) => index.toString()}
                         showsVerticalScrollIndicator={false} />
