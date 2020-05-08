@@ -84,10 +84,11 @@ export default function Following(props) {
     function renderFollowersItem(data) {
         return (
             <ActivityListItem image={data.item.picture}
+                marginTop={data.index === 0 ? normalise(2) : normalise(15)}
                 title={data.item.title} type={true}
                 follow={data.item.type === "Follow" ? true : false}
                 marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
-                onPressImage={()=>{props.navigation.navigate("OthersProfile")}} />
+                onPressImage={() => { props.navigation.navigate("OthersProfile") }} />
         )
     }
 
@@ -100,7 +101,7 @@ export default function Following(props) {
             <SafeAreaView style={{ flex: 1 }}>
 
                 <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon} title={`Following (${following})`}
+                    imageone={ImagePath.backicon} title={`FOLLOWING (${following})`}
                     thirditemtext={true} texttwo={""}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
@@ -113,17 +114,17 @@ export default function Following(props) {
                         color: Colors.white, paddingLeft: normalise(30)
                     }}
                         placeholder={"Search"}
-                        placeholderTextColor={Colors.white}
+                        placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => { console.log(text) }} />
 
-                    <Image source={ImagePath.searchicon}
+                    <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
                         }} resizeMode="contain" />
                 </View>
 
-                
+
                 <FlatList
                     data={followdata}
                     showsVerticalScrollIndicator={false}

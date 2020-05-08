@@ -34,7 +34,7 @@ function ActivityListItem(props) {
     
     return (
 
-        <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom, }}>
+        <View style={{ width: '90%', alignSelf: 'center', marginTop: props.marginTop, marginBottom: props.marginBottom, }}>
 
             <View style={{
                 flexDirection: 'row', alignItems: 'center',
@@ -95,7 +95,8 @@ ActivityListItem.propTypes = {
     type: PropTypes.bool,
     follow: PropTypes.bool,
     marginBottom: PropTypes.number,
-    onPressImage: PropTypes.bool
+    onPressImage: PropTypes.bool,
+    marginTop: PropTypes.number
 };
 
 ActivityListItem.defaultProps = {
@@ -106,5 +107,6 @@ ActivityListItem.defaultProps = {
     type: true,
     follow: true,
     marginBottom: 0,
-    onPressImage: null
+    onPressImage: null,
+    marginTop: normalise(15)
 }

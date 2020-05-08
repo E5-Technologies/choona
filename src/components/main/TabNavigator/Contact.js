@@ -108,10 +108,10 @@ export default function Contact(props) {
                         paddingLeft: normalise(30)
                     }}
                         placeholder={"Search"}
-                        placeholderTextColor={Colors.white}
+                        placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => { console.log(text) }} />
 
-                    <Image source={ImagePath.searchicon}
+                    <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15),
                             width: normalise(15),
