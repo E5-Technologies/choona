@@ -56,6 +56,8 @@ const ImagePath = {
   more_copy: require('./images/more_copy.png'),
   more_unfollow: require('./images/more_unfollow.png'),
   home_icon_choona: require('./images/home_icon_choona.png'),
+  gradient_border_horizontal: require('./images/gradient_border_horizontal.png'),
+  music_icon: require('./images/music_icon.png'),
 
 };
 
