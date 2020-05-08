@@ -133,7 +133,7 @@ export default function Inbox(props) {
                     }}
                 />
 
-                <View style={{ width: '95%', alignSelf: 'center', }}>
+                <View style={{ width: '92%', alignSelf: 'center', }}>
 
                     <TextInput style={{
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
@@ -141,10 +141,10 @@ export default function Inbox(props) {
                         color: Colors.white, paddingLeft: normalise(30)
                     }}
                         placeholder={"Search"}
-                        placeholderTextColor={Colors.white}
+                        placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => { console.log(text) }} />
 
-                    <Image source={ImagePath.searchicon}
+                    <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)

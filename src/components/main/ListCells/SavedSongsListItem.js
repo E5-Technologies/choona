@@ -213,17 +213,17 @@ function SavedSongListItem(props) {
 
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
-                        fontFamily:'ProximaNova-Regular',fontWeight:'bold',
+                        fontFamily:'ProximaNova-Regular',fontWeight:'600',
                     }} numberOfLines={1}> {props.title} </Text>
 
                     <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
-                        fontFamily:'ProximaNova-Regular',fontWeight:'bold',
+                        fontFamily:'ProximaNova-Regular',fontWeight:'500',
                     }} numberOfLines={1}> {props.singer} </Text>
 
                     {props.comments ? <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
-                        fontFamily:'ProximaNova-Regular',fontWeight:'bold',
+                        fontFamily:'ProximaNova-Regular',fontWeight:'500',
                     }} numberOfLines={1}> {props.comments} comments </Text> : null}
                 </View>
 

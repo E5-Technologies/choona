@@ -12,7 +12,7 @@ import {
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HeaderComponent';
+import InsideMessegeHeader from '../../widgets/InsideMessegeHeader';
 import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../utils/MyStatusBar';
@@ -90,14 +90,14 @@ export default function InsideaMessage(props) {
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
-            
+
             <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
 
 
 
-                <HeaderComponent firstitemtext={false}
+                <InsideMessegeHeader firstitemtext={false}
                     imageone={ImagePath.backicon}
                     imagesecond={ImagePath.dp}
 
@@ -108,18 +108,23 @@ export default function InsideaMessage(props) {
                     imagetwowidth={25}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
-                <View style={{ width: '95%', alignSelf: 'center', }}>
+                <View style={{ width: '92%', alignSelf: 'center', }}>
 
                     <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30)
+                        height: normalise(35),
+                        width: '100%',
+                        backgroundColor: Colors.fadeblack,
+                        borderRadius: normalise(8),
+                        marginTop: normalise(20),
+                        padding: normalise(10),
+                        color: Colors.white,
+                        paddingLeft: normalise(30)
                     }}
                         placeholder={"Search"}
-                        placeholderTextColor={Colors.white}
+                        placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => { console.log(text) }} />
 
-                    <Image source={ImagePath.searchicon}
+                    <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
@@ -149,7 +154,7 @@ export default function InsideaMessage(props) {
                     disableRightSwipe={true}
                     rightOpenValue={-75} />
 
-                
+
 
                 <TouchableOpacity style={{
                     marginBottom: normalise(30),
@@ -162,7 +167,7 @@ export default function InsideaMessage(props) {
 
                     <Text style={{
                         marginLeft: normalise(10), color: Colors.gray, fontSize: normalise(14),
-                        fontWeight: 'bold'
+                        fontFamily: 'ProximaNova-Extrabld',
                     }}>ADD ANOTHER SONG</Text>
 
                 </TouchableOpacity>

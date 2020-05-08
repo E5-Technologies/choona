@@ -48,15 +48,17 @@ export default function SendSongInMessageFinal(props) {
                     onPressThirdItem={() => props.navigation.replace('InsideaMessage')}
                 />
 
-                <View style={{ marginTop: normalise(20), width: '95%', alignSelf: 'center', }}>
+                <View style={{ marginTop: normalise(20), width: '92%', alignSelf: 'center', }}>
 
                     <TextInput style={{
                         width: '100%',
-                        borderRadius: normalise(8), padding: normalise(10),
+                        borderRadius: normalise(8), 
+                        padding: normalise(10),
+                        fontFamily:'ProximaNova-Regular',
                         color: Colors.white, fontWeight: '500'
                     }} value={search}
                         multiline={true}
-                        placeholder={"Add a caption..."}
+                        placeholder={"Add a comment"}
                         placeholderTextColor={Colors.grey}
                         onChangeText={(text) => { setSearch(text) }} />
 

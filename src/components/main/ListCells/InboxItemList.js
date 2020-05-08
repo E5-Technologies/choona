@@ -29,36 +29,47 @@ function InboxListItem(props) {
     return (
 
         <TouchableOpacity style={{
-            width: '90%', alignSelf: 'center', marginTop: normalise(15),
+            width: '90%',
+            height: normalise(45),
+            alignSelf: 'center',
+            marginTop: normalise(10),
             marginBottom: props.marginBottom,
         }} onPress={() => { onPress() }}  >
 
             <View style={{
-                flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'space-between'
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center'
             }}>
 
 
                 <Image source={props.image}
-                    style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(17) }}
+                    style={{
+                        height: normalise(35),
+                        width: normalise(35),
+                        borderRadius: normalise(17),
+                    }}
                     resizeMode="contain" />
 
 
 
                 <View style={{
-                    flexDirection: 'column', alignItems: 'flex-start', width: '80%',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    width: '80%',
                     justifyContent: 'flex-start'
                 }}>
 
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
-                        fontWeight: 'bold',
+                        fontFamily: 'ProximaNova-Bold',
                     }}> {props.title} </Text>
 
                     <Text style={{
                         marginTop: normalise(2),
                         color: props.read ? Colors.grey : Colors.white, fontSize: normalise(10),
-                        fontWeight: 'bold',
+                        fontFamily: 'ProximaNova-Regular',
+                        fontWeight: '500',
                     }}> {props.description} </Text>
 
                 </View>
@@ -73,8 +84,9 @@ function InboxListItem(props) {
 
             {/* {props.bottom ? null : */}
             <View style={{
-                marginTop: normalise(10), borderBottomWidth: normalise(1),
-                borderBottomColor: Colors.grey
+                height: 0.5,
+                backgroundColor: Colors.grey,
+                marginTop: normalise(10),
             }} />
             {/* } */}
 

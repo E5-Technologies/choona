@@ -41,7 +41,7 @@ const profileData2 = []
 
 export default function Profile(props) {
 
-    const [following, setFollowing] = useState("1633");
+    const [following, setFollowing] = useState("1,633");
     const [followers, setFollowers] = useState('429')
 
     function renderProfileData(data) {
@@ -77,7 +77,7 @@ export default function Profile(props) {
                             resizeMode="contain" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=>{props.navigation.goBack()}}>
+                    <TouchableOpacity onPress={() => { props.navigation.goBack() }}>
                         <Image source={ImagePath.iconmenu}
                             style={{ height: normalise(20), width: normalise(20) }}
                             resizeMode="contain" />
@@ -100,35 +100,53 @@ export default function Profile(props) {
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15),
-                            fontWeight: 'bold'
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '600'
                         }}>Andy Jones</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
-                            color: Colors.darkgrey, fontSize: normalise(11),
+                            color: Colors.darkgrey,
+                            fontSize: normalise(11),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '500'
                         }}>@andyjones88</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '500'
                         }}>Liverpool, UK</Text>
 
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            marginTop: normalise(2),
+
+                        }}>
 
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontWeight: 'bold'
-                                }}><Text style={{ color: Colors.white }}>{following}</Text>  Following</Text>
+                                    fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: '600'
+                                }}><Text style={{
+                                    color: Colors.white, fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: '600'
+                                }}>{following}</Text>  Following</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontWeight: 'bold'
-                                }}><Text style={{ color: Colors.white }}>{followers}</Text>  Followers</Text>
+                                    fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: '600'
+                                }}><Text style={{
+                                    color: Colors.white, fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: '600'
+                                }}>{followers}</Text>  Followers</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -152,7 +170,10 @@ export default function Profile(props) {
                                 width: normalise(40), justifyContent: 'center', alignItems: 'center'
                             }}>
 
-                                <Image source={ImagePath.addicon} style={{ height: normalise(20), width: normalise(20) }} />
+                                <Image source={ImagePath.addicon} style={{
+                                    height: normalise(20),
+                                    width: normalise(20)
+                                }} />
 
                             </TouchableOpacity>
 
@@ -162,7 +183,8 @@ export default function Profile(props) {
                             }}>
 
                                 <Text style={{
-                                    color: Colors.white, fontSize: normalise(9), fontWeight: 'bold'
+                                    color: Colors.white, fontSize: normalise(9),
+                                    fontFamily: 'ProximaNova-Bold'
                                 }}>FEATURED TRACK</Text>
 
                                 <Text style={{
@@ -197,20 +219,27 @@ export default function Profile(props) {
                             }}>
 
                                 <Text style={{
-                                    color: Colors.white, fontSize: normalise(9), fontWeight: 'bold'
+                                    color: Colors.white, fontSize:
+                                        normalise(9), fontFamily: 'ProximaNova-Regular',
                                 }}>FEATURED TRACK</Text>
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(10),
+                                    
+                                    fontFamily: 'ProximaNova-Bold'
                                 }}>Bongo Song</Text>
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(9),
+                                    fontFamily: 'ProximaNova-Regular',
                                 }}>Above & Beyond</Text>
                             </View>
 
                             <TouchableOpacity>
-                                <Image source={ImagePath.change} style={{ height: normalise(40), width: normalise(40) }} />
+                                <Image source={ImagePath.change} style={{
+                                    height: normalise(40),
+                                    width: normalise(40),
+                                }} />
                             </TouchableOpacity>
                         </View>}
                 </ImageBackground>
@@ -218,11 +247,13 @@ export default function Profile(props) {
 
                 {_.isEmpty(profileData) ?
 
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
-                        <View style={{height:'50%', justifyContent:'flex-end', alignItems:"center",
-                         width:'50%'}}>
-                           
+                        <View style={{
+                            height: '50%', justifyContent: 'flex-end', alignItems: "center",
+                            width: '50%'
+                        }}>
+
                             <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
                                 Your Profile is Empty</Text>
 
@@ -231,8 +262,9 @@ export default function Profile(props) {
                             }}>You haven't posted any songs yet, let's post one </Text>
                         </View>
 
-                        <View style={{height:'50%',justifyContent:'flex-end', alignItems:"center", width: '80%'}}>
-                            <TouchableOpacity style={{ marginBottom:normalise(10),
+                        <View style={{ height: '50%', justifyContent: 'flex-end', alignItems: "center", width: '80%' }}>
+                            <TouchableOpacity style={{
+                                marginBottom: normalise(10),
                                 height: normalise(40), width: '100%', alignItems: 'center',
                                 justifyContent: 'center', borderRadius: normalise(20),
                                 backgroundColor: Colors.white
@@ -251,7 +283,7 @@ export default function Profile(props) {
                         renderItem={renderProfileData}
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false}
-                        numColumns={2} />   }
+                        numColumns={2} />}
 
 
 

@@ -110,7 +110,7 @@ export default function AddSongsInMessage(props) {
                     imagetwowidth={25}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
-                <View style={{ width: '95%', alignSelf: 'center', }}>
+                <View style={{ width: '92%', alignSelf: 'center', }}>
 
                     <TextInput style={{
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
@@ -118,10 +118,10 @@ export default function AddSongsInMessage(props) {
                         color: Colors.white, paddingLeft: normalise(30)
                     }} value={search}
                         placeholder={"Search"}
-                        placeholderTextColor={Colors.white}
+                        placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => { setSearch(text) }} />
 
-                    <Image source={ImagePath.searchicon}
+                    <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
@@ -160,13 +160,15 @@ export default function AddSongsInMessage(props) {
 
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
-                        <Image source={ImagePath.searchicon} style={{ height: normalise(25), width: normalise(25) }} />
+                        <Image source={ImagePath.searchicongrey} style={{ height: normalise(25), width: normalise(25) }} />
 
                         <Text style={{
-                            color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
+                            color: Colors.white, fontSize: normalise(15),
+                            fontFamily: ('ProximaNova-Regular'),
+                            fontWeight: '500',
                             marginTop: normalise(20), width: '60%', textAlign: 'center'
                         }}>
-                            Seach for the song you want to share above </Text>
+                            Search for the song you want to share above </Text>
 
                     </View>
 
@@ -206,15 +208,25 @@ export default function AddSongsInMessage(props) {
                     >
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
-                            <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(15),
-                                fontWeight: 'bold',
-                                marginTop: normalise(10),
-                                width: '75%',
-                                textAlign: 'right'
-                            }}>
-                                ADD USERS TO MESSAGE</Text>
+                            <View style={{ flexDirection: 'row', width: '75%', justifyContent: 'flex-end' }}>
+                                <Text style={{
+                                    color: Colors.white,
+                                    fontSize: normalise(14),
+                                    fontWeight: 'bold',
+                                    marginTop: normalise(10),
+                                    textAlign: 'right'
+                                }}>
+                                    ADD USERS TO MESSAGE</Text>
+
+                                {userClicked ?
+                                    <Text style={{
+                                        color: Colors.white,
+                                        marginTop: normalise(10),
+                                        fontSize: normalise(14),
+                                        fontWeight: 'bold',
+                                    }}> (1)</Text> : null}
+
+                            </View>
 
                             <TouchableOpacity
                                 onPress={() => {
@@ -246,10 +258,10 @@ export default function AddSongsInMessage(props) {
                                 color: Colors.white, paddingLeft: normalise(30)
                             }} value={userSeach}
                                 placeholder={"Search"}
-                                placeholderTextColor={Colors.white}
+                                placeholderTextColor={Colors.grey_text}
                                 onChangeText={(text) => { setUserSeach(text) }} />
 
-                            <Image source={ImagePath.searchicon}
+                            <Image source={ImagePath.searchicongrey}
                                 style={{
                                     height: normalise(15), width: normalise(15), bottom: normalise(25),
                                     paddingLeft: normalise(30)
@@ -282,19 +294,19 @@ export default function AddSongsInMessage(props) {
                                 <Text style={{ color: Colors.black, fontWeight: 'bold' }}>IzzyWhite</Text>
                                 <TouchableOpacity style={{
                                     position: 'absolute', right: 0, top: -5,
-                                    backgroundColor: 'red', height: 25, width: 25,
+                                    height: 25, width: 25,
                                     borderRadius: 12
                                 }}
                                     onPress={() => {
                                         setUserClicked(false)
                                     }}>
-                                    <Text style={{
-                                        color: 'white',
-                                        fontSize: normalize(16),
-                                        fontWeight: 'bold',
-                                        marginTop: normalise(-1.5),
-                                        marginStart: normalise(5.5)
-                                    }}>x</Text>
+                                    <Image
+                                        source={ImagePath.crossIcon}
+                                        style={{
+                                            marginTop: normalise(-1.5),
+                                            marginStart: normalise(5.5),
+                                            height: 25, width: 25,
+                                        }} />
                                 </TouchableOpacity>
 
                             </View> : null}
@@ -365,6 +377,6 @@ export default function AddSongsInMessage(props) {
 
 
             </SafeAreaView>
-        </View>
+        </View >
     )
 }
