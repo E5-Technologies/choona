@@ -7,23 +7,23 @@ const ImagePath = {
   applogo: require('../assests/images/new_logo.png'),
   copyright: require('../assests/images/Copyright.png'),
   applemusic: require('../assests/images/itunesicon.png'),
-  homeactive: require('../assests/images/icon-home-active.png'),
+  homeactive: require('../assests/images/active_home_white.png'),
   homeinactive: require('../assests/images/icon-home.png'),
   sendiconcopy:require('../assests/images/icon-send-copy.png'),
   sendicon:require('../assests/images/icon-send-new.png'),
   iconbox:require('../assests/images/icon-box.png'),
   greyplus:require('../assests/images/greyplus.png'),
   greycross:require('../assests/images/greycross.png'),
-  searchactive: require('./images/icon-search-active.png'),
-  searchinactive: require('./images/icon-search.png'),
+  searchactive: require('./images/active_seach_white.png'),
+  searchinactive: require('./images/inactive_seach.png'),
   addbtn: require('./images/Button-Add.png'),
-  notificationactive: require('./images/icon-active.png'),
-  notificationinactive: require('./images/icon-inactive.png'),
+  notificationactive: require('./images/active_bell_white.png'),
+  notificationinactive: require('./images/inactive_bell.png'),
   backwardicon:require('./images/backwardicon.png'),
   forwardicon:require('./images/forwardicon.png'),
   boxicon:require('./images/icon-box-new.png'),
-  boxactive: require('./images/icon-box-active.png'),
-  boxinactive: require('./images/icon-box.png'),
+  boxactive: require('./images/active_saved_song_white.png'),
+  boxinactive: require('./images/in_active_saved_song.png'),
   dp: require('../assests/images/dp.png'),
   dp1: require('../assests/images/Mask.png'),
   dp2: require('../assests/images/Group1.png'),
@@ -61,6 +61,13 @@ const ImagePath = {
   headerShadow: require('./images/headerShadow.png'),
   add_white: require('./images/add_white.png'),
   searchicongrey: require('./images/searchIcongrey.png'),
+
+
+
+
+
+
+
 
 };
 

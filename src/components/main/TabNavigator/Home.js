@@ -6,7 +6,7 @@ import {
   View,
   Text, TextInput,
   ImageBackground,
-  TouchableOpacity, TouchableHighlight,
+  TouchableOpacity, KeyboardAvoidingView,
   Image,
   Modal
 } from 'react-native';
@@ -301,13 +301,7 @@ export default function Home(props) {
 
 
               </View>
-
-
-
-
-
             </Modal>
-
 
             <Modal
               animationType="fade"
@@ -327,18 +321,24 @@ export default function Home(props) {
                 >
                   <Text style={{
                     color: Colors.white,
-                    fontSize: normalise(15),
+                    fontSize: normalise(12),
                     fontFamily: 'ProximaNova-Regular',
                     fontWeight: '600',
                   }}>MORE</Text>
 
-                  <View style={{ backgroundColor: Colors.white, height: 1, marginTop:2 }} />
+                  <View style={{
+                    backgroundColor: Colors.white,
+                    height: 0.5,
+                    marginTop: normalise(12),
+                    marginBottom: normalise(12)
+                  }} />
+
                   <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(16),
+                      fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Regular',
                       fontWeight: '600',
                     }}>Save Song</Text>
@@ -347,7 +347,8 @@ export default function Home(props) {
                     <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
-                      color: Colors.white, fontSize: normalise(16), marginLeft: normalise(15),
+                      color: Colors.white, 
+                      fontSize: normalise(13), marginLeft: normalise(15),
                       fontFamily: 'ProximaNova-Regular',
                       fontWeight: '600',
                     }}>Send Song</Text>
@@ -357,7 +358,7 @@ export default function Home(props) {
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(16),
+                      fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Regular',
                       fontWeight: '600',
                     }}>Copy Link</Text>
@@ -367,7 +368,7 @@ export default function Home(props) {
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(16),
+                      fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Regular',
                       fontWeight: '600',
                     }}>Unfollow Shimshimmer</Text>
@@ -375,40 +376,37 @@ export default function Home(props) {
 
                 </View>
 
-                <View style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}>
-                  <TouchableOpacity onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
 
-                    style={{
-                      margin: 20,
-                      height: normalise(50),
-                      width: normalise(280),
-                      backgroundColor: "#010203",
-                      opacity: 10,
-                      borderRadius: 20,
-                      // padding: 35,
-                      alignItems: "center",
-                      justifyContent: 'center',
+                <TouchableOpacity onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
 
-
-                    }}>
+                  style={{
+                    marginStart: normalise(20),
+                    marginEnd: normalise(20),
+                    marginBottom: normalise(20),
+                    height: normalise(50),
+                    width: "95%",
+                    backgroundColor: "#010203",
+                    opacity: 10,
+                    borderRadius: 20,
+                    // padding: 35,
+                    alignItems: "center",
+                    justifyContent: 'center',
 
 
-                    <Text style={{ fontSize: normalise(16), 
+                  }}>
+
+
+                  <Text style={{
+                    fontSize: normalise(12),
                     fontFamily: 'ProximaNova-Bold',
-                    fontWeight:'900',
-                    color: Colors.white }}>Cancel</Text>
+                    color: Colors.white
+                  }}>CANCEL</Text>
 
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               </ImageBackground>
             </Modal>
-
-
 
           </View>
 
@@ -452,12 +450,6 @@ export default function Home(props) {
 
 
           </View>
-
-
-
-
-
-
           : null}
 
 
@@ -465,28 +457,20 @@ export default function Home(props) {
 
 
     </View>
-
-
-
-
   )
 }
 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    backgroundColor: '#800080',
-    opacity: 0.8,
     justifyContent: "flex-end",
     alignItems: "center",
 
-
-
   },
   modalView: {
-    margin: 20,
-    height: normalise(220),
-    width: normalise(280),
+    marginBottom: normalise(10),
+    height: normalise(250),
+    width: "95%",
     backgroundColor: 'rgba(0,0,0,1)',
     borderRadius: 20,
     padding: 35,

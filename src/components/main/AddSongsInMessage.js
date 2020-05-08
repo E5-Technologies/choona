@@ -194,10 +194,10 @@ export default function AddSongsInMessage(props) {
                         container: {
                             backgroundColor: 'black'
                         },
-                        wrapper: {
-                            backgroundColor: 'rgba(87,97,145,0.5)'
+                        // wrapper: {
+                        //     backgroundColor: 'rgba(87,97,145,0.5)'
 
-                        },
+                        // },
 
                     }}
                 >
