@@ -203,6 +203,7 @@ export default function Home(props) {
 
         <HomeHeaderComponent
           firstitemtext={false}
+          marginTop={0}
           imageone={ImagePath.dp}
           imageoneheight={30}
           imageonewidth={30}

@@ -39,7 +39,7 @@ function InsideMessegeHeader(props) {
             width: '90%',
             height: normalise(10),
             alignSelf: 'center',
-            marginTop: normalise(10),
+            marginTop: normalise(15),
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',

@@ -286,13 +286,13 @@ function HomeItemList(props) {
                 <Text style={{
                     color: Colors.white, fontSize: normalise(10),
                     fontFamily: 'ProximaNova-Regular', fontWeight:'500', marginLeft: Platform.OS === 'android' ?
-                     normalize(33): normalise(30),
-                    width:'90%'
+                     normalize(33): normalise(30), bottom: 4, width:'90%'
                 }} >{props.content}</Text>
 
                 <View style={{
                     height: normalise(30), flexDirection: 'row',
-                    justifyContent: 'space-between', marginStart:normalise(25),
+                    justifyContent: 'space-between', marginStart: Platform.OS === 'android' ?
+                    normalize(33): normalise(30),
                     marginTop: normalise(10)
                 }}>
 

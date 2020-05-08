@@ -14,7 +14,7 @@ import {
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HeaderComponent';
+import HeaderComponent from '../../widgets/HomeHeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { normalizeUnits } from 'moment';
@@ -108,7 +108,6 @@ export default function HomeItemComments(props) {
        <HeaderComponent firstitemtext={false}
                     imageone={ImagePath.backicon} 
                    //imagesecond={ImagePath.dp}
-                   
                     title="4 COMMENTS"
                     thirditemtext={false} 
                    // imagetwo={ImagePath.newmessage} 
