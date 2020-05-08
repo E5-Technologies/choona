@@ -204,7 +204,7 @@ export default function Login(props) {
                             fontFamily: 'ProximaNova-Regular',
                             fontWeight: '600'
                         }}>
-                            Spotify Username : andy88jones
+                            Spotify Username: andy88jones
                 </Text>
                     </View>
 
