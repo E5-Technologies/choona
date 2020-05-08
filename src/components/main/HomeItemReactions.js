@@ -185,13 +185,12 @@ export default function HomeItemReaction(props) {
 
                 <StatusBar barStyle={'light-content'} />
 
-                <SafeAreaView style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1}}>
 
 
                     <HomeHeaderComponent firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
-
                         title="10 REACTIONS"
                         thirditemtext={false}
                         // imagetwo={ImagePath.newmessage} 

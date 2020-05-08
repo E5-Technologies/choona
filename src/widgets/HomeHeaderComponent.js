@@ -36,9 +36,9 @@ function HomeHeaderComponent(props) {
     return (
 
         <View style={{
-            width: '90%', alignSelf: 'center', marginTop: normalise(10),
+            width: '90%', alignSelf: 'center', marginTop: props.marginTop,
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            height: normalise(35)
+            height: props.height, 
         }}>
 
             {props.firstitemtext ?
@@ -120,6 +120,8 @@ HomeHeaderComponent.propTypes = {
     imagetwoheight: PropTypes.number,
     imagetwowidth: PropTypes.number,
     middleImageReq: PropTypes.bool,
+    marginTop: PropTypes.number,
+    height: PropTypes.number
 };
 HomeHeaderComponent.defaultProps = {
     firstitemtext: true,
@@ -138,6 +140,8 @@ HomeHeaderComponent.defaultProps = {
     imagetwoheight: normalise(15),
     imagetwowidth: normalise(15),
     middleImageReq: false,
+    marginTop: normalise(15),
+    height: normalise(35)
 
 }
 
