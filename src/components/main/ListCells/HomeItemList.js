@@ -292,12 +292,13 @@ function HomeItemList(props) {
 
                 <View style={{
                     height: normalise(30), flexDirection: 'row',
-                    justifyContent: 'space-between', marginLeft: normalise(20), marginTop: normalise(10)
+                    justifyContent: 'space-between', marginStart:normalise(25),
+                    marginTop: normalise(10)
                 }}>
 
 
                     <TouchableOpacity style={{
-                        height: normalise(28), width: normalise(125), alignSelf: 'center',
+                        height: normalise(28), width: "48%", alignSelf: 'center',
                         borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
                          flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
                     }} onPress={() => { props.onPressCommentbox() }} >
@@ -314,7 +315,7 @@ function HomeItemList(props) {
 
 
                     <TouchableOpacity style={{
-                        height: normalise(28), width: normalise(125), alignSelf: 'center',
+                        height: normalise(28), width: "48%", alignSelf: 'center',
                         borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
                          flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
                     }} onPress={() => { props.onPressReactionbox() }} >

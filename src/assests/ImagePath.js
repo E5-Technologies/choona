@@ -63,13 +63,9 @@ const ImagePath = {
   searchicongrey: require('./images/searchIcongrey.png'),
   user: require('./images/user.png'),
   crossIcon: require('./images/crossIcon.png'),
-
-
-
-
-
-
-
+  genretrack: require('./images/img1.png'),
+  genretrack2: require('./images/img2.png'),
+  genretrack3: require('./images/img3.png'),
 
 };
 
