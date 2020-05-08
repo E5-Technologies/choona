@@ -58,6 +58,8 @@ const ImagePath = {
   home_icon_choona: require('./images/home_icon_choona.png'),
   gradient_border_horizontal: require('./images/gradient_border_horizontal.png'),
   music_icon: require('./images/music_icon.png'),
+  headerShadow: require('./images/headerShadow.png'),
+  add_white: require('./images/add_white.png'),
 
 };
 

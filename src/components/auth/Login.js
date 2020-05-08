@@ -26,6 +26,7 @@ export default function SignUp(props) {
             <View style={{ height: '50%' }}>
                 <Image
                     source={ImagePath.albumsPic}
+
                     style={{ height: '90%', width: '100%', alignItems: "center", justifyContent: 'center', }}
                 />
 
@@ -42,9 +43,18 @@ export default function SignUp(props) {
 
                 <TouchableOpacity style={{
                     height: normalise(50), width: '80%', alignSelf: 'center',
-                    borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
-                    borderColor: Colors.grey, shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-                    shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
+                    borderRadius: normalise(25),
+                    backgroundColor: Colors.darkerblack,
+                    borderWidth: normalise(0.5),
+                    borderColor: Colors.grey,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 5, },
+                    shadowOpacity: 0.36,
+                    shadowRadius: 6.68,
+                    elevation: 11,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                 }} onPress={() => { props.navigation.navigate("SignUp") }}  >
 
                     <Image source={ImagePath.spotifyicon}
@@ -74,10 +84,10 @@ export default function SignUp(props) {
                         resizeMode='contain' />
 
                     <Text style={{
-                        marginLeft: normalise(10), 
-                        color: Colors.black, 
+                        marginLeft: normalise(10),
+                        color: Colors.black,
                         fontSize: normalise(12),
-                        
+
                         fontFamily: 'ProximaNova-Extrabld',
                     }}>LOGIN WITH APPLE MUSIC</Text>
 

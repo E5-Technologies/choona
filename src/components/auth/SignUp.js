@@ -129,11 +129,15 @@ export default function Login(props) {
                         {picture ?
                             <Image
                                 source={{ uri: profilePic }}
-                                style={{ height: normalise(120), width: normalise(120), borderRadius: normalise(60) }}
+                                style={{
+                                    height: normalise(120),
+                                    width: normalise(120),
+                                    borderRadius: normalise(55)
+                                }}
                                 resizeMode='contain' />
 
                             : <TouchableOpacity onPress={() => { showPickerOptions() }}>
-                                <Image source={ImagePath.addicon} style={{
+                                <Image source={ImagePath.add_white} style={{
                                     height: normalise(40), width: normalise(40),
                                     borderRadius: normalise(20)
                                 }} />

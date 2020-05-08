@@ -8,7 +8,8 @@ const Colors = {
     darkgrey: '#959698',
     blue: '##449C8C',
     red: '#e24f4f',
-    facebookblue: '#3e63ab'
+    facebookblue: '#3e63ab',
+    grey_text: "#929294"
 
 };
 
