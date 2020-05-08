@@ -49,7 +49,8 @@ function ActivityListItem(props) {
 
                  <Text style={{
                     color: Colors.white, fontSize: normalise(11), width: props.type ? '50%' : '70%',
-                    fontWeight: 'bold',  textAlign:'left',
+                    fontFamily:'ProximaNova-Regular',fontWeight:'bold',
+                    textAlign:'left',
                 }}>{props.title}</Text>
                    
 
@@ -74,7 +75,7 @@ function ActivityListItem(props) {
 
            {/* {props.bottom ? null : */}
             <View style={{
-                marginTop: normalise(10), borderBottomWidth: normalise(1),
+                marginTop: normalise(10), borderBottomWidth: 0.5,
                 borderBottomColor: Colors.grey
             }} />  
              {/* } */}

@@ -36,9 +36,9 @@ function HomeHeaderComponent(props) {
     return (
 
         <View style={{
-            width: '90%', alignSelf: 'center', marginTop:normalise(10),
+            width: '90%', alignSelf: 'center', marginTop: normalise(10),
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            height:normalise(35)
+            height: normalise(35)
         }}>
 
             {props.firstitemtext ?
@@ -53,7 +53,11 @@ function HomeHeaderComponent(props) {
                     <TouchableOpacity style={{ left: 0, position: 'absolute' }}
                         onPress={() => { onPressFirstItem() }}>
                         <Image source={props.imageone}
-                            style={{ height: props.imageoneheight, width: props.imageonewidth, marginTop: normalise(-8) }}
+                            style={{
+                                height: props.imageoneheight,
+                                width: props.imageonewidth,
+                                marginTop: normalise(-8)
+                            }}
                             resizeMode="contain"
                         />
                     </TouchableOpacity>
@@ -71,8 +75,13 @@ function HomeHeaderComponent(props) {
                     </TouchableOpacity>
                 </View>}
 
-            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
-                {props.title}</Text>
+            {!props.middleImageReq ? <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                {props.title}</Text> : <Image
+                    style={{ width: normalise(85) }}
+                    source={ImagePath.home_icon_choona}
+                    resizeMode={'contain'}
+                />}
+
 
 
             {props.thirditemtext ?
@@ -109,7 +118,8 @@ HomeHeaderComponent.propTypes = {
     imageoneheight: PropTypes.number,
     imageonewidth: PropTypes.number,
     imagetwoheight: PropTypes.number,
-    imagetwowidth: PropTypes.number
+    imagetwowidth: PropTypes.number,
+    middleImageReq: PropTypes.bool,
 };
 HomeHeaderComponent.defaultProps = {
     firstitemtext: true,
@@ -127,6 +137,7 @@ HomeHeaderComponent.defaultProps = {
     imagesecondwidth: normalise(30),
     imagetwoheight: normalise(15),
     imagetwowidth: normalise(15),
+    middleImageReq: false,
 
 }
 

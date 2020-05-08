@@ -11,7 +11,6 @@ const ImagePath = {
   homeinactive: require('../assests/images/icon-home.png'),
   sendiconcopy:require('../assests/images/icon-send-copy.png'),
   sendicon:require('../assests/images/icon-send-new.png'),
-  homelightbg:require('../assests/images/Rectangle.png'),
   iconbox:require('../assests/images/icon-box.png'),
   greyplus:require('../assests/images/greyplus.png'),
   greycross:require('../assests/images/greycross.png'),
@@ -53,6 +52,10 @@ const ImagePath = {
   facebook: require('./images/facebook.png'),
   newmessage: require('./images/Iconnewmessage.png'),
   green_tick: require('./images/green_tick.png'),
+  page_gradient: require('./images/page_gradient.png'),
+  more_copy: require('./images/more_copy.png'),
+  more_unfollow: require('./images/more_unfollow.png'),
+  home_icon_choona: require('./images/home_icon_choona.png'),
 
 };
 

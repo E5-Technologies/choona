@@ -204,14 +204,14 @@ export default function Home(props) {
         <HomeHeaderComponent
           firstitemtext={false}
           imageone={ImagePath.dp}
-          imageoneheight={25}
-          imageonewidth={25}
+          imageoneheight={30}
+          imageonewidth={30}
           title={"CHOONA"}
           thirditemtext={false}
           imagetwo={ImagePath.inbox}
           imagetwoheight={25}
           imagetwowidth={25}
-
+          middleImageReq={true}
           onPressFirstItem={() => { props.navigation.navigate("Profile") }}
           onPressThirdItem={() => { props.navigation.navigate("Inbox") }} />
 
@@ -270,17 +270,10 @@ export default function Home(props) {
 
           <View style={{ flex: 1 }}>
 
-
-
-
-
-
             <SwipeListView
               data={flatlistdata}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
-
-
               keyExtractor={(item, index) => { index.toString() }}
               disableRightSwipe={true}
               rightOpenValue={-75} />
@@ -317,56 +310,70 @@ export default function Home(props) {
 
 
             <Modal
-              animationType="slide"
+              animationType="fade"
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
               }}
             >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>More</Text>
-                  <View style={{ backgroundColor: Colors.grey, height: 1, }} />
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+              <ImageBackground
+                source={ImagePath.page_gradient}
+                style={styles.centeredView}
+              >
+
+                <View
+                  style={styles.modalView}
+                >
+                  <Text style={{
+                    color: Colors.white,
+                    fontSize: normalise(15),
+                    fontFamily: 'ProximaNova-Regular',
+                    fontWeight: '600',
+                  }}>MORE</Text>
+
+                  <View style={{ backgroundColor: Colors.white, height: 1, marginTop:2 }} />
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(16), fontWeight: 'bold'
+                      fontSize: normalise(16),
+                      fontFamily: 'ProximaNova-Regular',
+                      fontWeight: '600',
                     }}>Save Song</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, fontSize: normalise(16), marginLeft: normalise(15),
-                      fontWeight: 'bold'
+                      fontFamily: 'ProximaNova-Regular',
+                      fontWeight: '600',
                     }}>Send Song</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
-                    <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                    <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(16), fontWeight: 'bold'
+                      fontSize: normalise(16),
+                      fontFamily: 'ProximaNova-Regular',
+                      fontWeight: '600',
                     }}>Copy Link</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
-                    <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                    <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(16), fontWeight: 'bold'
+                      fontSize: normalise(16),
+                      fontFamily: 'ProximaNova-Regular',
+                      fontWeight: '600',
                     }}>Unfollow Shimshimmer</Text>
                   </TouchableOpacity>
 
                 </View>
-
-
-
-
-
 
                 <View style={{
                   justifyContent: "center",
@@ -391,11 +398,14 @@ export default function Home(props) {
                     }}>
 
 
-                    <Text style={{ fontSize: normalise(15), color: Colors.white }}>Cancel</Text>
+                    <Text style={{ fontSize: normalise(16), 
+                    fontFamily: 'ProximaNova-Bold',
+                    fontWeight:'900',
+                    color: Colors.white }}>Cancel</Text>
 
                   </TouchableOpacity>
                 </View>
-              </View>
+              </ImageBackground>
             </Modal>
 
 
@@ -432,11 +442,12 @@ export default function Home(props) {
             <EmojiSelector
               category={Categories.symbols}
 
-              onEmojiSelected={emoji => {setVisible(true), setModalReact(emoji),
-              setTimeout(()=>{
-                setVisible(false)
-              },2000)
-            }}
+              onEmojiSelected={emoji => {
+                setVisible(true), setModalReact(emoji),
+                  setTimeout(() => {
+                    setVisible(false)
+                  }, 2000)
+              }}
             />
 
 
@@ -474,10 +485,9 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    height: normalise(200),
+    height: normalise(220),
     width: normalise(280),
-    backgroundColor: "#010203",
-    opacity: 10,
+    backgroundColor: 'rgba(0,0,0,1)',
     borderRadius: 20,
     padding: 35,
 

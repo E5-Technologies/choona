@@ -71,7 +71,11 @@ function HeaderComponent(props) {
                     </TouchableOpacity>
                 </View>}
 
-            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+            <Text style={{
+                color: Colors.white,
+                fontSize: normalise(15),
+                fontFamily:('ProximaNova-Black'),
+            }}>
                 {props.title}</Text>
 
 

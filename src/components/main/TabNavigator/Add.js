@@ -106,7 +106,10 @@ export default function AddSong(props) {
                     texttwo={"POST"}
                 />
 
-                <View style={{ width: '95%', alignSelf: 'center', }}>
+                <View style={{
+                    width: '95%',
+                    alignSelf: 'center',
+                }}>
 
                     <TextInput style={{
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
