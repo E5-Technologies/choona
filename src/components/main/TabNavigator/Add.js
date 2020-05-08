@@ -107,20 +107,20 @@ export default function AddSong(props) {
                 />
 
                 <View style={{
-                    width: '95%',
+                    width: '92%',
                     alignSelf: 'center',
                 }}>
 
                     <TextInput style={{
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
                         borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30)
+                        color: Colors.white, paddingLeft: normalise(30),
                     }} value={search}
                         placeholder={"Search"}
-                        placeholderTextColor={Colors.white}
+                        placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => { setSearch(text) }} />
 
-                    <Image source={ImagePath.searchicon}
+                    <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
@@ -159,13 +159,12 @@ export default function AddSong(props) {
 
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
-                        <Image source={ImagePath.searchicon} style={{ height: normalise(25), width: normalise(25) }} />
+                        <Image source={ImagePath.searchicongrey} style={{ height: normalise(35), width: normalise(35) }} />
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
                             marginTop: normalise(20), width: '60%', textAlign: 'center'
-                        }}>
-                            Seach for the song you want to share above </Text>
+                        }}>Search for the song you want to share above.</Text>
 
                     </View>
 

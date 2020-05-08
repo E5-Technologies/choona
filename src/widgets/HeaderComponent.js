@@ -38,7 +38,7 @@ function HeaderComponent(props) {
         <View style={{
             width: '90%', alignSelf: 'center', marginTop: normalise(10),
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-
+                
         }}>
 
             {props.firstitemtext ?

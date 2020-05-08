@@ -60,6 +60,7 @@ const ImagePath = {
   music_icon: require('./images/music_icon.png'),
   headerShadow: require('./images/headerShadow.png'),
   add_white: require('./images/add_white.png'),
+  searchicongrey: require('./images/searchIcongrey.png'),
 
 };
 
