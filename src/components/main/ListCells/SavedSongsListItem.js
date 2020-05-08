@@ -200,8 +200,9 @@ function SavedSongListItem(props) {
 
                     <Image source={ImagePath.play}
                         style={{
-                            height: normalise(23), width: normalise(23), position: 'absolute',
-                            marginLeft: normalise(10), marginTop: normalise(11)
+                            height: normalise(23), width: normalise(23),
+                            position: 'absolute', right: "25%", top: "25%"
+
                         }} />
                 </TouchableOpacity>
 
@@ -213,25 +214,34 @@ function SavedSongListItem(props) {
 
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
-                        fontFamily:'ProximaNova-Regular',fontWeight:'600',
+                        fontFamily: 'ProximaNova-Regular', fontWeight: '600',
                     }} numberOfLines={1}> {props.title} </Text>
 
                     <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
-                        fontFamily:'ProximaNova-Regular',fontWeight:'500',
+                        fontFamily: 'ProximaNova-Regular', fontWeight: '500',
                     }} numberOfLines={1}> {props.singer} </Text>
 
                     {props.comments ? <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
-                        fontFamily:'ProximaNova-Regular',fontWeight:'500',
+                        fontFamily: 'ProximaNova-Regular', fontWeight: '500',
                     }} numberOfLines={1}> {props.comments} comments </Text> : null}
                 </View>
 
 
                 {props.change ?
 
-                    <TouchableOpacity onPress={() => { onPressSecondImage() }}>
-                        <Image source={props.image2} style={{ height: normalise(25), width: normalise(25) }} />
+                    <TouchableOpacity
+                        style={{
+                           height: normalise(25),
+                            width: normalise(25),
+                            marginBottom: normalise(8)
+                        }}
+                        onPress={() => { onPressSecondImage() }}>
+                        <Image source={props.image2} style={{
+                            height: normalise(25),
+                            width: normalise(25)
+                        }} />
                     </TouchableOpacity>
 
                     : <View style={{
