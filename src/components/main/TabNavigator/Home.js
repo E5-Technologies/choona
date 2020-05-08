@@ -30,7 +30,7 @@ const flatlistdata = [
   {
     image: ImagePath.profiletrack1,
     picture: ImagePath.dp1,
-    title: 'This girl',
+    title: 'This Girl',
     singer: "Kungs Vs Cookins 3 burners",
     comments: 1,
     name: 'Shimshimmer',
