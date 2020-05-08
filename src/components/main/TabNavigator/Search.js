@@ -6,8 +6,8 @@ import {
     View,
     Text,
     Image,
-    TextInput,
-    TouchableOpacity
+    TextInput, ImageBackground,
+    TouchableOpacity, Modal
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -51,15 +51,15 @@ let usersdata = [
         type: 'Follow'
     },
 
-
 ];
+
 let userdataEmpty = [];
 
 let songsdata = [
     {
         image: ImagePath.profiletrack1,
         picture: ImagePath.dp1,
-        title: 'This girl',
+        title: 'This Girl',
         singer: "Kungs Vs Cookins 3 burners",
         comments: 1,
         name: 'Shimshimmer',
@@ -125,7 +125,37 @@ let songsdata = [
     },
 
 ];
+
 let songDataEmpty = [];
+
+let genreData = [
+    {
+        title: "Electronic/Dance"
+    },
+    {
+        title: "Pop"
+    },
+    {
+        title: "Rock"
+    },
+    {
+        title: "Country Music"
+    },
+    {
+        title: "R & B"
+    },
+    {
+        title: "Indie"
+    },
+    {
+        title: "Rap"
+    },
+    {
+        title: "Afro"
+    },
+
+];
+
 
 
 export default function Search(props) {
@@ -138,6 +168,7 @@ export default function Search(props) {
     const [genreSearchText, setGenreSearchText] = useState("");
     const [songSearchText, setSongSearchText] = useState("");
 
+    const [modalVisible, setModalVisible] = useState(false);
 
     function renderUserData(data) {
         return (
@@ -163,19 +194,19 @@ export default function Search(props) {
                 title={data.item.title}
                 singer={data.item.singer}
                 onPressReact1={() => {
-                    hitreact(react[0])
+                    console.log('Coming Soon...')
                 }}
                 onPressReact2={() => {
-                    hitreact(react[1])
+                    console.log('Coming Soon...')
                 }}
                 onPressReact3={() => {
-                    hitreact(react[2])
+                    console.log('Coming Soon...')
                 }}
                 onPressReact4={() => {
-                    hitreact(react[3])
+                    console.log('Coming Soon...')
                 }}
                 onPressReact5={() => {
-                    hitreact1(modal1Visible)
+                    console.log('Coming Soon...')
                 }}
                 onPressMusicbox={() => {
                     props.navigation.navigate('Player', {
@@ -193,12 +224,149 @@ export default function Search(props) {
                         time: data.item.time, title: data.item.title
                     })
                 }}
-                // onPressSecondImage={() => {
-                //     setModalVisible(true)
-                // }}
-                marginBottom={data.index === songDataEmpty.length - 1 ? normalise(20) : 0} />
+                onPressSecondImage={() => {
+                    setModalVisible(true)
+                }}
+                marginBottom={data.index === songDataEmpty.length - 1 ? normalise(50) : 0} />
         )
-    }
+    };
+
+
+    function renderGenreData(data) {
+        return (
+            <TouchableOpacity style={{
+                width: '88%', alignSelf: 'center', flexDirection: 'row',
+                alignItems: 'center', justifyContent: 'space-between', paddingTop: normalise(20),
+                paddingBottom: normalise(20),
+                marginBottom: data.index === genreData.length - 1 ? normalise(30) : normalise(0),
+                borderBottomWidth: 0.5, borderBottomColor: Colors.grey
+            }}>
+
+                <Text style={{
+                    fontFamily: 'ProximaNova-Regular', fontWeight: '600',
+                    fontSize: normalise(15), color: Colors.white, marginLeft: normalise(5)
+                }}>{data.item.title}</Text>
+
+                <Image source={ImagePath.backicon} style={{
+                    height: normalise(10), width: normalise(10),
+                    transform: [{ rotate: '180deg' },], marginRight: normalise(5)
+                }} resizeMode='contain' />
+            </TouchableOpacity>
+        )
+    };
+
+    //MODAL MORE PRESSED
+    const MorePressed = () => {
+        return (
+
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                }}
+            >
+                <ImageBackground
+                    source={ImagePath.page_gradient}
+                    style={styles.centeredView}
+                >
+
+                    <View
+                        style={styles.modalView}
+                    >
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: normalise(12),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '600',
+                        }}>MORE</Text>
+
+                        <View style={{
+                            backgroundColor: Colors.white,
+                            height: 0.5,
+                            marginTop: normalise(12),
+                            marginBottom: normalise(12)
+                        }} />
+
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                            <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
+                                resizeMode='contain' />
+                            <Text style={{
+                                color: Colors.white, marginLeft: normalise(15),
+                                fontSize: normalise(13),
+                                fontFamily: 'ProximaNova-Regular',
+                                fontWeight: '600',
+                            }}>Save Song</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                            <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                                resizeMode='contain' />
+                            <Text style={{
+                                color: Colors.white,
+                                fontSize: normalise(13), marginLeft: normalise(15),
+                                fontFamily: 'ProximaNova-Regular',
+                                fontWeight: '600',
+                            }}>Send Song</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                            <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
+                                resizeMode='contain' />
+                            <Text style={{
+                                color: Colors.white, marginLeft: normalise(15),
+                                fontSize: normalise(13),
+                                fontFamily: 'ProximaNova-Regular',
+                                fontWeight: '600',
+                            }}>Copy Link</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                            <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
+                                resizeMode='contain' />
+                            <Text style={{
+                                color: Colors.white, marginLeft: normalise(15),
+                                fontSize: normalise(13),
+                                fontFamily: 'ProximaNova-Regular',
+                                fontWeight: '600',
+                            }}>Unfollow Shimshimmer</Text>
+                        </TouchableOpacity>
+
+                    </View>
+
+
+                    <TouchableOpacity onPress={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+
+                        style={{
+                            marginStart: normalise(20),
+                            marginEnd: normalise(20),
+                            marginBottom: normalise(20),
+                            height: normalise(50),
+                            width: "95%",
+                            backgroundColor: "#010203",
+                            opacity: 10,
+                            borderRadius: 20,
+                            // padding: 35,
+                            alignItems: "center",
+                            justifyContent: 'center',
+
+
+                        }}>
+
+
+                        <Text style={{
+                            fontSize: normalise(12),
+                            fontFamily: 'ProximaNova-Bold',
+                            color: Colors.white
+                        }}>CANCEL</Text>
+
+                    </TouchableOpacity>
+                </ImageBackground>
+            </Modal>
+        )
+    };
+    //END OF MODAL MORE PRESSED
+
 
     if (usersSearchText !== "") {
         userdataEmpty = [...usersdata]
@@ -206,6 +374,10 @@ export default function Search(props) {
     else if (songSearchText !== "") {
         songDataEmpty = [...songsdata]
     }
+    else if (genreSearchText !== "") {
+        genreDataEmpty = [...genreData]
+    }
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -366,7 +538,8 @@ export default function Search(props) {
                 </View>
 
 
-                {usersSearch ?
+
+                {usersSearch ?              //USERS VIEW
 
                     _.isEmpty(userdataEmpty) ?
 
@@ -398,7 +571,7 @@ export default function Search(props) {
 
 
                             <FlatList
-                                style={{ marginTop: normalise(10), height: '70%' }}
+                                style={{ height: '70%' }}
                                 data={userdataEmpty}
                                 renderItem={renderUserData}
                                 keyExtractor={(item, index) => index.toString()}
@@ -408,7 +581,7 @@ export default function Search(props) {
                     : null}
 
 
-                {songSearch ?
+                {songSearch ?               //SONG VIEW
 
                     _.isEmpty(songDataEmpty) ?
 
@@ -440,7 +613,7 @@ export default function Search(props) {
 
 
                             <FlatList
-                                style={{ marginTop: normalise(10), height: '70%' }}
+                                style={{ height: '70%' }}
                                 data={songDataEmpty}
                                 renderItem={renderSongData}
                                 keyExtractor={(item, index) => index.toString()}
@@ -450,9 +623,57 @@ export default function Search(props) {
                     : null}
 
 
+                {genreSearch ?              //GENRE VIEW
 
+                    <FlatList
+                        style={{ height: '70%' }}
+                        data={genreData}
+                        renderItem={renderGenreData}
+                        keyExtractor={(item, index) => index.toString()}
+                        showsVerticalScrollIndicator={false} />
+
+                    : null}
+
+
+                {MorePressed()}
 
             </SafeAreaView>
         </View>
     )
-}
+
+};
+
+
+
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+
+    },
+    modalView: {
+        marginBottom: normalise(10),
+        height: normalise(250),
+        width: "95%",
+        backgroundColor: 'rgba(0,0,0,1)',
+        borderRadius: 20,
+        padding: 35,
+
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+
+    }
+});
