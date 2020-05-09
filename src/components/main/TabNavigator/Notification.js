@@ -145,7 +145,7 @@ export default function Notification(props) {
                         <Text style={{
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
                             fontFamily:'ProximaNova-Regular',fontWeight:'bold',
-                        }}>PREVIOUS</Text>
+                        }}>PREVIOUSLY</Text>
                     </View>
 
                     <FlatList

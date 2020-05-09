@@ -115,7 +115,7 @@ export default function EditProfile(props) {
                             resizeMode='contain' />
 
                         : <TouchableOpacity onPress={() => { showPickerOptions() }}>
-                            <Image source={ImagePath.addicon} style={{
+                            <Image source={ImagePath.add_white} style={{
                                 height: normalise(40), width: normalise(40),
                                 borderRadius: normalise(20)
                             }} />
