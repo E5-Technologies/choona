@@ -184,13 +184,13 @@ function SavedSongListItem(props) {
 
         <View style={{
             width: '90%', alignSelf: 'center',
-            marginTop: normalise(15),
-            marginBottom: props.marginBottom
+            marginTop: normalise(10),
+            marginBottom: props.marginBottom,
         }}>
 
             <View style={{
                 flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
             }}>
 
                 <TouchableOpacity onPress={() => { onPressImage() }}>
@@ -209,7 +209,7 @@ function SavedSongListItem(props) {
 
                 <View style={{
                     flexDirection: 'column', alignItems: 'flex-start', width: '50%',
-                    marginRight: normalise(30)
+                    marginRight: props.marginRight
                 }}>
 
                     <Text style={{
@@ -235,7 +235,6 @@ function SavedSongListItem(props) {
                         style={{
                            height: normalise(25),
                             width: normalise(25),
-                            marginBottom: normalise(8)
                         }}
                         onPress={() => { onPressSecondImage() }}>
                         <Image source={props.image2} style={{
@@ -285,7 +284,8 @@ SavedSongListItem.propTypes = {
     change: PropTypes.bool,
     image2: PropTypes.string,
     onPressSecondImage: PropTypes.func,
-    comments: PropTypes.bool
+    comments: PropTypes.bool,
+    marginRight: PropTypes.number
 };
 
 SavedSongListItem.defaultProps = {
@@ -298,5 +298,6 @@ SavedSongListItem.defaultProps = {
     change: false,
     image2: "",
     onPressSecondImage: null,
-    comments: false
+    comments: false,
+    marginRight: normalise(30)
 }

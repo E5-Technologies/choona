@@ -188,7 +188,7 @@ function HomeItemList(props) {
                     <TouchableOpacity
                         onPress={() => { props.onPressReact1() }}
                     >
-                        <Text style={{ fontSize: 42, fontWeight: 'bold', position: 'relative' }}>{react[0]}</Text>
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold', position: 'relative' }}>{react[0]}</Text>
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
@@ -200,7 +200,7 @@ function HomeItemList(props) {
                     <TouchableOpacity
                         onPress={() => { props.onPressReact2() }}
                     >
-                        <Text style={{ fontSize: 42, fontWeight: 'bold' }}>{react[1]}</Text>
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[1]}</Text>
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
@@ -212,7 +212,7 @@ function HomeItemList(props) {
                     <TouchableOpacity
                         onPress={() => { props.onPressReact3() }}
                     >
-                        <Text style={{ fontSize: 42, fontWeight: 'bold' }}>{react[2]}</Text>
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[2]}</Text>
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
@@ -224,7 +224,7 @@ function HomeItemList(props) {
                     <TouchableOpacity
                         onPress={() => { props.onPressReact4() }}
                     >
-                        <Text style={{ fontSize: 43, fontWeight: 'bold' }}>{react[3]}</Text>
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[3]}</Text>
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
@@ -286,7 +286,7 @@ function HomeItemList(props) {
                 <Text style={{
                     color: Colors.white, fontSize: normalise(10),
                     fontFamily: 'ProximaNova-Regular', fontWeight:'500', marginLeft: Platform.OS === 'android' ?
-                     normalize(33): normalise(30), bottom: 4, width:'90%'
+                     normalize(33): normalise(30), bottom: 4, width:'88%'
                 }} >{props.content}</Text>
 
                 <View style={{

@@ -143,7 +143,7 @@ export default function Contact(props) {
                             justifyContent: "space-evenly",
                             height: normalise(39),
                             width: normalise(42),
-                            marginTop: normalise(15),
+                            marginTop: normalise(10),
                             position: 'absolute', right: 21
                         }}
                             //  onPress={ () => { rowMap[rowData.item.key].closeRow() }}

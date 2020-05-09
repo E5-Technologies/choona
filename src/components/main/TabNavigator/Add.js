@@ -74,6 +74,7 @@ export default function AddSong(props) {
                 image={data.item.image}
                 title={data.item.title}
                 singer={data.item.singer}
+                marginRight={normalise(50)}
                 marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
                 change={true}
                 image2={ImagePath.addicon}
