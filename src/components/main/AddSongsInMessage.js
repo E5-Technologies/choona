@@ -203,7 +203,11 @@ export default function AddSongsInMessage(props) {
                         //     backgroundColor: 'rgba(87,97,145,0.5)'
 
                         // },
-                        draggableIcon:{backgroundColor:"#000"}
+                        draggableIcon: {
+                            backgroundColor: Colors.grey,
+                            width: normalise(70),
+                            height: normalise(3)
+                        }
 
                     }}
                 >
