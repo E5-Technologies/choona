@@ -150,7 +150,7 @@ export default function AddSong(props) {
                         <Text style={{
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
                             fontWeight: 'bold'
-                        }}> RESULTS(23)</Text>
+                        }}> RESULTS (23)</Text>
 
                     </View>}
 
