@@ -9,7 +9,8 @@ import {
     StatusBar,
     TouchableOpacity,
     TextInput,
-    Image
+    Image,
+    KeyboardAvoidingView
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -80,7 +81,7 @@ export default function HomeItemComments(props) {
                 title={data.item.title}
                 name={data.item.name}
                 comment={data.item.content}
-           time={data.item.time}
+                time={data.item.time}
                 marginBottom={data.index === flatlistdata.length -1 ? normalise(20) : 0} />
             )
         }
@@ -100,7 +101,9 @@ export default function HomeItemComments(props) {
 
     return (
 
-        <View style={{ flex: 1, backgroundColor: Colors.black, }}>
+        <KeyboardAvoidingView 
+        behavior="height"
+        style={{ flex: 1, backgroundColor: Colors.black,  }}>
             <SafeAreaView style={{ flex: 1 }}>
 
              
@@ -110,6 +113,7 @@ export default function HomeItemComments(props) {
                    //imagesecond={ImagePath.dp}
                     title="4 COMMENTS"
                     thirditemtext={false} 
+                    marginTop={Platform.OS === 'android' ? normalise(18) : normalise(0)}
                    // imagetwo={ImagePath.newmessage} 
                     imagetwoheight={25}
                     imagetwowidth={25}
@@ -133,13 +137,15 @@ export default function HomeItemComments(props) {
            }} />
     </TouchableOpacity>
  <View style={{marginLeft:normalise(10),}}>
-    <View  style={{flexDirection:'row'}}>
+    <View  style={{flexDirection:'row', justifyContent:'space-between'}}>
 
-     <Text style={{width:normalise(150),color:Colors.white,fontSize:14}}>
+     <Text style={{
+        color:Colors.white,fontSize:14}}>
           Shimshimmer
       </Text>
-      <Text style={{width:normalise(70),color:Colors.white,fontSize:12}}>
-         8 minutes ago
+      <Text style={{marginEnd:normalise(12.5),
+        color:Colors.grey_text,fontSize:12}}>
+         8 mins ago
       </Text>
       </View>
       <View>
@@ -172,27 +178,43 @@ export default function HomeItemComments(props) {
 
 
 
-<View style={{  minHeight: normalise(40),height: 'auto', width: '95%',
+<View style={{  height: normalise(40),
+ maxHeight:normalise(100),
+                width: '95%',
                 backgroundColor: Colors.fadeblack,
-                borderColor:Colors.darkgrey,borderWidth:1,flexDirection:'row',marginLeft:normalise(10),
-                borderRadius: normalise(25), marginTop: normalise(20), paddingLeft: normalise(15),
-                color: Colors.white, paddingLeft: normalise(20)
+                borderColor:Colors.darkgrey,
+                borderWidth:1,
+                flexDirection:'row',
+                borderRadius: normalise(25), 
+                marginTop: normalise(20), 
+                color: Colors.white, 
+                alignSelf:'center',
+                alignItems:'center', 
+                position:'absolute',
+                bottom:normalise(15) ,
+                justifyContent:'space-between'
              }}>
 
  <TextInput multiline style={{
   width: '80%',
   marginTop:normalise(7),
-    height: 'auto',
-    minHeight:normalise(30),
+    
+    maxHeight:normalise(100),
     fontSize:normalise(12), 
     color: Colors.white, 
+    marginStart:normalise(10),
+    paddingBottom:normalise(11)
 }}
     placeholder={"Add a comment..."}
     placeholderTextColor={Colors.white}
     onChangeText={(text) => { console.log(text) }} /> 
 
-    <TouchableOpacity style={{alignItems:'center',justifyContent:'center'}}>
-        <Text style={{fontSize:normalise(13),color:Colors.white,fontWeight:'bold'}}>
+    <TouchableOpacity style={{alignItems:'center',
+    justifyContent:'center'}}>
+        <Text style={{fontSize:normalise(13),
+            color:Colors.white,
+            marginEnd:normalise(10),
+            fontWeight:'bold'}}>
             POST
         </Text>
     </TouchableOpacity>
@@ -202,6 +224,6 @@ export default function HomeItemComments(props) {
             </SafeAreaView>
 
 
-        </View>
+        </KeyboardAvoidingView>
     )
 }

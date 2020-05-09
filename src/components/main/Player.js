@@ -29,7 +29,7 @@ const followdata = [
 
         picture: ImagePath.dp1,
         title: 'This girl',
-        name: "andy88Jones",
+        name: "Andy88Jones",
         comments: 1,
 
         reactions: 11,
@@ -41,7 +41,7 @@ const followdata = [
         picture: ImagePath.dp,
         title: 'Paradise',
         singer: "Cold Play",
-        name: "andy88Jones",
+        name: "Andy88Jones",
 
         reactions: 7,
         content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
@@ -51,7 +51,7 @@ const followdata = [
 
         picture: ImagePath.dp1,
         title: 'Naked feat. Justin Suissa',
-        name: "andy88Jones",
+        name: "Andy88Jones",
         comments: 1,
 
         reactions: 10,
@@ -63,7 +63,7 @@ const followdata = [
 
         picture: ImagePath.dp,
         title: 'Naked feat. Justin Suissa',
-        name: "andy88Jones",
+        name: "Andy88Jones",
         comments: 1,
 
         reactions: 11,
@@ -110,6 +110,7 @@ export default function Player(props) {
                         RbSheetRef = ref
                     }
                 }}
+                animationType={'fade'}
                 closeOnDragDown={false}
                 closeOnPressMask={false}
                 nestedScrollEnabled={true}
@@ -120,37 +121,41 @@ export default function Player(props) {
                         borderTopEndRadius: normalise(8),
                         borderTopStartRadius: normalise(8),
                     },
-                    
+
                 }}>
 
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.black }}>
                     <View style={{ width: '95%', alignSelf: 'center' }}>
 
                         <View style={{
-                            flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-                            marginTop: normalise(15), borderBottomWidth: normalise(1), borderColor: Colors.grey
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginTop: normalise(15),
+                            borderBottomWidth: 0.5,
+                            borderColor: Colors.grey
                         }}>
                             <TouchableOpacity onPress={() => { if (RbSheetRef) { RbSheetRef.close() } }}>
-                                <Image source={ImagePath.backicon}
+                                <Image source={ImagePath.donw_arrow_solid}
                                     style={{
-                                        height: normalise(10), width: normalise(10), transform: [{ rotate: '270deg' }],
+                                        height: normalise(10), width: normalise(10),
                                         marginBottom: normalise(10)
                                     }}
                                     resizeMode='contain' />
                             </TouchableOpacity>
 
-
-                            <Text style={{
-                                fontSize: normalise(12), color: Colors.white,
-                                fontWeight: '500', 
-                                fontFamily:'ProximaNova-Regular',
-                                marginBottom: normalise(10)
-                            }}>3 COMMENTS</Text>
+                            <TouchableOpacity onPress={() => { if (RbSheetRef) { RbSheetRef.close() } }}>
+                                <Text style={{
+                                    fontSize: normalise(12), color: Colors.white,
+                                    fontFamily: 'ProximaNova-Bold',
+                                    marginBottom: normalise(10)
+                                }}>4 COMMENTS</Text>
+                            </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => { if (RbSheetRef) { RbSheetRef.close() } }}>
-                                <Image source={ImagePath.backicon}
+                                <Image source={ImagePath.donw_arrow_solid}
                                     style={{
-                                        height: normalise(10), width: normalise(10), transform: [{ rotate: '270deg' }],
+                                        height: normalise(10), width: normalise(10),
                                         marginBottom: normalise(10)
                                     }}
                                     resizeMode='contain' />
@@ -167,10 +172,12 @@ export default function Player(props) {
 
                         <TextInput style={{
                             height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                            borderRadius: normalise(17), marginTop: normalise(10), padding: normalise(10),
+                            borderRadius: normalise(17),
+                            marginTop: normalise(10),
+                            padding: normalise(10),
                             color: Colors.white, paddingLeft: normalise(30)
                         }}
-                            placeholder={"Add a comment"}
+                            placeholder={"Add a comment..."}
                             placeholderTextColor={Colors.white}
                             onChangeText={(text) => { console.log(text) }} />
 

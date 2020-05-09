@@ -264,7 +264,7 @@ export default function Search(props) {
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
+                    //Alert.alert("Modal has been closed.");
                 }}
             >
                 <ImageBackground

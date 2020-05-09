@@ -286,19 +286,19 @@ export default function Home(props) {
               transparent={true}
               visible={visible}
               onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
+                //Alert.alert("Modal has been closed.");
               }}
             >
               <View style={{
                 flex: 1,
                 backgroundColor: '#000000',
-                opacity: 0.8,
+                opacity: 0.9,
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: 22
               }}>
 
-                <Text style={{ fontSize: 220}}>{modalReact}</Text>
+                <Text style={{ fontSize: (120) }}>{modalReact}</Text>
 
 
               </View>
@@ -309,7 +309,7 @@ export default function Home(props) {
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
+                //Alert.alert("Modal has been closed.");
               }}
             >
               <ImageBackground
@@ -474,7 +474,8 @@ const styles = StyleSheet.create({
     width: "95%",
     backgroundColor: 'rgba(0,0,0,1)',
     borderRadius: 20,
-    padding: 35,
+    padding: 20,
+    paddingTop: normalise(35) 
 
   },
   openButton: {

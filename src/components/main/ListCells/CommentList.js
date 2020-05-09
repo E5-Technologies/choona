@@ -62,16 +62,34 @@ function CommentList(props) {
 
                 </TouchableOpacity>
                 <View style={{ marginLeft: normalise(10), }}>
-                    <View style={{ flexDirection: 'row'}}>
+                    <View style={{
+                        flexDirection: 'row',
+                        width: '77%',
+                        justifyContent: 'space-between'
+                    }}>
 
-                        <Text style={{ width: normalise(180), color: Colors.white, fontSize: 14 }}>
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: normalise(12),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '600',
+                        }}>
                             {props.name}
                         </Text>
-                        <Text style={{ width: normalise(70), color: Colors.white, fontSize: 12, }}>
-                            {props.time} minutes ago</Text>
+                        <Text style={{
+                            color: Colors.grey_text,
+                            fontSize: 12,
+                            fontFamily: 'ProximaNova-Regular',
+                        }}>
+                            {props.time} mins ago</Text>
                     </View>
                     <View>
-                        <Text style={{ width: normalise(220), color: Colors.white, fontSize: 12, marginTop: normalise(2) }}>
+                        <Text style={{
+                            width: normalise(220),
+                            color: Colors.white,
+                            fontSize: normalise(11),
+                            marginTop: normalise(2)
+                        }}>
                             {props.comment}</Text>
                     </View>
                 </View>
@@ -79,7 +97,7 @@ function CommentList(props) {
             </View>
 
             <View style={{
-                marginTop: normalise(10), borderBottomWidth: normalise(1),
+                marginTop: normalise(20), borderBottomWidth: 0.5,
                 borderBottomColor: Colors.grey
             }} />
 

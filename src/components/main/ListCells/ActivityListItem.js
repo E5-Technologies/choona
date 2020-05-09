@@ -31,54 +31,72 @@ function ActivityListItem(props) {
             props.onPressImage()
         }
     };
-    
+
     return (
 
-        <View style={{ width: '90%', alignSelf: 'center', marginTop: props.marginTop, marginBottom: props.marginBottom, }}>
+        <View style={{
+            width: '90%',
+            alignSelf: 'center',
+            marginTop: props.marginTop,
+            marginBottom: props.marginBottom,
+        }}>
 
             <View style={{
                 flexDirection: 'row', alignItems: 'center',
                 justifyContent: 'space-between'
             }}>
 
-                <TouchableOpacity onPress={()=>{onPressImage()}}>
+                <TouchableOpacity onPress={() => { onPressImage() }}>
                     <Image source={props.image}
                         style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(17) }}
                         resizeMode="contain" />
                 </TouchableOpacity>
 
-                 <Text style={{
-                    color: Colors.white, fontSize: normalise(11), width: props.type ? '50%' : '70%',
-                    fontFamily:'ProximaNova-Regular',fontWeight:'bold',
-                    textAlign:'left',
+                <Text style={{
+                    color: Colors.white, fontSize: normalise(11),
+                    width: props.type ? '50%' : '70%',
+                    fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
+                    textAlign: 'left',
+                    paddingBottom:normalise(5)
                 }}>{props.title}</Text>
-                   
 
-            {props.type ?
-                <TouchableOpacity
-                    style={{height: normalise(25), width: normalise(80), borderRadius: normalise(12), alignSelf: 'center',
-                        backgroundColor: follow?Colors.white:Colors.fadeblack,justifyContent: 'center', alignItems: 'center',
-                    }} onPress={() => { onPress(), setFollow(!follow) }} >
 
-                {follow ?        
-                    <Text style={{ color: Colors.black, fontWeight: 'bold' }}>Follow</Text>:
-                    <Text style={{ color: Colors.white, fontWeight: 'bold' }}>Following</Text>}
-                </TouchableOpacity>
+                {props.type ?
+                    <TouchableOpacity
+                        style={{
+                            height: normalise(25), width: normalise(80), borderRadius: normalise(12), alignSelf: 'center',
+                            backgroundColor: follow ? Colors.white : Colors.fadeblack, justifyContent: 'center', alignItems: 'center',
+                        }} onPress={() => { onPress(), setFollow(!follow) }} >
 
-            :
-            <TouchableOpacity>
-            <Image source={props.image2} style={{height: normalise(35), width: normalise(35)}}
-                resizeMode='contain' /> 
-            </TouchableOpacity>}
+                        {follow ?
+                            <Text style={{
+                                color: Colors.black,
+                                fontWeight: 'bold',
+                                fontFamily: 'ProximaNova-Regular',
+                                fontSize: normalise(10)
+                            }}>FOLLOW</Text> :
+                            <Text style={{
+                                color: Colors.white,
+                                fontWeight: 'bold',
+                                fontFamily: 'ProximaNova-Regular',
+                                fontSize: normalise(10)
+                            }}>FOLLOWING</Text>}
+                    </TouchableOpacity>
+
+                    :
+                    <TouchableOpacity>
+                        <Image source={props.image2} style={{ height: normalise(35), width: normalise(35) }}
+                            resizeMode='contain' />
+                    </TouchableOpacity>}
             </View>
 
 
-           {/* {props.bottom ? null : */}
+            {/* {props.bottom ? null : */}
             <View style={{
                 marginTop: normalise(10), borderBottomWidth: 0.5,
                 borderBottomColor: Colors.grey
-            }} />  
-             {/* } */}
+            }} />
+            {/* } */}
 
 
         </View>

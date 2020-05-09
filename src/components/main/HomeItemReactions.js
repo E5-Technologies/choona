@@ -12,7 +12,7 @@ import {
     ScrollView,
     View, Image, Modal,
     Text, TextInput,
-    StatusBar,
+    StatusBar, Platform,
     TouchableOpacity,
     FlatList
 } from 'react-native';
@@ -170,6 +170,7 @@ export default function HomeItemReaction(props) {
                 //  bottom={data.index === reaction1.length - 1 ? true : false} 
                 // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                 onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                marginBottom={0}
             />
         )
     }
@@ -185,7 +186,7 @@ export default function HomeItemReaction(props) {
 
                 <StatusBar barStyle={'light-content'} />
 
-                <SafeAreaView style={{ flex: 1}}>
+                <SafeAreaView style={{ flex: 1 }}>
 
 
                     <HomeHeaderComponent firstitemtext={false}
@@ -303,7 +304,7 @@ export default function HomeItemReaction(props) {
                     <HomeHeaderComponent firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
-
+                        marginTop={Platform.OS === 'android' ? normalise(18) : normalise(0)}
                         title="10 REACTIONS"
                         thirditemtext={false}
                         // imagetwo={ImagePath.newmessage} 
@@ -323,7 +324,7 @@ export default function HomeItemReaction(props) {
 
 
 
-                        <View style={{ width: '95%', alignSelf: 'center', }}>
+                        <View style={{ width: '92%', alignSelf: 'center', }}>
 
                             <TextInput style={{
                                 height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
@@ -331,10 +332,10 @@ export default function HomeItemReaction(props) {
                                 color: Colors.white, paddingLeft: normalise(30)
                             }}
                                 placeholder={"Search"}
-                                placeholderTextColor={Colors.white}
+                                placeholderTextColor={Colors.grey_text}
                                 onChangeText={(text) => { console.log(text) }} />
 
-                            <Image source={ImagePath.searchicon}
+                            <Image source={ImagePath.searchicongrey}
                                 style={{
                                     height: normalise(15), width: normalise(15), bottom: normalise(25),
                                     paddingLeft: normalise(30)
@@ -344,12 +345,16 @@ export default function HomeItemReaction(props) {
 
 
                         <View style={{
-                            marginTop: normalise(10), flexDirection: 'row',
-                            width: '100%', height: normalise(42), alignItems: 'center', backgroundColor: Colors.fadeblack
+                            marginTop: normalise(10),
+                            width: '100%',
+                            height: normalise(42),
+                            justifyContent: 'center',
+                            backgroundColor: Colors.fadeblack
                         }}>
 
                             <Text style={{
-                                color: Colors.white, fontSize: normalise(30), marginLeft: normalise(5),
+                                color: Colors.white,
+                                fontSize: normalise(30), marginLeft: normalise(5),
                                 fontWeight: 'bold'
                             }}> {react[0]}</Text>
                         </View>
@@ -495,12 +500,12 @@ export default function HomeItemReaction(props) {
                         transparent={true}
                         visible={modalVisible}
                         onRequestClose={() => {
-                            Alert.alert("Modal has been closed.");
+                            //Alert.alert("Modal has been closed.");
                         }}
                     >
                         <View style={styles.centeredView}>
 
-                            <Text style={{ fontSize: 220 }}>{modalReact}</Text>
+                            <Text style={{ fontSize: 120 }}>{modalReact}</Text>
 
 
                         </View>
@@ -538,10 +543,10 @@ export default function HomeItemReaction(props) {
                                 category={Categories.symbols}
 
                                 onEmojiSelected={emoji => {
-                                setModalVisible(true), setModalReact(emoji),
-                                    setTimeout(() => {
-                                        setModalVisible(false)
-                                    }, 2000)
+                                    setModalVisible(true), setModalReact(emoji),
+                                        setTimeout(() => {
+                                            setModalVisible(false)
+                                        }, 2000)
                                 }}
                             />
 

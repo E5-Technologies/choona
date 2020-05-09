@@ -66,6 +66,7 @@ const ImagePath = {
   genretrack: require('./images/img1.png'),
   genretrack2: require('./images/img2.png'),
   genretrack3: require('./images/img3.png'),
+  donw_arrow_solid: require('./images/donw_arrow_solid.png'),
 
 };
 
