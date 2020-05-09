@@ -29,7 +29,7 @@ const profileData = [
     {
         image: ImagePath.profiletrack4
     },
-   
+
 ]
 
 export default function OthersProfile(props) {
@@ -40,10 +40,15 @@ export default function OthersProfile(props) {
     function renderProfileData(data) {
         return (
             <TouchableOpacity style={{
-                margin: normalise(5),
+
                 marginBottom: data.index === profileData.length - 1 ? normalise(30) : normalise(0)
             }}>
-                <Image source={data.item.image} style={{ height: normalise(140), width: normalise(140) }}
+                <Image source={data.item.image}
+                    style={{
+                        height: normalise(140),
+                        width: normalise(152),
+                        marginBottom: normalise(10)
+                    }}
                     resizeMode="contain" />
             </TouchableOpacity>
         )
@@ -81,18 +86,23 @@ export default function OthersProfile(props) {
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15),
-                            fontWeight: 'bold'
+                            fontFamily: 'ProximaNova-Bold',
+
                         }}>Dan Vernon</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '600',
 
                         }}>4 posts</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
+                            fontFamily: 'ProximaNova-Regular',
+                            fontWeight: '600',
 
                         }}>London, UK</Text>
 
@@ -101,7 +111,8 @@ export default function OthersProfile(props) {
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontWeight: 'bold'
+                                    fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: 'bold',
                                 }}><Text style={{ color: Colors.white }}>{following}</Text>  Following</Text>
                             </TouchableOpacity>
 
@@ -109,40 +120,51 @@ export default function OthersProfile(props) {
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontWeight: 'bold'
-                                }}><Text style={{ color: Colors.white }}>{followers}</Text>  Folowers</Text>
+                                    fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: 'bold',
+                                }}><Text style={{ color: Colors.white }}>{followers}</Text>  Followers</Text>
                             </TouchableOpacity>
 
                         </View>
                     </View>
                 </View>
 
-                <View style={{width:'90%', alignSelf:'center', marginTop:normalise(20), flexDirection:'row', 
-                    alignItems:'center', justifyContent:'space-around'}}>
-                        
-                        <TouchableOpacity 
-                        style={{height:normalise(30), width:'45%', borderRadius:normalise(15), 
-                        backgroundColor:Colors.white, alignItems:'center', justifyContent:'center'}}>
+                <View style={{
+                    width: '95%', alignSelf: 'center', marginTop: normalise(20), flexDirection: 'row',
+                    alignItems: 'center', justifyContent: 'space-around'
+                }}>
 
-                            <Text style={{color:Colors.white, fontSize:normalise(11), color:Colors.black,
-                            fontWeight:'bold'}}>
-                                SEND A SONG
+                    <TouchableOpacity
+                        style={{
+                            height: normalise(30), width: '45%', borderRadius: normalise(15),
+                            backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
+                        }}>
+
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(11), color: Colors.black,
+                            fontFamily: 'ProximaNova-Bold'
+                        }}>
+                            SEND A SONG
                             </Text>
 
-                        </TouchableOpacity>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity 
-                        style={{height:normalise(30), width:'45%', borderRadius:normalise(15), 
-                        backgroundColor:Colors.white, alignItems:'center', justifyContent:'center'}}>
+                    <TouchableOpacity
+                        style={{
+                            height: normalise(30), width: '45%', borderRadius: normalise(15),
+                            backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
+                        }}>
 
-                            <Text style={{color:Colors.white, fontSize:normalise(11), color:Colors.black,
-                            fontWeight:'bold'}}>
-                                FOLLOW
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(11), color: Colors.black,
+                            fontFamily: 'ProximaNova-Bold'
+                        }}>
+                            FOLLOW
                             </Text>
 
-                        </TouchableOpacity>
+                    </TouchableOpacity>
 
-                    </View> 
+                </View>
 
                 <ImageBackground source={ImagePath.gradientbar}
                     style={{
@@ -168,15 +190,23 @@ export default function OthersProfile(props) {
                         }}>
 
                             <Text style={{
-                                color: Colors.white, fontSize: normalise(9), fontWeight: 'bold'
+                                color: Colors.white,
+                                fontSize: normalise(9),
+                                fontFamily: 'ProximaNova-Bold'
                             }}>FEATURED TRACK</Text>
 
                             <Text style={{
-                                color: Colors.white, fontSize: normalise(10),
+                                color: Colors.white,
+                                fontSize: normalise(10),
+                                fontFamily: 'ProximaNova-Bold'
+
                             }}>Naked feat. Justin Suissa</Text>
 
                             <Text style={{
-                                color: Colors.white, fontSize: normalise(9),
+                                color: Colors.white,
+                                fontSize: normalise(9),
+                                fontFamily: 'ProximaNova-Regular',
+                                fontWeight: '400'
                             }}>Above & Beyond</Text>
                         </View>
 
