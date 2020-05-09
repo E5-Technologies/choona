@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
     TextInput,
     Image,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Platform
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -113,7 +114,7 @@ export default function HomeItemComments(props) {
                    //imagesecond={ImagePath.dp}
                     title="4 COMMENTS"
                     thirditemtext={false} 
-                    marginTop={Platform.OS === 'android' ? normalise(18) : normalise(0)}
+                    marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
                    // imagetwo={ImagePath.newmessage} 
                     imagetwoheight={25}
                     imagetwowidth={25}
@@ -178,16 +179,15 @@ export default function HomeItemComments(props) {
 
 
 
-<View style={{  height: normalise(40),
- maxHeight:normalise(100),
+<View style={{  
                 width: '95%',
                 backgroundColor: Colors.fadeblack,
                 borderColor:Colors.darkgrey,
                 borderWidth:1,
                 flexDirection:'row',
+                padding: normalise(4),
                 borderRadius: normalise(25), 
                 marginTop: normalise(20), 
-                color: Colors.white, 
                 alignSelf:'center',
                 alignItems:'center', 
                 position:'absolute',
@@ -195,13 +195,13 @@ export default function HomeItemComments(props) {
                 justifyContent:'space-between'
              }}>
 
- <TextInput multiline style={{
+ <TextInput multiline 
+ style={{
   width: '80%',
-  marginTop:normalise(7),
-    
     maxHeight:normalise(100),
     fontSize:normalise(12), 
     color: Colors.white, 
+    marginTop: Platform.OS==='android'?0:normalise(6),
     marginStart:normalise(10),
     paddingBottom:normalise(11)
 }}

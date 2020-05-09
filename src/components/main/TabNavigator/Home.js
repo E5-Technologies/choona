@@ -8,7 +8,8 @@ import {
   ImageBackground,
   TouchableOpacity, KeyboardAvoidingView,
   Image,
-  Modal
+  Modal,
+  Platform
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -298,7 +299,7 @@ export default function Home(props) {
                 marginTop: 22
               }}>
 
-                <Text style={{ fontSize: (75) }}>{modalReact}</Text>
+                <Text style={{  fontSize: Platform.OS==='android'?normalise(70):normalise(100)  }}>{modalReact}</Text>
 
 
               </View>
