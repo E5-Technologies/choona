@@ -79,6 +79,7 @@ export default function AddSongsInMessage(props) {
             <SavedSongsListItem
                 image={data.item.image}
                 title={data.item.title}
+                marginRight={normalise(50)}
                 singer={data.item.singer}
                 marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
                 change={true}

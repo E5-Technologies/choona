@@ -454,7 +454,7 @@ export default function Player(props) {
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(12),
                                     fontFamily:'ProximaNova-Extrabld'
-                                }}>MINIMIZE PLAYER</Text>
+                                }}>MINIMISE PLAYER</Text>
 
 
                                 <Image source={ImagePath.donw_arrow_solid}

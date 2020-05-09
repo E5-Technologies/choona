@@ -184,7 +184,7 @@ function SavedSongListItem(props) {
 
         <View style={{
             width: '90%', alignSelf: 'center',
-            marginTop: normalise(15),
+            marginTop: normalise(10),
             marginBottom: props.marginBottom
         }}>
 
@@ -209,7 +209,7 @@ function SavedSongListItem(props) {
 
                 <View style={{
                     flexDirection: 'column', alignItems: 'flex-start', width: '50%',
-                    marginRight: normalise(30)
+                    marginRight: props.marginRight
                 }}>
 
                     <Text style={{
@@ -285,7 +285,8 @@ SavedSongListItem.propTypes = {
     change: PropTypes.bool,
     image2: PropTypes.string,
     onPressSecondImage: PropTypes.func,
-    comments: PropTypes.bool
+    comments: PropTypes.bool,
+    marginRight: PropTypes.number
 };
 
 SavedSongListItem.defaultProps = {
@@ -298,5 +299,6 @@ SavedSongListItem.defaultProps = {
     change: false,
     image2: "",
     onPressSecondImage: null,
-    comments: false
+    comments: false,
+    marginRight: normalise(30)
 }
