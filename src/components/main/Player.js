@@ -228,26 +228,21 @@ export default function Player(props) {
 
                             <View style={{
                                 flexDirection: 'column', alignItems: 'flex-start', width: '50%',
-                                marginRight: normalise(30)
+                                marginRight: normalise(60)
                             }}>
 
                                 <Text style={{
-                                    color: Colors.grey, fontSize: normalise(10),
-                                    fontWeight: 'bold',
-                                }} numberOfLines={1}> Posted By </Text>
+                                    color: Colors.grey, fontSize: normalise(8),
+                                    fontFamily: 'ProximaNova-Bold'
+                                }} numberOfLines={1}> POSTED BY </Text>
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(11),
-                                    fontWeight: 'bold',
-
+                                    fontFamily: 'ProximaNova-Regular', fontWeight:'600'
                                 }} numberOfLines={1}> ShimShimmer </Text>
 
 
                             </View>
-
-
-
-
 
                             <View style={{
                                 height: normalise(40), width: normalise(50), backgroundColor: Colors.black,
@@ -285,28 +280,53 @@ export default function Player(props) {
 
                         </TouchableOpacity>
 
-                        <Text style={{
-                            margin: normalise(20),
-                            color: Colors.white, fontSize: normalise(12),
-                            fontWeight: 'bold',
+                        <View style={{
+                            flexDirection: 'row', alignItems: "center", justifyContent: 'space-between',
+                            width: '90%', alignSelf: 'center', marginTop: normalise(15)
+                        }}>
 
-                        }} numberOfLines={2}>
-                            Played-A-Live (The Bongo {"\n"} Song)
-                </Text>
+                            <View style={{
+                                flexDirection: 'column', width: '90%', alignSelf: 'center',
+                            }}>
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(14),
+                                    fontFamily: 'ProximaNova-Regular', fontWeight:'600',
+                                    width: '90%',
+                                }} numberOfLines={1}>Played-A-Live (The Bongo Song)</Text>
+
+                                <Text style={{
+                                    color: Colors.grey_text, fontSize: normalise(12),
+                                    fontFamily: 'ProximaNova-Regular', fontWeight:'500', width: '90%',
+                                }} numberOfLines={1}>Safri Duo</Text>
+
+                            </View>
+
+                            <Image source={ImagePath.spotifyicon}
+                            style={{height:normalise(20), width:normalise(20)}}
+                            resizeMode='contain' />
+
+                        </View>
 
                         <View style={{
-                            flexDirection: 'row', marginLeft: normalise(22), width: normalise(276),
-                            justifyContent: 'space-between'
+                            flexDirection: 'row', width: '90%', alignSelf: 'center',
+                            justifyContent: 'space-between', marginTop: normalise(15),
                         }}>
-                            <Text style={{ color: 'white' }}>
+
+                            <Text style={{ color: 'white', 
+                            fontFamily: 'ProximaNova-Regular', fontWeight:'600', }}>
                                 01:30
-                    </Text>
-                            <Text style={{ color: 'white' }}>
+                                </Text>
+
+                            <Text style={{ color: 'white',
+                            fontFamily: 'ProximaNova-Regular', fontWeight:'600', }}>
                                 -2:19
-                        </Text>
+                                </Text>
+
                         </View>
+
                         <Slider
-                            style={{ width: normalise(276), height: 40, marginLeft: normalise(22) }}
+                            style={{ width: '90%', height: 40, alignSelf: "center", }}
                             minimumValue={0}
                             maximumValue={1}
                             minimumTrackTintColor="#FFFFFF"
@@ -314,12 +334,15 @@ export default function Player(props) {
                         />
 
                         <View style={{
-                            flexDirection: 'row', marginLeft: normalise(22), width: normalise(276),
-                            justifyContent: 'space-around', marginTop: normalise(25), alignItems: 'center'
+                            flexDirection: 'row', alignSelf: 'center', width: '70%',
+                            justifyContent: 'space-around', marginTop: normalise(15), alignItems: 'center'
                         }}>
-                            <Image source={ImagePath.backwardicon}
-                                style={{ height: normalise(18), width: normalise(18) }}
-                                resizeMode="contain" />
+                            <TouchableOpacity>
+                                <Image source={ImagePath.backwardicon}
+                                    style={{ height: normalise(18), width: normalise(18) }}
+                                    resizeMode="contain" />
+                            </TouchableOpacity>
+
                             <TouchableOpacity
                                 onPress={() => {
                                     playing()
@@ -329,27 +352,30 @@ export default function Player(props) {
                                     backgroundColor: Colors.white, borderRadius: normalise(30)
                                 }}>
                                 {playVisible == true ?
-                                    <Image source={ImagePath.pauseicon}
+                                    <Image source={ImagePath.playicon}
                                         style={{ height: normalise(20), width: normalise(20) }}
                                         resizeMode="contain" />
                                     :
 
-                                    <Image source={ImagePath.playicon}
+                                    <Image source={ImagePath.pauseicon}
                                         style={{ height: normalise(20), width: normalise(20) }}
                                         resizeMode="contain" />
 
                                 }
 
                             </TouchableOpacity>
-                            <Image source={ImagePath.forwardicon}
-                                style={{ height: normalise(18), width: normalise(18) }}
-                                resizeMode="contain" />
+
+                            <TouchableOpacity>
+                                <Image source={ImagePath.forwardicon}
+                                    style={{ height: normalise(18), width: normalise(18) }}
+                                    resizeMode="contain" />
+                            </TouchableOpacity>
                         </View>
 
 
                         <View style={{
-                            flexDirection: 'row', marginLeft: normalise(15), width: normalise(290),
-                            justifyContent: 'space-around', marginTop: normalise(25), alignItems: 'center'
+                            flexDirection: 'row', width: '90%', alignSelf:'center',
+                            justifyContent: 'space-between', marginTop: normalise(25), alignItems: 'center'
                         }}>
                             <TouchableOpacity style={{
                                 height: normalise(40), width: normalise(42), alignItems: 'center', justifyContent: 'center',
@@ -397,18 +423,20 @@ export default function Player(props) {
                                     style={{ height: normalise(16), width: normalise(16) }}
                                     resizeMode="contain" />
 
-                                <Text style={{ fontSize: normalise(9), color: Colors.white, marginLeft: normalise(5) }}>
-                                    3 Comments
-                     </Text>
+                                <Text style={{ fontSize: normalise(9), color: Colors.white, marginLeft: normalise(10),
+                                fontFamily:'ProximaNova-Bold' }}>
+                                    3 COMMENTS
+                                    </Text>
 
                             </TouchableOpacity>
                         </View>
 
                         <TouchableOpacity style={{
-                            width: '90%', alignSelf: 'center', backgroundColor: Colors.white,
-                            height: normalise(50), marginTop: normalise(20), alignItems: 'center',
+                            width: '90%', alignSelf: 'center', backgroundColor: Colors.fadeblack,
+                            height: normalise(50), marginTop: normalise(40), alignItems: 'center',
                             justifyContent: 'center',
-                            borderRadius: normalise(10), marginBottom: normalise(20),
+                            borderTopRightRadius: normalise(8), borderTopLeftRadius:normalise(8),
+                             marginBottom: normalise(20),
                         }} onPress={() => { props.navigation.goBack() }}>
 
                             <View style={{
@@ -417,23 +445,21 @@ export default function Player(props) {
                             }}>
 
 
-                                <Image source={ImagePath.playicon}
+                                <Image source={ImagePath.donw_arrow_solid}
                                     style={{
-                                        height: normalise(12), width: normalise(12),
-                                        transform: [{ rotate: '90deg' }]
+                                        height: normalise(10), width: normalise(10),
                                     }} resizeMode='contain' />
 
 
                                 <Text style={{
-                                    color: Colors.darkerblack, fontSize: normalise(12),
-                                    fontWeight: '500'
-                                }}>Minimize Player</Text>
+                                    color: Colors.white, fontSize: normalise(12),
+                                    fontFamily:'ProximaNova-Extrabld'
+                                }}>MINIMIZE PLAYER</Text>
 
 
-                                <Image source={ImagePath.playicon}
+                                <Image source={ImagePath.donw_arrow_solid}
                                     style={{
-                                        height: normalise(12), width: normalise(12),
-                                        transform: [{ rotate: '90deg' }]
+                                        height: normalise(10), width: normalise(10),
                                     }} resizeMode='contain' />
 
 
