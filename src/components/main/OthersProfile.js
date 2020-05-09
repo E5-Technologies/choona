@@ -96,7 +96,7 @@ export default function OthersProfile(props) {
                             fontFamily: 'ProximaNova-Regular',
                             fontWeight: '600',
 
-                        }}>4 posts</Text>
+                        }}>4 Posts</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
