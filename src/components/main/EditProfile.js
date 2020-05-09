@@ -135,7 +135,7 @@ export default function EditProfile(props) {
                 </TouchableOpacity>
 
 
-                <View style={{width:'90%', alignSelf:'center'}}>
+                <View style={{ width: '90%', alignSelf: 'center' }}>
 
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}

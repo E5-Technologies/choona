@@ -168,7 +168,7 @@ export default function AddSongsInMessage(props) {
                             fontWeight: '500',
                             marginTop: normalise(20), width: '60%', textAlign: 'center'
                         }}>
-                            Search for the song you want to share above </Text>
+                            Search for the song you want to share </Text>
 
                     </View>
 

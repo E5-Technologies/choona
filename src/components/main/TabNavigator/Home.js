@@ -298,7 +298,7 @@ export default function Home(props) {
                 marginTop: 22
               }}>
 
-                <Text style={{ fontSize: (120) }}>{modalReact}</Text>
+                <Text style={{ fontSize: (75) }}>{modalReact}</Text>
 
 
               </View>

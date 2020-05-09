@@ -505,7 +505,7 @@ export default function HomeItemReaction(props) {
                     >
                         <View style={styles.centeredView}>
 
-                            <Text style={{ fontSize: 120 }}>{modalReact}</Text>
+                            <Text style={{ fontSize: (75) }}>{modalReact}</Text>
 
 
                         </View>
