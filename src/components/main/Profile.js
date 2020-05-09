@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     FlatList,
     Image,
-    ImageBackground
+    ImageBackground,
+    Platform
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -215,7 +216,8 @@ export default function Profile(props) {
 
 
                             <View style={{
-                                flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(100),
+                                flexDirection: 'column', alignItems: 'flex-start',
+                                 marginRight: Platform.OS === 'android' ? normalise(110) :  normalise(104)  ,
                             }}>
 
                                 <Text style={{

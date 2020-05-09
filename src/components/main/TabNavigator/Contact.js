@@ -2,7 +2,7 @@
 
 
 
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -67,6 +67,8 @@ const flatlistdata = [
 
 export default function Contact(props) {
 
+    const [search, setSearch] = useState("")
+
     function renderItem(data) {
         return (
             <SavedSongsListItem
@@ -93,32 +95,40 @@ export default function Contact(props) {
                 />
 
                 <View style={{
-                    width: '95%',
-                    height: normalise(52),
+                    width: '92%',
                     alignSelf: 'center',
                 }}>
 
                     <TextInput style={{
-                        height: normalise(35), width: '100%',
-                        backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8),
-                        marginTop: normalise(20),
-                        padding: normalise(10),
-                        color: Colors.white,
-                        paddingLeft: normalise(30)
-                    }}
+                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                        color: Colors.white, paddingLeft: normalise(30),
+                    }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { console.log(text) }} />
+                        onChangeText={(text) => { setSearch(text) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
-                            height: normalise(15),
-                            width: normalise(15),
-                            bottom: normalise(25),
+                            height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
                         }} resizeMode="contain" />
+
+                    {search === "" ? null :
+                        <TouchableOpacity onPress={()=>{setSearch("")}}
+                            style={{
+                                position: 'absolute', right: 0,
+                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                paddingRight: normalise(10)
+                            }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                            }}>CLEAR</Text>
+
+                        </TouchableOpacity>}
+
                 </View>
+
 
                 <SwipeListView
                     data={flatlistdata}
@@ -140,8 +150,8 @@ export default function Contact(props) {
                             onPress={() => { props.navigation.navigate('Player') }}
                         >
 
-                            <Image source={ImagePath.unsaved} 
-                            style={{ height: normalise(15), width: normalise(15), }}
+                            <Image source={ImagePath.unsaved}
+                                style={{ height: normalise(15), width: normalise(15), }}
                                 resizeMode='contain' />
                             <Text style={{
                                 fontSize: normalise(8), color: Colors.white,

@@ -25,7 +25,7 @@ import {
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { useDispatch, useSelector } from 'react-redux'
 import { getTokenRequest } from './src/action/index';
 import Colors from './src/assests/Colors';
@@ -75,12 +75,23 @@ const App = () => {
     }, 3000)
   }, []);
 
+  // const TabBar = (props) => (
+  //   <View>
+  //   <View style={{height:normalise(35), backgroundColor:'white'}}>
+  //       <Text>ABCD</Text>
+  //     </View>
+  //     <BottomTabBar {...props} />
+  //   </View>
+  // );
 
   const BottomTab = () => {
     return (
       <Tab.Navigator initialRouteName={"Home"}
         tabBarOptions={{ activeBackgroundColor: Colors.darkerblack, inactiveBackgroundColor: Colors.darkerblack,
-        safeAreaInsets:{bottom:0}, style:{height: Platform.OS === "android" ? normalise(45) : normalise(60) }}}>
+        safeAreaInsets:{bottom:0}, style:{height: Platform.OS === "android" ? normalise(45) : normalise(60) }}}   
+       
+      //  tabBar={TabBar}  
+       >
 
         <Tab.Screen name="Home" component={Home}
           options={{

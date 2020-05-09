@@ -80,6 +80,7 @@ const followdata = [
 export default function Following(props) {
 
     const [following, setFollowing] = useState(props.route.params.following)
+    const [search, setSearch] = useState("")
 
     function renderFollowersItem(data) {
         return (
@@ -106,22 +107,39 @@ export default function Following(props) {
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
 
-                <View style={{ width: '95%', alignSelf: 'center' }}>
+                <View style={{
+                    width: '92%',
+                    alignSelf: 'center',
+                }}>
 
                     <TextInput style={{
                         height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
                         borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30)
-                    }}
+                        color: Colors.white, paddingLeft: normalise(30),
+                    }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { console.log(text) }} />
+                        onChangeText={(text) => { setSearch(text) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
                         }} resizeMode="contain" />
+
+                    {search === "" ? null :
+                        <TouchableOpacity onPress={() => { setSearch("") }}
+                            style={{
+                                position: 'absolute', right: 0,
+                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                paddingRight: normalise(10)
+                            }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                            }}>CLEAR</Text>
+
+                        </TouchableOpacity>}
+
                 </View>
 
 

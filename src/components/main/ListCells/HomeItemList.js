@@ -100,8 +100,8 @@ function HomeItemList(props) {
         <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
             <View style={{
-                flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'space-between',
+                flexDirection: 'row', alignItems: 'center', alignSelf:"center",
+                justifyContent: 'space-between', width:normalise(280)
             }}>
 
 
