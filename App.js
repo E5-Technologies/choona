@@ -58,6 +58,7 @@ import AddSongsInMessage from './src/components/main/AddSongsInMessage';
 import SendSongInMessageFinal from './src/components/main/SendSongInMessageFinal';
 import GenreClicked from './src/components/main/GenreClicked';
 import GenreSongClicked from './src/components/main/GenreSongClicked';
+import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -75,14 +76,12 @@ const App = () => {
     }, 3000)
   }, []);
 
-  // const TabBar = (props) => (
-  //   <View>
-  //   <View style={{height:normalise(35), backgroundColor:'white'}}>
-  //       <Text>ABCD</Text>
-  //     </View>
-  //     <BottomTabBar {...props} />
-  //   </View>
-  // );
+  const TabBar = (props) => (
+    <View>
+      <MusicPlayerBar />
+      <BottomTabBar {...props} />
+    </View>
+  );
 
   const BottomTab = () => {
     return (
@@ -90,7 +89,7 @@ const App = () => {
         tabBarOptions={{ activeBackgroundColor: Colors.darkerblack, inactiveBackgroundColor: Colors.darkerblack,
         safeAreaInsets:{bottom:0}, style:{height: Platform.OS === "android" ? normalise(45) : normalise(60) }}}   
        
-      //  tabBar={TabBar}  
+       tabBar={TabBar}  
        >
 
         <Tab.Screen name="Home" component={Home}
