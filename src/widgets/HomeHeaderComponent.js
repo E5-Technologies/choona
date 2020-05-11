@@ -75,7 +75,7 @@ function HomeHeaderComponent(props) {
                     </TouchableOpacity>
                 </View>}
 
-            {!props.middleImageReq ? <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+            {!props.middleImageReq ? <Text style={{ color: Colors.white, fontSize: normalise(15), fontFamily:'ProximaNova-Black' }}>
                 {props.title}</Text> : <Image
                     style={{ width: normalise(85) }}
                     source={ImagePath.home_icon_choona}

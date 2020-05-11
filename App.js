@@ -20,6 +20,7 @@ import {
   StatusBar,
   Image,
   Platform,
+  Dimensions
 
 } from 'react-native';
 
@@ -86,16 +87,26 @@ const App = () => {
   const BottomTab = () => {
     return (
       <Tab.Navigator initialRouteName={"Home"}
-        tabBarOptions={{ activeBackgroundColor: Colors.darkerblack, inactiveBackgroundColor: Colors.darkerblack,
-        safeAreaInsets:{bottom:0}, style:{height: Platform.OS === "android" ? normalise(45) : normalise(60) }}}   
-       
-       tabBar={TabBar}  
-       >
+        tabBarOptions={{
+          activeBackgroundColor: Colors.darkerblack, inactiveBackgroundColor: Colors.darkerblack,
+          safeAreaInsets: { bottom: 0 }, style: {
+            height: Platform.OS === "android" ? normalise(45) : normalise(60),
+            borderTopColor: Colors.darkerblack,
+          }
+        }}
+
+        tabBar={TabBar}
+      >
 
         <Tab.Screen name="Home" component={Home}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Image style={{ marginTop: normalise(10), height: normalize(20), width: normalize(20) }}
+              <Image style={{
+                marginTop: Platform.OS === 'android' ? normalise(10) :  
+                Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                height: normalize(20), width: normalize(20),
+                height: normalize(20), width: normalize(20)
+              }}
                 source={focused ? ImagePath.homeactive : ImagePath.homeinactive}
                 resizeMode='contain' />
             ),
@@ -106,7 +117,11 @@ const App = () => {
         <Tab.Screen name="Search" component={Search}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Image style={{ marginTop: normalise(10), height: normalize(20), width: normalize(20) }}
+              <Image style={{
+                marginTop: Platform.OS === 'android' ? normalise(10) :
+                  Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                height: normalize(20), width: normalize(20)
+              }}
                 source={focused ? ImagePath.searchactive : ImagePath.searchinactive}
                 resizeMode='contain' />
             ),
@@ -116,11 +131,16 @@ const App = () => {
 
         <Tab.Screen name="Add" component={AddSong}
           options={{
-            tabBarIcon: ({ focused }) => (  
-                <Image style={{ marginTop: normalise(10), height: normalize(35), width: normalize(35) }}
-                  source={focused ? ImagePath.addbtn : ImagePath.addbtn}
-                  resizeMode='contain' />
-              
+            tabBarIcon: ({ focused }) => (
+              <Image style={{
+                marginTop: Platform.OS === 'android' ? normalise(10) :
+                  Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                height: normalize(20), width: normalize(20),
+                height: normalize(35), width: normalize(35)
+              }}
+                source={focused ? ImagePath.addbtn : ImagePath.addbtn}
+                resizeMode='contain' />
+
             ),
             tabBarLabel: ""
           }} />
@@ -129,7 +149,10 @@ const App = () => {
           options={{
             tabBarIcon: ({ focused }) => (
               <Image style={{
-                marginTop: normalise(10), height: normalize(20), width: normalize(20),
+                marginTop: Platform.OS === 'android' ? normalise(10) : 
+               Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                height: normalize(20), width: normalize(20),
+                height: normalize(20), width: normalize(20),
                 marginRight: focused ? normalise(2) : null
               }}
                 source={focused ? ImagePath.notificationactive : ImagePath.notificationinactive}
@@ -141,7 +164,12 @@ const App = () => {
         <Tab.Screen name="Contact" component={Contact}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Image style={{ marginTop: normalise(10), height: normalize(20), width: normalize(20) }}
+              <Image style={{
+                marginTop: Platform.OS === 'android' ? normalise(10) : 
+                 Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                height: normalize(20), width: normalize(20),
+                height: normalize(20), width: normalize(20)
+              }}
                 source={focused ? ImagePath.boxactive : ImagePath.boxinactive}
                 resizeMode='contain' />
             ),

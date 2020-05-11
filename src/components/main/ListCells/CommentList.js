@@ -47,7 +47,7 @@ function CommentList(props) {
 
     return (
 
-        <View style={{ width: props.width, alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
+        <View style={{ width: props.width, alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom}}>
 
             <View style={{
                 flexDirection: 'row',
@@ -70,7 +70,7 @@ function CommentList(props) {
 
                         <Text style={{
                             color: Colors.white,
-                            fontSize: normalise(12),
+                            fontSize: 14,
                             fontFamily: 'ProximaNova-Regular',
                             fontWeight: '600',
                         }}>
@@ -83,11 +83,10 @@ function CommentList(props) {
                         }}>
                             {props.time} mins ago</Text>
                     </View>
-                    <View>
+                    <View style={{width: '77%'}}>
                         <Text style={{
-                            width: normalise(220),
                             color: Colors.white,
-                            fontSize: normalise(11),
+                            fontSize: 12,
                             marginTop: normalise(2)
                         }}>
                             {props.comment}</Text>
@@ -98,7 +97,7 @@ function CommentList(props) {
 
             <View style={{
                 marginTop: normalise(20), borderBottomWidth: 0.5,
-                borderBottomColor: Colors.grey
+                borderBottomColor: Colors.activityBorderColor
             }} />
 
         </View>

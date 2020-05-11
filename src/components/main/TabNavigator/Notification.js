@@ -47,12 +47,14 @@ const previous = [
     },
     {
         picture: ImagePath.dp,
-        title: "Annie88jones started following you",
+        title: "DanVermon98 started following you",
+        picture2: ImagePath.dp2,
         type: 'Following'
     },
     {
         picture: ImagePath.dp1,
         title: "RonnyJ started following you",
+        picture2: ImagePath.dp2,
         type: 'Follow'
     },
     {

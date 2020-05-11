@@ -85,7 +85,7 @@ function InboxListItem(props) {
             {/* {props.bottom ? null : */}
             <View style={{
                 height: 0.5,
-                backgroundColor: Colors.grey,
+                backgroundColor: Colors.activityBorderColor,
                 marginTop: normalise(10),
             }} />
             {/* } */}

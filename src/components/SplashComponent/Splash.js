@@ -93,7 +93,7 @@ export default function Splash(props) {
 
             <Text style={{
                 color: Colors.white,
-                fontSize: normalise(14),
+                fontSize: normalise(10),
                 position: 'absolute',
                 fontFamily: 'ProximaNova-Bold',
                 bottom: 20

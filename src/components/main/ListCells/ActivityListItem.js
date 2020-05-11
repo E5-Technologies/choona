@@ -39,14 +39,17 @@ function ActivityListItem(props) {
             alignSelf: 'center',
             marginTop: props.marginTop,
             marginBottom: props.marginBottom,
+           
         }}>
 
             <View style={{
-                flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'space-between'
+                flexDirection: 'row', alignItems: 'center', 
+                justifyContent: 'space-between', marginTop:normalise(10),
+                marginBottom:normalise(10),
             }}>
 
-                <TouchableOpacity onPress={() => { onPressImage() }}>
+                <TouchableOpacity 
+                onPress={() => { onPressImage() }}>
                     <Image source={props.image}
                         style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(17) }}
                         resizeMode="contain" />
@@ -57,8 +60,7 @@ function ActivityListItem(props) {
                     width: props.type ? '50%' : '70%',
                     fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
                     textAlign: 'left',
-                    paddingBottom: normalise(5)
-                }}>{props.title}</Text>
+                }} numberOfLines={2}>{props.title}</Text>
 
 
                 {props.type ?
@@ -66,8 +68,6 @@ function ActivityListItem(props) {
                         style={{
                             height: normalise(25), width: normalise(80),
                             borderRadius: normalise(12),
-                            marginBottom: normalise(6),
-                            alignSelf: 'center',
                             backgroundColor: follow ? Colors.white : Colors.fadeblack,
                             justifyContent: 'center', alignItems: 'center',
                         }} onPress={() => { onPress(), setFollow(!follow) }} >
@@ -97,8 +97,8 @@ function ActivityListItem(props) {
 
             {/* {props.bottom ? null : */}
             <View style={{
-                marginTop: normalise(10), borderBottomWidth: 0.5,
-                borderBottomColor: Colors.grey
+                borderBottomWidth: 0.5,
+                borderBottomColor: Colors.activityBorderColor
             }} />
             {/* } */}
 
@@ -130,5 +130,5 @@ ActivityListItem.defaultProps = {
     follow: true,
     marginBottom: 0,
     onPressImage: null,
-    marginTop: normalise(15)
+    marginTop: 0
 }

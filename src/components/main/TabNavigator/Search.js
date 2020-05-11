@@ -239,7 +239,7 @@ export default function Search(props) {
                 alignItems: 'center', justifyContent: 'space-between', paddingTop: normalise(20),
                 paddingBottom: normalise(20),
                 marginBottom: data.index === genreData.length - 1 ? normalise(30) : normalise(0),
-                borderBottomWidth: 0.5, borderBottomColor: Colors.grey
+                borderBottomWidth: 0.5, borderBottomColor: Colors.activityBorderColor
             }} onPress={()=>{props.navigation.navigate("GenreClicked", {data: data.item.title} )}}>
 
                 <Text style={{
@@ -260,109 +260,109 @@ export default function Search(props) {
         return (
 
             <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    //Alert.alert("Modal has been closed.");
-                }}
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              //Alert.alert("Modal has been closed.");
+            }}
+          >
+            <ImageBackground
+              source={ImagePath.page_gradient}
+              style={styles.centeredView}
             >
-                <ImageBackground
-                    source={ImagePath.page_gradient}
-                    style={styles.centeredView}
-                >
 
-                    <View
-                        style={styles.modalView}
-                    >
-                        <Text style={{
-                            color: Colors.white,
-                            fontSize: normalise(12),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600',
-                        }}>MORE</Text>
+              <View
+                style={styles.modalView}
+              >
+                <Text style={{
+                  color: Colors.white,
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Regular',
+                  fontWeight: '600',
+                }}>MORE</Text>
 
-                        <View style={{
-                            backgroundColor: Colors.white,
-                            height: 0.5,
-                            marginTop: normalise(12),
-                            marginBottom: normalise(12)
-                        }} />
+                <View style={{
+                  backgroundColor: Colors.activityBorderColor,
+                  height: 0.5,
+                  marginTop: normalise(12),
+                  marginBottom: normalise(12)
+                }} />
 
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                            <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
-                                resizeMode='contain' />
-                            <Text style={{
-                                color: Colors.white, marginLeft: normalise(15),
-                                fontSize: normalise(13),
-                                fontFamily: 'ProximaNova-Regular',
-                                fontWeight: '600',
-                            }}>Save Song</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                            <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
-                                resizeMode='contain' />
-                            <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(13), marginLeft: normalise(15),
-                                fontFamily: 'ProximaNova-Regular',
-                                fontWeight: '600',
-                            }}>Send Song</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                            <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
-                                resizeMode='contain' />
-                            <Text style={{
-                                color: Colors.white, marginLeft: normalise(15),
-                                fontSize: normalise(13),
-                                fontFamily: 'ProximaNova-Regular',
-                                fontWeight: '600',
-                            }}>Copy Link</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                            <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
-                                resizeMode='contain' />
-                            <Text style={{
-                                color: Colors.white, marginLeft: normalise(15),
-                                fontSize: normalise(13),
-                                fontFamily: 'ProximaNova-Regular',
-                                fontWeight: '600',
-                            }}>Unfollow Shimshimmer</Text>
-                        </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+                  <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
+                    resizeMode='contain' />
+                  <Text style={{
+                    color: Colors.white, marginLeft: normalise(15),
+                    fontSize: normalise(13),
+                    fontFamily: 'ProximaNova-Regular',
+                    fontWeight: '600',
+                  }}>Save Song</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                    resizeMode='contain' />
+                  <Text style={{
+                    color: Colors.white, 
+                    fontSize: normalise(13), marginLeft: normalise(15),
+                    fontFamily: 'ProximaNova-Regular',
+                    fontWeight: '600',
+                  }}>Send Song</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
+                    resizeMode='contain' />
+                  <Text style={{
+                    color: Colors.white, marginLeft: normalise(15),
+                    fontSize: normalise(13),
+                    fontFamily: 'ProximaNova-Regular',
+                    fontWeight: '600',
+                  }}>Copy Link</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
+                    resizeMode='contain' />
+                  <Text style={{
+                    color: Colors.white, marginLeft: normalise(15),
+                    fontSize: normalise(13),
+                    fontFamily: 'ProximaNova-Regular',
+                    fontWeight: '600',
+                  }}>Unfollow Shimshimmer</Text>
+                </TouchableOpacity>
 
-                    </View>
+              </View>
 
 
-                    <TouchableOpacity onPress={() => {
-                        setModalVisible(!modalVisible);
-                    }}
+              <TouchableOpacity onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
 
-                        style={{
-                            marginStart: normalise(20),
-                            marginEnd: normalise(20),
-                            marginBottom: normalise(20),
-                            height: normalise(50),
-                            width: "95%",
-                            backgroundColor: "#010203",
-                            opacity: 10,
-                            borderRadius: 20,
-                            // padding: 35,
-                            alignItems: "center",
-                            justifyContent: 'center',
-
-
-                        }}>
+                style={{
+                  marginStart: normalise(20),
+                  marginEnd: normalise(20),
+                  marginBottom: normalise(20),
+                  height: normalise(50),
+                  width: "95%",
+                  backgroundColor: Colors.darkerblack,
+                  opacity: 10,
+                  borderRadius: 20,
+                  // padding: 35,
+                  alignItems: "center",
+                  justifyContent: 'center',
 
 
-                        <Text style={{
-                            fontSize: normalise(12),
-                            fontFamily: 'ProximaNova-Bold',
-                            color: Colors.white
-                        }}>CANCEL</Text>
+                }}>
 
-                    </TouchableOpacity>
-                </ImageBackground>
-            </Modal>
+
+                <Text style={{
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  color: Colors.white
+                }}>CANCEL</Text>
+
+              </TouchableOpacity>
+            </ImageBackground>
+          </Modal>
         )
     };
     //END OF MODAL MORE PRESSED
@@ -647,33 +647,34 @@ export default function Search(props) {
 
 const styles = StyleSheet.create({
     centeredView: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
-
+      flex: 1,
+      justifyContent: "flex-end",
+      alignItems: "center",
+  
     },
     modalView: {
-        marginBottom: normalise(10),
-        height: normalise(250),
-        width: "95%",
-        backgroundColor: 'rgba(0,0,0,1)',
-        borderRadius: 20,
-        padding: 35,
-
+      marginBottom: normalise(10),
+      height: normalise(220),
+      width: "95%",
+      backgroundColor: Colors.darkerblack,
+      borderRadius: 20,
+      padding: 20,
+      paddingTop: normalise(20) 
+  
     },
     openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
+      backgroundColor: "#F194FF",
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2
     },
     textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
+      color: "white",
+      fontWeight: "bold",
+      textAlign: "center"
     },
     modalText: {
-        marginBottom: 15,
-
+      marginBottom: 15,
+  
     }
-});
+  });

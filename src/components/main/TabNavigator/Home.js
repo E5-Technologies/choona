@@ -329,13 +329,13 @@ export default function Home(props) {
                   }}>MORE</Text>
 
                   <View style={{
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.activityBorderColor,
                     height: 0.5,
                     marginTop: normalise(12),
                     marginBottom: normalise(12)
                   }} />
 
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
@@ -389,7 +389,7 @@ export default function Home(props) {
                     marginBottom: normalise(20),
                     height: normalise(50),
                     width: "95%",
-                    backgroundColor: "#010203",
+                    backgroundColor: Colors.darkerblack,
                     opacity: 10,
                     borderRadius: 20,
                     // padding: 35,
@@ -471,12 +471,12 @@ const styles = StyleSheet.create({
   },
   modalView: {
     marginBottom: normalise(10),
-    height: normalise(250),
+    height: normalise(220),
     width: "95%",
-    backgroundColor: 'rgba(0,0,0,1)',
+    backgroundColor: Colors.darkerblack,
     borderRadius: 20,
     padding: 20,
-    paddingTop: normalise(35) 
+    paddingTop: normalise(20) 
 
   },
   openButton: {

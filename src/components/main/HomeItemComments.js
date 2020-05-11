@@ -123,9 +123,7 @@ export default function HomeItemComments(props) {
 <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
 <View style={{
-    flexDirection: 'row', 
- 
-}}>
+    flexDirection: 'row', }}>
 
     <TouchableOpacity onPress={() => { onPressImage() }}  style={{justifyContent:'center'}}>
         <Image source={ ImagePath.profiletrack1}
@@ -137,35 +135,38 @@ export default function HomeItemComments(props) {
             alignSelf:'center'
            }} />
     </TouchableOpacity>
- <View style={{marginLeft:normalise(10),}}>
-    <View  style={{flexDirection:'row', justifyContent:'space-between'}}>
+
+
+ <View style={{marginLeft:normalise(10)}}>
+    <View  style={{flexDirection:'row', justifyContent:'space-between', width:normalise(220)}}>
 
      <Text style={{
-        color:Colors.white,fontSize:14}}>
-          Shimshimmer
+        color:Colors.white,fontSize:14, fontFamily: 'ProximaNova-Regular',
+        fontWeight: '600',}}>
+          andy88jones
       </Text>
       <Text style={{marginEnd:normalise(12.5),
-        color:Colors.grey_text,fontSize:12}}>
+        color:Colors.grey_text,fontSize:12, fontFamily: 'ProximaNova-Regular',}}>
          8 mins ago
       </Text>
       </View>
+
       <View>
-      <Text style={{width:normalise(220),color:Colors.white,fontSize:12,marginTop:normalise(8)}}>
-      Absolutely use to love this song,was an unreal banger bck in the day
-       
+      <Text style={{width:normalise(218),color:Colors.white,fontSize:12,marginTop:normalise(2), 
+        fontFamily:'ProximaNova-Regular'}}>
+      Absolutely use to love this song, was an unreal banger back in the day
       </Text>
       </View>
  </View>
-
 </View>
+
 
 <View style={{
     marginTop: normalise(10), borderBottomWidth: normalise(1),
-    borderBottomColor: Colors.grey
+    borderBottomColor: Colors.activityBorderColor
 }} />
 
 </View>
-
 
                 <SwipeListView
                 data={flatlistdata}
@@ -182,7 +183,7 @@ export default function HomeItemComments(props) {
 <View style={{  
                 width: '95%',
                 backgroundColor: Colors.fadeblack,
-                borderColor:Colors.darkgrey,
+                borderColor:Colors.activityBorderColor,
                 borderWidth:1,
                 flexDirection:'row',
                 padding: normalise(4),
@@ -221,9 +222,8 @@ export default function HomeItemComments(props) {
 
 </View>
 
-            </SafeAreaView>
+</SafeAreaView>
 
-
-        </KeyboardAvoidingView>
+</KeyboardAvoidingView>
     )
 }

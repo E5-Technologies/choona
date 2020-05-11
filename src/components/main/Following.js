@@ -85,7 +85,6 @@ export default function Following(props) {
     function renderFollowersItem(data) {
         return (
             <ActivityListItem image={data.item.picture}
-                marginTop={data.index === 0 ? normalise(2) : normalise(15)}
                 title={data.item.title} type={true}
                 follow={data.item.type === "Follow" ? true : false}
                 marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
