@@ -57,15 +57,19 @@ function ActivityListItem(props) {
                     width: props.type ? '50%' : '70%',
                     fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
                     textAlign: 'left',
-                    paddingBottom:normalise(5)
+                    paddingBottom: normalise(5)
                 }}>{props.title}</Text>
 
 
                 {props.type ?
                     <TouchableOpacity
                         style={{
-                            height: normalise(25), width: normalise(80), borderRadius: normalise(12), alignSelf: 'center',
-                            backgroundColor: follow ? Colors.white : Colors.fadeblack, justifyContent: 'center', alignItems: 'center',
+                            height: normalise(25), width: normalise(80),
+                            borderRadius: normalise(12),
+                            marginBottom: normalise(6),
+                            alignSelf: 'center',
+                            backgroundColor: follow ? Colors.white : Colors.fadeblack,
+                            justifyContent: 'center', alignItems: 'center',
                         }} onPress={() => { onPress(), setFollow(!follow) }} >
 
                         {follow ?

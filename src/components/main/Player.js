@@ -419,7 +419,7 @@ export default function Player(props) {
 
 
 
-                                <Image source={ImagePath.commenticon}
+                                <Image source={ImagePath.comment_grey}
                                     style={{ height: normalise(16), width: normalise(16) }}
                                     resizeMode="contain" />
 
