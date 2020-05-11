@@ -505,7 +505,7 @@ export default function Search(props) {
                         color: Colors.white,
                         paddingLeft: normalise(30)
                     }} value={usersSearch ? usersSearchText : genreSearch ? genreSearchText : songSearchText}
-                        placeholder={usersSearch ? "Search Users" : genreSearch ? "Seach Genres" : "Seach Songs"}
+                        placeholder={usersSearch ? "Search Users" : genreSearch ? "Search Genres" : "Search Songs"}
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
                             usersSearch ? setUsersSearchText(text) : genreSearch ? setGenreSearchText(text) :
