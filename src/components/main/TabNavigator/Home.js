@@ -22,6 +22,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
+import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 
 const flatlistdata1 = []
 
@@ -280,6 +281,10 @@ export default function Home(props) {
               disableRightSwipe={true}
               rightOpenValue={-75} />
 
+            <View>
+              <MusicPlayerBar />
+            </View>
+
 
 
             <Modal
@@ -299,7 +304,7 @@ export default function Home(props) {
                 marginTop: 22
               }}>
 
-                <Text style={{  fontSize: Platform.OS==='android'?normalise(70):normalise(100)  }}>{modalReact}</Text>
+                <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
 
 
               </View>
@@ -349,7 +354,7 @@ export default function Home(props) {
                     <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
-                      color: Colors.white, 
+                      color: Colors.white,
                       fontSize: normalise(13), marginLeft: normalise(15),
                       fontFamily: 'ProximaNova-Regular',
                       fontWeight: '600',
@@ -476,7 +481,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkerblack,
     borderRadius: 20,
     padding: 20,
-    paddingTop: normalise(20) 
+    paddingTop: normalise(20)
 
   },
   openButton: {

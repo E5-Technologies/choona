@@ -77,12 +77,12 @@ const App = () => {
     }, 3000)
   }, []);
 
-  const TabBar = (props) => (
-    <View>
-      <MusicPlayerBar />
-      <BottomTabBar {...props} />
-    </View>
-  );
+  // const TabBar = (props) => (
+  //   <View>
+  //     <MusicPlayerBar />
+  //     <BottomTabBar {...props} />
+  //   </View>
+  // );
 
   const BottomTab = () => {
     return (
@@ -95,7 +95,7 @@ const App = () => {
           }
         }}
 
-        tabBar={TabBar}
+        // tabBar={TabBar}
       >
 
         <Tab.Screen name="Home" component={Home}
