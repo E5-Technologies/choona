@@ -1,4 +1,6 @@
-Go to: /Volumes/External/Prithviraj/Choona/node_modules/react-native-emoji-selector and replace the content of index.js with:
+Go to: 
+/Volumes/External/Prithviraj/Choona/node_modules/react-native-emoji-selector 
+and replace the content of index.js with:
 
 import React, { Component } from "react";
 import {
