@@ -381,7 +381,9 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   tabBar: {
-    flexDirection: "row"
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    paddingTop: 10
   },
   scrollview: {
     flex: 1, height: normalize(165),

@@ -282,7 +282,7 @@ export default function Home(props) {
               rightOpenValue={-75} />
 
             <View>
-              <MusicPlayerBar onPress={()=>{props.navigation.navigate("Player")}}/>
+              <MusicPlayerBar onPress={() => { props.navigation.navigate("Player") }} />
             </View>
 
 
@@ -401,7 +401,6 @@ export default function Home(props) {
                     alignItems: "center",
                     justifyContent: 'center',
 
-
                   }}>
 
 
@@ -436,8 +435,8 @@ export default function Home(props) {
             bottom: 110,
             shadowColor: "#000",
             shadowOffset: {
-                width: 0,
-                height: 2
+              width: 0,
+              height: 2
             },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
@@ -449,14 +448,12 @@ export default function Home(props) {
               category={Categories.history}
               showHistory={true}
               onEmojiSelected={emoji => {
-                setModalVisible(true), setModalReact(emoji),
+                setVisible(true), setModalReact(emoji),
                   setTimeout(() => {
-                    setModalVisible(false)
+                    setVisible(false)
                   }, 2000)
               }}
             />
-
-
           </View>
           : null}
 
