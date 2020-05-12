@@ -145,6 +145,7 @@ export default function Home(props) {
         time={data.item.time}
         title={data.item.title}
         singer={data.item.singer}
+        modalVisible={modal1Visible}
         onPressReact1={() => {
           hitreact(react[0])
         }}
@@ -282,7 +283,7 @@ export default function Home(props) {
               rightOpenValue={-75} />
 
             <View>
-              <MusicPlayerBar onPress={()=>{props.navigation.navigate("Player")}}/>
+              <MusicPlayerBar onPress={() => { props.navigation.navigate("Player") }} />
             </View>
 
 
@@ -301,7 +302,6 @@ export default function Home(props) {
                 opacity: 0.9,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 22
               }}>
 
                 <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
@@ -423,41 +423,42 @@ export default function Home(props) {
 
         {modal1Visible == true ?
 
-          <View style={{
-            position: 'absolute',
-            margin: 20,
-            height: normalise(280),
-            width: "92%",
-            alignSelf: 'center',
-            marginHorizontal: normalise(15),
-            backgroundColor: Colors.white,
-            borderRadius: 20,
-            padding: 35,
-            bottom: 110,
-            shadowColor: "#000",
-            shadowOffset: {
+           <View style={{
+              position: 'absolute',
+              margin: 20,
+              height: normalise(280),
+              width: "92%",
+              alignSelf: 'center',
+              marginHorizontal: normalise(15),
+              backgroundColor: Colors.white,
+              borderRadius: 20,
+              padding: 35,
+              bottom: 50,
+              shadowColor: "#000",
+              shadowOffset: {
                 width: 0,
                 height: 2
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5
-          }}>
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5
+            }}>
 
+              <Image source={ImagePath.greycross}
+              style={{}} />
 
-            <EmojiSelector
-              category={Categories.history}
-              showHistory={true}
-              onEmojiSelected={emoji => {
-                setModalVisible(true), setModalReact(emoji),
-                  setTimeout(() => {
-                    setModalVisible(false)
-                  }, 2000)
-              }}
-            />
+              <EmojiSelector
+                category={Categories.history}
+                showHistory={true}
+                onEmojiSelected={emoji => {
+                  setVisible(true), setModalReact(emoji),
+                    setTimeout(() => {
+                      setVisible(false)
+                    }, 2000)
+                }}
+              />
 
-
-          </View>
+            </View>
           : null}
 
 
