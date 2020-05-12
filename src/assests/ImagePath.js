@@ -68,7 +68,7 @@ const ImagePath = {
   genretrack3: require('./images/img3.png'),
   donw_arrow_solid: require('./images/donw_arrow_solid.png'),
   comment_grey: require('./images/comment_grey.png'),
-
+  musicplayerbarbg: require('./images/bgmusicbar.png')
 };
 
 export default ImagePath;

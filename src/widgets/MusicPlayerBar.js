@@ -16,7 +16,9 @@ import {
     Alert,
     CheckBox,
     Slider,
-    Platform
+    Platform,
+    ImageBackground,
+    Dimensions
 } from 'react-native';
 
 import normalise from "../utils/helpers/Dimens";
@@ -33,9 +35,18 @@ export default function MusicPlayerBar(props) {
     }
 
     return (
-        <View style={{ width: '100%', height: normalize(45), backgroundColor: Colors.black, }}>
+        <ImageBackground
+            source={ImagePath.gradientbar}
+            style={{
+                width: '100%', height: normalize(45),
+            }}
+            blurRadius={200}>
+
             <Slider
-                style={{ width: '100%', height: Platform.OS === 'android' ? 5 : 0, alignSelf: "center", }}
+                style={{
+                    width: Platform.OS == 'ios' ? '100%' : normalise(335),
+                    height: Platform.OS === 'android' ? 5 : 0, alignSelf: 'center'
+                }}
                 minimumValue={0}
                 maximumValue={1}
                 minimumTrackTintColor="#FFFFFF"
@@ -44,47 +55,49 @@ export default function MusicPlayerBar(props) {
 
             <View style={{
                 width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between',
-                marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8), flexDirection:'row'
+                marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8), flexDirection: 'row'
             }}>
 
-                <TouchableOpacity>
-                    <Image source={ImagePath.profiletrack1}
-                        style={{ height: normalize(25), width: normalize(25) }} />
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{onPress()}}>
+                        <Image source={ImagePath.profiletrack1}
+                            style={{ height: normalize(25), width: normalize(25) }} />
+                    </TouchableOpacity>
 
-                <View style={{ flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center',
-            marginRight:normalise(50) }}>
+                    <View style={{
+                        flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center',
+                        marginRight: normalise(60)
+                    }}>
 
-                    <Text style={{
-                        color: Colors.white, fontSize: normalise(11),
-                        fontFamily: 'ProximaNova-Regular', fontWeight: '600',
-                        width: '100%',
-                    }} numberOfLines={1}>Played-A-Live (The Bongo Song)</Text>
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(11),
+                            fontFamily: 'ProximaNova-Regular', fontWeight: '600',
+                            width: '100%',
+                        }} numberOfLines={1}>Played-A-Live (The Bongo Song)</Text>
 
-                    <Text style={{
-                        color: Colors.grey_text, fontSize: normalise(10),
-                        fontFamily: 'ProximaNova-Regular', fontWeight: '500', width: '100%',
-                    }} numberOfLines={1}>Safri Duo</Text>
-                </View>
+                        <Text style={{
+                            color: Colors.grey_text, fontSize: normalise(10),
+                            fontFamily: 'ProximaNova-Regular', fontWeight: '500', width: '100%',
+                        }} numberOfLines={1}>Safri Duo</Text>
+                    </View>
 
-                <TouchableOpacity>
-                    <Image source={ImagePath.play}
-                        style={{ height: normalize(25), width: normalize(25) }} />
-                </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Image source={ImagePath.play}
+                            style={{ height: normalize(25), width: normalize(25) }} />
+                    </TouchableOpacity>
 
+
+               
             </View>
-
-        </View>
-
+        </ImageBackground>
     )
 
 };
 
 
 MusicPlayerBar.propTypes = {
-
-}
+    onPress: propTypes.func
+};
 
 MusicPlayerBar.defaultProps = {
-
-}
+    onPress: null
+};

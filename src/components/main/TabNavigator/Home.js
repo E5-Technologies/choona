@@ -37,7 +37,7 @@ const flatlistdata = [
     comments: 1,
     name: 'Shimshimmer',
     reactions: 11,
-    content: 'Absolutely use to love this song,was an unreal banger bck in the day',
+    content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
   {
@@ -48,7 +48,7 @@ const flatlistdata = [
     comments: 2,
     name: 'Shimshimmer',
     reactions: 7,
-    content: 'Absolutely use to love this song,was an unreal banger bck in the day',
+    content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
   {
@@ -59,7 +59,7 @@ const flatlistdata = [
     comments: 1,
     name: 'Shimshimmer',
     reactions: 10,
-    content: 'Absolutely use to love this song,was an unreal banger bck in the day',
+    content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
 
@@ -71,7 +71,7 @@ const flatlistdata = [
     comments: 1,
     name: 'Shimshimmer',
     reactions: 11,
-    content: 'Absolutely use to love this song,was an unreal banger bck in the day',
+    content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
   {
@@ -82,7 +82,7 @@ const flatlistdata = [
     comments: 3,
     name: 'Shimshimmer',
     reactions: 9,
-    content: 'Absolutely use to love this song,was an unreal banger bck in the day',
+    content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
   {
@@ -93,7 +93,7 @@ const flatlistdata = [
     comments: 2,
     name: 'Shimshimmer',
     reactions: 11,
-    content: 'Absolutely use to love this song,was an unreal banger bck in the day',
+    content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
 
@@ -282,7 +282,7 @@ export default function Home(props) {
               rightOpenValue={-75} />
 
             <View>
-              <MusicPlayerBar />
+              <MusicPlayerBar onPress={()=>{props.navigation.navigate("Player")}}/>
             </View>
 
 
