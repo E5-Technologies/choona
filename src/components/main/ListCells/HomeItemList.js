@@ -180,10 +180,9 @@ function HomeItemList(props) {
                     position: 'absolute', marginBottom: normalise(10), alignSelf: 'center', marginHorizontal: normalise(10),
                     bottom: 0, height: normalise(50), width: '90%', justifyContent: 'space-between',
                     borderRadius: normalise(35), backgroundColor: Colors.white, opacity: 0.9,
-                    borderWidth: normalise(0.5),
                     shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-                    borderColor: Colors.grey, paddingHorizontal: normalise(10)
+                     paddingHorizontal: normalise(10)
                 }}>
                     <TouchableOpacity
                         onPress={() => { props.onPressReact1() }}
