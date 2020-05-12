@@ -191,7 +191,8 @@ function HomeItemList(props) {
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
-                            position: "absolute", right: 0, alignItems: 'center',
+                            position: "absolute", right: 0, top:Platform.OS === 'android' ? 2 : 0 ,
+                            alignItems: 'center',
                         }}>
                             <Text style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>2</Text>
                         </View>
@@ -203,7 +204,8 @@ function HomeItemList(props) {
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
-                            position: "absolute", right: 0, alignItems: 'center'
+                            position: "absolute", right: 0, top:Platform.OS === 'android' ? 2 : 0,
+                            alignItems: 'center'
                         }}>
                             <Text  style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>5</Text>
                         </View>
@@ -215,7 +217,8 @@ function HomeItemList(props) {
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
-                            position: "absolute", right: 0, alignItems: 'center'
+                            position: "absolute", right: 0, alignItems: 'center',
+                            top:Platform.OS === 'android' ? 2 : 0
                         }}>
                             <Text  style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>8</Text>
                         </View>
@@ -227,7 +230,8 @@ function HomeItemList(props) {
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
-                            position: "absolute", right: 0, alignItems: 'center'
+                            position: "absolute", right: 0, alignItems: 'center',
+                            top:Platform.OS === 'android' ? 2 : 0
                         }}>
                             <Text  style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>0</Text>
                         </View>
