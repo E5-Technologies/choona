@@ -22,6 +22,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
+import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 
 const flatlistdata1 = []
 
@@ -280,6 +281,10 @@ export default function Home(props) {
               disableRightSwipe={true}
               rightOpenValue={-75} />
 
+            <View>
+              <MusicPlayerBar />
+            </View>
+
 
 
             <Modal
@@ -299,7 +304,7 @@ export default function Home(props) {
                 marginTop: 22
               }}>
 
-                <Text style={{  fontSize: Platform.OS==='android'?normalise(70):normalise(100)  }}>{modalReact}</Text>
+                <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
 
 
               </View>
@@ -349,7 +354,7 @@ export default function Home(props) {
                     <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
-                      color: Colors.white, 
+                      color: Colors.white,
                       fontSize: normalise(13), marginLeft: normalise(15),
                       fontFamily: 'ProximaNova-Regular',
                       fontWeight: '600',
@@ -420,18 +425,19 @@ export default function Home(props) {
 
           <View style={{
             position: 'absolute',
-            bottom: 50,
-            height: normalise(225),
-            width: normalise(290), marginHorizontal: normalise(15),
+            margin: 20,
+            height: normalise(280),
+            width: "92%",
+            alignSelf: 'center',
+            marginHorizontal: normalise(15),
             backgroundColor: Colors.white,
             borderRadius: 20,
             padding: 35,
-
-
+            bottom: 110,
             shadowColor: "#000",
             shadowOffset: {
-              width: 0,
-              height: 2
+                width: 0,
+                height: 2
             },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
@@ -440,12 +446,12 @@ export default function Home(props) {
 
 
             <EmojiSelector
-              category={Categories.symbols}
-
+              category={Categories.history}
+              showHistory={true}
               onEmojiSelected={emoji => {
-                setVisible(true), setModalReact(emoji),
+                setModalVisible(true), setModalReact(emoji),
                   setTimeout(() => {
-                    setVisible(false)
+                    setModalVisible(false)
                   }, 2000)
               }}
             />
@@ -476,7 +482,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkerblack,
     borderRadius: 20,
     padding: 20,
-    paddingTop: normalise(20) 
+    paddingTop: normalise(20)
 
   },
   openButton: {

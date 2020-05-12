@@ -24,6 +24,8 @@ import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
 
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
+import EmojiInput from "react-native-emoji-input"
+
 const react = ["🔥", "🕺", "💃", "😳", "❤️"]
 const reaction1 = [
     {
@@ -443,12 +445,23 @@ export default function HomeItemReaction(props) {
                     </ScrollView>
 
                     <View style={{
-                        position: 'absolute', marginBottom: normalise(30), alignSelf: 'center', marginHorizontal: normalise(15),
-                        bottom: 0, height: normalise(60), width: '85%', justifyContent: 'space-between',
-                        borderRadius: normalise(35), backgroundColor: Colors.white, borderWidth: normalise(0.5),
-                        shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-                        shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-                        borderColor: Colors.grey, paddingHorizontal: normalise(10)
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        bottom: normalise(30),
+                        height: normalise(60),
+                        width: '92%',
+                        justifyContent: 'space-between',
+                        borderRadius: normalise(35),
+                        backgroundColor: Colors.white,
+                        borderWidth: normalise(0.5),
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 5, },
+                        shadowOpacity: 0.36,
+                        shadowRadius: 6.68, elevation: 11,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderColor: Colors.grey,
+                        paddingHorizontal: normalise(10)
                     }}>
                         <TouchableOpacity onPress={() => {
                             hitreact(react[0])
@@ -521,13 +534,14 @@ export default function HomeItemReaction(props) {
                         <View style={{
                             position: 'absolute',
                             margin: 20,
-                            height: normalise(225),
-                            width: normalise(290), marginHorizontal: normalise(15),
+                            height: normalise(280),
+                            width: "92%",
+                            alignSelf: 'center',
+                            marginHorizontal: normalise(15),
                             backgroundColor: Colors.white,
                             borderRadius: 20,
                             padding: 35,
-                            bottom: 150,
-
+                            bottom: 110,
                             shadowColor: "#000",
                             shadowOffset: {
                                 width: 0,
@@ -540,8 +554,8 @@ export default function HomeItemReaction(props) {
 
 
                             <EmojiSelector
-                                category={Categories.symbols}
-
+                                category={Categories.history}
+                                showHistory={true}
                                 onEmojiSelected={emoji => {
                                     setModalVisible(true), setModalReact(emoji),
                                         setTimeout(() => {
@@ -552,11 +566,6 @@ export default function HomeItemReaction(props) {
 
 
                         </View>
-
-
-
-
-
 
                         : null}
                 </SafeAreaView>
