@@ -59,7 +59,7 @@ function ActivityListItem(props) {
                     color: Colors.white, fontSize: normalise(11),
                     width: props.type ? '50%' : '70%',
                     fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
-                    textAlign: 'left',
+                    textAlign: 'left',marginRight: props.type ? normalise(10) : 0,
                 }} numberOfLines={2}>{props.title}</Text>
 
 
