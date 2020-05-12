@@ -24,7 +24,6 @@ import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
 
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
-import EmojiInput from "react-native-emoji-input"
 
 const react = ["🔥", "🕺", "💃", "😳", "❤️"]
 const reaction1 = [
