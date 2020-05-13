@@ -17,21 +17,34 @@ import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
 import constants from '../../utils/helpers/constants'
+import { authorize, prefetchConfiguration } from 'react-native-app-auth';
 
 export default function SignUp(props) {
 
     // const config = {
     //     clientId: constants.spotify_client_id, // available on the app page
     //     clientSecret: constants.spotify_client_secret, // click "show client secret" to see this
-    //     redirectUrl: 'com.webskitters.Choona:/oauth', // the redirect you defined after creating the app
+    //     redirectUrl: 'https://www.google.com/', // the redirect you defined after creating the app
     //     scopes: ['user-read-email', 'playlist-modify-public', 'user-read-private'], // the scopes you need to access
     //     serviceConfiguration: {
     //         authorizationEndpoint: 'https://accounts.spotify.com/authorize',
     //         tokenEndpoint: 'https://accounts.spotify.com/api/token',
     //     },
-    //     additionalParameters: { response_type: 'code', foo: 'bar' }
+    //     //additionalParameters: { response_type: 'code' }
     // };
 
+   
+    // async function authSpotify() {
+    //     try {
+    //         const result = await authorize(config);
+
+    //         console.log(result)
+    //         // result includes accessToken, accessTokenExpirationDate and refreshToken
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+
+    // }
 
 
     return (
@@ -81,7 +94,7 @@ export default function SignUp(props) {
                         marginLeft: normalise(10),
                         color: Colors.white,
                         fontSize: normalise(12),
-                        fontFamily: 'ProximaNovaAW07-Medium',
+                        fontFamily: 'ProximaNova-Extrabld',
                     }}>LOGIN WITH SPOTIFY</Text>
 
                 </TouchableOpacity>
