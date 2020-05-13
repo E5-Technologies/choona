@@ -401,7 +401,6 @@ export default function Home(props) {
                     alignItems: "center",
                     justifyContent: 'center',
 
-
                   }}>
 
 
