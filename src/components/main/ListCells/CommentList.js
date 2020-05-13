@@ -61,7 +61,7 @@ function CommentList(props) {
 
 
                 </TouchableOpacity>
-                <View style={{ marginLeft: normalise(10), }}>
+                <View style={{ marginLeft: normalise(6), }}>
                     <View style={{
                         flexDirection: 'row',
                         width: '77%',
@@ -87,7 +87,8 @@ function CommentList(props) {
                         <Text style={{
                             color: Colors.white,
                             fontSize: 12,
-                            marginTop: normalise(2)
+                            marginTop: normalise(2),
+                            fontFamily: 'ProximaNova-Regular'
                         }}>
                             {props.comment}</Text>
                     </View>

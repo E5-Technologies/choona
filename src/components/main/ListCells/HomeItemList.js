@@ -276,7 +276,7 @@ function HomeItemList(props) {
                        <Text style={{ alignSelf:"flex-start",
                             color: Colors.white, fontSize: 14,
                             fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600', marginRight:normalise(125)
+                            fontWeight: '600', marginRight:normalise(135)
                         }} numberOfLines={1}> {props.name} </Text>       
 
                     <Text style={{ color: Colors.grey_text,  alignSelf:"flex-start",
@@ -289,7 +289,7 @@ function HomeItemList(props) {
                 <Text style={{
                     color: Colors.white, fontSize: 12,
                     fontFamily: 'ProximaNova-Regular', fontWeight:'500', marginLeft: Platform.OS === 'android' ?
-                     normalize(33): normalise(30), bottom: 4, width:'88%'
+                     normalize(29): normalise(26), bottom: 6, width:'88%'
                 }} >{props.content}</Text>
 
                 <View style={{

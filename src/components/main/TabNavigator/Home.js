@@ -443,10 +443,8 @@ export default function Home(props) {
               shadowRadius: 3.84,
               elevation: 5
             }}>
-
-              <Image source={ImagePath.greycross}
-              style={{}} />
-
+              
+                        
               <EmojiSelector
                 category={Categories.history}
                 showHistory={true}
