@@ -38,7 +38,7 @@ function HomeHeaderComponent(props) {
         <View style={{
             width: '90%', alignSelf: 'center', marginTop: props.marginTop,
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-            height: props.height, 
+            height: props.height,
         }}>
 
             {props.firstitemtext ?
@@ -75,7 +75,7 @@ function HomeHeaderComponent(props) {
                     </TouchableOpacity>
                 </View>}
 
-            {!props.middleImageReq ? <Text style={{ color: Colors.white, fontSize: normalise(15), fontFamily:'ProximaNova-Black' }}>
+            {!props.middleImageReq ? <Text style={{ color: Colors.white, fontSize: normalise(15), fontFamily: 'ProximaNova-Black' }}>
                 {props.title}</Text> : <Image
                     style={{ width: normalise(85) }}
                     source={ImagePath.home_icon_choona}

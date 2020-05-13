@@ -54,8 +54,8 @@ export default function SendSongInMessageFinal(props) {
                         width: '100%',
                         borderRadius: normalise(8), 
                         padding: normalise(10),
-                        fontFamily:'ProximaNova-Regular',
-                        color: Colors.white, fontWeight: '500'
+                        fontFamily:'ProximaNovaAW07-Medium',
+                        color: Colors.white, 
                     }} value={search}
                         multiline={true}
                         placeholder={"Add a comment"}

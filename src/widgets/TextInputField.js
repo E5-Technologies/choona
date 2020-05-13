@@ -31,8 +31,7 @@ function TextInputField(props) {
                 style={{
                     width: '100%',
                     marginTop: normalize(10),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: '600',
+                    fontFamily: 'ProximaNova-Semibold',
                     fontSize: normalize(12),
                     backgroundColor: Colors.fadeblack,
                     height: normalize(45),

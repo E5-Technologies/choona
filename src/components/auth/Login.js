@@ -33,7 +33,7 @@ export default function SignUp(props) {
     //     //additionalParameters: { response_type: 'code' }
     // };
 
-   
+
     // async function authSpotify() {
     //     try {
     //         const result = await authorize(config);
@@ -116,7 +116,6 @@ export default function SignUp(props) {
                         marginLeft: normalise(10),
                         color: Colors.black,
                         fontSize: normalise(12),
-
                         fontFamily: 'ProximaNova-Extrabld',
                     }}>LOGIN WITH APPLE MUSIC</Text>
 

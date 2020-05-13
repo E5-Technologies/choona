@@ -98,7 +98,7 @@ export default function Splash(props) {
                 fontFamily: 'ProximaNova-Bold',
                 bottom: 20
             }} >
-                COPYRIGHT ©2020 CHOONA
+                Copyright ©2020 CHOONA
                         </Text>
 
         </ImageBackground>

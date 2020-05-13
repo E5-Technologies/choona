@@ -101,23 +101,20 @@ export default function Profile(props) {
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600'
+                            fontFamily: 'ProximaNova-Semibold'
                         }}>Andy Jones</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey,
                             fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '500'
+                            fontFamily: 'ProximaNovaAW07-Medium',
                         }}>@andyjones88</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '500'
+                            fontFamily: 'ProximaNovaAW07-Medium',
                         }}>Liverpool, UK</Text>
 
 
@@ -130,11 +127,9 @@ export default function Profile(props) {
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: '600'
+                                    fontFamily: 'ProximaNova-Semibold'
                                 }}><Text style={{
-                                    color: Colors.white, fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: '600'
+                                    color: Colors.white, fontFamily: 'ProximaNova-Semibold'
                                 }}>{following}</Text>  Following</Text>
                             </TouchableOpacity>
 
@@ -142,11 +137,9 @@ export default function Profile(props) {
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: '600'
+                                    fontFamily: 'ProximaNova-Semibold'
                                 }}><Text style={{
-                                    color: Colors.white, fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: '600'
+                                    color: Colors.white, fontFamily: 'ProximaNova-Semibold'
                                 }}>{followers}</Text>  Followers</Text>
                             </TouchableOpacity>
                         </View>

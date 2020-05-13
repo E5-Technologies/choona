@@ -21,6 +21,7 @@ import Colors from '../../assests/Colors';
 import ActivityListItem from './ListCells/ActivityListItem';
 import ImagePath from '../../assests/ImagePath';
 import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
+import nexHeader from '../../widgets/HomeHeaderComponent'
 
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
@@ -190,14 +191,17 @@ export default function HomeItemReaction(props) {
                 <SafeAreaView style={{ flex: 1 }}>
 
 
-                    <HomeHeaderComponent firstitemtext={false}
+                    <HomeHeaderComponent 
+                    firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
                         title="10 REACTIONS"
                         thirditemtext={false}
+                        marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
                         // imagetwo={ImagePath.newmessage} 
                         imagetwoheight={25}
                         imagetwowidth={25}
+                        inner={true}
                         onPressFirstItem={() => { props.navigation.goBack() }} />
                     <View style={{
                         minHeight: normalise(35), height: normalise(15), width: normalise(300),
@@ -305,7 +309,7 @@ export default function HomeItemReaction(props) {
                     <HomeHeaderComponent firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
-                        marginTop={Platform.OS === 'android' ? normalise(18) : normalise(0)}
+                        marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
                         title="10 REACTIONS"
                         thirditemtext={false}
                         // imagetwo={ImagePath.newmessage} 

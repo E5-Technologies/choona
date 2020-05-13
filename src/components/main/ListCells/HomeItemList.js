@@ -97,11 +97,11 @@ function HomeItemList(props) {
     };
     return (
 
-        <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom}}>
+        <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
             <View style={{
-                flexDirection: 'row', alignItems: 'center', alignSelf:"center",
-                justifyContent: 'space-between', width:normalise(280)
+                flexDirection: 'row', alignItems: 'center', alignSelf: "center",
+                justifyContent: 'space-between', width: normalise(280)
             }}>
 
 
@@ -118,14 +118,12 @@ function HomeItemList(props) {
 
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
-                       fontFamily: 'ProximaNova-Regular',
-                       fontWeight:'600'
+                        fontFamily: 'ProximaNova-Semibold',
                     }} numberOfLines={1}> {props.title} </Text>
 
                     <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
-                        fontFamily: 'ProximaNova-Regular',
-                        fontWeight: '500',
+                        fontFamily: 'ProximaNovaAW07-Medium',
                     }} numberOfLines={1}> {props.singer} </Text>
 
 
@@ -182,7 +180,7 @@ function HomeItemList(props) {
                     borderRadius: normalise(35), backgroundColor: Colors.white, opacity: 0.9,
                     shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-                     paddingHorizontal: normalise(10)
+                    paddingHorizontal: normalise(10)
                 }}>
                     <TouchableOpacity
                         onPress={() => { props.onPressReact1() }}
@@ -191,10 +189,10 @@ function HomeItemList(props) {
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
-                            position: "absolute", right: 0, top:Platform.OS === 'android' ? 2 : 0 ,
+                            position: "absolute", right: 0, top: Platform.OS === 'android' ? 2 : 0,
                             alignItems: 'center',
                         }}>
-                            <Text style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>2</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>2</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -204,10 +202,10 @@ function HomeItemList(props) {
                         <View style={{
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
-                            position: "absolute", right: 0, top:Platform.OS === 'android' ? 2 : 0,
+                            position: "absolute", right: 0, top: Platform.OS === 'android' ? 2 : 0,
                             alignItems: 'center'
                         }}>
-                            <Text  style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>5</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>5</Text>
                         </View>
                     </TouchableOpacity >
                     <TouchableOpacity
@@ -218,9 +216,9 @@ function HomeItemList(props) {
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
                             position: "absolute", right: 0, alignItems: 'center',
-                            top:Platform.OS === 'android' ? 2 : 0
+                            top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text  style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>8</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>8</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -231,9 +229,9 @@ function HomeItemList(props) {
                             backgroundColor: Colors.white, opacity: 15, height: normalise(16),
                             width: normalise(16), borderRadius: normalise(8),
                             position: "absolute", right: 0, alignItems: 'center',
-                            top:Platform.OS === 'android' ? 2 : 0
+                            top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text  style={{fontFamily:'ProximaNova-Regular', fontWeight:'600'}}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -241,7 +239,7 @@ function HomeItemList(props) {
                     >
 
                         {/* {plusVisible==true ? */}
-                        <Image source={props.modalVisible? ImagePath.greycross: ImagePath.greyplus}
+                        <Image source={props.modalVisible ? ImagePath.greycross : ImagePath.greyplus}
                             style={{
                                 height: normalise(35), width: normalise(35),
 
@@ -258,59 +256,67 @@ function HomeItemList(props) {
                 </View>
             </TouchableOpacity>
 
-            
-            <View style={{ height: normalise(90), width: normalise(280), marginTop: normalize(10), 
-            alignSelf:'center'}}>
-                
-                <View style={{
-                    flexDirection: 'row', alignItems: 'center',
-                    justifyContent: 'space-between', 
-                }}>
 
-                    <TouchableOpacity onPress={() => { onPressImage() }}>
+            <View style={{
+                height: normalise(90), width: normalise(280), marginTop: normalize(10),
+                alignSelf: 'center',
+            }}>
+
+                <View style={{
+                    flexDirection: 'row', alignItems: 'flex-start',
+                    justifyContent: 'space-between', width:'100%', 
+                }}>
+                    
+                    <TouchableOpacity style={{width:'9%'}}
+                     onPress={() => { onPressImage() }}>
                         <Image source={props.picture}
                             style={{ height: normalise(20), width: normalise(20) }}
                             resizeMode="contain" />
                     </TouchableOpacity>
-                  
-                       <Text style={{ alignSelf:"flex-start",
+
+
+                    <View style={{width:'91%', flexDirection:'row', alignItems:'center',
+                justifyContent:'space-between',}}>
+
+                        <Text style={{
                             color: Colors.white, fontSize: 14,
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600', marginRight:normalise(125)
-                        }} numberOfLines={1}> {props.name} </Text>       
+                            fontFamily: 'ProximaNova-Semibold',
+                            
+                        }} numberOfLines={1}>{props.name}</Text>
 
-                    <Text style={{ color: Colors.grey_text,  alignSelf:"flex-start",
-                        fontFamily: 'ProximaNova-Regular', fontWeight:'500', fontSize: 12}}>
-                        {props.time} mins ago
-                     </Text>
-
+                        <Text style={{
+                            color: Colors.grey_text, 
+                            fontFamily: 'ProximaNovaAW07-Medium', fontSize: 12,
+                        }}>{props.time} mins ago</Text>
+                    </View>
                 </View>
 
                 <Text style={{
                     color: Colors.white, fontSize: 12,
-                    fontFamily: 'ProximaNova-Regular', fontWeight:'500', marginLeft: Platform.OS === 'android' ?
-                     normalize(33): normalise(30), bottom: 4, width:'88%'
-                }} >{props.content}</Text>
+                    fontFamily: 'ProximaNovaAW07-Medium', bottom: 6, 
+                    width:'90.8%', 
+                    alignSelf:'flex-end',textAlign:'left',
+                }}>{props.content}</Text>
 
                 <View style={{
                     height: normalise(30), flexDirection: 'row',
                     justifyContent: 'space-between', marginStart: Platform.OS === 'android' ?
-                    normalize(33): normalise(30),
-                    marginTop: normalise(10)
+                        normalize(25) : normalise(24),
+                    marginTop: normalise(5)
                 }}>
 
 
                     <TouchableOpacity style={{
                         height: normalise(28), width: "48%", alignSelf: 'center',
                         borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
-                         flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+                        flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
                     }} onPress={() => { props.onPressCommentbox() }} >
 
 
 
                         <Text style={{
-                         color: Colors.white, fontSize:10,
-                            fontFamily:'ProximaNova-Bold', 
+                            color: Colors.white, fontSize: 10,
+                            fontFamily: 'ProximaNova-Bold',
                         }}>{props.comments} COMMENTS</Text>
 
                     </TouchableOpacity>
@@ -320,14 +326,14 @@ function HomeItemList(props) {
                     <TouchableOpacity style={{
                         height: normalise(28), width: "48%", alignSelf: 'center',
                         borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
-                         flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+                        flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
                     }} onPress={() => { props.onPressReactionbox() }} >
 
 
 
                         <Text style={{
                             color: Colors.white, fontSize: 10,
-                            fontFamily:"ProximaNova-Bold"
+                            fontFamily: "ProximaNova-Bold"
                         }}>{props.reactions} REACTIONS</Text>
 
                     </TouchableOpacity>
