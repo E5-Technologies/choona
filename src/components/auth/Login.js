@@ -29,6 +29,7 @@ export default function SignUp(props) {
     //         authorizationEndpoint: 'https://accounts.spotify.com/authorize',
     //         tokenEndpoint: 'https://accounts.spotify.com/api/token',
     //     },
+    //     additionalParameters: { response_type: 'code', foo: 'bar' }
     // };
 
 
@@ -80,7 +81,7 @@ export default function SignUp(props) {
                         marginLeft: normalise(10),
                         color: Colors.white,
                         fontSize: normalise(12),
-                        fontFamily: 'ProximaNova-Extrabld',
+                        fontFamily: 'ProximaNovaAW07-Medium',
                     }}>LOGIN WITH SPOTIFY</Text>
 
                 </TouchableOpacity>
