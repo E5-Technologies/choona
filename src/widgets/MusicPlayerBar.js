@@ -70,13 +70,13 @@ export default function MusicPlayerBar(props) {
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Regular', fontWeight: '600',
+                            fontFamily: 'ProximaNova-Semibold',
                             width: '100%',
                         }} numberOfLines={1}>Played-A-Live (The Bongo Song)</Text>
 
                         <Text style={{
                             color: Colors.grey_text, fontSize: normalise(10),
-                            fontFamily: 'ProximaNova-Regular', fontWeight: '500', width: '100%',
+                            fontFamily: 'ProximaNovaAW07-Medium', width: '100%',
                         }} numberOfLines={1}>Safri Duo</Text>
                     </View>
 

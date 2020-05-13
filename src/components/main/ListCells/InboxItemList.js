@@ -68,8 +68,7 @@ function InboxListItem(props) {
                     <Text style={{
                         marginTop: normalise(2),
                         color: props.read ? Colors.grey : Colors.white, fontSize: normalise(10),
-                        fontFamily: 'ProximaNova-Regular',
-                        fontWeight: '500',
+                        fontFamily: 'ProximaNovaAW07-Medium'
                     }}> {props.description} </Text>
 
                 </View>

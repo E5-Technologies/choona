@@ -118,14 +118,12 @@ function HomeItemList(props) {
 
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
-                        fontFamily: 'ProximaNova-Regular',
-                        fontWeight: '600'
+                        fontFamily: 'ProximaNova-Semibold',
                     }} numberOfLines={1}> {props.title} </Text>
 
                     <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
-                        fontFamily: 'ProximaNova-Regular',
-                        fontWeight: '500',
+                        fontFamily: 'ProximaNovaAW07-Medium',
                     }} numberOfLines={1}> {props.singer} </Text>
 
 
@@ -194,7 +192,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, top: Platform.OS === 'android' ? 2 : 0,
                             alignItems: 'center',
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Regular', fontWeight: '600' }}>2</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>2</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -207,7 +205,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, top: Platform.OS === 'android' ? 2 : 0,
                             alignItems: 'center'
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Regular', fontWeight: '600' }}>5</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>5</Text>
                         </View>
                     </TouchableOpacity >
                     <TouchableOpacity
@@ -220,7 +218,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Regular', fontWeight: '600' }}>8</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>8</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -233,7 +231,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Regular', fontWeight: '600' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -269,7 +267,7 @@ function HomeItemList(props) {
                     justifyContent: 'space-between', width:'100%', 
                 }}>
                     
-                    <TouchableOpacity style={{width:'8%'}}
+                    <TouchableOpacity style={{width:'9%'}}
                      onPress={() => { onPressImage() }}>
                         <Image source={props.picture}
                             style={{ height: normalise(20), width: normalise(20) }}
@@ -277,28 +275,26 @@ function HomeItemList(props) {
                     </TouchableOpacity>
 
 
-                    <View style={{width:'92%', flexDirection:'row', alignItems:'center',
-                justifyContent:'space-between'}}>
+                    <View style={{width:'91%', flexDirection:'row', alignItems:'center',
+                justifyContent:'space-between',}}>
 
                         <Text style={{
                             color: Colors.white, fontSize: 14,
                             fontFamily: 'ProximaNova-Semibold',
-                            fontWeight: '600',
-                        }} numberOfLines={1}> {props.name} </Text>
+                            
+                        }} numberOfLines={1}>{props.name}</Text>
 
                         <Text style={{
                             color: Colors.grey_text, 
-                            fontFamily: 'ProximaNova-Medium', fontSize: 12,
-                        }}>
-                            {props.time} mins ago
-                     </Text>
+                            fontFamily: 'ProximaNovaAW07-Medium', fontSize: 12,
+                        }}>{props.time} mins ago</Text>
                     </View>
                 </View>
 
                 <Text style={{
                     color: Colors.white, fontSize: 12,
-                    fontFamily: 'ProximaNova-Medium', bottom: 6, 
-                    width:'90.8%',
+                    fontFamily: 'ProximaNovaAW07-Medium', bottom: 6, 
+                    width:'90.8%', 
                     alignSelf:'flex-end',textAlign:'left',
                 }}>{props.content}</Text>
 

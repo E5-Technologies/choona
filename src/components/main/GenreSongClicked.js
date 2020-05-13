@@ -171,8 +171,7 @@ export default function GenreSongClicked(props) {
                 <Text style={{
                   color: Colors.white,
                   fontSize: normalise(12),
-                  fontFamily: 'ProximaNova-Regular',
-                  fontWeight: '600',
+                  fontFamily: 'ProximaNova-Semibold',
                 }}>MORE</Text>
 
                 <View style={{
@@ -188,8 +187,7 @@ export default function GenreSongClicked(props) {
                   <Text style={{
                     color: Colors.white, marginLeft: normalise(15),
                     fontSize: normalise(13),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: '600',
+                    fontFamily: 'ProximaNova-Semibold',
                   }}>Save Song</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
@@ -198,8 +196,7 @@ export default function GenreSongClicked(props) {
                   <Text style={{
                     color: Colors.white, 
                     fontSize: normalise(13), marginLeft: normalise(15),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: '600',
+                    fontFamily: 'ProximaNova-Semibold',
                   }}>Send Song</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
@@ -208,8 +205,7 @@ export default function GenreSongClicked(props) {
                   <Text style={{
                     color: Colors.white, marginLeft: normalise(15),
                     fontSize: normalise(13),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: '600',
+                    fontFamily: 'ProximaNova-Semibold',
                   }}>Copy Link</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
@@ -218,8 +214,7 @@ export default function GenreSongClicked(props) {
                   <Text style={{
                     color: Colors.white, marginLeft: normalise(15),
                     fontSize: normalise(13),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: '600',
+                    fontFamily: 'ProximaNova-Semibold',
                   }}>Unfollow Shimshimmer</Text>
                 </TouchableOpacity>
 

@@ -238,7 +238,7 @@ export default function Player(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Regular', fontWeight:'600'
+                                    fontFamily: 'ProximaNova-Semibold',
                                 }} numberOfLines={1}> ShimShimmer </Text>
 
 
@@ -291,13 +291,13 @@ export default function Player(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(14),
-                                    fontFamily: 'ProximaNova-Regular', fontWeight:'600',
+                                    fontFamily: 'ProximaNova-Semibold',
                                     width: '90%',
                                 }} numberOfLines={1}>Played-A-Live (The Bongo Song)</Text>
 
                                 <Text style={{
                                     color: Colors.grey_text, fontSize: normalise(12),
-                                    fontFamily: 'ProximaNova-Regular', fontWeight:'500', width: '90%',
+                                    fontFamily: 'ProximaNovaAW07-Medium', width: '90%',
                                 }} numberOfLines={1}>Safri Duo</Text>
 
                             </View>
@@ -314,12 +314,12 @@ export default function Player(props) {
                         }}>
 
                             <Text style={{ color: 'white', 
-                            fontFamily: 'ProximaNova-Regular', fontWeight:'600', }}>
+                            fontFamily: 'ProximaNova-Semibold' }}>
                                 01:30
                                 </Text>
 
                             <Text style={{ color: 'white',
-                            fontFamily: 'ProximaNova-Regular', fontWeight:'600', }}>
+                            fontFamily: 'ProximaNova-Semibold'}}>
                                 -2:19
                                 </Text>
 

@@ -86,23 +86,21 @@ export default function OthersProfile(props) {
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15),
-                            fontFamily: 'ProximaNova-Bold',
+                            fontFamily: 'ProximaNovaAW07-Medium',
 
                         }}>Dan Vernon</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600',
+                            fontFamily: 'ProximaNovaAW07-Medium',
 
                         }}>4 Posts</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600',
+                            fontFamily: 'ProximaNovaAW07-Medium',
 
                         }}>London, UK</Text>
 
@@ -111,8 +109,7 @@ export default function OthersProfile(props) {
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: 'bold',
+                                    fontFamily: 'ProximaNova-Semibold',
                                 }}><Text style={{ color: Colors.white }}>{following}</Text>  Following</Text>
                             </TouchableOpacity>
 
@@ -120,8 +117,7 @@ export default function OthersProfile(props) {
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: 'bold',
+                                    fontFamily: 'ProximaNova-Semibold',
                                 }}><Text style={{ color: Colors.white }}>{followers}</Text>  Followers</Text>
                             </TouchableOpacity>
 

@@ -165,8 +165,7 @@ export default function AddSongsInMessage(props) {
 
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15),
-                            fontFamily: ('ProximaNova-Regular'),
-                            fontWeight: '500',
+                            fontFamily: 'ProximaNovaAW07-Medium',
                             marginTop: normalise(20), width: '60%', textAlign: 'center'
                         }}>
                             Search for the song you want to share </Text>

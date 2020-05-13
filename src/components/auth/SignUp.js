@@ -201,8 +201,7 @@ export default function Login(props) {
                         <Text style={{
                             color: Colors.white,
                             fontSize: normalise(12),
-                            fontFamily: 'ProximaNova-Regular',
-                            fontWeight: '600'
+                            fontFamily: 'ProximaNova-Semibold',
                         }}>
                             Spotify Username: andy88jones
                 </Text>

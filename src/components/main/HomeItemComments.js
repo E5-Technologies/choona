@@ -141,19 +141,18 @@ export default function HomeItemComments(props) {
     <View  style={{flexDirection:'row', justifyContent:'space-between', width:normalise(220)}}>
 
      <Text style={{
-        color:Colors.white,fontSize:14, fontFamily: 'ProximaNova-Regular',
-        fontWeight: '600',}}>
+        color:Colors.white,fontSize:14, fontFamily: 'ProximaNova-Semibold',}}>
           andy88jones
       </Text>
       <Text style={{marginEnd:normalise(12.5),
-        color:Colors.grey_text,fontSize:12, fontFamily: 'ProximaNova-Regular',}}>
+        color:Colors.grey_text,fontSize:12, fontFamily: 'ProximaNovaAW07-Medium',}}>
          8 mins ago
       </Text>
       </View>
 
       <View>
       <Text style={{width:normalise(218),color:Colors.white,fontSize:12,marginTop:normalise(2), 
-        fontFamily:'ProximaNova-Regular'}}>
+        fontFamily:'ProximaNovaAW07-Medium'}}>
       Absolutely use to love this song, was an unreal banger back in the day
       </Text>
       </View>
