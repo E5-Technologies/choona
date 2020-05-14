@@ -367,10 +367,10 @@ export default function Search(props) {
     if (usersSearchText !== "") {
         userdataEmpty = [...usersdata]
     }
-    else if (songSearchText !== "") {
+     if (songSearchText !== "") {
         songDataEmpty = [...songsdata]
     }
-    else if (genreSearchText !== "") {
+     if (genreSearchText !== "") {
         genreDataEmpty = [...genreData]
     }
 
