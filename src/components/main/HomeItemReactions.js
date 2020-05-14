@@ -191,8 +191,8 @@ export default function HomeItemReaction(props) {
                 <SafeAreaView style={{ flex: 1 }}>
 
 
-                    <HomeHeaderComponent 
-                    firstitemtext={false}
+                    <HomeHeaderComponent
+                        firstitemtext={false}
                         imageone={ImagePath.backicon}
                         //imagesecond={ImagePath.dp}
                         title="10 REACTIONS"
