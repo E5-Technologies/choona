@@ -18,27 +18,32 @@ import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
 import constants from '../../utils/helpers/constants'
-import { authorize, prefetchConfiguration } from 'react-native-app-auth';
+import { authorize, prefetchConfiguration, refresh } from 'react-native-app-auth';
+import { encode as btoa } from 'base-64';
 
 export default function SignUp(props) {
 
     const config = {
         clientId: constants.spotify_client_id,
         clientSecret: constants.spotify_client_secret,
-        redirectUrl: Platform.OS === 'android' ? 'com.choona://oauthredirect' : 'com.webskitters.Choona://oauthredirect',
+        redirectUrl: 'com.choona:/oauthredirect',
         scopes: [
-            'playlist-read-private',
-            'playlist-modify-public',
-            'playlist-modify-private',
-            'user-library-read',
-            'user-library-modify',
-            'user-top-read',
+            // 'playlist-read-private',
+            // 'playlist-modify-public',
+            // 'playlist-modify-private',
+            // 'user-library-read',
+            // 'user-library-modify',
+            // 'user-top-read',
+            'user-read-email',
+            'user-read-private'
         ],
         serviceConfiguration: {
             authorizationEndpoint: 'https://accounts.spotify.com/authorize',
             tokenEndpoint: 'https://accounts.spotify.com/api/token',
+            response_type: 'code',
+            state: '123456'
         },
-        additionalParameters: { response_type: 'code' }
+        //additionalParameters: {  }
     };
 
 
@@ -46,7 +51,22 @@ export default function SignUp(props) {
         try {
             const result = await authorize(config);
             console.log(result)
-            Alert(result);
+            
+            return result;
+            // result includes accessToken, accessTokenExpirationDate and refreshToken
+        } catch (error) {
+            console.log(JSON.stringify(error));
+        }
+
+    }
+
+    async function refreshSpotifyToken() {
+        try {
+            const result = await refresh(config,{
+                refreshToken: "AQBbDnudR_1lx_kcW2rFUp7Svo4IwwEqAWGHZG9UGoUHbyukwhkgJRxjzY4tYIEyyPS6T_ywQn3qAhihgxeSl-Epjg0OdR4uop9qxS4kqe4jblFXIf0YdOPNRCo3i8hInCc"
+            });
+            console.log(result)
+            
             return result;
             // result includes accessToken, accessTokenExpirationDate and refreshToken
         } catch (error) {
