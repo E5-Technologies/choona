@@ -23,9 +23,9 @@ import { authorize, prefetchConfiguration } from 'react-native-app-auth';
 export default function SignUp(props) {
 
     const config = {
-        clientId: constants.spotify_client_id, 
-        clientSecret: constants.spotify_client_secret, 
-        redirectUrl: 'com.choona://oauthredirect', 
+        clientId: constants.spotify_client_id,
+        clientSecret: constants.spotify_client_secret,
+        redirectUrl: Platform.OS === 'android' ? 'com.choona://oauthredirect' : 'com.webskitters.Choona://oauthredirect',
         scopes: [
             'playlist-read-private',
             'playlist-modify-public',
@@ -38,7 +38,7 @@ export default function SignUp(props) {
             authorizationEndpoint: 'https://accounts.spotify.com/authorize',
             tokenEndpoint: 'https://accounts.spotify.com/api/token',
         },
-        //additionalParameters: { response_type: 'code' }
+        additionalParameters: { response_type: 'code' }
     };
 
 

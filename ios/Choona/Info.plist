@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.choona</string>
+				<string>com.webskitters.Choona://oauthredirect</string>
 			</array>
 		</dict>
 	</array>
