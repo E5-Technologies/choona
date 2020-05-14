@@ -10,7 +10,8 @@ import {
     StatusBar,
     ImageBackground,
     Image,
-    Platform
+    Platform,
+    Alert
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
@@ -21,30 +22,38 @@ import { authorize, prefetchConfiguration } from 'react-native-app-auth';
 
 export default function SignUp(props) {
 
-    // const config = {
-    //     clientId: constants.spotify_client_id, // available on the app page
-    //     clientSecret: constants.spotify_client_secret, // click "show client secret" to see this
-    //     redirectUrl: 'https://www.google.com/', // the redirect you defined after creating the app
-    //     scopes: ['user-read-email', 'playlist-modify-public', 'user-read-private'], // the scopes you need to access
-    //     serviceConfiguration: {
-    //         authorizationEndpoint: 'https://accounts.spotify.com/authorize',
-    //         tokenEndpoint: 'https://accounts.spotify.com/api/token',
-    //     },
-    //     //additionalParameters: { response_type: 'code' }
-    // };
+    const config = {
+        clientId: constants.spotify_client_id, 
+        clientSecret: constants.spotify_client_secret, 
+        redirectUrl: 'com.choona://oauthredirect', 
+        scopes: [
+            'playlist-read-private',
+            'playlist-modify-public',
+            'playlist-modify-private',
+            'user-library-read',
+            'user-library-modify',
+            'user-top-read',
+        ],
+        serviceConfiguration: {
+            authorizationEndpoint: 'https://accounts.spotify.com/authorize',
+            tokenEndpoint: 'https://accounts.spotify.com/api/token',
+        },
+        //additionalParameters: { response_type: 'code' }
+    };
 
 
-    // async function authSpotify() {
-    //     try {
-    //         const result = await authorize(config);
+    async function authSpotify() {
+        try {
+            const result = await authorize(config);
+            console.log(result)
+            Alert(result);
+            return result;
+            // result includes accessToken, accessTokenExpirationDate and refreshToken
+        } catch (error) {
+            console.log(JSON.stringify(error));
+        }
 
-    //         console.log(result)
-    //         // result includes accessToken, accessTokenExpirationDate and refreshToken
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-
-    // }
+    }
 
 
     return (
@@ -84,7 +93,9 @@ export default function SignUp(props) {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center'
-                }} onPress={() => { props.navigation.navigate("SignUp") }}  >
+                }} onPress={() => {
+                    authSpotify();
+                }}  >
 
                     <Image source={ImagePath.spotifyicon}
                         style={{ height: normalise(22), width: normalise(22) }}
