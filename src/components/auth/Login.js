@@ -1,5 +1,5 @@
 
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -17,64 +17,67 @@ import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import constants from '../../utils/helpers/constants'
-import { authorize, prefetchConfiguration, refresh } from 'react-native-app-auth';
-import { encode as btoa } from 'base-64';
+import { loginWithSpotify, getSpotifyToken } from '../../utils/helpers/SpotifyLogin'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAILURE
+} from '../../action/TypeConstants'
+import { loginRequest } from '../../action/UserAction'
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import { connect } from 'react-redux';
 
-export default function SignUp(props) {
+let status = "";
+function SignUp(props) {
 
-    const config = {
-        clientId: constants.spotify_client_id,
-        clientSecret: constants.spotify_client_secret,
-        redirectUrl: 'com.choona:/oauthredirect',
-        scopes: [
-            // 'playlist-read-private',
-            // 'playlist-modify-public',
-            // 'playlist-modify-private',
-            // 'user-library-read',
-            // 'user-library-modify',
-            // 'user-top-read',
-            'user-read-email',
-            'user-read-private'
-        ],
-        serviceConfiguration: {
-            authorizationEndpoint: 'https://accounts.spotify.com/authorize',
-            tokenEndpoint: 'https://accounts.spotify.com/api/token',
-            response_type: 'code',
-            state: '123456'
-        },
-        //additionalParameters: {  }
-    };
+    const [userDetails, setUserDetails] = useState({})
 
 
-    async function authSpotify() {
-        try {
-            const result = await authorize(config);
-            console.log(result)
-            
-            return result;
-            // result includes accessToken, accessTokenExpirationDate and refreshToken
-        } catch (error) {
-            console.log(JSON.stringify(error));
-        }
+    function spotifyLogin() {
+
+        loginWithSpotify().then((value) => {
+
+            console.log(value);
+            setUserDetails(value)
+
+            let payload = {
+                social_id: value.id,
+                social_type: 'spotify',
+                deviceToken: '123456',
+                deviceType: Platform.OS
+            }
+
+            props.loginRequest(payload);
+
+
+        }).catch((error) => { console.log(error) })
 
     }
 
-    async function refreshSpotifyToken() {
-        try {
-            const result = await refresh(config,{
-                refreshToken: "AQBbDnudR_1lx_kcW2rFUp7Svo4IwwEqAWGHZG9UGoUHbyukwhkgJRxjzY4tYIEyyPS6T_ywQn3qAhihgxeSl-Epjg0OdR4uop9qxS4kqe4jblFXIf0YdOPNRCo3i8hInCc"
-            });
-            console.log(result)
-            
-            return result;
-            // result includes accessToken, accessTokenExpirationDate and refreshToken
-        } catch (error) {
-            console.log(JSON.stringify(error));
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case USER_LOGIN_REQUEST:
+                status = props.status
+                break;
+
+            case USER_LOGIN_SUCCESS:
+                status = props.status
+                break;
+
+            case USER_LOGIN_FAILURE:
+                status = props.status
+
+                if (props.error.status === 201) {
+                    props.navigation.navigate("SignUp", { userDetails: userDetails })
+                } else {
+                    alert(props.error.message)
+                }
+
+                break;
         }
-
     }
-
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -114,7 +117,7 @@ export default function SignUp(props) {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }} onPress={() => {
-                    authSpotify();
+                    spotifyLogin()
                 }}  >
 
                     <Image source={ImagePath.spotifyicon}
@@ -156,3 +159,23 @@ export default function SignUp(props) {
         </View>
     )
 }
+
+
+const mapStateToProps = (state) => {
+    return {
+
+        status: state.UserReducer.status,
+        error: state.UserReducer.error,
+        loginResponse: state.UserReducer.loginResponse,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loginRequest: (payload) => {
+            dispatch(loginRequest(payload))
+        },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

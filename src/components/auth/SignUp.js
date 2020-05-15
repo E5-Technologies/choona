@@ -25,11 +25,14 @@ export default function Login(props) {
 
     const dispatch = useDispatch()
 
-    const [username, setUsername] = useState("");
-    const [fullname, setFullname] = useState("");
-    const [location, setLocation] = useState("");
+    const [username, setUsername] = useState(props.route.params.userDetails.display_name);
+    const [fullname, setFullname] = useState(props.route.params.userDetails.display_name);
+    const [location, setLocation] = useState(props.route.params.userDetails.country);
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState("")
+
+   
+    const [userDetails, setUserDetails] = useState(props.route.params.userDetails)
 
 
     // IMAGE PICKER OPTIONS
@@ -173,6 +176,7 @@ export default function Login(props) {
                         placeholderTextColor={Colors.grey}
                         marginTop={normalise(30)}
                         tick_req={true}
+                        value={username}
                         tick_visible={username}
                         onChangeText={(text) => { setUsername(text) }}
                     />
@@ -180,11 +184,13 @@ export default function Login(props) {
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}
                         placeholderTextColor={Colors.grey}
+                        value={username}
                         onChangeText={(text) => { setFullname(text) }} />
 
                     <TextInputField text={"ENTER LOCATION"}
                         placeholder={"Type Location"}
                         placeholderTextColor={Colors.grey}
+                        value={location}
                         onChangeText={(text) => { setLocation(text) }} />
 
 
@@ -203,8 +209,8 @@ export default function Login(props) {
                             fontSize: normalise(12),
                             fontFamily: 'ProximaNova-Semibold',
                         }}>
-                            Spotify Username: andy88jones
-                </Text>
+                            {`Spotify Username: ${username}`}
+                        </Text>
                     </View>
 
                     <Button title={"COMPLETE PROFILE"}
