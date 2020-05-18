@@ -14,6 +14,10 @@ import {
     USER_PROFILE_SUCCESS,
     USER_PROFILE_FAILURE,
 
+    EDIT_PROFILE_REQUEST,
+    EDIT_PROFILE_SUCCESS,
+    EDIT_PROFILE_FAILURE
+
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
 
@@ -58,13 +62,13 @@ export function* UserSignUpAction(action) {
 
         const header = {
             Accept: 'application/json',
-            contenttype: 'application/json',
+            contenttype: 'multipart/formdata',
         };
 
         const response = yield call(postApi, 'user/signup', action.payload, header)
 
         yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token,
-    "registerType": response.data.data.register_type }))
+        "registerType": response.data.data.register_type }))
 
         yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
         yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType:response.data.data.register_type  })
@@ -73,6 +77,7 @@ export function* UserSignUpAction(action) {
         yield put({ type: USER_SIGNUP_FAILURE, error: error })
     }
 };
+
 
 export function* userProfileAction(action) {
     try {
@@ -93,6 +98,25 @@ export function* userProfileAction(action) {
 };
 
 
+export function* editProfileAction(action) {
+    try {
+        const items = yield select(getItems)
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'multipart/formdata',
+            accesstoken: items.token
+        };
+
+        const response = yield call (postApi, 'user/profile/update', action.payload,  Header);
+        yield put ({type: EDIT_PROFILE_SUCCESS, data:response.data.data});
+
+    } catch (error) {
+        yield put ({type: EDIT_PROFILE_FAILURE, error: error})
+    }
+};
+
+
 
 export function* watchLoginRequest() {
     yield takeLatest(USER_LOGIN_REQUEST, loginAction);
@@ -104,4 +128,8 @@ export function* watchUserSignUpAction() {
 
 export function* watchuserProfileAction() {
     yield takeLatest(USER_PROFILE_REQUEST, userProfileAction)
+};
+
+export function* watcheditProfileAction() {
+    yield takeLatest(EDIT_PROFILE_REQUEST, editProfileAction)
 };

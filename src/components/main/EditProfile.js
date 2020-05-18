@@ -23,8 +23,13 @@ import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
+import { EDIT_PROFILE_REQUEST, EDIT_PROFILE_SUCCESS, EDIT_PROFILE_FAILURE } from '../../action/TypeConstants';
+import { editProfileRequest } from '../../action/UserAction';
+import Loader from '../../widgets/AuthLoader';
 
 
+
+let status = "";
 function EditProfile(props) {
 
     const [fullname, setFullname] = useState(props.userProfileResp.full_name);
@@ -32,6 +37,27 @@ function EditProfile(props) {
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState(constants.profile_picture_base_url + props.userProfileResp.profile_image)
     const [imageDetails, setImageDetails] = useState("");
+
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case EDIT_PROFILE_REQUEST:
+                status = props.status
+                break;
+
+            case EDIT_PROFILE_SUCCESS:
+                props.navigation.goBack()
+                status = props.status
+                break;
+
+            case EDIT_PROFILE_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
+        }
+    };
+
 
     // IMAGE PICKER OPTIONS
     const showPickerOptions = () => {
@@ -90,27 +116,44 @@ function EditProfile(props) {
 
     const updateProfile = () => {
 
-        let formdata = new formdata;
+        let formdata = new FormData;
 
         if (picture) {
 
             let uploadPicture = {
                 name: imageDetails.filename,
                 type: imageDetails.mime,
-                uri: profilePic };
-                
+                uri: profilePic
+            };
+
             formdata.append("profile_image", uploadPicture);
             formdata.append("full_name", fullname);
             formdata.append("location", location);
-
+            
+            isInternetConnected()
+            .then(()=>{
+                props.editProfileReq(formdata)
+            })
+            .catch((err)=>{
+                toast("Oops", "Please Connect To Internet")
+            })
+           
 
         } else {
 
             formdata.append("full_name", fullname);
             formdata.append("location", location);
+            
+            isInternetConnected()
+            .then(()=>{
+                props.editProfileReq(formdata)
+            })
+            .catch((err)=>{
+                toast("Oops", "Please Connect To Internet")
+            })
         }
 
-    }
+    };
 
 
     //VIEW BEGINS
@@ -119,6 +162,8 @@ function EditProfile(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+
+            <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -193,8 +238,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getProfileReq: () => {
-            dispatch(getProfileRequest())
+        editProfileReq: (payload) => {
+            dispatch(editProfileRequest(payload))
         }
     }
 };

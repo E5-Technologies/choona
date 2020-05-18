@@ -9,7 +9,11 @@ import {
 
     USER_PROFILE_REQUEST,
     USER_PROFILE_SUCCESS,
-    USER_PROFILE_FAILURE
+    USER_PROFILE_FAILURE,
+
+    EDIT_PROFILE_REQUEST,
+    EDIT_PROFILE_SUCCESS,
+    EDIT_PROFILE_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -18,7 +22,8 @@ const initialState = {
     error: {},
     loginResponse: {},
     signupResponse: {},
-    userProfileResp: {}
+    userProfileResp: {},
+    editProfileResp: {}
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -78,6 +83,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case USER_PROFILE_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case EDIT_PROFILE_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case EDIT_PROFILE_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                editProfileResp: action.data
+            };
+
+        case EDIT_PROFILE_FAILURE:
             return {
                 ...state,
                 status: action.type,

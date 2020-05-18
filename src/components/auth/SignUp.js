@@ -166,6 +166,8 @@ function Login(props) {
             formdata.append("email", userDetails.email);
 
             formdata.append("deviceToken", "123456");
+            
+            formdata.append("deviceType", Platform.OS);
 
             props.route.params.loginType === 'Spotify' ?
                 formdata.append("social_id", userDetails.id) :
