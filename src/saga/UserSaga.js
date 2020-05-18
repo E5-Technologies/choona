@@ -30,10 +30,11 @@ export function* loginAction(action) {
 
         if (response.data.status === 200) {
 
-            yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token }))
+            yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token,
+            "registerType": response.data.data.register_type  }))
 
             yield put({ type: USER_LOGIN_SUCCESS, data: response.data.data });
-            yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token })
+            yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType:response.data.data.register_type  })
 
 
         } else {
@@ -57,10 +58,11 @@ export function* UserSignUpAction(action) {
 
         const response = yield call(postApi, 'user/signup', action.payload, header)
 
-        yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token }))
+        yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token,
+    "registerType": response.data.data.register_type }))
 
         yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
-        yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token })
+        yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType:response.data.data.register_type  })
 
     } catch (error) {
         yield put({ type: USER_SIGNUP_FAILURE, error: error })

@@ -14,6 +14,7 @@ const initialState = {
     error: {},
     loading: true,
     token: "",
+    registerType: ""
 }
 
 const TokenReducer = (state = initialState, action) => {
@@ -31,6 +32,7 @@ const TokenReducer = (state = initialState, action) => {
                 status: action.type,
                 loading: false,
                 token: action.token,
+                registerType: action.registerType
             };
 
         case ASYNC_STORAGE_FAILURE:

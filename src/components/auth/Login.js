@@ -288,7 +288,7 @@ function SignUp(props) {
                     buttonType={AppleButton.Type.SIGN_IN}
                     onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
                 /> : null }
-                
+
             </View>
 
         </View>

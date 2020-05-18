@@ -24,7 +24,7 @@ export function* getTokenAction(action) {
         if (creds === null) {
             yield put({ type: GET_TOKEN_SUCCESS, token: null })
         }
-        yield put({ type: GET_TOKEN_SUCCESS, token: JSON.parse(creds).token })
+        yield put({ type: GET_TOKEN_SUCCESS, token: JSON.parse(creds).token, registerType:JSON.parse(creds).registerType })
 
     } catch (error) {
 
