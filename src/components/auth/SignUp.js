@@ -7,7 +7,8 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    Alert
+    Alert,
+    Platform
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import { tokenRequest } from '../../action/index';
@@ -19,19 +20,46 @@ import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import StatusBar from '../../utils/MyStatusBar';
+import {
+    USER_SIGNUP_REQUEST, USER_SIGNUP_SUCCESS,
+    USER_SIGNUP_FAILURE,
+    USER_LOGIN_FAILURE
+} from '../../action/TypeConstants';
+import { signupRequest } from '../../action/UserAction';
+import { connect } from 'react-redux';
+import { register } from 'react-native-app-auth';
 
 
-export default function Login(props) {
+let status = ""
+
+function Login(props) {
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+            case USER_SIGNUP_REQUEST:
+                status = props.status
+                break;
+
+            case USER_SIGNUP_SUCCESS:
+                status = props.status
+                break;
+
+            case USER_LOGIN_FAILURE:
+                status = props.status
+                break;
+        }
+    };
 
     const dispatch = useDispatch()
 
     const [username, setUsername] = useState(props.route.params.userDetails.display_name);
     const [fullname, setFullname] = useState("");
+    const [imageDetails, setImageDetails] = useState({});
     const [location, setLocation] = useState(props.route.params.userDetails.country);
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState("")
 
-   
+
     const [userDetails, setUserDetails] = useState(props.route.params.userDetails)
 
 
@@ -62,6 +90,7 @@ export default function Login(props) {
         })
             .then((image) => {
                 console.log(`IMAGE: ${JSON.stringify(image)}`)
+                setImageDetails(image)
                 setPicture(true)
                 setProfilePic(image.path)
             })
@@ -80,12 +109,53 @@ export default function Login(props) {
             mediaType: 'photo'
         })
             .then((image) => {
+                setImageDetails(image)
                 setPicture(true)
                 setProfilePic(image.path)
             })
             .catch((err) => {
                 console.log(err)
             })
+    };
+
+    const register = () => {
+
+        if (username === "") {
+            console.log("Please Enter Username")
+        }
+        else if (fullname === "") {
+            console.log("Please Enter Username")
+        }
+        else if (location === "") {
+            console.log("Please Enter Username")
+        }
+        else if (profilePic === "") {
+            console.log("Please Enter Username")
+        }
+
+        else {
+
+            let profileImage = {
+                name: imageDetails.filename,
+                type: imageDetails.mime,
+                uri:  Platform.OS === "android" ? profilePic : profilePic.replace("file://", "")
+            }
+               
+
+            let formdata = new FormData;
+            formdata.append("full_name", fullname);
+            formdata.append("profile_image", profileImage);
+            formdata.append("username", username);
+            formdata.append("location", location);
+            formdata.append("social_username", userDetails.display_name);
+            formdata.append("email", userDetails.email);
+            formdata.append("deviceToken", "123456");
+            formdata.append("social_id", userDetails.id);
+            formdata.append("register_type", 'spotify');
+
+            console.log(formdata)
+            props.signUpRequest(formdata);
+        }
     }
 
 
@@ -217,7 +287,7 @@ export default function Login(props) {
                         marginTop={normalise(40)}
                         marginBottom={normalise(40)}
                         fontSize={normalise(15)}
-                        onPress={() => { dispatch(tokenRequest('QWERTY')) }} />
+                        onPress={() => { register() }} />
 
 
                 </ScrollView>
@@ -225,4 +295,21 @@ export default function Login(props) {
             </SafeAreaView>
         </KeyboardAvoidingView>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.UserReducer.status,
+        signupResponse: state.UserReducer.signupResponse
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUpRequest: (payload) => {
+            dispatch(signupRequest(payload))
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

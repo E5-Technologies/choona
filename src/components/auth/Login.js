@@ -26,6 +26,7 @@ import {
 import { loginRequest } from '../../action/UserAction'
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
+import _ from 'lodash'
 
 let status = "";
 function SignUp(props) {
@@ -37,18 +38,19 @@ function SignUp(props) {
 
         loginWithSpotify().then((value) => {
 
-            console.log(value);
-            setUserDetails(value)
+            if (!_.isEmpty(value)) {
 
-            let payload = {
-                social_id: value.id,
-                social_type: 'spotify',
-                deviceToken: '123456',
-                deviceType: Platform.OS
+                setUserDetails(value)
+
+                let payload = {
+                    social_id: value.id,
+                    social_type: 'spotify',
+                    deviceToken: '123456',
+                    deviceType: Platform.OS
+                }
+
+                props.loginRequest(payload);
             }
-
-            props.loginRequest(payload);
-
 
         }).catch((error) => { console.log(error) })
 

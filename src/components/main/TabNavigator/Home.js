@@ -282,9 +282,9 @@ export default function Home(props) {
               disableRightSwipe={true}
               rightOpenValue={-75} />
 
-            {/* <View>
+            <View>
               <MusicPlayerBar onPress={() => { props.navigation.navigate("Player") }} />
-            </View> */}
+            </View>
 
 
 

@@ -39,6 +39,7 @@ export default function MusicPlayerBar(props) {
             source={ImagePath.gradientbar}
             style={{
                 width: '100%', height: normalize(45),
+                backgroundColor:Colors.fadeblack
             }}
             blurRadius={200}>
 
