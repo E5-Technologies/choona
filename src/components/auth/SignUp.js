@@ -26,7 +26,7 @@ export default function Login(props) {
     const dispatch = useDispatch()
 
     const [username, setUsername] = useState(props.route.params.userDetails.display_name);
-    const [fullname, setFullname] = useState(props.route.params.userDetails.display_name);
+    const [fullname, setFullname] = useState("");
     const [location, setLocation] = useState(props.route.params.userDetails.country);
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState("")
@@ -184,7 +184,7 @@ export default function Login(props) {
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}
                         placeholderTextColor={Colors.grey}
-                        value={username}
+                        value={fullname}
                         onChangeText={(text) => { setFullname(text) }} />
 
                     <TextInputField text={"ENTER LOCATION"}
