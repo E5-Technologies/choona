@@ -27,11 +27,31 @@ import { loginRequest } from '../../action/UserAction'
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
 import _ from 'lodash'
+import appleAuth, {
+    AppleButton,
+    AppleAuthError,
+    AppleAuthRequestScope,
+    AppleAuthRealUserStatus,
+    AppleAuthCredentialState,
+    AppleAuthRequestOperation,
+} from '@invertase/react-native-apple-authentication';
 
+
+let user = null;
 let status = "";
+
 function SignUp(props) {
 
-    const [userDetails, setUserDetails] = useState({})
+    const [userDetails, setUserDetails] = useState({});
+    const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
+    const [loginType, setLoginType] = useState("");
+
+    useEffect(() => {
+        fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
+          updateCredentialStateForUser(`Error: ${error.code}`),
+        );
+        return () => {};
+      }, []);
 
 
     function spotifyLogin() {
@@ -54,7 +74,103 @@ function SignUp(props) {
 
         }).catch((error) => { console.log(error) })
 
-    }
+    };
+
+
+    //ON APLLE BUTTON PRESS
+    async function onAppleButtonPress(updateCredentialStateForUser) {
+        setLoginType("Apple")
+        console.warn('Beginning Apple Authentication');
+        // start a login request
+        try {
+          const appleAuthRequestResponse = await appleAuth.performRequest({
+            requestedOperation: AppleAuthRequestOperation.LOGIN,
+            requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+          });
+      
+          console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+      
+          const {
+            user: newUser,
+            email,
+            nonce,
+            identityToken,
+            realUserStatus /* etc */,
+          } = appleAuthRequestResponse;
+      
+          user = newUser;
+      
+          fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
+            updateCredentialStateForUser(`Error: ${error.code}`),
+          );
+      
+          if (identityToken) {
+            appleLoginWithOurServer(appleAuthRequestResponse)
+            console.log(nonce, identityToken);
+          } else {
+            // no token - failed sign-in?
+          }
+      
+          if (realUserStatus === AppleAuthRealUserStatus.LIKELY_REAL) {
+            console.log("I'm a real person!");
+          }
+      
+          console.warn(`Apple Authentication Completed, ${user}, ${email}`);
+        } catch (error) {
+          if (error.code === AppleAuthError.CANCELED) {
+            console.warn('User canceled Apple Sign in.');
+          } else {
+            console.error(error);
+          }
+        }
+      };
+
+
+      //FETCH AND UPDATE CRED STATE
+      async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
+        if (user === null) {
+          updateCredentialStateForUser('N/A');
+        } else {
+          const credentialState = await appleAuth.getCredentialStateForUser(user);
+          if (credentialState === AppleAuthCredentialState.AUTHORIZED) {
+            updateCredentialStateForUser('AUTHORIZED');
+          } else {
+            updateCredentialStateForUser(credentialState);
+          }
+        }
+      };
+
+      //TOKEN FIREBASE
+      function appleLoginWithOurServer(appleData) {
+        let token = '123456'
+        signInwithApple(appleData, token);    
+      };
+
+      
+      // API REQUEST
+      function signInwithApple(appleData, token) {
+
+        // isInternetConnected().then(() => {
+    
+          var appleSignUpObject = {}
+    
+          appleSignUpObject.social_id = ("user" in appleData) ? appleData.user : "";
+          appleSignUpObject.social_type = "apple";
+          appleSignUpObject.deviceType = Platform.OS;
+          appleSignUpObject.deviceToken = token;
+
+          console.log("Apple ", appleData)
+          props.loginRequest(appleSignUpObject);
+          setUserDetails(appleData)
+    
+        // }).catch(() => {
+        //   console.log('Error', 'Please connect to internet')
+        // });
+    
+    
+      };
+    //APPLE SIGN IN END
+
 
 
     if (status === "" || props.status !== status) {
@@ -72,15 +188,17 @@ function SignUp(props) {
                 status = props.status
 
                 if (props.error.status === 201) {
-                    props.navigation.navigate("SignUp", { userDetails: userDetails })
+                    props.navigation.navigate("SignUp", { userDetails: userDetails, loginType: loginType })
                 } else {
                     alert(props.error.message)
                 }
 
                 break;
         }
-    }
+    };
 
+    console.log(loginType);
+    //VIEW
     return (
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
@@ -119,7 +237,7 @@ function SignUp(props) {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }} onPress={() => {
-                    spotifyLogin()
+                    spotifyLogin(), setLoginType('Spotify')
                 }}  >
 
                     <Image source={ImagePath.spotifyicon}
@@ -136,7 +254,7 @@ function SignUp(props) {
                 </TouchableOpacity>
 
 
-                <TouchableOpacity style={{
+                {/* <TouchableOpacity style={{
                     marginBottom: normalise(40),
                     marginTop: normalise(20), height: normalise(50), width: '80%', alignSelf: 'center',
                     borderRadius: normalise(25), backgroundColor: Colors.white, borderWidth: normalise(0.5),
@@ -155,7 +273,22 @@ function SignUp(props) {
                         fontFamily: 'ProximaNova-Extrabld',
                     }}>LOGIN WITH APPLE MUSIC</Text>
 
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+            
+            {Platform.OS === 'ios' ?
+                <AppleButton
+                    style={{
+                        marginTop:normalise(10),
+                        marginBottom:normalise(20),
+                        width: '80%',
+                        height: normalize(48),
+                    }}
+                    cornerRadius={100}
+                    buttonStyle={AppleButton.Style.WHITE}
+                    buttonType={AppleButton.Type.SIGN_IN}
+                    onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
+                /> : null }
+                
             </View>
 
         </View>
