@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import TokenReducer from '../reducers/TokenReducer';
+import UserReducer from '../reducers/UserReducer'
 
 const allReducers = combineReducers({
-    TokenReducer: TokenReducer
+    TokenReducer: TokenReducer,
+    UserReducer: UserReducer,
 });
 
 
