@@ -16,6 +16,8 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
+import {connect} from 'react-redux';
+import constants from '../../utils/helpers/constants';
 
 const profileData = [
     {
@@ -40,7 +42,7 @@ const profileData = [
 
 const profileData2 = []
 
-export default function Profile(props) {
+function Profile(props) {
 
     const [following, setFollowing] = useState("1,633");
     const [followers, setFollowers] = useState('429')
@@ -91,7 +93,7 @@ export default function Profile(props) {
                     alignItems: 'center', marginTop: normalise(15)
                 }}>
 
-                    <Image source={ImagePath.dp}
+                    <Image source={{uri:constants.profile_picture_base_url+props.userProfileResp.profile_image}}
                         style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
                     <View style={{
@@ -285,4 +287,19 @@ export default function Profile(props) {
             </SafeAreaView>
         </View>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+      status: state.UserReducer.status,
+      userProfileResp: state.UserReducer.userProfileResp
+    }
+  };
+  
+  const mapDispatchToProps = (dispatch) => {
+    return {
+    
+    }
+  };
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(Profile);

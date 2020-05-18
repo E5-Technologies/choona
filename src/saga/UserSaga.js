@@ -1,4 +1,4 @@
-import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
+import { put, call, fork, takeLatest, all, select } from 'redux-saga/effects';
 import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
@@ -8,13 +8,19 @@ import {
 
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
-    USER_SIGNUP_FAILURE
+    USER_SIGNUP_FAILURE,
+
+    USER_PROFILE_REQUEST,
+    USER_PROFILE_SUCCESS,
+    USER_PROFILE_FAILURE,
+
 } from '../action/TypeConstants';
-import { postApi } from "../utils/helpers/ApiRequest"
+import { postApi, getApi } from "../utils/helpers/ApiRequest"
 
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
 
+const getItems = (state) => state.TokenReducer
 
 export function* loginAction(action) {
 
@@ -22,7 +28,6 @@ export function* loginAction(action) {
         Accept: 'application/json',
         contenttype: 'application/json',
     }
-
 
     try {
 
@@ -67,7 +72,26 @@ export function* UserSignUpAction(action) {
     } catch (error) {
         yield put({ type: USER_SIGNUP_FAILURE, error: error })
     }
-}
+};
+
+export function* userProfileAction(action) {
+    try {
+        const items = yield select(getItems)
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call (getApi, 'user/profile', Header);
+        yield put ({type: USER_PROFILE_SUCCESS, data:response.data.data});
+
+    } catch (error) {
+        yield put ({type: USER_PROFILE_FAILURE, error: error})
+    }
+};
+
 
 
 export function* watchLoginRequest() {
@@ -76,4 +100,8 @@ export function* watchLoginRequest() {
 
 export function* watchUserSignUpAction() {
     yield takeLatest(USER_SIGNUP_REQUEST, UserSignUpAction);
-}
+};
+
+export function* watchuserProfileAction() {
+    yield takeLatest(USER_PROFILE_REQUEST, userProfileAction)
+};

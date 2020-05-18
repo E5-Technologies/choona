@@ -52,10 +52,11 @@ function HomeHeaderComponent(props) {
                 <View style={{ left: 0, position: 'absolute' }}>
                     <TouchableOpacity style={{ left: 0, position: 'absolute' }}
                         onPress={() => { onPressFirstItem() }}>
-                        <Image source={props.imageone}
+                        <Image source={{uri : props.imageone}}
                             style={{
                                 height: props.imageoneheight,
                                 width: props.imageonewidth,
+                                borderRadius: props.borderRadius,
                                 marginTop: normalise(-8)
                             }}
                             resizeMode="contain"
@@ -121,7 +122,8 @@ HomeHeaderComponent.propTypes = {
     imagetwowidth: PropTypes.number,
     middleImageReq: PropTypes.bool,
     marginTop: PropTypes.number,
-    height: PropTypes.number
+    height: PropTypes.number,
+    borderRadius: PropTypes.number
 };
 HomeHeaderComponent.defaultProps = {
     firstitemtext: true,
@@ -135,6 +137,7 @@ HomeHeaderComponent.defaultProps = {
     onPressThirdItem: null,
     imageoneheight: normalise(15),
     imageonewidth: normalise(15),
+    borderRadius:normalise(7.5),
     imagesecondheight: normalise(30),
     imagesecondwidth: normalise(30),
     imagetwoheight: normalise(15),

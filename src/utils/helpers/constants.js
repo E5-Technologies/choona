@@ -8,7 +8,7 @@ export default {
     spotify_authorize_uri: "https://accounts.spotify.com/authorize",
     spotify_token_uri: "https://accounts.spotify.com/api/token",
     spotify_profile_uri: "https://api.spotify.com/v1/me",
-    
+    profile_picture_base_url: 'http://choona.dedicateddevelopers.us/uploads/user/thumb/',
     BASE_URL: "http://choona.dedicateddevelopers.us/api",
     
 }
