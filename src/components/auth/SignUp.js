@@ -53,15 +53,15 @@ function Login(props) {
     const dispatch = useDispatch()
 
     const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
-     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
-    
-     const [fullname, setFullname] = useState(props.route.params.loginType === 'Spotify' ?
-    "" :`${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`);
+        props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
+
+    const [fullname, setFullname] = useState(props.route.params.loginType === 'Spotify' ?
+        "" : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`);
 
     const [imageDetails, setImageDetails] = useState({});
 
     const [location, setLocation] = useState(props.route.params.loginType === 'Spotify' ?
-    props.route.params.userDetails.country : "");
+        props.route.params.userDetails.country : "");
 
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState("")
@@ -69,7 +69,7 @@ function Login(props) {
 
     const [userDetails, setUserDetails] = useState(props.route.params.userDetails)
 
-    console.log('DETAILS'+JSON.stringify(userDetails))
+    console.log('DETAILS' + JSON.stringify(userDetails))
 
     // IMAGE PICKER OPTIONS
     const showPickerOptions = () => {
@@ -146,34 +146,34 @@ function Login(props) {
             let profileImage = {
                 name: imageDetails.filename,
                 type: imageDetails.mime,
-                uri:  Platform.OS === "android" ? profilePic : profilePic.replace("file://", "")
+                uri: Platform.OS === "android" ? profilePic : profilePic.replace("file://", "")
             }
-               
+
 
             let formdata = new FormData;
             formdata.append("full_name", fullname);
-            
+
             formdata.append("profile_image", profileImage);
-            
+
             formdata.append("username", username);
-            
+
             formdata.append("location", location);
 
             props.route.params.loginType === 'Spotify' ?
-            formdata.append("social_username", userDetails.display_name):
-            formdata.append("social_username", userDetails.fullName.givenName);
-            
+                formdata.append("social_username", userDetails.display_name) :
+                formdata.append("social_username", userDetails.fullName.givenName);
+
             formdata.append("email", userDetails.email);
-            
+
             formdata.append("deviceToken", "123456");
-            
+
             props.route.params.loginType === 'Spotify' ?
-            formdata.append("social_id", userDetails.id):
-            formdata.append("social_id", userDetails.user);
-            
+                formdata.append("social_id", userDetails.id) :
+                formdata.append("social_id", userDetails.user);
+
             props.route.params.loginType === 'Spotify' ?
-            formdata.append("register_type", 'spotify'):
-            formdata.append("register_type", 'apple');
+                formdata.append("register_type", 'spotify') :
+                formdata.append("register_type", 'apple');
 
             console.log(formdata)
             props.signUpRequest(formdata);
@@ -286,25 +286,25 @@ function Login(props) {
                         onChangeText={(text) => { setLocation(text) }} />
 
 
-                {props.route.params.loginType === "Spotify" ?
-                    <View style={{
-                        marginTop: normalize(30), height: normalize(45), borderRadius: normalize(10),
-                        borderWidth: normalise(1), borderColor: Colors.grey, flexDirection: 'row', alignItems: 'center',
-                        justifyContent: 'center', padding: normalize(5)
-                    }}>
-
-                        <Image source={ImagePath.spotifyicon}
-                            style={{ height: normalise(22), width: normalise(22), position: 'absolute', left: 20 }}
-                            resizeMode="contain" />
-
-                        <Text style={{
-                            color: Colors.white,
-                            fontSize: normalise(12),
-                            fontFamily: 'ProximaNova-Semibold',
+                    {props.route.params.loginType === "Spotify" ?
+                        <View style={{
+                            marginTop: normalize(30), height: normalize(45), borderRadius: normalize(10),
+                            borderWidth: normalise(1), borderColor: Colors.grey, flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'center', padding: normalize(5)
                         }}>
-                            {`Spotify Username: ${username}`}
-                        </Text>
-                    </View> : null }
+
+                            <Image source={ImagePath.spotifyicon}
+                                style={{ height: normalise(22), width: normalise(22), position: 'absolute', left: 20 }}
+                                resizeMode="contain" />
+
+                            <Text style={{
+                                color: Colors.white,
+                                fontSize: normalise(12),
+                                fontFamily: 'ProximaNova-Semibold',
+                            }}>
+                                {`Spotify Username: ${userDetails.display_name}`}
+                            </Text>
+                        </View> : null}
 
 
                     <Button title={"COMPLETE PROFILE"}
