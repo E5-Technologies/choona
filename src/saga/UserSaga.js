@@ -3,6 +3,7 @@ import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
     USER_LOGIN_FAILURE,
+
     ASYNC_STORAGE_SUCCESS,
 
     USER_SIGNUP_REQUEST,
@@ -10,6 +11,7 @@ import {
     USER_SIGNUP_FAILURE
 } from '../action/TypeConstants';
 import { postApi } from "../utils/helpers/ApiRequest"
+
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
 
@@ -27,11 +29,13 @@ export function* loginAction(action) {
         const response = yield call(postApi, `user/signin`, action.payload, header)
 
         if (response.data.status === 200) {
+
+            yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token }))
+
             yield put({ type: USER_LOGIN_SUCCESS, data: response.data.data });
-            
-            console.log(response)
-            // yield call (AsyncStorage.setItem(constants.CHOONACREDS, JSON.stringify({token: response.token, userId:
-            // response.data})))
+            yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token })
+
+
         } else {
             yield put({ type: USER_LOGIN_FAILURE, error: response.data })
         }
@@ -45,17 +49,21 @@ export function* loginAction(action) {
 
 export function* UserSignUpAction(action) {
     try {
-        
+
         const header = {
             Accept: 'application/json',
             contenttype: 'application/json',
         };
 
-        const response = yield call (postApi, 'user/signup', action.payload, header)
-        yield put ({type: USER_SIGNUP_SUCCESS, data: response.data.data});
+        const response = yield call(postApi, 'user/signup', action.payload, header)
+
+        yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token }))
+
+        yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
+        yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token })
 
     } catch (error) {
-       yield put ({type: USER_SIGNUP_FAILURE, error:error}) 
+        yield put({ type: USER_SIGNUP_FAILURE, error: error })
     }
 }
 

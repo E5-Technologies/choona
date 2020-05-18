@@ -121,16 +121,16 @@ function Login(props) {
     const register = () => {
 
         if (username === "") {
-            console.log("Please Enter Username")
+            alert("Please enter your user name")
         }
         else if (fullname === "") {
-            console.log("Please Enter Username")
+            alert("Please enter your name")
         }
         else if (location === "") {
-            console.log("Please Enter Username")
+            alert("Please enter your location")
         }
         else if (profilePic === "") {
-            console.log("Please Enter Username")
+            alert("Please upload your profile picture")
         }
 
         else {

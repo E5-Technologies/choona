@@ -1,7 +1,11 @@
 import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
 import {
-    ASYNC_STORAGE_REQUEST, ASYNC_STORAGE_SUCCESS, ASYNC_STORAGE_FAILURE,
-    GET_TOKEN_REQUEST, GET_TOKEN_SUCCESS, GET_TOKEN_FAILURE
+    ASYNC_STORAGE_REQUEST,
+    ASYNC_STORAGE_SUCCESS,
+    ASYNC_STORAGE_FAILURE,
+    GET_TOKEN_REQUEST,
+    GET_TOKEN_SUCCESS,
+    GET_TOKEN_FAILURE
 } from '../action/TypeConstants';
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
@@ -25,7 +29,7 @@ export function* getTokenAction(action) {
     } catch (error) {
 
         yield put({ type: GET_TOKEN_FAILURE, error: error })
-    
+
     }
 };
 
