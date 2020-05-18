@@ -52,7 +52,8 @@ const TokenReducer = (state = initialState, action) => {
                 ...state,
                 status: action.type,
                 loading: false,
-                token: action.token
+                token: action.token,
+                registerType: action.registerType
             }
 
         case GET_TOKEN_FAILURE:
