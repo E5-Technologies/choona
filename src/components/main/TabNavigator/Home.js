@@ -23,11 +23,19 @@ import { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
+import {
+  USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
+  USER_PROFILE_FAILURE
+} from '../../../action/TypeConstants';
+import { getProfileRequest } from '../../../action/UserAction';
+import { connect } from 'react-redux'
+import { userProfileAction } from '../../../saga/UserSaga';
+import isInternetConnected from '../../../utils/helpers/NetInfo';
+import toast from '../../../utils/helpers/ShowErrorAlert';
+import Loader from '../../../widgets/AuthLoader';
+import constants from '../../../utils/helpers/constants';
 
 const flatlistdata1 = []
-
-
-
 const flatlistdata = [
   {
     image: ImagePath.profiletrack1,
@@ -96,13 +104,49 @@ const flatlistdata = [
     content: 'Absolutely use to love this song,was an unreal banger back in the day',
     time: 8
   },
+];
 
-]
-export default function Home(props) {
+let status = "";
+
+function Home(props) {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState("");
   const [modal1Visible, setModal1Visible] = useState(false);
+
+  useEffect(() => {
+    const unsuscribe = props.navigation.addListener('focus', (payload) => {
+      isInternetConnected()
+        .then(() => {
+          props.getProfileReq()
+        })
+        .catch(() => {
+          toast('Error', 'Please Connect To Internet')
+        })
+    });
+
+    return () => {
+      unsuscribe();
+    }
+  });
+
+  if (status === "" || props.status !== status) {
+    switch (props.status) {
+      case USER_PROFILE_REQUEST:
+        status = props.status
+        break;
+      
+        case USER_PROFILE_SUCCESS:
+        status = props.status
+        break;
+      
+        case USER_PROFILE_FAILURE:
+        status = props.status
+        toast("Oops", "Something Went Wrong, Please Try Again")
+        break;
+    }
+  };
 
   const react = ["🔥", "🕺", "💃", "😳", "❤️"]
   let val = 0
@@ -113,7 +157,8 @@ export default function Home(props) {
     this.setTimeout(() => {
       setVisible(false)
     }, 2000);
-  }
+  };
+
   function hitreact1(modal1Visible) {
 
     if (modal1Visible == true) {
@@ -122,15 +167,14 @@ export default function Home(props) {
     else {
       setModal1Visible(true)
     }
-
-  }
+  };
 
   function modal() {
 
     return (
       val = 1
     )
-  }
+  };
 
   function renderItem(data) {
     return (
@@ -185,7 +229,7 @@ export default function Home(props) {
         marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0} />
       // </TouchableOpacity>
     )
-  }
+  };
 
   return (
 
@@ -194,6 +238,7 @@ export default function Home(props) {
       backgroundColor: Colors.black
     }}>
 
+      <Loader visible={props.status === USER_PROFILE_REQUEST}/>
 
       <StatusBar />
 
@@ -207,9 +252,10 @@ export default function Home(props) {
         <HomeHeaderComponent
           firstitemtext={false}
           marginTop={0}
-          imageone={ImagePath.dp}
+          imageone={constants.profile_picture_base_url+props.userProfileResp.profile_image}
           imageoneheight={30}
           imageonewidth={30}
+          borderRadius={15}
           title={"CHOONA"}
           thirditemtext={false}
           imagetwo={ImagePath.inbox}
@@ -330,7 +376,7 @@ export default function Home(props) {
                     color: Colors.white,
                     fontSize: normalise(12),
                     fontFamily: 'ProximaNova-Semibold',
-                    
+
                   }}>MORE</Text>
 
                   <View style={{
@@ -418,40 +464,40 @@ export default function Home(props) {
 
         {modal1Visible == true ?
 
-           <View style={{
-              position: 'absolute',
-              margin: 20,
-              height: normalise(280),
-              width: "92%",
-              alignSelf: 'center',
-              marginHorizontal: normalise(15),
-              backgroundColor: Colors.white,
-              borderRadius: 20,
-              padding: 35,
-              bottom: 50,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5
-            }}>
-              
-                        
-              <EmojiSelector
-                category={Categories.history}
-                showHistory={true}
-                onEmojiSelected={emoji => {
-                  setVisible(true), setModalReact(emoji),
-                    setTimeout(() => {
-                      setVisible(false)
-                    }, 2000)
-                }}
-              />
+          <View style={{
+            position: 'absolute',
+            margin: 20,
+            height: normalise(280),
+            width: "92%",
+            alignSelf: 'center',
+            marginHorizontal: normalise(15),
+            backgroundColor: Colors.white,
+            borderRadius: 20,
+            padding: 35,
+            bottom: 50,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5
+          }}>
 
-            </View>
+
+            <EmojiSelector
+              category={Categories.history}
+              showHistory={true}
+              onEmojiSelected={emoji => {
+                setVisible(true), setModalReact(emoji),
+                  setTimeout(() => {
+                    setVisible(false)
+                  }, 2000)
+              }}
+            />
+
+          </View>
           : null}
 
 
@@ -460,7 +506,7 @@ export default function Home(props) {
 
     </View>
   )
-}
+};
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -495,3 +541,20 @@ const styles = StyleSheet.create({
 
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    status: state.UserReducer.status,
+    userProfileResp: state.UserReducer.userProfileResp
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getProfileReq: () => {
+      dispatch(getProfileRequest())
+    }
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
