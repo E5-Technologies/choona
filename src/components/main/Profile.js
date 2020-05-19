@@ -18,6 +18,15 @@ import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
+import {
+    USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
+    USER_PROFILE_FAILURE
+  } from '../../action/TypeConstants';
+import { getProfileRequest } from '../../action/UserAction';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import Loader from '../../widgets/AuthLoader';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+
 
 const profileData = [
     {
@@ -42,10 +51,48 @@ const profileData = [
 
 const profileData2 = []
 
+let status = "";
+
 function Profile(props) {
 
     const [following, setFollowing] = useState("1,633");
-    const [followers, setFollowers] = useState('429')
+    const [followers, setFollowers] = useState('429');
+
+
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+          isInternetConnected()
+            .then(() => {
+              props.getProfileReq()
+            })
+            .catch(() => {
+              toast('Error', 'Please Connect To Internet')
+            })
+        });
+    
+        return () => {
+          unsuscribe();
+        }
+      });
+
+      if (status === "" || props.status !== status) {
+        switch (props.status) {
+          case USER_PROFILE_REQUEST:
+            status = props.status
+            break;
+          
+            case USER_PROFILE_SUCCESS:
+            status = props.status
+            break;
+          
+            case USER_PROFILE_FAILURE:
+            status = props.status
+            toast("Oops", "Something Went Wrong, Please Try Again")
+            break;
+        }
+      };
+
+
 
     function renderProfileData(data) {
         return (
@@ -57,7 +104,7 @@ function Profile(props) {
                     resizeMode="contain" />
             </TouchableOpacity>
         )
-    }
+    };
 
 
     return (
@@ -65,6 +112,8 @@ function Profile(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+
+            <Loader visible={props.status === USER_PROFILE_REQUEST}/>
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -104,20 +153,20 @@ function Profile(props) {
                         <Text style={{
                             color: Colors.white, fontSize: normalise(15),
                             fontFamily: 'ProximaNova-Semibold'
-                        }}>Andy Jones</Text>
+                        }}>{props.userProfileResp.full_name}</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey,
                             fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
-                        }}>@andyjones88</Text>
+                        }}>{props.userProfileResp.username}</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
-                        }}>Liverpool, UK</Text>
+                        }}>{props.userProfileResp.location}</Text>
 
 
                         <View style={{
@@ -298,7 +347,9 @@ const mapStateToProps = (state) => {
   
   const mapDispatchToProps = (dispatch) => {
     return {
-    
+        getProfileReq: () => {
+            dispatch(getProfileRequest())
+          }
     }
   };
   

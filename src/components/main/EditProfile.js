@@ -20,15 +20,43 @@ import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import { connect } from 'react-redux';
+import constants from '../../utils/helpers/constants';
+import { EDIT_PROFILE_REQUEST, EDIT_PROFILE_SUCCESS, EDIT_PROFILE_FAILURE } from '../../action/TypeConstants';
+import { editProfileRequest } from '../../action/UserAction';
+import Loader from '../../widgets/AuthLoader';
 
-export default function EditProfile(props) {
 
 
-    const [username, setUsername] = useState("");
-    const [fullname, setFullname] = useState("");
-    const [location, setLocation] = useState("");
+let status = "";
+function EditProfile(props) {
+
+    const [fullname, setFullname] = useState(props.userProfileResp.full_name);
+    const [location, setLocation] = useState(props.userProfileResp.location);
     const [picture, setPicture] = useState(false);
-    const [profilePic, setProfilePic] = useState("")
+    const [profilePic, setProfilePic] = useState(constants.profile_picture_base_url + props.userProfileResp.profile_image)
+    const [imageDetails, setImageDetails] = useState("");
+
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case EDIT_PROFILE_REQUEST:
+                status = props.status
+                break;
+
+            case EDIT_PROFILE_SUCCESS:
+                props.navigation.goBack()
+                status = props.status
+                break;
+
+            case EDIT_PROFILE_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
+        }
+    };
 
 
     // IMAGE PICKER OPTIONS
@@ -59,6 +87,7 @@ export default function EditProfile(props) {
             .then((image) => {
                 console.log(`IMAGE: ${JSON.stringify(image)}`)
                 setPicture(true)
+                setImageDetails(image)
                 setProfilePic(image.path)
             })
             .catch((err) => {
@@ -77,12 +106,54 @@ export default function EditProfile(props) {
         })
             .then((image) => {
                 setPicture(true)
+                setImageDetails(image)
                 setProfilePic(image.path)
             })
             .catch((err) => {
                 console.log(err)
             })
-    }
+    };
+
+    const updateProfile = () => {
+
+        let formdata = new FormData;
+
+        if (picture) {
+
+            let uploadPicture = {
+                name: imageDetails.filename,
+                type: imageDetails.mime,
+                uri: profilePic
+            };
+
+            formdata.append("profile_image", uploadPicture);
+            formdata.append("full_name", fullname);
+            formdata.append("location", location);
+            
+            isInternetConnected()
+            .then(()=>{
+                props.editProfileReq(formdata)
+            })
+            .catch((err)=>{
+                toast("Oops", "Please Connect To Internet")
+            })
+           
+
+        } else {
+
+            formdata.append("full_name", fullname);
+            formdata.append("location", location);
+            
+            isInternetConnected()
+            .then(()=>{
+                props.editProfileReq(formdata)
+            })
+            .catch((err)=>{
+                toast("Oops", "Please Connect To Internet")
+            })
+        }
+
+    };
 
 
     //VIEW BEGINS
@@ -92,6 +163,8 @@ export default function EditProfile(props) {
 
             <StatusBar />
 
+            <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
+
             <SafeAreaView style={{ flex: 1 }}>
 
                 <HeaderComponent
@@ -100,7 +173,9 @@ export default function EditProfile(props) {
                     title={"EDIT PROFILE"}
                     thirditemtext={true}
                     texttwo={"SAVE"}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                    onPressFirstItem={() => { props.navigation.goBack() }}
+                    onPressThirdItem={() => { updateProfile() }}
+                />
 
 
                 <View style={{
@@ -108,19 +183,14 @@ export default function EditProfile(props) {
                     backgroundColor: Colors.fadeblack, alignSelf: 'center', marginTop: normalise(40),
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {picture ?
-                        <Image
-                            source={{ uri: profilePic }}
-                            style={{ height: normalise(120), width: normalise(120), borderRadius: normalise(60) }}
-                            resizeMode='contain' />
 
-                        : <TouchableOpacity onPress={() => { showPickerOptions() }}>
-                            <Image source={ImagePath.add_white} style={{
-                                height: normalise(40), width: normalise(40),
-                                borderRadius: normalise(20)
-                            }} />
-                        </TouchableOpacity>
-                    }
+                    <Image
+                        source={{ uri: profilePic }}
+                        style={{ height: normalise(120), width: normalise(120), borderRadius: normalise(60) }}
+                        resizeMode='contain' />
+
+
+
                 </View>
 
                 <TouchableOpacity style={{ marginTop: normalise(10) }} onPress={() => { showPickerOptions() }}>
@@ -139,6 +209,7 @@ export default function EditProfile(props) {
 
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}
+                        value={fullname}
                         placeholderTextColor={Colors.grey}
                         onChangeText={(text) => { setFullname(text) }}
                         borderColor={fullname === "" ? Colors.grey : Colors.white}
@@ -146,6 +217,7 @@ export default function EditProfile(props) {
 
                     <TextInputField text={"ENTER LOCATION"}
                         placeholder={"Type Location"}
+                        value={location}
                         placeholderTextColor={Colors.grey}
                         onChangeText={(text) => { setLocation(text) }}
                         borderColor={location === "" ? Colors.grey : Colors.white} />
@@ -155,4 +227,21 @@ export default function EditProfile(props) {
             </SafeAreaView>
         </View>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.UserReducer.status,
+        userProfileResp: state.UserReducer.userProfileResp
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        editProfileReq: (payload) => {
+            dispatch(editProfileRequest(payload))
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

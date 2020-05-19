@@ -1,6 +1,6 @@
 import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
 import { watchtokenAction, watchgetTokenAction } from './TokenSaga';
-import { watchLoginRequest, watchUserSignUpAction, watchuserProfileAction } from './UserSaga'
+import { watchLoginRequest, watchUserSignUpAction, watchuserProfileAction, watcheditProfileAction } from './UserSaga'
 
 
 
@@ -11,7 +11,8 @@ function* RootSaga() {
         watchgetTokenAction(),
         watchLoginRequest(),
         watchUserSignUpAction(),
-        watchuserProfileAction()
+        watchuserProfileAction(),
+        watcheditProfileAction()
     ])
 }
 
