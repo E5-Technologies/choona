@@ -39,6 +39,7 @@ function HomeItemList(props) {
         }
     };
     const onPressCommentbox = () => {
+
         if (props.onPressCommentbox) {
             props.onPressCommentbox()
         }
@@ -264,28 +265,30 @@ function HomeItemList(props) {
 
                 <View style={{
                     flexDirection: 'row', alignItems: 'flex-start',
-                    justifyContent: 'space-between', width:'100%', 
+                    justifyContent: 'space-between', width: '100%',
                 }}>
-                    
-                    <TouchableOpacity style={{width:'9%'}}
-                     onPress={() => { onPressImage() }}>
+
+                    <TouchableOpacity style={{ width: '9%' }}
+                        onPress={() => { onPressImage() }}>
                         <Image source={props.picture}
                             style={{ height: normalise(20), width: normalise(20) }}
                             resizeMode="contain" />
                     </TouchableOpacity>
 
 
-                    <View style={{width:'91%', flexDirection:'row', alignItems:'center',
-                justifyContent:'space-between',}}>
+                    <View style={{
+                        width: '91%', flexDirection: 'row', alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}>
 
                         <Text style={{
                             color: Colors.white, fontSize: 14,
                             fontFamily: 'ProximaNova-Semibold',
-                            
+
                         }} numberOfLines={1}>{props.name}</Text>
 
                         <Text style={{
-                            color: Colors.grey_text, 
+                            color: Colors.grey_text,
                             fontFamily: 'ProximaNovaAW07-Medium', fontSize: 12,
                         }}>{props.time} mins ago</Text>
                     </View>
@@ -293,9 +296,9 @@ function HomeItemList(props) {
 
                 <Text style={{
                     color: Colors.white, fontSize: 12,
-                    fontFamily: 'ProximaNovaAW07-Medium', bottom: 6, 
-                    width:'90.8%', 
-                    alignSelf:'flex-end',textAlign:'left',
+                    fontFamily: 'ProximaNovaAW07-Medium', bottom: 6,
+                    width: '90.8%',
+                    alignSelf: 'flex-end', textAlign: 'left',
                 }}>{props.content}</Text>
 
                 <View style={{
@@ -310,7 +313,7 @@ function HomeItemList(props) {
                         height: normalise(28), width: "48%", alignSelf: 'center',
                         borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
                         flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
-                    }} onPress={() => { props.onPressCommentbox() }} >
+                    }} onPress={() => { onPressCommentbox() }} >
 
 
 
@@ -327,7 +330,7 @@ function HomeItemList(props) {
                         height: normalise(28), width: "48%", alignSelf: 'center',
                         borderRadius: normalise(5), backgroundColor: Colors.fadeblack, borderWidth: normalise(0.2),
                         flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
-                    }} onPress={() => { props.onPressReactionbox() }} >
+                    }} onPress={() => { onPressReactionbox() }} >
 
 
 

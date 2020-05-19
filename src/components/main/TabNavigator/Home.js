@@ -136,12 +136,12 @@ function Home(props) {
       case USER_PROFILE_REQUEST:
         status = props.status
         break;
-      
-        case USER_PROFILE_SUCCESS:
+
+      case USER_PROFILE_SUCCESS:
         status = props.status
         break;
-      
-        case USER_PROFILE_FAILURE:
+
+      case USER_PROFILE_FAILURE:
         status = props.status
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
@@ -218,10 +218,8 @@ function Home(props) {
           })
         }}
         onPressCommentbox={() => {
-          props.navigation.navigate('HomeItemComments', {
-            comments: data.item.comments,
-            time: data.item.time, title: data.item.title
-          })
+
+          props.navigation.navigate('HomeItemComments')
         }}
         onPressSecondImage={() => {
           setModalVisible(true)
@@ -238,7 +236,7 @@ function Home(props) {
       backgroundColor: Colors.black
     }}>
 
-      <Loader visible={props.status === USER_PROFILE_REQUEST}/>
+      <Loader visible={props.status === USER_PROFILE_REQUEST} />
 
       <StatusBar />
 
@@ -252,7 +250,8 @@ function Home(props) {
         <HomeHeaderComponent
           firstitemtext={false}
           marginTop={0}
-          imageone={constants.profile_picture_base_url+props.userProfileResp.profile_image}
+          imageone={constants.profile_picture_base_url + props.userProfileResp.profile_image}
+          staticFirstImage={false}
           imageoneheight={30}
           imageonewidth={30}
           borderRadius={15}

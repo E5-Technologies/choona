@@ -87,20 +87,6 @@ export default function HomeItemComments(props) {
         )
     }
 
-    function renderHiddenItem(data) {
-        return (
-            <TouchableOpacity style={{
-                flexDirection: 'column', alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-
-                <Image source={ImagePath.boxactive}
-                    style={{ height: normalise(20), width: normalise(20) }} />
-
-                <Text>Unsave</Text>
-            </TouchableOpacity>
-        )
-    }
 
     return (
 
@@ -114,6 +100,7 @@ export default function HomeItemComments(props) {
                 <HeaderComponent
                     firstitemtext={false}
                     imageone={ImagePath.backicon}
+                    
                     //imagesecond={ImagePath.dp}
                     title="4 COMMENTS"
                     thirditemtext={false}
@@ -121,7 +108,6 @@ export default function HomeItemComments(props) {
                     // imagetwo={ImagePath.newmessage} 
                     imagetwoheight={25}
                     imagetwowidth={25}
-                    inner={true}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
                 <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
@@ -150,13 +136,13 @@ export default function HomeItemComments(props) {
                                     color: Colors.white, fontSize: 14, fontFamily: 'ProximaNova-Semibold',
                                 }}>
                                     andy88jones
-      </Text>
+                                     </Text>
                                 <Text style={{
                                     marginEnd: normalise(12.5),
                                     color: Colors.grey_text, fontSize: 12, fontFamily: 'ProximaNovaAW07-Medium',
                                 }}>
                                     8 mins ago
-      </Text>
+                                </Text>
                             </View>
 
                             <View>
@@ -165,7 +151,7 @@ export default function HomeItemComments(props) {
                                     fontFamily: 'ProximaNovaAW07-Medium'
                                 }}>
                                     Absolutely use to love this song, was an unreal banger back in the day
-      </Text>
+                                 </Text>
                             </View>
                         </View>
                     </View>

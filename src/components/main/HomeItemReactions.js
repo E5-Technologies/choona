@@ -308,6 +308,7 @@ export default function HomeItemReaction(props) {
 
                     <HomeHeaderComponent firstitemtext={false}
                         imageone={ImagePath.backicon}
+
                         //imagesecond={ImagePath.dp}
                         marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
                         title="10 REACTIONS"
@@ -317,17 +318,7 @@ export default function HomeItemReaction(props) {
                         imagetwowidth={25}
                         onPressFirstItem={() => { props.navigation.goBack() }} />
 
-
-
-
-
-
-
                     <ScrollView showsVerticalScrollIndicator={false}>
-
-
-
-
 
                         <View style={{ width: '92%', alignSelf: 'center', }}>
 
