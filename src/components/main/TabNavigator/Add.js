@@ -101,10 +101,10 @@ export default function AddSong(props) {
             <SafeAreaView style={{ flex: 1 }}>
 
                 <HeaderComponent firstitemtext={true}
-                    textone={"CANCEL"}
+                    textone={""}
                     title={"ADD SONG"}
                     thirditemtext={true}
-                    texttwo={"POST"}
+                    texttwo={""}
                 />
 
                 <View style={{
