@@ -181,7 +181,7 @@ function Profile(props) {
                                     fontFamily: 'ProximaNova-Semibold'
                                 }}><Text style={{
                                     color: Colors.white, fontFamily: 'ProximaNova-Semibold'
-                                }}>{following}</Text>  Following</Text>
+                                }}>{props.userProfileResp.following}</Text>  Following</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
@@ -191,7 +191,7 @@ function Profile(props) {
                                     fontFamily: 'ProximaNova-Semibold'
                                 }}><Text style={{
                                     color: Colors.white, fontFamily: 'ProximaNova-Semibold'
-                                }}>{followers}</Text>  Followers</Text>
+                                }}>{props.userProfileResp.follower}</Text>  Followers</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
