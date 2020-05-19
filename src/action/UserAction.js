@@ -2,7 +2,8 @@ import {
     USER_LOGIN_REQUEST,
     USER_SIGNUP_REQUEST,
     USER_PROFILE_REQUEST,
-    EDIT_PROFILE_REQUEST
+    EDIT_PROFILE_REQUEST,
+    USER_SEARCH_REQUEST
 }
     from './TypeConstants';
 
@@ -22,6 +23,11 @@ export const getProfileRequest = () => ({
 
 export const editProfileRequest = (payload) => ({
     type: EDIT_PROFILE_REQUEST,
+    payload
+});
+
+export const userSearchRequest = (payload) => ({
+    type: USER_SEARCH_REQUEST,
     payload
 });
 

@@ -16,15 +16,19 @@ import {
 
     EDIT_PROFILE_REQUEST,
     EDIT_PROFILE_SUCCESS,
-    EDIT_PROFILE_FAILURE
+    EDIT_PROFILE_FAILURE,
+
+    USER_SEARCH_REQUEST,
+    USER_SEARCH_SUCCESS,
+    USER_SEARCH_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
-
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
 
 const getItems = (state) => state.TokenReducer
+
 
 export function* loginAction(action) {
 
@@ -117,6 +121,24 @@ export function* editProfileAction(action) {
 };
 
 
+export function* userSearchAction(action) {
+    try {
+        const items = yield select(getItems);
+        
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call (postApi, 'user/search', action.payload, Header)
+        yield put ({type: USER_SEARCH_SUCCESS, data: response.data.data})
+
+    } catch (error) {
+        yield put ({type: USER_SEARCH_FAILURE, error: error})
+    }
+};
+
 
 export function* watchLoginRequest() {
     yield takeLatest(USER_LOGIN_REQUEST, loginAction);
@@ -132,4 +154,8 @@ export function* watchuserProfileAction() {
 
 export function* watcheditProfileAction() {
     yield takeLatest(EDIT_PROFILE_REQUEST, editProfileAction)
+};
+
+export function* watchuserSearchAction() {
+    yield takeLatest(USER_SEARCH_REQUEST, userSearchAction)
 };

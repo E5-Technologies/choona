@@ -134,24 +134,22 @@ export default function HomeItemComments(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: 14, fontFamily: 'ProximaNova-Semibold',
-                                }}>
-                                    andy88jones
-                                     </Text>
+                                }}>andy88jones</Text>
+
                                 <Text style={{
                                     marginEnd: normalise(12.5),
                                     color: Colors.grey_text, fontSize: 12, fontFamily: 'ProximaNovaAW07-Medium',
-                                }}>
-                                    8 mins ago
-                                </Text>
+                                }}>8 mins ago</Text>
+
                             </View>
 
                             <View>
+                                
                                 <Text style={{
                                     width: normalise(218), color: Colors.white, fontSize: 12, marginTop: normalise(2),
                                     fontFamily: 'ProximaNovaAW07-Medium'
-                                }}>
-                                    Absolutely use to love this song, was an unreal banger back in the day
-                                 </Text>
+                                }}>Absolutely use to love this song, was an unreal banger back in the day</Text>
+
                             </View>
                         </View>
                     </View>
@@ -215,9 +213,8 @@ export default function HomeItemComments(props) {
                             color: Colors.white,
                             marginEnd: normalise(10),
                             fontWeight: 'bold'
-                        }}>
-                            POST
-        </Text>
+                        }}>POST</Text>
+
                     </TouchableOpacity>
 
                 </View>
