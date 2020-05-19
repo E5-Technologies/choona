@@ -218,7 +218,7 @@ function SignUp(props) {
 
 
             <View style={{
-                height: '50%', flexDirection: 'column', alignItems: 'center',
+                height: Platform.OS === 'android' ?'45%':'50%', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'flex-end'
             }}>
 

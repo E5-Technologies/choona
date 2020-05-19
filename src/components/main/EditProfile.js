@@ -121,7 +121,7 @@ function EditProfile(props) {
         if (picture) {
 
             let uploadPicture = {
-                name: imageDetails.filename,
+                name: imageDetails.filename === undefined ? 'xyz.jpg' : imageDetails.filename,
                 type: imageDetails.mime,
                 uri: profilePic
             };
@@ -129,28 +129,28 @@ function EditProfile(props) {
             formdata.append("profile_image", uploadPicture);
             formdata.append("full_name", fullname);
             formdata.append("location", location);
-            
+
             isInternetConnected()
-            .then(()=>{
-                props.editProfileReq(formdata)
-            })
-            .catch((err)=>{
-                toast("Oops", "Please Connect To Internet")
-            })
-           
+                .then(() => {
+                    props.editProfileReq(formdata)
+                })
+                .catch((err) => {
+                    toast("Oops", "Please Connect To Internet")
+                })
+
 
         } else {
 
             formdata.append("full_name", fullname);
             formdata.append("location", location);
-            
+
             isInternetConnected()
-            .then(()=>{
-                props.editProfileReq(formdata)
-            })
-            .catch((err)=>{
-                toast("Oops", "Please Connect To Internet")
-            })
+                .then(() => {
+                    props.editProfileReq(formdata)
+                })
+                .catch((err) => {
+                    toast("Oops", "Please Connect To Internet")
+                })
         }
 
     };

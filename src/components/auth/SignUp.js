@@ -144,7 +144,7 @@ function Login(props) {
         else {
 
             let profileImage = {
-                name: imageDetails.filename,
+                name: imageDetails.filename === undefined ? 'xyz.jpg' : imageDetails.filename,
                 type: imageDetails.mime,
                 uri: Platform.OS === "android" ? profilePic : profilePic.replace("file://", "")
             }
