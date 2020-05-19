@@ -77,7 +77,7 @@ export default function Notification(props) {
 
     function renderTodayitem(data) {
         return (
-            <ActivityListItem image={data.item.picture} title={data.item.title}
+            <ActivityListItem image={""} title={data.item.title}
                 follow={data.item.type === "Follow" ? true : false}
                 bottom={data.index === today.length - 1 ? true : false}
                 marginBottom={data.index === today.length - 1 ? normalise(10) : normalise(0)}
@@ -88,7 +88,7 @@ export default function Notification(props) {
 
     function renderPreviousItem(data) {
         return (
-            <ActivityListItem image={data.item.picture} title={data.item.title}
+            <ActivityListItem image={""} title={data.item.title}
                 bottom={data.index === previous.length - 1 ? true : false}
                 follow={data.item.type === "Follow" ? true : false}
                 marginBottom={data.index === previous.length - 1 ? normalise(20) : normalise(0)}

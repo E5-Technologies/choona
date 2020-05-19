@@ -149,8 +149,8 @@ function Login(props) {
                 uri: Platform.OS === "android" ? profilePic : profilePic.replace("file://", "")
             }
 
-
             let formdata = new FormData;
+
             formdata.append("full_name", fullname);
 
             formdata.append("profile_image", profileImage);

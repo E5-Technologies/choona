@@ -167,7 +167,7 @@ export default function HomeItemReaction(props) {
 
     function renderItem(data) {
         return (
-            <ActivityListItem image={data.item.picture} title={data.item.name}
+            <ActivityListItem image={""} title={data.item.name}
                 follow={data.item.type === "Follow" ? true : false}
                 //  bottom={data.index === reaction1.length - 1 ? true : false} 
                 // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
