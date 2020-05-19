@@ -3,7 +3,8 @@ import {
     USER_SIGNUP_REQUEST,
     USER_PROFILE_REQUEST,
     EDIT_PROFILE_REQUEST,
-    USER_SEARCH_REQUEST
+    USER_SEARCH_REQUEST,
+    USER_FOLLOW_UNFOLLOW_REQUEST
 }
     from './TypeConstants';
 
@@ -31,4 +32,8 @@ export const userSearchRequest = (payload) => ({
     payload
 });
 
+export const userFollowUnfollowRequest = (payload) => ({
+    type: USER_FOLLOW_UNFOLLOW_REQUEST,
+    payload
+});
 
