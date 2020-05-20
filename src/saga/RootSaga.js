@@ -2,7 +2,8 @@ import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
 import { watchtokenAction, watchgetTokenAction } from './TokenSaga';
 import {
     watchLoginRequest, watchUserSignUpAction, watchuserProfileAction, watcheditProfileAction,
-    watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction
+    watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction,
+    watchhomePageAction
 } from './UserSaga'
 
 import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSaga'
@@ -22,7 +23,8 @@ function* RootSaga() {
         watchuserFollowOrUnfollowAction(),
         watchSearchSongsForPostRequest(),
         watchCreatePostRequest(),
-        watchothersProfileAction()
+        watchothersProfileAction(),
+        watchhomePageAction()
     ])
 }
 

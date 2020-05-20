@@ -28,7 +28,11 @@ import {
 
     OTHERS_PROFILE_REQUEST,
     OTHERS_PROFILE_SUCCESS,
-    OTHERS_PROFILE_FAILURE
+    OTHERS_PROFILE_FAILURE,
+
+    HOME_PAGE_REQUEST,
+    HOME_PAGE_SUCCESS,
+    HOME_PAGE_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
@@ -51,11 +55,13 @@ export function* loginAction(action) {
 
         if (response.data.status === 200) {
 
-            yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token,
-            "registerType": response.data.data.register_type  }))
+            yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({
+                "token": response.data.token,
+                "registerType": response.data.data.register_type
+            }))
 
             yield put({ type: USER_LOGIN_SUCCESS, data: response.data.data });
-            yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType:response.data.data.register_type  })
+            yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType: response.data.data.register_type })
 
 
         } else {
@@ -79,11 +85,13 @@ export function* UserSignUpAction(action) {
 
         const response = yield call(postApi, 'user/signup', action.payload, header)
 
-        yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({ "token": response.data.token,
-        "registerType": response.data.data.register_type }))
+        yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({
+            "token": response.data.token,
+            "registerType": response.data.data.register_type
+        }))
 
         yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
-        yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType:response.data.data.register_type  })
+        yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType: response.data.data.register_type })
 
     } catch (error) {
         yield put({ type: USER_SIGNUP_FAILURE, error: error })
@@ -101,11 +109,11 @@ export function* userProfileAction(action) {
             accesstoken: items.token
         };
 
-        const response = yield call (getApi, 'user/profile', Header);
-        yield put ({type: USER_PROFILE_SUCCESS, data:response.data.data});
+        const response = yield call(getApi, 'user/profile', Header);
+        yield put({ type: USER_PROFILE_SUCCESS, data: response.data.data });
 
     } catch (error) {
-        yield put ({type: USER_PROFILE_FAILURE, error: error})
+        yield put({ type: USER_PROFILE_FAILURE, error: error })
     }
 };
 
@@ -120,16 +128,73 @@ export function* editProfileAction(action) {
             accesstoken: items.token
         };
 
-        const response = yield call (postApi, 'user/profile/update', action.payload,  Header);
-        yield put ({type: EDIT_PROFILE_SUCCESS, data:response.data.data});
+        const response = yield call(postApi, 'user/profile/update', action.payload, Header);
+        yield put({ type: EDIT_PROFILE_SUCCESS, data: response.data.data });
 
     } catch (error) {
-        yield put ({type: EDIT_PROFILE_FAILURE, error: error})
+        yield put({ type: EDIT_PROFILE_FAILURE, error: error })
     }
 };
 
 
 export function* userSearchAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call(postApi, 'user/search', action.payload, Header)
+        yield put({ type: USER_SEARCH_SUCCESS, data: response.data.data })
+
+    } catch (error) {
+        yield put({ type: USER_SEARCH_FAILURE, error: error })
+    }
+};
+
+
+export function* userFollowOrUnfollowAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call(postApi, 'follower/user/store', action.payload, Header);
+        yield put({ type: USER_FOLLOW_UNFOLLOW_SUCCESS, data: response.data.data });
+
+    } catch (error) {
+        yield put({ type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error })
+    }
+};
+
+
+export function* othersProfileAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call(getApi, `user/profile/${action.id}`, Header);
+        yield put({ type: OTHERS_PROFILE_SUCCESS, data: response.data.data });
+
+    } catch (error) {
+        yield put({ type: OTHERS_PROFILE_FAILURE, error: error })
+    }
+};
+
+
+export function* homePageAction(action) {
     try {
         const items = yield select(getItems);
         
@@ -139,49 +204,11 @@ export function* userSearchAction(action) {
             accesstoken: items.token
         };
 
-        const response = yield call (postApi, 'user/search', action.payload, Header)
-        yield put ({type: USER_SEARCH_SUCCESS, data: response.data.data})
+        const response = yield call (getApi, 'post/list', Header);
+        yield put ({type: HOME_PAGE_SUCCESS, data: response.data.data})
 
     } catch (error) {
-        yield put ({type: USER_SEARCH_FAILURE, error: error})
-    }
-};
-
-
-export function* userFollowOrUnfollowAction(action) {
-    try {
-        const items = yield select (getItems);
-        
-        const Header = {
-            Accept: 'application/json',
-            contenttype: 'application/json',
-            accesstoken: items.token
-        };
-
-        const response = yield call (postApi, 'follower/user/store', action.payload, Header);
-        yield put({type: USER_FOLLOW_UNFOLLOW_SUCCESS, data: response.data.data});
-
-    } catch (error) {
-        yield put({type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error})
-    }
-};
-
-
-export function* othersProfileAction(action) {
-    try {
-        const items = yield select (getItems);
-        
-        const Header = {
-            Accept: 'application/json',
-            contenttype: 'application/json',
-            accesstoken: items.token
-        };
-
-        const response = yield call (getApi, `user/profile/${action.id}`, Header);
-        yield put ({type: OTHERS_PROFILE_SUCCESS, data:response.data.data});
-
-    } catch (error) {
-        yield put ({type: OTHERS_PROFILE_FAILURE, error: error})
+        yield put({ type: HOME_PAGE_FAILURE, error: error })
     }
 };
 
@@ -207,9 +234,13 @@ export function* watchuserSearchAction() {
 };
 
 export function* watchuserFollowOrUnfollowAction() {
-    yield takeLatest( USER_FOLLOW_UNFOLLOW_REQUEST, userFollowOrUnfollowAction)
+    yield takeLatest(USER_FOLLOW_UNFOLLOW_REQUEST, userFollowOrUnfollowAction)
 };
 
 export function* watchothersProfileAction() {
     yield takeLatest(OTHERS_PROFILE_REQUEST, othersProfileAction)
-}
+};
+
+export function* watchhomePageAction() {
+    yield takeLatest(HOME_PAGE_REQUEST, homePageAction)
+};
