@@ -38,9 +38,9 @@ export async function postApi(url, payload, header) {
 
     return await axios.post(`${constants.BASE_URL}/${url}`, payload, {
         headers: {
-            "Accept": header.Accept,
-            'Content-Type': header.contenttype,
-            'x-access-token': header.accesstoken
+            'Accept': header.Accept,
+            'Content-type': header.contenttype,
+            'x-access-token': header.accesstoken,
         }
     });
 };

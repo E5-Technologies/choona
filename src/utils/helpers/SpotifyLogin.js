@@ -53,10 +53,10 @@ export const getSpotifyToken = async () => {
         const value = await AsyncStorage.getItem(constants.SPOTIFY)
 
         let accessToken = JSON.parse(value).accessToken;
-        let accessTokenExpirationDate = JSON.parse(value).accessToken;
+        let accessTokenExpirationDate = JSON.parse(value).accessTokenExpirationDate;
         let refreshToken = JSON.parse(value).refreshToken;
         let currentTime = moment().utc().format(`YYYY-MM-DDTHH:mm:ssZ`);
-
+        
         if (accessTokenExpirationDate > currentTime) {
 
             return `Bearer ${accessToken}`;

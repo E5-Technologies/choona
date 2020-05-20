@@ -18,6 +18,13 @@ import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from './../ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../../utils/MyStatusBar';
+import { connect } from 'react-redux';
+import {
+    SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
+    SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+    SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
+} from '../../../action/TypeConstants';
+import { seachSongsForPostRequest } from '../../../action/PostAction';
 
 const flatlistdata = [
     {
@@ -64,24 +71,35 @@ const flatlistdata = [
 
 let flatlistdata1 = []
 
-export default function AddSong(props) {
+function AddSong(props) {
 
     const [search, setSearch] = useState("")
+
+    function singerList(artists) {
+
+        let names = ""
+
+        artists.map((val, index) => {
+            names = names + val.name + ", "
+        })
+
+        return names
+    }
 
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={data.item.image}
-                title={data.item.title}
-                singer={data.item.singer}
+                image={data.item.album.images[0].url}
+                title={data.item.name}
+                singer={singerList(data.item.artists)}
                 marginRight={normalise(50)}
                 marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
                 change={true}
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
                     props.navigation.navigate("CreatePost", {
-                        image: data.item.image,
-                        title: data.item.title, title2: data.item.singer
+                        image: data.item.album.images[0].url,
+                        title: data.item.name, title2: singerList(data.item.artists), details: data.item
                     })
                 }} />
         )
@@ -119,7 +137,10 @@ export default function AddSong(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text) }} />
+                        onChangeText={(text) => {
+                            props.seachSongsForPostRequest(text)
+                            setSearch(text)
+                        }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -151,7 +172,7 @@ export default function AddSong(props) {
                         <Text style={{
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
                             fontWeight: 'bold'
-                        }}> RESULTS (23)</Text>
+                        }}>{` RESULTS (${props.spotifyResponse.length})`}</Text>
 
                     </View>}
 
@@ -171,7 +192,7 @@ export default function AddSong(props) {
 
                     : <FlatList
                         style={{ marginTop: normalise(10) }}
-                        data={flatlistdata}
+                        data={props.spotifyResponse}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false}
@@ -181,3 +202,22 @@ export default function AddSong(props) {
         </View>
     )
 }
+
+const mapStateToProps = (state) => {
+
+    return {
+        status: state.PostReducer.status,
+        spotifyResponse: state.PostReducer.spotifyResponse
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        seachSongsForPostRequest: (payload) => {
+            dispatch(seachSongsForPostRequest(payload))
+        },
+
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddSong);

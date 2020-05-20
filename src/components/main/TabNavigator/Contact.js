@@ -72,7 +72,7 @@ export default function Contact(props) {
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={data.item.image}
+                image={""}
                 title={data.item.title}
                 singer={data.item.singer}
                 marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0} />

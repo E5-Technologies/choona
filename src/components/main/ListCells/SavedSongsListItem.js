@@ -194,7 +194,7 @@ function SavedSongListItem(props) {
             }}>
 
                 <TouchableOpacity onPress={() => { onPressImage() }}>
-                    <Image source={props.image}
+                    <Image source={props.image===""?ImagePath.profiletrack4:{uri: props.image}}
                         style={{ height: normalise(40), width: normalise(40) }}
                         resizeMode="contain" />
 

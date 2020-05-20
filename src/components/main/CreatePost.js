@@ -17,79 +17,44 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
+import { connect } from 'react-redux';
+import {
+    CREATE_POST_REQUEST,
+    CREATE_POST_SUCCESS,
+    CREATE_POST_FAILURE
 
-const flatlistdata = [
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack3,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack4,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack5,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack6,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-];
+} from '../../action/TypeConstants';
+import { createPostRequest } from '../../action/PostAction';
 
-const flatlistdata1 = []
-
-export default function AddSong(props) {
+function AddSong(props) {
 
     const [search, setSearch] = useState("");
     const [imgsource, setImgSource] = useState(props.route.params.image)
     const [title1, setTitle1] = useState(props.route.params.title)
     const [title2, setTitle2] = useState(props.route.params.title2)
 
-    function renderItem(data) {
-        return (
-            <SavedSongsListItem
-                image={data.item.image}
-                title={data.item.title}
-                singer={data.item.singer}
-                marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
-                change={true}
-                image2={ImagePath.addicon} />
-        )
+    function createPost() {
+
+        var payload = {
+            "post_content": search,
+            "social_type": "spotify",
+            "song_name": title1,
+            "song_uri": props.route.params.details.preview_url,
+            "song_image": imgsource,
+            "artist_name": title2,
+            "album_name": props.route.params.details.album.name
+        }
+
+        props.createPostRequest(payload);
+
     }
-
-
 
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
-            
+
             <SafeAreaView style={{ flex: 1 }}>
 
                 <HeaderComponent firstitemtext={true}
@@ -98,6 +63,7 @@ export default function AddSong(props) {
                     thirditemtext={true}
                     texttwo={"POST"}
                     onPressFirstItem={() => { props.navigation.goBack() }}
+                    onPressThirdItem={() => { createPost() }}
                 />
 
                 <View style={{ marginTop: normalise(20), width: '95%', alignSelf: 'center', }}>
@@ -124,7 +90,7 @@ export default function AddSong(props) {
                         }}>
 
                             <TouchableOpacity>
-                                <Image source={imgsource}
+                                <Image source={{ uri: imgsource }}
                                     style={{ height: normalise(40), width: normalise(40), borderRadius: normalise(5) }}
                                     resizeMode='contain' />
                             </TouchableOpacity>
@@ -153,3 +119,22 @@ export default function AddSong(props) {
         </View>
     )
 }
+
+const mapStateToProps = (state) => {
+
+    return {
+        status: state.PostReducer.status,
+        createPostResponse: state.PostReducer.createPostResponse
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createPostRequest: (payload) => {
+            dispatch(createPostRequest(payload))
+        },
+
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddSong);
