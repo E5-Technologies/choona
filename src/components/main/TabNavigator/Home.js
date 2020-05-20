@@ -387,7 +387,6 @@ function Home(props) {
                   }} />
 
                   <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
-
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{

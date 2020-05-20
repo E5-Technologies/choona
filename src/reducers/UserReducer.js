@@ -17,7 +17,11 @@ import {
 
     USER_SEARCH_REQUEST,
     USER_SEARCH_SUCCESS,
-    USER_SEARCH_FAILURE
+    USER_SEARCH_FAILURE,
+
+    USER_FOLLOW_UNFOLLOW_REQUEST,
+    USER_FOLLOW_UNFOLLOW_SUCCESS,
+    USER_FOLLOW_UNFOLLOW_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -28,7 +32,8 @@ const initialState = {
     signupResponse: {},
     userProfileResp: {},
     editProfileResp: {},
-    userSearch: []
+    userSearch: [],
+    followUnfollowResp: {}
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -128,6 +133,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case USER_SIGNUP_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case USER_FOLLOW_UNFOLLOW_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case USER_FOLLOW_UNFOLLOW_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                followUnfollowResp: action.data
+            };
+
+        case USER_FOLLOW_UNFOLLOW_FAILURE:
             return {
                 ...state,
                 status: action.type,

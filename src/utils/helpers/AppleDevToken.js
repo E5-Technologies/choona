@@ -11,7 +11,10 @@ export const getAppleDevToken = async () => {
             
             const token = await getAppleDevelopersToken(constants.appleGetTokenApi)
 
-            await AsyncStorage.setItem(constants.APPLE, JSON.stringify({token: token.data.token, token_exp: token.data.token_exp}))
+            await AsyncStorage.setItem(constants.APPLE, JSON.stringify({
+                token: token.data.token, 
+                token_exp: token.data.token_exp
+            }))
 
             return token.data.token
         } 
@@ -24,7 +27,10 @@ export const getAppleDevToken = async () => {
             if(currentTime > tokenexp){
 
             const token = await getAppleDevelopersToken(constants.appleGetTokenApi)
-            await AsyncStorage.setItem(constants.APPLE, JSON.stringify({token: token.data.token, token_exp: token.data.token_exp}))
+            await AsyncStorage.setItem(constants.APPLE, JSON.stringify({
+                token: token.data.token, 
+                token_exp: token.data.token_exp
+            }))
             return token.data.token ;
             }
             else{
