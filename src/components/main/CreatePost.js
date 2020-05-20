@@ -37,13 +37,17 @@ function AddSong(props) {
 
         var payload = {
             "post_content": search,
-            "social_type": "spotify",
+            "social_type": props.route.params.registerType === "spotify" ? "spotify" : 'apple',
             "song_name": title1,
-            "song_uri": props.route.params.details.preview_url,
+            "song_uri": props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
+             props.route.params.details.previewUrl,
             "song_image": imgsource,
             "artist_name": title2,
-            "album_name": props.route.params.details.album.name
-        }
+            "album_name":  props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
+            props.route.params.details.collectionName
+        };
+
+
 
         props.createPostRequest(payload);
 
@@ -96,6 +100,7 @@ function AddSong(props) {
                             </TouchableOpacity>
 
                             <View style={{ alignItems: 'flex-start', justifyContent: 'center' }}>
+                                
                                 <Text style={{
                                     marginLeft: normalise(20), color: Colors.white,
                                     fontSize: normalise(11)
@@ -103,8 +108,9 @@ function AddSong(props) {
 
                                 <Text style={{
                                     marginLeft: normalise(20), color: Colors.grey,
-                                    fontSize: normalise(10)
+                                    fontSize: normalise(10), width: '80%'
                                 }} numberOfLines={1} >{title2}</Text>
+
                             </View>
 
 

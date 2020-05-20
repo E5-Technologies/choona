@@ -46,8 +46,7 @@ function OthersProfile(props) {
 
 
     const [id, setId] = useState(props.route.params.id)
-    const [following, setFollowing] = useState("120");
-    const [followers, setFollowers] = useState('873');
+    const [isFollowing, setIsFollowing ] = useState(props.route.params.following)
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -195,14 +194,15 @@ function OthersProfile(props) {
                     <TouchableOpacity
                         style={{
                             height: normalise(30), width: '45%', borderRadius: normalise(15),
-                            backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
+                            backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
+                             alignItems: 'center', justifyContent: 'center'
                         }}>
 
                         <Text style={{
-                            color: Colors.white, fontSize: normalise(11), color: Colors.black,
+                            fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,
                             fontFamily: 'ProximaNova-Bold'
                         }}>
-                            FOLLOW
+                           {isFollowing?"Following":"Follow"}
                             </Text>
 
                     </TouchableOpacity>
