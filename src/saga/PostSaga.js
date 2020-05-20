@@ -11,10 +11,12 @@ import {
 
 
 } from '../action/TypeConstants';
-import { postApi, getApi, getSpotifyApi } from "../utils/helpers/ApiRequest"
+import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin'
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import { Header } from 'react-native/Libraries/NewAppScreen';
 
 const getItems = (state) => state.TokenReducer
 
@@ -23,10 +25,13 @@ export function* searchSongsForPostAction(action) {
 
     const spotifyToken = yield call(getSpotifyToken);
     const items = yield select(getItems);
+    const AppleToken = yield call (getAppleDevToken);
 
     let spotifyHeader = {
-        "Authorization": `${spotifyToken}`,
-    }
+        "Authorization": items.registerType ===  "spotify" ?`${spotifyToken}`:`${AppleToken}`,
+    };
+
+    console.log("spotifyHeader"+JSON.stringify(spotifyHeader))
 
     try {
 
@@ -34,6 +39,10 @@ export function* searchSongsForPostAction(action) {
             const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.payload)}&type=track`, spotifyHeader)
 
             yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items });
+        }
+        else{
+            const response = yield call (getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.payload}&entity=song&limit=20`, spotifyHeader)
+            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results});
         }
 
     } catch (error) {

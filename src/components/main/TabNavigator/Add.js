@@ -26,48 +26,6 @@ import {
 } from '../../../action/TypeConstants';
 import { seachSongsForPostRequest } from '../../../action/PostAction';
 
-const flatlistdata = [
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack3,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack4,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack5,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack6,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-];
 
 let flatlistdata1 = []
 
@@ -84,29 +42,28 @@ function AddSong(props) {
         })
 
         return names
-    }
+    };
 
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={data.item.album.images[0].url}
-                title={data.item.name}
-                singer={singerList(data.item.artists)}
+                image={props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100}
+                title={props.registerType === 'spotify' ? data.item.name : data.item.trackName}
+                singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName}
                 marginRight={normalise(50)}
-                marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
+                marginBottom={data.index === props.spotifyResponse.length - 1 ? normalise(20) : 0}
                 change={true}
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
                     props.navigation.navigate("CreatePost", {
-                        image: data.item.album.images[0].url,
-                        title: data.item.name, title2: singerList(data.item.artists), details: data.item
+                        image: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100,
+                        title: props.registerType === 'spotify' ? data.item.name : data.item.trackName, 
+                        title2: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName, 
+                        details: data.item, registerType:props.registerType
                     })
-                }} />
+                }} 
+                />
         )
-    }
-
-    if (search !== "") {
-        flatlistdata1 = [...flatlistdata]
     }
 
 
@@ -149,7 +106,7 @@ function AddSong(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), flatlistdata1 = [] }}
+                        <TouchableOpacity onPress={() => { setSearch("")}}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -163,12 +120,13 @@ function AddSong(props) {
 
                 </View>
 
-                {_.isEmpty(flatlistdata1) ? null :
+                {_.isEmpty(props.spotifyResponse) ? null :
                     <View style={{
                         flexDirection: 'row', alignItems: 'center', width: '90%', alignSelf: 'center',
                         marginTop: normalise(5)
                     }}>
-                        <Image source={ImagePath.spotifyicon} style={{ height: normalise(20), width: normalise(20) }} />
+                        <Image source={props.registerType === "spotify" ?ImagePath.spotifyicon: ImagePath.applemusic}
+                         style={{ height: normalise(20), width: normalise(20) }} />
                         <Text style={{
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
                             fontWeight: 'bold'
@@ -177,7 +135,7 @@ function AddSong(props) {
                     </View>}
 
 
-                {_.isEmpty(flatlistdata1) ?
+                {_.isEmpty(props.spotifyResponse) ?
 
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
@@ -207,7 +165,8 @@ const mapStateToProps = (state) => {
 
     return {
         status: state.PostReducer.status,
-        spotifyResponse: state.PostReducer.spotifyResponse
+        spotifyResponse: state.PostReducer.spotifyResponse,
+        registerType: state.TokenReducer.registerType
     }
 };
 

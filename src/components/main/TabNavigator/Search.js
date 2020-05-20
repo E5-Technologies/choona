@@ -194,8 +194,9 @@ function Search(props) {
                 follow={data.item.isFollowing ? false : true}
                 bottom={data.index === props.userSearch.length - 1 ? true : false}
                 marginBottom={data.index === props.userSearch.length - 1 ? normalise(80) : normalise(0)}
-                onPressImage={() => { props.navigation.navigate("OthersProfile", {id: data.item._id}) }}
-                onPress={() => { props.followReq({ follower_id: data.item._id }) }}
+                onPressImage={() => { props.navigation.navigate("OthersProfile", 
+                {id: data.item._id, following: data.item.isFollowing}) }}
+                onPress={() => { props.followReq({ follower_id: data.item._id}) }}
             />
         )
     };

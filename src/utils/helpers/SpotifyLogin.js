@@ -59,6 +59,8 @@ export const getSpotifyToken = async () => {
 
         if (accessTokenExpirationDate > currentTime) {
 
+            console.log("HERE")
+
             return `Bearer ${accessToken}`;
 
         } else {
