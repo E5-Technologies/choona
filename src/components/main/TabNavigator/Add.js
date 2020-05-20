@@ -118,7 +118,9 @@ function AddSong(props) {
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
-                            props.seachSongsForPostRequest(text)
+                            if (text.length >= 1) {
+                                props.seachSongsForPostRequest(text)
+                            }
                             setSearch(text)
                         }} />
 

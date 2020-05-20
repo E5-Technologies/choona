@@ -31,7 +31,7 @@ export function* searchSongsForPostAction(action) {
         "Authorization": items.registerType ===  "spotify" ?`${spotifyToken}`:`${AppleToken}`,
     };
 
-    console.log("spotifyHeader"+JSON.stringify(spotifyHeader))
+    //console.log("spotifyHeader"+JSON.stringify(spotifyHeader))
 
     try {
 
