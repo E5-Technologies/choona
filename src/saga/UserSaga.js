@@ -20,7 +20,11 @@ import {
 
     USER_SEARCH_REQUEST,
     USER_SEARCH_SUCCESS,
-    USER_SEARCH_FAILURE
+    USER_SEARCH_FAILURE,
+
+    USER_FOLLOW_UNFOLLOW_REQUEST,
+    USER_FOLLOW_UNFOLLOW_SUCCESS,
+    USER_FOLLOW_UNFOLLOW_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
@@ -140,6 +144,25 @@ export function* userSearchAction(action) {
 };
 
 
+export function* userFollowOrUnfollowAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call (postApi, 'follower/user/store', action.payload, Header);
+        yield put({type: USER_FOLLOW_UNFOLLOW_SUCCESS, data: response.data.data});
+
+    } catch (error) {
+        yield put({type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error})
+    }
+};
+
+
 export function* watchLoginRequest() {
     yield takeLatest(USER_LOGIN_REQUEST, loginAction);
 };
@@ -159,3 +182,7 @@ export function* watcheditProfileAction() {
 export function* watchuserSearchAction() {
     yield takeLatest(USER_SEARCH_REQUEST, userSearchAction)
 };
+
+export function* watchuserFollowOrUnfollowAction() {
+    yield takeLatest( USER_FOLLOW_UNFOLLOW_REQUEST, userFollowOrUnfollowAction)
+}

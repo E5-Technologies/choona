@@ -21,9 +21,12 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
     USER_SEARCH_REQUEST, USER_SEARCH_SUCCESS,
-    USER_SEARCH_FAILURE
+    USER_SEARCH_FAILURE,
+    USER_FOLLOW_UNFOLLOW_REQUEST,
+    USER_FOLLOW_UNFOLLOW_SUCCESS,
+    USER_FOLLOW_UNFOLLOW_FAILURE
 } from '../../../action/TypeConstants';
-import { userSearchRequest } from '../../../action/UserAction';
+import { userSearchRequest, userFollowUnfollowRequest } from '../../../action/UserAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
@@ -165,6 +168,19 @@ function Search(props) {
                 toast('Opps', 'Something went wrong, Please try again')
                 status = props.status
                 break;
+
+            case USER_FOLLOW_UNFOLLOW_REQUEST:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_SUCCESS:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_FAILURE:
+                toast('Opps', 'Something went wrong, Please try again')
+                status = props.status
+                break;
         }
     };
 
@@ -175,10 +191,11 @@ function Search(props) {
             <ActivityListItem
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
-                follow={true}
+                follow={data.item.isFollowing ? false : true}
                 bottom={data.index === props.userSearch.length - 1 ? true : false}
                 marginBottom={data.index === props.userSearch.length - 1 ? normalise(80) : normalise(0)}
                 onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                onPress={() => { props.followReq({ follower_id: data.item._id }) }}
             />
         )
     };
@@ -707,6 +724,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         userSearchReq: (payload) => {
             dispatch(userSearchRequest(payload))
+        },
+
+        followReq: (payload) => {
+            dispatch(userFollowUnfollowRequest(payload))
         }
     }
 };

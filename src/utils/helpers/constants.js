@@ -10,5 +10,7 @@ export default {
     spotify_profile_uri: "https://api.spotify.com/v1/me",
     profile_picture_base_url: 'http://choona.dedicateddevelopers.us/uploads/user/thumb/',
     BASE_URL: "http://choona.dedicateddevelopers.us/api",
+    APPLE: "APPLETOKEN",
+    appleGetTokenApi: 'http://choona.dedicateddevelopers.us/api/applemusic/token',
     
 }

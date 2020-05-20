@@ -43,4 +43,11 @@ export async function postApi(url, payload, header) {
             'x-access-token': header.accesstoken
         }
     });
-}
+};
+
+export async function getAppleDevelopersToken(url , header) {
+   
+    console.log("URL: ", `${url}`);
+
+    return await axios.get(url);
+};
