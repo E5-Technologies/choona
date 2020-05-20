@@ -25,6 +25,11 @@ import {
 
 } from '../../action/TypeConstants';
 import { createPostRequest } from '../../action/PostAction';
+import Loader from '../../widgets/AuthLoader';
+import toast from '../../utils/helpers/ShowErrorAlert';
+
+
+let status;
 
 function AddSong(props) {
 
@@ -40,22 +45,43 @@ function AddSong(props) {
             "social_type": props.route.params.registerType === "spotify" ? "spotify" : 'apple',
             "song_name": title1,
             "song_uri": props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
-             props.route.params.details.previewUrl,
+                props.route.params.details.previewUrl,
             "song_image": imgsource,
             "artist_name": title2,
-            "album_name":  props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
-            props.route.params.details.collectionName
+            "album_name": props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
+                props.route.params.details.collectionName
         };
 
 
 
         props.createPostRequest(payload);
 
-    }
+    };
+
+    if (status === "" || status !== props.status) {
+        switch (props.status) {
+
+            case CREATE_POST_REQUEST:
+                status = props.status
+                break;
+
+            case CREATE_POST_SUCCESS:
+                props.navigation.goBack()
+                status = props.status
+                break;
+
+            case CREATE_POST_FAILURE:
+                toast("Error", "Something Went Wong, Please Try Again")
+                status = props.status
+                break;
+        }
+    };
 
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
+
+            <Loader visible={props.status === CREATE_POST_REQUEST} />
 
             <StatusBar />
 

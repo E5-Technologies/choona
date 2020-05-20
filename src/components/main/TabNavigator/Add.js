@@ -25,13 +25,34 @@ import {
     SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 } from '../../../action/TypeConstants';
 import { seachSongsForPostRequest } from '../../../action/PostAction';
+import Loader from '../../../widgets/AuthLoader';
+import toast from '../../../utils/helpers/ShowErrorAlert';
 
-
-let flatlistdata1 = []
+let status;
 
 function AddSong(props) {
 
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState("");
+    const [data, setData] = useState([])
+
+    if (status === "" || status !== props.status) {
+        switch (props.status) {
+
+            case SEARCH_SONG_REQUEST_FOR_POST_REQUEST:
+                status = props.status
+                break;
+
+            case SEARCH_SONG_REQUEST_FOR_POST_SUCCESS:
+                setData(props.spotifyResponse)
+                status = props.status
+                break;
+
+            case SEARCH_SONG_REQUEST_FOR_POST_FAILURE:
+                toast("Error", "Something Went Wong, Please Try Again")
+                status = props.status
+                break;
+        }
+    };
 
     function singerList(artists) {
 
@@ -57,12 +78,12 @@ function AddSong(props) {
                 onPressSecondImage={() => {
                     props.navigation.navigate("CreatePost", {
                         image: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100,
-                        title: props.registerType === 'spotify' ? data.item.name : data.item.trackName, 
-                        title2: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName, 
-                        details: data.item, registerType:props.registerType
+                        title: props.registerType === 'spotify' ? data.item.name : data.item.trackName,
+                        title2: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
+                        details: data.item, registerType: props.registerType
                     })
-                }} 
-                />
+                }}
+            />
         )
     }
 
@@ -72,6 +93,8 @@ function AddSong(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+
+            <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -106,7 +129,7 @@ function AddSong(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch("")}}
+                        <TouchableOpacity onPress={() => { setSearch(""), setData([]) }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -120,13 +143,13 @@ function AddSong(props) {
 
                 </View>
 
-                {_.isEmpty(props.spotifyResponse) ? null :
+                {_.isEmpty(data) ? null :
                     <View style={{
                         flexDirection: 'row', alignItems: 'center', width: '90%', alignSelf: 'center',
                         marginTop: normalise(5)
                     }}>
-                        <Image source={props.registerType === "spotify" ?ImagePath.spotifyicon: ImagePath.applemusic}
-                         style={{ height: normalise(20), width: normalise(20) }} />
+                        <Image source={props.registerType === "spotify" ? ImagePath.spotifyicon : ImagePath.applemusic}
+                            style={{ height: normalise(20), width: normalise(20) }} />
                         <Text style={{
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
                             fontWeight: 'bold'
@@ -135,7 +158,7 @@ function AddSong(props) {
                     </View>}
 
 
-                {_.isEmpty(props.spotifyResponse) ?
+                {_.isEmpty(data) ?
 
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
@@ -150,7 +173,7 @@ function AddSong(props) {
 
                     : <FlatList
                         style={{ marginTop: normalise(10) }}
-                        data={props.spotifyResponse}
+                        data={data}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false}
