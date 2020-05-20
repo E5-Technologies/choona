@@ -16,7 +16,7 @@ export const getAppleDevToken = async () => {
                 token_exp: token.data.token_exp
             }))
 
-            return token.data.token
+            return `Bearer ${token.data.token}`
         } 
         else{
 
@@ -31,10 +31,10 @@ export const getAppleDevToken = async () => {
                 token: token.data.token, 
                 token_exp: token.data.token_exp
             }))
-            return token.data.token ;
+            return `Bearer ${token.data.token}`;
             }
             else{
-            return  devToken
+            return  `Bearer ${devToken}`;
             }
         }
 

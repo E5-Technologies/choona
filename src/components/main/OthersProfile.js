@@ -15,6 +15,14 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
+import { OTHERS_PROFILE_REQUEST, OTHERS_PROFILE_SUCCESS, OTHERS_PROFILE_FAILURE } from '../../action/TypeConstants';
+import { othersProfileRequest } from '../../action/UserAction';
+import constants from '../../utils/helpers/constants';
+import Loader from '../../widgets/AuthLoader';
+import { connect } from 'react-redux'
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import toast from '../../utils/helpers/ShowErrorAlert';
+
 
 const profileData = [
     {
@@ -32,10 +40,47 @@ const profileData = [
 
 ]
 
-export default function OthersProfile(props) {
+let status;
 
+function OthersProfile(props) {
+
+
+    const [id, setId] = useState(props.route.params.id)
     const [following, setFollowing] = useState("120");
-    const [followers, setFollowers] = useState('873')
+    const [followers, setFollowers] = useState('873');
+
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+            isInternetConnected()
+                .then(() => {
+                    props.othersProfileReq(id)
+                })
+                .catch(() => {
+                    toast('Error', 'Please Connect to Internet')
+                })
+        });
+
+        return () => {
+            unsuscribe();
+        }
+    });
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+            case OTHERS_PROFILE_REQUEST:
+                status = props.status
+                break;
+
+            case OTHERS_PROFILE_SUCCESS:
+                status = props.status
+                break;
+
+            case OTHERS_PROFILE_FAILURE:
+                status = props.status
+                toast('Oops', 'Something Went Wrong, Please Try Again')
+                break;
+        }
+    };
 
     function renderProfileData(data) {
         return (
@@ -59,13 +104,15 @@ export default function OthersProfile(props) {
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
+            <Loader visible={props.status === OTHERS_PROFILE_REQUEST} />
+
             <StatusBar />
 
             <SafeAreaView style={{ flex: 1, }}>
 
                 <HeaderComponent firstitemtext={false}
                     imageone={ImagePath.backicon}
-                    title={"@DANVERNON"}
+                    title={props.othersProfileresp.username}
                     thirditemtext={true}
                     texttwo={""}
                     onPressFirstItem={() => { props.navigation.goBack() }}
@@ -76,7 +123,7 @@ export default function OthersProfile(props) {
                     width: '90%', alignSelf: 'center', flexDirection: 'row',
                     alignItems: 'center', marginTop: normalise(15)
                 }}>
-                    <Image source={ImagePath.dp1}
+                    <Image source={{uri:constants.profile_picture_base_url+props.othersProfileresp.profile_image}}
                         style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
                     <View style={{
@@ -88,7 +135,7 @@ export default function OthersProfile(props) {
                             color: Colors.white, fontSize: normalise(15),
                             fontFamily: 'ProximaNovaAW07-Medium',
 
-                        }}>Dan Vernon</Text>
+                        }}>{props.othersProfileresp.full_name}</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
@@ -102,7 +149,7 @@ export default function OthersProfile(props) {
                             color: Colors.darkgrey, fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
 
-                        }}>London, UK</Text>
+                        }}>{props.othersProfileresp.location}</Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
 
@@ -110,7 +157,7 @@ export default function OthersProfile(props) {
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold',
-                                }}><Text style={{ color: Colors.white }}>{following}</Text>  Following</Text>
+                                }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.following}</Text>  Following</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
@@ -118,7 +165,7 @@ export default function OthersProfile(props) {
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold',
-                                }}><Text style={{ color: Colors.white }}>{followers}</Text>  Followers</Text>
+                                }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.follower}</Text>  Followers</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -223,4 +270,21 @@ export default function OthersProfile(props) {
             </SafeAreaView>
         </View>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.UserReducer.status,
+        othersProfileresp: state.UserReducer.othersProfileresp
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        othersProfileReq: (id) => {
+            dispatch(othersProfileRequest(id))
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OthersProfile)

@@ -81,7 +81,7 @@ export default function Notification(props) {
                 follow={data.item.type === "Follow" ? true : false}
                 bottom={data.index === today.length - 1 ? true : false}
                 marginBottom={data.index === today.length - 1 ? normalise(10) : normalise(0)}
-                onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
             />
         )
     }
@@ -94,7 +94,7 @@ export default function Notification(props) {
                 marginBottom={data.index === previous.length - 1 ? normalise(20) : normalise(0)}
                 type={data.item.type === 'Comment' || data.item.type === 'Mention' ? false : true}
                 image2={data.item.picture2}
-                onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
             />
         )
     }

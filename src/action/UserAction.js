@@ -5,7 +5,8 @@ import {
     EDIT_PROFILE_REQUEST,
     USER_SEARCH_REQUEST,
     USER_FOLLOW_UNFOLLOW_REQUEST,
-    OTHERS_PROFILE_FAILURE
+    OTHERS_PROFILE_FAILURE,
+    OTHERS_PROFILE_REQUEST
 }
     from './TypeConstants';
 
@@ -37,6 +38,11 @@ export const userFollowUnfollowRequest = (payload) => ({
     type: USER_FOLLOW_UNFOLLOW_REQUEST,
     payload
 });
+
+export const othersProfileRequest = (id) => ({
+    type: OTHERS_PROFILE_REQUEST,
+    id
+})
 
 
 
