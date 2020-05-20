@@ -34,7 +34,6 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
 
 const flatlistdata1 = []
 const flatlistdata = [
@@ -230,16 +229,6 @@ function Home(props) {
     )
   };
 
-  const call = () => {
-     getAppleDevToken()
-    .then((token)=>{
-      console.log('token' + token)
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
-  };
-
 
   return (
 
@@ -397,8 +386,7 @@ function Home(props) {
                     marginBottom: normalise(12)
                   }} />
 
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }} 
-                  onPress={()=>{call()}}>
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
 
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
