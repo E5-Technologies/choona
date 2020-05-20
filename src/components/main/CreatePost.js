@@ -95,7 +95,10 @@ function AddSong(props) {
                                     resizeMode='contain' />
                             </TouchableOpacity>
 
-                            <View style={{ alignItems: 'flex-start', justifyContent: 'center' }}>
+                            <View style={{
+                                alignItems: 'flex-start',
+                                justifyContent: 'center', width: '85%'
+                            }}>
                                 <Text style={{
                                     marginLeft: normalise(20), color: Colors.white,
                                     fontSize: normalise(11)

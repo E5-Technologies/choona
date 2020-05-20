@@ -56,7 +56,7 @@ export const getSpotifyToken = async () => {
         let accessTokenExpirationDate = JSON.parse(value).accessTokenExpirationDate;
         let refreshToken = JSON.parse(value).refreshToken;
         let currentTime = moment().utc().format(`YYYY-MM-DDTHH:mm:ssZ`);
-        
+
         if (accessTokenExpirationDate > currentTime) {
 
             return `Bearer ${accessToken}`;
@@ -64,14 +64,15 @@ export const getSpotifyToken = async () => {
         } else {
 
             const result = await refresh(config, { refreshToken: refreshToken });
-
+            
             await AsyncStorage.setItem(constants.SPOTIFY, JSON.stringify({
                 accessToken: result.accessToken,
                 accessTokenExpirationDate: result.accessTokenExpirationDate,
+                refreshToken: result.refreshToken
             }))
 
             return `Bearer ${result.accessToken}`;
-        }
+         }
 
     } catch (error) {
         return ""
