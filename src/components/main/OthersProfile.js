@@ -15,8 +15,11 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
-import { OTHERS_PROFILE_REQUEST, OTHERS_PROFILE_SUCCESS, OTHERS_PROFILE_FAILURE } from '../../action/TypeConstants';
-import { othersProfileRequest } from '../../action/UserAction';
+import {
+    OTHERS_PROFILE_REQUEST, OTHERS_PROFILE_SUCCESS, OTHERS_PROFILE_FAILURE,
+    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE
+} from '../../action/TypeConstants';
+import { othersProfileRequest, userFollowUnfollowRequest } from '../../action/UserAction';
 import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
 import { connect } from 'react-redux'
@@ -46,7 +49,7 @@ function OthersProfile(props) {
 
 
     const [id, setId] = useState(props.route.params.id)
-    const [isFollowing, setIsFollowing ] = useState(props.route.params.following)
+    const [isFollowing, setIsFollowing] = useState(props.route.params.following)
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -78,6 +81,22 @@ function OthersProfile(props) {
                 status = props.status
                 toast('Oops', 'Something Went Wrong, Please Try Again')
                 break;
+
+            case USER_FOLLOW_UNFOLLOW_REQUEST:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_SUCCESS:
+                setIsFollowing(isFollowing?false:true)
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_FAILURE:
+                status = props.status
+                toast('Oops', 'Something Went Wrong, Please Try Again')
+                break;
+
+
         }
     };
 
@@ -122,7 +141,7 @@ function OthersProfile(props) {
                     width: '90%', alignSelf: 'center', flexDirection: 'row',
                     alignItems: 'center', marginTop: normalise(15)
                 }}>
-                    <Image source={{uri:constants.profile_picture_base_url+props.othersProfileresp.profile_image}}
+                    <Image source={{ uri: constants.profile_picture_base_url + props.othersProfileresp.profile_image }}
                         style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
                     <View style={{
@@ -195,15 +214,15 @@ function OthersProfile(props) {
                         style={{
                             height: normalise(30), width: '45%', borderRadius: normalise(15),
                             backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
-                             alignItems: 'center', justifyContent: 'center'
-                        }}>
+                            alignItems: 'center', justifyContent: 'center'
+                        }} onPress={() => { props.followReq({ follower_id: id}) }}>
 
                         <Text style={{
                             fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,
                             fontFamily: 'ProximaNova-Bold'
                         }}>
-                           {isFollowing?"Following":"Follow"}
-                            </Text>
+                            {isFollowing ? "FOLLOWING" : "FOLLOW"}
+                        </Text>
 
                     </TouchableOpacity>
 
@@ -283,6 +302,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         othersProfileReq: (id) => {
             dispatch(othersProfileRequest(id))
+        },
+        followReq: (payload) => {
+            dispatch(userFollowUnfollowRequest(payload))
         }
     }
 };
