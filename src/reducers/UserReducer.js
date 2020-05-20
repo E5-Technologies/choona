@@ -25,7 +25,11 @@ import {
 
     OTHERS_PROFILE_REQUEST,
     OTHERS_PROFILE_SUCCESS,
-    OTHERS_PROFILE_FAILURE
+    OTHERS_PROFILE_FAILURE,
+
+    HOME_PAGE_REQUEST,
+    HOME_PAGE_SUCCESS,
+    HOME_PAGE_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -38,7 +42,8 @@ const initialState = {
     editProfileResp: {},
     userSearch: [],
     followUnfollowResp: {},
-    othersProfileresp: {}
+    othersProfileresp: {},
+    postData: []
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -178,6 +183,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case OTHERS_PROFILE_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case HOME_PAGE_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case HOME_PAGE_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                postData: action.data
+            };
+
+        case HOME_PAGE_FAILURE:
             return {
                 ...state,
                 status: action.type,

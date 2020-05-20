@@ -25,9 +25,11 @@ import EmojiSelector, { Categories } from "react-native-emoji-selector";
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import {
   USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
-  USER_PROFILE_FAILURE
+  USER_PROFILE_FAILURE,
+  HOME_PAGE_REQUEST, HOME_PAGE_SUCCESS,
+  HOME_PAGE_FAILURE
 } from '../../../action/TypeConstants';
-import { getProfileRequest } from '../../../action/UserAction';
+import { getProfileRequest, homePageReq } from '../../../action/UserAction';
 import { connect } from 'react-redux'
 import { userProfileAction } from '../../../saga/UserSaga';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
@@ -119,7 +121,8 @@ function Home(props) {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
       isInternetConnected()
         .then(() => {
-          props.getProfileReq()
+          props.getProfileReq(),
+          props.homePageReq()
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet')
@@ -237,7 +240,7 @@ function Home(props) {
       backgroundColor: Colors.black
     }}>
 
-      <Loader visible={props.status === USER_PROFILE_REQUEST} />
+      <Loader visible={props.status === USER_PROFILE_REQUEST || props.status === HOME_PAGE_REQUEST} />
 
       <StatusBar />
 
@@ -545,7 +548,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     status: state.UserReducer.status,
-    userProfileResp: state.UserReducer.userProfileResp
+    userProfileResp: state.UserReducer.userProfileResp,
+    postData: state.UserReducer.postData
   }
 };
 
@@ -553,7 +557,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getProfileReq: () => {
       dispatch(getProfileRequest())
-    }
+    },
+    
+    homePageReq: () => {
+      dispatch(homePageReq())
+    },
   }
 };
 
