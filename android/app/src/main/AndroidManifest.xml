@@ -15,6 +15,7 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
         tools:ignore="LockedOrientationActivity"
+        android:usesCleartextTraffic="true"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <activity

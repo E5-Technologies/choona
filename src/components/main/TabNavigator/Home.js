@@ -123,12 +123,9 @@ function Home(props) {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
       isInternetConnected()
         .then(() => {
-          if (props.status === "") {
-            props.getProfileReq()
-            
-          }
-          //,
 
+          props.getProfileReq(),
+            props.homePage()
 
         })
         .catch(() => {
@@ -265,7 +262,7 @@ function Home(props) {
           staticFirstImage={false}
           imageoneheight={30}
           imageonewidth={30}
-          borderRadius={15}
+          borderRadius={30}
           title={"CHOONA"}
           thirditemtext={false}
           imagetwo={ImagePath.inbox}
