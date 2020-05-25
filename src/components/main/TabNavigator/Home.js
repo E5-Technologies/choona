@@ -194,8 +194,8 @@ function Home(props) {
         reactions={data.item.reactions}
         content={data.item.content}
         time={data.item.time}
-        title={data.item.title}
-        singer={data.item.singer}
+        title={data.item.song_name}
+        singer={data.item.artist_name}
         modalVisible={modal1Visible}
         onPressReact1={() => {
           hitreact(react[0])
@@ -273,7 +273,7 @@ function Home(props) {
           onPressThirdItem={() => { props.navigation.navigate("Inbox") }} />
 
 
-        {_.isEmpty(flatlistdata) ?
+        {_.isEmpty(props.postData) ?
 
           <View style={{ flex: 1, position: 'absolute' }}>
             <View style={{ height: '60%', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -328,7 +328,7 @@ function Home(props) {
           <View style={{ flex: 1 }}>
 
             <SwipeListView
-              data={flatlistdata}
+              data={props.postData}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => { index.toString() }}

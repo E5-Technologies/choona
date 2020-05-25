@@ -106,8 +106,12 @@ function HomeItemList(props) {
             }}>
 
 
-                <Image source={ImagePath.spotifyicon}
-                    style={{ height: normalise(24), width: normalise(24) }}
+                <Image source={props.postType ? ImagePath.spotifyicon : ImagePath.applemusic}
+                    style={{
+                        height: normalise(24),
+                        width: normalise(24),
+                        borderRadius: normalise(12)
+                    }}
                     resizeMode="contain" />
 
 
@@ -372,7 +376,9 @@ HomeItemList.propTypes = {
 
     onPressReact4: PropTypes.func,
     onPressReact5: PropTypes.func,
-    modalVisible: PropTypes.bool
+    modalVisible: PropTypes.bool,
+
+    postType: PropTypes.bool
 
 };
 
@@ -386,5 +392,6 @@ HomeItemList.defaultProps = {
     change: false,
     image2: "",
     onPressSecondImage: null,
-    modalVisible: false
+    modalVisible: false,
+    postType: true
 }
