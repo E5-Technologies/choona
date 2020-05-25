@@ -87,7 +87,6 @@ function OthersProfile(props) {
                 break;
 
             case USER_FOLLOW_UNFOLLOW_SUCCESS:
-                setIsFollowing(isFollowing ? false : true)
                 status = props.status
                 break;
 
@@ -219,7 +218,7 @@ function OthersProfile(props) {
                             height: normalise(30), width: '45%', borderRadius: normalise(15),
                             backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
                             alignItems: 'center', justifyContent: 'center'
-                        }} onPress={() => { props.followReq({ follower_id: id }) }}>
+                        }} onPress={() => { setIsFollowing(!isFollowing), props.followReq({ follower_id: id }) }}>
 
                         <Text style={{
                             fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,

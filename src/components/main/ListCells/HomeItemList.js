@@ -108,6 +108,7 @@ function HomeItemList(props) {
                 justifyContent: 'space-between', width: normalise(280)
             }}>
 
+                <View style={{}}></View>
 
                 <Image source={props.postType ? ImagePath.spotifyicon : ImagePath.apple_icon_round}
                     style={{
@@ -169,7 +170,7 @@ function HomeItemList(props) {
                 }}   >
 
 
-                <Image source={{ uri: props.postType ? props.image : props.image.replace("100x100bb.jpg", "300x300bb.jpg") }}
+                <Image source={props.image === "" ? ImagePath.profiletrack1 : { uri: props.postType ? props.image : props.image.replace("100x100bb.jpg", "300x300bb.jpg") }}
                     style={{ height: normalise(250), width: normalise(280), borderRadius: normalise(10) }}
                     resizeMode="cover" />
 
@@ -277,7 +278,7 @@ function HomeItemList(props) {
 
                     <TouchableOpacity style={{ width: '9%' }}
                         onPress={() => { onPressImage() }}>
-                        <Image source={{ uri: constants.profile_picture_base_url + props.picture }}
+                        <Image source={props.picture === ""?ImagePath.dp1:{ uri: constants.profile_picture_base_url + props.picture }}
                             style={{
                                 height: normalise(20), width: normalise(20),
                                 borderRadius: normalise(20)
@@ -304,7 +305,9 @@ function HomeItemList(props) {
                     </View>
                 </View>
 
-                <Text style={{
+                <Text 
+                numberOfLines={4}
+                style={{
                     color: Colors.white, fontSize: 12,
                     fontFamily: 'ProximaNovaAW07-Medium', bottom: 6,
                     width: '90.8%',

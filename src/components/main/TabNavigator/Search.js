@@ -175,6 +175,7 @@ function Search(props) {
 
             case USER_FOLLOW_UNFOLLOW_SUCCESS:
                 status = props.status
+                props.userSearchReq({ keyword: usersSearchText })
                 break;
 
             case USER_FOLLOW_UNFOLLOW_FAILURE:
@@ -204,8 +205,8 @@ function Search(props) {
     function renderSongData(data) {
         return (
             <HomeItemList
-                image={data.item.image}
-                picture={data.item.picture}
+                image={""}
+                picture={""}
                 name={data.item.name}
                 comments={data.item.comments}
                 reactions={data.item.reactions}

@@ -186,7 +186,10 @@ function EditProfile(props) {
 
                     <Image
                         source={{ uri: profilePic }}
-                        style={{ height: normalise(120), width: normalise(120), borderRadius: normalise(60) }}
+                        style={{
+                            height: normalise(120), width: normalise(120),
+                            borderRadius: normalise(60)
+                        }}
                         resizeMode='contain' />
 
 

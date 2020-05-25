@@ -51,7 +51,7 @@ function ActivityListItem(props) {
                 <TouchableOpacity 
                 onPress={() => { onPressImage() }}>
                     <Image source={props.image === "" ? ImagePath.dp : { uri : props.image}}
-                        style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(17) }}
+                        style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(35) }}
                         resizeMode="contain" />
                 </TouchableOpacity>
 
