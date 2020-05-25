@@ -187,16 +187,17 @@ function Home(props) {
     return (
 
       <HomeItemList
-        image={data.item.image}
-        picture={data.item.picture}
-        name={data.item.name}
-        comments={data.item.comments}
-        reactions={data.item.reactions}
-        content={data.item.content}
-        time={data.item.time}
+        image={data.item.song_image}
+        picture={data.item.userDetails.profile_image}
+        name={data.item.userDetails.username}
+        comments={0}
+        reactions={0}
+        content={data.item.post_content}
+        time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
         modalVisible={modal1Visible}
+        postType={data.item.social_type === "spotify"}
         onPressReact1={() => {
           hitreact(react[0])
         }}
@@ -275,54 +276,53 @@ function Home(props) {
 
         {_.isEmpty(props.postData) ?
 
-          <View style={{ flex: 1, position: 'absolute' }}>
-            <View style={{ height: '60%', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <Image source={ImagePath.noposts} style={{ height: normalise(150), width: normalise(150) }}
+          <View style={{ flex: 1, alignItems: 'center' }}>
+
+            <Image source={ImagePath.noposts} style={{ height: normalise(150), width: normalise(150), marginTop: '28%' }}
+              resizeMode='contain' />
+            <Text style={{
+              marginBottom: '20%',
+              marginTop: normalise(10), color: Colors.white,
+              fontSize: normalise(14), fontWeight: 'bold'
+            }}>NO POSTS YET</Text>
+
+
+            <TouchableOpacity style={{
+              height: normalise(50), width: '80%',
+              borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
+              shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
+              shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
+              alignItems: 'center', justifyContent: 'center'
+            }} >
+              <Image source={ImagePath.facebook}
+                style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode='contain' />
+
               <Text style={{
-                marginTop: normalise(10), color: Colors.white,
-                fontSize: normalise(14), fontWeight: 'bold'
-              }}>NO POSTS YET</Text>
-            </View>
+                marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
+                fontWeight: 'bold'
+              }}>CONNECT WITH FACEBOOK</Text>
 
-            <View style={{ marginTop: normalise(10), height: '40%', alignItems: 'center', justifyContent: 'flex-end' }}>
-
-              <TouchableOpacity style={{
-                height: normalise(50), width: '80%', alignSelf: 'center',
-                borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
-                shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
-                shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
-                alignItems: 'center', justifyContent: 'center'
-              }} >
-                <Image source={ImagePath.facebook}
-                  style={{ height: normalise(20), width: normalise(20) }}
-                  resizeMode='contain' />
-
-                <Text style={{
-                  marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
-                  fontWeight: 'bold'
-                }}>CONNECT WITH FACEBOOK</Text>
-
-              </TouchableOpacity>
+            </TouchableOpacity>
 
 
-              <TouchableOpacity style={{
-                marginBottom: normalise(30),
-                marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
-                borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
-                shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-                shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'center', borderColor: Colors.grey,
-              }}  >
+            <TouchableOpacity style={{
+              marginBottom: normalise(30),
+              marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
+              borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
+              shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
+              shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
+              justifyContent: 'center', borderColor: Colors.grey,
+            }}  >
 
-                <Text style={{
-                  marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
-                  fontWeight: 'bold'
-                }}>CHECK YOUR PHONEBOOK</Text>
+              <Text style={{
+                marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
+                fontWeight: 'bold'
+              }}>CHECK YOUR PHONEBOOK</Text>
 
-              </TouchableOpacity>
-            </View>
-          </View> :
+            </TouchableOpacity>
+          </View>
+          :
 
 
           <View style={{ flex: 1 }}>

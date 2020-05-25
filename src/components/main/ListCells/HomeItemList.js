@@ -15,6 +15,8 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import PropTypes from "prop-types";
 import { normalizeUnits } from 'moment';
+import constants from '../../../utils/helpers/constants';
+import moment from "moment";
 
 
 function HomeItemList(props) {
@@ -96,6 +98,7 @@ function HomeItemList(props) {
         }
 
     };
+
     return (
 
         <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
@@ -106,7 +109,7 @@ function HomeItemList(props) {
             }}>
 
 
-                <Image source={props.postType ? ImagePath.spotifyicon : ImagePath.applemusic}
+                <Image source={props.postType ? ImagePath.spotifyicon : ImagePath.apple_icon_round}
                     style={{
                         height: normalise(24),
                         width: normalise(24),
@@ -166,7 +169,7 @@ function HomeItemList(props) {
                 }}   >
 
 
-                <Image source={props.image}
+                <Image source={{ uri: props.postType ? props.image : props.image.replace("100x100bb.jpg", "300x300bb.jpg") }}
                     style={{ height: normalise(250), width: normalise(280), borderRadius: normalise(10) }}
                     resizeMode="cover" />
 
@@ -274,8 +277,11 @@ function HomeItemList(props) {
 
                     <TouchableOpacity style={{ width: '9%' }}
                         onPress={() => { onPressImage() }}>
-                        <Image source={props.picture}
-                            style={{ height: normalise(20), width: normalise(20) }}
+                        <Image source={{ uri: constants.profile_picture_base_url + props.picture }}
+                            style={{
+                                height: normalise(20), width: normalise(20),
+                                borderRadius: normalise(20)
+                            }}
                             resizeMode="contain" />
                     </TouchableOpacity>
 
@@ -294,7 +300,7 @@ function HomeItemList(props) {
                         <Text style={{
                             color: Colors.grey_text,
                             fontFamily: 'ProximaNovaAW07-Medium', fontSize: 12,
-                        }}>{props.time} mins ago</Text>
+                        }}>{moment(props.time).fromNow()} </Text>
                     </View>
                 </View>
 

@@ -59,7 +59,7 @@ function AddSong(props) {
         let names = ""
 
         artists.map((val, index) => {
-            names = names + val.name + ", "
+            names = names + `${val.name}${artists.length - 1 === index ? "" : ", "}`
         })
 
         return names

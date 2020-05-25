@@ -87,7 +87,7 @@ function OthersProfile(props) {
                 break;
 
             case USER_FOLLOW_UNFOLLOW_SUCCESS:
-                setIsFollowing(isFollowing?false:true)
+                setIsFollowing(isFollowing ? false : true)
                 status = props.status
                 break;
 
@@ -171,14 +171,18 @@ function OthersProfile(props) {
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
+                            <TouchableOpacity onPress={() => {
+                                //props.navigation.navigate("Following", { following: following }) 
+                            }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold',
                                 }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.following}</Text>  Following</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
+                            <TouchableOpacity onPress={() => {
+                                //props.navigation.navigate("Followers", { followers: followers }) 
+                            }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -215,7 +219,7 @@ function OthersProfile(props) {
                             height: normalise(30), width: '45%', borderRadius: normalise(15),
                             backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
                             alignItems: 'center', justifyContent: 'center'
-                        }} onPress={() => { props.followReq({ follower_id: id}) }}>
+                        }} onPress={() => { props.followReq({ follower_id: id }) }}>
 
                         <Text style={{
                             fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,
