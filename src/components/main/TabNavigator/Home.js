@@ -36,6 +36,7 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
+import { useFocusEffect } from '@react-navigation/native';
 
 const flatlistdata1 = []
 const flatlistdata = [
@@ -117,12 +118,18 @@ function Home(props) {
   const [modalReact, setModalReact] = useState("");
   const [modal1Visible, setModal1Visible] = useState(false);
 
+
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
       isInternetConnected()
         .then(() => {
-          props.getProfileReq(),
-          props.homePageReq()
+          if (props.status === "") {
+            props.getProfileReq()
+            
+          }
+          //,
+
+
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet')
@@ -132,7 +139,7 @@ function Home(props) {
     return () => {
       unsuscribe();
     }
-  });
+  }, []);
 
   if (status === "" || props.status !== status) {
     switch (props.status) {
@@ -558,8 +565,8 @@ const mapDispatchToProps = (dispatch) => {
     getProfileReq: () => {
       dispatch(getProfileRequest())
     },
-    
-    homePageReq: () => {
+
+    homePage: () => {
       dispatch(homePageReq())
     },
   }
