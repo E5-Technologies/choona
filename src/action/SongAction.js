@@ -10,8 +10,9 @@ export const saveSongRequest = (payload) => ({
     payload
 });
 
-export const savedSongsListRequset = () => ({
-    type: SAVED_SONGS_LIST_REQUEST
+export const savedSongsListRequset = (search) => ({
+    type: SAVED_SONGS_LIST_REQUEST,
+    search
 });
 
 export const unsaveSongRequest = (id) => ({

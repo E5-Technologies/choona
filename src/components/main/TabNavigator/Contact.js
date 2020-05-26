@@ -40,11 +40,12 @@ function Contact(props) {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
-                    props.getSavedSongs()
+                    props.getSavedSongs(search)
                 })
                 .catch(() => {
                     toast("Oops", "Please Connect To Internet")
                 })
+
 
         });
 
@@ -75,7 +76,7 @@ function Contact(props) {
 
             case UNSAVE_SONG_SUCCESS:
                 status = props.status
-                props.getSavedSongs()
+                props.getSavedSongs(search)
                 break;
 
             case UNSAVE_SONG_FAILURE:
@@ -125,7 +126,10 @@ function Contact(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text) }} />
+                        onChangeText={(text) => {
+                            setSearch(text),
+                                props.getSavedSongs(text)
+                        }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -165,9 +169,10 @@ function Contact(props) {
                             marginTop: normalise(10),
                             position: 'absolute', right: 21
                         }}
-                            onPress={() => { 
+                            onPress={() => {
                                 props.unsaveSongReq(rowData.item._id)
-                                rowMap[rowData.item.key].closeRow() }}
+                                rowMap[rowData.item.key].closeRow()
+                            }}
                         >
 
                             <Image source={ImagePath.unsaved}
@@ -200,8 +205,8 @@ const mapStateToProps = (state) => {
 
 const mapDistapchToProps = (dispatch) => {
     return {
-        getSavedSongs: () => {
-            dispatch(savedSongsListRequset())
+        getSavedSongs: (search) => {
+            dispatch(savedSongsListRequset(search))
         },
 
         unsaveSongReq: (id) => {

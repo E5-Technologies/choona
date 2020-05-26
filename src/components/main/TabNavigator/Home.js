@@ -362,13 +362,15 @@ function Home(props) {
                         song_name: props.postData[positionInArray].song_name,
                         song_image: props.postData[positionInArray].song_image,
                         artist_name: props.postData[positionInArray].artist_name,
-                        album_name: props.postData[positionInArray].album_name
+                        album_name: props.postData[positionInArray].album_name,
+                        post_id: props.postData[positionInArray]._id,
                       };
 
                       props.saveSongReq(saveSongObject);
                       setModalVisible(!modalVisible)
 
                     }}>
+                      
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
