@@ -151,7 +151,7 @@ function Home(props) {
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
-        comments={data.item.comment.length}
+        comments={data.item.comment}
         reactions={0}
         content={data.item.post_content}
         time={data.item.createdAt}
@@ -188,7 +188,7 @@ function Home(props) {
         }}
         onPressCommentbox={() => {
 
-          props.navigation.navigate('HomeItemComments')
+          props.navigation.navigate('HomeItemComments', { index: data.index });
         }}
         onPressSecondImage={() => {
           setPositionInArray(data.index)
@@ -370,7 +370,7 @@ function Home(props) {
                       setModalVisible(!modalVisible)
 
                     }}>
-                      
+
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{

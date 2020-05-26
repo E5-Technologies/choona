@@ -1,5 +1,5 @@
 
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -19,73 +19,65 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HomeHeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { normalizeUnits } from 'moment';
+import { connect } from 'react-redux';
+import moment from 'moment'
+import {
+    COMMENT_ON_POST_REQUEST, COMMENT_ON_POST_SUCCESS,
+    COMMENT_ON_POST_FAILURE
+} from '../../action/TypeConstants';
+import { commentOnPostReq } from '../../action/UserAction';
+import Loader from '../../widgets/AuthLoader';
+import constants from '../../utils/helpers/constants';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import isInternetConnected from '../../utils/helpers/NetInfo';
 
 
+let status;
 
-const flatlistdata = [
-    {
+function HomeItemComments(props) {
 
-        picture: ImagePath.dp1,
-        title: 'This girl',
-        name: "andy88Jones",
-        comments: 1,
+    const [index, setIndex] = useState(props.route.params.index);
+    const [commentData, setCommentData] = useState(props.postData[index].comment);
+    const [image, setImage] = useState(props.postData[index].song_image);
+    const [username, setUserName] = useState(props.postData[index].userDetails.username);
+    const [userComment, setUserComment] = useState(props.postData[index].post_content);
+    const [time, setTime] = useState(props.postData[index].createdAt);
+    const [id, setId] = useState(props.postData[index]._id);
+    const [commentText, setCommentText] = useState();
+    const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
-        reactions: 11,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-    {
-
-        picture: ImagePath.dp,
-        title: 'Paradise',
-        singer: "Cold Play",
-        name: "andy88Jones",
-
-        reactions: 7,
-        content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        time: 8
-    },
-    {
-
-        picture: ImagePath.dp1,
-        title: 'Naked feat. Justin Suissa',
-        name: "andy88Jones",
-        comments: 1,
-
-        reactions: 10,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-
-    {
-
-        picture: ImagePath.dp,
-        title: 'Naked feat. Justin Suissa',
-        name: "andy88Jones",
-        comments: 1,
-
-        reactions: 11,
-        content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        time: 8
-    },
-
-
-]
-
-export default function HomeItemComments(props) {
 
     function renderItem(data) {
         return (
             <CommentList
-                image={data.item.picture}
-                title={data.item.title}
-                name={data.item.name}
-                comment={data.item.content}
-                time={data.item.time}
-                marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0} />
+                image={constants.profile_picture_base_url+data.item.profile_image}
+                name={data.item.username}
+                comment={data.item.text}
+                time={moment(data.item.createdAt).from()}
+                marginBottom={data.index === commentData.length - 1 ? normalise(20) : 0} />
         )
-    }
+    };
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case COMMENT_ON_POST_REQUEST:
+                status = props.status
+                break;
+
+            case COMMENT_ON_POST_SUCCESS:
+                status = props.status
+                commentData.push(props.commentResp.comment[props.commentResp.comment.length-1])
+                setArrayLength(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
+                break;
+
+            case COMMENT_ON_POST_FAILURE:
+                status = props.status;
+                toast('Oops', 'Something Went Wrong');
+                break;
+
+        }
+    };
 
 
     return (
@@ -93,16 +85,17 @@ export default function HomeItemComments(props) {
         <KeyboardAvoidingView
             behavior="height"
             style={{ flex: 1, backgroundColor: Colors.black, }}>
+
+            <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
+
             <SafeAreaView style={{ flex: 1 }}>
-
-
 
                 <HeaderComponent
                     firstitemtext={false}
                     imageone={ImagePath.backicon}
-                    
+
                     //imagesecond={ImagePath.dp}
-                    title="4 COMMENTS"
+                    title={arrayLength}
                     thirditemtext={false}
                     marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
                     // imagetwo={ImagePath.newmessage} 
@@ -117,7 +110,7 @@ export default function HomeItemComments(props) {
                     }}>
 
                         <TouchableOpacity onPress={() => { onPressImage() }} style={{ justifyContent: 'center' }}>
-                            <Image source={ImagePath.profiletrack1}
+                            <Image source={{ uri: image }}
                                 style={{ height: normalise(60), width: normalise(60), }}
                                 resizeMode="contain" />
 
@@ -134,21 +127,21 @@ export default function HomeItemComments(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: 14, fontFamily: 'ProximaNova-Semibold',
-                                }}>andy88jones</Text>
+                                }}>{username}</Text>
 
                                 <Text style={{
                                     marginEnd: normalise(12.5),
                                     color: Colors.grey_text, fontSize: 12, fontFamily: 'ProximaNovaAW07-Medium',
-                                }}>8 mins ago</Text>
+                                }}>{moment(time).from()}</Text>
 
                             </View>
 
                             <View>
-                                
+
                                 <Text style={{
                                     width: normalise(218), color: Colors.white, fontSize: 12, marginTop: normalise(2),
                                     fontFamily: 'ProximaNovaAW07-Medium'
-                                }}>Absolutely use to love this song, was an unreal banger back in the day</Text>
+                                }}>{userComment}</Text>
 
                             </View>
                         </View>
@@ -163,11 +156,9 @@ export default function HomeItemComments(props) {
                 </View>
 
                 <SwipeListView
-                    data={flatlistdata}
+                    data={commentData}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-
-
                     keyExtractor={(item, index) => { index.toString() }}
                     disableRightSwipe={true}
                     rightOpenValue={-75} />
@@ -202,11 +193,25 @@ export default function HomeItemComments(props) {
                         }}
                         placeholder={"Add a comment..."}
                         placeholderTextColor={Colors.white}
-                        onChangeText={(text) => { console.log(text) }} />
+                        onChangeText={(text) => {setCommentText(text) }} />
 
                     <TouchableOpacity style={{
                         alignItems: 'center',
                         justifyContent: 'center'
+                    }}  
+                    onPress={()=>{
+                        let commentObject = {
+                            post_id: id,
+                            text: commentText
+                        };
+                        isInternetConnected()
+                        .then(()=>{
+                            props.commentOnPost(commentObject)
+                        })
+                        .catch(()=>{
+                            toast('Error', 'Please Connect To Internet')
+                        })
+                        
                     }}>
                         <Text style={{
                             fontSize: normalise(13),
@@ -223,4 +228,23 @@ export default function HomeItemComments(props) {
 
         </KeyboardAvoidingView>
     )
-}
+};
+
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.UserReducer.status,
+        postData: state.UserReducer.postData,
+        commentResp: state.UserReducer.commentResp
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        commentOnPost: (payload) => {
+            dispatch(commentOnPostReq(payload))
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeItemComments);

@@ -55,7 +55,7 @@ function CommentList(props) {
             }}>
 
                 <TouchableOpacity onPress={() => { onPressImage() }}  >
-                    <Image source={props.image}
+                    <Image source={{uri: props.image}}
                         style={{ height: normalise(30), width: normalise(30), borderRadius: normalise(15) }}
                         resizeMode="contain" />
 
@@ -80,7 +80,7 @@ function CommentList(props) {
                             fontSize: 12,
                             fontFamily: 'ProximaNovaAW07-Medium',
                         }}>
-                            {props.time} mins ago</Text>
+                            {props.time}</Text>
                     </View>
                     <View style={{width: '77%'}}>
                         <Text style={{
@@ -109,7 +109,6 @@ export default CommentList;
 
 CommentList.propTypes = {
     image: PropTypes.string,
-    title: PropTypes.string,
     onPress: PropTypes.func,
     onPressImage: PropTypes.bool,
     singer: PropTypes.string,
@@ -122,7 +121,6 @@ CommentList.propTypes = {
 };
 CommentList.defaultProps = {
     image: "",
-    title: "",
     onPress: null,
     onPressImage: null,
     singer: "",

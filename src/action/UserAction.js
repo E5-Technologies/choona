@@ -7,6 +7,7 @@ import {
     USER_FOLLOW_UNFOLLOW_REQUEST,
     OTHERS_PROFILE_REQUEST,
     HOME_PAGE_REQUEST,
+    COMMENT_ON_POST_REQUEST
 }
     from './TypeConstants';
 
@@ -48,6 +49,10 @@ export const homePageReq = () => ({
     type: HOME_PAGE_REQUEST
 });
 
+export const commentOnPostReq = (payload) => ({
+    type: COMMENT_ON_POST_REQUEST,
+    payload
+});
 
 
 
