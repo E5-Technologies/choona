@@ -121,7 +121,7 @@ export default function GenreSongClicked(props) {
             onPressReact4={() => {
                 console.log('Coming Soon...')
             }}
-            onPressReact5={() => {
+            onAddReaction={() => {
                 console.log('Coming Soon...')
             }}
             onPressMusicbox={() => {

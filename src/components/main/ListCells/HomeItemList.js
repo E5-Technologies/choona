@@ -65,32 +65,10 @@ function HomeItemList(props) {
     };
 
 
+    const onAddReaction = () => {
 
-
-    const onPressReact1 = () => {
-        if (props.onPressReact1) {
-            props.onPressReact1()
-        }
-    };
-    const onPressReact2 = () => {
-        if (props.onPressReact2) {
-            props.onPressReact2()
-        }
-    };
-    const onPressReact3 = () => {
-        if (props.onPressReact3) {
-            props.onPressReact3()
-        }
-    };
-    const onPressReact4 = () => {
-        if (props.onPressReact4) {
-            props.onPressReact4()
-        }
-    };
-    const onPressReact5 = () => {
-
-        if (props.onPressReact5) {
-            props.onPressReact5()
+        if (props.onAddReaction) {
+            props.onAddReaction()
 
             // if (plusVisible == true) {
             //     setPlusVisible(false)
@@ -208,7 +186,7 @@ function HomeItemList(props) {
                 }}>
 
                     <TouchableOpacity
-                        onPress={() => { props.onPressReact5() }}>
+                        onPress={() => { onAddReaction() }}>
 
 
                         <Image source={props.modalVisible ? ImagePath.greycross : ImagePath.greyplus}
@@ -356,7 +334,7 @@ HomeItemList.propTypes = {
     onPressReact3: PropTypes.func,
 
     onPressReact4: PropTypes.func,
-    onPressReact5: PropTypes.func,
+    onAddReaction: PropTypes.func,
     modalVisible: PropTypes.bool,
 
     postType: PropTypes.bool

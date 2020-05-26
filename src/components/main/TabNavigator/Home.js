@@ -171,7 +171,7 @@ function Home(props) {
         onPressReact4={() => {
           hitreact(react[3])
         }}
-        onPressReact5={() => {
+        onAddReaction={() => {
           hitreact1(modal1Visible)
         }}
         onPressMusicbox={() => {
