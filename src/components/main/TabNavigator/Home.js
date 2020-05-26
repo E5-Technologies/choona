@@ -73,7 +73,7 @@ function Home(props) {
 
   if (status === "" || props.status !== status) {
     
-    switch (props.status && props.songStatus) {
+    switch (props.status) {
 
       case USER_PROFILE_REQUEST:
         status = props.status;
@@ -101,19 +101,19 @@ function Home(props) {
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
 
-      case SAVE_SONGS_REQUEST:
-        status = props.status;
-        break;
+      // case SAVE_SONGS_REQUEST:
+      //   status = props.status;
+      //   break;
 
-      case SAVE_SONGS_SUCCESS:
-        status = props.status;
-        toast("Success", "Song Successfully Saved")
-        break;
+      // case SAVE_SONGS_SUCCESS:
+      //   status = props.status;
+      //   toast("Success", "Song Successfully Saved")
+      //   break;
 
-      case SAVE_SONGS_FAILURE:
-        status = props.status;
-        toast("Oops", "Something Went Wrong, Please Try Again")
-        break;
+      // case SAVE_SONGS_FAILURE:
+      //   status = props.status;
+      //   toast("Oops", "Something Went Wrong, Please Try Again")
+      //   break;
 
 
     };
