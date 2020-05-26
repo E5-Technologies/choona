@@ -27,7 +27,7 @@ export function* saveSongAction(action) {
 
         };
 
-    const response = yield call(postApi, `post/store`, action.payload, header)
+    const response = yield call(postApi, `song/store`, action.payload, Header)
 
         yield put({ type: SAVE_SONGS_SUCCESS, data: response.data });
 
