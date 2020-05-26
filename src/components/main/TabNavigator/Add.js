@@ -59,7 +59,7 @@ function AddSong(props) {
         let names = ""
 
         artists.map((val, index) => {
-            names = names + val.name + ", "
+            names = names + `${val.name}${artists.length - 1 === index ? "" : ", "}`
         })
 
         return names
@@ -118,7 +118,9 @@ function AddSong(props) {
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
-                            props.seachSongsForPostRequest(text)
+                            if (text.length >= 1) {
+                                props.seachSongsForPostRequest(text)
+                            }
                             setSearch(text)
                         }} />
 

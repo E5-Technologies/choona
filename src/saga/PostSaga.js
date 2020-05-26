@@ -28,9 +28,10 @@ export function* searchSongsForPostAction(action) {
     const AppleToken = yield call (getAppleDevToken);
 
     let spotifyHeader = {
-        "Authorization": items.registerType ===  "spoitfy" ?`${spotifyToken}`:`${AppleToken}`,
+        "Authorization": items.registerType ===  "spotify" ?`${spotifyToken}`:`${AppleToken}`,
     };
 
+    //console.log("spotifyHeader"+JSON.stringify(spotifyHeader))
 
     try {
 
