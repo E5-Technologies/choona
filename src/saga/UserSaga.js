@@ -34,6 +34,10 @@ import {
     HOME_PAGE_SUCCESS,
     HOME_PAGE_FAILURE,
 
+    COMMENT_ON_POST_REQUEST,
+    COMMENT_ON_POST_SUCCESS,
+    COMMENT_ON_POST_FAILURE
+
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
 import AsyncStorage from '@react-native-community/async-storage';
@@ -213,6 +217,28 @@ export function* homePageAction(action) {
 };
 
 
+export function* commentOnPostAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call (postApi, 'post/comment', action.payload, Header);
+        yield put ({type: COMMENT_ON_POST_SUCCESS, data: response.data.data})
+
+
+    } catch (error) {
+        yield put ({type: COMMENT_ON_POST_FAILURE, error:error})
+    }
+};
+
+
+//WATCH FUNCTIONS
+
 export function* watchLoginRequest() {
     yield takeLatest(USER_LOGIN_REQUEST, loginAction);
 };
@@ -244,3 +270,7 @@ export function* watchothersProfileAction() {
 export function* watchhomePageAction() {
     yield takeLatest(HOME_PAGE_REQUEST, homePageAction)
 };
+
+export function* watchcommentOnPostAction() {
+    yield takeLatest(COMMENT_ON_POST_REQUEST, commentOnPostAction)
+}

@@ -305,7 +305,7 @@ function HomeItemList(props) {
                         <Text style={{
                             color: Colors.white, fontSize: 10,
                             fontFamily: 'ProximaNova-Bold',
-                        }}>{props.comments > 0 ? `${props.comments} COMMENTS` : `COMMENT`}</Text>
+                        }}>{props.comments.length > 0 ? `${props.comments.length} COMMENTS` : `COMMENT`}</Text>
 
                     </TouchableOpacity>
 

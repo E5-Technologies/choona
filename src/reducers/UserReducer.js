@@ -29,7 +29,11 @@ import {
 
     HOME_PAGE_REQUEST,
     HOME_PAGE_SUCCESS,
-    HOME_PAGE_FAILURE
+    HOME_PAGE_FAILURE,
+
+    COMMENT_ON_POST_REQUEST,
+    COMMENT_ON_POST_SUCCESS,
+    COMMENT_ON_POST_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -43,7 +47,8 @@ const initialState = {
     userSearch: [],
     followUnfollowResp: {},
     othersProfileresp: {},
-    postData: []
+    postData: [],
+    commentResp: {}
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -203,6 +208,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case HOME_PAGE_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case COMMENT_ON_POST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case COMMENT_ON_POST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                commentResp: action.data,
+            };
+
+        case COMMENT_ON_POST_FAILURE:
             return {
                 ...state,
                 status: action.type,

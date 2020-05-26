@@ -151,7 +151,7 @@ function Home(props) {
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
-        comments={0}
+        comments={data.item.comment}
         reactions={0}
         content={data.item.post_content}
         time={data.item.createdAt}
@@ -188,7 +188,7 @@ function Home(props) {
         }}
         onPressCommentbox={() => {
 
-          props.navigation.navigate('HomeItemComments')
+          props.navigation.navigate('HomeItemComments', {index: data.index});
         }}
         onPressSecondImage={() => {
           setPositionInArray(data.index)

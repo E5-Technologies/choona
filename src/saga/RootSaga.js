@@ -3,7 +3,7 @@ import { watchtokenAction, watchgetTokenAction } from './TokenSaga';
 import {
     watchLoginRequest, watchUserSignUpAction, watchuserProfileAction, watcheditProfileAction,
     watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction,
-    watchhomePageAction
+    watchhomePageAction, watchcommentOnPostAction
 } from './UserSaga'
 
 import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSaga'
@@ -27,7 +27,8 @@ function* RootSaga() {
         watchhomePageAction(),
         watchsaveSongAction(),
         watchsavedSongListAction(),
-        watchunsaveSongAction()
+        watchunsaveSongAction(),
+        watchcommentOnPostAction()
     ])
 }
 
