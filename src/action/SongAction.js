@@ -14,6 +14,7 @@ export const savedSongsListRequset = () => ({
     type: SAVED_SONGS_LIST_REQUEST
 });
 
-export const unsaveSongRequest = () => ({
-    type: UNSAVE_SONG_REQUEST
+export const unsaveSongRequest = (id) => ({
+    type: UNSAVE_SONG_REQUEST,
+    id
 });
