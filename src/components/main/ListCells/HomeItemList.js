@@ -283,7 +283,7 @@ function HomeItemList(props) {
                         <Text style={{
                             color: Colors.white, fontSize: 10,
                             fontFamily: 'ProximaNova-Bold',
-                        }}>{props.comments > 0 ? `${props.comments} COMMENTS` : `COMMENT`}</Text>
+                        }}>{props.comments > 0 ? props.comments > 1 ? `${props.comments}  COMMENTS` : `${props.comments}  COMMENT` : `COMMENT`}</Text>
 
                     </TouchableOpacity>
 
