@@ -72,7 +72,8 @@ function Home(props) {
   }, []);
 
   if (status === "" || props.status !== status) {
-    switch (props.status) {
+    
+    switch (props.status && props.songStatus) {
 
       case USER_PROFILE_REQUEST:
         status = props.status;
@@ -106,14 +107,16 @@ function Home(props) {
 
       case SAVE_SONGS_SUCCESS:
         status = props.status;
-        toast('Success', 'Song Saved Successfully');
+        toast("Success", "Song Successfully Saved")
         break;
 
       case SAVE_SONGS_FAILURE:
         status = props.status;
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
-    }
+
+
+    };
   };
 
   const react = ["🔥", "🕺", "💃", "😳", "❤️"]
@@ -366,6 +369,7 @@ function Home(props) {
                       };
 
                       props.saveSongReq(saveSongObject);
+                      setModalVisible(!modalVisible)
 
                     }}>
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
@@ -533,7 +537,8 @@ const mapStateToProps = (state) => {
   return {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
-    postData: state.UserReducer.postData
+    postData: state.UserReducer.postData,
+    songStatus: state.SongReducer.status
   }
 };
 
