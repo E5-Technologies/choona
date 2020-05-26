@@ -32,7 +32,7 @@ import {
 
     HOME_PAGE_REQUEST,
     HOME_PAGE_SUCCESS,
-    HOME_PAGE_FAILURE
+    HOME_PAGE_FAILURE,
 
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"

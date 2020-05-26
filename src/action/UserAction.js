@@ -5,9 +5,8 @@ import {
     EDIT_PROFILE_REQUEST,
     USER_SEARCH_REQUEST,
     USER_FOLLOW_UNFOLLOW_REQUEST,
-    OTHERS_PROFILE_FAILURE,
     OTHERS_PROFILE_REQUEST,
-    HOME_PAGE_REQUEST
+    HOME_PAGE_REQUEST,
 }
     from './TypeConstants';
 
@@ -48,6 +47,8 @@ export const othersProfileRequest = (id) => ({
 export const homePageReq = () => ({
     type: HOME_PAGE_REQUEST
 });
+
+
 
 
 
