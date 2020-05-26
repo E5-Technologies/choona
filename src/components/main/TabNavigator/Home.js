@@ -122,7 +122,7 @@ function Home(props) {
       isInternetConnected()
         .then(() => {
           props.getProfileReq(),
-          props.homePageReq()
+            props.homePageReq()
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet')
@@ -136,6 +136,7 @@ function Home(props) {
 
   if (status === "" || props.status !== status) {
     switch (props.status) {
+
       case USER_PROFILE_REQUEST:
         status = props.status
         break;
@@ -145,6 +146,19 @@ function Home(props) {
         break;
 
       case USER_PROFILE_FAILURE:
+        status = props.status
+        toast("Oops", "Something Went Wrong, Please Try Again")
+        break;
+
+      case HOME_PAGE_REQUEST:
+        status = props.status
+        break;
+
+      case HOME_PAGE_SUCCESS:
+        status = props.status
+        break;
+
+      case HOME_PAGE_FAILURE:
         status = props.status
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
@@ -558,7 +572,7 @@ const mapDispatchToProps = (dispatch) => {
     getProfileReq: () => {
       dispatch(getProfileRequest())
     },
-    
+
     homePageReq: () => {
       dispatch(homePageReq())
     },
