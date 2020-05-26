@@ -27,87 +27,19 @@ import {
   USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
   USER_PROFILE_FAILURE,
   HOME_PAGE_REQUEST, HOME_PAGE_SUCCESS,
-  HOME_PAGE_FAILURE
+  HOME_PAGE_FAILURE,
+  SAVE_SONGS_REQUEST, SAVE_SONGS_SUCCESS,
+  SAVE_SONGS_FAILURE
 } from '../../../action/TypeConstants';
 import { getProfileRequest, homePageReq } from '../../../action/UserAction';
+import { saveSongRequest } from '../../../action/SongAction';
 import { connect } from 'react-redux'
-import { userProfileAction } from '../../../saga/UserSaga';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import { useFocusEffect } from '@react-navigation/native';
 
-const flatlistdata1 = []
-const flatlistdata = [
-  {
-    image: ImagePath.profiletrack1,
-    picture: ImagePath.dp1,
-    title: 'This Girl',
-    singer: "Kungs Vs Cookins 3 burners",
-    comments: 1,
-    name: 'Shimshimmer',
-    reactions: 11,
-    content: 'Absolutely use to love this song,was an unreal banger back in the day',
-    time: 8
-  },
-  {
-    image: ImagePath.profiletrack4,
-    picture: ImagePath.dp,
-    title: 'Paradise',
-    singer: "Cold Play",
-    comments: 2,
-    name: 'Shimshimmer',
-    reactions: 7,
-    content: 'Absolutely use to love this song,was an unreal banger back in the day',
-    time: 8
-  },
-  {
-    image: ImagePath.profiletrack2,
-    picture: ImagePath.dp1,
-    title: 'Naked feat. Justin Suissa',
-    singer: "Kygo",
-    comments: 1,
-    name: 'Shimshimmer',
-    reactions: 10,
-    content: 'Absolutely use to love this song,was an unreal banger back in the day',
-    time: 8
-  },
-
-  {
-    image: ImagePath.profiletrack1,
-    picture: ImagePath.dp,
-    title: 'Naked feat. Justin Suissa',
-    singer: "Dua Lipa",
-    comments: 1,
-    name: 'Shimshimmer',
-    reactions: 11,
-    content: 'Absolutely use to love this song,was an unreal banger back in the day',
-    time: 8
-  },
-  {
-    image: ImagePath.profiletrack3,
-    picture: ImagePath.dp1,
-    title: 'Naked feat. Justin Suissa',
-    singer: "Kygo",
-    comments: 3,
-    name: 'Shimshimmer',
-    reactions: 9,
-    content: 'Absolutely use to love this song,was an unreal banger back in the day',
-    time: 8
-  },
-  {
-    image: ImagePath.profiletrack4,
-    picture: ImagePath.dp,
-    title: 'Naked feat. Justin Suissa',
-    singer: "Above & Beyond",
-    comments: 2,
-    name: 'Shimshimmer',
-    reactions: 11,
-    content: 'Absolutely use to love this song,was an unreal banger back in the day',
-    time: 8
-  },
-];
 
 let status = "";
 
@@ -117,6 +49,7 @@ function Home(props) {
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState("");
   const [modal1Visible, setModal1Visible] = useState(false);
+  const [positionInArray, setPositionInArray] = useState();
 
 
   useEffect(() => {
@@ -142,28 +75,42 @@ function Home(props) {
     switch (props.status) {
 
       case USER_PROFILE_REQUEST:
-        status = props.status
+        status = props.status;
         break;
 
       case USER_PROFILE_SUCCESS:
-        status = props.status
+        status = props.status;
         break;
 
       case USER_PROFILE_FAILURE:
-        status = props.status
+        status = props.status;
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
 
       case HOME_PAGE_REQUEST:
-        status = props.status
+        status = props.status;
         break;
 
       case HOME_PAGE_SUCCESS:
-        status = props.status
+        status = props.status;
         break;
 
       case HOME_PAGE_FAILURE:
-        status = props.status
+        status = props.status;
+        toast("Oops", "Something Went Wrong, Please Try Again")
+        break;
+
+      case SAVE_SONGS_REQUEST:
+        status = props.status;
+        break;
+
+      case SAVE_SONGS_SUCCESS:
+        status = props.status;
+        toast('Success', 'Song Saved Successfully');
+        break;
+
+      case SAVE_SONGS_FAILURE:
+        status = props.status;
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
     }
@@ -244,9 +191,10 @@ function Home(props) {
           props.navigation.navigate('HomeItemComments')
         }}
         onPressSecondImage={() => {
+          setPositionInArray(data.index)
           setModalVisible(true)
         }}
-        marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0} />
+        marginBottom={data.index === props.postData.length - 1 ? normalise(20) : 0} />
       // </TouchableOpacity>
     )
   };
@@ -407,7 +355,19 @@ function Home(props) {
                     marginBottom: normalise(12)
                   }} />
 
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                    onPress={() => {
+                      let saveSongObject = {
+                        song_id: props.postData[positionInArray].song_uri,
+                        song_name: props.postData[positionInArray].song_name,
+                        song_image: props.postData[positionInArray].song_image,
+                        artist_name: props.postData[positionInArray].artist_name,
+                        album_name: props.postData[positionInArray].album_name
+                      };
+
+                      props.saveSongReq(saveSongObject);
+
+                    }}>
                     <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
@@ -416,6 +376,8 @@ function Home(props) {
                       fontFamily: 'ProximaNova-Semibold',
                     }}>Save Song</Text>
                   </TouchableOpacity>
+
+
                   <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
@@ -425,6 +387,8 @@ function Home(props) {
                       fontFamily: 'ProximaNova-Semibold',
                     }}>Send Song</Text>
                   </TouchableOpacity>
+
+
                   <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
@@ -434,6 +398,8 @@ function Home(props) {
                       fontFamily: 'ProximaNova-Semibold',
                     }}>Copy Link</Text>
                   </TouchableOpacity>
+
+
                   <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
@@ -580,6 +546,10 @@ const mapDispatchToProps = (dispatch) => {
     homePage: () => {
       dispatch(homePageReq())
     },
+
+    saveSongReq: (payload) => {
+      dispatch(saveSongRequest(payload))
+    }
   }
 };
 
