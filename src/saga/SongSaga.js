@@ -11,10 +11,12 @@ import {
     UNSAVE_SONG_REQUEST,
     UNSAVE_SONG_SUCCESS,
     UNSAVE_SONG_FAILURE
+
 } from '../action/TypeConstants';
 import { getApi, postApi } from '../utils/helpers/ApiRequest';
 
 const getItems = (state) =>  state.TokenReducer 
+
 
 export function* saveSongAction(action) {
     try {
@@ -36,10 +38,57 @@ export function* saveSongAction(action) {
     }
 };
 
+export function* savedSongListAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call (getApi, 'song/list', Header);
+        
+        yield put ({type: SAVED_SONGS_LIST_SUCCESS, data:response.data.data });
+
+    } catch (error) {
+        yield put ({type: SAVED_SONGS_LIST_FAILURE, error:error})
+    }
+};
+
+
+export function* unsaveSongAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call (getApi, `song/remove/${action.id}`, Header);
+        
+        yield put ({type: UNSAVE_SONG_SUCCESS, data:response.data });
+
+    } catch (error) {
+        yield put ({type: UNSAVE_SONG_FAILURE, error:error})
+    }
+};
+
 
 
 //WATCH FUNCTIONS
 
 export function* watchsaveSongAction() {
     yield takeLatest( SAVE_SONGS_REQUEST, saveSongAction)
+};
+
+export function* watchsavedSongListAction() {
+    yield takeLatest(SAVED_SONGS_LIST_REQUEST, savedSongListAction)
+};
+
+export function* watchunsaveSongAction() {
+    yield takeLatest(UNSAVE_SONG_REQUEST, unsaveSongAction)
 };

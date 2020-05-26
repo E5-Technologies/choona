@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
@@ -20,62 +16,83 @@ import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from '../ListCells/SavedSongsListItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../../utils/MyStatusBar';
+import {
+    SAVED_SONGS_LIST_REQUEST, SAVED_SONGS_LIST_SUCCESS,
+    SAVED_SONGS_LIST_FAILURE,
+    UNSAVE_SONG_REQUEST,
+    UNSAVE_SONG_SUCCESS,
+    UNSAVE_SONG_FAILURE
+} from '../../../action/TypeConstants';
+import { savedSongsListRequset, unsaveSongRequest } from '../../../action/SongAction';
+import Loader from '../../../widgets/AuthLoader';
+import toast from '../../../utils/helpers/ShowErrorAlert';
+import { connect } from 'react-redux';
+import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 
-const flatlistdata = [
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack3,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack4,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack5,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack6,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-]
+let status;
 
-export default function Contact(props) {
+function Contact(props) {
 
     const [search, setSearch] = useState("")
+
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+            isInternetConnected()
+                .then(() => {
+                    props.getSavedSongs()
+                })
+                .catch(() => {
+                    toast("Oops", "Please Connect To Internet")
+                })
+
+        });
+
+        return () => {
+            unsuscribe()
+        }
+    }, []);
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case SAVED_SONGS_LIST_REQUEST:
+                status = props.status
+                break;
+
+            case SAVED_SONGS_LIST_SUCCESS:
+                status = props.status
+                break;
+
+            case SAVED_SONGS_LIST_FAILURE:
+                status = props.status
+                toast('Oops', 'Something Went Wrong')
+                break;
+
+            case UNSAVE_SONG_REQUEST:
+                status = props.status
+                break;
+
+            case UNSAVE_SONG_SUCCESS:
+                status = props.status
+                props.getSavedSongs()
+                break;
+
+            case UNSAVE_SONG_FAILURE:
+                status = props.status
+                toast('Oops', 'Something Went Wrong')
+                break;
+
+        }
+    }
 
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={""}
-                title={data.item.title}
-                singer={data.item.singer}
-                marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0} />
+                image={data.item.song_image}
+                title={data.item.song_name}
+                singer={data.item.artist_name}
+                marginBottom={data.index === props.savedSong.length - 1 ? normalise(20) : 0} />
         )
     }
 
@@ -84,6 +101,8 @@ export default function Contact(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+
+            <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -115,7 +134,7 @@ export default function Contact(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={()=>{setSearch("")}}
+                        <TouchableOpacity onPress={() => { setSearch("") }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -131,7 +150,7 @@ export default function Contact(props) {
 
 
                 <SwipeListView
-                    data={flatlistdata}
+                    data={props.savedSong}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
                     renderHiddenItem={(rowData, rowMap) => (
@@ -146,8 +165,9 @@ export default function Contact(props) {
                             marginTop: normalise(10),
                             position: 'absolute', right: 21
                         }}
-                            //  onPress={ () => { rowMap[rowData.item.key].closeRow() }}
-                            onPress={() => { props.navigation.navigate('Player') }}
+                            onPress={() => { 
+                                props.unsaveSongReq(rowData.item._id)
+                                rowMap[rowData.item.key].closeRow() }}
                         >
 
                             <Image source={ImagePath.unsaved}
@@ -161,11 +181,34 @@ export default function Contact(props) {
                         </TouchableOpacity>
                     )}
 
-                    keyExtractor={(item, index) => { index.toString() }}
+                    keyExtractor={(item, index, rowData) => { index.toString() }}
                     disableRightSwipe={true}
                     rightOpenValue={-75} />
 
             </SafeAreaView>
         </View>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.SongReducer.status,
+        error: state.SongReducer.error,
+        savedSong: state.SongReducer.savedSongList
+    }
+};
+
+const mapDistapchToProps = (dispatch) => {
+    return {
+        getSavedSongs: () => {
+            dispatch(savedSongsListRequset())
+        },
+
+        unsaveSongReq: (id) => {
+            dispatch(unsaveSongRequest(id))
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDistapchToProps)(Contact)
+
