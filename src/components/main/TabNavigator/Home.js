@@ -109,7 +109,7 @@ function Home(props) {
       status = props.songStatus
       toast("Success", "Song Successfully Saved")
     }
-    else {
+    else if (props.songStatus === SAVE_SONGS_FAILURE) {
       status = props.status
       toast("Oops", "Something Went Wrong, Please Try Again")
     }
