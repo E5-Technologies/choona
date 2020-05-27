@@ -52,6 +52,7 @@ function OthersProfile(props) {
 
     const [id, setId] = useState(props.route.params.id)
     const [isFollowing, setIsFollowing] = useState(props.route.params.following)
+    const [noOfPosts, setNoOfPosts] = useState("");
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -67,7 +68,7 @@ function OthersProfile(props) {
         return () => {
             unsuscribe();
         }
-    });
+    }, []);
 
     if (status === "" || props.status !== status) {
         switch (props.status) {
@@ -77,6 +78,7 @@ function OthersProfile(props) {
 
             case OTHERS_PROFILE_SUCCESS:
                 status = props.status
+                setNoOfPosts(props.othersProfileresp.post.length)
                 break;
 
             case OTHERS_PROFILE_FAILURE:
@@ -166,7 +168,7 @@ function OthersProfile(props) {
                             color: Colors.darkgrey, fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
 
-                        }}>{props.othersProfileresp.post.length}</Text>
+                        }}>{noOfPosts}</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
