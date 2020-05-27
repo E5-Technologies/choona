@@ -48,9 +48,8 @@ const profileData = [
     {
         image: ImagePath.profiletrack6
     },
-]
+];
 
-const profileData2 = []
 
 let status = "";
 
