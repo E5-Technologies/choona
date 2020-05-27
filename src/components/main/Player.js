@@ -34,7 +34,7 @@ const followdata = [
 
         reactions: 11,
         content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
+        time: "15 hours ago"
     },
     {
 
@@ -45,7 +45,7 @@ const followdata = [
 
         reactions: 7,
         content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        time: 8
+        time: "8 min ago"
     },
     {
 
@@ -56,7 +56,7 @@ const followdata = [
 
         reactions: 10,
         content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
+        time: "10 days ago"
     },
 
     {
@@ -68,7 +68,7 @@ const followdata = [
 
         reactions: 11,
         content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-        time: 8
+        time: "2 days ago"
     },
 
 ]
@@ -93,7 +93,7 @@ export default function Player(props) {
         return (
             <CommentList
                 width={"100%"}
-                image={data.item.picture}
+                image={""}
                 title={data.item.title}
                 name={data.item.name}
                 comment={data.item.content}

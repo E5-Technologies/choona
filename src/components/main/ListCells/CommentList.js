@@ -51,22 +51,28 @@ function CommentList(props) {
 
             <View style={{
                 flexDirection: 'row',
-
             }}>
 
-                <TouchableOpacity onPress={() => { onPressImage() }}  >
-                    <Image source={{uri: props.image}}
-                        style={{ height: normalise(30), width: normalise(30), borderRadius: normalise(15) }}
-                        resizeMode="contain" />
+
+                <View style={{ width: '10%' }}>
+
+                    <TouchableOpacity onPress={() => { onPressImage() }}  >
+                        <Image source={props.image == "" ? ImagePath.dp1 : { uri: props.image }}
+                            style={{ height: normalise(30), width: normalise(30), borderRadius: normalise(15) }}
+                            resizeMode="contain" />
+                    </TouchableOpacity>
+                </View>
 
 
-                </TouchableOpacity>
-                <View style={{ marginLeft: normalise(6), }}>
-                    <View style={{
-                        flexDirection: 'row',
-                        width: '77%',
-                        justifyContent: 'space-between'
-                    }}>
+                <View style={{
+                    flexDirection: 'row',
+                    width: '90%',
+                    justifyContent: 'space-between',
+                }}>
+
+
+                    <View style={{flexDirection:'column', justifyContent:'flex-start', alignItems:'flex-start',
+                 marginLeft:normalise(10), width:'70%'}}>
 
                         <Text style={{
                             color: Colors.white,
@@ -75,28 +81,31 @@ function CommentList(props) {
                         }}>
                             {props.name}
                         </Text>
-                        <Text style={{
-                            color: Colors.grey_text,
-                            fontSize: 12,
-                            fontFamily: 'ProximaNovaAW07-Medium',
-                        }}>
-                            {props.time}</Text>
-                    </View>
-                    <View style={{width: '77%'}}>
+
                         <Text style={{
                             color: Colors.white,
                             fontSize: 12,
                             marginTop: normalise(2),
+                            textAlign:'left',
                             fontFamily: 'ProximaNovaAW07-Medium'
                         }}>
                             {props.comment}</Text>
-                    </View>
-                </View>
 
+                    </View>
+
+                    <Text style={{
+                        color: Colors.grey_text,
+                        fontSize: 12,
+                        fontFamily: 'ProximaNovaAW07-Medium',
+                    }}>
+                        {props.time}</Text>
+
+                </View>
             </View>
 
+
             <View style={{
-                marginTop: normalise(20), borderBottomWidth: 0.5,
+                marginTop: normalise(15), borderBottomWidth: 0.5,
                 borderBottomColor: Colors.activityBorderColor
             }} />
 
