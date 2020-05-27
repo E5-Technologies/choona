@@ -17,12 +17,12 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
     USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
     USER_PROFILE_FAILURE
-  } from '../../action/TypeConstants';
+} from '../../action/TypeConstants';
 import { getProfileRequest } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
@@ -58,36 +58,36 @@ function Profile(props) {
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
-          isInternetConnected()
-            .then(() => {
-              props.getProfileReq()
-            })
-            .catch(() => {
-              toast('Error', 'Please Connect To Internet')
-            })
+            isInternetConnected()
+                .then(() => {
+                    props.getProfileReq()
+                })
+                .catch(() => {
+                    toast('Error', 'Please Connect To Internet')
+                })
         });
-    
-        return () => {
-          unsuscribe();
-        }
-      });
 
-      if (status === "" || props.status !== status) {
-        switch (props.status) {
-          case USER_PROFILE_REQUEST:
-            status = props.status
-            break;
-          
-            case USER_PROFILE_SUCCESS:
-            status = props.status
-            break;
-          
-            case USER_PROFILE_FAILURE:
-            status = props.status
-            toast("Oops", "Something Went Wrong, Please Try Again")
-            break;
+        return () => {
+            unsuscribe();
         }
-      };
+    });
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+            case USER_PROFILE_REQUEST:
+                status = props.status
+                break;
+
+            case USER_PROFILE_SUCCESS:
+                status = props.status
+                break;
+
+            case USER_PROFILE_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
+        }
+    };
 
 
 
@@ -97,14 +97,18 @@ function Profile(props) {
                 margin: normalise(4),
                 marginBottom: data.index === props.userProfileResp.post.length - 1 ? normalise(30) : normalise(5)
             }}>
-                <Image source={{uri: props.userProfileResp.register_type === 'spotify' ? data.item.song_image:
-                data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")}} 
-                
-                style={{ width: Dimensions.get("window").width / 2.1,
-                height: Dimensions.get("window").height * 0.22, 
-                borderRadius:normalise(10) }}
-                   
-                   resizeMode="cover" />
+                <Image source={{
+                    uri: props.userProfileResp.register_type === 'spotify' ? data.item.song_image :
+                        data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")
+                }}
+
+                    style={{
+                        width: Dimensions.get("window").width / 2.1,
+                        height: Dimensions.get("window").height * 0.22,
+                        borderRadius: normalise(10)
+                    }}
+
+                    resizeMode="cover" />
             </TouchableOpacity>
         )
     };
@@ -116,7 +120,7 @@ function Profile(props) {
 
             <StatusBar />
 
-            <Loader visible={props.status === USER_PROFILE_REQUEST}/>
+            <Loader visible={props.status === USER_PROFILE_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -145,7 +149,7 @@ function Profile(props) {
                     alignItems: 'center', marginTop: normalise(15)
                 }}>
 
-                    <Image source={{uri:constants.profile_picture_base_url+props.userProfileResp.profile_image}}
+                    <Image source={{ uri: constants.profile_picture_base_url + props.userProfileResp.profile_image }}
                         style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
                     <View style={{
@@ -178,7 +182,9 @@ function Profile(props) {
 
                         }}>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
+                            <TouchableOpacity onPress={() => {
+                                //props.navigation.navigate("Following", { following: following })
+                            }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold'
@@ -187,7 +193,9 @@ function Profile(props) {
                                 }}>{props.userProfileResp.following}</Text>  Following</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
+                            <TouchableOpacity onPress={() => {
+                                //props.navigation.navigate("Followers", { followers: followers })
+                            }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -264,7 +272,7 @@ function Profile(props) {
 
                             <View style={{
                                 flexDirection: 'column', alignItems: 'flex-start',
-                                 marginRight: Platform.OS === 'android' ? normalise(110) :  normalise(104)  ,
+                                marginRight: Platform.OS === 'android' ? normalise(110) : normalise(104),
                             }}>
 
                                 <Text style={{
@@ -274,7 +282,7 @@ function Profile(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(10),
-                                    
+
                                     fontFamily: 'ProximaNova-Bold'
                                 }}>Bongo Song</Text>
 
@@ -343,18 +351,18 @@ function Profile(props) {
 
 const mapStateToProps = (state) => {
     return {
-      status: state.UserReducer.status,
-      userProfileResp: state.UserReducer.userProfileResp,
+        status: state.UserReducer.status,
+        userProfileResp: state.UserReducer.userProfileResp,
 
     }
-  };
-  
-  const mapDispatchToProps = (dispatch) => {
+};
+
+const mapDispatchToProps = (dispatch) => {
     return {
         getProfileReq: () => {
             dispatch(getProfileRequest())
-          }
+        }
     }
-  };
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
