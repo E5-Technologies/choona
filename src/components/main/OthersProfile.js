@@ -26,6 +26,7 @@ import Loader from '../../widgets/AuthLoader';
 import { connect } from 'react-redux'
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import _ from "lodash"
 
 
 const profileData = [
@@ -106,14 +107,18 @@ function OthersProfile(props) {
                 margin: normalise(4),
                 marginBottom: data.index === props.othersProfileresp.post.length - 1 ? normalise(30) : normalise(5)
             }}>
-                <Image source={{uri: props.othersProfileresp.register_type === 'spotify' ? data.item.song_image:
-                data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")}} 
-                
-                style={{ width: Dimensions.get("window").width / 2.1,
-                height: Dimensions.get("window").height * 0.22, 
-                borderRadius:normalise(10) }}
-                   
-                   resizeMode="cover" />
+                <Image source={{
+                    uri: props.othersProfileresp.register_type === 'spotify' ? data.item.song_image :
+                        data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")
+                }}
+
+                    style={{
+                        width: Dimensions.get("window").width / 2.1,
+                        height: Dimensions.get("window").height * 0.22,
+                        borderRadius: normalise(10)
+                    }}
+
+                    resizeMode="cover" />
             </TouchableOpacity>
         )
     }
@@ -161,7 +166,7 @@ function OthersProfile(props) {
                             color: Colors.darkgrey, fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
 
-                        }}>4 Posts</Text>
+                        }}>{props.othersProfileresp.post.length}</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
@@ -281,14 +286,32 @@ function OthersProfile(props) {
 
                 </ImageBackground>
 
-                <FlatList
-                    style={{ paddingTop: normalise(10)}}
-                    data={props.othersProfileresp.post}
-                    renderItem={renderProfileData}
-                    keyExtractor={(item, index) => { index.toString() }}
-                    showsVerticalScrollIndicator={false}
-                    numColumns={2} />
 
+                {_.isEmpty(props.othersProfileresp.post) ?
+
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+
+                            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                                 Profile is Empty</Text>
+
+                            <Text style={{
+                                marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
+                                width:'60%', textAlign:'center'
+                            }}>{props.othersProfileresp.username} has not posted any songs yet</Text>
+                       
+                    </View>
+
+                    :
+
+                    <FlatList
+                        style={{ paddingTop: normalise(10) }}
+                        data={props.othersProfileresp.post}
+                        renderItem={renderProfileData}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        showsVerticalScrollIndicator={false}
+                        numColumns={2} />
+                }
 
 
             </SafeAreaView>
