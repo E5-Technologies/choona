@@ -54,7 +54,7 @@ function CommentList(props) {
             }}>
 
 
-                <View style={{ width: '10%' }}>
+                <View style={{ width: '13%' }}>
 
                     <TouchableOpacity onPress={() => { onPressImage() }}  >
                         <Image source={props.image == "" ? ImagePath.dp1 : { uri: props.image }}
@@ -66,13 +66,13 @@ function CommentList(props) {
 
                 <View style={{
                     flexDirection: 'row',
-                    width: '90%',
+                    width: '87%',
                     justifyContent: 'space-between',
                 }}>
 
 
                     <View style={{flexDirection:'column', justifyContent:'flex-start', alignItems:'flex-start',
-                 marginLeft:normalise(10), width:'70%'}}>
+                 width:'70%'}}>
 
                         <Text style={{
                             color: Colors.white,
