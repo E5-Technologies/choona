@@ -50,7 +50,7 @@ function CommentList(props) {
         <View style={{ width: props.width, alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom}}>
 
             <View style={{
-                flexDirection: 'row',
+                flexDirection: 'row'
             }}>
 
 

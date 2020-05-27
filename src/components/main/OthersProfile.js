@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     FlatList,
     Image,
-    ImageBackground
+    ImageBackground,
+    Dimensions
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -102,16 +103,17 @@ function OthersProfile(props) {
     function renderProfileData(data) {
         return (
             <TouchableOpacity style={{
-
-                marginBottom: data.index === profileData.length - 1 ? normalise(30) : normalise(0)
+                margin: normalise(5),
+                marginBottom: data.index === props.othersProfileresp.post.length - 1 ? normalise(30) : normalise(5)
             }}>
-                <Image source={data.item.image}
-                    style={{
-                        height: normalise(140),
-                        width: normalise(152),
-                        marginBottom: normalise(10)
-                    }}
-                    resizeMode="contain" />
+                <Image source={{uri: props.othersProfileresp.register_type === 'spotify' ? data.item.song_image:
+                data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")}} 
+                
+                style={{ width: Dimensions.get("window").width / 2.2,
+                height: Dimensions.get("window").height * 0.22, 
+                borderRadius:normalise(10), backgroundColor:'grey' }}
+                   
+                   resizeMode="cover" />
             </TouchableOpacity>
         )
     }
@@ -281,7 +283,7 @@ function OthersProfile(props) {
 
                 <FlatList
                     style={{ paddingTop: normalise(10), alignSelf: 'center' }}
-                    data={profileData}
+                    data={props.othersProfileresp.post}
                     renderItem={renderProfileData}
                     keyExtractor={(item, index) => { index.toString() }}
                     showsVerticalScrollIndicator={false}

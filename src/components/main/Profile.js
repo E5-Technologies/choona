@@ -9,7 +9,8 @@ import {
     FlatList,
     Image,
     ImageBackground,
-    Platform
+    Platform,
+    Dimensions
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -55,9 +56,6 @@ let status = "";
 
 function Profile(props) {
 
-    const [following, setFollowing] = useState("1,633");
-    const [followers, setFollowers] = useState('429');
-
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -98,10 +96,16 @@ function Profile(props) {
         return (
             <TouchableOpacity style={{
                 margin: normalise(5),
-                marginBottom: data.index === profileData.length - 1 ? normalise(30) : normalise(0)
+                marginBottom: data.index === props.userProfileResp.post.length - 1 ? normalise(30) : normalise(5)
             }}>
-                <Image source={data.item.image} style={{ height: normalise(140), width: normalise(140) }}
-                    resizeMode="contain" />
+                <Image source={{uri: props.userProfileResp.register_type === 'spotify' ? data.item.song_image:
+                data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")}} 
+                
+                style={{ width: Dimensions.get("window").width / 2.2,
+                height: Dimensions.get("window").height * 0.22, 
+                borderRadius:normalise(10), backgroundColor:'grey' }}
+                   
+                   resizeMode="cover" />
             </TouchableOpacity>
         )
     };
@@ -291,7 +295,7 @@ function Profile(props) {
                 </ImageBackground>
 
 
-                {_.isEmpty(profileData) ?
+                {_.isEmpty(props.userProfileResp.post) ?
 
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
@@ -325,7 +329,7 @@ function Profile(props) {
 
                     : <FlatList
                         style={{ paddingTop: normalise(10), alignSelf: 'center' }}
-                        data={profileData}
+                        data={props.userProfileResp.post}
                         renderItem={renderProfileData}
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false}
@@ -341,7 +345,8 @@ function Profile(props) {
 const mapStateToProps = (state) => {
     return {
       status: state.UserReducer.status,
-      userProfileResp: state.UserReducer.userProfileResp
+      userProfileResp: state.UserReducer.userProfileResp,
+
     }
   };
   
