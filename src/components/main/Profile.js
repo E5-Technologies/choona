@@ -95,15 +95,15 @@ function Profile(props) {
     function renderProfileData(data) {
         return (
             <TouchableOpacity style={{
-                margin: normalise(5),
+                margin: normalise(4),
                 marginBottom: data.index === props.userProfileResp.post.length - 1 ? normalise(30) : normalise(5)
             }}>
                 <Image source={{uri: props.userProfileResp.register_type === 'spotify' ? data.item.song_image:
                 data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")}} 
                 
-                style={{ width: Dimensions.get("window").width / 2.2,
+                style={{ width: Dimensions.get("window").width / 2.1,
                 height: Dimensions.get("window").height * 0.22, 
-                borderRadius:normalise(10), backgroundColor:'grey' }}
+                borderRadius:normalise(10) }}
                    
                    resizeMode="cover" />
             </TouchableOpacity>
@@ -328,7 +328,7 @@ function Profile(props) {
                     </View>
 
                     : <FlatList
-                        style={{ paddingTop: normalise(10), alignSelf: 'center' }}
+                        style={{ paddingTop: normalise(10) }}
                         data={props.userProfileResp.post}
                         renderItem={renderProfileData}
                         keyExtractor={(item, index) => { index.toString() }}
