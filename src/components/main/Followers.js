@@ -73,7 +73,7 @@ let status;
             <ActivityListItem image={constants.profile_picture_base_url+data.item.profile_image}
                 title={data.item.username} 
                 type={true}
-                follow={data.item.isFollowing ? false : true}
+                follow={data.item.isFollowing?false:true}
                 marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
                 // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                  />

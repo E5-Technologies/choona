@@ -47,7 +47,7 @@ function CommentList(props) {
 
     return (
 
-        <View style={{ width: props.width, alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom}}>
+        <View style={{ width: props.width, alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
             <View style={{
                 flexDirection: 'row'
@@ -67,42 +67,33 @@ function CommentList(props) {
                 <View style={{
                     flexDirection: 'row',
                     width: '87%',
-                    justifyContent: 'space-between',
-                }}>
-
-
-                    <View style={{flexDirection:'column', justifyContent:'flex-start', alignItems:'flex-start',
-                 width:'70%'}}>
-
-                        <Text style={{
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'ProximaNova-Semibold',
-                        }}>
-                            {props.name}
-                        </Text>
-
-                        <Text style={{
-                            color: Colors.white,
-                            fontSize: 12,
-                            marginTop: normalise(2),
-                            textAlign:'left',
-                            fontFamily: 'ProximaNovaAW07-Medium'
-                        }}>
-                            {props.comment}</Text>
-
-                    </View>
+                    justifyContent: 'space-between'}}>
+                   
+                    <Text style={{
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: 'ProximaNova-Semibold',
+                    }}>{props.name}</Text>
 
                     <Text style={{
                         color: Colors.grey_text,
                         fontSize: 12,
                         fontFamily: 'ProximaNovaAW07-Medium',
-                    }}>
-                        {props.time}</Text>
+                    }}>{props.time}</Text>
 
                 </View>
+
             </View>
 
+            <Text style={{
+                color: Colors.white,
+                fontSize: 12,
+                marginTop: normalise(-15),
+                alignSelf:'flex-end',
+                width:'86.6%',
+                textAlign: 'left',
+                fontFamily: 'ProximaNovaAW07-Medium'
+            }}>{props.comment}</Text>
 
             <View style={{
                 marginTop: normalise(15), borderBottomWidth: 0.5,
