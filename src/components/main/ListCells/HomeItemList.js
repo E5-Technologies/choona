@@ -26,60 +26,43 @@ function HomeItemList(props) {
     const [plusVisible, setPlusVisible] = useState(false);
     const [numberOfLines, setNumberOfLines] = useState(3);
     const [viewMore, setViewMore] = useState(false);
-    const [fire, setfire] = useState(0);
-    const [heartEyes, setheartEyes] = useState(0);
-    const [dancingGirl, setdancingGirl] = useState(0);
-    const [party, setpartyparty] = useState(0);
-    const [laughing, setlaughing] = useState(0);
-    const [hundred, sethundred] = useState(0);
+
+    let fire = [];
+    let heartEyes = [];
+    let dancingGirl = [];
+    let party = [];
+    let laughing = [];
+    let hundred = [];
 
 
-    // if (props.reactions.length > 0) {
-    //     props.reactions.map((item, index) => {
+    if (props.reactions.length > 0) {
+        props.reactions.map((item, index) => {
 
-    //         switch (item.text) {
+             if(item.text === react[0]){
+               fire.push(item)
+            }
 
-    //             case react[0]:
-    //                 setfire(fire + 1)
-    //                 break;
-    //         }
+            else if(item.text === react[1]){
+              heartEyes.push(item)
+            }
 
-    //         // else if(item.text === react[1]){
-    //         //     setReaction({
-    //         //         ...reaction,
-    //         //         heartEyes: reaction.heartEyes + 1
-    //         //     });   
-    //         // }
+            else if(item.text === react[2]){
+                dancingGirl.push(item)  
+            }
 
-    //         // else if(item.text === react[2]){
-    //         //     setReaction({
-    //         //         ...reaction,
-    //         //         dancingGirl: reaction.dancingGirl + 1
-    //         //     });   
-    //         // }
+            else if(item.text === react[3]){
+                party.push(item)
+            }
 
-    //         // else if(item.text === react[3]){
-    //         //     setReaction({
-    //         //         ...reaction,
-    //         //         party: reaction.party + 1
-    //         //     });   
-    //         // }
+            else if(item.text === react[4]){
+               laughing.push(item) 
+            }
 
-    //         // else if(item.text === react[4]){
-    //         //     setReaction({
-    //         //         ...reaction,
-    //         //         laughing: reaction.laughing + 1
-    //         //     });   
-    //         // }
-
-    //         // else if(item.text === react[5]){
-    //         //     setReaction({
-    //         //         ...reaction,
-    //         //         hundred: reaction.hundred + 1
-    //         //     });   
-    //         // }
-    //     })
-    // }
+            else if(item.text === react[5]){
+                hundred.push(item) 
+            }
+        })
+    }
 
 
     const onPress = () => {
@@ -246,7 +229,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{fire}</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{fire.length}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -262,7 +245,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{heartEyes}</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{heartEyes.length}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -278,7 +261,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{dancingGirl}</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{dancingGirl.length}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -295,7 +278,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{party}</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{party.length}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -311,7 +294,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{laughing}</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{laughing.length}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -327,7 +310,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{hundred}</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{hundred.length}</Text>
                         </View>
                     </TouchableOpacity>
 

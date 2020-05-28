@@ -212,6 +212,7 @@ function EditProfile(props) {
 
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}
+                        maxLength={25}
                         value={fullname}
                         placeholderTextColor={Colors.grey}
                         onChangeText={(text) => { setFullname(text) }}

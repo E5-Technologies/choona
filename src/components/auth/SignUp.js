@@ -278,6 +278,7 @@ function Login(props) {
                     <TextInputField text={"FULL NAME"}
                         placeholder={"Enter Name"}
                         placeholderTextColor={Colors.grey}
+                        maxLength={25}
                         value={fullname}
                         onChangeText={(text) => { setFullname(text) }} />
 

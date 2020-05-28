@@ -305,14 +305,16 @@ function Profile(props) {
 
                         <View style={{
                             height: '50%', justifyContent: 'flex-end', alignItems: "center",
-                            width: '50%'
+                            width: '60%'
                         }}>
 
-                            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
+                            textAlign:'center' }}>
                                 Your Profile is Empty</Text>
 
                             <Text style={{
                                 marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
+                                textAlign:'center'
                             }}>You haven't posted any songs yet, let's post one </Text>
                         </View>
 
