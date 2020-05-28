@@ -18,8 +18,6 @@ import PropTypes from "prop-types";
 function ActivityListItem(props) {
 
     const [follow, setFollow] = useState(props.follow)
-
-
     const onPress = () => {
         if (props.onPress) {
             props.onPress()
@@ -128,7 +126,6 @@ ActivityListItem.defaultProps = {
     title: "",
     onPress: null,
     type: true,
-    follow: true,
     marginBottom: 0,
     onPressImage: null,
     marginTop: 0
