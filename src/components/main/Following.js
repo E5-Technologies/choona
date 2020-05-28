@@ -17,87 +17,79 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
+import {FOLLOWING_LIST_REQUEST, FOLLOWING_LIST_SUCCESS, FOLLOWING_LIST_FAILURE} from '../../action/TypeConstants';
+import {followingListReq} from '../../action/UserAction';
+import Loader from '../../widgets/AuthLoader';
+import constants from '../../utils/helpers/constants';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import {connect} from 'react-redux'
 
-const followdata = [
-    {
-        picture: ImagePath.dp,
-        title: "DanVermon98",
-        picture2: ImagePath.dp2,
-        type: 'Following'
-    },
 
-    {
-        picture: ImagePath.dp1,
-        title: "Bigbird883",
-        picture2: ImagePath.dp2,
-        type: 'Following'
-    },
-    {
-        picture: ImagePath.dp,
-        title: "Annie88jones ",
-        type: 'Following'
-    },
-    {
-        picture: ImagePath.dp1,
-        title: "RonnyJ ",
-        type: 'Following'
-    },
-    {
-        picture: ImagePath.dp,
-        title: "DanVermon98",
-        picture2: ImagePath.dp2,
-        type: 'Following'
-    },
+let status; 
 
-    {
-        picture: ImagePath.dp1,
-        title: "Bigbird883",
-        type: 'Following'
-    },
-    {
-        picture: ImagePath.dp,
-        title: "Annie88j",
-        type: 'Following'
-    },
-    {
-        picture: ImagePath.dp1,
-        title: "RonnyJ",
-        type: 'Following'
-    },
-    {
-        picture: ImagePath.dp,
-        title: "DanVermon98",
-        type: 'Following'
-    },
+function Following(props) {
 
-    {
-        picture: ImagePath.dp1,
-        title: "Bigbird883",
-        type: 'Following'
-    },
-]
-
-export default function Following(props) {
-
-    const [following, setFollowing] = useState(props.route.params.following)
+    const [type, setType] = useState(props.route.params.type)
+    const [id, setId] = useState(props.route.params.id)
+    const [following, setFollowing] = useState("")
     const [search, setSearch] = useState("")
 
+    
+    useEffect(()=>{
+        props.navigation.addListener('focus', (payload)=>{
+            isInternetConnected()
+            .then(()=>{
+                props.followingListReq(type, id)
+            })
+            .catch(()=>{
+                toast('Error', "Please Connect To Internet")
+            })
+        })
+    });
+
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case FOLLOWING_LIST_REQUEST:
+                status = props.status
+                break;
+
+            case FOLLOWING_LIST_SUCCESS:
+                status = props.status
+                setFollowing(props.followingData.length)
+                break;
+
+            case FOLLOWING_LIST_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
+        }
+    };
+    
+    
     function renderFollowersItem(data) {
         return (
-            <ActivityListItem image={""}
-                title={data.item.title} type={true}
-                follow={data.item.type === "Follow" ? true : false}
-                marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
+            <ActivityListItem image={constants.profile_picture_base_url+data.item.profile_image}
+                title={data.item.username} 
+                type={true}
+                follow={false}
+                marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
                 // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
             />
         )
-    }
+    };
+
+
 
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+
+            <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -144,7 +136,7 @@ export default function Following(props) {
 
 
                 <FlatList
-                    data={followdata}
+                    data={props.followingData}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => { index.toString() }}
                     renderItem={renderFollowersItem} />
@@ -154,4 +146,21 @@ export default function Following(props) {
             </SafeAreaView>
         </View>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return{
+        status: state.UserReducer.status,
+        followingData: state.UserReducer.followingData
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return{
+        followingListReq: (usertype, id) => {
+            dispatch(followingListReq(usertype, id))
+        }
+    }
+};
+
+export default connect (mapStateToProps, mapDispatchToProps)(Following)

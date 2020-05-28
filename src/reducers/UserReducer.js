@@ -35,6 +35,14 @@ import {
     COMMENT_ON_POST_SUCCESS,
     COMMENT_ON_POST_FAILURE,
 
+    FOLLOWER_LIST_REQUEST,
+    FOLLOWER_LIST_SUCCESS,
+    FOLLOWER_LIST_FAILURE,
+
+    FOLLOWING_LIST_REQUEST,
+    FOLLOWING_LIST_SUCCESS,
+    FOLLOWING_LIST_FAILURE,
+
     REACTION_ON_POST_REQUEST,
     REACTION_ON_POST_SUCCESS,
     REACTION_ON_POST_FAILURE,
@@ -53,6 +61,8 @@ const initialState = {
     othersProfileresp: {},
     postData: [],
     commentResp: {},
+    followerData: [],
+    followingData: [],
     reactionResp: {},
 }
 
@@ -233,6 +243,46 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case COMMENT_ON_POST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case FOLLOWER_LIST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case FOLLOWER_LIST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                followerData: action.data,
+            };
+
+        case FOLLOWER_LIST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case FOLLOWING_LIST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case FOLLOWING_LIST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                followingData: action.data,
+            };
+
+        case FOLLOWING_LIST_FAILURE:
             return {
                 ...state,
                 status: action.type,

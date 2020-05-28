@@ -38,6 +38,14 @@ import {
     COMMENT_ON_POST_SUCCESS,
     COMMENT_ON_POST_FAILURE,
 
+    FOLLOWER_LIST_REQUEST,
+    FOLLOWER_LIST_SUCCESS,
+    FOLLOWER_LIST_FAILURE,
+
+    FOLLOWING_LIST_REQUEST,
+    FOLLOWING_LIST_SUCCESS,
+    FOLLOWING_LIST_FAILURE,
+
     REACTION_ON_POST_REQUEST,
     REACTION_ON_POST_SUCCESS,
     REACTION_ON_POST_FAILURE,
@@ -240,6 +248,55 @@ export function* commentOnPostAction(action) {
     }
 };
 
+export function* followerListAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token 
+        };
+
+        if(action.usertype === 'user'){
+            const response = yield call (getApi, 'follower/list', Header)
+            yield put ({type: FOLLOWER_LIST_SUCCESS, data: response.data.data})
+        }
+        else{
+            const response = yield call (getApi, `follower/list?user_id=${action.id}`, Header)
+            yield put ({type: FOLLOWER_LIST_SUCCESS, data: response.data.data})
+        }
+
+    } catch (error) {
+        yield put ({type: FOLLOWER_LIST_FAILURE, error: error})
+    }
+};
+
+
+export function* followingListAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token 
+        };
+
+        if(action.usertype === 'user'){
+            const response = yield call (getApi, 'follower/following/list', Header)
+            yield put ({type: FOLLOWING_LIST_SUCCESS, data: response.data.data})
+        }
+        else{
+            const response = yield call (getApi, `follower/following/list?user_id=${action.id}`, Header)
+            yield put ({type: FOLLOWING_LIST_SUCCESS, data: response.data.data})
+        }
+
+    } catch (error) {
+        yield put ({type: FOLLOWING_LIST_FAILURE, error: error})
+    }
+};
+
 export function* reactionOnPostAction(action) {
     try {
         const items = yield select (getItems);
@@ -296,7 +353,15 @@ export function* watchhomePageAction() {
 
 export function* watchcommentOnPostAction() {
     yield takeLatest(COMMENT_ON_POST_REQUEST, commentOnPostAction)
-}
+};
+
+export function* watchfollowerListAction() {
+    yield takeLatest(FOLLOWER_LIST_REQUEST, followerListAction)
+};
+
+export function* watchfollowingListAction() {
+    yield takeLatest(FOLLOWING_LIST_REQUEST, followingListAction)
+};
 
 export function* watchReactionOnPostAction() {
     yield takeLatest(REACTION_ON_POST_REQUEST, reactionOnPostAction)
