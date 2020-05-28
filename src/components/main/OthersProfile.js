@@ -78,7 +78,7 @@ function OthersProfile(props) {
 
             case OTHERS_PROFILE_SUCCESS:
                 status = props.status
-                setNoOfPosts(props.othersProfileresp.post.length)
+                setNoOfPosts(`${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}`)
                 break;
 
             case OTHERS_PROFILE_FAILURE:

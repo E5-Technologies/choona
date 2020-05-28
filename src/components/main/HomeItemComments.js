@@ -54,7 +54,8 @@ function HomeItemComments(props) {
                 name={data.item.username}
                 comment={data.item.text}
                 time={moment(data.item.createdAt).from()}
-                marginBottom={data.index === commentData.length - 1 ? normalise(50) : normalise(0)} />
+                marginBottom={data.index === commentData.length - 1 ? 
+                Platform.OS === 'android' ? normalise(80) : normalise(50) : normalise(0)} />
         )
     };
 
