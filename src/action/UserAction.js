@@ -7,7 +7,9 @@ import {
     USER_FOLLOW_UNFOLLOW_REQUEST,
     OTHERS_PROFILE_REQUEST,
     HOME_PAGE_REQUEST,
-    COMMENT_ON_POST_REQUEST
+    COMMENT_ON_POST_REQUEST,
+    FOLLOWER_LIST_REQUEST,
+    FOLLOWING_LIST_REQUEST
 }
     from './TypeConstants';
 
@@ -53,6 +55,19 @@ export const commentOnPostReq = (payload) => ({
     type: COMMENT_ON_POST_REQUEST,
     payload
 });
+
+export const followerListReq = (usertype, id) => ({
+    type: FOLLOWER_LIST_REQUEST,
+    usertype,
+    id
+});
+
+export const followingListReq = (usertype, id) => ({
+    type: FOLLOWING_LIST_REQUEST,
+    usertype,
+    id
+});
+
 
 
 

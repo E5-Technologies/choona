@@ -178,7 +178,7 @@ function Profile(props) {
 
                         }}>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { following: following }) }}>
+                            <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { type:'user', id:"" }) }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold'
@@ -187,7 +187,8 @@ function Profile(props) {
                                 }}>{props.userProfileResp.following}</Text>  Following</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Followers", { followers: followers }) }}>
+                            <TouchableOpacity 
+                            onPress={() => { props.navigation.navigate("Followers", { type:'user', id: ""}) }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),

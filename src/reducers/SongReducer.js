@@ -47,6 +47,7 @@ const SongReducer = (state = initialState, action) => {
         case SAVED_SONGS_LIST_REQUEST:
             return {
                 ...state,
+                savedSongList: [],
                 status: action.type
             };
 

@@ -108,6 +108,7 @@ function HomeItemComments(props) {
 
                     <View style={{
                         flexDirection: 'row',
+                        alignItems:'flex-start',
                     }}>
 
                         <TouchableOpacity onPress={() => { onPressImage() }} style={{ justifyContent: 'center' }}>
