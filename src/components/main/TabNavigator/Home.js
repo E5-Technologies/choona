@@ -28,7 +28,8 @@ import {
   HOME_PAGE_REQUEST, HOME_PAGE_SUCCESS,
   HOME_PAGE_FAILURE,
   SAVE_SONGS_REQUEST, SAVE_SONGS_SUCCESS,
-  SAVE_SONGS_FAILURE
+  SAVE_SONGS_FAILURE,
+  REACTION_ON_POST_SUCCESS
 } from '../../../action/TypeConstants';
 import { getProfileRequest, homePageReq, reactionOnPostRequest } from '../../../action/UserAction';
 import { saveSongRequest } from '../../../action/SongAction';
@@ -100,6 +101,11 @@ function Home(props) {
         status = props.status;
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
+
+      case REACTION_ON_POST_SUCCESS:
+        status = props.status;
+        props.homePage()
+        break;  
     };
   };
 
@@ -178,7 +184,7 @@ function Home(props) {
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
         comments={data.item.comment}
-        reactions={0}
+        reactions={data.item.reaction}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}

@@ -26,6 +26,61 @@ function HomeItemList(props) {
     const [plusVisible, setPlusVisible] = useState(false);
     const [numberOfLines, setNumberOfLines] = useState(3);
     const [viewMore, setViewMore] = useState(false);
+    const [fire, setfire] = useState(0);
+    const [heartEyes, setheartEyes] = useState(0);
+    const [dancingGirl, setdancingGirl] = useState(0);
+    const [party, setpartyparty] = useState(0);
+    const [laughing, setlaughing] = useState(0);
+    const [hundred, sethundred] = useState(0);
+
+
+    // if (props.reactions.length > 0) {
+    //     props.reactions.map((item, index) => {
+
+    //         switch (item.text) {
+
+    //             case react[0]:
+    //                 setfire(fire + 1)
+    //                 break;
+    //         }
+
+    //         // else if(item.text === react[1]){
+    //         //     setReaction({
+    //         //         ...reaction,
+    //         //         heartEyes: reaction.heartEyes + 1
+    //         //     });   
+    //         // }
+
+    //         // else if(item.text === react[2]){
+    //         //     setReaction({
+    //         //         ...reaction,
+    //         //         dancingGirl: reaction.dancingGirl + 1
+    //         //     });   
+    //         // }
+
+    //         // else if(item.text === react[3]){
+    //         //     setReaction({
+    //         //         ...reaction,
+    //         //         party: reaction.party + 1
+    //         //     });   
+    //         // }
+
+    //         // else if(item.text === react[4]){
+    //         //     setReaction({
+    //         //         ...reaction,
+    //         //         laughing: reaction.laughing + 1
+    //         //     });   
+    //         // }
+
+    //         // else if(item.text === react[5]){
+    //         //     setReaction({
+    //         //         ...reaction,
+    //         //         hundred: reaction.hundred + 1
+    //         //     });   
+    //         // }
+    //     })
+    // }
+
 
     const onPress = () => {
         if (props.onPress) {
@@ -191,7 +246,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{fire}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -207,7 +262,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{heartEyes}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -223,7 +278,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{dancingGirl}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -240,7 +295,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{party}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -256,7 +311,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{laughing}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -272,7 +327,7 @@ function HomeItemList(props) {
                             position: "absolute", right: 0, alignItems: 'center',
                             top: Platform.OS === 'android' ? 2 : 0
                         }}>
-                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>0</Text>
+                            <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>{hundred}</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -339,7 +394,7 @@ function HomeItemList(props) {
                     style={{
                         color: Colors.white, fontSize: 12,
                         fontFamily: 'ProximaNovaAW07-Medium', bottom: 6,
-                        width: '90.8%',
+                        width: '90.6%',
                         alignSelf: 'flex-end', textAlign: 'left',
                     }}>{props.content}</Text>
 
@@ -351,7 +406,7 @@ function HomeItemList(props) {
                         style={{
                             color: Colors.white, fontSize: 12,
                             fontFamily: 'ProximaNovaAW07-Medium', bottom: 6,
-                            width: '90.8%',
+                            width: '90.6%',
                             alignSelf: 'flex-end', textAlign: 'left',
                         }}>{!viewMore ? `...View More` : `View Less`}</Text>
                 </TouchableOpacity> : null}
@@ -393,7 +448,7 @@ function HomeItemList(props) {
                         <Text style={{
                             color: Colors.white, fontSize: 10,
                             fontFamily: "ProximaNova-Bold"
-                        }}>{props.reactions > 1 ? `${props.reactions} REACTIONS` : `${props.reactions} REACTION`}</Text>
+                        }}>{props.reactions > 1 ? `${props.reactions.length} REACTIONS` : `${props.reactions.length} REACTION`}</Text>
 
                     </TouchableOpacity>
                 </View>

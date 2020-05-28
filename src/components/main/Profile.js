@@ -322,8 +322,12 @@ function Profile(props) {
                                 height: normalise(40), width: '100%', alignItems: 'center',
                                 justifyContent: 'center', borderRadius: normalise(20),
                                 backgroundColor: Colors.white
-                            }}>
-                                <Text style={{ color: Colors.black, fontSize: normalise(12), fontWeight: 'bold' }}>
+                            }} onPress={() => { props.navigation.replace("bottomTab", { screen: "Add" }) }}>
+
+                                <Text style={{
+                                    color: Colors.black, fontSize: normalise(12),
+                                    fontWeight: 'bold'
+                                }}>
                                     POST YOUR FIRST SONG
                                 </Text>
                             </TouchableOpacity>
