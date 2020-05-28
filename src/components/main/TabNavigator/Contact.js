@@ -138,7 +138,10 @@ function Contact(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch("") }}
+                        <TouchableOpacity onPress={() => {
+                        setSearch(""),
+                            props.getSavedSongs("")
+                        }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
