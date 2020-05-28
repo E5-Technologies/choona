@@ -15,7 +15,6 @@ import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
-
 import _ from 'lodash'
 import HomeItemList from '../ListCells/HomeItemList';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -31,14 +30,14 @@ import {
   SAVE_SONGS_REQUEST, SAVE_SONGS_SUCCESS,
   SAVE_SONGS_FAILURE
 } from '../../../action/TypeConstants';
-import { getProfileRequest, homePageReq } from '../../../action/UserAction';
+import { getProfileRequest, homePageReq, reactionOnPostRequest } from '../../../action/UserAction';
 import { saveSongRequest } from '../../../action/SongAction';
 import { connect } from 'react-redux'
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-import { useFocusEffect } from '@react-navigation/native';
+import { func } from 'prop-types';
 
 
 let status = "";
@@ -144,6 +143,20 @@ function Home(props) {
     )
   };
 
+  function sendReaction(id, reaction) {
+    let reactionObject = {
+      post_id: id,
+      text: reaction
+    };
+    isInternetConnected()
+      .then(() => {
+        props.reactionOnPostRequest(reactionObject)
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet')
+      })
+  }
+
   function renderItem(data) {
     return (
 
@@ -159,17 +172,9 @@ function Home(props) {
         singer={data.item.artist_name}
         modalVisible={modal1Visible}
         postType={data.item.social_type === "spotify"}
-        onPressReact1={() => {
-          hitreact(react[0])
-        }}
-        onPressReact2={() => {
-          hitreact(react[1])
-        }}
-        onPressReact3={() => {
-          hitreact(react[2])
-        }}
-        onPressReact4={() => {
-          hitreact(react[3])
+        onReactionPress={(reaction) => {
+          hitreact(reaction),
+            sendReaction(data.item._id, reaction);
         }}
         onAddReaction={() => {
           hitreact1(modal1Visible)
@@ -187,7 +192,6 @@ function Home(props) {
           })
         }}
         onPressCommentbox={() => {
-
           props.navigation.navigate('HomeItemComments', { index: data.index });
         }}
         onPressSecondImage={() => {
@@ -537,6 +541,7 @@ const mapStateToProps = (state) => {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     postData: state.UserReducer.postData,
+    reactionResp: state.UserReducer.reactionResp,
     songStatus: state.SongReducer.status
   }
 };
@@ -553,6 +558,10 @@ const mapDispatchToProps = (dispatch) => {
 
     saveSongReq: (payload) => {
       dispatch(saveSongRequest(payload))
+    },
+
+    reactionOnPostRequest: (payload) => {
+      dispatch(reactionOnPostRequest(payload))
     }
   }
 };

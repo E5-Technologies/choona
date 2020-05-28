@@ -740,7 +740,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.webskitters.Choona;
 				PRODUCT_NAME = Choona;
-				PROVISIONING_PROFILE_SPECIFIER = ChoonaDevProvProfile;
+				PROVISIONING_PROFILE_SPECIFIER = ChoonaDevProvProfile_28/05;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -766,7 +766,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.webskitters.Choona;
 				PRODUCT_NAME = Choona;
-				PROVISIONING_PROFILE_SPECIFIER = ChoonaDevProvProfile;
+				PROVISIONING_PROFILE_SPECIFIER = ChoonaDevProvProfile_28/05;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -36,7 +36,11 @@ import {
 
     COMMENT_ON_POST_REQUEST,
     COMMENT_ON_POST_SUCCESS,
-    COMMENT_ON_POST_FAILURE
+    COMMENT_ON_POST_FAILURE,
+
+    REACTION_ON_POST_REQUEST,
+    REACTION_ON_POST_SUCCESS,
+    REACTION_ON_POST_FAILURE,
 
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
@@ -236,6 +240,25 @@ export function* commentOnPostAction(action) {
     }
 };
 
+export function* reactionOnPostAction(action) {
+    try {
+        const items = yield select (getItems);
+        
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call (postApi, 'post/reaction', action.payload, Header);
+        yield put ({type: REACTION_ON_POST_SUCCESS, data: response.data.data})
+
+
+    } catch (error) {
+        yield put ({type: REACTION_ON_POST_FAILURE, error:error})
+    }
+};
+
 
 //WATCH FUNCTIONS
 
@@ -273,4 +296,8 @@ export function* watchhomePageAction() {
 
 export function* watchcommentOnPostAction() {
     yield takeLatest(COMMENT_ON_POST_REQUEST, commentOnPostAction)
+}
+
+export function* watchReactionOnPostAction() {
+    yield takeLatest(REACTION_ON_POST_REQUEST, reactionOnPostAction)
 }

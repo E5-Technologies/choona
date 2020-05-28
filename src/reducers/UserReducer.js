@@ -33,7 +33,11 @@ import {
 
     COMMENT_ON_POST_REQUEST,
     COMMENT_ON_POST_SUCCESS,
-    COMMENT_ON_POST_FAILURE
+    COMMENT_ON_POST_FAILURE,
+
+    REACTION_ON_POST_REQUEST,
+    REACTION_ON_POST_SUCCESS,
+    REACTION_ON_POST_FAILURE,
 }
     from '../action/TypeConstants';
 
@@ -48,7 +52,8 @@ const initialState = {
     followUnfollowResp: {},
     othersProfileresp: {},
     postData: [],
-    commentResp: {}
+    commentResp: {},
+    reactionResp: {},
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -228,6 +233,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case COMMENT_ON_POST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case REACTION_ON_POST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case REACTION_ON_POST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                reactionResp: action.data,
+            };
+
+        case REACTION_ON_POST_FAILURE:
             return {
                 ...state,
                 status: action.type,

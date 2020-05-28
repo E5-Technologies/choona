@@ -66,17 +66,9 @@ function HomeItemList(props) {
     };
 
 
-    const onAddReaction = () => {
-
-        if (props.onAddReaction) {
-            props.onAddReaction()
-
-            // if (plusVisible == true) {
-            //     setPlusVisible(false)
-            //   }
-            //   else {
-            //     setPlusVisible(true)
-            //   }
+    const onReactionPress = (reaction) => {
+        if (props.onReactionPress) {
+            props.onReactionPress(reaction)
         }
 
     };
@@ -189,7 +181,7 @@ function HomeItemList(props) {
 
                     <TouchableOpacity
                         onPress={() => {
-                            //props.onPressReact3() 
+                            onReactionPress(react[0]);
                         }}
                     >
                         <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[0]}</Text>
@@ -205,7 +197,7 @@ function HomeItemList(props) {
 
                     <TouchableOpacity
                         onPress={() => {
-                            //props.onPressReact3() 
+                            onReactionPress(react[1]);
                         }}
                     >
                         <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[1]}</Text>
@@ -221,7 +213,7 @@ function HomeItemList(props) {
 
                     <TouchableOpacity
                         onPress={() => {
-                            //props.onPressReact3() 
+                            onReactionPress(react[2]);
                         }}
                     >
                         <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[2]}</Text>
@@ -238,7 +230,7 @@ function HomeItemList(props) {
 
                     <TouchableOpacity
                         onPress={() => {
-                            //props.onPressReact3() 
+                            onReactionPress(react[3]);
                         }}
                     >
                         <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[3]}</Text>
@@ -254,7 +246,7 @@ function HomeItemList(props) {
 
                     <TouchableOpacity
                         onPress={() => {
-                            //props.onPressReact3() 
+                            onReactionPress(react[4]);
                         }}
                     >
                         <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[4]}</Text>
@@ -269,8 +261,8 @@ function HomeItemList(props) {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => { 
-                            //props.onPressReact3() 
+                        onPress={() => {
+                            onReactionPress(react[5]);
                         }}
                     >
                         <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[5]}</Text>
