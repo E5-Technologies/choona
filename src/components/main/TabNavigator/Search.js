@@ -30,6 +30,7 @@ import { userSearchRequest, userFollowUnfollowRequest } from '../../../action/Us
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
+import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 
 let songsdata = [
@@ -192,12 +193,14 @@ function Search(props) {
             <ActivityListItem
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
-                follow={data.item.isFollowing?false:true}
+                follow={data.item.isFollowing ? false : true}
                 bottom={data.index === props.userSearch.length - 1 ? true : false}
                 marginBottom={data.index === props.userSearch.length - 1 ? normalise(80) : normalise(0)}
-                onPressImage={() => { props.navigation.navigate("OthersProfile", 
-                {id: data.item._id, following: data.item.isFollowing}) }}
-                onPress={() => { props.followReq({ follower_id: data.item._id}) }}
+                onPressImage={() => {
+                    props.navigation.navigate("OthersProfile",
+                        { id: data.item._id, following: data.item.isFollowing })
+                }}
+                onPress={() => { props.followReq({ follower_id: data.item._id }) }}
             />
         )
     };

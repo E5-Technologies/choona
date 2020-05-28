@@ -182,7 +182,9 @@ function Profile(props) {
 
                         }}>
 
-                            <TouchableOpacity onPress={() => { props.navigation.navigate("Following", { type:'user', id:"" }) }}>
+                            <TouchableOpacity onPress={() => {
+                                //props.navigation.navigate("Following", { type:'user', id:"" }) 
+                            }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold'
@@ -191,8 +193,10 @@ function Profile(props) {
                                 }}>{props.userProfileResp.following}</Text>  Following</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity 
-                            onPress={() => { props.navigation.navigate("Followers", { type:'user', id: ""}) }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    //props.navigation.navigate("Followers", { type: 'user', id: "" }) 
+                                }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -245,9 +249,6 @@ function Profile(props) {
                                     color: Colors.white, fontSize: normalise(10),
                                 }}>You don't currently have a featured track.let's add one</Text>
 
-
-
-
                             </View>
 
                         </View>
@@ -279,7 +280,6 @@ function Profile(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(10),
-
                                     fontFamily: 'ProximaNova-Bold'
                                 }}>Bongo Song</Text>
 

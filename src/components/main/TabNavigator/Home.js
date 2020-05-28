@@ -41,6 +41,7 @@ import { func } from 'prop-types';
 
 
 let status = "";
+let songStatus = ""
 
 function Home(props) {
 
@@ -100,20 +101,32 @@ function Home(props) {
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
     };
-
-    if (props.songStatus === SAVE_SONGS_REQUEST) {
-      status = props.songStatus
-    }
-    else if (props.songStatus === SAVE_SONGS_SUCCESS) {
-      status = props.songStatus
-      toast("Success", "Song Successfully Saved")
-    }
-    else if (props.songStatus === SAVE_SONGS_FAILURE) {
-      status = props.status
-      toast("Oops", "Something Went Wrong, Please Try Again")
-    }
-
   };
+
+  if (songStatus === "" || props.songStatus !== songStatus) {
+
+    switch (props.songStatus) {
+
+      case SAVE_SONGS_REQUEST:
+        songStatus = props.songStatus
+        break;
+
+      case SAVE_SONGS_SUCCESS:
+        songStatus = props.songStatus
+        if (props.savedSongResponse.status === 200)
+          toast("Success", props.savedSongResponse.message)
+        else
+          toast("Success", props.savedSongResponse.message)
+        break;
+
+      case SAVE_SONGS_FAILURE:
+        songStatus = props.status
+        toast("Oops", "Something Went Wrong, Please Try Again")
+        break;
+    }
+  };
+
+
 
   const react = ["🔥", "🕺", "💃", "😳", "❤️"]
   let val = 0
@@ -542,7 +555,8 @@ const mapStateToProps = (state) => {
     userProfileResp: state.UserReducer.userProfileResp,
     postData: state.UserReducer.postData,
     reactionResp: state.UserReducer.reactionResp,
-    songStatus: state.SongReducer.status
+    songStatus: state.SongReducer.status,
+    savedSongResponse: state.SongReducer.savedSongResponse
   }
 };
 

@@ -180,7 +180,7 @@ function OthersProfile(props) {
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.navigate("Following", { type: "public", id: props.othersProfileresp._id  }) 
+                                //props.navigation.navigate("Following", { type: "public", id: props.othersProfileresp._id  }) 
                             }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -189,7 +189,7 @@ function OthersProfile(props) {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.navigate("Followers", { type: "public", id:props.othersProfileresp._id  }) 
+                                //props.navigation.navigate("Followers", { type: "public", id:props.othersProfileresp._id  }) 
                             }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
@@ -294,14 +294,14 @@ function OthersProfile(props) {
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
 
-                            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
-                                 Profile is Empty</Text>
+                        <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                            Profile is Empty</Text>
 
-                            <Text style={{
-                                marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
-                                width:'60%', textAlign:'center'
-                            }}>{props.othersProfileresp.username} has not posted any songs yet</Text>
-                       
+                        <Text style={{
+                            marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
+                            width: '60%', textAlign: 'center'
+                        }}>{props.othersProfileresp.username} has not posted any songs yet</Text>
+
                     </View>
 
                     :
