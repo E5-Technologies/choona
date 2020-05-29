@@ -17,16 +17,16 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
-import {FOLLOWING_LIST_REQUEST, FOLLOWING_LIST_SUCCESS, FOLLOWING_LIST_FAILURE} from '../../action/TypeConstants';
-import {followingListReq} from '../../action/UserAction';
+import { FOLLOWING_LIST_REQUEST, FOLLOWING_LIST_SUCCESS, FOLLOWING_LIST_FAILURE } from '../../action/TypeConstants';
+import { followingListReq } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 
-let status; 
+let status;
 
 function Following(props) {
 
@@ -35,16 +35,16 @@ function Following(props) {
     const [following, setFollowing] = useState("")
     const [search, setSearch] = useState("")
 
-    
-    useEffect(()=>{
-        props.navigation.addListener('focus', (payload)=>{
+
+    useEffect(() => {
+        props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
-            .then(()=>{
-                props.followingListReq(type, id)
-            })
-            .catch(()=>{
-                toast('Error', "Please Connect To Internet")
-            })
+                .then(() => {
+                    props.followingListReq(type, id)
+                })
+                .catch(() => {
+                    toast('Error', "Please Connect To Internet")
+                })
         })
     });
 
@@ -67,18 +67,36 @@ function Following(props) {
                 break;
         }
     };
-    
-    
+
+
     function renderFollowersItem(data) {
-        return (
-            <ActivityListItem image={constants.profile_picture_base_url+data.item.profile_image}
-                title={data.item.username} 
-                type={true}
-                follow={false}
-                marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
+
+        if (props.userProfileResp._id === data.item.user_id) {
+            return (
+                
+                <ActivityListItem 
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={false}
+                    image2={"123"}
+                    marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
                 // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-            />
-        )
+                />
+            );
+        } else {
+            
+            return (
+               
+                <ActivityListItem 
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={true}
+                    follow={false}
+                    marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                />
+            );
+        }
     };
 
 
@@ -149,18 +167,19 @@ function Following(props) {
 };
 
 const mapStateToProps = (state) => {
-    return{
+    return {
         status: state.UserReducer.status,
-        followingData: state.UserReducer.followingData
+        followingData: state.UserReducer.followingData,
+        userProfileResp: state.UserReducer.userProfileResp,
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return{
+    return {
         followingListReq: (usertype, id) => {
             dispatch(followingListReq(usertype, id))
         }
     }
 };
 
-export default connect (mapStateToProps, mapDispatchToProps)(Following)
+export default connect(mapStateToProps, mapDispatchToProps)(Following)

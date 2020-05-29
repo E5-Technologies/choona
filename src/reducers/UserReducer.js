@@ -152,6 +152,7 @@ const UserReducer = (state = initialState, action) => {
         case USER_SEARCH_REQUEST:
             return {
                 ...state,
+                userSearch: [],
                 status: action.type
             };
 
@@ -252,7 +253,8 @@ const UserReducer = (state = initialState, action) => {
         case FOLLOWER_LIST_REQUEST:
             return {
                 ...state,
-                status: action.type
+                status: action.type,
+                followerData: []
             };
 
         case FOLLOWER_LIST_SUCCESS:
@@ -272,7 +274,8 @@ const UserReducer = (state = initialState, action) => {
         case FOLLOWING_LIST_REQUEST:
             return {
                 ...state,
-                status: action.type
+                status: action.type,
+                followingData: []
             };
 
         case FOLLOWING_LIST_SUCCESS:

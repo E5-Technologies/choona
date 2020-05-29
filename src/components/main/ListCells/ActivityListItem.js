@@ -88,7 +88,8 @@ function ActivityListItem(props) {
 
                     :
                     <TouchableOpacity>
-                        <Image source={props.image2} style={{ height: normalise(35), width: normalise(35) }}
+                        <Image source={props.image2 === "" ? ImagePath.dp2 : {uri: props.image2}} 
+                        style={{ height: normalise(35), width: normalise(35) }}
                             resizeMode='contain' />
                     </TouchableOpacity>}
             </View>

@@ -18,33 +18,33 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
-import {FOLLOWER_LIST_REQUEST, FOLLOWER_LIST_SUCCESS, FOLLOWER_LIST_FAILURE} from '../../action/TypeConstants';
-import {followerListReq} from '../../action/UserAction';
+import { FOLLOWER_LIST_REQUEST, FOLLOWER_LIST_SUCCESS, FOLLOWER_LIST_FAILURE } from '../../action/TypeConstants';
+import { followerListReq } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 
 let status;
 
- function Followers(props) {
+function Followers(props) {
 
     const [type, setType] = useState(props.route.params.type)
     const [id, setId] = useState(props.route.params.id)
     const [search, setSearch] = useState("")
     const [followers, setFollowers] = useState("")
 
-    useEffect(()=>{
-        props.navigation.addListener('focus', (payload)=>{
+    useEffect(() => {
+        props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
-            .then(()=>{
-                props.followListReq(type, id)
-            })
-            .catch(()=>{
-                toast('Error', "Please Connect To Internet")
-            })
+                .then(() => {
+                    props.followListReq(type, id)
+                })
+                .catch(() => {
+                    toast('Error', "Please Connect To Internet")
+                })
         })
     });
 
@@ -69,17 +69,33 @@ let status;
     };
 
     function renderFollowersItem(data) {
-        return (
-            <ActivityListItem image={constants.profile_picture_base_url+data.item.profile_image}
-                title={data.item.username} 
-                type={true}
-                follow={data.item.isFollowing?false:true}
-                marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-                 />
-        )
-    }
 
+        if (props.userProfileResp._id === data.item._id) {
+
+            return (
+                <ActivityListItem 
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={false}
+                    image2={'123'}
+                    marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                />
+            )
+        } else {
+
+            return (
+                <ActivityListItem 
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={true}
+                    follow={data.item.isFollowing ? false : true}
+                    marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                />
+            )
+        }
+    }
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -147,18 +163,19 @@ let status;
 
 
 const mapStateToProps = (state) => {
-    return{
+    return {
         status: state.UserReducer.status,
-        followerData: state.UserReducer.followerData
+        followerData: state.UserReducer.followerData,
+        userProfileResp: state.UserReducer.userProfileResp,
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return{
+    return {
         followListReq: (usertype, id) => {
             dispatch(followerListReq(usertype, id))
         }
     }
 };
 
-export default connect (mapStateToProps, mapDispatchToProps)(Followers)
+export default connect(mapStateToProps, mapDispatchToProps)(Followers)

@@ -93,7 +93,7 @@ export default function Notification(props) {
                 follow={data.item.type === "Follow" ? true : false}
                 marginBottom={data.index === previous.length - 1 ? normalise(20) : normalise(0)}
                 type={data.item.type === 'Comment' || data.item.type === 'Mention' ? false : true}
-                image2={data.item.picture2}
+                image2={""}
                 // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
             />
         )
