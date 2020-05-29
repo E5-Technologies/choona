@@ -105,7 +105,7 @@ function Home(props) {
       case REACTION_ON_POST_SUCCESS:
         status = props.status;
         props.homePage()
-        break;  
+        break;
     };
   };
 
@@ -205,10 +205,7 @@ function Home(props) {
           })
         }}
         onPressReactionbox={() => {
-          props.navigation.navigate('HomeItemReactions', {
-            //comments: data.item.comments,
-            //time: data.item.time, title: data.item.title
-          })
+          props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction })
         }}
         onPressCommentbox={() => {
           props.navigation.navigate('HomeItemComments', { index: data.index });

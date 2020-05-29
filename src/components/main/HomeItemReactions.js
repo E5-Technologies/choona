@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
@@ -22,131 +15,81 @@ import ActivityListItem from './ListCells/ActivityListItem';
 import ImagePath from '../../assests/ImagePath';
 import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
 import nexHeader from '../../widgets/HomeHeaderComponent'
+import _ from 'lodash';
+import constants from '../../utils/helpers/constants';
 
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
-
-const react = ["🔥", "🕺", "💃", "😳", "❤️"]
-const reaction1 = [
-    {
-
-        name: 'Joseph',
-        picture: ImagePath.dp,
-        title: "Annie88jones started following you",
-        type: 'Following'
-
-    },
-    {
-        name: 'Irfan Khan',
-        picture: ImagePath.dp1,
-        title: "RonnyJ started following you",
-        type: 'Follow'
-    },
-
-
-];
-
-const reaction2 = [
-
-    {
-        name: 'Raaidelsyed',
-        picture: ImagePath.dp,
-        title: "DanVermon98 mentioned you on a track: check out this track @Annie88jones absolutely awesome",
-        picture2: ImagePath.dp2,
-        type: 'Following'
-    },
-
-    {
-        name: 'Mochun72',
-        picture: ImagePath.dp1,
-        title: "Bigbird883 commented you on your track: Ah fucking tune man! OLDSCHOOL",
-        picture2: ImagePath.dp2,
-        type: 'Follow'
-    },
-    {
-        name: 'Wimwillems',
-        picture: ImagePath.dp,
-        title: "Annie88jones started following you",
-        type: 'Following'
-    },
-    {
-        name: 'John',
-        picture: ImagePath.dp1,
-        title: "RonnyJ started following you",
-        type: 'Follow'
-    },
-
-]
-
-
-const reaction3 = [
-    {
-
-        name: 'Joseph',
-        picture: ImagePath.dp,
-        title: "Annie88jones started following you",
-        type: 'Following'
-
-    },
-    {
-        name: 'Irfan Khan',
-        picture: ImagePath.dp1,
-        title: "RonnyJ started following you",
-        type: 'Follow'
-    },
-
-
-];
-
-const reaction4 = [
-    {
-        name: 'Wimwillems',
-        picture: ImagePath.dp,
-        title: "Annie88jones started following you",
-        type: 'Following'
-    },
-    {
-        name: 'John',
-        picture: ImagePath.dp1,
-        title: "RonnyJ started following you",
-        type: 'Follow'
-    },
-
-];
-
-
-const reaction5 = [
-    {
-        name: 'Raaidelsyed',
-        picture: ImagePath.dp,
-        title: "DanVermon98 mentioned you on a track: check out this track @Annie88jones absolutely awesome",
-        picture2: ImagePath.dp2,
-        type: 'Following'
-    },
-
-    {
-        name: 'Mochun72',
-        picture: ImagePath.dp1,
-        title: "Bigbird883 commented you on your track: Ah fucking tune man! OLDSCHOOL",
-        picture2: ImagePath.dp2,
-        type: 'Follow'
-    },
-
-];
-const reaction6 = []
-const reaction7 = []
+const react = ["🔥", "😍", "💃", "🎉", "😂", "💯"]
 
 
 export default function HomeItemReaction(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [modal1Visible, setModal1Visible] = useState(false);
     const [modalReact, setModalReact] = useState("");
+    const [search, setSearch] = useState("")
+    const [reactionList, setReactionList] = useState(editArray(props.route.params.reactions))
+
+    let userId = "5ec2660e9179cfbd1fb06765";
+
+    function editArray(array) {
+
+        var editedList = []
+
+        array.map((item, index) => {
+            let reactionObject = {}
+
+            reactionObject['header'] = item.text;
+            reactionObject.data = _.filter(array, { text: item.text });
+
+            editedList.push(reactionObject);
+
+            editedList = Array.from(new Set(editedList.map(JSON.stringify))).map(JSON.parse);
+        })
+
+        return editedList
+
+    }
+
+    function getFilteredData(keyword) {
+
+        let filterdData = _.filter(props.route.params.reactions, function (item) {
+            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
+        })
+
+
+        setReactionList(editArray(filterdData))
+
+    }
+
+    function addOrChangeReaction(reaction) {
+        let reactions = props.route.params.reactions;
+
+        console.log("REACTIONS: " + JSON.stringify(reactions))
+
+        let index = _.findIndex(reactions, function (item) { return item.user_id == userId; })
+
+        if (index != -1) {
+            reactions[index].text = reaction;
+            setReactionList(editArray(reactions))
+        } else {
+            reactions.push({
+                "user_id": userId,
+                "text": reaction,
+                "profile_image": "profile_image_1590474350708_IMG_0002",
+                "username": "MusicFreakAvik"
+            })
+            setReactionList(editArray(reactions))
+        }
+
+    }
 
 
     function hitreact(x) {
+        addOrChangeReaction(x)
         setModalVisible(true)
         setModalReact(x)
-        this.setTimeout(() => {
+        setTimeout(() => {
             setModalVisible(false)
         }, 2000);
     }
@@ -167,406 +110,258 @@ export default function HomeItemReaction(props) {
 
     function renderItem(data) {
         return (
-            <ActivityListItem image={""} title={data.item.name}
-                follow={data.item.type === "Follow" ? true : false}
+            <ActivityListItem
+                image={constants.profile_picture_base_url + data.item.profile_image}
+                title={data.item.username}
+                follow={data.item.isFollowing}
                 //  bottom={data.index === reaction1.length - 1 ? true : false} 
                 // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
-                onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                 marginBottom={0}
             />
         )
     }
 
+    function renderItemWithHeader(data) {
 
-
-
-    if (reaction1.length == 0 && reaction2.length == 0 && reaction3.length == 0 && reaction4.legth == 0)
-    //if(reaction6.length==0  && reaction7.length==0 )
-    {
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.black }}>
+            <View >
+                <View style={{
+                    marginTop: normalise(10),
+                    width: '100%',
+                    height: normalise(42),
+                    justifyContent: 'center',
+                    backgroundColor: Colors.fadeblack
+                }}>
 
-                <StatusBar barStyle={'light-content'} />
+                    <Text style={{
+                        color: Colors.white,
+                        fontSize: normalise(30), marginLeft: normalise(5),
+                        fontWeight: 'bold'
+                    }}> {data.item.header}</Text>
+                </View>
 
-                <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                    data={data.item.data}
+                    renderItem={renderItem}
+                    listKey={(item, index) => { item.toString() }}
+                    showsVerticalScrollIndicator={false}
+                />
+            </View>
+        )
+    }
+
+    return (
+
+        <View style={{ flex: 1, backgroundColor: Colors.black }}>
+
+            <StatusBar barStyle={'light-content'} />
+
+            <SafeAreaView style={{ flex: 1 }}>
 
 
-                    <HomeHeaderComponent
-                        firstitemtext={false}
-                        imageone={ImagePath.backicon}
-                        //imagesecond={ImagePath.dp}
-                        title="10 REACTIONS"
-                        thirditemtext={false}
-                        marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
-                        // imagetwo={ImagePath.newmessage} 
-                        imagetwoheight={25}
-                        imagetwowidth={25}
-                        inner={true}
-                        onPressFirstItem={() => { props.navigation.goBack() }} />
-                    <View style={{
-                        minHeight: normalise(35), height: normalise(15), width: normalise(300),
-                        backgroundColor: Colors.fadeblack,
-                        flexDirection: 'row', marginLeft: normalise(10),
-                        borderRadius: normalise(10), marginTop: normalise(20), paddingLeft: normalise(5),
-                        color: Colors.white, paddingLeft: normalise(10)
-                    }}>
-                        <Image source={ImagePath.searchicon}
-                            style={{
-                                height: normalise(15), width: normalise(25), marginTop: normalise(10),
-                                paddingLeft: normalise(10), justifyContent: 'center'
-                            }} resizeMode="contain" />
-                        <TextInput multiline style={{
-                            width: normalise(210),
-                            marginTop: normalise(7),
-                            height: normalise(15),
-                            minHeight: normalise(30),
-                            fontSize: normalise(12),
-                            color: Colors.white,
+                <HomeHeaderComponent firstitemtext={false}
+                    imageone={ImagePath.backicon}
+                    //imagesecond={ImagePath.dp}
+                    marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
+                    title={` ${props.route.params.reactions.length} REACTIONS`}
+                    thirditemtext={false}
+                    // imagetwo={ImagePath.newmessage} 
+                    imagetwoheight={25}
+                    imagetwowidth={25}
+                    onPressFirstItem={() => { props.navigation.goBack() }} />
+
+                <View style={{ width: '92%', alignSelf: 'center', }}>
+
+                    <TextInput style={{
+                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                        color: Colors.white, paddingLeft: normalise(30)
+                    }}
+                        placeholder={"Search"}
+                        placeholderTextColor={Colors.grey_text}
+                        value={search}
+                        onChangeText={(text) => {
+                            setSearch(text),
+                                getFilteredData(text)
+                        }} />
+
+                    <Image source={ImagePath.searchicongrey}
+                        style={{
+                            height: normalise(15), width: normalise(15), bottom: normalise(25),
+                            paddingLeft: normalise(30)
+                        }} resizeMode="contain" />
+
+                    {search === "" ? null :
+                        <TouchableOpacity onPress={() => {
+                            setSearch(""),
+                                getFilteredData("")
                         }}
-                            placeholder={"Search"}
-                            placeholderTextColor={Colors.white}
-                            onChangeText={(text) => { console.log(text) }} />
+                            style={{
+                                position: 'absolute', right: 0,
+                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                paddingRight: normalise(10)
+                            }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                            }}>CLEAR</Text>
 
-                        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: normalise(50) }}>
-                            <Text style={{ fontSize: normalise(13), color: Colors.white, fontWeight: 'bold' }}>
-                                CLEAR
-        </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
+                </View>
 
-                    </View>
-
-                    <View style={{ marginTop: normalise(100), marginHorizontal: normalise(50), alignItems: 'center' }} >
+                {reactionList.length > 0 ? <FlatList
+                    data={reactionList}
+                    renderItem={renderItemWithHeader}
+                    keyExtractor={(item, index) => { index.toString() }}
+                    showsVerticalScrollIndicator={false}
+                /> : <View style={{ marginTop: normalise(100), marginHorizontal: normalise(50), alignItems: 'center' }} >
                         <Image source={ImagePath.blankreactionbg}
                             style={{ height: normalise(225), width: normalise(225) }}
                             resizeMode='contain' />
                         <Text style={{ fontSize: normalise(12), color: Colors.white }}>
-                            No results found,please try
- </Text>
-                        <Text style={{ fontSize: normalise(12), color: Colors.white }}>another name</Text>
+                            No results found, please try again later.
+                    </Text>
+                        {/* <Text style={{ fontSize: normalise(12), color: Colors.white }}>another name</Text> */}
+                    </View>}
+
+                <View style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    bottom: normalise(30),
+                    height: normalise(60),
+                    width: '92%',
+                    justifyContent: 'space-between',
+                    borderRadius: normalise(35),
+                    backgroundColor: Colors.white,
+                    borderWidth: normalise(0.5),
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 5, },
+                    shadowOpacity: 0.36,
+                    shadowRadius: 6.68, elevation: 11,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    borderColor: Colors.grey,
+                    paddingHorizontal: normalise(10)
+                }}>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            hitreact(react[0]);
+                        }}
+                    >
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[0]}</Text>
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            hitreact(react[1]);
+                        }}
+                    >
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[1]}</Text>
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            hitreact(react[2]);
+                        }}
+                    >
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[2]}</Text>
+
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            hitreact(react[3]);
+                        }}
+                    >
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[3]}</Text>
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            hitreact(react[4]);
+                        }}
+                    >
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[4]}</Text>
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            hitreact(react[5]);
+                        }}
+                    >
+                        <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>{react[5]}</Text>
+
+                    </TouchableOpacity>
+
+                </View>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        //Alert.alert("Modal has been closed.");
+                    }}
+                >
+                    <View style={styles.centeredView}>
+
+                        <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
+
+
                     </View>
 
+                </Modal>
 
-
-
-                    <View style={{
-                        position: 'absolute', marginBottom: normalise(30), alignSelf: 'center', marginHorizontal: normalise(15),
-                        marginTop: normalise(575), height: normalise(60), width: '85%', justifyContent: 'space-between',
-                        borderRadius: normalise(35), backgroundColor: Colors.white, borderWidth: normalise(0.5),
-                        shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-                        shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-                        borderColor: Colors.grey, paddingHorizontal: normalise(10)
-                    }}>
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[0])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[0]}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[1])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[1]}</Text>
-                        </TouchableOpacity >
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[2])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[2]}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[3])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[3]}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            hitreact1()
-                        }}>
-                            <Image source={ImagePath.greyplus}
-                                style={{
-                                    height: normalise(35), width: normalise(35),
-
-                                }} resizeMode="contain" />
-                        </TouchableOpacity>
-
-
-                    </View>
-
-                </SafeAreaView>
-
-            </View>
-
-        )
-    }
-
-    else {
-        return (
-
-            <View style={{ flex: 1, backgroundColor: Colors.black }}>
-
-                <StatusBar barStyle={'light-content'} />
-
-                <SafeAreaView style={{ flex: 1 }}>
-
-
-                    <HomeHeaderComponent firstitemtext={false}
-                        imageone={ImagePath.backicon}
-
-                        //imagesecond={ImagePath.dp}
-                        marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
-                        title="10 REACTIONS"
-                        thirditemtext={false}
-                        // imagetwo={ImagePath.newmessage} 
-                        imagetwoheight={25}
-                        imagetwowidth={25}
-                        onPressFirstItem={() => { props.navigation.goBack() }} />
-
-                    <ScrollView showsVerticalScrollIndicator={false}>
-
-                        <View style={{ width: '92%', alignSelf: 'center', }}>
-
-                            <TextInput style={{
-                                height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                                borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                                color: Colors.white, paddingLeft: normalise(30)
-                            }}
-                                placeholder={"Search"}
-                                placeholderTextColor={Colors.grey_text}
-                                onChangeText={(text) => { console.log(text) }} />
-
-                            <Image source={ImagePath.searchicongrey}
-                                style={{
-                                    height: normalise(15), width: normalise(15), bottom: normalise(25),
-                                    paddingLeft: normalise(30)
-                                }} resizeMode="contain" />
-                        </View>
-
-
-
-                        <View style={{
-                            marginTop: normalise(10),
-                            width: '100%',
-                            height: normalise(42),
-                            justifyContent: 'center',
-                            backgroundColor: Colors.fadeblack
-                        }}>
-
-                            <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(30), marginLeft: normalise(5),
-                                fontWeight: 'bold'
-                            }}> {react[0]}</Text>
-                        </View>
-
-                        <FlatList
-                            data={reaction1}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => { index.toString() }}
-                            showsVerticalScrollIndicator={false}
-                        />
-
-
-
-                        <View style={{
-                            marginTop: normalise(10), flexDirection: 'row',
-                            width: '100%', height: normalise(42), alignItems: 'center', backgroundColor: Colors.fadeblack
-                        }}>
-
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(30), marginLeft: normalise(5),
-                                fontWeight: 'bold'
-                            }}> {react[1]} </Text>
-                        </View>
-                        <FlatList
-                            data={reaction2}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => { index.toString() }}
-                            showsVerticalScrollIndicator={false}
-                        />
-
-
-                        <View style={{
-                            marginTop: normalise(10), flexDirection: 'row',
-                            width: '100%', height: normalise(42), alignItems: 'center', backgroundColor: Colors.fadeblack
-                        }}>
-
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(30), marginLeft: normalise(5),
-                                fontWeight: 'bold'
-                            }}>{react[2]}</Text>
-                        </View>
-
-                        <FlatList
-                            data={reaction3}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => { index.toString() }}
-                            showsVerticalScrollIndicator={false}
-                        />
-
-                        <View style={{
-                            marginTop: normalise(10), flexDirection: 'row',
-                            width: '100%', height: normalise(42), alignItems: 'center', backgroundColor: Colors.fadeblack
-                        }}>
-
-
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(30), marginLeft: normalise(5),
-                                fontWeight: 'bold'
-                            }}> {react[3]}</Text>
-                        </View>
-                        <FlatList
-                            data={reaction4}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => { index.toString() }}
-                            showsVerticalScrollIndicator={false}
-                        />
-
-                        <View style={{
-                            marginTop: normalise(10), flexDirection: 'row',
-                            width: '100%', height: normalise(42), alignItems: 'center', backgroundColor: Colors.fadeblack
-                        }}>
-
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(30), marginLeft: normalise(5),
-                                fontWeight: 'bold'
-                            }}>  {react[4]}</Text>
-                        </View>
-
-                        <FlatList
-                            data={reaction5}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => { index.toString() }}
-                            showsVerticalScrollIndicator={false}
-                        />
-
-                    </ScrollView>
+                {modal1Visible == true ?
 
                     <View style={{
                         position: 'absolute',
+                        margin: 20,
+                        height: normalise(280),
+                        width: "92%",
                         alignSelf: 'center',
-                        bottom: normalise(30),
-                        height: normalise(60),
-                        width: '92%',
-                        justifyContent: 'space-between',
-                        borderRadius: normalise(35),
+                        marginHorizontal: normalise(15),
                         backgroundColor: Colors.white,
-                        borderWidth: normalise(0.5),
+                        borderRadius: 20,
+                        padding: 35,
+                        bottom: 110,
                         shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 5, },
-                        shadowOpacity: 0.36,
-                        shadowRadius: 6.68, elevation: 11,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        borderColor: Colors.grey,
-                        paddingHorizontal: normalise(10)
+                        shadowOffset: {
+                            width: 0,
+                            height: 2
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 5
                     }}>
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[0])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[0]}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[1])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[1]}</Text>
-                        </TouchableOpacity >
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[2])
-                        }}>
-                            <Text style={{ fontSize: 42 }}>{react[2]}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            hitreact(react[3])
-                        }}>
-                            <Text style={{ fontSize: 43 }}>{react[3]}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            hitreact1()
-                        }}>
-                            {modal1Visible == true ?
-                                <Image source={ImagePath.greycross}
-                                    style={{
-                                        height: normalise(35), width: normalise(35),
 
-                                    }} resizeMode="contain" />
-                                :
-                                <Image source={ImagePath.greyplus}
-                                    style={{
-                                        height: normalise(35), width: normalise(35),
 
-                                    }} resizeMode="contain" />
-                            }
-                        </TouchableOpacity>
+                        <EmojiSelector
+                            category={Categories.history}
+                            showHistory={true}
+                            onEmojiSelected={emoji => {
+                                setModalVisible(true), setModalReact(emoji),
+                                    setTimeout(() => {
+                                        setModalVisible(false)
+                                    }, 2000)
+                            }}
+                        />
 
 
                     </View>
 
-
-
-
-
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            //Alert.alert("Modal has been closed.");
-                        }}
-                    >
-                        <View style={styles.centeredView}>
-
-                            <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
-
-
-                        </View>
-
-
-
-
-
-                    </Modal>
-
-                    {modal1Visible == true ?
-
-                        <View style={{
-                            position: 'absolute',
-                            margin: 20,
-                            height: normalise(280),
-                            width: "92%",
-                            alignSelf: 'center',
-                            marginHorizontal: normalise(15),
-                            backgroundColor: Colors.white,
-                            borderRadius: 20,
-                            padding: 35,
-                            bottom: 110,
-                            shadowColor: "#000",
-                            shadowOffset: {
-                                width: 0,
-                                height: 2
-                            },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 3.84,
-                            elevation: 5
-                        }}>
-
-
-                            <EmojiSelector
-                                category={Categories.history}
-                                showHistory={true}
-                                onEmojiSelected={emoji => {
-                                    setModalVisible(true), setModalReact(emoji),
-                                        setTimeout(() => {
-                                            setModalVisible(false)
-                                        }, 2000)
-                                }}
-                            />
-
-
-                        </View>
-
-                        : null}
-                </SafeAreaView>
-            </View>
-        )
-    }
+                    : null}
+            </SafeAreaView>
+        </View>
+    )
 }
+
 
 const styles = StyleSheet.create({
     centeredView: {
@@ -606,6 +401,5 @@ const styles = StyleSheet.create({
     },
     modalText: {
         marginBottom: 15,
-        //   textAlign: "center"
     }
 });
