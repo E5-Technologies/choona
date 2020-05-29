@@ -4,7 +4,7 @@ import {
     watchLoginRequest, watchUserSignUpAction, watchuserProfileAction, watcheditProfileAction,
     watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction,
     watchhomePageAction, watchcommentOnPostAction, watchfollowerListAction,
-    watchfollowingListAction, watchReactionOnPostAction
+    watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction
 } from './UserSaga'
 
 import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSaga'
@@ -33,7 +33,9 @@ function* RootSaga() {
         watchcommentOnPostAction(),
         watchfollowerListAction(),
         watchfollowingListAction(),
-        watchReactionOnPostAction()
+        watchReactionOnPostAction(),
+        watchactivityListAction()
+
     ])
 }
 

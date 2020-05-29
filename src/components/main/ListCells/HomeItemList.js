@@ -431,7 +431,8 @@ function HomeItemList(props) {
                         <Text style={{
                             color: Colors.white, fontSize: 10,
                             fontFamily: "ProximaNova-Bold"
-                        }}>{props.reactions > 1 ? `${props.reactions.length} REACTIONS` : `${props.reactions.length} REACTION`}</Text>
+                        }}>{ props.reactions.length > 1 ? `${props.reactions.length} REACTIONS`
+                        : `${props.reactions.length} REACTION`}</Text>
 
                     </TouchableOpacity>
                 </View>

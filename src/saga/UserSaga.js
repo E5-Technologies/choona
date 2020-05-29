@@ -50,6 +50,10 @@ import {
     REACTION_ON_POST_SUCCESS,
     REACTION_ON_POST_FAILURE,
 
+    ACTIVITY_LIST_REQUEST,
+    ACTIVITY_LIST_SUCCESS,
+    ACTIVITY_LIST_FAILURE
+
 } from '../action/TypeConstants';
 import { postApi, getApi } from "../utils/helpers/ApiRequest"
 import AsyncStorage from '@react-native-community/async-storage';
@@ -317,6 +321,23 @@ export function* reactionOnPostAction(action) {
 };
 
 
+export function* activityListAction(action) {
+    try {
+        const items = yield select (getItems);
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        }  
+
+        const response = yield call (getApi, 'activity/list', Header)
+        yield put ({type: ACTIVITY_LIST_SUCCESS, data:response.data.data})
+
+    } catch (error) {
+        yield put ({type: ACTIVITY_LIST_FAILURE, error: error})
+    }
+};
+
 //WATCH FUNCTIONS
 
 export function* watchLoginRequest() {
@@ -365,4 +386,8 @@ export function* watchfollowingListAction() {
 
 export function* watchReactionOnPostAction() {
     yield takeLatest(REACTION_ON_POST_REQUEST, reactionOnPostAction)
-}
+};
+
+export function* watchactivityListAction() {
+    yield takeLatest (ACTIVITY_LIST_REQUEST, activityListAction)
+};

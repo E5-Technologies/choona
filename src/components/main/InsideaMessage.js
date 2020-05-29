@@ -64,7 +64,7 @@ export default function InsideaMessage(props) {
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={data.item.image}
+                image={""}
                 title={data.item.title}
                 singer={data.item.singer}
                 comments={data.item.comments}
