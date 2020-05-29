@@ -43,7 +43,7 @@ function HomeItemComments(props) {
     const [userComment, setUserComment] = useState(props.postData[index].post_content);
     const [time, setTime] = useState(props.postData[index].createdAt);
     const [id, setId] = useState(props.postData[index]._id);
-    const [commentText, setCommentText] = useState();
+    const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
 
@@ -199,6 +199,7 @@ function HomeItemComments(props) {
                         placeholderTextColor={Colors.white}
                         onChangeText={(text) => {setCommentText(text) }} />
 
+                {commentText !== "" ?
                     <TouchableOpacity style={{
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -224,7 +225,7 @@ function HomeItemComments(props) {
                             fontWeight: 'bold'
                         }}>POST</Text>
 
-                    </TouchableOpacity>
+                    </TouchableOpacity> : null }
 
                 </View>
 
