@@ -322,7 +322,9 @@ const UserReducer = (state = initialState, action) => {
         case ACTIVITY_LIST_REQUEST:
             return {
                 ...state,
-                status: action.type
+                status: action.type,
+                activityListPrevious: [],
+                activityListToday: []
             };
 
         case ACTIVITY_LIST_SUCCESS:      

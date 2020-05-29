@@ -73,10 +73,11 @@ function Notification(props) {
                 <ActivityListItem
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={`${data.item.username} started following you`}
-                    follow={false}
+                    follow={!data.item.isFollowing}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
                     marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    onPressImage={() => { props.navigation.navigate("OthersProfile", 
+                    {id: data.item._id, following: data.item.isFollowing}) }}
                 />
             );
         }
@@ -89,7 +90,8 @@ function Notification(props) {
                     image2={data.item.image}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
                     marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    onPressImage={() => { props.navigation.navigate("OthersProfile", 
+                    {id: data.item._id, following: data.item.isFollowing}) }}
                 />
             );
         }
@@ -102,7 +104,8 @@ function Notification(props) {
                     image2={data.item.image}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
                     marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    onPressImage={() => { props.navigation.navigate("OthersProfile", 
+                    {id: data.item._id, following: data.item.isFollowing}) }}
                 />
             )
         }

@@ -17,13 +17,14 @@ import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
 import nexHeader from '../../widgets/HomeHeaderComponent'
 import _ from 'lodash';
 import constants from '../../utils/helpers/constants';
-
+import { connect } from 'react-redux'
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
 
 const react = ["🔥", "😍", "💃", "🎉", "😂", "💯"]
 
 
-export default function HomeItemReaction(props) {
+function HomeItemReaction(props) {
+
     const [modalVisible, setModalVisible] = useState(false);
     const [modal1Visible, setModal1Visible] = useState(false);
     const [modalReact, setModalReact] = useState("");
@@ -109,23 +110,39 @@ export default function HomeItemReaction(props) {
     }
 
     function renderItem(data) {
-        return (
-            <ActivityListItem
-                image={constants.profile_picture_base_url + data.item.profile_image}
-                title={data.item.username}
-                follow={data.item.isFollowing}
-                //  bottom={data.index === reaction1.length - 1 ? true : false} 
-                // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
-                //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-                marginBottom={0}
-            />
-        )
-    }
+        
+        if (props.userProfileResp._id === data.item.user_id) {
+            return (
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={false}
+                    image2={"123"}
+                    //  bottom={data.index === reaction1.length - 1 ? true : false} 
+                    // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
+                    //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    marginBottom={0}
+                />
+            )
+        } else {
+            return (
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    follow={!data.item.isFollowing}
+                    //  bottom={data.index === reaction1.length - 1 ? true : false} 
+                    // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
+                    //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    marginBottom={0}
+                />
+            )
+        }
+    };
 
     function renderItemWithHeader(data) {
 
         return (
-            <View >
+            <View style={{marginBottom: data.index === reactionList.length - 1 ? normalise(120) : normalise(0)}}>
                 <View style={{
                     marginTop: normalise(10),
                     width: '100%',
@@ -144,6 +161,7 @@ export default function HomeItemReaction(props) {
                 <FlatList
                     data={data.item.data}
                     renderItem={renderItem}
+                    keyExtractor={(item, index) => { index.toString() }}
                     listKey={(item, index) => { item.toString() }}
                     showsVerticalScrollIndicator={false}
                 />
@@ -360,7 +378,7 @@ export default function HomeItemReaction(props) {
             </SafeAreaView>
         </View>
     )
-}
+};
 
 
 const styles = StyleSheet.create({
@@ -403,3 +421,18 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.UserReducer.status,
+        userProfileResp: state.UserReducer.userProfileResp
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeItemReaction);

@@ -183,7 +183,7 @@ function Profile(props) {
                         }}>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.navigate("Following", { type:'user', id:"" }) 
+                                props.navigation.replace("Following", { type:'user', id:"" }) 
                             }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -195,7 +195,7 @@ function Profile(props) {
 
                             <TouchableOpacity
                                 onPress={() => {
-                                    props.navigation.navigate("Followers", { type: 'user', id: "" }) 
+                                    props.navigation.replace("Followers", { type: 'user', id: "" }) 
                                 }}>
                                 <Text style={{
                                     marginLeft: normalise(10),

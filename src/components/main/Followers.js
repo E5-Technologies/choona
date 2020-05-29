@@ -79,7 +79,7 @@ function Followers(props) {
                     type={false}
                     image2={'123'}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                 />
             )
         } else {
@@ -91,7 +91,8 @@ function Followers(props) {
                     type={true}
                     follow={data.item.isFollowing ? false : true}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    onPressImage={() => { props.navigation.replace("OthersProfile", 
+                    {id: data.item._id, follower: data.item.isFollowing}) }}
                 />
             )
         }

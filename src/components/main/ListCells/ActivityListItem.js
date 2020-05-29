@@ -18,6 +18,7 @@ import PropTypes from "prop-types";
 function ActivityListItem(props) {
 
     const [follow, setFollow] = useState(props.follow)
+    
     const onPress = () => {
         if (props.onPress) {
             props.onPress()
