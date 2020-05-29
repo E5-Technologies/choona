@@ -36,8 +36,7 @@ function ActivityListItem(props) {
             width: '90%',
             alignSelf: 'center',
             marginTop: props.marginTop,
-            marginBottom: props.marginBottom,
-           
+            marginBottom: props.marginBottom, 
         }}>
 
             <View style={{

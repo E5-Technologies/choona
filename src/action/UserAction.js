@@ -10,7 +10,8 @@ import {
     COMMENT_ON_POST_REQUEST,
     FOLLOWER_LIST_REQUEST,
     FOLLOWING_LIST_REQUEST,
-    REACTION_ON_POST_REQUEST
+    REACTION_ON_POST_REQUEST,
+    ACTIVITY_LIST_REQUEST
 }
     from './TypeConstants';
 
@@ -72,6 +73,10 @@ export const followingListReq = (usertype, id) => ({
 export const reactionOnPostRequest = (payload) => ({
     type: REACTION_ON_POST_REQUEST,
     payload
+});
+
+export const activityListReq = () => ({
+    type: ACTIVITY_LIST_REQUEST,
 });
 
 

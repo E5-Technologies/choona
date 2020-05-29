@@ -71,7 +71,7 @@ function Following(props) {
 
     function renderFollowersItem(data) {
 
-        if (props.userProfileResp._id === data.item.user_id) {
+        if (props.userProfileResp._id === data.item._id) {
             return (
                 
                 <ActivityListItem 
@@ -91,7 +91,7 @@ function Following(props) {
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={data.item.username}
                     type={true}
-                    follow={false}
+                    follow={data.item.isFollowing ? false : true}
                     marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
                 // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                 />

@@ -46,8 +46,13 @@ import {
     REACTION_ON_POST_REQUEST,
     REACTION_ON_POST_SUCCESS,
     REACTION_ON_POST_FAILURE,
+
+    ACTIVITY_LIST_REQUEST,
+    ACTIVITY_LIST_SUCCESS,
+    ACTIVITY_LIST_FAILURE
 }
-    from '../action/TypeConstants';
+from '../action/TypeConstants';
+import moment from 'moment'
 
 const initialState = {
     status: "",
@@ -64,6 +69,8 @@ const initialState = {
     followerData: [],
     followingData: [],
     reactionResp: {},
+    activityListPrevious: [],
+    activityListToday: []
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -306,6 +313,46 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case REACTION_ON_POST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case ACTIVITY_LIST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case ACTIVITY_LIST_SUCCESS:      
+            
+            let previous = [];
+            let today = [];
+            let time = moment().format('MM-DD-YYYY')
+            
+            
+            action.data.map((item, index) => {
+                let postTime = moment(item.createdAt).format('MM-DD-YYYY')
+                console.log(time)
+                console.log(postTime)
+                
+                if(postTime < time){
+                    previous.push(item)
+                }
+                else{
+                    today.push(item)
+                }
+            });
+            
+            return {
+                ...state,
+                status: action.type,
+                activityListPrevious: previous,
+                activityListToday: today
+            };
+
+        case ACTIVITY_LIST_FAILURE:
             return {
                 ...state,
                 status: action.type,
