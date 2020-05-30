@@ -62,7 +62,6 @@ function HomeItemReaction(props) {
             return item.username.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
         })
 
-
         setReactionList(editArray(filterdData))
 
     }

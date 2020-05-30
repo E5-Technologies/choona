@@ -227,7 +227,9 @@ function Home(props) {
       backgroundColor: Colors.black
     }}>
 
-      <Loader visible={props.status === USER_PROFILE_REQUEST || props.status === HOME_PAGE_REQUEST} />
+      <Loader visible={props.status === USER_PROFILE_REQUEST} />
+
+      <Loader visible={props.status === HOME_PAGE_REQUEST} />
 
       <StatusBar />
 

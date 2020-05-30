@@ -1,4 +1,3 @@
-
 import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
