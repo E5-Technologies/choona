@@ -52,7 +52,7 @@ function OthersProfile(props) {
 
     const [id, setId] = useState(props.route.params.id)
     const [isFollowing, setIsFollowing] = useState(props.route.params.following)
-    const [noOfPosts, setNoOfPosts] = useState("");
+    
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -77,8 +77,7 @@ function OthersProfile(props) {
                 break;
 
             case OTHERS_PROFILE_SUCCESS:
-                status = props.status
-                setNoOfPosts(`${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}`)
+                status = props.status;
                 break;
 
             case OTHERS_PROFILE_FAILURE:
@@ -134,7 +133,7 @@ function OthersProfile(props) {
 
             <StatusBar />
 
-            <SafeAreaView style={{ flex: 1, }}>
+            {props.status === OTHERS_PROFILE_SUCCESS ? <SafeAreaView style={{ flex: 1, }}>
 
                 <HeaderComponent firstitemtext={false}
                     imageone={ImagePath.backicon}
@@ -168,7 +167,7 @@ function OthersProfile(props) {
                             color: Colors.darkgrey, fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
 
-                        }}>{noOfPosts}</Text>
+                        }}>{`${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}`}</Text>
 
                         <Text style={{
                             marginTop: normalise(2),
@@ -180,7 +179,7 @@ function OthersProfile(props) {
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.replace("Following", { type: "public", id: props.othersProfileresp._id  }) 
+                                props.navigation.replace("Following", { type: "public", id: props.othersProfileresp._id })
                             }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -189,7 +188,7 @@ function OthersProfile(props) {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.replace("Followers", { type: "public", id:props.othersProfileresp._id  }) 
+                                props.navigation.replace("Followers", { type: "public", id: props.othersProfileresp._id })
                             }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
@@ -218,7 +217,7 @@ function OthersProfile(props) {
                             fontFamily: 'ProximaNova-Bold'
                         }}>
                             SEND A SONG
-                            </Text>
+            </Text>
 
                     </TouchableOpacity>
 
@@ -316,7 +315,9 @@ function OthersProfile(props) {
                 }
 
 
-            </SafeAreaView>
+            </SafeAreaView> : null}
+
+
         </View>
     )
 };
