@@ -17,8 +17,12 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
-import { FOLLOWING_LIST_REQUEST, FOLLOWING_LIST_SUCCESS, FOLLOWING_LIST_FAILURE } from '../../action/TypeConstants';
-import { followingListReq } from '../../action/UserAction';
+import {
+    FOLLOWING_LIST_REQUEST, FOLLOWING_LIST_SUCCESS, FOLLOWING_LIST_FAILURE,
+    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE
+}
+    from '../../action/TypeConstants';
+import { followingListReq, userFollowUnfollowRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -67,6 +71,18 @@ function Following(props) {
                 status = props.status
                 toast("Oops", "Something Went Wrong, Please Try Again")
                 break;
+
+            case USER_FOLLOW_UNFOLLOW_REQUEST:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_SUCCESS:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_FAILURE:
+                status = props.status
+                break;
         }
     };
 
@@ -89,8 +105,8 @@ function Following(props) {
 
         if (props.userProfileResp._id === data.item._id) {
             return (
-                
-                <ActivityListItem 
+
+                <ActivityListItem
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={data.item.username}
                     type={false}
@@ -100,17 +116,20 @@ function Following(props) {
                 />
             );
         } else {
-            
+
             return (
-               
-                <ActivityListItem 
+
+                <ActivityListItem
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={data.item.username}
                     type={true}
                     follow={data.item.isFollowing ? false : true}
                     marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
-                    onPressImage={() => { props.navigation.replace("OthersProfile",
-                    {id: data.item._id, following: data.item.isFollowing}) }}
+                    onPressImage={() => {
+                        props.navigation.replace("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
+                    onPress={()=>{props.followReq({follower_id: data.item._id})}}
                 />
             );
         }
@@ -126,7 +145,7 @@ function Following(props) {
 
             <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
             <Loader visible={bool} />
-            
+
             <SafeAreaView style={{ flex: 1 }}>
 
                 <HeaderComponent firstitemtext={false}
@@ -156,7 +175,7 @@ function Following(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("")  }}
+                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -196,6 +215,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         followingListReq: (usertype, id) => {
             dispatch(followingListReq(usertype, id))
+        },
+
+        followReq: (payload) => {
+            dispatch(userFollowUnfollowRequest(payload))
         }
     }
 };

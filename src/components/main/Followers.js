@@ -17,8 +17,12 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
-import { FOLLOWER_LIST_REQUEST, FOLLOWER_LIST_SUCCESS, FOLLOWER_LIST_FAILURE } from '../../action/TypeConstants';
-import { followerListReq } from '../../action/UserAction';
+import {
+    FOLLOWER_LIST_REQUEST, FOLLOWER_LIST_SUCCESS, FOLLOWER_LIST_FAILURE,
+    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE
+}
+    from '../../action/TypeConstants';
+import { followerListReq, userFollowUnfollowRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -67,6 +71,18 @@ function Followers(props) {
                 status = props.status
                 toast("Oops", "Something Went Wrong, Please Try Again")
                 break;
+
+            case USER_FOLLOW_UNFOLLOW_REQUEST:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_SUCCESS:
+                status = props.status
+                break;
+
+            case USER_FOLLOW_UNFOLLOW_FAILURE:
+                status = props.status
+                break;
         }
     };
 
@@ -111,6 +127,7 @@ function Followers(props) {
                         props.navigation.replace("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
+                    onPress={()=>{props.followReq({follower_id: data.item._id})}}
                 />
             )
         }
@@ -191,6 +208,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         followListReq: (usertype, id) => {
             dispatch(followerListReq(usertype, id))
+        },
+
+        followReq: (payload) => {
+            dispatch(userFollowUnfollowRequest(payload))
         }
     }
 };
