@@ -200,7 +200,8 @@ const UserReducer = (state = initialState, action) => {
         case OTHERS_PROFILE_REQUEST:
             return {
                 ...state,
-                status: action.type
+                status: action.type,
+                othersProfileresp: []
             };
 
         case OTHERS_PROFILE_SUCCESS:
