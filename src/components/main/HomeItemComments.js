@@ -50,12 +50,12 @@ function HomeItemComments(props) {
     function renderItem(data) {
         return (
             <CommentList
-                image={constants.profile_picture_base_url+data.item.profile_image}
+                image={constants.profile_picture_base_url + data.item.profile_image}
                 name={data.item.username}
                 comment={data.item.text}
                 time={moment(data.item.createdAt).from()}
-                marginBottom={data.index === commentData.length - 1 ? 
-                Platform.OS === 'android' ? normalise(80) : normalise(50) : normalise(0)} />
+                marginBottom={data.index === commentData.length - 1 ?
+                    Platform.OS === 'android' ? normalise(80) : normalise(50) : normalise(0)} />
         )
     };
 
@@ -69,7 +69,9 @@ function HomeItemComments(props) {
             case COMMENT_ON_POST_SUCCESS:
                 status = props.status
                 setCommentText("")
-                commentData.push(props.commentResp.comment[props.commentResp.comment.length-1])
+                let data = props.commentResp.comment[props.commentResp.comment.length - 1]
+                data.profile_image = props.userProfileResp.profile_image
+                commentData.push(data);
                 setArrayLength(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
                 break;
 
@@ -95,7 +97,6 @@ function HomeItemComments(props) {
                 <HeaderComponent
                     firstitemtext={false}
                     imageone={ImagePath.backicon}
-
                     //imagesecond={ImagePath.dp}
                     title={arrayLength}
                     thirditemtext={false}
@@ -105,11 +106,11 @@ function HomeItemComments(props) {
                     imagetwowidth={25}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
-                <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom}}>
+                <View style={{ width: '90%', alignSelf: 'center', marginTop: normalise(15), marginBottom: props.marginBottom }}>
 
                     <View style={{
                         flexDirection: 'row',
-                        alignItems:'flex-start',
+                        alignItems: 'flex-start',
                     }}>
 
                         <TouchableOpacity onPress={() => { onPressImage() }} style={{ justifyContent: 'center' }}>
@@ -126,7 +127,7 @@ function HomeItemComments(props) {
 
 
                         <View style={{ marginLeft: normalise(10) }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: normalise(230)}}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: normalise(230) }}>
 
                                 <Text style={{
                                     color: Colors.white, fontSize: 14, fontFamily: 'ProximaNova-Semibold',
@@ -197,35 +198,35 @@ function HomeItemComments(props) {
                         value={commentText}
                         placeholder={"Add a comment..."}
                         placeholderTextColor={Colors.white}
-                        onChangeText={(text) => {setCommentText(text) }} />
+                        onChangeText={(text) => { setCommentText(text) }} />
 
-                {commentText !== "" ?
-                    <TouchableOpacity style={{
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}  
-                    onPress={()=>{
-                        let commentObject = {
-                            post_id: id,
-                            text: commentText
-                        };
-                        isInternetConnected()
-                        .then(()=>{
-                            props.commentOnPost(commentObject)
-                        })
-                        .catch(()=>{
-                            toast('Error', 'Please Connect To Internet')
-                        })
-                        
-                    }}>
-                        <Text style={{
-                            fontSize: normalise(13),
-                            color: Colors.white,
-                            marginEnd: normalise(10),
-                            fontWeight: 'bold'
-                        }}>POST</Text>
+                    {commentText !== "" ?
+                        <TouchableOpacity style={{
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                            onPress={() => {
+                                let commentObject = {
+                                    post_id: id,
+                                    text: commentText
+                                };
+                                isInternetConnected()
+                                    .then(() => {
+                                        props.commentOnPost(commentObject)
+                                    })
+                                    .catch(() => {
+                                        toast('Error', 'Please Connect To Internet')
+                                    })
 
-                    </TouchableOpacity> : null }
+                            }}>
+                            <Text style={{
+                                fontSize: normalise(13),
+                                color: Colors.white,
+                                marginEnd: normalise(10),
+                                fontWeight: 'bold'
+                            }}>POST</Text>
+
+                        </TouchableOpacity> : null}
 
                 </View>
 
@@ -240,7 +241,8 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         postData: state.UserReducer.postData,
-        commentResp: state.UserReducer.commentResp
+        commentResp: state.UserReducer.commentResp,
+        userProfileResp: state.UserReducer.userProfileResp
     }
 };
 
