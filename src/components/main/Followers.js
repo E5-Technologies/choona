@@ -124,7 +124,7 @@ function Followers(props) {
                     follow={!data.item.isFollowing}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
                     onPressImage={() => {
-                        props.navigation.navigate("OthersProfile",
+                        props.navigation.replace("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
                     onPress={()=>{props.followReq({follower_id: data.item._id})}}
