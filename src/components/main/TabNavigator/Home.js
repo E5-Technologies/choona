@@ -205,7 +205,7 @@ function Home(props) {
           })
         }}
         onPressReactionbox={() => {
-          props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction })
+          props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id:data.item._id })
         }}
         onPressCommentbox={() => {
           props.navigation.navigate('HomeItemComments', { index: data.index });

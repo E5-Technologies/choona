@@ -19,6 +19,9 @@ import _ from 'lodash';
 import constants from '../../utils/helpers/constants';
 import { connect } from 'react-redux'
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
+import { reactionOnPostRequest } from '../../action/UserAction';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import toast from '../../utils/helpers/ShowErrorAlert';
 
 const react = ["🔥", "😍", "💃", "🎉", "😂", "💯"]
 
@@ -29,9 +32,10 @@ function HomeItemReaction(props) {
     const [modal1Visible, setModal1Visible] = useState(false);
     const [modalReact, setModalReact] = useState("");
     const [search, setSearch] = useState("")
+    const [postId, setPostId] = useState(props.route.params.post_id)
     const [reactionList, setReactionList] = useState(editArray(props.route.params.reactions))
 
-    let userId = "5ec2660e9179cfbd1fb06765";
+    let userId = props.userProfileResp._id;
 
     function editArray(array) {
 
@@ -77,17 +81,32 @@ function HomeItemReaction(props) {
             reactions.push({
                 "user_id": userId,
                 "text": reaction,
-                "profile_image": "profile_image_1590474350708_IMG_0002",
-                "username": "MusicFreakAvik"
+                "profile_image": props.userProfileResp.profile_image,
+                "username": props.userProfileResp.username
             })
             setReactionList(editArray(reactions))
         }
 
+    };
+
+    const reactionOnPost = (reaction, id) => {
+        let reactionObject = {
+            post_id: id,
+            text: reaction
+        };
+        isInternetConnected()
+            .then(() => {
+                props.reactionOnPostRequest(reactionObject)
+            })
+            .catch(() => {
+                toast('Error', 'Please Connect To Internet')
+            })
     }
 
 
     function hitreact(x) {
         addOrChangeReaction(x)
+        reactionOnPost(x, postId)
         setModalVisible(true)
         setModalReact(x)
         setTimeout(() => {
@@ -110,7 +129,7 @@ function HomeItemReaction(props) {
     }
 
     function renderItem(data) {
-        
+
         if (props.userProfileResp._id === data.item.user_id) {
             return (
                 <ActivityListItem
@@ -142,7 +161,7 @@ function HomeItemReaction(props) {
     function renderItemWithHeader(data) {
 
         return (
-            <View style={{marginBottom: data.index === reactionList.length - 1 ? normalise(120) : normalise(0)}}>
+            <View style={{ marginBottom: data.index === reactionList.length - 1 ? normalise(120) : normalise(0) }}>
                 <View style={{
                     marginTop: normalise(10),
                     width: '100%',
@@ -431,7 +450,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        reactionOnPostRequest: (payload) => {
+            dispatch(reactionOnPostRequest(payload))
+        }
     }
 };
 
