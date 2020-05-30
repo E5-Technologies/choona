@@ -23,6 +23,7 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
+import _ from 'lodash'
 
 let status;
 
@@ -172,8 +173,17 @@ function Notification(props) {
                     alignSelf: 'center'
                 }}> ACTIVITY</Text>
 
+                
+                { _.isEmpty(props.activityListToday) && _.isEmpty(props.activityListPrevious) ?
+                 
+                 <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                     <Text style={{color:Colors.white, fontSize:normalise(15)}}>No Activity</Text>
+                 </View>
+
+                :
                 <ScrollView showsVerticalScrollIndicator={false}>
 
+                {_.isEmpty(props.activityListToday) ? null :
                     <View style={{
                         marginTop: normalise(12), flexDirection: 'row',
                         width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
@@ -183,7 +193,7 @@ function Notification(props) {
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
                             fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
                         }}>TODAY</Text>
-                    </View>
+                    </View> }
 
                     <FlatList
                         data={props.activityListToday}
@@ -194,7 +204,7 @@ function Notification(props) {
 
 
 
-
+                {_.isEmpty(props.activityListPrevious) ? null :
                     <View style={{
                         marginTop: normalise(10), flexDirection: 'row',
                         width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
@@ -204,7 +214,7 @@ function Notification(props) {
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
                             fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
                         }}>PREVIOUSLY</Text>
-                    </View>
+                    </View>}
 
                     <FlatList
                         data={props.activityListPrevious}
@@ -213,10 +223,7 @@ function Notification(props) {
                         showsVerticalScrollIndicator={false}
                     />
 
-
-
-
-                </ScrollView>
+                </ScrollView>  }
             </SafeAreaView>
         </View>
     )
