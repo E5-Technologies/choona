@@ -146,11 +146,10 @@ function Search(props) {
     const [usersSearchText, setUsersSearchText] = useState("");
     const [genreSearchText, setGenreSearchText] = useState("");
     const [songSearchText, setSongSearchText] = useState("");
-
+    const [bool, setBool] = useState(false);
     const [songData, setSongData] = useState([]);
 
     const [modalVisible, setModalVisible] = useState(false);
-
 
     if (status === "" || status !== props.status) {
 
@@ -161,8 +160,13 @@ function Search(props) {
                 break;
 
             case USER_SEARCH_SUCCESS:
-                setSongData(props.userSearch)
                 status = props.status
+                setBool(true)
+                setSongData([])
+                setTimeout(()=>{
+                setSongData(props.userSearch)
+                setBool(false);
+                },800)
                 break;
 
             case USER_SEARCH_FAILURE:
@@ -421,6 +425,8 @@ function Search(props) {
             <StatusBar />
 
             <Loader visible={props.status === USER_SEARCH_REQUEST} />
+
+            <Loader visible={bool} />
 
             <SafeAreaView style={{ flex: 1 }}>
 

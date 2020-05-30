@@ -1,4 +1,3 @@
-
 import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
@@ -34,8 +33,10 @@ function Followers(props) {
     const [type, setType] = useState(props.route.params.type);
     const [id, setId] = useState(props.route.params.id);
     const [search, setSearch] = useState("");
-    const [followers, setFollowers] = useState("");
-    const [followerData, setFollowerData] = useState([]);
+
+    const [bool, setBool] = useState(false)
+
+    const [followerList, setFollowerList] = useState([]);
 
     useEffect(() => {
         props.navigation.addListener('focus', (payload) => {
@@ -59,8 +60,7 @@ function Followers(props) {
 
             case FOLLOWER_LIST_SUCCESS:
                 status = props.status
-                setFollowers(props.followerData.length);
-                filterArray("");
+                setFollowerList(props.followerData);
                 break;
 
             case FOLLOWER_LIST_FAILURE:
@@ -70,13 +70,18 @@ function Followers(props) {
         }
     };
 
-    function filterArray (keyword)  {
-        setFollowerData([]);
+    function filterArray(keyword) {
+
         let data = _.filter(props.followerData, (item) => {
             return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
-        console.log(data)
-        setFollowerData(data);
+        console.log(data);
+        setFollowerList([]);
+        setBool(true);
+        setTimeout(() => {
+            setFollowerList(data);
+            setBool(false);
+        }, 800);
     };
 
     function renderFollowersItem(data) {
@@ -100,7 +105,7 @@ function Followers(props) {
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={data.item.username}
                     type={true}
-                    follow={data.item.isFollowing ? false : true}
+                    follow={!data.item.isFollowing}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
                     onPressImage={() => {
                         props.navigation.replace("OthersProfile",
@@ -115,13 +120,14 @@ function Followers(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
+            <Loader visible={bool} />
 
             <StatusBar />
 
             <SafeAreaView style={{ flex: 1, }}>
 
                 <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon} title={`FOLLOWERS (${followers})`}
+                    imageone={ImagePath.backicon} title={`FOLLOWERS (${followerList.length})`}
                     thirditemtext={true} texttwo={""}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
@@ -162,13 +168,10 @@ function Followers(props) {
 
 
                 <FlatList
-                    data={followerData}
+                    data={followerList}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => { index.toString() }}
                     renderItem={renderFollowersItem} />
-
-
-
 
             </SafeAreaView>
         </View>
