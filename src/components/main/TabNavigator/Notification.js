@@ -174,7 +174,7 @@ function Notification(props) {
                 }}> ACTIVITY</Text>
 
                 
-                {_.isEmpty(props.activityListToday) && _.isEmpty(props.activityListPrevious) ?
+                { _.isEmpty(props.activityListToday) && _.isEmpty(props.activityListPrevious) ?
                  
                  <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                      <Text style={{color:Colors.white, fontSize:normalise(15)}}>No Activity</Text>
