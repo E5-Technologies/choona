@@ -9,7 +9,8 @@ import {
   TouchableOpacity, KeyboardAvoidingView,
   Image,
   Modal,
-  Platform
+  Platform,
+  Clipboard
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -139,7 +140,7 @@ function Home(props) {
   function hitreact(x) {
     setVisible(true)
     setModalReact(x)
-    this.setTimeout(() => {
+    setTimeout(() => {
       setVisible(false)
     }, 2000);
   };
@@ -411,7 +412,17 @@ function Home(props) {
                   </TouchableOpacity>
 
 
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      Clipboard.setString(props.postData[positionInArray].song_uri);
+                      setModalVisible(!modalVisible);
+
+                      setTimeout(() => {
+                        toast("Success", "Song copied to clipboard.")
+                      }, 1000);
+
+                    }}
+                    style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
                       resizeMode='contain' />
                     <Text style={{
