@@ -94,7 +94,7 @@ function Following(props) {
                     follow={data.item.isFollowing ? false : true}
                     marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
                     onPressImage={() => { props.navigation.replace("OthersProfile",
-                    {id: data.item._id, follower: data.item.isFollowing}) }}
+                    {id: data.item._id, following: data.item.isFollowing}) }}
                 />
             );
         }

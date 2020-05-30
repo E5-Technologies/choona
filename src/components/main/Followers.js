@@ -25,16 +25,17 @@ import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux'
-
+import _ from 'lodash'
 
 let status;
 
 function Followers(props) {
 
-    const [type, setType] = useState(props.route.params.type)
-    const [id, setId] = useState(props.route.params.id)
-    const [search, setSearch] = useState("")
-    const [followers, setFollowers] = useState("")
+    const [type, setType] = useState(props.route.params.type);
+    const [id, setId] = useState(props.route.params.id);
+    const [search, setSearch] = useState("");
+    const [followers, setFollowers] = useState("");
+    const [followerData, setFollowerData] = useState([]);
 
     useEffect(() => {
         props.navigation.addListener('focus', (payload) => {
@@ -58,7 +59,8 @@ function Followers(props) {
 
             case FOLLOWER_LIST_SUCCESS:
                 status = props.status
-                setFollowers(props.followerData.length)
+                setFollowers(props.followerData.length);
+                filterArray("");
                 break;
 
             case FOLLOWER_LIST_FAILURE:
@@ -68,31 +70,42 @@ function Followers(props) {
         }
     };
 
+    function filterArray (keyword)  {
+        setFollowerData([]);
+        let data = _.filter(props.followerData, (item) => {
+            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+        });
+        console.log(data)
+        setFollowerData(data);
+    };
+
     function renderFollowersItem(data) {
 
         if (props.userProfileResp._id === data.item._id) {
 
             return (
-                <ActivityListItem 
+                <ActivityListItem
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={data.item.username}
                     type={false}
                     image2={'123'}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
-                    // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                 />
             )
         } else {
 
             return (
-                <ActivityListItem 
+                <ActivityListItem
                     image={constants.profile_picture_base_url + data.item.profile_image}
                     title={data.item.username}
                     type={true}
                     follow={data.item.isFollowing ? false : true}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
-                    onPressImage={() => { props.navigation.replace("OthersProfile", 
-                    {id: data.item._id, follower: data.item.isFollowing}) }}
+                    onPressImage={() => {
+                        props.navigation.replace("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
                 />
             )
         }
@@ -124,7 +137,7 @@ function Followers(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text) }} />
+                        onChangeText={(text) => { setSearch(text), filterArray(text) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -133,7 +146,7 @@ function Followers(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch("") }}
+                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -149,7 +162,7 @@ function Followers(props) {
 
 
                 <FlatList
-                    data={props.followerData}
+                    data={followerData}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => { index.toString() }}
                     renderItem={renderFollowersItem} />
