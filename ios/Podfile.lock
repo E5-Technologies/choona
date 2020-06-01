@@ -328,6 +328,11 @@ PODS:
     - React
   - RNScreens (2.5.0):
     - React
+  - RNSound (0.11.0):
+    - React
+    - RNSound/Core (= 0.11.0)
+  - RNSound/Core (0.11.0):
+    - React
   - RSKImageCropper (2.2.3)
   - Toast (4.0.0)
   - Yoga (1.14.0)
@@ -392,6 +397,7 @@ DEPENDENCIES:
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -483,6 +489,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -534,11 +542,12 @@ SPEC CHECKSUMS:
   RNImageCropPicker: cf129d17e042ce3e96fb9ada967c28f21f977c82
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: ac02d0e4529f08ced69f5580d416f968a6ec3a1d
+  RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 6dd14e737788fc1491ed0c4280d6c50f5a88b3db
+PODFILE CHECKSUM: 39b4c2ee9b14758da6fd6cc040e8101e0637d79a
 
 COCOAPODS: 1.8.4
