@@ -15,7 +15,8 @@ const initialState = {
     status: "",
     error: {},
     spotifyResponse: [],
-    createPostResponse: {}
+    createPostResponse: {},
+    chooseSongToSend : []
 }
 
 const PostReducer = (state = initialState, action) => {
@@ -28,11 +29,21 @@ const PostReducer = (state = initialState, action) => {
             };
 
         case SEARCH_SONG_REQUEST_FOR_POST_SUCCESS:
-            return {
-                ...state,
-                status: action.type,
-                spotifyResponse: action.data,
-            };
+
+            if (action.post) {
+                return {
+                    ...state,
+                    status: action.type,
+                    spotifyResponse: action.data,
+                };
+            } else {
+                return {
+                    ...state,
+                    status: action.type,
+                    chooseSongToSend: action.data,
+                };
+            }
+
 
         case SEARCH_SONG_REQUEST_FOR_POST_FAILURE:
             return {

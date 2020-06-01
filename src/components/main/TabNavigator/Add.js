@@ -33,7 +33,8 @@ let status;
 function AddSong(props) {
 
     const [search, setSearch] = useState("");
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
+    let post = true
 
     if (status === "" || status !== props.status) {
         switch (props.status) {
@@ -66,9 +67,10 @@ function AddSong(props) {
     };
 
     function renderItem(data) {
+
         return (
             <SavedSongsListItem
-                image={props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100}
+                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.artworkUrl100}
                 title={props.registerType === 'spotify' ? data.item.name : data.item.trackName}
                 singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName}
                 marginRight={normalise(50)}
@@ -85,7 +87,7 @@ function AddSong(props) {
                 }}
             />
         )
-    }
+    };
 
 
     return (
@@ -119,7 +121,7 @@ function AddSong(props) {
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
                             if (text.length >= 1) {
-                                props.seachSongsForPostRequest(text)
+                                props.seachSongsForPostRequest(text, post)
                             }
                             setSearch(text)
                         }} />
@@ -197,8 +199,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        seachSongsForPostRequest: (payload) => {
-            dispatch(seachSongsForPostRequest(payload))
+        seachSongsForPostRequest: (text, post) => {
+            dispatch(seachSongsForPostRequest(text, post))
         },
 
     }

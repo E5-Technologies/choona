@@ -70,7 +70,8 @@ const initialState = {
     followingData: [],
     reactionResp: {},
     activityListPrevious: [],
-    activityListToday: []
+    activityListToday: [],
+    sendSongUserSearch: []
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -164,11 +165,21 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case USER_SEARCH_SUCCESS:
+            
+        if (action.sendSong) {
             return {
                 ...state,
                 status: action.type,
-                userSearch: action.data
+                sendSongUserSearch: action.data
             };
+
+            } else {
+                return {
+                    ...state,
+                    status: action.type,
+                    userSearch: action.data
+                };
+            }
 
         case USER_SIGNUP_FAILURE:
             return {
@@ -328,26 +339,26 @@ const UserReducer = (state = initialState, action) => {
                 activityListToday: []
             };
 
-        case ACTIVITY_LIST_SUCCESS:      
-            
+        case ACTIVITY_LIST_SUCCESS:
+
             let previous = [];
             let today = [];
             let time = moment().format('MM-DD-YYYY')
-            
-            
+
+
             action.data.map((item, index) => {
                 let postTime = moment(item.createdAt).format('MM-DD-YYYY')
                 console.log(time)
                 console.log(postTime)
-                
-                if(postTime < time){
+
+                if (postTime < time) {
                     previous.push(item)
                 }
-                else{
+                else {
                     today.push(item)
                 }
             });
-            
+
             return {
                 ...state,
                 status: action.type,

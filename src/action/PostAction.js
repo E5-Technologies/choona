@@ -4,9 +4,10 @@ import {
 }
     from './TypeConstants';
 
-export const seachSongsForPostRequest = (payload) => ({
+export const seachSongsForPostRequest = (text, post) => ({
     type: SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
-    payload
+    text,
+    post
 });
 
 export const createPostRequest = (payload) => ({

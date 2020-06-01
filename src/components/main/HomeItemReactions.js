@@ -19,7 +19,7 @@ import _ from 'lodash';
 import constants from '../../utils/helpers/constants';
 import { connect } from 'react-redux'
 import EmojiSelector, { Categories } from "react-native-emoji-selector";
-import { reactionOnPostRequest } from '../../action/UserAction';
+import { reactionOnPostRequest, userFollowUnfollowRequest } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 
@@ -128,7 +128,7 @@ function HomeItemReaction(props) {
     }
 
     function renderItem(data) {
-
+        console.log(data)
         if (props.userProfileResp._id === data.item.user_id) {
             return (
                 <ActivityListItem
@@ -152,6 +152,7 @@ function HomeItemReaction(props) {
                     // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                     //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                     marginBottom={0}
+                    onPress={()=>{props.followReq({follower_id: data.item.user_id})}}
                 />
             )
         }
@@ -451,6 +452,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         reactionOnPostRequest: (payload) => {
             dispatch(reactionOnPostRequest(payload))
+        },
+
+        followReq: (payload) => {
+            dispatch(userFollowUnfollowRequest(payload))
         }
     }
 };
