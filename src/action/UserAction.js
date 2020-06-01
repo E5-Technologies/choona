@@ -34,9 +34,10 @@ export const editProfileRequest = (payload) => ({
     payload
 });
 
-export const userSearchRequest = (payload) => ({
+export const userSearchRequest = (payload, sendSong) => ({
     type: USER_SEARCH_REQUEST,
-    payload
+    payload,
+    sendSong
 });
 
 export const userFollowUnfollowRequest = (payload) => ({

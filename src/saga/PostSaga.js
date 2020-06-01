@@ -36,13 +36,13 @@ export function* searchSongsForPostAction(action) {
     try {
 
         if (items.registerType === "spotify") {
-            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.payload)}&type=track`, spotifyHeader)
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track`, spotifyHeader)
 
-            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items });
+            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items, post: action.post });
         }
         else{
-            const response = yield call (getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.payload}&entity=song&limit=20`, spotifyHeader)
-            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results});
+            const response = yield call (getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, spotifyHeader)
+            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results, post: action.post});
         }
 
     } catch (error) {

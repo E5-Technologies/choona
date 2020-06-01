@@ -33,7 +33,8 @@ let status;
 function AddSong(props) {
 
     const [search, setSearch] = useState("");
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
+    let post = true
 
     if (status === "" || status !== props.status) {
         switch (props.status) {
@@ -85,7 +86,7 @@ function AddSong(props) {
                 }}
             />
         )
-    }
+    };
 
 
     return (
@@ -119,7 +120,7 @@ function AddSong(props) {
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
                             if (text.length >= 1) {
-                                props.seachSongsForPostRequest(text)
+                                props.seachSongsForPostRequest(text, post)
                             }
                             setSearch(text)
                         }} />
@@ -197,8 +198,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        seachSongsForPostRequest: (payload) => {
-            dispatch(seachSongsForPostRequest(payload))
+        seachSongsForPostRequest: (text, post) => {
+            dispatch(seachSongsForPostRequest(text, post))
         },
 
     }

@@ -168,7 +168,7 @@ export function* userSearchAction(action) {
         };
 
         const response = yield call(postApi, 'user/search', action.payload, Header)
-        yield put({ type: USER_SEARCH_SUCCESS, data: response.data.data })
+        yield put({ type: USER_SEARCH_SUCCESS, data: response.data.data, sendSong: action.sendSong })
 
     } catch (error) {
         yield put({ type: USER_SEARCH_FAILURE, error: error })

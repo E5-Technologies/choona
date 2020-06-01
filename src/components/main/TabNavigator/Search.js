@@ -151,6 +151,8 @@ function Search(props) {
 
     const [modalVisible, setModalVisible] = useState(false);
 
+    let sendSong = false
+
     if (status === "" || status !== props.status) {
 
         switch (props.status) {
@@ -407,7 +409,7 @@ function Search(props) {
     const search = (text) => {
         if (usersSearch) {
             if (text.length >= 1) {
-                props.userSearchReq({ keyword: text })
+                props.userSearchReq({ keyword: text }, sendSong)
             }
         };
     };
@@ -733,8 +735,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        userSearchReq: (payload) => {
-            dispatch(userSearchRequest(payload))
+        userSearchReq: (payload, sendSong) => {
+            dispatch(userSearchRequest(payload, sendSong))
         },
 
         followReq: (payload) => {

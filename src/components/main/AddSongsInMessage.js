@@ -20,85 +20,213 @@ import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
 import RBSheet from "react-native-raw-bottom-sheet";
+import { seachSongsForPostRequest } from '../../action/PostAction';
+import { userSearchRequest } from '../../action/UserAction';
+import {
+    SEARCH_SONG_REQUEST_FOR_POST_REQUEST, SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+    SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 
-const flatlistdata = [
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack3,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack4,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack5,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-    {
-        image: ImagePath.profiletrack6,
-        title: 'Firestone',
-        singer: "Kygo"
-    },
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond"
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'One Kiss',
-        singer: "Dua Lipa"
-    },
-];
+    USER_SEARCH_REQUEST, USER_SEARCH_SUCCESS,
+    USER_SEARCH_FAILURE,
+} from '../../action/TypeConstants';
+import { connect } from 'react-redux';
+import Loader from '../../widgets/AuthLoader';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import constants from '../../utils/helpers/constants';
+import { array } from 'prop-types';
 
-let flatlistdata1 = []
+let status;
+let userReducerStatus;
 
-export default function AddSongsInMessage(props) {
+function AddSongsInMessage(props) {
 
     const [search, setSearch] = useState("");
     const [userSeach, setUserSeach] = useState("");
     const [userClicked, setUserClicked] = useState(false);
+    const [result, setResult] = useState([]);
+    const [userSearchData, setUserSearchData] = useState([]);
+    const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
+
+
+    let post = false;
+    let sendSong = true;
 
     var bottomSheetRef;
+
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+
+            case SEARCH_SONG_REQUEST_FOR_POST_REQUEST:
+                status = props.status
+                break;
+
+            case SEARCH_SONG_REQUEST_FOR_POST_SUCCESS:
+                status = props.status
+                setResult(props.searchResponse)
+                break;
+
+            case SEARCH_SONG_REQUEST_FOR_POST_FAILURE:
+                status = props.status;
+                toast("Error", "Something Went Wong, Please Try Again")
+                break;
+        }
+    };
+
+    if (userReducerStatus === "" || props.userStatus !== userReducerStatus) {
+        switch (props.userStatus) {
+
+            case USER_SEARCH_REQUEST:
+                userReducerStatus = props.userStatus
+                break;
+
+            case USER_SEARCH_SUCCESS:
+                userReducerStatus = props.userStatus
+                setUserSearchData(props.SearchData)
+                break;
+
+            case USER_SEARCH_FAILURE:
+                userReducerStatus = props.userStatus;
+                toast("Error", "Something Went Wong, Please Try Again")
+                break;
+        }
+    };
+
+    function singerList(artists) {
+
+        let names = ""
+
+        artists.map((val, index) => {
+            names = names + `${val.name}${artists.length - 1 === index ? "" : ", "}`
+        })
+
+        return names
+    };
+
+
+    const searchUser = (text) => {
+        if (text.length >= 1) {
+            props.userSearchReq({ keyword: text }, sendSong)
+        }
+
+    };
 
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={data.item.image}
-                title={data.item.title}
+                image={props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100}
+                title={props.registerType === 'spotify' ? data.item.name : data.item.trackName}
+                singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName}
                 marginRight={normalise(50)}
-                singer={data.item.singer}
-                marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0}
+                marginBottom={data.index === props.searchResponse.length - 1 ? normalise(20) : 0}
                 change={true}
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
-                    bottomSheetRef.open();
-                }} />
+                    bottomSheetRef.open()
+                }}
+            />
         )
-    }
+    };
 
-    if (search !== "") {
-        flatlistdata1 = [...flatlistdata]
-    }
+
+    // RENDER USER SEARCH FLATLIST DATA
+    function renderAddUsersToMessageItem(data) {
+
+        return (
+            <TouchableOpacity style={{
+                marginTop: normalise(10),
+                width: "87%",
+                alignSelf: 'center'
+            }}
+                onPress={() => {
+                
+                    if (usersToSEndSong.length > 0) {
+
+                        usersToSEndSong.map((item, index) => {
+                            if (item._id === data.item._id) {
+                                console.log('Already Exists');
+                            } 
+                            else {
+                                let array = [...usersToSEndSong]
+                                array.push(data.item)
+                                sesUsersToSEndSong(array);
+                            };
+                        })
+
+                    } else {
+                        let array = [...usersToSEndSong]
+                        array.push(data.item)
+                        sesUsersToSEndSong(array);
+                    }}}>
+
+                <View style={{ flexDirection: 'row', }}>
+                    <Image
+                        source={{ uri: constants.profile_picture_base_url + data.item.profile_image }}
+                        style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+                    />
+                    <View style={{ marginStart: normalise(10) }}>
+                        <Text style={{ color: Colors.white }}>{data.item.full_name}</Text>
+                        <Text style={{ color: Colors.white }}>{data.item.username}</Text>
+                    </View>
+
+                </View>
+                <View style={{
+                    backgroundColor: Colors.grey,
+                    height: 0.5,
+                    marginTop: normalise(10)
+                }} />
+            </TouchableOpacity>
+
+        )
+    };
+
+
+    // RENDER ADD TO FLATLIST DATA
+    function renderUsersToSendSongItem(data) {
+        return (
+            <TouchableOpacity style={{
+                height: normalize(30),
+                width: normalize(85),
+                marginStart: normalise(20),
+                marginTop: normalise(5),
+                borderRadius: 25,
+                alignItems: 'center', justifyContent: "center",
+                backgroundColor: 'white',
+                marginEnd: data.index === usersToSEndSong.length - 1 ? normalise(20) : 0
+            }}>
+                <Text style={{ color: Colors.black, fontWeight: 'bold' }}>{data.item.username}</Text>
+                <TouchableOpacity style={{
+                    position: 'absolute', right: 0, top: -5,
+                    height: 25, width: 25,
+                    borderRadius: 12
+                }}
+                    onPress={() => {
+                        let popArray = [...usersToSEndSong];
+                        popArray.splice(data.index, 1)
+                        sesUsersToSEndSong(popArray);
+                    }}>
+
+                    <Image
+                        source={ImagePath.crossIcon}
+                        style={{
+                            marginTop: normalise(-1.5),
+                            marginStart: normalise(8.5),
+                            height: 25, width: 25,
+                        }} />
+                </TouchableOpacity>
+
+            </TouchableOpacity>
+        )
+    };
+    
 
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+
+            <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
 
             <SafeAreaView style={{ flex: 1, }}>
 
@@ -120,7 +248,7 @@ export default function AddSongsInMessage(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text) }} />
+                        onChangeText={(text) => { setSearch(text), props.searchSongReq(text, post) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -129,7 +257,7 @@ export default function AddSongsInMessage(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), flatlistdata1 = [] }}
+                        <TouchableOpacity onPress={() => { setSearch(""), setResult([]) }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -143,21 +271,22 @@ export default function AddSongsInMessage(props) {
 
                 </View>
 
-                {_.isEmpty(flatlistdata1) ? null :
+                {_.isEmpty(result) ? null :
                     <View style={{
                         flexDirection: 'row', alignItems: 'center', width: '90%', alignSelf: 'center',
                         marginTop: normalise(5)
                     }}>
-                        <Image source={ImagePath.spotifyicon} style={{ height: normalise(20), width: normalise(20) }} />
+                        <Image source={props.registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                            style={{ height: normalise(20), width: normalise(20) }} />
                         <Text style={{
                             color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
                             fontWeight: 'bold'
-                        }}> RESULTS (23)</Text>
+                        }}> RESULTS ({result.length})</Text>
 
                     </View>}
 
 
-                {_.isEmpty(flatlistdata1) ?
+                {_.isEmpty(result) ?
 
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
@@ -174,11 +303,12 @@ export default function AddSongsInMessage(props) {
 
                     : <FlatList
                         style={{ marginTop: normalise(10) }}
-                        data={flatlistdata}
+                        data={result}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false}
                     />}
+
 
                 <RBSheet
                     ref={ref => {
@@ -188,13 +318,14 @@ export default function AddSongsInMessage(props) {
                     }}
                     closeOnDragDown={true}
                     closeOnPressMask={true}
+                    onClose={() => {sesUsersToSEndSong([]) }}
                     nestedScrollEnabled={true}
                     keyboardAvoidingViewEnabled={true}
                     height={normalize(500)}
                     duration={250}
                     customStyles={{
                         container: {
-                            backgroundColor: 'black',
+                            backgroundColor: Colors.black,
                             borderTopEndRadius: normalise(8),
                             borderTopStartRadius: normalise(8),
                         },
@@ -208,11 +339,11 @@ export default function AddSongsInMessage(props) {
                             height: normalise(3)
                         }
 
-                    }}
-                >
+                    }}>
+
                     <View
-                        style={{ flex: 1 }}
-                    >
+                        style={{ flex: 1 }}>
+
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
                             <View style={{ flexDirection: 'row', width: '75%', justifyContent: 'flex-end' }}>
@@ -266,7 +397,7 @@ export default function AddSongsInMessage(props) {
                             }} value={userSeach}
                                 placeholder={"Search"}
                                 placeholderTextColor={Colors.grey_text}
-                                onChangeText={(text) => { setUserSeach(text) }} />
+                                onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
 
                             <Image source={ImagePath.searchicongrey}
                                 style={{
@@ -275,7 +406,7 @@ export default function AddSongsInMessage(props) {
                                 }} resizeMode="contain" />
 
                             {userSeach === "" ? null :
-                                <TouchableOpacity onPress={() => { setUserSeach("") }}
+                                <TouchableOpacity onPress={() => { setUserSeach(""), setUserSearchData([]) }}
                                     style={{
                                         position: 'absolute', right: 0,
                                         bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -286,104 +417,59 @@ export default function AddSongsInMessage(props) {
                                     }}>CLEAR</Text>
 
                                 </TouchableOpacity>}
-
                         </View>
-                        {userClicked ?
-                            <View style={{
-                                height: normalize(30),
-                                width: normalize(95),
-                                borderRadius: 25,
-                                marginStart: normalise(20),
-                                marginBottom: normalise(20),
-                                alignItems: 'center', justifyContent: "center",
-                                backgroundColor: 'white'
-                            }}>
-                                <Text style={{ color: Colors.black, fontWeight: 'bold' }}>IzzyWhite</Text>
-                                <TouchableOpacity style={{
-                                    position: 'absolute', right: 0, top: -5,
-                                    height: 25, width: 25,
-                                    borderRadius: 12
-                                }}
-                                    onPress={() => {
-                                        setUserClicked(false)
-                                    }}>
-                                    <Image
-                                        source={ImagePath.crossIcon}
-                                        style={{
-                                            marginTop: normalise(-1.5),
-                                            marginStart: normalise(5.5),
-                                            height: 25, width: 25,
-                                        }} />
-                                </TouchableOpacity>
-
-                            </View> : null}
 
 
-                        {userSeach === "" ? null :
-                            <View>
-                                <TouchableOpacity style={{
-                                    marginTop: normalise(10),
-                                    width: "87%",
-                                    alignSelf: 'center'
-                                }}
-                                    onPress={() => {
-                                        setUserClicked(true)
-                                    }}
-                                >
-                                    <View style={{ flexDirection: 'row', }}>
-                                        <Image
-                                            source={ImagePath.dp}
-                                            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-                                        />
-                                        <View style={{ marginStart: normalise(10) }}>
-                                            <Text style={{ color: Colors.white }}>Isabelle Frarnandes</Text>
-                                            <Text style={{ color: Colors.white }}>@IzzyWhite</Text>
-                                        </View>
+                                    
+                        {usersToSEndSong.length > 0 ?       // ADD TO ARRAY FLATLIST
+                            <FlatList
+                                style={{ alignSelf: "center", maxHeight: normalise(40) }}
+                                horizontal={true}
+                                data={usersToSEndSong}
+                                renderItem={renderUsersToSendSongItem}
+                                keyExtractor={(item, index) => { index.toString() }}
+                                showsHorizontalScrollIndicator={false}
+                            />
+                            : null}
 
-                                    </View>
-                                    <View style={{
-                                        backgroundColor: Colors.grey,
-                                        height: 0.5,
-                                        marginTop: normalise(10)
-                                    }} />
-                                </TouchableOpacity>
 
-                                <TouchableOpacity style={{
-                                    marginTop: normalise(10),
-                                    width: "87%",
-                                    alignSelf: 'center'
-                                }}
-                                    onPress={() => {
-                                        setUserClicked(true)
-                                    }}
-                                >
-                                    <View style={{ flexDirection: 'row', }}>
-                                        <Image
-                                            source={ImagePath.dp1}
-                                            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-                                        />
-                                        <View style={{ marginStart: normalise(10) }}>
-                                            <Text style={{ color: Colors.white }}>John Smith</Text>
-                                            <Text style={{ color: Colors.white }}>@john007</Text>
-                                        </View>
+                        <FlatList       // USER SEARCH FLATLIST
+                            style={{ marginTop: usersToSEndSong.length > 0 ? normalise(20) : 0 }}
+                            data={userSearchData}
+                            renderItem={renderAddUsersToMessageItem}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            showsVerticalScrollIndicator={false}
+                        />
 
-                                    </View>
-                                    <View style={{
-                                        backgroundColor: Colors.grey,
-                                        height: 0.5,
-                                        marginTop: normalise(10)
-                                    }} />
-                                </TouchableOpacity>
-                            </View>}
 
                     </View>
-
                 </RBSheet>
-
-
-
-
             </SafeAreaView>
         </View >
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.PostReducer.status,
+        error: state.PostReducer.error,
+        searchResponse: state.PostReducer.chooseSongToSend,
+        registerType: state.TokenReducer.registerType,
+        userStatus: state.UserReducer.status,
+        SearchData: state.UserReducer.sendSongUserSearch
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        searchSongReq: (text, post) => {
+            dispatch(seachSongsForPostRequest(text, post))
+        },
+
+        userSearchReq: (payload, sendSong) => {
+            dispatch(userSearchRequest(payload, sendSong))
+        },
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddSongsInMessage);
