@@ -180,7 +180,7 @@ function Search(props) {
 
             case USER_FOLLOW_UNFOLLOW_SUCCESS:
                 status = props.status
-                props.userSearchReq({ keyword: usersSearchText })
+                //props.userSearchReq({ keyword: usersSearchText })
                 break;
 
             case USER_FOLLOW_UNFOLLOW_FAILURE:

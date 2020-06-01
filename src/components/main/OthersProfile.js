@@ -51,8 +51,8 @@ function OthersProfile(props) {
 
 
     const [id, setId] = useState(props.route.params.id)
-    const [isFollowing, setIsFollowing] = useState(props.route.params.following)
-    
+    const [isFollowing, setIsFollowing] = useState(false)
+
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -77,6 +77,7 @@ function OthersProfile(props) {
                 break;
 
             case OTHERS_PROFILE_SUCCESS:
+                setIsFollowing(props.othersProfileresp.isFollowing)
                 status = props.status;
                 break;
 
@@ -133,189 +134,190 @@ function OthersProfile(props) {
 
             <StatusBar />
 
-            {props.status === OTHERS_PROFILE_SUCCESS ? <SafeAreaView style={{ flex: 1, }}>
+            {props.status === OTHERS_PROFILE_SUCCESS || props.status === USER_FOLLOW_UNFOLLOW_SUCCESS
+                ? <SafeAreaView style={{ flex: 1, }}>
 
-                <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon}
-                    title={props.othersProfileresp.username}
-                    thirditemtext={true}
-                    texttwo={""}
-                    onPressFirstItem={() => { props.navigation.goBack() }}
-                />
+                    <HeaderComponent firstitemtext={false}
+                        imageone={ImagePath.backicon}
+                        title={props.othersProfileresp.username}
+                        thirditemtext={true}
+                        texttwo={""}
+                        onPressFirstItem={() => { props.navigation.goBack() }}
+                    />
 
-
-                <View style={{
-                    width: '90%', alignSelf: 'center', flexDirection: 'row',
-                    alignItems: 'center', marginTop: normalise(15)
-                }}>
-                    <Image source={{ uri: constants.profile_picture_base_url + props.othersProfileresp.profile_image }}
-                        style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
                     <View style={{
-                        flexDirection: 'column', alignItems: 'flex-start',
-                        marginLeft: normalise(20),
+                        width: '90%', alignSelf: 'center', flexDirection: 'row',
+                        alignItems: 'center', marginTop: normalise(15)
                     }}>
-
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(15),
-                            fontFamily: 'ProximaNovaAW07-Medium',
-
-                        }}>{props.othersProfileresp.full_name}</Text>
-
-                        <Text style={{
-                            marginTop: normalise(2),
-                            color: Colors.darkgrey, fontSize: normalise(11),
-                            fontFamily: 'ProximaNovaAW07-Medium',
-
-                        }}>{`${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}`}</Text>
-
-                        <Text style={{
-                            marginTop: normalise(2),
-                            color: Colors.darkgrey, fontSize: normalise(11),
-                            fontFamily: 'ProximaNovaAW07-Medium',
-
-                        }}>{props.othersProfileresp.location}</Text>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
-
-                            <TouchableOpacity onPress={() => {
-                                props.navigation.navigate("Following", { type: "public", id: props.othersProfileresp._id })
-                            }}>
-                                <Text style={{
-                                    color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.following}</Text>  Following</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => {
-                                props.navigation.navigate("Followers", { type: "public", id: props.othersProfileresp._id })
-                            }}>
-                                <Text style={{
-                                    marginLeft: normalise(10),
-                                    color: Colors.darkgrey, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.follower}</Text>  Followers</Text>
-                            </TouchableOpacity>
-
-                        </View>
-                    </View>
-                </View>
-
-                <View style={{
-                    width: '95%', alignSelf: 'center', marginTop: normalise(20), flexDirection: 'row',
-                    alignItems: 'center', justifyContent: 'space-around'
-                }}>
-
-                    <TouchableOpacity
-                        style={{
-                            height: normalise(30), width: '45%', borderRadius: normalise(15),
-                            backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
-                        }}>
-
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(11), color: Colors.black,
-                            fontFamily: 'ProximaNova-Bold'
-                        }}>
-                            SEND A SONG
-            </Text>
-
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{
-                            height: normalise(30), width: '45%', borderRadius: normalise(15),
-                            backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
-                            alignItems: 'center', justifyContent: 'center'
-                        }} onPress={() => { setIsFollowing(!isFollowing), props.followReq({ follower_id: id }) }}>
-
-                        <Text style={{
-                            fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,
-                            fontFamily: 'ProximaNova-Bold'
-                        }}>
-                            {isFollowing ? "FOLLOWING" : "FOLLOW"}
-                        </Text>
-
-                    </TouchableOpacity>
-
-                </View>
-
-                <ImageBackground source={ImagePath.gradientbar}
-                    style={{
-                        width: '100%', height: normalise(50),
-                        marginTop: normalise(15),
-                    }}>
-
-                    <View style={{
-                        width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
-                        justifyContent: 'space-between', height: normalise(50),
-                    }}>
-                        <TouchableOpacity>
-                            <Image source={ImagePath.dp2} style={{ height: normalise(40), width: normalise(40) }} />
-                            <Image source={ImagePath.play} style={{
-                                height: normalise(25), width: normalise(25),
-                                position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
-                            }} />
-                        </TouchableOpacity>
-
+                        <Image source={{ uri: constants.profile_picture_base_url + props.othersProfileresp.profile_image }}
+                            style={{ height: normalise(80), width: normalise(80), borderRadius: normalise(40) }} />
 
                         <View style={{
-                            flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(120),
+                            flexDirection: 'column', alignItems: 'flex-start',
+                            marginLeft: normalise(20),
                         }}>
 
                             <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(9),
-                                fontFamily: 'ProximaNova-Bold'
-                            }}>FEATURED TRACK</Text>
+                                color: Colors.white, fontSize: normalise(15),
+                                fontFamily: 'ProximaNovaAW07-Medium',
+
+                            }}>{props.othersProfileresp.full_name}</Text>
 
                             <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(10),
-                                fontFamily: 'ProximaNova-Bold'
+                                marginTop: normalise(2),
+                                color: Colors.darkgrey, fontSize: normalise(11),
+                                fontFamily: 'ProximaNovaAW07-Medium',
 
-                            }}>Naked feat. Justin Suissa</Text>
+                            }}>{`${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}`}</Text>
 
                             <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(9),
-                                fontFamily: 'ProximaNova-Regular',
-                                fontWeight: '400'
-                            }}>Above & Beyond</Text>
+                                marginTop: normalise(2),
+                                color: Colors.darkgrey, fontSize: normalise(11),
+                                fontFamily: 'ProximaNovaAW07-Medium',
+
+                            }}>{props.othersProfileresp.location}</Text>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
+
+                                <TouchableOpacity onPress={() => {
+                                    props.navigation.navigate("Following", { type: "public", id: props.othersProfileresp._id })
+                                }}>
+                                    <Text style={{
+                                        color: Colors.darkgrey, fontSize: normalise(11),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.following}</Text>  Following</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => {
+                                    props.navigation.navigate("Followers", { type: "public", id: props.othersProfileresp._id })
+                                }}>
+                                    <Text style={{
+                                        marginLeft: normalise(10),
+                                        color: Colors.darkgrey, fontSize: normalise(11),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}><Text style={{ color: Colors.white }}>{props.othersProfileresp.follower}</Text>  Followers</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{
+                        width: '95%', alignSelf: 'center', marginTop: normalise(20), flexDirection: 'row',
+                        alignItems: 'center', justifyContent: 'space-around'
+                    }}>
+
+                        <TouchableOpacity
+                            style={{
+                                height: normalise(30), width: '45%', borderRadius: normalise(15),
+                                backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
+                            }}>
+
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(11), color: Colors.black,
+                                fontFamily: 'ProximaNova-Bold'
+                            }}>
+                                SEND A SONG
+            </Text>
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{
+                                height: normalise(30), width: '45%', borderRadius: normalise(15),
+                                backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
+                                alignItems: 'center', justifyContent: 'center'
+                            }} onPress={() => { setIsFollowing(!isFollowing), props.followReq({ follower_id: id }) }}>
+
+                            <Text style={{
+                                fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,
+                                fontFamily: 'ProximaNova-Bold'
+                            }}>
+                                {isFollowing ? "FOLLOWING" : "FOLLOW"}
+                            </Text>
+
+                        </TouchableOpacity>
+
+                    </View>
+
+                    <ImageBackground source={ImagePath.gradientbar}
+                        style={{
+                            width: '100%', height: normalise(50),
+                            marginTop: normalise(15),
+                        }}>
+
+                        <View style={{
+                            width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'space-between', height: normalise(50),
+                        }}>
+                            <TouchableOpacity>
+                                <Image source={ImagePath.dp2} style={{ height: normalise(40), width: normalise(40) }} />
+                                <Image source={ImagePath.play} style={{
+                                    height: normalise(25), width: normalise(25),
+                                    position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
+                                }} />
+                            </TouchableOpacity>
+
+
+                            <View style={{
+                                flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(120),
+                            }}>
+
+                                <Text style={{
+                                    color: Colors.white,
+                                    fontSize: normalise(9),
+                                    fontFamily: 'ProximaNova-Bold'
+                                }}>FEATURED TRACK</Text>
+
+                                <Text style={{
+                                    color: Colors.white,
+                                    fontSize: normalise(10),
+                                    fontFamily: 'ProximaNova-Bold'
+
+                                }}>Naked feat. Justin Suissa</Text>
+
+                                <Text style={{
+                                    color: Colors.white,
+                                    fontSize: normalise(9),
+                                    fontFamily: 'ProximaNova-Regular',
+                                    fontWeight: '400'
+                                }}>Above & Beyond</Text>
+                            </View>
+
                         </View>
 
-                    </View>
-
-                </ImageBackground>
+                    </ImageBackground>
 
 
-                {_.isEmpty(props.othersProfileresp.post) ?
+                    {_.isEmpty(props.othersProfileresp.post) ?
 
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
-
-                        <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
-                            Profile is Empty</Text>
-
-                        <Text style={{
-                            marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
-                            width: '60%', textAlign: 'center'
-                        }}>{props.othersProfileresp.username} has not posted any songs yet</Text>
-
-                    </View>
-
-                    :
-
-                    <FlatList
-                        style={{ paddingTop: normalise(10) }}
-                        data={props.othersProfileresp.post}
-                        renderItem={renderProfileData}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        showsVerticalScrollIndicator={false}
-                        numColumns={2} />
-                }
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
 
-            </SafeAreaView> : null}
+                            <Text style={{ color: Colors.white, fontSize: normalise(15), fontWeight: 'bold' }}>
+                                Profile is Empty</Text>
+
+                            <Text style={{
+                                marginTop: normalise(10), color: Colors.grey, fontSize: normalise(15),
+                                width: '60%', textAlign: 'center'
+                            }}>{props.othersProfileresp.username} has not posted any songs yet</Text>
+
+                        </View>
+
+                        :
+
+                        <FlatList
+                            style={{ paddingTop: normalise(10) }}
+                            data={props.othersProfileresp.post}
+                            renderItem={renderProfileData}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            showsVerticalScrollIndicator={false}
+                            numColumns={2} />
+                    }
+
+
+                </SafeAreaView> : null}
 
 
         </View>
