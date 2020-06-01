@@ -13,10 +13,13 @@ import Colors from '../../../assests/Colors';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import ImagePath from '../../../assests/ImagePath';
 import StatusBar from '../../../utils/MyStatusBar';
-import { activityListReq } from '../../../action/UserAction';
+import { activityListReq, userFollowUnfollowRequest } from '../../../action/UserAction';
 import {
     ACTIVITY_LIST_REQUEST, ACTIVITY_LIST_SUCCESS,
-    ACTIVITY_LIST_FAILURE
+    ACTIVITY_LIST_FAILURE,
+
+    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS,
+    USER_FOLLOW_UNFOLLOW_FAILURE,
 } from '../../../action/TypeConstants';
 import { connect } from 'react-redux'
 import isInternetConnected from '../../../utils/helpers/NetInfo';
@@ -69,7 +72,7 @@ function Notification(props) {
     function renderTodayitem(data) {
 
         if (data.item.activity_type === 'following') {
-            
+
             return (
                 <ActivityListItem
                     image={constants.profile_picture_base_url + data.item.profile_image}
@@ -77,8 +80,11 @@ function Notification(props) {
                     follow={!data.item.isFollowing}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
                     marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-                    onPressImage={() => { props.navigation.navigate("OthersProfile", 
-                    {id: data.item._id, following: data.item.isFollowing}) }}
+                    onPressImage={() => {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
+                    onPress={() => { props.followReq({ follower_id: data.item._id }) }}
                 />
             );
         }
@@ -91,8 +97,10 @@ function Notification(props) {
                     image2={data.item.image}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
                     marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-                    onPressImage={() => { props.navigation.navigate("OthersProfile", 
-                    {id: data.item._id, following: data.item.isFollowing}) }}
+                    onPressImage={() => {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
                 />
             );
         }
@@ -105,8 +113,10 @@ function Notification(props) {
                     image2={data.item.image}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
                     marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-                    onPressImage={() => { props.navigation.navigate("OthersProfile", 
-                    {id: data.item._id, following: data.item.isFollowing}) }}
+                    onPressImage={() => {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
                 />
             )
         }
@@ -173,57 +183,57 @@ function Notification(props) {
                     alignSelf: 'center'
                 }}> ACTIVITY</Text>
 
-                
-                { _.isEmpty(props.activityListToday) && _.isEmpty(props.activityListPrevious) ?
-                 
-                 <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                     <Text style={{color:Colors.white, fontSize:normalise(15)}}>No Activity</Text>
-                 </View>
 
-                :
-                <ScrollView showsVerticalScrollIndicator={false}>
+                {_.isEmpty(props.activityListToday) && _.isEmpty(props.activityListPrevious) ?
 
-                {_.isEmpty(props.activityListToday) ? null :
-                    <View style={{
-                        marginTop: normalise(12), flexDirection: 'row',
-                        width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
-                    }}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ color: Colors.white, fontSize: normalise(15) }}>No Activity</Text>
+                    </View>
 
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
-                            fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
-                        }}>TODAY</Text>
-                    </View> }
+                    :
+                    <ScrollView showsVerticalScrollIndicator={false}>
 
-                    <FlatList
-                        data={props.activityListToday}
-                        renderItem={renderTodayitem}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        showsVerticalScrollIndicator={false}
-                    />
+                        {_.isEmpty(props.activityListToday) ? null :
+                            <View style={{
+                                marginTop: normalise(12), flexDirection: 'row',
+                                width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
+                            }}>
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
+                                    fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
+                                }}>TODAY</Text>
+                            </View>}
+
+                        <FlatList
+                            data={props.activityListToday}
+                            renderItem={renderTodayitem}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            showsVerticalScrollIndicator={false}
+                        />
 
 
 
-                {_.isEmpty(props.activityListPrevious) ? null :
-                    <View style={{
-                        marginTop: normalise(10), flexDirection: 'row',
-                        width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
-                    }}>
+                        {_.isEmpty(props.activityListPrevious) ? null :
+                            <View style={{
+                                marginTop: normalise(10), flexDirection: 'row',
+                                width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
+                            }}>
 
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
-                            fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
-                        }}>PREVIOUSLY</Text>
-                    </View>}
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(12), marginLeft: normalise(20),
+                                    fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
+                                }}>PREVIOUSLY</Text>
+                            </View>}
 
-                    <FlatList
-                        data={props.activityListPrevious}
-                        renderItem={renderTodayitem}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        showsVerticalScrollIndicator={false}
-                    />
+                        <FlatList
+                            data={props.activityListPrevious}
+                            renderItem={renderTodayitem}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            showsVerticalScrollIndicator={false}
+                        />
 
-                </ScrollView>  }
+                    </ScrollView>}
             </SafeAreaView>
         </View>
     )
@@ -241,6 +251,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         activityListReq: () => {
             dispatch(activityListReq())
+        },
+        followReq: (payload) => {
+            dispatch(userFollowUnfollowRequest(payload))
         }
     }
 };

@@ -166,7 +166,7 @@ function Search(props) {
                 setTimeout(()=>{
                 setSongData(props.userSearch)
                 setBool(false);
-                },900)
+                },1000)
                 break;
 
             case USER_SEARCH_FAILURE:
