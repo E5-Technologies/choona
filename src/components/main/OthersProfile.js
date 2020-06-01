@@ -179,7 +179,7 @@ function OthersProfile(props) {
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.replace("Following", { type: "public", id: props.othersProfileresp._id })
+                                props.navigation.navigate("Following", { type: "public", id: props.othersProfileresp._id })
                             }}>
                                 <Text style={{
                                     color: Colors.darkgrey, fontSize: normalise(11),
@@ -188,7 +188,7 @@ function OthersProfile(props) {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                props.navigation.replace("Followers", { type: "public", id: props.othersProfileresp._id })
+                                props.navigation.navigate("Followers", { type: "public", id: props.othersProfileresp._id })
                             }}>
                                 <Text style={{
                                     marginLeft: normalise(10),
