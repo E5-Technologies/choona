@@ -1,5 +1,5 @@
 
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, Fragment, useState, useRef } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -21,6 +21,8 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from "react-native-raw-bottom-sheet";
+import Sound from 'react-native-sound';
+import toast from '../../utils/helpers/ShowErrorAlert';
 
 let RbSheetRef;
 
@@ -76,18 +78,88 @@ const followdata = [
 export default function Player(props) {
 
     const [playVisible, setPlayVisible] = useState(false);
+    const [uri, setUri] = useState(props.route.params.uri);
+    const [trackRef, setTrackRef] = useState();
+    const [currentTime, setCurrentTime] = useState();
+    let track;
+
+    
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+            Sound.setCategory('Playback');
+            playSongOnLoad()
+        });
+
+        return () => {
+            unsuscribe();
+        }
+    },[]);
 
 
+    const playSongOnLoad = () => {
+        
+         track = new Sound(uri, "", (err) => {
+            if (err) {
+                console.log(err);
+                setPlayVisible(true);
+            }
+            else {
+                console.log('success')
+                track.play((success) => {
+                    if (success) {
+                        console.log('Yesssss!')
+                        setPlayVisible(true);
+                    }
+                    else {
+                        console.log('NOOOOOOOO')
+                    }
+                })
+            };
+        });
+        setTrackRef(track);
+    };
+
+
+    // PAUSE AND PLAY
     function playing() {
 
         if (playVisible == true) {
+            console.log(trackRef);
             setPlayVisible(false)
+            trackRef.play((err) => {
+                if (err) {
+                    setPlayVisible(true);
+                }
+            })
         }
         else {
+            console.log(trackRef);
             setPlayVisible(true)
+            trackRef.pause(() => {
+                console.log('paused');
+            })
         }
-        //  setModalReact(x)
     };
+
+    //REWIND AND FORWARD
+    const toggleTime = (type) => {
+
+        if (type === 'backward') {
+            trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
+            if(currentTime > 5){
+            trackRef.setCurrentTime(currentTime - 5)
+            // console.log(trackRef.getCurrentTime((seconds) => { return seconds }))
+            }
+        }
+        else {
+            trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
+            if(currentTime < 25){
+            trackRef.setCurrentTime(currentTime + 5)
+            // console.log(trackRef.getCurrentTime((seconds) => { return seconds }))
+            }
+        }
+    };
+
 
     function renderFlatlistData(data) {
         return (
@@ -100,7 +172,7 @@ export default function Player(props) {
                 time={data.item.time}
                 marginBottom={data.index === followdata.length - 1 ? normalise(10) : 0} />
         )
-    }
+    };
 
     const RbSheet = () => {
         return (
@@ -198,7 +270,7 @@ export default function Player(props) {
 
             </RBSheet>
         )
-    }
+    };
 
 
     return (
@@ -303,8 +375,8 @@ export default function Player(props) {
                             </View>
 
                             <Image source={ImagePath.spotifyicon}
-                            style={{height:normalise(20), width:normalise(20)}}
-                            resizeMode='contain' />
+                                style={{ height: normalise(20), width: normalise(20) }}
+                                resizeMode='contain' />
 
                         </View>
 
@@ -313,13 +385,17 @@ export default function Player(props) {
                             justifyContent: 'space-between', marginTop: normalise(15),
                         }}>
 
-                            <Text style={{ color: 'white', 
-                            fontFamily: 'ProximaNova-Semibold' }}>
+                            <Text style={{
+                                color: 'white',
+                                fontFamily: 'ProximaNova-Semibold'
+                            }}>
                                 01:30
                                 </Text>
 
-                            <Text style={{ color: 'white',
-                            fontFamily: 'ProximaNova-Semibold'}}>
+                            <Text style={{
+                                color: 'white',
+                                fontFamily: 'ProximaNova-Semibold'
+                            }}>
                                 -2:19
                                 </Text>
 
@@ -337,7 +413,7 @@ export default function Player(props) {
                             flexDirection: 'row', alignSelf: 'center', width: '70%',
                             justifyContent: 'space-around', marginTop: normalise(15), alignItems: 'center'
                         }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => { toggleTime('backward') }}>
                                 <Image source={ImagePath.backwardicon}
                                     style={{ height: normalise(18), width: normalise(18) }}
                                     resizeMode="contain" />
@@ -365,7 +441,7 @@ export default function Player(props) {
 
                             </TouchableOpacity>
 
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => { toggleTime('forward') }}>
                                 <Image source={ImagePath.forwardicon}
                                     style={{ height: normalise(18), width: normalise(18) }}
                                     resizeMode="contain" />
@@ -374,7 +450,7 @@ export default function Player(props) {
 
 
                         <View style={{
-                            flexDirection: 'row', width: '90%', alignSelf:'center',
+                            flexDirection: 'row', width: '90%', alignSelf: 'center',
                             justifyContent: 'space-between', marginTop: normalise(25), alignItems: 'center'
                         }}>
                             <TouchableOpacity style={{
@@ -423,8 +499,10 @@ export default function Player(props) {
                                     style={{ height: normalise(16), width: normalise(16) }}
                                     resizeMode="contain" />
 
-                                <Text style={{ fontSize: normalise(9), color: Colors.white, marginLeft: normalise(10),
-                                fontFamily:'ProximaNova-Bold' }}>
+                                <Text style={{
+                                    fontSize: normalise(9), color: Colors.white, marginLeft: normalise(10),
+                                    fontFamily: 'ProximaNova-Bold'
+                                }}>
                                     3 COMMENTS
                                     </Text>
 
@@ -435,9 +513,9 @@ export default function Player(props) {
                             width: '90%', alignSelf: 'center', backgroundColor: Colors.fadeblack,
                             height: normalise(50), marginTop: normalise(40), alignItems: 'center',
                             justifyContent: 'center',
-                            borderTopRightRadius: normalise(8), borderTopLeftRadius:normalise(8),
-                             marginBottom: normalise(20),
-                        }} onPress={() => { props.navigation.goBack() }}>
+                            borderTopRightRadius: normalise(8), borderTopLeftRadius: normalise(8),
+                            marginBottom: normalise(20),
+                        }} onPress={() => { props.navigation.goBack(), trackRef.release() }}>
 
                             <View style={{
                                 width: '90%', alignSelf: 'center', flexDirection: 'row',
@@ -453,7 +531,7 @@ export default function Player(props) {
 
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(12),
-                                    fontFamily:'ProximaNova-Extrabld'
+                                    fontFamily: 'ProximaNova-Extrabld'
                                 }}>MINIMISE PLAYER</Text>
 
 

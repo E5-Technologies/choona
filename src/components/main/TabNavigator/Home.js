@@ -201,7 +201,8 @@ function Home(props) {
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
             comments: data.item.comments,
-            time: data.item.time, title: data.item.title
+            time: data.item.time, title: data.item.title,
+            uri: data.item.song_uri
           })
         }}
         onPressReactionbox={() => {
