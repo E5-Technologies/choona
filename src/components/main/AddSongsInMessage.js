@@ -139,25 +139,31 @@ function AddSongsInMessage(props) {
                 alignSelf: 'center'
             }}
                 onPress={() => {
-                
+
                     if (usersToSEndSong.length > 0) {
 
+                        let idArray = [];
+
                         usersToSEndSong.map((item, index) => {
-                            if (item._id === data.item._id) {
-                                console.log('Already Exists');
-                            } 
-                            else {
-                                let array = [...usersToSEndSong]
-                                array.push(data.item)
-                                sesUsersToSEndSong(array);
-                            };
-                        })
+
+                            idArray.push(item._id)
+
+                        });
+                        if (idArray.includes(data.item._id)) {
+                            console.log('Already Exists');
+                        }
+                        else {
+                            let array = [...usersToSEndSong]
+                            array.push(data.item)
+                            sesUsersToSEndSong(array);
+                        };
 
                     } else {
                         let array = [...usersToSEndSong]
                         array.push(data.item)
                         sesUsersToSEndSong(array);
-                    }}}>
+                    }
+                }}>
 
                 <View style={{ flexDirection: 'row', }}>
                     <Image
@@ -218,7 +224,7 @@ function AddSongsInMessage(props) {
             </TouchableOpacity>
         )
     };
-    
+
 
     return (
 
@@ -318,7 +324,7 @@ function AddSongsInMessage(props) {
                     }}
                     closeOnDragDown={true}
                     closeOnPressMask={true}
-                    onClose={() => {sesUsersToSEndSong([]) }}
+                    onClose={() => { sesUsersToSEndSong([]) }}
                     nestedScrollEnabled={true}
                     keyboardAvoidingViewEnabled={true}
                     height={normalize(500)}
@@ -420,7 +426,7 @@ function AddSongsInMessage(props) {
                         </View>
 
 
-                                    
+
                         {usersToSEndSong.length > 0 ?       // ADD TO ARRAY FLATLIST
                             <FlatList
                                 style={{ alignSelf: "center", maxHeight: normalise(40) }}
