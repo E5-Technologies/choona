@@ -23,8 +23,7 @@ import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import {connect} from 'react-redux';
-import { State } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 
 let RbSheetRef;
@@ -88,13 +87,16 @@ function Player(props) {
     const [songTitle, setSongTitle] = useState(props.postData[index].song_name);
     const [albumTitle, setAlbumTitle] = useState(props.postData[index].album_name);
     const [pic, setPic] = useState(props.regType === 'spotify' ? props.postData[index].song_image :
-    props.postData[index].song_image.replace("100x100bb.jpg", "500x500bb.jpg"));
+        props.postData[index].song_image.replace("100x100bb.jpg", "500x500bb.jpg"));
     const [username, setUsername] = useState(props.postData[index].userDetails.username);
     const [profilePic, setprofilePic] = useState(props.postData[index].userDetails.profile_image);
+    const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
+    const [playerDuration, setplayerDuration] = useState(0);
+    const [playerPaused, setPlayerpaused] = useState(false);
 
     let track;
 
-    
+
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
             Sound.setCategory('Playback');
@@ -104,18 +106,24 @@ function Player(props) {
         return () => {
             unsuscribe();
         }
-    },[]);
+    }, []);
 
 
+    // PLAY SONG ON LOAD
     const playSongOnLoad = () => {
-        
-         track = new Sound(uri, "", (err) => {
+
+        track = new Sound(uri, "", (err) => {
             if (err) {
                 console.log(err);
                 setPlayVisible(true);
             }
             else {
                 console.log('success')
+                changeTime(track);
+
+                let res = track.getDuration();
+                setplayerDuration(res);
+
                 track.play((success) => {
                     if (success) {
                         console.log('Yesssss!')
@@ -124,9 +132,10 @@ function Player(props) {
                     else {
                         console.log('NOOOOOOOO')
                     }
-                })
+                });
             };
         });
+
         setTrackRef(track);
     };
 
@@ -137,17 +146,24 @@ function Player(props) {
         if (playVisible == true) {
             console.log(trackRef);
             setPlayVisible(false)
-            trackRef.play((err) => {
-                if (err) {
+            
+            trackRef.play((success) => {
+                if (success) {
+                    console.log('Yesssss Done!')
                     setPlayVisible(true);
+                }
+                else {
+                    console.log('NOOOOOOOO')
                 }
             })
         }
         else {
             console.log(trackRef);
             setPlayVisible(true)
+            
             trackRef.pause(() => {
                 console.log('paused');
+                setPlayerpaused(!playerPaused);
             })
         }
     };
@@ -157,22 +173,23 @@ function Player(props) {
     const toggleTime = (type) => {
 
         if (type === 'backward') {
-            trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-            if(currentTime > 5){
-            trackRef.setCurrentTime(currentTime - 5)
-            // console.log(trackRef.getCurrentTime((seconds) => { return seconds }))
-            }
+            // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
+            // if (currentTime > 5) {
+                trackRef.setCurrentTime(0)
+                setPlayerCurrentTime(0)
+            // }
         }
         else {
             trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-            if(currentTime < 25){
-            trackRef.setCurrentTime(currentTime + 5)
-            // console.log(trackRef.getCurrentTime((seconds) => { return seconds }))
+            if (currentTime < 30) {
+                trackRef.setCurrentTime(currentTime + 5)
+                setPlayerCurrentTime(currentTime + 5)
             }
         }
     };
 
 
+    // RENDER FLATLIST DATA
     function renderFlatlistData(data) {
         return (
             <CommentList
@@ -186,6 +203,8 @@ function Player(props) {
         )
     };
 
+
+    // BOTTOM SHEET FUNC
     const RbSheet = () => {
         return (
             <RBSheet
@@ -285,6 +304,23 @@ function Player(props) {
     };
 
 
+    // CHANGE TIME
+    const changeTime = (ref) => {
+        
+        setInterval(()=>{
+            ref.getCurrentTime((seconds)=>{setPlayerCurrentTime(seconds)})
+        }, 1000)
+     
+    };
+
+
+    // ON SILIDE SLIDER
+    const onSliderSlide = (time) => {
+        setPlayerCurrentTime(time);
+        trackRef.setCurrentTime(time);
+    };
+
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -304,8 +340,8 @@ function Player(props) {
                         }}>
 
 
-                            <Image source={{uri: constants.profile_picture_base_url+profilePic}}
-                                style={{ height: normalise(24), width: normalise(24), borderRadius:normalise(12) }}
+                            <Image source={{ uri: constants.profile_picture_base_url + profilePic }}
+                                style={{ height: normalise(24), width: normalise(24), borderRadius: normalise(12) }}
                                 resizeMode="contain" />
 
 
@@ -356,7 +392,7 @@ function Player(props) {
                             }}   >
 
 
-                            <Image source={{uri: pic}}
+                            <Image source={{ uri: pic }}
                                 style={{ height: normalise(265), width: normalise(290), borderRadius: normalise(15) }}
                                 resizeMode="cover" />
 
@@ -387,7 +423,7 @@ function Player(props) {
                             </View>
 
                             <Image source={props.regType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
-                                style={{ height: normalise(20), width: normalise(20), borderRadius:normalise(10) }}
+                                style={{ height: normalise(20), width: normalise(20), borderRadius: normalise(10) }}
                                 resizeMode='contain' />
 
                         </View>
@@ -401,24 +437,27 @@ function Player(props) {
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
-                                01:30
-                                </Text>
+                                {playerCurrentTime > 9 ? "00:" : "00:0"}{playerCurrentTime.toFixed(0)}
+                            </Text>
 
                             <Text style={{
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
-                                -2:19
-                                </Text>
+                                -00:{playerDuration.toFixed(0)}
+                            </Text>
 
                         </View>
 
                         <Slider
                             style={{ width: '90%', height: 40, alignSelf: "center", }}
                             minimumValue={0}
-                            maximumValue={1}
+                            maximumValue={30}
+                            step={1}
+                            value={playerCurrentTime}
                             minimumTrackTintColor="#FFFFFF"
                             maximumTrackTintColor="#000000"
+                            onSlidingComplete={(number) => { onSliderSlide(number) }}
                         />
 
                         <View style={{
@@ -567,7 +606,7 @@ function Player(props) {
 };
 
 const mapStateToProps = (state) => {
-    return{
+    return {
         status: state.UserReducer.status,
         postData: state.UserReducer.postData,
         regType: state.TokenReducer.registerType
@@ -575,9 +614,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return{
-       
+    return {
+
     }
 };
 
-export default connect (mapStateToProps, mapDispatchToProps)(Player);
+export default connect(mapStateToProps, mapDispatchToProps)(Player);

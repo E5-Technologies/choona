@@ -142,16 +142,21 @@ function AddSongsInMessage(props) {
                 
                     if (usersToSEndSong.length > 0) {
 
+                        let idArray = [];
+
                         usersToSEndSong.map((item, index) => {
-                            if (item._id === data.item._id) {
-                                console.log('Already Exists');
-                            } 
-                            else {
-                                let array = [...usersToSEndSong]
-                                array.push(data.item)
-                                sesUsersToSEndSong(array);
-                            };
-                        })
+
+                            idArray.push(item._id)
+
+                        });
+                        if (idArray.includes(data.item._id)) {
+                            console.log('Already Exists');
+                        }
+                        else {
+                            let array = [...usersToSEndSong]
+                            array.push(data.item)
+                            sesUsersToSEndSong(array);
+                        };
 
                     } else {
                         let array = [...usersToSEndSong]
