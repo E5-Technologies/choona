@@ -202,7 +202,7 @@ function Home(props) {
           props.navigation.navigate('Player', {
             comments: data.item.comments,
             time: data.item.time, title: data.item.title,
-            uri: data.item.song_uri
+            uri: data.item.song_uri, index: data.index
           })
         }}
         onPressReactionbox={() => {

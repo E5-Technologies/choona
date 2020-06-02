@@ -23,6 +23,9 @@ import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import {connect} from 'react-redux';
+import { State } from 'react-native-gesture-handler';
+import constants from '../../utils/helpers/constants';
 
 let RbSheetRef;
 
@@ -75,12 +78,20 @@ const followdata = [
 
 ]
 
-export default function Player(props) {
+function Player(props) {
 
     const [playVisible, setPlayVisible] = useState(false);
     const [uri, setUri] = useState(props.route.params.uri);
     const [trackRef, setTrackRef] = useState();
     const [currentTime, setCurrentTime] = useState();
+    const [index, setIndex] = useState(props.route.params.index);
+    const [songTitle, setSongTitle] = useState(props.postData[index].song_name);
+    const [albumTitle, setAlbumTitle] = useState(props.postData[index].album_name);
+    const [pic, setPic] = useState(props.regType === 'spotify' ? props.postData[index].song_image :
+    props.postData[index].song_image.replace("100x100bb.jpg", "500x500bb.jpg"));
+    const [username, setUsername] = useState(props.postData[index].userDetails.username);
+    const [profilePic, setprofilePic] = useState(props.postData[index].userDetails.profile_image);
+
     let track;
 
     
@@ -140,6 +151,7 @@ export default function Player(props) {
             })
         }
     };
+
 
     //REWIND AND FORWARD
     const toggleTime = (type) => {
@@ -292,8 +304,8 @@ export default function Player(props) {
                         }}>
 
 
-                            <Image source={ImagePath.dp1}
-                                style={{ height: normalise(24), width: normalise(24) }}
+                            <Image source={{uri: constants.profile_picture_base_url+profilePic}}
+                                style={{ height: normalise(24), width: normalise(24), borderRadius:normalise(12) }}
                                 resizeMode="contain" />
 
 
@@ -311,7 +323,7 @@ export default function Player(props) {
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(11),
                                     fontFamily: 'ProximaNova-Semibold',
-                                }} numberOfLines={1}> ShimShimmer </Text>
+                                }} numberOfLines={1}> {username} </Text>
 
 
                             </View>
@@ -344,7 +356,7 @@ export default function Player(props) {
                             }}   >
 
 
-                            <Image source={ImagePath.profiletrack4}
+                            <Image source={{uri: pic}}
                                 style={{ height: normalise(265), width: normalise(290), borderRadius: normalise(15) }}
                                 resizeMode="cover" />
 
@@ -365,17 +377,17 @@ export default function Player(props) {
                                     color: Colors.white, fontSize: normalise(14),
                                     fontFamily: 'ProximaNova-Semibold',
                                     width: '90%',
-                                }} numberOfLines={1}>Played-A-Live (The Bongo Song)</Text>
+                                }} numberOfLines={1}>{songTitle}</Text>
 
                                 <Text style={{
                                     color: Colors.grey_text, fontSize: normalise(12),
                                     fontFamily: 'ProximaNovaAW07-Medium', width: '90%',
-                                }} numberOfLines={1}>Safri Duo</Text>
+                                }} numberOfLines={1}>{albumTitle}</Text>
 
                             </View>
 
-                            <Image source={ImagePath.spotifyicon}
-                                style={{ height: normalise(20), width: normalise(20) }}
+                            <Image source={props.regType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                style={{ height: normalise(20), width: normalise(20), borderRadius:normalise(10) }}
                                 resizeMode='contain' />
 
                         </View>
@@ -552,4 +564,20 @@ export default function Player(props) {
         </View>
 
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return{
+        status: state.UserReducer.status,
+        postData: state.UserReducer.postData,
+        regType: state.TokenReducer.registerType
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return{
+       
+    }
+};
+
+export default connect (mapStateToProps, mapDispatchToProps)(Player);
