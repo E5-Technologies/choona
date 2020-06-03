@@ -18,6 +18,8 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
+import database from '@react-native-firebase/database';
+import moment from "moment"
 
 const followdata = [
     {
@@ -133,7 +135,7 @@ export default function Inbox(props) {
                     }}
                 />
 
-<View style={{
+                <View style={{
                     width: '92%',
                     alignSelf: 'center',
                 }}>
