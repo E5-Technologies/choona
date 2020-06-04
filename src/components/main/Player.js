@@ -153,8 +153,8 @@ function Player(props) {
                     setplayerDuration(time);
                     setBool(false);
                     global.playerReference.pause();
-                    global.playerReference.play((success)=>{
-                        if(success){
+                    global.playerReference.play((success) => {
+                        if (success) {
                             console.log('Playback End')
                             setPlayVisible(true);
                         }
@@ -176,42 +176,52 @@ function Player(props) {
     // PLAY SONG
     const playSong = () => {
 
-        track = new Sound(uri, "", (err) => {
-            if (err) {
-                console.log(err);
-                setPlayVisible(true);
-            }
-            else {
-                console.log('Loaded')
-                setBool(false);
-                changeTime(track);
+        if (uri === null) {
+            setBool(false);
+            setPlayVisible(true);
+            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
+        } else {
+
+            track = new Sound(uri, "", (err) => {
+                if (err) {
+                    console.log(err);
+                    setPlayVisible(true);
+                }
+                else {
+                    console.log('Loaded')
+                    setBool(false);
+                    changeTime(track);
 
 
-                let saveSongResObj = {}
-                saveSongResObj.uri = uri,
-                    saveSongResObj.song_name = songTitle,
-                    saveSongResObj.album_name = albumTitle,
-                    saveSongResObj.song_pic = pic
+                    let saveSongResObj = {}
+                    saveSongResObj.uri = uri,
+                        saveSongResObj.song_name = songTitle,
+                        saveSongResObj.album_name = albumTitle,
+                        saveSongResObj.song_pic = pic
 
-                props.saveSongRefReq(saveSongResObj);
-                global.playerReference = track;
+                    props.saveSongRefReq(saveSongResObj);
+                    global.playerReference = track;
 
-                let res = track.getDuration();
-                setplayerDuration(res);
+                    let res = track.getDuration();
+                    setplayerDuration(res);
 
-                track.play((success) => {
-                    if (success) {
-                        console.log('PlayBack End')
-                        setPlayVisible(true);
-                    }
-                    else {
-                        console.log('NOOOOOOOO')
-                    }
-                });
-            };
-        });
+                    track.play((success) => {
+                        if (success) {
+                            console.log('PlayBack End')
+                            setPlayVisible(true);
+                        }
+                        else {
+                            console.log('NOOOOOOOO')
+                        }
+                    });
+                };
+            });
 
-        setTrackRef(track);
+            setTrackRef(track);
+
+        }
+
+
     }
 
 
