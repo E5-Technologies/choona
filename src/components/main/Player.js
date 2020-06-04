@@ -71,6 +71,8 @@ function Player(props) {
 
     let track;
 
+
+
     useEffect(() => {
         // const unsuscribe = props.navigation.addListener('focus', (payload) => {
         // Sound.setActive(true)
@@ -228,46 +230,62 @@ function Player(props) {
     // PAUSE AND PLAY
     function playing() {
 
-        if (playVisible == true) {
-
-            setPlayVisible(false)
-
-            global.playerReference.play((success) => {
-                if (success) {
-                    console.log('PlayBack End!')
-                    setPlayVisible(true);
-                }
-                else {
-                    console.log('NOOOOOOOO')
-                }
-            });
-
+        if (uri === null) {
+            setBool(false);
+            setPlayVisible(true);
+            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
         } else {
 
-            setPlayVisible(true)
+            if (playVisible == true) {
 
-            global.playerReference.pause(() => {
-                console.log('paused');
-            })
+                setPlayVisible(false)
+
+                global.playerReference.play((success) => {
+                    if (success) {
+                        console.log('PlayBack End!')
+                        setPlayVisible(true);
+                    }
+                    else {
+                        console.log('NOOOOOOOO')
+                    }
+                });
+
+            } else {
+
+                setPlayVisible(true)
+
+                global.playerReference.pause(() => {
+                    console.log('paused');
+                })
+            }
         }
+
+
     };
 
 
     //REWIND AND FORWARD
     const toggleTime = (type) => {
 
-        if (type === 'backward') {
-            // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-            // if (currentTime > 5) {
-            global.playerReference.setCurrentTime(0)
-            setPlayerCurrentTime(0)
-            // }
-        }
-        else {
-            global.playerReference.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-            if (currentTime < 25) {
-                global.playerReference.setCurrentTime(currentTime + 5)
-                setPlayerCurrentTime(currentTime + 5)
+        if (uri === null) {
+            setBool(false);
+            setPlayVisible(true);
+            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
+        } else {
+
+            if (type === 'backward') {
+                // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
+                // if (currentTime > 5) {
+                global.playerReference.setCurrentTime(0)
+                setPlayerCurrentTime(0)
+                // }
+            }
+            else {
+                global.playerReference.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
+                if (currentTime < 25) {
+                    global.playerReference.setCurrentTime(currentTime + 5)
+                    setPlayerCurrentTime(currentTime + 5)
+                }
             }
         }
     };
@@ -493,7 +511,7 @@ function Player(props) {
                             }}   >
 
 
-                            <Image source={{ uri: pic }}
+                            <Image source={{ uri: pic.replace("100x100bb.jpg", "500x500bb.jpg") }}
                                 style={{ height: normalise(265), width: normalise(290), borderRadius: normalise(15) }}
                                 resizeMode="cover" />
 
