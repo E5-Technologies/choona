@@ -17,18 +17,114 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
+import constants from '../../utils/helpers/constants';
+import { connect } from 'react-redux';
+import { sendChatMessageRequest } from '../../action/MessageAction'
+import moment from "moment"
+import toast from '../../utils/helpers/ShowErrorAlert';
+import {
 
+    SEND_CHAT_MESSAGE_REQUEST,
+    SEND_CHAT_MESSAGE_SUCCESS,
+    SEND_CHAT_MESSAGE_FAILURE,
 
+} from '../../action/TypeConstants';
 
-export default function SendSongInMessageFinal(props) {
+let status;
+
+function SendSongInMessageFinal(props) {
 
     const [search, setSearch] = useState("");
     const [imgsource, setImgSource] = useState(props.route.params.image)
     const [title1, setTitle1] = useState(props.route.params.title)
-    const [title2, setTitle2] = useState(props.route.params.title2)
+    const [title2, setTitle2] = useState(props.route.params.title2);
+    const [usersData, setUserData] = useState(props.route.params.users);
+
+    if (status === "" || status !== props.status) {
+        switch (props.status) {
+
+            case SEND_CHAT_MESSAGE_REQUEST:
+                status = props.status
+                break;
+
+            case SEND_CHAT_MESSAGE_SUCCESS:
+                status = props.status;
+                toast("Error", "Message sent successfully.")
+                props.navigation.goBack()
+                break;
+
+            case SEND_CHAT_MESSAGE_FAILURE:
+                status = props.status
+                toast("Error", "Something Went Wong, Please Try Again")
+                break;
+        }
+    };
 
 
+    // RENDER USER SEARCH FLATLIST DATA
+    function renderAddUsersToMessageItem(data) {
 
+        return (
+            <TouchableOpacity style={{
+                marginTop: normalise(10),
+                width: "87%",
+                alignSelf: 'center'
+            }}
+                onPress={() => {
+
+                }}>
+
+                <View style={{ flexDirection: 'row', }}>
+                    <Image
+                        source={{ uri: constants.profile_picture_base_url + data.item.profile_image }}
+                        style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+                    />
+                    <View style={{ marginStart: normalise(10) }}>
+                        <Text style={{ color: Colors.white }}>{data.item.full_name}</Text>
+                        <Text style={{ color: Colors.white }}>{data.item.username}</Text>
+                    </View>
+
+                </View>
+                <View style={{
+                    backgroundColor: Colors.grey,
+                    height: 0.5,
+                    marginTop: normalise(10)
+                }} />
+            </TouchableOpacity>
+
+        )
+    };
+
+    function sendMessage() {
+
+        let chatBody = [];
+
+        props.chatTokenList.map((item) => {
+
+            var chatObject = {
+                message: search,
+                sender_id: props.userProfileResp._id,
+                receiver_id: item.receiver_id,
+                song_name: title1,
+                artist_name: title2,
+                song_uri: props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
+                    props.route.params.details.previewUrl,
+                read: false,
+                time: moment()
+            }
+
+            chatBody.push(chatObject);
+
+        });
+
+        let chatPayload = {
+            chatTokens: props.chatTokenList,
+            chatBody: chatBody
+        }
+
+        props.sendChatMessageRequest(chatPayload);
+
+    }
 
 
     return (
@@ -45,17 +141,19 @@ export default function SendSongInMessageFinal(props) {
                     thirditemtext={true}
                     texttwo={"SEND"}
                     onPressFirstItem={() => { props.navigation.goBack() }}
-                    onPressThirdItem={() => props.navigation.replace('InsideaMessage')}
+                    onPressThirdItem={() => {
+                        sendMessage();
+                    }}
                 />
 
                 <View style={{ marginTop: normalise(20), width: '92%', alignSelf: 'center', }}>
 
                     <TextInput style={{
                         width: '100%',
-                        borderRadius: normalise(8), 
+                        borderRadius: normalise(8),
                         padding: normalise(10),
-                        fontFamily:'ProximaNovaAW07-Medium',
-                        color: Colors.white, 
+                        fontFamily: 'ProximaNovaAW07-Medium',
+                        color: Colors.white,
                     }} value={search}
                         multiline={true}
                         placeholder={"Add a comment"}
@@ -74,15 +172,18 @@ export default function SendSongInMessageFinal(props) {
                         }}>
 
                             <TouchableOpacity>
-                                <Image source={imgsource}
+                                <Image source={{ uri: imgsource }}
                                     style={{ height: normalise(40), width: normalise(40), borderRadius: normalise(5) }}
                                     resizeMode='contain' />
                             </TouchableOpacity>
 
-                            <View style={{ alignItems: 'flex-start', justifyContent: 'center' }}>
+                            <View style={{
+                                alignItems: 'flex-start',
+                                justifyContent: 'center', width: '85%'
+                            }}>
                                 <Text style={{
                                     marginLeft: normalise(20), color: Colors.white,
-                                    fontSize: normalise(11)
+                                    fontSize: normalise(11),
                                 }} numberOfLines={1} >{title1}</Text>
 
                                 <Text style={{
@@ -96,39 +197,21 @@ export default function SendSongInMessageFinal(props) {
                     </View>
 
                 </View>
-                
+
                 <Text
-                style={{
-                    color:Colors.grey,
-                    margin:normalise(15)
-                }}
-                >Sending song to:</Text>
-                <TouchableOpacity style={{
-                    marginTop: normalise(10),
-                    width: "87%",
-                    alignSelf: 'center'
-                }}
-                    onPress={() => {
-
+                    style={{
+                        color: Colors.grey,
+                        margin: normalise(15)
                     }}
-                >
-                    <View style={{ flexDirection: 'row', }}>
-                        <Image
-                            source={ImagePath.dp}
-                            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-                        />
-                        <View style={{ marginStart: normalise(10) }}>
-                            <Text style={{ color: Colors.white }}>Isabelle Frarnandes</Text>
-                            <Text style={{ color: Colors.white }}>@IzzyWhite</Text>
-                        </View>
+                >Sending song to:</Text>
 
-                    </View>
-                    <View style={{
-                        backgroundColor: Colors.grey,
-                        height: 0.5,
-                        marginTop: normalise(10)
-                    }} />
-                </TouchableOpacity>
+                <FlatList       // USER SEARCH FLATLIST
+                    style={{ marginTop: usersData.length > 0 ? normalise(20) : 0 }}
+                    data={usersData}
+                    renderItem={renderAddUsersToMessageItem}
+                    keyExtractor={(item, index) => { index.toString() }}
+                    showsVerticalScrollIndicator={false}
+                />
 
 
 
@@ -136,3 +219,23 @@ export default function SendSongInMessageFinal(props) {
         </View>
     )
 }
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.MessageReducer.status,
+        chatTokenList: state.MessageReducer.chatTokenList,
+        sendChatResponse: state.MessageReducer.sendChatResponse,
+        userProfileResp: state.UserReducer.userProfileResp,
+
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        sendChatMessageRequest: (payload) => {
+            dispatch(sendChatMessageRequest(payload))
+        },
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SendSongInMessageFinal);

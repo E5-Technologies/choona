@@ -11,6 +11,8 @@ import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSa
 
 import {watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction} from './SongSaga';
 
+import {watchGetChatTokenRequest, watchSendChatMessageRequest} from './MessageSaga';
+
 
 function* RootSaga() {
 
@@ -34,7 +36,9 @@ function* RootSaga() {
         watchfollowerListAction(),
         watchfollowingListAction(),
         watchReactionOnPostAction(),
-        watchactivityListAction()
+        watchactivityListAction(),
+        watchGetChatTokenRequest(),
+        watchSendChatMessageRequest()
 
     ])
 }

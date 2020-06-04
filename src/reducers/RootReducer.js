@@ -3,12 +3,14 @@ import TokenReducer from '../reducers/TokenReducer';
 import UserReducer from '../reducers/UserReducer'
 import PostReducer from './PostReducer'
 import SongReducer from './SongReducer';
+import MessageReducer from './MessageReducer'
 
 const allReducers = combineReducers({
     TokenReducer: TokenReducer,
     UserReducer: UserReducer,
     PostReducer: PostReducer,
-    SongReducer: SongReducer
+    SongReducer: SongReducer,
+    MessageReducer: MessageReducer
 });
 
 

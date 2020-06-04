@@ -35,7 +35,7 @@ export async function postSpotifyApi(url, payload, header) {
 export async function postApi(url, payload, header) {
 
     console.log("URL: ", `${constants.BASE_URL}/${url}`)
-
+   
     return await axios.post(`${constants.BASE_URL}/${url}`, payload, {
         headers: {
             'Accept': header.Accept,

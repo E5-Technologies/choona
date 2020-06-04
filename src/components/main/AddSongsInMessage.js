@@ -22,21 +22,30 @@ import _ from 'lodash';
 import RBSheet from "react-native-raw-bottom-sheet";
 import { seachSongsForPostRequest } from '../../action/PostAction';
 import { userSearchRequest } from '../../action/UserAction';
+import { createChatTokenRequest } from '../../action/MessageAction'
 import {
-    SEARCH_SONG_REQUEST_FOR_POST_REQUEST, SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+    SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
+    SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
     SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 
-    USER_SEARCH_REQUEST, USER_SEARCH_SUCCESS,
+    USER_SEARCH_REQUEST,
+    USER_SEARCH_SUCCESS,
     USER_SEARCH_FAILURE,
+
+    CREATE_CHAT_TOKEN_REQUEST,
+    CREATE_CHAT_TOKEN_SUCCESS,
+    CREATE_CHAT_TOKEN_FAILURE,
+
 } from '../../action/TypeConstants';
 import { connect } from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import constants from '../../utils/helpers/constants';
-import { array } from 'prop-types';
+
 
 let status;
 let userReducerStatus;
+let messageStatus;
 
 function AddSongsInMessage(props) {
 
@@ -46,6 +55,7 @@ function AddSongsInMessage(props) {
     const [result, setResult] = useState([]);
     const [userSearchData, setUserSearchData] = useState([]);
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
+    const [index, setIndex] = useState([])
 
 
     let post = false;
@@ -92,6 +102,40 @@ function AddSongsInMessage(props) {
         }
     };
 
+    if (messageStatus === "" || props.messageStatus !== messageStatus) {
+        switch (props.messageStatus) {
+
+            case CREATE_CHAT_TOKEN_REQUEST:
+                messageStatus = props.messageStatus
+                break;
+
+            case CREATE_CHAT_TOKEN_SUCCESS:
+                messageStatus = props.messageStatus
+
+                props.navigation.replace('SendSongInMessageFinal', {
+                    image: props.registerType === 'spotify' ? result[index].album.images[0].url : result[index].artworkUrl100,
+                    title: props.registerType === 'spotify' ? result[index].name : result[index].trackName,
+                    title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].artistName,
+                    users: usersToSEndSong, details: result[index], registerType: props.registerType
+                })
+                break;
+
+            case CREATE_CHAT_TOKEN_FAILURE:
+                messageStatus = props.messageStatus;
+                toast("Error", "Something Went Wong, Please Try Again")
+                break;
+        }
+    };
+
+
+    function sendMessagesToUsers() {
+        var userIds = []
+        usersToSEndSong.map((users) => {
+            userIds.push(users._id);
+        })
+        props.createChatTokenRequest(userIds);
+    }
+
     function singerList(artists) {
 
         let names = ""
@@ -122,6 +166,7 @@ function AddSongsInMessage(props) {
                 change={true}
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
+                    setIndex(data.index)
                     bottomSheetRef.open()
                 }}
             />
@@ -324,7 +369,9 @@ function AddSongsInMessage(props) {
                     }}
                     closeOnDragDown={true}
                     closeOnPressMask={true}
-                    onClose={() => { sesUsersToSEndSong([]) }}
+                    onClose={() => { 
+                        //sesUsersToSEndSong([]) 
+                    }}
                     nestedScrollEnabled={true}
                     keyboardAvoidingViewEnabled={true}
                     height={normalize(500)}
@@ -375,11 +422,7 @@ function AddSongsInMessage(props) {
                             <TouchableOpacity
                                 onPress={() => {
                                     bottomSheetRef.close(),
-                                        props.navigation.replace('SendSongInMessageFinal', {
-                                            image: ImagePath.profiletrack1,
-                                            title: "'Naked feat. Justin Suissa'",
-                                            title2: "Above & Beyond"
-                                        })
+                                        sendMessagesToUsers();
                                 }}>
                                 <Text style={{
                                     color: Colors.white,
@@ -462,7 +505,8 @@ const mapStateToProps = (state) => {
         searchResponse: state.PostReducer.chooseSongToSend,
         registerType: state.TokenReducer.registerType,
         userStatus: state.UserReducer.status,
-        SearchData: state.UserReducer.sendSongUserSearch
+        SearchData: state.UserReducer.sendSongUserSearch,
+        messageStatus: state.MessageReducer.status,
     }
 };
 
@@ -474,6 +518,9 @@ const mapDispatchToProps = (dispatch) => {
 
         userSearchReq: (payload, sendSong) => {
             dispatch(userSearchRequest(payload, sendSong))
+        },
+        createChatTokenRequest: (payload) => {
+            dispatch(createChatTokenRequest(payload))
         },
     }
 };

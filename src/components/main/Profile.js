@@ -356,7 +356,6 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         userProfileResp: state.UserReducer.userProfileResp,
-
     }
 };
 
