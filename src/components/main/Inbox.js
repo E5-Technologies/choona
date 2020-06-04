@@ -19,97 +19,70 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
-import moment from "moment"
-
-const followdata = [
-    {
-        picture: ImagePath.dp,
-        title: "DanVermon98",
-        message: "Remember we use to play this in office ?",
-        read: false
-
-    },
-
-    {
-        picture: ImagePath.dp1,
-        title: "Bigbird883",
-        message: "Here's a blast from past?",
-        read: false
-
-    },
-    {
-        picture: ImagePath.dp,
-        title: "Annie88jones ",
-        message: "Here's a blast from past?",
-        read: true
+import moment from "moment";
+import { connect } from 'react-redux';
+import {
+    GET_CHAT_LIST_REQUEST, GET_CHAT_LIST_SUCCESS,
+    GET_CHAT_LIST_FAILURE
+} from '../../action/TypeConstants';
+import { getChatListRequest } from '../../action/MessageAction';
+import constants from '../../utils/helpers/constants';
+import Loader from '../../widgets/AuthLoader';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import _ from 'lodash';
 
 
-    },
-    {
-        picture: ImagePath.dp1,
-        title: "RonnyJ ",
-        message: "Here's a blast from past?",
-        read: true
+let status;
 
-    },
-    {
-        picture: ImagePath.dp,
-        title: "DanVermon98",
-        message: "Here's a blast from past?",
-        read: true
+function Inbox(props) {
 
-    },
+    const [search, setSearch] = useState("");
 
-    {
-        picture: ImagePath.dp1,
-        title: "Bigbird883",
-        message: "Here's a blast from past?",
-        read: true
 
-    },
-    {
-        picture: ImagePath.dp,
-        title: "Annie88j",
-        message: "Here's a blast from past?",
-        read: true
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+            isInternetConnected()
+                .then(() => {
+                    props.getChatListReq();
+                })
+                .catch((err) => {
+                    toast('Error', 'Please Connect To Internet')
+                });
 
-    },
-    {
-        picture: ImagePath.dp1,
-        title: "RonnyJ",
-        message: "Here's a blast from past?",
-        read: true
+            return () => {
+                unsuscribe();
+            }
+        })
+    });
 
-    },
-    {
-        picture: ImagePath.dp,
-        title: "DanVermon98",
-        message: "Here's a blast from past?",
-        read: true
+    if (props.status === "" || props.status !== status) {
+        switch (props.status) {
 
-    },
+            case GET_CHAT_LIST_REQUEST:
+                status = props.status
+                break;
 
-    {
-        picture: ImagePath.dp1,
-        title: "Bigbird883",
-        message: "Here's a blast from past?",
-        read: true
+            case GET_CHAT_LIST_SUCCESS:
+                status = props.status
+                break;
 
-    },
-]
-
-export default function Inbox(props) {
-
-    const [search, setSearch] = useState("")
+            case GET_CHAT_LIST_FAILURE:
+                status = props.status
+                toast('Error', 'Something Went Wrong, Please Try Again');
+                break;
+        }
+    };
 
     function renderInboxItem(data) {
         return (
-            <InboxListItem image={data.item.picture}
-                title={data.item.title}
-                description={data.item.message}
+            <InboxListItem 
+                image={constants.profile_picture_base_url+data.item.profile_image}
+                title={data.item.username}
+                description={Object.values(data.item)[0].message}
                 read={data.item.read === true ? true : false}
                 onPress={() => props.navigation.navigate('InsideaMessage')}
-                marginBottom={data.index === followdata.length - 1 ? normalise(20) : 0}
+                marginBottom={data.index === props.chatList.length - 1 ? normalise(20) : 0}
             />
         )
     }
@@ -170,11 +143,17 @@ export default function Inbox(props) {
 
                 </View>
 
-                <FlatList
-                    data={followdata}
-                    renderItem={renderInboxItem}
-                    keyExtractor={(item, index) => { index.toString() }}
-                    showsVerticalScrollIndicator={false} />
+                {_.isEmpty(props.chatList) ?
+
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ color: Colors.white, fontSize: normalise(15) }}>No Messages</Text>
+                    </View>
+
+                    : <FlatList
+                        data={props.chatList}
+                        renderItem={renderInboxItem}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        showsVerticalScrollIndicator={false} />}
 
 
 
@@ -182,4 +161,22 @@ export default function Inbox(props) {
             </SafeAreaView>
         </View>
     )
-}
+};
+
+const mapStateToProps = (state) => {
+    return {
+        status: state.MessageReducer.status,
+        chatList: state.MessageReducer.chatList,
+        error: state.MessageReducer.error
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getChatListReq: () => {
+            dispatch(getChatListRequest())
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Inbox);

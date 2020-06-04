@@ -8,6 +8,10 @@ import {
     SEND_CHAT_MESSAGE_SUCCESS,
     SEND_CHAT_MESSAGE_FAILURE,
 
+    GET_CHAT_LIST_REQUEST,
+    GET_CHAT_LIST_SUCCESS,
+    GET_CHAT_LIST_FAILURE
+
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -15,6 +19,7 @@ const initialState = {
     error: "",
     chatTokenList: [],
     sendChatResponse: {},
+    chatList: []
 };
 
 const MessageReducer = (state = initialState, action) => {
@@ -55,6 +60,26 @@ const MessageReducer = (state = initialState, action) => {
             };
 
         case SEND_CHAT_MESSAGE_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case GET_CHAT_LIST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case GET_CHAT_LIST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                chatList: action.data
+            };
+
+        case GET_CHAT_LIST_FAILURE:
             return {
                 ...state,
                 status: action.type,
