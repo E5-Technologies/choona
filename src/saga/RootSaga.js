@@ -12,7 +12,7 @@ import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSa
 import {watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction,
 watchsaveSongRefAction} from './SongSaga';
 
-import {watchGetChatTokenRequest, watchSendChatMessageRequest} from './MessageSaga';
+import {watchGetChatTokenRequest, watchSendChatMessageRequest, watchgetChatListAction} from './MessageSaga';
 
 
 function* RootSaga() {
@@ -40,7 +40,8 @@ function* RootSaga() {
         watchactivityListAction(),
         watchGetChatTokenRequest(),
         watchSendChatMessageRequest(),
-        watchsaveSongRefAction()
+        watchsaveSongRefAction(),
+        watchgetChatListAction()
 
     ])
 }

@@ -11,6 +11,10 @@ import {
     SEND_CHAT_MESSAGE_SUCCESS,
     SEND_CHAT_MESSAGE_FAILURE,
 
+    GET_CHAT_LIST_REQUEST,
+    GET_CHAT_LIST_SUCCESS,
+    GET_CHAT_LIST_FAILURE
+
 
 } from '../action/TypeConstants'
 import { postApi, getApi } from '../utils/helpers/ApiRequest'
@@ -62,7 +66,7 @@ export function* sendChatMessageAction(action) {
     console.log("SEND_CHAT_REQ", action.payload);
 
     try {
-        action.payload.chatTokens.map((chatToken,index) => {
+        action.payload.chatTokens.map((chatToken, index) => {
 
             FIREBASE_REF_MESSAGES.child(chatToken._id).push(action.payload.chatBody[index])
 
@@ -74,7 +78,27 @@ export function* sendChatMessageAction(action) {
 
         yield put({ type: SEND_CHAT_MESSAGE_FAILURE, error: error })
     }
-}
+};
+
+
+export function* getChatListAction(params) {
+    try {
+        const items = yield select(getItems);
+        
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call(getApi, 'chat/list', Header)
+        yield put({ type: GET_CHAT_LIST_SUCCESS, data: response.data.data });
+
+    } catch (error) {
+        yield put({ type: GET_CHAT_LIST_FAILURE, error: error })
+    }
+};
+
 
 export function* watchGetChatTokenRequest() {
     yield takeLatest(CREATE_CHAT_TOKEN_REQUEST, getChatTokenAction)
@@ -82,6 +106,10 @@ export function* watchGetChatTokenRequest() {
 
 export function* watchSendChatMessageRequest() {
     yield takeLatest(SEND_CHAT_MESSAGE_REQUEST, sendChatMessageAction)
+}
+
+export function* watchgetChatListAction() {
+    yield takeLatest (GET_CHAT_LIST_REQUEST, getChatListAction)
 }
 
 

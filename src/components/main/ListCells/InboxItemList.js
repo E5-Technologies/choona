@@ -43,7 +43,7 @@ function InboxListItem(props) {
             }}>
 
 
-                <Image source={props.image}
+                <Image source={{uri: props.image}}
                     style={{
                         height: normalise(35),
                         width: normalise(35),
