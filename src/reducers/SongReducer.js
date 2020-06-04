@@ -9,7 +9,11 @@ import {
 
     UNSAVE_SONG_REQUEST,
     UNSAVE_SONG_SUCCESS,
-    UNSAVE_SONG_FAILURE
+    UNSAVE_SONG_FAILURE,
+
+    SAVE_SONG_REFERENCE_REQUEST,
+    SAVE_SONG_REFERENCE_SUCCESS,
+    SAVE_SONG_REFERENCE_FAILURE
 
 } from '../action/TypeConstants';
 
@@ -18,7 +22,8 @@ const initialState = {
     error: "",
     savedSongResponse: {},
     savedSongList: [],
-    unsaveSongResp: {}
+    unsaveSongResp: {},
+    playingSongRef: ""
 };
 
 const SongReducer = (state = initialState, action) => {
@@ -79,6 +84,26 @@ const SongReducer = (state = initialState, action) => {
             };
 
         case UNSAVE_SONG_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case SAVE_SONG_REFERENCE_REQUEST:
+            return {
+                ...state,
+                status: action.type,
+            };
+
+        case SAVE_SONG_REFERENCE_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                playingSongRef: action.data
+            };
+
+        case SAVE_SONG_REFERENCE_FAILURE:
             return {
                 ...state,
                 status: action.type,

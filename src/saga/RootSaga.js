@@ -9,7 +9,8 @@ import {
 
 import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSaga'
 
-import {watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction} from './SongSaga';
+import {watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction,
+watchsaveSongRefAction} from './SongSaga';
 
 
 function* RootSaga() {
@@ -34,7 +35,8 @@ function* RootSaga() {
         watchfollowerListAction(),
         watchfollowingListAction(),
         watchReactionOnPostAction(),
-        watchactivityListAction()
+        watchactivityListAction(),
+        watchsaveSongRefAction()
 
     ])
 }

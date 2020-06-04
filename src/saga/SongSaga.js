@@ -10,7 +10,11 @@ import {
 
     UNSAVE_SONG_REQUEST,
     UNSAVE_SONG_SUCCESS,
-    UNSAVE_SONG_FAILURE
+    UNSAVE_SONG_FAILURE,
+
+    SAVE_SONG_REFERENCE_REQUEST,
+    SAVE_SONG_REFERENCE_SUCCESS,
+    SAVE_SONG_REFERENCE_FAILURE
 
 } from '../action/TypeConstants';
 import { getApi, postApi } from '../utils/helpers/ApiRequest';
@@ -78,6 +82,16 @@ export function* unsaveSongAction(action) {
 };
 
 
+export function* saveSongRefAction(action) {
+    try {
+        yield put({type: SAVE_SONG_REFERENCE_SUCCESS, data: action.object})
+
+    } catch (error) {
+        yield put ({type: SAVE_SONG_REFERENCE_FAILURE, error: error})
+    }
+};
+
+
 
 //WATCH FUNCTIONS
 
@@ -91,4 +105,8 @@ export function* watchsavedSongListAction() {
 
 export function* watchunsaveSongAction() {
     yield takeLatest(UNSAVE_SONG_REQUEST, unsaveSongAction)
+};
+
+export function* watchsaveSongRefAction() {
+    yield takeLatest(SAVE_SONG_REFERENCE_REQUEST, saveSongRefAction)
 };

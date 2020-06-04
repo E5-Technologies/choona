@@ -35,8 +35,8 @@ import {
 } from '../../action/TypeConstants';
 import { commentOnPostReq } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import { saveSongRequest } from '../../action/SongAction';
-
+import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
+import Loader from '../../widgets/AuthLoader';
 
 let RbSheetRef;
 
@@ -67,18 +67,22 @@ function Player(props) {
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
+    const [bool, setBool] = useState(true);
+
     let track;
 
     useEffect(() => {
-        const unsuscribe = props.navigation.addListener('focus', (payload) => {
-            // Sound.setActive(true)
-            Sound.setCategory('Playback');
-            playSongOnLoad()
-        });
+        // const unsuscribe = props.navigation.addListener('focus', (payload) => {
+        // Sound.setActive(true)
+        Sound.setCategory('Playback', false);
+        playSongOnLoad()
 
-        return () => {
-            unsuscribe();
-        }
+
+        // });
+
+        // return () => {
+        //     unsuscribe();
+        // }
     }, []);
 
 
@@ -107,7 +111,7 @@ function Player(props) {
     };
 
     if (songStatus === "" || props.songStatus !== songStatus) {
-        switch (props.status) {
+        switch (props.songStatus) {
 
             case SAVE_SONGS_REQUEST:
                 songStatus = props.songStatus
@@ -133,62 +137,106 @@ function Player(props) {
     // PLAY SONG ON LOAD
     const playSongOnLoad = () => {
 
-        if (trackRef !== "") {
-            console.log('Song Already Playing');
-        }
+        if (props.playingSongRef === "") {
 
-        else {
-            track = new Sound(uri, "", (err) => {
-                if (err) {
-                    console.log(err);
-                    setPlayVisible(true);
-                }
-                else {
-                    console.log('success')
-                    changeTime(track);
+            console.log('first time')
+            playSong();
 
-                    let res = track.getDuration();
-                    setplayerDuration(res);
+        } else {
 
-                    track.play((success) => {
-                        if (success) {
-                            console.log('Yesssss!')
+            if (global.playerReference._filename === uri) {
+                console.log('Already Playing');
+
+                setTimeout(() => {
+                    changeTime(global.playerReference);
+                    let time = global.playerReference.getDuration();
+                    setplayerDuration(time);
+                    setBool(false);
+                    global.playerReference.pause();
+                    global.playerReference.play((success)=>{
+                        if(success){
+                            console.log('Playback End')
                             setPlayVisible(true);
                         }
-                        else {
-                            console.log('NOOOOOOOO')
-                        }
-                    });
-                };
-            });
+                    })
+                }, 100)
 
-            setTrackRef(track);
-        }
+            }
+
+            else {
+                console.log('reset');
+                global.playerReference.release();
+                playSong();
+            }
+
+        };
     };
+
+
+    // PLAY SONG
+    const playSong = () => {
+
+        track = new Sound(uri, "", (err) => {
+            if (err) {
+                console.log(err);
+                setPlayVisible(true);
+            }
+            else {
+                console.log('Loaded')
+                setBool(false);
+                changeTime(track);
+
+
+                let saveSongResObj = {}
+                saveSongResObj.uri = uri,
+                    saveSongResObj.song_name = songTitle,
+                    saveSongResObj.album_name = albumTitle,
+                    saveSongResObj.song_pic = pic
+
+                props.saveSongRefReq(saveSongResObj);
+                global.playerReference = track;
+
+                let res = track.getDuration();
+                setplayerDuration(res);
+
+                track.play((success) => {
+                    if (success) {
+                        console.log('PlayBack End')
+                        setPlayVisible(true);
+                    }
+                    else {
+                        console.log('NOOOOOOOO')
+                    }
+                });
+            };
+        });
+
+        setTrackRef(track);
+    }
 
 
     // PAUSE AND PLAY
     function playing() {
 
         if (playVisible == true) {
-            console.log(trackRef);
+
             setPlayVisible(false)
 
-            trackRef.play((success) => {
+            global.playerReference.play((success) => {
                 if (success) {
-                    console.log('Yesssss Done!')
+                    console.log('PlayBack End!')
                     setPlayVisible(true);
                 }
                 else {
                     console.log('NOOOOOOOO')
                 }
-            })
-        }
-        else {
-            console.log(trackRef);
+            });
+
+        } else {
+
             setPlayVisible(true)
 
-            trackRef.pause(() => {
+            global.playerReference.pause(() => {
                 console.log('paused');
             })
         }
@@ -201,14 +249,14 @@ function Player(props) {
         if (type === 'backward') {
             // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
             // if (currentTime > 5) {
-            trackRef.setCurrentTime(0)
+            global.playerReference.setCurrentTime(0)
             setPlayerCurrentTime(0)
             // }
         }
         else {
-            trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-            if (currentTime < 30) {
-                trackRef.setCurrentTime(currentTime + 5)
+            global.playerReference.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
+            if (currentTime < 25) {
+                global.playerReference.setCurrentTime(currentTime + 5)
                 setPlayerCurrentTime(currentTime + 5)
             }
         }
@@ -355,9 +403,11 @@ function Player(props) {
 
     // ON SILIDE SLIDER
     const onSliderSlide = (time) => {
+        setPlayerCurrentTime(0)
         setPlayerCurrentTime(time);
-        trackRef.setCurrentTime(time);
+        global.playerReference.setCurrentTime(time);
     };
+
 
 
     return (
@@ -365,6 +415,8 @@ function Player(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
             <KeyboardAvoidingView style={{ flex: 1 }}>
                 <StatusBar />
+
+                <Loader visible={bool} />
 
                 <SafeAreaView style={{ flex: 1, }}>
 
@@ -623,7 +675,7 @@ function Player(props) {
                             justifyContent: 'center',
                             borderTopRightRadius: normalise(8), borderTopLeftRadius: normalise(8),
                             marginBottom: normalise(20),
-                        }} onPress={() => { props.navigation.goBack(), trackRef.release() }}>
+                        }} onPress={() => { props.navigation.goBack() }}>
 
                             <View style={{
                                 width: '90%', alignSelf: 'center', flexDirection: 'row',
@@ -670,7 +722,8 @@ const mapStateToProps = (state) => {
         commentResp: state.UserReducer.commentResp,
         userProfileResp: state.UserReducer.userProfileResp,
         songStatus: state.SongReducer.status,
-        savedSongResponse: state.SongReducer.savedSongResponse
+        savedSongResponse: state.SongReducer.savedSongResponse,
+        playingSongRef: state.SongReducer.playingSongRef
     }
 };
 
@@ -682,6 +735,10 @@ const mapDispatchToProps = (dispatch) => {
 
         saveSongReq: (payload) => {
             dispatch(saveSongRequest(payload))
+        },
+
+        saveSongRefReq: (object) => {
+            dispatch(saveSongRefReq(object))
         },
     }
 };
