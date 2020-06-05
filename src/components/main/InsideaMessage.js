@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -60,6 +60,10 @@ const flatlistdata = [
 ]
 
 export default function InsideaMessage(props) {
+
+
+    const [index,setIndex] = useState(props.route.params.index);
+    
 
     function renderItem(data) {
         return (
