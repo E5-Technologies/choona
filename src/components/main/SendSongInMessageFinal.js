@@ -114,7 +114,7 @@ function SendSongInMessageFinal(props) {
                 song_uri: props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
                     props.route.params.details.previewUrl,
                 read: false,
-                time: moment()
+                time: moment().toString()
             }
 
             chatBody.push(chatObject);
@@ -128,7 +128,7 @@ function SendSongInMessageFinal(props) {
 
         props.sendChatMessageRequest(chatPayload);
         toast("Error", "Message sent successfully.")
-        props.navigation.goBack();
+        //props.navigation.goBack();
 
     }
 
