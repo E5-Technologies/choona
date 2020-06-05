@@ -62,6 +62,8 @@ function SendSongInMessageFinal(props) {
         }
     };
 
+    console.log(usersData)
+
 
     // RENDER USER SEARCH FLATLIST DATA
     function renderAddUsersToMessageItem(data) {
@@ -101,12 +103,12 @@ function SendSongInMessageFinal(props) {
 
         let chatBody = [];
 
-        props.chatTokenList.map((item) => {
+        usersData.map((item) => {
 
             var chatObject = {
                 message: search,
                 sender_id: props.userProfileResp._id,
-                receiver_id: item.receiver_id,
+                receiver_id: item._id,
                 song_name: title1,
                 artist_name: title2,
                 song_uri: props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
