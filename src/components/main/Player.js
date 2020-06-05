@@ -282,9 +282,9 @@ function Player(props) {
             }
             else {
                 global.playerReference.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-                if (currentTime < 25) {
-                    global.playerReference.setCurrentTime(currentTime + 5)
-                    setPlayerCurrentTime(currentTime + 5)
+                if (playerCurrentTime < 25) {
+                    global.playerReference.setCurrentTime(playerCurrentTime + 5)
+                    setPlayerCurrentTime(playerCurrentTime + 5)
                 }
             }
         }
