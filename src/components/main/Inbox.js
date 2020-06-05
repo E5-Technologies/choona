@@ -80,9 +80,10 @@ function Inbox(props) {
     function filterArray(keyword) {
 
         let data = _.filter(props.chatList, (item) => {
-            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 ||
+                item.full_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
-        
+
         console.log(data);
         setMessageList([]);
         setBool(true);
@@ -93,13 +94,15 @@ function Inbox(props) {
     };
 
     function renderInboxItem(data) {
+
         return (
             <InboxListItem
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
                 description={Object.values(data.item)[0].message}
-                read={data.item.read === true ? true : false}
-                onPress={() => props.navigation.navigate('InsideaMessage')}
+                read={data.item.user_id == Object.values(data.item)[0].receiver_id
+                    ? true : Object.values(data.item)[0].read}
+                onPress={() => props.navigation.navigate('InsideaMessage', { index: data.index })}
                 marginBottom={data.index === props.chatList.length - 1 ? normalise(20) : 0}
             />
         )
