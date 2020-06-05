@@ -379,7 +379,7 @@ function Player(props) {
                             borderRadius: normalise(17),
                             marginTop: normalise(10),
                             padding: normalise(10),
-                            color: Colors.white, paddingLeft: normalise(30)
+                            color: Colors.white, paddingRight: normalise(50)
                         }}
                             placeholder={"Add a comment..."}
                             value={commentText}

@@ -228,7 +228,7 @@ function Home(props) {
       backgroundColor: Colors.black
     }}>
 
-      <Loader visible={props.status === USER_PROFILE_REQUEST} />
+      {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
 
       <Loader visible={props.status === HOME_PAGE_REQUEST} />
 
@@ -320,9 +320,10 @@ function Home(props) {
               disableRightSwipe={true}
               rightOpenValue={-75} />
 
+        {/* {props.status === HOME_PAGE_SUCCESS ?
             <View>
               <MusicPlayerBar onPress={() => { props.navigation.navigate("Player") }} />
-            </View>
+            </View> : null } */}
 
 
 

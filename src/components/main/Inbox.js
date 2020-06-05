@@ -100,8 +100,7 @@ function Inbox(props) {
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
                 description={Object.values(data.item)[0].message}
-                read={data.item.user_id == Object.values(data.item)[0].receiver_id
-                    ? true : Object.values(data.item)[0].read}
+                read={false}
                 onPress={() => props.navigation.navigate('InsideaMessage', { index: data.index })}
                 marginBottom={data.index === props.chatList.length - 1 ? normalise(20) : 0}
             />
