@@ -56,20 +56,20 @@ function InboxListItem(props) {
                 <View style={{
                     flexDirection: 'column',
                     alignItems: 'flex-start',
-                    width: '80%',
+                    width: '75%',
                     justifyContent: 'flex-start'
                 }}>
 
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
                         fontFamily: 'ProximaNova-Bold',
-                    }}> {props.title} </Text>
+                    }} numberOfLines={1}>{props.title}</Text>
 
                     <Text style={{
                         marginTop: normalise(2),
                         color: props.read ? Colors.grey : Colors.white, fontSize: normalise(10),
                         fontFamily: 'ProximaNovaAW07-Medium'
-                    }}> {props.description} </Text>
+                    }} numberOfLines={2} >{props.description}</Text>
 
                 </View>
 
