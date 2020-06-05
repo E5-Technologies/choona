@@ -431,9 +431,16 @@ function Player(props) {
 
     // ON SILIDE SLIDER
     const onSliderSlide = (time) => {
-        setPlayerCurrentTime(0)
-        setPlayerCurrentTime(time);
-        global.playerReference.setCurrentTime(time);
+
+        if (uri === null) {
+            setBool(false);
+            setPlayVisible(true);
+            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
+        } else {
+            setPlayerCurrentTime(0)
+            setPlayerCurrentTime(time);
+            global.playerReference.setCurrentTime(time);
+        }
     };
 
 
