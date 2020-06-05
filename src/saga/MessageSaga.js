@@ -81,7 +81,7 @@ export function* sendChatMessageAction(action) {
 };
 
 
-export function* getChatListAction(params) {
+export function* getChatListAction(action) {
     try {
         const items = yield select(getItems);
         
