@@ -237,7 +237,7 @@ function AddSongsInMessage(props) {
         return (
             <TouchableOpacity style={{
                 height: normalize(30),
-                width: normalize(85),
+                paddingHorizontal: normalise(18),
                 marginStart: normalise(20),
                 marginTop: normalise(5),
                 borderRadius: 25,
@@ -369,7 +369,7 @@ function AddSongsInMessage(props) {
                     }}
                     closeOnDragDown={true}
                     closeOnPressMask={true}
-                    onClose={() => { 
+                    onClose={() => {
                         //sesUsersToSEndSong([]) 
                     }}
                     nestedScrollEnabled={true}
@@ -437,11 +437,17 @@ function AddSongsInMessage(props) {
 
                         </View>
 
-                        <View style={{ width: '90%', alignSelf: 'center', }}>
+                        <View style={{
+                            width: '90%', alignSelf: 'center',
+                            height: normalise(35), marginTop: normalise(20),
+                            borderRadius: normalise(8),
+                            backgroundColor: Colors.fadeblack,
+                        }}>
 
                             <TextInput style={{
-                                height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                                borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                                height: normalise(35),
+                                width: '85%',
+                                padding: normalise(10),
                                 color: Colors.white, paddingLeft: normalise(30)
                             }} value={userSeach}
                                 placeholder={"Search"}
@@ -457,8 +463,7 @@ function AddSongsInMessage(props) {
                             {userSeach === "" ? null :
                                 <TouchableOpacity onPress={() => { setUserSeach(""), setUserSearchData([]) }}
                                     style={{
-                                        position: 'absolute', right: 0,
-                                        bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                        position: 'absolute', right: 0, top: normalise(9.5),
                                         paddingRight: normalise(10)
                                     }}>
                                     <Text style={{
@@ -472,7 +477,9 @@ function AddSongsInMessage(props) {
 
                         {usersToSEndSong.length > 0 ?       // ADD TO ARRAY FLATLIST
                             <FlatList
-                                style={{ alignSelf: "center", maxHeight: normalise(40) }}
+                                style={{
+                                    marginTop: normalise(10)
+                                }}
                                 horizontal={true}
                                 data={usersToSEndSong}
                                 renderItem={renderUsersToSendSongItem}
@@ -483,7 +490,10 @@ function AddSongsInMessage(props) {
 
 
                         <FlatList       // USER SEARCH FLATLIST
-                            style={{ marginTop: usersToSEndSong.length > 0 ? normalise(20) : 0 }}
+                            style={{
+                                marginTop: usersToSEndSong.length > 0 ? normalise(20) : 0,
+                                height: '65%',
+                            }}
                             data={userSearchData}
                             renderItem={renderAddUsersToMessageItem}
                             keyExtractor={(item, index) => { index.toString() }}

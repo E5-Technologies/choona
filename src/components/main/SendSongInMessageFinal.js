@@ -44,17 +44,19 @@ function SendSongInMessageFinal(props) {
         switch (props.status) {
 
             case SEND_CHAT_MESSAGE_REQUEST:
+                console.log("HERE SEND")
                 status = props.status
                 break;
 
             case SEND_CHAT_MESSAGE_SUCCESS:
                 status = props.status;
-                toast("Error", "Message sent successfully.")
-                props.navigation.goBack()
+                console.log("HERE SEND")
+
                 break;
 
             case SEND_CHAT_MESSAGE_FAILURE:
-                status = props.status
+                status = props.status;
+                console.log("HERE FAIL")
                 toast("Error", "Something Went Wong, Please Try Again")
                 break;
         }
@@ -123,6 +125,8 @@ function SendSongInMessageFinal(props) {
         }
 
         props.sendChatMessageRequest(chatPayload);
+        toast("Error", "Message sent successfully.")
+        props.navigation.goBack();
 
     }
 
