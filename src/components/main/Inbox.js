@@ -38,6 +38,8 @@ let status;
 function Inbox(props) {
 
     const [search, setSearch] = useState("");
+    const [mesageList, setMessageList] = useState("");
+    const [bool, setBool] = useState(false);
 
 
     useEffect(() => {
@@ -64,7 +66,8 @@ function Inbox(props) {
                 break;
 
             case GET_CHAT_LIST_SUCCESS:
-                status = props.status
+                status = props.status;
+                setMessageList(props.chatList)
                 break;
 
             case GET_CHAT_LIST_FAILURE:
@@ -74,10 +77,25 @@ function Inbox(props) {
         }
     };
 
+    function filterArray(keyword) {
+
+        let data = _.filter(props.chatList, (item) => {
+            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+        });
+        
+        console.log(data);
+        setMessageList([]);
+        setBool(true);
+        setTimeout(() => {
+            setMessageList(data);
+            setBool(false);
+        }, 800);
+    };
+
     function renderInboxItem(data) {
         return (
-            <InboxListItem 
-                image={constants.profile_picture_base_url+data.item.profile_image}
+            <InboxListItem
+                image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
                 description={Object.values(data.item)[0].message}
                 read={data.item.read === true ? true : false}
@@ -92,6 +110,8 @@ function Inbox(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <StatusBar />
+            <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
+            <Loader visible={bool} />
 
             <SafeAreaView style={{ flex: 1, }}>
 
@@ -120,7 +140,7 @@ function Inbox(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text) }} />
+                        onChangeText={(text) => { setSearch(text), filterArray(text) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -129,7 +149,7 @@ function Inbox(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch("") }}
+                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -150,7 +170,7 @@ function Inbox(props) {
                     </View>
 
                     : <FlatList
-                        data={props.chatList}
+                        data={mesageList}
                         renderItem={renderInboxItem}
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false} />}
