@@ -204,10 +204,12 @@ function Home(props) {
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
-            username: data.item.username,
+            username: data.item.userDetails.username,
             profile_pic: data.item.userDetails.profile_image, 
             time: data.item.time, title: data.item.title,
             uri: data.item.song_uri, 
+            reactions: data.item.reaction,
+            id: data.item._id
 
           })
         }}
@@ -335,7 +337,8 @@ function Home(props) {
                 song_pic: props.playingSongRef.song_pic,
                 username: props.playingSongRef.username,
                 profile_pic: props.playingSongRef.profile_pic, 
-                uri: props.playingSongRef.uri, }) }} />
+                uri: props.playingSongRef.uri,
+                reactions: props.playingSongRef.reactionData }) }} />
             </View> : null }
 
 

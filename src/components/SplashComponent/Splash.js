@@ -60,7 +60,7 @@ export default function Splash(props) {
             });
 
             if (granted === PermissionsAndroid.PERMISSIONS.GRANTED) {
-                console.log('External Read Permisiion Denied')
+                console.log('External Read Permisiion Given')
             }
             else {
                 console.log('External Read Permisiion Denied')

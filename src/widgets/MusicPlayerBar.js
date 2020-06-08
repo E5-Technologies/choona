@@ -98,13 +98,13 @@ function MusicPlayerBar(props) {
 
         props.playingSongRef !== "" ?
 
-            <ImageBackground
-                source={ImagePath.gradientbar}
+            <View
+                // source={ImagePath.gradientbar}
                 style={{
                     width: '100%', height: normalize(45),
-                    backgroundColor: Colors.fadeblack
-                }}
-                blurRadius={200}>
+                    backgroundColor: Colors.fadeblack,
+                    opacity: 0.8
+                }}>
 
                 <Loader visible={bool} />
 
@@ -161,7 +161,7 @@ function MusicPlayerBar(props) {
 
 
                 </View>
-            </ImageBackground> : null
+            </View> : null
     )
 
 };
