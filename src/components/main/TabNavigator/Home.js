@@ -330,7 +330,7 @@ function Home(props) {
               rightOpenValue={-75} />
 
         {props.status === HOME_PAGE_SUCCESS ?
-            <View>
+           
               <MusicPlayerBar onPress={() => { props.navigation.navigate("Player",
               {comments: props.playingSongRef.commentData,
                 song_title: props.playingSongRef.song_name,
@@ -343,7 +343,7 @@ function Home(props) {
                 id: props.playingSongRef.id,
                 artist: props.playingSongRef.artist
                  }) }} />
-            </View> : null }
+           : null }
 
 
 
