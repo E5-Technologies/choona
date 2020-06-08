@@ -92,7 +92,7 @@ function CommentList(props) {
                 alignSelf:'flex-end',
                 width:'86.6%',
                 textAlign: 'left',
-                fontFamily: 'ProximaNovaAW07-Medium'
+                fontFamily: 'ProximaNova-Regular'
             }}>{props.comment}</Text>
 
             <View style={{

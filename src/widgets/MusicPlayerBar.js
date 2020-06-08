@@ -103,7 +103,7 @@ function MusicPlayerBar(props) {
                 style={{
                     width: '100%', height: normalize(45),
                     backgroundColor: Colors.fadeblack,
-                    opacity: 0.9
+                    opacity: 0.9, position:'absolute', bottom:0
                 }}>
 
                 <Loader visible={bool} />
