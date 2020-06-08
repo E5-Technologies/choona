@@ -49,20 +49,18 @@ function Player(props) {
     const [playVisible, setPlayVisible] = useState(false);
     const [uri, setUri] = useState(props.route.params.uri);
     const [trackRef, setTrackRef] = useState("");
-    const [index, setIndex] = useState(props.route.params.index);
-    const [songTitle, setSongTitle] = useState(props.postData[index].song_name);
-    const [albumTitle, setAlbumTitle] = useState(props.postData[index].album_name);
-    const [pic, setPic] = useState(props.regType === 'spotify' ? props.postData[index].song_image :
-        props.postData[index].song_image.replace("100x100bb.jpg", "500x500bb.jpg"));
+    const [songTitle, setSongTitle] = useState(props.route.params.song_title);
+    const [albumTitle, setAlbumTitle] = useState(props.route.params.album_name);
+    const [pic, setPic] = useState(props.route.params.song_pic);
 
-    const [username, setUsername] = useState(props.postData[index].userDetails.username);
-    const [profilePic, setprofilePic] = useState(props.postData[index].userDetails.profile_image);
+    const [username, setUsername] = useState(props.route.params.username);
+    const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
 
     //COMMENT ON POST
-    const [commentData, setCommentData] = useState(props.postData[index].comment);
-    const [id, setId] = useState(props.postData[index]._id);
+    const [commentData, setCommentData] = useState(props.route.params.comments);
+    const [id, setId] = useState();
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
@@ -195,10 +193,14 @@ function Player(props) {
 
 
                     let saveSongResObj = {}
-                    saveSongResObj.uri = uri,
+                        saveSongResObj.uri = uri,
                         saveSongResObj.song_name = songTitle,
                         saveSongResObj.album_name = albumTitle,
-                        saveSongResObj.song_pic = pic
+                        saveSongResObj.song_pic = pic,
+                        saveSongResObj.username = username,
+                        saveSongResObj.profile_pic = profilePic,
+                        saveSongResObj.commentData = commentData
+
 
                     props.saveSongRefReq(saveSongResObj);
                     global.playerReference = track;
@@ -275,8 +277,10 @@ function Player(props) {
             if (type === 'backward') {
                 // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
                 // if (currentTime > 5) {
-                global.playerReference.setCurrentTime(0)
-                setPlayerCurrentTime(0)
+                    if (playerCurrentTime > 5) {
+                        global.playerReference.setCurrentTime(playerCurrentTime - 5)
+                        setPlayerCurrentTime(playerCurrentTime - 5)
+                    }
                 // }
             }
             else {

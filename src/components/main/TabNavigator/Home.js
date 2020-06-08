@@ -200,9 +200,15 @@ function Home(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments: data.item.comments,
+            comments: data.item.comment,
+            song_title: data.item.song_name,
+            album_name: data.item.album_name,
+            song_pic: data.item.song_image,
+            username: data.item.username,
+            profile_pic: data.item.userDetails.profile_image, 
             time: data.item.time, title: data.item.title,
-            uri: data.item.song_uri, index: data.index
+            uri: data.item.song_uri, 
+
           })
         }}
         onPressReactionbox={() => {
@@ -322,7 +328,14 @@ function Home(props) {
 
         {props.status === HOME_PAGE_SUCCESS ?
             <View>
-              <MusicPlayerBar onPress={() => { props.navigation.navigate("Player") }} />
+              <MusicPlayerBar onPress={() => { props.navigation.navigate("Player",
+              {comments: props.playingSongRef.commentData,
+                song_title: props.playingSongRef.song_name,
+                album_name: props.playingSongRef.album_name,
+                song_pic: props.playingSongRef.song_pic,
+                username: props.playingSongRef.username,
+                profile_pic: props.playingSongRef.profile_pic, 
+                uri: props.playingSongRef.uri, }) }} />
             </View> : null }
 
 
@@ -573,7 +586,8 @@ const mapStateToProps = (state) => {
     postData: state.UserReducer.postData,
     reactionResp: state.UserReducer.reactionResp,
     songStatus: state.SongReducer.status,
-    savedSongResponse: state.SongReducer.savedSongResponse
+    savedSongResponse: state.SongReducer.savedSongResponse,
+    playingSongRef: state.SongReducer.playingSongRef
   }
 };
 

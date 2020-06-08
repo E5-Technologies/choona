@@ -99,7 +99,7 @@ function MusicPlayerBar(props) {
         props.playingSongRef !== "" ?
 
             <ImageBackground
-                // source={ImagePath.gradientbar}
+                source={ImagePath.gradientbar}
                 style={{
                     width: '100%', height: normalize(45),
                     backgroundColor: Colors.fadeblack
@@ -119,8 +119,10 @@ function MusicPlayerBar(props) {
                     maximumTrackTintColor="#000000"
                 /> */}
 
-                <View style={{ height: normalise(2), width: `${time*3.4}%`, alignSelf: 'flex-start', 
-                backgroundColor: Colors.white }} />
+                <View style={{
+                    height: normalise(2), width: `${time * 3.4}%`, alignSelf: 'flex-start',
+                    backgroundColor: Colors.white
+                }} />
 
 
                 <View style={{

@@ -247,7 +247,7 @@ function AddSongsInMessage(props) {
             }}>
                 <Text style={{ color: Colors.black, fontWeight: 'bold' }}>{data.item.username}</Text>
                 <TouchableOpacity style={{
-                    position: 'absolute', right: 0, top: -5,
+                    position: 'absolute', right: 0, top: -4,
                     height: 25, width: 25,
                     borderRadius: 12
                 }}
