@@ -51,6 +51,7 @@ function Player(props) {
     const [trackRef, setTrackRef] = useState("");
     const [songTitle, setSongTitle] = useState(props.route.params.song_title);
     const [albumTitle, setAlbumTitle] = useState(props.route.params.album_name);
+    const [artist, setArtist] = useState(props.route.params.artist);
     const [pic, setPic] = useState(props.route.params.song_pic);
 
     const [username, setUsername] = useState(props.route.params.username);
@@ -202,6 +203,8 @@ function Player(props) {
                         saveSongResObj.profile_pic = profilePic,
                         saveSongResObj.commentData = commentData
                         saveSongResObj.reactionData = reactions
+                        saveSongResObj.id = id,
+                        saveSongResObj.artist = artist
 
 
                     props.saveSongRefReq(saveSongResObj);
@@ -667,12 +670,12 @@ function Player(props) {
                                 backgroundColor: Colors.fadeblack, borderRadius: normalise(5)
                             }} onPress={() => {
                                 let saveSongObject = {
-                                    song_uri: props.postData[index].song_uri,
-                                    song_name: props.postData[index].song_name,
-                                    song_image: props.postData[index].song_image,
-                                    artist_name: props.postData[index].artist_name,
-                                    album_name: props.postData[index].album_name,
-                                    post_id: props.postData[index]._id,
+                                    song_uri: uri,
+                                    song_name: songTitle,
+                                    song_image: pic,
+                                    artist_name: artist,
+                                    album_name: albumTitle,
+                                    post_id: id,
                                 };
 
                                 props.saveSongReq(saveSongObject);

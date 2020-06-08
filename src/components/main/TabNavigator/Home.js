@@ -209,7 +209,8 @@ function Home(props) {
             time: data.item.time, title: data.item.title,
             uri: data.item.song_uri, 
             reactions: data.item.reaction,
-            id: data.item._id
+            id: data.item._id,
+            artist: data.item.artist_name
 
           })
         }}
@@ -338,7 +339,10 @@ function Home(props) {
                 username: props.playingSongRef.username,
                 profile_pic: props.playingSongRef.profile_pic, 
                 uri: props.playingSongRef.uri,
-                reactions: props.playingSongRef.reactionData }) }} />
+                reactions: props.playingSongRef.reactionData,
+                id: props.playingSongRef.id,
+                artist: props.playingSongRef.artist
+                 }) }} />
             </View> : null }
 
 
