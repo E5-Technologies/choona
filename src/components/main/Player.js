@@ -49,20 +49,20 @@ function Player(props) {
     const [playVisible, setPlayVisible] = useState(false);
     const [uri, setUri] = useState(props.route.params.uri);
     const [trackRef, setTrackRef] = useState("");
-    const [index, setIndex] = useState(props.route.params.index);
-    const [songTitle, setSongTitle] = useState(props.postData[index].song_name);
-    const [albumTitle, setAlbumTitle] = useState(props.postData[index].album_name);
-    const [pic, setPic] = useState(props.regType === 'spotify' ? props.postData[index].song_image :
-        props.postData[index].song_image.replace("100x100bb.jpg", "500x500bb.jpg"));
+    const [songTitle, setSongTitle] = useState(props.route.params.song_title);
+    const [albumTitle, setAlbumTitle] = useState(props.route.params.album_name);
+    const [artist, setArtist] = useState(props.route.params.artist);
+    const [pic, setPic] = useState(props.route.params.song_pic);
 
-    const [username, setUsername] = useState(props.postData[index].userDetails.username);
-    const [profilePic, setprofilePic] = useState(props.postData[index].userDetails.profile_image);
+    const [username, setUsername] = useState(props.route.params.username);
+    const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
+    const [reactions, setSReactions] = useState(props.route.params.reactions);
 
     //COMMENT ON POST
-    const [commentData, setCommentData] = useState(props.postData[index].comment);
-    const [id, setId] = useState(props.postData[index]._id);
+    const [commentData, setCommentData] = useState(props.route.params.comments);
+    const [id, setId] = useState(props.route.params.id);
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
@@ -198,7 +198,14 @@ function Player(props) {
                     saveSongResObj.uri = uri,
                         saveSongResObj.song_name = songTitle,
                         saveSongResObj.album_name = albumTitle,
-                        saveSongResObj.song_pic = pic
+                        saveSongResObj.song_pic = pic,
+                        saveSongResObj.username = username,
+                        saveSongResObj.profile_pic = profilePic,
+                        saveSongResObj.commentData = commentData
+                        saveSongResObj.reactionData = reactions
+                        saveSongResObj.id = id,
+                        saveSongResObj.artist = artist
+
 
                     props.saveSongRefReq(saveSongResObj);
                     global.playerReference = track;
@@ -275,8 +282,10 @@ function Player(props) {
             if (type === 'backward') {
                 // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
                 // if (currentTime > 5) {
-                global.playerReference.setCurrentTime(0)
-                setPlayerCurrentTime(0)
+                if (playerCurrentTime > 5) {
+                    global.playerReference.setCurrentTime(playerCurrentTime - 5)
+                    setPlayerCurrentTime(playerCurrentTime - 5)
+                }
                 // }
             }
             else {
@@ -465,45 +474,57 @@ function Player(props) {
                         }}>
 
 
-                            <Image source={{ uri: constants.profile_picture_base_url + profilePic }}
-                                style={{ height: normalise(24), width: normalise(24), borderRadius: normalise(12) }}
-                                resizeMode="contain" />
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
+                                <Image source={{ uri: constants.profile_picture_base_url + profilePic }}
+                                    style={{ height: normalise(24), width: normalise(24), borderRadius: normalise(12) }}
+                                    resizeMode="contain" />
 
+                                <View style={{
+                                    flexDirection: 'column', alignItems: 'flex-start', marginLeft: normalise(5)
+                                }}>
 
-                            <View style={{
-                                flexDirection: 'column', alignItems: 'flex-start', width: '50%',
-                                marginRight: normalise(60)
-                            }}>
+                                    <Text style={{
+                                        color: Colors.grey, fontSize: normalise(8),
+                                        fontFamily: 'ProximaNova-Bold'
+                                    }} numberOfLines={1}> POSTED BY </Text>
 
-                                <Text style={{
-                                    color: Colors.grey, fontSize: normalise(8),
-                                    fontFamily: 'ProximaNova-Bold'
-                                }} numberOfLines={1}> POSTED BY </Text>
-
-                                <Text style={{
-                                    color: Colors.white, fontSize: normalise(11),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }} numberOfLines={1}> {username} </Text>
-
-
+                                    <Text style={{
+                                        color: Colors.white, fontSize: normalise(11),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }} numberOfLines={1}> {username} </Text>
+                                </View>
                             </View>
 
+
                             <View style={{
-                                height: normalise(40), width: normalise(50), backgroundColor: Colors.black,
-                                justifyContent: 'center',
+                                height: normalise(40), backgroundColor: Colors.black,
+                                justifyContent: 'center', flexDirection: 'row'
                             }}>
 
                                 <TouchableOpacity style={{
                                     height: normalise(25), width: normalise(45),
                                     borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.fadeblack,
                                     justifyContent: 'center', alignItems: 'center'
-                                }} >
-
-                                    <Image source={ImagePath.threedots} style={{ height: normalise(15), width: normalise(15) }}
+                                }}>
+                                    <Image
+                                        source={ImagePath.threedots}
+                                        style={{ height: normalise(15), width: normalise(15) }}
                                         resizeMode='contain' />
-
                                 </TouchableOpacity>
+
+
+                                <TouchableOpacity style={{
+                                    height: normalise(25), width: normalise(45),
+                                    borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.fadeblack,
+                                    justifyContent: 'center', alignItems: 'center', marginLeft: normalise(10)
+                                }} onPress={() => { props.navigation.goBack() }}>
+
+                                    <Image source={ImagePath.donw_arrow_solid}
+                                        style={{ height: normalise(10), width: normalise(10) }}
+                                        resizeMode='contain' />
+                                </TouchableOpacity>
+
                             </View>
                         </View>
 
@@ -627,7 +648,7 @@ function Player(props) {
 
                         <View style={{
                             flexDirection: 'row', width: '90%', alignSelf: 'center',
-                            justifyContent: 'space-between', marginTop: normalise(25), alignItems: 'center'
+                            justifyContent: 'space-between', marginTop: normalise(30), alignItems: 'center'
                         }}>
 
                             <TouchableOpacity style={{
@@ -635,7 +656,7 @@ function Player(props) {
                                 backgroundColor: Colors.fadeblack, borderRadius: normalise(5)
                             }} onPress={() => {
                                 props.navigation.navigate('HomeItemReactions',
-                                    { reactions: props.postData[index].reaction, post_id: id })
+                                    { reactions: reactions, post_id: id })
                             }}>
                                 <Image source={ImagePath.reactionicon}
                                     style={{ height: normalise(20), width: normalise(20) }}
@@ -649,12 +670,12 @@ function Player(props) {
                                 backgroundColor: Colors.fadeblack, borderRadius: normalise(5)
                             }} onPress={() => {
                                 let saveSongObject = {
-                                    song_uri: props.postData[index].song_uri,
-                                    song_name: props.postData[index].song_name,
-                                    song_image: props.postData[index].song_image,
-                                    artist_name: props.postData[index].artist_name,
-                                    album_name: props.postData[index].album_name,
-                                    post_id: props.postData[index]._id,
+                                    song_uri: uri,
+                                    song_name: songTitle,
+                                    song_image: pic,
+                                    artist_name: artist,
+                                    album_name: albumTitle,
+                                    post_id: id,
                                 };
 
                                 props.saveSongReq(saveSongObject);
@@ -703,7 +724,7 @@ function Player(props) {
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={{
+                        {/* <TouchableOpacity style={{
                             width: '90%', alignSelf: 'center', backgroundColor: Colors.fadeblack,
                             height: normalise(50), marginTop: normalise(40), alignItems: 'center',
                             justifyContent: 'center',
@@ -736,7 +757,7 @@ function Player(props) {
 
 
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         {RbSheet()}
 

@@ -98,13 +98,13 @@ function MusicPlayerBar(props) {
 
         props.playingSongRef !== "" ?
 
-            <ImageBackground
+            <View
                 // source={ImagePath.gradientbar}
                 style={{
                     width: '100%', height: normalize(45),
-                    backgroundColor: Colors.fadeblack
-                }}
-                blurRadius={200}>
+                    backgroundColor: Colors.fadeblack,
+                    opacity: 0.9, position:'absolute', bottom:0
+                }}>
 
                 <Loader visible={bool} />
 
@@ -119,8 +119,10 @@ function MusicPlayerBar(props) {
                     maximumTrackTintColor="#000000"
                 /> */}
 
-                <View style={{ height: normalise(2), width: `${time*3.4}%`, alignSelf: 'flex-start', 
-                backgroundColor: Colors.white }} />
+                <View style={{
+                    height: normalise(2), width: `${time * 3.4}%`, alignSelf: 'flex-start',
+                    backgroundColor: Colors.white
+                }} />
 
 
                 <View style={{
@@ -151,7 +153,7 @@ function MusicPlayerBar(props) {
                     </View>
 
                     <TouchableOpacity onPress={() => { playOrPause() }}>
-                        <Image source={play ? ImagePath.pauseicon : ImagePath.play}
+                        <Image source={play ? ImagePath.pause : ImagePath.play}
                             style={{ height: normalize(25), width: normalize(25) }}
                             resizeMode={'contain'} />
                     </TouchableOpacity>
@@ -159,7 +161,7 @@ function MusicPlayerBar(props) {
 
 
                 </View>
-            </ImageBackground> : null
+            </View> : null
     )
 
 };

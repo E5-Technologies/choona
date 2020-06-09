@@ -70,6 +70,7 @@ const ImagePath = {
   comment_grey: require('./images/comment_grey.png'),
   musicplayerbarbg: require('./images/bgmusicbar.png'),
   apple_icon_round: require('./images/apple_icon_round.png'),
+  pause: require('./images/pause.png')
 };
 
 export default ImagePath;
