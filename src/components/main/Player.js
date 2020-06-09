@@ -49,7 +49,6 @@ function Player(props) {
     const [playVisible, setPlayVisible] = useState(false);
     const [uri, setUri] = useState(props.route.params.uri);
     const [trackRef, setTrackRef] = useState("");
-    const [currentTime, setCurrentTime] = useState();
     const [index, setIndex] = useState(props.route.params.index);
     const [songTitle, setSongTitle] = useState(props.postData[index].song_name);
     const [albumTitle, setAlbumTitle] = useState(props.postData[index].album_name);
@@ -314,9 +313,9 @@ function Player(props) {
                         RbSheetRef = ref
                     }
                 }}
-                animationType={'fade'}
+                animationType={'slide'}
                 closeOnDragDown={false}
-                closeOnPressMask={false}
+                closeOnPressMask={true}
                 nestedScrollEnabled={true}
                 keyboardAvoidingViewEnabled={true}
                 customStyles={{

@@ -320,10 +320,10 @@ function Home(props) {
               disableRightSwipe={true}
               rightOpenValue={-75} />
 
-        {/* {props.status === HOME_PAGE_SUCCESS ?
+        {props.status === HOME_PAGE_SUCCESS ?
             <View>
               <MusicPlayerBar onPress={() => { props.navigation.navigate("Player") }} />
-            </View> : null } */}
+            </View> : null }
 
 
 
