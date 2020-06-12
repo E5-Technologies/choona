@@ -593,7 +593,8 @@ function Player(props) {
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             
                                 <Image source={{ uri: constants.profile_picture_base_url + profilePic }}
-                                    style={{ height: normalise(24), width: normalise(24), borderRadius: normalise(12) }}
+                                    style={{ height: normalise(24), width: normalise(24), 
+                                        borderRadius: normalise(24) }}
                                     resizeMode="contain" />
 
                                 <View style={{
