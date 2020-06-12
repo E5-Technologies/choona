@@ -357,8 +357,7 @@ function Profile(props) {
                             width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'space-between', height: normalise(50),
                         }}>
-                            <View style={{ flexDirection: 'row' }}>
-
+                           <View style={{ flexDirection: 'row', alignItems:'center' }}>
 
                                 <TouchableOpacity onPress={() => {
                                     props.navigation.navigate('Player', {
