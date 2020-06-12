@@ -13,7 +13,11 @@ import {
 
     GET_CHAT_LIST_REQUEST,
     GET_CHAT_LIST_SUCCESS,
-    GET_CHAT_LIST_FAILURE
+    GET_CHAT_LIST_FAILURE,
+
+    CHAT_LOAD_REQUEST,
+    CHAT_LOAD_SUCCESS,
+    CHAT_LOAD_FAILURE,
 
 
 } from '../action/TypeConstants'
@@ -84,7 +88,7 @@ export function* sendChatMessageAction(action) {
 export function* getChatListAction(action) {
     try {
         const items = yield select(getItems);
-        
+
         const Header = {
             Accept: 'application/json',
             contenttype: 'application/json',
@@ -100,6 +104,65 @@ export function* getChatListAction(action) {
 };
 
 
+/**
+ * This function is used for listening to any change in firebase realtime database, and 
+ * read the chat message
+ * @param {Object} action provide the chat token of a particular channel
+ */
+export function* getChatMessages(action) {
+
+    // Creates an eventChannel and starts the listener;
+    const channel = eventChannel(emiter => {
+        const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken).on(
+            'value',
+            dataSnapshot => {
+                var items = []
+                dataSnapshot.forEach(child => {
+                    
+                    items.push(child.val())
+
+                    // if (action.payload.userId == child.val().receiver_id) {
+                    //     child.child("read").ref.set(true)
+                    // }
+
+                })
+
+
+                console.log("CHATS", items.reverse())
+
+                var chatResponse = {
+                    data: items.reverse(),
+                }
+
+                emiter(chatResponse || {})
+
+                //emiter({ data: items.reverse() || {} })
+            }
+        )
+
+        // Return the shutdown method;
+        return () => {
+            FIREBASE_REF_MESSAGES.child(action.payload.chatToken).off()
+        }
+    })
+
+    if (action.payload.isMount) {
+        while (true) {
+            const chatResponse = yield take(channel)
+            // Pause the task until the channel emits a signal and dispatch an action in the store;
+            yield put({ type: CHAT_LOAD_SUCCESS, chatResponse })
+        }
+    } else {
+        var chatResponse = {
+            data: [],
+        }
+        yield put({ type: CHAT_LOAD_SUCCESS, chatResponse })
+        channel.close()
+    }
+
+}
+
+
 export function* watchGetChatTokenRequest() {
     yield takeLatest(CREATE_CHAT_TOKEN_REQUEST, getChatTokenAction)
 }
@@ -109,7 +172,11 @@ export function* watchSendChatMessageRequest() {
 }
 
 export function* watchgetChatListAction() {
-    yield takeLatest (GET_CHAT_LIST_REQUEST, getChatListAction)
+    yield takeLatest(GET_CHAT_LIST_REQUEST, getChatListAction)
+}
+
+export function* watchLoadMessages() {
+    yield takeLatest(CHAT_LOAD_REQUEST, getChatMessages)
 }
 
 

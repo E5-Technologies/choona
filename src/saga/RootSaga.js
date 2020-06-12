@@ -9,10 +9,15 @@ import {
 
 import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSaga'
 
-import {watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction,
-watchsaveSongRefAction} from './SongSaga';
+import {
+    watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction,
+    watchsaveSongRefAction
+} from './SongSaga';
 
-import {watchGetChatTokenRequest, watchSendChatMessageRequest, watchgetChatListAction} from './MessageSaga';
+import {
+    watchGetChatTokenRequest, watchSendChatMessageRequest,
+    watchgetChatListAction, watchLoadMessages
+} from './MessageSaga';
 
 
 function* RootSaga() {
@@ -41,7 +46,8 @@ function* RootSaga() {
         watchGetChatTokenRequest(),
         watchSendChatMessageRequest(),
         watchsaveSongRefAction(),
-        watchgetChatListAction()
+        watchgetChatListAction(),
+        watchLoadMessages()
 
     ])
 }

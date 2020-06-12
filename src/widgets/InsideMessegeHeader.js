@@ -31,7 +31,7 @@ function InsideMessegeHeader(props) {
             props.onPressThirdItem()
         }
     }
-
+    
 
     return (
 
@@ -57,7 +57,7 @@ function InsideMessegeHeader(props) {
                 <View style={{ left: 0, position: 'absolute' }}>
                     <TouchableOpacity style={{ left: 0, position: 'absolute' }}
                         onPress={() => { onPressFirstItem() }}>
-                        <Image source={props.imageone}
+                        <Image source={ImagePath.backicon}
                             style={{ height: props.imageoneheight, width: props.imageonewidth, marginTop: normalise(-8) }}
                             resizeMode="contain"
                         />
@@ -65,18 +65,20 @@ function InsideMessegeHeader(props) {
                     <TouchableOpacity style={{ left: normalize(40), position: 'absolute', flexDirection: 'row', marginTop: normalise(-12) }}
                         onPress={() => { onPressFirstItem() }}>
                         {/* <Text>Hello</Text> */}
-                        <Image source={props.imagesecond}
-                            style={{
-                                height: normalise(25),
-                                width: normalise(25)
-                            }}
-                            resizeMode="contain"
-                        />
-                        <Image source={props.imagesecond}
+                        <Image source={{uri: props.imageone}}
                             style={{
                                 height: normalise(25),
                                 width: normalise(25),
-                                marginLeft: normalise(-5)
+                                borderRadius: normalise(25)
+                            }}
+                            resizeMode="contain"
+                        />
+                        <Image source={{uri: props.imagesecond}}
+                            style={{
+                                height: normalise(25),
+                                width: normalise(25),
+                                marginLeft: normalise(-5),
+                                borderRadius: normalise(25)
                             }}
                             resizeMode="contain"
                         />

@@ -1,7 +1,8 @@
 import {
     CREATE_CHAT_TOKEN_REQUEST,
     SEND_CHAT_MESSAGE_REQUEST,
-    GET_CHAT_LIST_REQUEST
+    GET_CHAT_LIST_REQUEST,
+    CHAT_LOAD_REQUEST,
 
 } from '../action/TypeConstants';
 
@@ -18,4 +19,9 @@ export const sendChatMessageRequest = (payload) => ({
 
 export const getChatListRequest = () => ({
     type: GET_CHAT_LIST_REQUEST
+});
+
+export const loadChatMessageRequest = payload => ({
+    type: CHAT_LOAD_REQUEST,
+    payload: payload
 });

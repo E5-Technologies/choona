@@ -16,144 +16,140 @@ import InsideMessegeHeader from '../../widgets/InsideMessegeHeader';
 import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../utils/MyStatusBar';
+import { loadChatMessageRequest } from '../../action/MessageAction'
+import { connect } from 'react-redux';
+import constants from '../../utils/helpers/constants';
+import {
 
+    CHAT_LOAD_REQUEST,
+    CHAT_LOAD_SUCCESS,
+    CHAT_LOAD_FAILURE,
 
-const flatlistdata = [
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond",
-        comments: 1
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Dua Lipa",
-        comments: 2
-    },
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Kygo",
-        comments: 1
-    },
+} from '../../action/TypeConstants'
+import toast from '../../utils/helpers/ShowErrorAlert';
+import Loader from '../../widgets/AuthLoader';
+import _ from 'lodash'
 
-    {
-        image: ImagePath.profiletrack2,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Dua Lipa",
-        comments: 1
-    },
-    {
-        image: ImagePath.profiletrack1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Kygo",
-        comments: 3
-    },
-    {
-        image: ImagePath.profiletrack2,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond",
-        comments: 2
-    },
+let status = ""
 
-]
+function InsideaMessage(props) {
 
-export default function InsideaMessage(props) {
+    const [index, setIndex] = useState(props.route.params.index);
+    const [chatData, setChatData] = useState([]);
 
+    const [search, setSearch] = useState("");
+    const [bool, setBool] = useState(false);
 
-    const [index,setIndex] = useState(props.route.params.index);
-    
+    useEffect(function () {
+
+        props.loadChatMessageRequest({ chatToken: props.chatList[index].chat_token, isMount: true, userId: props.userProfileResp._id });
+
+        return () => {
+
+            props.loadChatMessageRequest({ chatToken: props.chatList[index].chat_token, isMount: false })
+        }
+    }, []);
+
+    if (status === "" || props.status !== status) {
+        switch (props.status) {
+            case CHAT_LOAD_REQUEST:
+                status = props.status
+                break;
+
+            case CHAT_LOAD_SUCCESS:
+                status = props.status;
+                setChatData(props.chatData)
+                break;
+
+            case CHAT_LOAD_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
+        }
+    };
+
 
     function renderItem(data) {
         return (
             <SavedSongsListItem
-                image={""}
-                title={data.item.title}
-                singer={data.item.singer}
-                comments={data.item.comments}
-                marginBottom={data.index === flatlistdata.length - 1 ? normalise(20) : 0} />
+                image={data.item.image}
+                title={data.item.song_name}
+                singer={data.item.artist_name}
+                comments={data.item.message}
+                marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
         )
     }
 
-    function renderHiddenItem(data) {
-        return (
-            <TouchableOpacity style={{
-                flexDirection: 'column', alignItems: 'center',
-                justifyContent: 'center'
-            }}>
+    function filterArray(keyword) {
 
-                <Image source={ImagePath.boxactive}
-                    style={{ height: normalise(20), width: normalise(20) }} />
-
-                <Text>Unsave</Text>
-            </TouchableOpacity>
-        )
-    }
+        let data = _.filter(props.chatData, (item) => {
+            return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+        });
+        
+        setChatData(data);
+    
+    };
 
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
+            <Loader visible={props.status === CHAT_LOAD_REQUEST} />
+            
             <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
 
-
-
-                <InsideMessegeHeader firstitemtext={false}
-                    imageone={ImagePath.backicon}
-                    imagesecond={ImagePath.dp}
-
-                    title={"RUSHY"}
+                <InsideMessegeHeader
+                    firstitemtext={false}
+                    imageone={constants.profile_picture_base_url + props.userProfileResp.profile_image}
+                    imagesecond={constants.profile_picture_base_url + props.chatList[index].profile_image}
+                    title={props.chatList[index].username}
                     thirditemtext={false}
                     // imagetwo={ImagePath.newmessage} 
                     imagetwoheight={25}
                     imagetwowidth={25}
                     onPressFirstItem={() => { props.navigation.goBack() }} />
 
-                <View style={{ width: '92%', alignSelf: 'center', }}>
+                <View style={{
+                    width: '92%',
+                    alignSelf: 'center',
+                }}>
 
                     <TextInput style={{
-                        height: normalise(35),
-                        width: '100%',
-                        backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8),
-                        marginTop: normalise(20),
-                        padding: normalise(10),
-                        color: Colors.white,
-                        paddingLeft: normalise(30)
-                    }}
+                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                        color: Colors.white, paddingLeft: normalise(30),
+                    }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { console.log(text) }} />
+                        onChangeText={(text) => { setSearch(text), filterArray(text) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
                             height: normalise(15), width: normalise(15), bottom: normalise(25),
                             paddingLeft: normalise(30)
                         }} resizeMode="contain" />
+
+                    {search === "" ? null :
+                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                            style={{
+                                position: 'absolute', right: 0,
+                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                paddingRight: normalise(10)
+                            }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                            }}>CLEAR</Text>
+
+                        </TouchableOpacity>}
+
                 </View>
 
                 <SwipeListView
-                    data={flatlistdata}
+                    data={chatData}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
-                    // renderHiddenItem={ (rowData, rowMap) => (
-
-                    //     <TouchableOpacity style={{backgroundColor:Colors.red, flexDirection:'column', 
-                    //     alignItems:'center', justifyContent:"space-evenly", height:normalise(39), width:normalise(44),
-                    //      marginTop:normalise(15), position:'absolute', right:21}}
-                    //      onPress={ () => { rowMap[rowData.item.key].closeRow() }}>
-
-                    //         <Image source={ImagePath.unsaved} style={{height:normalise(18), width:normalise(18),}} 
-                    //         resizeMode='contain' />
-                    //         <Text style={{fontSize:normalise(8), color:Colors.white,
-                    //         fontWeight:'bold'}}>UNSAVE</Text>
-
-                    //     </TouchableOpacity>
-                    // )}
-
                     keyExtractor={(item, index) => { index.toString() }}
                     disableRightSwipe={true}
                     rightOpenValue={-75} />
@@ -176,6 +172,28 @@ export default function InsideaMessage(props) {
 
                 </TouchableOpacity>
             </SafeAreaView>
+
+
         </View>
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        chatList: state.MessageReducer.chatList,
+        chatData: state.MessageReducer.chatData,
+        userProfileResp: state.UserReducer.userProfileResp,
+        status: state.MessageReducer.status,
+        error: state.MessageReducer.error,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadChatMessageRequest: (payload) => {
+            dispatch(loadChatMessageRequest(payload))
+        },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InsideaMessage);

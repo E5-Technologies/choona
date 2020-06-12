@@ -69,7 +69,7 @@ function Followers(props) {
 
             case FOLLOWER_LIST_FAILURE:
                 status = props.status
-                toast("Oops", "Something Went Wrong, Please Try Again")
+                toast("Oops", "Something Went Wrong, Please Try Again");
                 break;
 
             case USER_FOLLOW_UNFOLLOW_REQUEST:
@@ -127,7 +127,7 @@ function Followers(props) {
                         props.navigation.replace("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
-                    onPress={()=>{props.followReq({follower_id: data.item._id})}}
+                    onPress={() => { props.followReq({ follower_id: data.item._id }) }}
                 />
             )
         }

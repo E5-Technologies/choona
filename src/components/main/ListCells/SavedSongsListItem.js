@@ -225,7 +225,7 @@ function SavedSongListItem(props) {
                     {props.comments ? <Text style={{
                         color: Colors.grey, fontSize: normalise(10),
                         fontFamily: 'ProximaNovaAW07-Medium'
-                    }} numberOfLines={1}> {props.comments} comments </Text> : null}
+                    }} numberOfLines={1}> {props.comments} </Text> : null}
                 </View>
 
 
