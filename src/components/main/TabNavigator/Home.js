@@ -160,13 +160,13 @@ function Home(props) {
         postStatus = props.postStatus
         break;
 
-        case DELETE_POST_SUCCESS:
+      case DELETE_POST_SUCCESS:
         postStatus = props.postStatus
         props.homePage()
         setPositionInArray(0);
         break;
 
-        case DELETE_POST_FAILURE:
+      case DELETE_POST_FAILURE:
         postStatus = props.postStatus
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
@@ -235,6 +235,16 @@ function Home(props) {
           hitreact(reaction),
             sendReaction(data.item._id, reaction);
         }}
+        onPressImage={() => {
+          if (props.userProfileResp._id === data.item.user_id) {
+            props.navigation.navigate("Profile")
+          }
+          else {
+            props.navigation.navigate("OthersProfile",
+              { id: data.item.user_id })
+          }
+        }}
+
         onAddReaction={() => {
           hitreact1(modal1Visible)
         }}
@@ -311,7 +321,7 @@ function Home(props) {
 
         {_.isEmpty(props.postData) ?
 
-          <View style={{ flex: 1, alignItems: 'center', justifyContent:'center' }}>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 
             <Image source={ImagePath.noposts} style={{ height: normalise(150), width: normalise(150), marginTop: '28%' }}
               resizeMode='contain' />
@@ -507,10 +517,10 @@ function Home(props) {
                     <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
                       onPress={() => {
                         setModalVisible(!modalVisible)
-                      
-                          props.userProfileResp._id !== props.postData[positionInArray].user_id ?                      // USER - FOLLOW/UNFOLLOW
+
+                        props.userProfileResp._id !== props.postData[positionInArray].user_id ?                      // USER - FOLLOW/UNFOLLOW
                           props.followUnfollowReq({ follower_id: props.postData[positionInArray].userDetails._id })    // USER - FOLLOW/UNFOLLOW
-                          : props.deletePostReq(props.postData[positionInArray]._id )                                  //  DELETE POST
+                          : props.deletePostReq(props.postData[positionInArray]._id)                                  //  DELETE POST
 
                       }}>
 
