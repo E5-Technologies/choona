@@ -35,6 +35,7 @@ let status;
 function Contact(props) {
 
     const [search, setSearch] = useState("")
+    let changePlayer = true;
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -93,7 +94,20 @@ function Contact(props) {
                 image={data.item.song_image}
                 title={data.item.song_name}
                 singer={data.item.artist_name}
-                marginBottom={data.index === props.savedSong.length - 1 ? normalise(20) : 0} />
+                marginBottom={data.index === props.savedSong.length - 1 ? normalise(20) : 0}
+                onPressImage={()=>{props.navigation.navigate("Player",
+                {
+                  song_title: data.item.song_name,
+                  album_name: data.item.album_name,
+                  song_pic: data.item.song_image,
+                  username: props.userProfileResp.username,
+                  profile_pic: props.userProfileResp.profile_image,
+                  uri: data.item.song_uri,
+                  id: data.item.post_id,
+                  artist: data.item.artist_name,
+                  changePlayer: changePlayer
+                })}} 
+                />
         )
     }
 
@@ -202,7 +216,8 @@ const mapStateToProps = (state) => {
     return {
         status: state.SongReducer.status,
         error: state.SongReducer.error,
-        savedSong: state.SongReducer.savedSongList
+        savedSong: state.SongReducer.savedSongList,
+        userProfileResp: state.UserReducer.userProfileResp
     }
 };
 

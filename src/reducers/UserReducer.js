@@ -49,9 +49,13 @@ import {
 
     ACTIVITY_LIST_REQUEST,
     ACTIVITY_LIST_SUCCESS,
-    ACTIVITY_LIST_FAILURE
+    ACTIVITY_LIST_FAILURE,
+
+    FEATURED_SONG_SEARCH_REQUEST,
+    FEATURED_SONG_SEARCH_SUCCESS,
+    FEATURED_SONG_SEARCH_FAILURE
 }
-from '../action/TypeConstants';
+    from '../action/TypeConstants';
 import moment from 'moment'
 
 const initialState = {
@@ -71,7 +75,8 @@ const initialState = {
     reactionResp: {},
     activityListPrevious: [],
     activityListToday: [],
-    sendSongUserSearch: []
+    sendSongUserSearch: [],
+    featuredSongSearchResp: []
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -165,13 +170,13 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case USER_SEARCH_SUCCESS:
-            
-        if (action.sendSong) {
-            return {
-                ...state,
-                status: action.type,
-                sendSongUserSearch: action.data
-            };
+
+            if (action.sendSong) {
+                return {
+                    ...state,
+                    status: action.type,
+                    sendSongUserSearch: action.data
+                };
 
             } else {
                 return {
@@ -367,6 +372,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case ACTIVITY_LIST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case FEATURED_SONG_SEARCH_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case FEATURED_SONG_SEARCH_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                featuredSongSearchResp: action.data
+            };
+
+        case FEATURED_SONG_SEARCH_FAILURE:
             return {
                 ...state,
                 status: action.type,
