@@ -56,7 +56,11 @@ import {
 
     FEATURED_SONG_SEARCH_REQUEST,
     FEATURED_SONG_SEARCH_SUCCESS,
-    FEATURED_SONG_SEARCH_FAILURE
+    FEATURED_SONG_SEARCH_FAILURE,
+
+    GET_CHAT_LIST_REQUEST,
+    GET_CHAT_LIST_SUCCESS,
+    GET_CHAT_LIST_FAILURE,
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -231,7 +235,12 @@ export function* homePageAction(action) {
         };
 
         const response = yield call(getApi, 'post/list', Header);
-        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data })
+
+        const chatResponse = yield call(getApi, 'chat/list', Header)
+        yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
+
+        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data });
+        //yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
 
     } catch (error) {
         yield put({ type: HOME_PAGE_FAILURE, error: error })
@@ -360,7 +369,7 @@ export function* featuredTrackSearchAction(action) {
         if (items.registerType === "spotify") {
             const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track`, Header)
 
-            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items});
+            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items });
         }
         else {
             const response = yield call(getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, Header)
