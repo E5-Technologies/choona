@@ -30,21 +30,6 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import _ from "lodash"
 
 
-const profileData = [
-    {
-        image: ImagePath.profiletrack1
-    },
-    {
-        image: ImagePath.profiletrack2
-    },
-    {
-        image: ImagePath.profiletrack3
-    },
-    {
-        image: ImagePath.profiletrack4
-    },
-
-]
 
 let status;
 
@@ -138,7 +123,7 @@ function OthersProfile(props) {
             <StatusBar />
 
             {props.status === OTHERS_PROFILE_SUCCESS || props.status === USER_FOLLOW_UNFOLLOW_SUCCESS
-            || props.status === HOME_PAGE_SUCCESS
+                || props.status === HOME_PAGE_SUCCESS
 
                 ? <SafeAreaView style={{ flex: 1, }}>
 
@@ -252,45 +237,62 @@ function OthersProfile(props) {
                             marginTop: normalise(15),
                         }}>
 
-                        <View style={{
-                            width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
-                            justifyContent: 'space-between', height: normalise(50),
-                        }}>
-                            <TouchableOpacity>
-                                <Image source={ImagePath.dp2} style={{ height: normalise(40), width: normalise(40) }} />
-                                <Image source={ImagePath.play} style={{
-                                    height: normalise(25), width: normalise(25),
-                                    position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
-                                }} />
-                            </TouchableOpacity>
-
+                        {_.isEmpty(props.othersProfileresp.feature_song) ?
 
                             <View style={{
-                                flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(120),
+                                width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                                justifyContent: 'center', height: normalise(50),
                             }}>
-
                                 <Text style={{
                                     color: Colors.white,
                                     fontSize: normalise(9),
                                     fontFamily: 'ProximaNova-Bold'
-                                }}>FEATURED TRACK</Text>
-
-                                <Text style={{
-                                    color: Colors.white,
-                                    fontSize: normalise(10),
-                                    fontFamily: 'ProximaNova-Bold'
-
-                                }}>Naked feat. Justin Suissa</Text>
-
-                                <Text style={{
-                                    color: Colors.white,
-                                    fontSize: normalise(9),
-                                    fontFamily: 'ProximaNova-Regular',
-                                    fontWeight: '400'
-                                }}>Above & Beyond</Text>
+                                }}>NO FEATURED TRACK</Text>
+                                
                             </View>
 
-                        </View>
+
+                            : <View style={{
+                                width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                                justifyContent: 'space-between', height: normalise(50),
+                            }}>
+                                <TouchableOpacity>
+                                    <Image source={{uri: JSON.parse(props.othersProfileresp.feature_song)[0].song_pic}} 
+                                    style={{ height: normalise(40), width: normalise(40) }} />
+                                    
+                                    <Image source={ImagePath.play} style={{
+                                        height: normalise(25), width: normalise(25),
+                                        position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
+                                    }} />
+                                </TouchableOpacity>
+
+
+                                <View style={{
+                                    flexDirection: 'column', alignItems: 'flex-start', marginRight: normalise(120),
+                                }}>
+
+                                    <Text style={{
+                                        color: Colors.white,
+                                        fontSize: normalise(9),
+                                        fontFamily: 'ProximaNova-Bold'
+                                    }}>FEATURED TRACK</Text>
+
+                                    <Text style={{
+                                        color: Colors.white,
+                                        fontSize: normalise(10),
+                                        fontFamily: 'ProximaNova-Bold'
+
+                                    }}>{JSON.parse(props.othersProfileresp.feature_song)[0].song_name}</Text>
+
+                                    <Text style={{
+                                        color: Colors.white,
+                                        fontSize: normalise(9),
+                                        fontFamily: 'ProximaNova-Regular',
+                                        fontWeight: '400'
+                                    }}>{JSON.parse(props.othersProfileresp.feature_song)[0].album_name}</Text>
+                                </View>
+
+                            </View>}
 
                     </ImageBackground>
 
