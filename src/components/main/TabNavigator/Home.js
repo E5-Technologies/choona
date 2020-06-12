@@ -236,6 +236,16 @@ function Home(props) {
           hitreact(reaction),
             sendReaction(data.item._id, reaction);
         }}
+        onPressImage={() => {
+          if (props.userProfileResp._id === data.item.user_id) {
+            props.navigation.navigate("Profile")
+          }
+          else {
+            props.navigation.navigate("OthersProfile",
+              { id: data.item.user_id })
+          }
+        }}
+
         onAddReaction={() => {
           hitreact1(modal1Visible)
         }}

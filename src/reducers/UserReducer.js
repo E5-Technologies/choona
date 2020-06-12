@@ -53,7 +53,11 @@ import {
 
     FEATURED_SONG_SEARCH_REQUEST,
     FEATURED_SONG_SEARCH_SUCCESS,
-    FEATURED_SONG_SEARCH_FAILURE
+    FEATURED_SONG_SEARCH_FAILURE,
+
+    USER_LOGOUT_REQUEST,
+    USER_LOGOUT_SUCCESS,
+    USER_LOGOUT_FAILURE
 }
     from '../action/TypeConstants';
 import moment from 'moment'
@@ -77,7 +81,8 @@ const initialState = {
     activityListPrevious: [],
     activityListToday: [],
     sendSongUserSearch: [],
-    featuredSongSearchResp: []
+    featuredSongSearchResp: [],
+    userLogoutResp: {}
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -393,6 +398,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case FEATURED_SONG_SEARCH_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case USER_LOGOUT_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case USER_LOGOUT_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                userLogoutResp: action.data
+            };
+
+        case USER_LOGOUT_FAILURE:
             return {
                 ...state,
                 status: action.type,

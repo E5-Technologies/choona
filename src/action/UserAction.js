@@ -12,7 +12,8 @@ import {
     FOLLOWING_LIST_REQUEST,
     REACTION_ON_POST_REQUEST,
     ACTIVITY_LIST_REQUEST,
-    FEATURED_SONG_SEARCH_REQUEST
+    FEATURED_SONG_SEARCH_REQUEST,
+    USER_LOGOUT_REQUEST
 }
     from './TypeConstants';
 
@@ -86,6 +87,9 @@ export const featuredSongSearchReq = (text) => ({
     text
 });
 
+export const userLogoutReq = () => ({
+    type: USER_LOGOUT_REQUEST
+});
 
 
 

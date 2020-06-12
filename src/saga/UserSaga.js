@@ -5,6 +5,7 @@ import {
     USER_LOGIN_FAILURE,
 
     ASYNC_STORAGE_SUCCESS,
+    ASYNC_STORAGE_CLEAR,
 
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
@@ -61,6 +62,10 @@ import {
     GET_CHAT_LIST_REQUEST,
     GET_CHAT_LIST_SUCCESS,
     GET_CHAT_LIST_FAILURE,
+
+    USER_LOGOUT_REQUEST,
+    USER_LOGOUT_SUCCESS,
+    USER_LOGOUT_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -381,6 +386,27 @@ export function* featuredTrackSearchAction(action) {
     }
 };
 
+export function* userLogoutAction(action) {
+    try {
+        const items = yield select(getItems);
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call(getApi, 'user/logout', Header);
+        yield call (AsyncStorage.removeItem, constants.CHOONACREDS);
+        
+        yield put({ type: USER_LOGOUT_SUCCESS, data: response.data.data });
+        yield put({ type: ASYNC_STORAGE_CLEAR, token: null, registerType: null  });
+
+    } catch (error) {
+        yield put({ type: USER_LOGOUT_FAILURE, error: error })
+    }
+};
+
+
 //WATCH FUNCTIONS
 
 export function* watchLoginRequest() {
@@ -437,4 +463,8 @@ export function* watchactivityListAction() {
 
 export function* watchfeaturedTrackSearchAction() {
     yield takeLatest(FEATURED_SONG_SEARCH_REQUEST, featuredTrackSearchAction)
+};
+
+export function* watchUserLogoutAction() {
+    yield takeLatest(USER_LOGOUT_REQUEST, userLogoutAction)
 };

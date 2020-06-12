@@ -36,9 +36,8 @@ let status;
 function OthersProfile(props) {
 
 
-    const [id, setId] = useState(props.route.params.id)
-    const [isFollowing, setIsFollowing] = useState(false)
-
+    const [id, setId] = useState(props.route.params.id);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -159,7 +158,9 @@ function OthersProfile(props) {
                                 color: Colors.darkgrey, fontSize: normalise(11),
                                 fontFamily: 'ProximaNovaAW07-Medium',
 
-                            }}>{`${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}`}</Text>
+                            }}>{props.othersProfileresp.post !== undefined ?
+                                `${props.othersProfileresp.post.length} ${props.othersProfileresp.post.length > 1 ? "Posts" : "Post"}` : null}
+                            </Text>
 
                             <Text style={{
                                 marginTop: normalise(2),
@@ -270,8 +271,8 @@ function OthersProfile(props) {
 
 
                                 <View style={{
-                                    flexDirection: 'column', 
-                                    alignItems: 'flex-start', 
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
                                     marginStart: normalise(10),
                                     width: "80%"
                                 }}>
@@ -282,23 +283,23 @@ function OthersProfile(props) {
                                         fontFamily: 'ProximaNova-Bold'
                                     }}>FEATURED TRACK</Text>
 
-                                    <Text 
-                                    numberOfLines={1}
-                                    style={{
-                                        color: Colors.white,
-                                        fontSize: normalise(10),
-                                        fontFamily: 'ProximaNova-Bold'
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{
+                                            color: Colors.white,
+                                            fontSize: normalise(10),
+                                            fontFamily: 'ProximaNova-Bold'
 
-                                    }}>{JSON.parse(props.othersProfileresp.feature_song)[0].song_name}</Text>
+                                        }}>{JSON.parse(props.othersProfileresp.feature_song)[0].song_name}</Text>
 
-                                    <Text 
-                                    numberOfLines={1}
-                                    style={{
-                                        color: Colors.white,
-                                        fontSize: normalise(9),
-                                        fontFamily: 'ProximaNova-Regular',
-                                        fontWeight: '400'
-                                    }}>{JSON.parse(props.othersProfileresp.feature_song)[0].album_name}</Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{
+                                            color: Colors.white,
+                                            fontSize: normalise(9),
+                                            fontFamily: 'ProximaNova-Regular',
+                                            fontWeight: '400'
+                                        }}>{JSON.parse(props.othersProfileresp.feature_song)[0].album_name}</Text>
                                 </View>
 
                             </View>}
