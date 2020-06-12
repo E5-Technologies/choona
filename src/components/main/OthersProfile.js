@@ -18,7 +18,8 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import {
     OTHERS_PROFILE_REQUEST, OTHERS_PROFILE_SUCCESS, OTHERS_PROFILE_FAILURE,
-    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE
+    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE,
+    HOME_PAGE_REQUEST, HOME_PAGE_SUCCESS
 } from '../../action/TypeConstants';
 import { othersProfileRequest, userFollowUnfollowRequest } from '../../action/UserAction';
 import constants from '../../utils/helpers/constants';
@@ -132,9 +133,13 @@ function OthersProfile(props) {
 
             <Loader visible={props.status === OTHERS_PROFILE_REQUEST} />
 
+            <Loader visible={props.status === HOME_PAGE_REQUEST} />
+
             <StatusBar />
 
             {props.status === OTHERS_PROFILE_SUCCESS || props.status === USER_FOLLOW_UNFOLLOW_SUCCESS
+            || props.status === HOME_PAGE_SUCCESS
+
                 ? <SafeAreaView style={{ flex: 1, }}>
 
                     <HeaderComponent firstitemtext={false}

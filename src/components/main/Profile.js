@@ -29,33 +29,12 @@ import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
 
-const profileData = [
-    {
-        image: ImagePath.profiletrack1
-    },
-    {
-        image: ImagePath.profiletrack2
-    },
-    {
-        image: ImagePath.profiletrack3
-    },
-    {
-        image: ImagePath.profiletrack4
-    },
-    {
-        image: ImagePath.profiletrack5
-    },
-    {
-        image: ImagePath.profiletrack6
-    },
-];
-
-
 let status = "";
 
 function Profile(props) {
 
     const [modalVisible, setModalVisible] = useState(false);
+    let changePlayer = true;
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -147,7 +126,7 @@ function Profile(props) {
 
                         <TouchableOpacity style={{ marginTop: normalise(10) }}>
                             <Text style={{
-                                color: Colors.white, 
+                                color: Colors.white,
                                 fontSize: normalise(13),
                                 fontFamily: 'ProximaNova-Semibold',
                             }}>Privacy Policy</Text>
@@ -175,7 +154,7 @@ function Profile(props) {
 
                         <TouchableOpacity style={{ marginTop: normalise(18) }}>
                             <Text style={{
-                                color: Colors.red, 
+                                color: Colors.red,
                                 fontSize: normalise(13),
                                 fontFamily: 'ProximaNova-Semibold',
                             }}>Logout</Text>
@@ -333,7 +312,7 @@ function Profile(props) {
                         marginTop: normalise(10),
                     }}>
 
-                    {_.isEmpty(profileData) ?              // IF DATA IS EMPTY
+                    {_.isEmpty(props.userProfileResp.feature_song) ?              // IF DATA IS EMPTY
                         <View style={{
                             width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'space-between', height: normalise(50),
@@ -341,12 +320,15 @@ function Profile(props) {
 
                             <TouchableOpacity style={{
                                 backgroundColor: Colors.fadeblack, height: normalise(40),
-                                width: normalise(40), justifyContent: 'center', alignItems: 'center'
-                            }}>
+                                width: normalise(40), justifyContent: 'center', alignItems: 'center',
+                                // borderColor: Colors.white, borderWidth:1, borderRadius: normalise(5)
+
+                            }} onPress={() => { props.navigation.navigate("FeaturedTrack") }}>
 
                                 <Image source={ImagePath.addicon} style={{
                                     height: normalise(20),
-                                    width: normalise(20)
+                                    width: normalise(20),
+                                    borderRadius: normalise(10)
                                 }} />
 
                             </TouchableOpacity>
@@ -362,9 +344,9 @@ function Profile(props) {
                                 }}>FEATURED TRACK</Text>
 
                                 <Text style={{
-                                    width: '70%', fontWeight: '500', marginTop: normalise(2),
+                                    width: '70%', marginTop: normalise(2), fontFamily: 'ProximaNova-Semibold',
                                     color: Colors.white, fontSize: normalise(10),
-                                }}>You don't currently have a featured track.let's add one</Text>
+                                }}>You don't currently have a featured track. Let's add one</Text>
 
                             </View>
 
@@ -375,38 +357,58 @@ function Profile(props) {
                             width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'space-between', height: normalise(50),
                         }}>
-
-                            <TouchableOpacity>
-                                <Image source={ImagePath.dp2} style={{ height: normalise(40), width: normalise(40) }} />
-                                <Image source={ImagePath.play} style={{
-                                    height: normalise(25), width: normalise(25),
-                                    position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
-                                }} />
-                            </TouchableOpacity>
+                            <View style={{ flexDirection: 'row' }}>
 
 
-                            <View style={{
-                                flexDirection: 'column', alignItems: 'flex-start',
-                                marginRight: Platform.OS === 'android' ? normalise(110) : normalise(104),
-                            }}>
+                                <TouchableOpacity onPress={() => {
+                                    props.navigation.navigate('Player', {
+                                        song_title: JSON.parse(props.userProfileResp.feature_song)[0].song_name,
+                                        album_name: JSON.parse(props.userProfileResp.feature_song)[0].album_name,
+                                        song_pic: JSON.parse(props.userProfileResp.feature_song)[0].song_pic,
+                                        username: props.userProfileResp.username,
+                                        profile_pic: props.userProfileResp.profile_image,
+                                        uri: JSON.parse(props.userProfileResp.feature_song)[0].song_uri,
+                                        artist: JSON.parse(props.userProfileResp.feature_song)[0].album_name,
+                                        changePlayer: changePlayer
+                                    })
+                                }}>
 
-                                <Text style={{
-                                    color: Colors.white, fontSize:
-                                        normalise(9), fontFamily: 'ProximaNova-Regular',
-                                }}>FEATURED TRACK</Text>
+                                    <Image source={{ uri: JSON.parse(props.userProfileResp.feature_song)[0].song_pic }}
+                                        style={{ height: normalise(40), width: normalise(40) }} />
+                                    <Image source={ImagePath.play} style={{
+                                        height: normalise(25), width: normalise(25),
+                                        position: 'absolute', marginLeft: normalise(8), marginTop: normalise(8)
+                                    }} />
+                                </TouchableOpacity>
 
-                                <Text style={{
-                                    color: Colors.white, fontSize: normalise(10),
-                                    fontFamily: 'ProximaNova-Bold'
-                                }}>Bongo Song</Text>
 
-                                <Text style={{
-                                    color: Colors.white, fontSize: normalise(9),
-                                    fontFamily: 'ProximaNova-Regular',
-                                }}>Above & Beyond</Text>
+                                <View style={{
+                                    marginStart: normalise(10),
+                                    width: "70%"
+                                }}>
+
+                                    <Text style={{
+                                        color: Colors.white, fontSize:
+                                            normalise(9), fontFamily: 'ProximaNova-Regular',
+                                    }}>FEATURED TRACK</Text>
+
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{
+                                            color: Colors.white, fontSize: normalise(10),
+                                            fontFamily: 'ProximaNova-Bold'
+                                        }}>{JSON.parse(props.userProfileResp.feature_song)[0].song_name}</Text>
+
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{
+                                            color: Colors.white, fontSize: normalise(9),
+                                            fontFamily: 'ProximaNova-Regular',
+                                        }}>{JSON.parse(props.userProfileResp.feature_song)[0].album_name}</Text>
+                                </View>
                             </View>
 
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => { props.navigation.navigate("FeaturedTrack") }}>
                                 <Image source={ImagePath.change} style={{
                                     height: normalise(40),
                                     width: normalise(40),

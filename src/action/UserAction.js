@@ -11,7 +11,8 @@ import {
     FOLLOWER_LIST_REQUEST,
     FOLLOWING_LIST_REQUEST,
     REACTION_ON_POST_REQUEST,
-    ACTIVITY_LIST_REQUEST
+    ACTIVITY_LIST_REQUEST,
+    FEATURED_SONG_SEARCH_REQUEST
 }
     from './TypeConstants';
 
@@ -78,6 +79,11 @@ export const reactionOnPostRequest = (payload) => ({
 
 export const activityListReq = () => ({
     type: ACTIVITY_LIST_REQUEST,
+});
+
+export const featuredSongSearchReq = (text) => ({
+    type: FEATURED_SONG_SEARCH_REQUEST,
+    text
 });
 
 

@@ -49,6 +49,7 @@ import SendSongInMessageFinal from './src/components/main/SendSongInMessageFinal
 import GenreClicked from './src/components/main/GenreClicked';
 import GenreSongClicked from './src/components/main/GenreSongClicked';
 import MusicPlayerBar from './src/widgets/MusicPlayerBar';
+import FeaturedTrack from './src/components/main/FeaturedTrack';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -206,6 +207,7 @@ const App = () => {
             <Stack.Screen name="SendSongInMessageFinal" component={SendSongInMessageFinal} />
             <Stack.Screen name="GenreClicked" component={GenreClicked} />
             <Stack.Screen name="GenreSongClicked" component={GenreSongClicked} />
+            <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
           </Stack.Navigator>
         }
 

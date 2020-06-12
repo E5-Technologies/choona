@@ -52,12 +52,18 @@ import {
 
     ACTIVITY_LIST_REQUEST,
     ACTIVITY_LIST_SUCCESS,
-    ACTIVITY_LIST_FAILURE
+    ACTIVITY_LIST_FAILURE,
+
+    FEATURED_SONG_SEARCH_REQUEST,
+    FEATURED_SONG_SEARCH_SUCCESS,
+    FEATURED_SONG_SEARCH_FAILURE
 
 } from '../action/TypeConstants';
-import { postApi, getApi } from "../utils/helpers/ApiRequest"
+import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
+import { getSpotifyToken } from '../utils/helpers/SpotifyLogin'
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
 
 const getItems = (state) => state.TokenReducer
 
@@ -217,15 +223,15 @@ export function* othersProfileAction(action) {
 export function* homePageAction(action) {
     try {
         const items = yield select(getItems);
-        
+
         const Header = {
             Accept: 'application/json',
             contenttype: 'application/json',
             accesstoken: items.token
         };
 
-        const response = yield call (getApi, 'post/list', Header);
-        yield put ({type: HOME_PAGE_SUCCESS, data: response.data.data})
+        const response = yield call(getApi, 'post/list', Header);
+        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data })
 
     } catch (error) {
         yield put({ type: HOME_PAGE_FAILURE, error: error })
@@ -235,106 +241,134 @@ export function* homePageAction(action) {
 
 export function* commentOnPostAction(action) {
     try {
-        const items = yield select (getItems);
-        
+        const items = yield select(getItems);
+
         const Header = {
             Accept: "application/json",
             contenttype: "application/json",
             accesstoken: items.token
         };
 
-        const response = yield call (postApi, 'post/comment', action.payload, Header);
-        yield put ({type: COMMENT_ON_POST_SUCCESS, data: response.data.data})
+        const response = yield call(postApi, 'post/comment', action.payload, Header);
+        yield put({ type: COMMENT_ON_POST_SUCCESS, data: response.data.data })
 
 
     } catch (error) {
-        yield put ({type: COMMENT_ON_POST_FAILURE, error:error})
+        yield put({ type: COMMENT_ON_POST_FAILURE, error: error })
     }
 };
 
+
 export function* followerListAction(action) {
     try {
-        const items = yield select (getItems);
-        
+        const items = yield select(getItems);
+
         const Header = {
             Accept: "application/json",
             contenttype: "application/json",
-            accesstoken: items.token 
+            accesstoken: items.token
         };
 
-        if(action.usertype === 'user'){
-            const response = yield call (getApi, 'follower/list', Header)
-            yield put ({type: FOLLOWER_LIST_SUCCESS, data: response.data.data})
+        if (action.usertype === 'user') {
+            const response = yield call(getApi, 'follower/list', Header)
+            yield put({ type: FOLLOWER_LIST_SUCCESS, data: response.data.data })
         }
-        else{
-            const response = yield call (getApi, `follower/list?user_id=${action.id}`, Header)
-            yield put ({type: FOLLOWER_LIST_SUCCESS, data: response.data.data})
+        else {
+            const response = yield call(getApi, `follower/list?user_id=${action.id}`, Header)
+            yield put({ type: FOLLOWER_LIST_SUCCESS, data: response.data.data })
         }
 
     } catch (error) {
-        yield put ({type: FOLLOWER_LIST_FAILURE, error: error})
+        yield put({ type: FOLLOWER_LIST_FAILURE, error: error })
     }
 };
 
 
 export function* followingListAction(action) {
     try {
-        const items = yield select (getItems);
-        
-        const Header = {
-            Accept: "application/json",
-            contenttype: "application/json",
-            accesstoken: items.token 
-        };
+        const items = yield select(getItems);
 
-        if(action.usertype === 'user'){
-            const response = yield call (getApi, 'follower/following/list', Header)
-            yield put ({type: FOLLOWING_LIST_SUCCESS, data: response.data.data})
-        }
-        else{
-            const response = yield call (getApi, `follower/following/list?user_id=${action.id}`, Header)
-            yield put ({type: FOLLOWING_LIST_SUCCESS, data: response.data.data})
-        }
-
-    } catch (error) {
-        yield put ({type: FOLLOWING_LIST_FAILURE, error: error})
-    }
-};
-
-export function* reactionOnPostAction(action) {
-    try {
-        const items = yield select (getItems);
-        
         const Header = {
             Accept: "application/json",
             contenttype: "application/json",
             accesstoken: items.token
         };
 
-        const response = yield call (postApi, 'post/reaction', action.payload, Header);
-        yield put ({type: REACTION_ON_POST_SUCCESS, data: response.data.data})
+        if (action.usertype === 'user') {
+            const response = yield call(getApi, 'follower/following/list', Header)
+            yield put({ type: FOLLOWING_LIST_SUCCESS, data: response.data.data })
+        }
+        else {
+            const response = yield call(getApi, `follower/following/list?user_id=${action.id}`, Header)
+            yield put({ type: FOLLOWING_LIST_SUCCESS, data: response.data.data })
+        }
+
+    } catch (error) {
+        yield put({ type: FOLLOWING_LIST_FAILURE, error: error })
+    }
+};
+
+
+export function* reactionOnPostAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call(postApi, 'post/reaction', action.payload, Header);
+        yield put({ type: REACTION_ON_POST_SUCCESS, data: response.data.data })
 
 
     } catch (error) {
-        yield put ({type: REACTION_ON_POST_FAILURE, error:error})
+        yield put({ type: REACTION_ON_POST_FAILURE, error: error })
     }
 };
 
 
 export function* activityListAction(action) {
     try {
-        const items = yield select (getItems);
+        const items = yield select(getItems);
         const Header = {
             Accept: "application/json",
             contenttype: "application/json",
             accesstoken: items.token
-        }  
+        }
 
-        const response = yield call (getApi, 'activity/list', Header)
-        yield put ({type: ACTIVITY_LIST_SUCCESS, data:response.data.data})
+        const response = yield call(getApi, 'activity/list', Header)
+        yield put({ type: ACTIVITY_LIST_SUCCESS, data: response.data.data })
 
     } catch (error) {
-        yield put ({type: ACTIVITY_LIST_FAILURE, error: error})
+        yield put({ type: ACTIVITY_LIST_FAILURE, error: error })
+    }
+};
+
+
+export function* featuredTrackSearchAction(action) {
+    try {
+        const spotifyToken = yield call(getSpotifyToken);
+        const items = yield select(getItems);
+        const AppleToken = yield call(getAppleDevToken);
+
+        let Header = {
+            "Authorization": items.registerType === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
+        };
+
+        if (items.registerType === "spotify") {
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track`, Header)
+
+            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items});
+        }
+        else {
+            const response = yield call(getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, Header)
+            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.results });
+        }
+
+    } catch (error) {
+        yield put({ type: FEATURED_SONG_SEARCH_FAILURE, error: error });
     }
 };
 
@@ -389,5 +423,9 @@ export function* watchReactionOnPostAction() {
 };
 
 export function* watchactivityListAction() {
-    yield takeLatest (ACTIVITY_LIST_REQUEST, activityListAction)
+    yield takeLatest(ACTIVITY_LIST_REQUEST, activityListAction)
+};
+
+export function* watchfeaturedTrackSearchAction() {
+    yield takeLatest(FEATURED_SONG_SEARCH_REQUEST, featuredTrackSearchAction)
 };

@@ -71,12 +71,12 @@ function HomeItemReaction(props) {
 
         console.log("REACTIONS: " + JSON.stringify(reactions))
 
-        let index = _.findIndex(reactions, function (item) { return item.user_id == userId; })
+        // let index = _.findIndex(reactions, function (item) { return item.user_id == userId; })
 
-        if (index != -1) {
-            reactions[index].text = reaction;
-            setReactionList(editArray(reactions))
-        } else {
+        // if (index != -1) {
+        //     reactions[index].text = reaction;
+        //     setReactionList(editArray(reactions))
+        // } else {
             reactions.push({
                 "user_id": userId,
                 "text": reaction,
@@ -84,7 +84,7 @@ function HomeItemReaction(props) {
                 "username": props.userProfileResp.username
             })
             setReactionList(editArray(reactions))
-        }
+        // }
 
     };
 

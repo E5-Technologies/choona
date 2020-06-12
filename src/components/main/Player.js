@@ -12,7 +12,8 @@ import {
     ImageBackground,
     TextInput,
     KeyboardAvoidingView,
-    Dimensions
+    Dimensions,
+    Modal
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -58,15 +59,17 @@ function Player(props) {
     const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
-    const [reactions, setSReactions] = useState(props.route.params.reactions);
+    const [reactions, setSReactions] = useState(props.route.params.changePlayer ? [] : props.route.params.reactions);
 
     //COMMENT ON POST
-    const [commentData, setCommentData] = useState(props.route.params.comments);
+    const [commentData, setCommentData] = useState(props.route.params.changePlayer ? [] : props.route.params.comments);
     const [id, setId] = useState(props.route.params.id);
     const [commentText, setCommentText] = useState("");
-    const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
+    const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`);
 
     const [bool, setBool] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [changePlayer, setChangePlayer] = useState(props.route.params.changePlayer);
 
     let track;
 
@@ -204,7 +207,8 @@ function Player(props) {
                         saveSongResObj.commentData = commentData
                         saveSongResObj.reactionData = reactions
                         saveSongResObj.id = id,
-                        saveSongResObj.artist = artist
+                        saveSongResObj.artist = artist,
+                        saveSongResObj.changePlayer = changePlayer
 
 
                     props.saveSongRefReq(saveSongResObj);
@@ -452,6 +456,118 @@ function Player(props) {
     };
 
 
+    const renderModalMorePressed = () => {
+        return (
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  //Alert.alert("Modal has been closed.");
+                }}
+              >
+                <ImageBackground
+                  source={ImagePath.page_gradient}
+                  style={styles.centeredView}
+                >
+
+                  <View
+                    style={styles.modalView}
+                  >
+                    <Text style={{
+                      color: Colors.white,
+                      fontSize: normalise(12),
+                      fontFamily: 'ProximaNova-Semibold',
+
+                    }}>MORE</Text>
+
+                    <View style={{
+                      backgroundColor: Colors.activityBorderColor,
+                      height: 0.5,
+                      marginTop: normalise(12),
+                      marginBottom: normalise(12)
+                    }} />
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+
+                      <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Save Song</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                      <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white,
+                        fontSize: normalise(13), marginLeft: normalise(15),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Send Song</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                      <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Copy Link</Text>
+                    </TouchableOpacity>
+
+
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                      <Image source={ImagePath.spotifyicon} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Open on Spotify</Text>
+                    </TouchableOpacity>
+
+                  </View>
+
+
+                  <TouchableOpacity onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}
+
+                    style={{
+                      marginStart: normalise(20),
+                      marginEnd: normalise(20),
+                      marginBottom: normalise(20),
+                      height: normalise(50),
+                      width: "95%",
+                      backgroundColor: Colors.darkerblack,
+                      opacity: 10,
+                      borderRadius: 20,
+                      // padding: 35,
+                      alignItems: "center",
+                      justifyContent: 'center',
+
+                    }}>
+
+
+                    <Text style={{
+                      fontSize: normalise(12),
+                      fontFamily: 'ProximaNova-Bold',
+                      color: Colors.white
+                    }}>CANCEL</Text>
+
+                  </TouchableOpacity>
+                </ImageBackground>
+              </Modal>
+        )
+    }
+
 
     return (
 
@@ -470,12 +586,12 @@ function Player(props) {
                             width: normalise(290),
                             marginTop: normalise(15),
                             flexDirection: 'row', alignItems: 'center',
-                            justifyContent: 'space-between'
+                            justifyContent: changePlayer ? 'flex-end' : 'space-between'
                         }}>
 
-
+                    {changePlayer ?  null  :
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
+                            
                                 <Image source={{ uri: constants.profile_picture_base_url + profilePic }}
                                     style={{ height: normalise(24), width: normalise(24), borderRadius: normalise(12) }}
                                     resizeMode="contain" />
@@ -493,8 +609,8 @@ function Player(props) {
                                         color: Colors.white, fontSize: normalise(11),
                                         fontFamily: 'ProximaNova-Semibold',
                                     }} numberOfLines={1}> {username} </Text>
-                                </View>
-                            </View>
+                                </View> 
+                                </View> }
 
 
                             <View style={{
@@ -506,7 +622,7 @@ function Player(props) {
                                     height: normalise(25), width: normalise(45),
                                     borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.fadeblack,
                                     justifyContent: 'center', alignItems: 'center'
-                                }}>
+                                }} onPress={()=>{setModalVisible(!modalVisible)}}>
                                     <Image
                                         source={ImagePath.threedots}
                                         style={{ height: normalise(15), width: normalise(15) }}
@@ -583,7 +699,7 @@ function Player(props) {
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
-                                {playerCurrentTime >= 10 ? "00:" : "00:0"}{playerCurrentTime.toFixed(0)}
+                                {playerCurrentTime > 9 ? "00:" : "00:0"}{playerCurrentTime.toFixed(0)}
                             </Text>
 
                             <Text style={{
@@ -645,6 +761,7 @@ function Player(props) {
                             </TouchableOpacity>
                         </View>
 
+                    {changePlayer ? null :
 
                         <View style={{
                             flexDirection: 'row', width: '90%', alignSelf: 'center',
@@ -722,7 +839,7 @@ function Player(props) {
                                 </Text>
 
                             </TouchableOpacity>
-                        </View>
+                        </View> }
 
                         {/* <TouchableOpacity style={{
                             width: '90%', alignSelf: 'center', backgroundColor: Colors.fadeblack,
@@ -760,6 +877,7 @@ function Player(props) {
                         </TouchableOpacity> */}
 
                         {RbSheet()}
+                        {renderModalMorePressed()}
 
                     </ScrollView>
                 </SafeAreaView>
@@ -799,3 +917,38 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Player);
+
+
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+
+    },
+    modalView: {
+        marginBottom: normalise(10),
+        height: normalise(220),
+        width: "95%",
+        backgroundColor: Colors.darkerblack,
+        borderRadius: 20,
+        padding: 20,
+        paddingTop: normalise(20),
+
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+
+    }
+});

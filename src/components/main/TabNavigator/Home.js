@@ -30,10 +30,15 @@ import {
   HOME_PAGE_FAILURE,
   SAVE_SONGS_REQUEST, SAVE_SONGS_SUCCESS,
   SAVE_SONGS_FAILURE,
-  REACTION_ON_POST_SUCCESS
+  REACTION_ON_POST_SUCCESS,
+  USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS,
+  USER_FOLLOW_UNFOLLOW_FAILURE,
+  DELETE_POST_REQUEST, DELETE_POST_SUCCESS,
+  DELETE_POST_FAILURE
 } from '../../../action/TypeConstants';
-import { getProfileRequest, homePageReq, reactionOnPostRequest } from '../../../action/UserAction';
+import { getProfileRequest, homePageReq, reactionOnPostRequest, userFollowUnfollowRequest } from '../../../action/UserAction';
 import { saveSongRequest } from '../../../action/SongAction';
+import { deletePostReq } from '../../../action/PostAction';
 import { connect } from 'react-redux'
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
@@ -42,7 +47,8 @@ import constants from '../../../utils/helpers/constants';
 
 
 let status = "";
-let songStatus = ""
+let songStatus = "";
+let postStatus = "";
 
 function Home(props) {
 
@@ -50,8 +56,9 @@ function Home(props) {
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState("");
   const [modal1Visible, setModal1Visible] = useState(false);
-  const [positionInArray, setPositionInArray] = useState();
+  const [positionInArray, setPositionInArray] = useState(0);
 
+  let changePlayer = false;
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -106,6 +113,20 @@ function Home(props) {
         status = props.status;
         props.homePage()
         break;
+
+      case USER_FOLLOW_UNFOLLOW_REQUEST:
+        status = props.status;
+        break;
+
+      case USER_FOLLOW_UNFOLLOW_SUCCESS:
+        status = props.status;
+        props.homePage()
+        break;
+
+      case USER_FOLLOW_UNFOLLOW_FAILURE:
+        status = props.status;
+        toast("Oops", "Something Went Wrong, Please Try Again")
+        break;
     };
   };
 
@@ -132,6 +153,25 @@ function Home(props) {
     }
   };
 
+  if (postStatus === "" || props.postStatus !== postStatus) {
+    switch (props.postStatus) {
+
+      case DELETE_POST_REQUEST:
+        postStatus = props.postStatus
+        break;
+
+        case DELETE_POST_SUCCESS:
+        postStatus = props.postStatus
+        props.homePage()
+        setPositionInArray(0);
+        break;
+
+        case DELETE_POST_FAILURE:
+        postStatus = props.postStatus
+        toast("Oops", "Something Went Wrong, Please Try Again")
+        break;
+    }
+  };
 
 
   const react = ["🔥", "🕺", "💃", "😳", "❤️"]
@@ -205,17 +245,18 @@ function Home(props) {
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
             username: data.item.userDetails.username,
-            profile_pic: data.item.userDetails.profile_image, 
+            profile_pic: data.item.userDetails.profile_image,
             time: data.item.time, title: data.item.title,
-            uri: data.item.song_uri, 
+            uri: data.item.song_uri,
             reactions: data.item.reaction,
             id: data.item._id,
-            artist: data.item.artist_name
+            artist: data.item.artist_name,
+            changePlayer: changePlayer
 
           })
         }}
         onPressReactionbox={() => {
-          props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id:data.item._id })
+          props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
         }}
         onPressCommentbox={() => {
           props.navigation.navigate('HomeItemComments', { index: data.index });
@@ -224,7 +265,7 @@ function Home(props) {
           setPositionInArray(data.index)
           setModalVisible(true)
         }}
-        marginBottom={data.index === props.postData.length - 1 ? normalise(20) : 0} />
+        marginBottom={data.index === props.postData.length - 1 ? normalise(60) : 0} />
       // </TouchableOpacity>
     )
   };
@@ -270,7 +311,7 @@ function Home(props) {
 
         {_.isEmpty(props.postData) ?
 
-          <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent:'center' }}>
 
             <Image source={ImagePath.noposts} style={{ height: normalise(150), width: normalise(150), marginTop: '28%' }}
               resizeMode='contain' />
@@ -281,7 +322,7 @@ function Home(props) {
             }}>NO POSTS YET</Text>
 
 
-            <TouchableOpacity style={{
+            {/* <TouchableOpacity style={{
               height: normalise(50), width: '80%',
               borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
               shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
@@ -314,7 +355,7 @@ function Home(props) {
                 fontWeight: 'bold'
               }}>CHECK YOUR PHONEBOOK</Text>
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           :
 
@@ -329,21 +370,25 @@ function Home(props) {
               disableRightSwipe={true}
               rightOpenValue={-75} />
 
-        {props.status === HOME_PAGE_SUCCESS ?
-           
-              <MusicPlayerBar onPress={() => { props.navigation.navigate("Player",
-              {comments: props.playingSongRef.commentData,
-                song_title: props.playingSongRef.song_name,
-                album_name: props.playingSongRef.album_name,
-                song_pic: props.playingSongRef.song_pic,
-                username: props.playingSongRef.username,
-                profile_pic: props.playingSongRef.profile_pic, 
-                uri: props.playingSongRef.uri,
-                reactions: props.playingSongRef.reactionData,
-                id: props.playingSongRef.id,
-                artist: props.playingSongRef.artist
-                 }) }} />
-           : null }
+            {props.status === HOME_PAGE_SUCCESS ?
+
+              <MusicPlayerBar onPress={() => {
+                props.navigation.navigate("Player",
+                  {
+                    comments: props.playingSongRef.commentData,
+                    song_title: props.playingSongRef.song_name,
+                    album_name: props.playingSongRef.album_name,
+                    song_pic: props.playingSongRef.song_pic,
+                    username: props.playingSongRef.username,
+                    profile_pic: props.playingSongRef.profile_pic,
+                    uri: props.playingSongRef.uri,
+                    reactions: props.playingSongRef.reactionData,
+                    id: props.playingSongRef.id,
+                    artist: props.playingSongRef.artist,
+                    changePlayer: props.playingSongRef.changePlayer
+                  })
+              }} />
+              : null}
 
 
 
@@ -369,136 +414,148 @@ function Home(props) {
               </View>
             </Modal>
 
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                //Alert.alert("Modal has been closed.");
-              }}
-            >
-              <ImageBackground
-                source={ImagePath.page_gradient}
-                style={styles.centeredView}
+            {props.status === HOME_PAGE_SUCCESS ?
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  //Alert.alert("Modal has been closed.");
+                }}
               >
-
-                <View
-                  style={styles.modalView}
+                <ImageBackground
+                  source={ImagePath.page_gradient}
+                  style={styles.centeredView}
                 >
-                  <Text style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontFamily: 'ProximaNova-Semibold',
 
-                  }}>MORE</Text>
+                  <View
+                    style={styles.modalView}
+                  >
+                    <Text style={{
+                      color: Colors.white,
+                      fontSize: normalise(12),
+                      fontFamily: 'ProximaNova-Semibold',
 
-                  <View style={{
-                    backgroundColor: Colors.activityBorderColor,
-                    height: 0.5,
-                    marginTop: normalise(12),
-                    marginBottom: normalise(12)
-                  }} />
+                    }}>MORE</Text>
 
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
-                    onPress={() => {
-                      let saveSongObject = {
-                        song_uri: props.postData[positionInArray].song_uri,
-                        song_name: props.postData[positionInArray].song_name,
-                        song_image: props.postData[positionInArray].song_image,
-                        artist_name: props.postData[positionInArray].artist_name,
-                        album_name: props.postData[positionInArray].album_name,
-                        post_id: props.postData[positionInArray]._id,
-                      };
+                    <View style={{
+                      backgroundColor: Colors.activityBorderColor,
+                      height: 0.5,
+                      marginTop: normalise(12),
+                      marginBottom: normalise(12)
+                    }} />
 
-                      props.saveSongReq(saveSongObject);
-                      setModalVisible(!modalVisible)
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                      onPress={() => {
+                        let saveSongObject = {
+                          song_uri: props.postData[positionInArray].song_uri,
+                          song_name: props.postData[positionInArray].song_name,
+                          song_image: props.postData[positionInArray].song_image,
+                          artist_name: props.postData[positionInArray].artist_name,
+                          album_name: props.postData[positionInArray].album_name,
+                          post_id: props.postData[positionInArray]._id,
+                        };
+
+                        props.saveSongReq(saveSongObject);
+                        setModalVisible(!modalVisible)
+
+                      }}>
+
+                      <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Save Song</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                      <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white,
+                        fontSize: normalise(13), marginLeft: normalise(15),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Send Song</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        Clipboard.setString(props.postData[positionInArray].song_uri);
+                        setModalVisible(!modalVisible);
+
+                        setTimeout(() => {
+                          toast("Success", "Song copied to clipboard.")
+                        }, 1000);
+
+                      }}
+                      style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                      <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>Copy Link</Text>
+                    </TouchableOpacity>
+
+
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                      onPress={() => {
+                        setModalVisible(!modalVisible)
+                      
+                          props.userProfileResp._id !== props.postData[positionInArray].user_id ?                      // USER - FOLLOW/UNFOLLOW
+                          props.followUnfollowReq({ follower_id: props.postData[positionInArray].userDetails._id })    // USER - FOLLOW/UNFOLLOW
+                          : props.deletePostReq(props.postData[positionInArray]._id )                                  //  DELETE POST
+
+                      }}>
+
+                      <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>{props.userProfileResp._id === props.postData[positionInArray].user_id ? "Delete Post" :
+                        `Unfollow ${props.postData[positionInArray].userDetails.username}`}</Text>
+                    </TouchableOpacity>
+
+                  </View>
+
+
+                  <TouchableOpacity onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}
+
+                    style={{
+                      marginStart: normalise(20),
+                      marginEnd: normalise(20),
+                      marginBottom: normalise(20),
+                      height: normalise(50),
+                      width: "95%",
+                      backgroundColor: Colors.darkerblack,
+                      opacity: 10,
+                      borderRadius: 20,
+                      // padding: 35,
+                      alignItems: "center",
+                      justifyContent: 'center',
 
                     }}>
 
-                    <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
-                      resizeMode='contain' />
+
                     <Text style={{
-                      color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>Save Song</Text>
+                      fontSize: normalise(12),
+                      fontFamily: 'ProximaNova-Bold',
+                      color: Colors.white
+                    }}>CANCEL</Text>
+
                   </TouchableOpacity>
-
-
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                    <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
-                      resizeMode='contain' />
-                    <Text style={{
-                      color: Colors.white,
-                      fontSize: normalise(13), marginLeft: normalise(15),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>Send Song</Text>
-                  </TouchableOpacity>
-
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      Clipboard.setString(props.postData[positionInArray].song_uri);
-                      setModalVisible(!modalVisible);
-
-                      setTimeout(() => {
-                        toast("Success", "Song copied to clipboard.")
-                      }, 1000);
-
-                    }}
-                    style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                    <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
-                      resizeMode='contain' />
-                    <Text style={{
-                      color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>Copy Link</Text>
-                  </TouchableOpacity>
-
-
-                  <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                    <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
-                      resizeMode='contain' />
-                    <Text style={{
-                      color: Colors.white, marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>Unfollow Shimshimmer</Text>
-                  </TouchableOpacity>
-
-                </View>
-
-
-                <TouchableOpacity onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}
-
-                  style={{
-                    marginStart: normalise(20),
-                    marginEnd: normalise(20),
-                    marginBottom: normalise(20),
-                    height: normalise(50),
-                    width: "95%",
-                    backgroundColor: Colors.darkerblack,
-                    opacity: 10,
-                    borderRadius: 20,
-                    // padding: 35,
-                    alignItems: "center",
-                    justifyContent: 'center',
-
-                  }}>
-
-
-                  <Text style={{
-                    fontSize: normalise(12),
-                    fontFamily: 'ProximaNova-Bold',
-                    color: Colors.white
-                  }}>CANCEL</Text>
-
-                </TouchableOpacity>
-              </ImageBackground>
-            </Modal>
+                </ImageBackground>
+              </Modal> : null}
 
           </View>
 
@@ -594,7 +651,8 @@ const mapStateToProps = (state) => {
     reactionResp: state.UserReducer.reactionResp,
     songStatus: state.SongReducer.status,
     savedSongResponse: state.SongReducer.savedSongResponse,
-    playingSongRef: state.SongReducer.playingSongRef
+    playingSongRef: state.SongReducer.playingSongRef,
+    postStatus: state.PostReducer.status
   }
 };
 
@@ -614,6 +672,14 @@ const mapDispatchToProps = (dispatch) => {
 
     reactionOnPostRequest: (payload) => {
       dispatch(reactionOnPostRequest(payload))
+    },
+
+    followUnfollowReq: (payload) => {
+      dispatch(userFollowUnfollowRequest(payload))
+    },
+
+    deletePostReq: (payload) => {
+      dispatch(deletePostReq(payload))
     }
   }
 };

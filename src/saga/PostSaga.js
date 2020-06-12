@@ -8,7 +8,9 @@ import {
     CREATE_POST_SUCCESS,
     CREATE_POST_FAILURE,
 
-
+    DELETE_POST_REQUEST,
+    DELETE_POST_SUCCESS,
+    DELETE_POST_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -25,10 +27,10 @@ export function* searchSongsForPostAction(action) {
 
     const spotifyToken = yield call(getSpotifyToken);
     const items = yield select(getItems);
-    const AppleToken = yield call (getAppleDevToken);
+    const AppleToken = yield call(getAppleDevToken);
 
     let spotifyHeader = {
-        "Authorization": items.registerType ===  "spotify" ?`${spotifyToken}`:`${AppleToken}`,
+        "Authorization": items.registerType === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
     };
 
     //console.log("spotifyHeader"+JSON.stringify(spotifyHeader))
@@ -40,9 +42,9 @@ export function* searchSongsForPostAction(action) {
 
             yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items, post: action.post });
         }
-        else{
-            const response = yield call (getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, spotifyHeader)
-            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results, post: action.post});
+        else {
+            const response = yield call(getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, spotifyHeader)
+            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results, post: action.post });
         }
 
     } catch (error) {
@@ -75,10 +77,36 @@ export function* createPostAction(action) {
     }
 };
 
+
+export function* deletePostAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call(getApi, `post/delete/${action.payload}`, Header);
+        yield put({ type: DELETE_POST_SUCCESS, data: response.data.data});
+
+    } catch (error) {
+        yield put({ type: DELETE_POST_FAILURE, error: error })
+    }
+};
+
+
+
+//WATCH FUNCTIONS
 export function* watchSearchSongsForPostRequest() {
     yield takeLatest(SEARCH_SONG_REQUEST_FOR_POST_REQUEST, searchSongsForPostAction)
-}
+};
 
 export function* watchCreatePostRequest() {
     yield takeLatest(CREATE_POST_REQUEST, createPostAction)
-}
+};
+
+export function* watchdeletePostAction() {
+    yield takeLatest (DELETE_POST_REQUEST, deletePostAction)
+};

@@ -4,10 +4,11 @@ import {
     watchLoginRequest, watchUserSignUpAction, watchuserProfileAction, watcheditProfileAction,
     watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction,
     watchhomePageAction, watchcommentOnPostAction, watchfollowerListAction,
-    watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction
+    watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction,
+    watchfeaturedTrackSearchAction
 } from './UserSaga'
 
-import { watchSearchSongsForPostRequest, watchCreatePostRequest } from './PostSaga'
+import { watchSearchSongsForPostRequest, watchCreatePostRequest, watchdeletePostAction } from './PostSaga'
 
 import {
     watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction,
@@ -47,7 +48,9 @@ function* RootSaga() {
         watchSendChatMessageRequest(),
         watchsaveSongRefAction(),
         watchgetChatListAction(),
-        watchLoadMessages()
+        watchLoadMessages(),
+        watchdeletePostAction(),
+        watchfeaturedTrackSearchAction()
 
     ])
 }
