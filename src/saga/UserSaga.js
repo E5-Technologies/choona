@@ -5,6 +5,7 @@ import {
     USER_LOGIN_FAILURE,
 
     ASYNC_STORAGE_SUCCESS,
+    ASYNC_STORAGE_CLEAR,
 
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
@@ -56,7 +57,11 @@ import {
 
     FEATURED_SONG_SEARCH_REQUEST,
     FEATURED_SONG_SEARCH_SUCCESS,
-    FEATURED_SONG_SEARCH_FAILURE
+    FEATURED_SONG_SEARCH_FAILURE,
+
+    USER_LOGOUT_REQUEST,
+    USER_LOGOUT_SUCCESS,
+    USER_LOGOUT_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -360,7 +365,7 @@ export function* featuredTrackSearchAction(action) {
         if (items.registerType === "spotify") {
             const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track`, Header)
 
-            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items});
+            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items });
         }
         else {
             const response = yield call(getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, Header)
@@ -371,6 +376,27 @@ export function* featuredTrackSearchAction(action) {
         yield put({ type: FEATURED_SONG_SEARCH_FAILURE, error: error });
     }
 };
+
+export function* userLogoutAction(action) {
+    try {
+        const items = yield select(getItems);
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call(getApi, 'user/logout', Header);
+        yield call (AsyncStorage.removeItem, constants.CHOONACREDS);
+        
+        yield put({ type: USER_LOGOUT_SUCCESS, data: response.data.data });
+        yield put({ type: ASYNC_STORAGE_CLEAR, token: null, registerType: null  });
+
+    } catch (error) {
+        yield put({ type: USER_LOGOUT_FAILURE, error: error })
+    }
+};
+
 
 //WATCH FUNCTIONS
 
@@ -428,4 +454,8 @@ export function* watchactivityListAction() {
 
 export function* watchfeaturedTrackSearchAction() {
     yield takeLatest(FEATURED_SONG_SEARCH_REQUEST, featuredTrackSearchAction)
+};
+
+export function* watchUserLogoutAction() {
+    yield takeLatest(USER_LOGOUT_REQUEST, userLogoutAction)
 };

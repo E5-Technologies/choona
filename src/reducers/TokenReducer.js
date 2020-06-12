@@ -2,6 +2,7 @@ import {
     ASYNC_STORAGE_REQUEST,
     ASYNC_STORAGE_SUCCESS,
     ASYNC_STORAGE_FAILURE,
+    ASYNC_STORAGE_CLEAR,
 
     GET_TOKEN_REQUEST,
     GET_TOKEN_SUCCESS,
@@ -39,6 +40,14 @@ const TokenReducer = (state = initialState, action) => {
             return {
                 ...state,
                 status: action.type
+            };
+
+        case ASYNC_STORAGE_CLEAR:
+            return {
+                ...state,
+                status: action.type,
+                token: action.token,
+                registerType: action.registerType
             };
 
         case GET_TOKEN_REQUEST:

@@ -23,7 +23,7 @@ import {
     USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
     USER_PROFILE_FAILURE
 } from '../../action/TypeConstants';
-import { getProfileRequest } from '../../action/UserAction';
+import { getProfileRequest, userLogoutReq } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -152,7 +152,8 @@ function Profile(props) {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity style={{ marginTop: normalise(18) }}>
+                        <TouchableOpacity style={{ marginTop: normalise(18) }}
+                            onPress={() => { setModalVisible(!modalVisible), props.logoutReq() }}>
                             <Text style={{
                                 color: Colors.red,
                                 fontSize: normalise(13),
@@ -357,7 +358,7 @@ function Profile(props) {
                             width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'space-between', height: normalise(50),
                         }}>
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
 
                                 <TouchableOpacity onPress={() => {
@@ -485,7 +486,12 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getProfileReq: () => {
             dispatch(getProfileRequest())
-        }
+        },
+
+        logoutReq: () => {
+            dispatch(userLogoutReq())
+        },
+
     }
 };
 
