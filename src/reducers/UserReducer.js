@@ -61,6 +61,7 @@ import {
 }
     from '../action/TypeConstants';
 import moment from 'moment'
+import _ from "lodash"
 
 const initialState = {
     status: "",
@@ -249,7 +250,7 @@ const UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 status: action.type,
-                postData: action.data
+                postData: _.sortBy(action.data,"createdAt").reverse()
             };
 
         case HOME_PAGE_FAILURE:

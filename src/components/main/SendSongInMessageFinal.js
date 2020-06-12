@@ -57,7 +57,7 @@ function SendSongInMessageFinal(props) {
             case SEND_CHAT_MESSAGE_FAILURE:
                 status = props.status;
                 console.log("HERE FAIL")
-                toast("Error", "Something Went Wong, Please Try Again")
+                toast("Error", "Something Went Wong, Please Try Again");
                 break;
         }
     };
@@ -149,7 +149,13 @@ function SendSongInMessageFinal(props) {
                     texttwo={"SEND"}
                     onPressFirstItem={() => { props.navigation.goBack() }}
                     onPressThirdItem={() => {
-                        sendMessage();
+                        if (search.trim() != "") {
+                            sendMessage();
+                            props.navigation.goBack();
+                        } else {
+                            toast("Error", "Please type in a message to send");
+                        }
+
                     }}
                 />
 
