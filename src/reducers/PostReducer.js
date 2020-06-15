@@ -10,7 +10,11 @@ import {
 
     DELETE_POST_REQUEST,
     DELETE_POST_SUCCESS,
-    DELETE_POST_FAILURE
+    DELETE_POST_FAILURE,
+
+    SEARCH_POST_REQUEST,
+    SEARCH_POST_SUCCESS,
+    SEARCH_POST_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -20,7 +24,8 @@ const initialState = {
     spotifyResponse: [],
     createPostResponse: {},
     chooseSongToSend: [],
-    deletePostResp: {}
+    deletePostResp: {},
+    searchPost: []
 }
 
 const PostReducer = (state = initialState, action) => {
@@ -90,6 +95,26 @@ const PostReducer = (state = initialState, action) => {
             };
 
         case DELETE_POST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case SEARCH_POST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case SEARCH_POST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                searchPost: action.data,
+            };
+
+        case SEARCH_POST_FAILURE:
             return {
                 ...state,
                 status: action.type,

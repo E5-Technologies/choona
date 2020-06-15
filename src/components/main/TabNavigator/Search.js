@@ -5,7 +5,7 @@ import {
     ScrollView,
     View,
     Text,
-    Image,
+    Image, Clipboard,
     TextInput, ImageBackground,
     TouchableOpacity, Modal
 } from 'react-native';
@@ -24,87 +24,19 @@ import {
     USER_SEARCH_FAILURE,
     USER_FOLLOW_UNFOLLOW_REQUEST,
     USER_FOLLOW_UNFOLLOW_SUCCESS,
-    USER_FOLLOW_UNFOLLOW_FAILURE
+    USER_FOLLOW_UNFOLLOW_FAILURE,
+    SEARCH_POST_REQUEST, SEARCH_POST_SUCCESS,
+    SEARCH_POST_FAILURE,
 } from '../../../action/TypeConstants';
-import { userSearchRequest, userFollowUnfollowRequest } from '../../../action/UserAction';
+import { userSearchRequest, userFollowUnfollowRequest, reactionOnPostRequest } from '../../../action/UserAction';
+import { saveSongRequest } from '../../../action/SongAction';
+import { searchPostReq } from '../../../action/PostAction';
+import { deletePostReq } from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
-
-let songsdata = [
-    {
-        image: ImagePath.profiletrack1,
-        picture: ImagePath.dp1,
-        title: 'This Girl',
-        singer: "Kungs Vs Cookins 3 burners",
-        comments: 1,
-        name: 'Shimshimmer',
-        reactions: 11,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-    {
-        image: ImagePath.profiletrack4,
-        picture: ImagePath.dp,
-        title: 'Paradise',
-        singer: "Cold Play",
-        comments: 2,
-        name: 'Shimshimmer',
-        reactions: 7,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-    {
-        image: ImagePath.profiletrack2,
-        picture: ImagePath.dp1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Kygo",
-        comments: 1,
-        name: 'Shimshimmer',
-        reactions: 10,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-
-    {
-        image: ImagePath.profiletrack1,
-        picture: ImagePath.dp,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Dua Lipa",
-        comments: 1,
-        name: 'Shimshimmer',
-        reactions: 11,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-    {
-        image: ImagePath.profiletrack3,
-        picture: ImagePath.dp1,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Kygo",
-        comments: 3,
-        name: 'Shimshimmer',
-        reactions: 9,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-    {
-        image: ImagePath.profiletrack4,
-        picture: ImagePath.dp,
-        title: 'Naked feat. Justin Suissa',
-        singer: "Above & Beyond",
-        comments: 2,
-        name: 'Shimshimmer',
-        reactions: 11,
-        content: 'Absolutely use to love this song,was an unreal banger bck in the day',
-        time: 8
-    },
-
-];
-
-let songDataEmpty = [];
 
 let genreData = [
     {
@@ -136,6 +68,7 @@ let genreData = [
 
 
 let status;
+let postStatus;
 
 function Search(props) {
 
@@ -147,11 +80,30 @@ function Search(props) {
     const [genreSearchText, setGenreSearchText] = useState("");
     const [songSearchText, setSongSearchText] = useState("");
     const [bool, setBool] = useState(false);
-    const [songData, setSongData] = useState([]);
 
+    const [songData, setSongData] = useState([]);       // user search data...ignore the naming
+    const [searchPostData, setSearchPostData] = useState([]);   //search post data
+
+    const [positionInArray, setPositionInArray] = useState(0);
+    const [modal1Visible, setModal1Visible] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [modalReact, setModalReact] = useState("");
 
-    let sendSong = false
+    let changePlayer = false;
+    let sendSong = false;
+
+
+    // useEffect(() => {
+    //     const unsuscribe = props.navigation.addListener('focus', (payload) => {
+    //         setSearchPostData([]);
+    //         setSongSearchText("");
+    //     });
+
+    //     return () => {
+    //         unsuscribe();
+    //     }
+    // }, []);
 
     if (status === "" || status !== props.status) {
 
@@ -165,10 +117,10 @@ function Search(props) {
                 status = props.status
                 setBool(true)
                 setSongData([])
-                setTimeout(()=>{
-                setSongData(props.userSearch)
-                setBool(false);
-                },1000)
+                setTimeout(() => {
+                    setSongData(props.userSearch)
+                    setBool(false);
+                }, 1000)
                 break;
 
             case USER_SEARCH_FAILURE:
@@ -189,6 +141,28 @@ function Search(props) {
                 toast('Opps', 'Something went wrong, Please try again')
                 status = props.status
                 break;
+
+        }
+    };
+
+    if (postStatus === "" || postStatus !== props.postStatus) {
+
+        switch (props.postStatus) {
+
+            case SEARCH_POST_REQUEST:
+                postStatus = props.postStatus
+                break;
+
+            case SEARCH_POST_SUCCESS:
+                postStatus = props.postStatus
+                setSearchPostData(props.searchPostData);
+                break;
+
+            case SEARCH_POST_FAILURE:
+                toast('Opps', 'Something went wrong, Please try again')
+                postStatus = props.postStatus
+                break;
+
         }
     };
 
@@ -214,50 +188,62 @@ function Search(props) {
     function renderSongData(data) {
         return (
             <HomeItemList
-                image={""}
-                picture={""}
-                name={data.item.name}
-                comments={data.item.comments}
-                reactions={data.item.reactions}
-                content={data.item.content}
-                time={data.item.time}
-                title={data.item.title}
-                singer={data.item.singer}
-                onPressReact1={() => {
-                    console.log('Coming Soon...')
+                image={data.item.song_image}
+                picture={data.item.userDetails.profile_image}
+                name={data.item.userDetails.username}
+                comments={data.item.comment}
+                reactions={data.item.reaction}
+                content={data.item.post_content}
+                time={data.item.createdAt}
+                title={data.item.song_name}
+                singer={data.item.artist_name}
+                modalVisible={modal1Visible}
+                postType={data.item.social_type === "spotify"}
+                onReactionPress={(reaction) => {
+                    hitreact(reaction),
+                        sendReaction(data.item._id, reaction);
                 }}
-                onPressReact2={() => {
-                    console.log('Coming Soon...')
+                onPressImage={() => {
+                    if (props.userProfileResp._id === data.item.user_id) {
+                        props.navigation.navigate("Profile")
+                    }
+                    else {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item.user_id })
+                    }
                 }}
-                onPressReact3={() => {
-                    console.log('Coming Soon...')
-                }}
-                onPressReact4={() => {
-                    console.log('Coming Soon...')
-                }}
+
                 onAddReaction={() => {
-                    console.log('Coming Soon...')
+                    hitreact1(modal1Visible)
                 }}
                 onPressMusicbox={() => {
                     props.navigation.navigate('Player', {
-                        comments: data.item.comments,
-                        time: data.item.time, title: data.item.title
+                        comments: data.item.comment,
+                        song_title: data.item.song_name,
+                        album_name: data.item.album_name,
+                        song_pic: data.item.song_image,
+                        username: data.item.userDetails.username,
+                        profile_pic: data.item.userDetails.profile_image,
+                        time: data.item.time, title: data.item.title,
+                        uri: data.item.song_uri,
+                        reactions: data.item.reaction,
+                        id: data.item._id,
+                        artist: data.item.artist_name,
+                        changePlayer: changePlayer
+
                     })
                 }}
                 onPressReactionbox={() => {
-                    props.navigation.navigate('HomeItemReactions', {
-                    })
+                    props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
                 }}
                 onPressCommentbox={() => {
-                    props.navigation.navigate('HomeItemComments', {
-                        comments: data.item.comments,
-                        time: data.item.time, title: data.item.title
-                    })
+                    props.navigation.navigate('HomeItemComments', { index: data.index, type: 'search' });
                 }}
                 onPressSecondImage={() => {
+                    setPositionInArray(data.index)
                     setModalVisible(true)
                 }}
-                marginBottom={data.index === songDataEmpty.length - 1 ? normalise(50) : 0} />
+                marginBottom={data.index === searchPostData.length - 1 ? normalise(50) : 0} />
         )
     };
 
@@ -285,6 +271,56 @@ function Search(props) {
         )
     };
     // RENDER FUNCTION FLATLIST END 
+
+
+    // SEND REACTION
+    function sendReaction(id, reaction) {
+        let reactionObject = {
+            post_id: id,
+            text: reaction
+        };
+        isInternetConnected()
+            .then(() => {
+                props.reactionOnPostRequest(reactionObject)
+            })
+            .catch(() => {
+                toast('Error', 'Please Connect To Internet')
+            })
+    };
+
+
+    // HIT REACT
+    function hitreact(x) {
+        setVisible(true)
+        setModalReact(x)
+        setTimeout(() => {
+            setVisible(false)
+        }, 2000);
+    };
+
+
+    // SHOW REACTION MODAL
+    <Modal
+        animationType="slide"
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => {
+            //Alert.alert("Modal has been closed.");
+        }}
+    >
+        <View style={{
+            flex: 1,
+            backgroundColor: '#000000',
+            opacity: 0.9,
+            justifyContent: "center",
+            alignItems: "center",
+        }}>
+
+            <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
+
+
+        </View>
+    </Modal>
 
 
 
@@ -322,7 +358,21 @@ function Search(props) {
                             marginBottom: normalise(12)
                         }} />
 
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                            onPress={() => {
+                                let saveSongObject = {
+                                    song_uri: props.searchPostData[positionInArray].song_uri,
+                                    song_name: props.searchPostData[positionInArray].song_name,
+                                    song_image: props.searchPostData[positionInArray].song_image,
+                                    artist_name: props.searchPostData[positionInArray].artist_name,
+                                    album_name: props.searchPostData[positionInArray].album_name,
+                                    post_id: props.searchPostData[positionInArray]._id,
+                                };
+
+                                props.saveSongReq(saveSongObject);
+                                setModalVisible(!modalVisible)
+                            }}>
+
                             <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
                             <Text style={{
@@ -331,6 +381,8 @@ function Search(props) {
                                 fontFamily: 'ProximaNova-Semibold',
                             }}>Save Song</Text>
                         </TouchableOpacity>
+
+
                         <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                             <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
@@ -340,7 +392,17 @@ function Search(props) {
                                 fontFamily: 'ProximaNova-Semibold',
                             }}>Send Song</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+
+
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                            onPress={() => {
+                                Clipboard.setString(props.searchPostData[positionInArray].song_uri);
+                                setModalVisible(!modalVisible);
+
+                                setTimeout(() => {
+                                    toast("Success", "Song copied to clipboard.")
+                                }, 1000);
+                            }}>
                             <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
                             <Text style={{
@@ -349,21 +411,38 @@ function Search(props) {
                                 fontFamily: 'ProximaNova-Semibold',
                             }}>Copy Link</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+
+
+                        {/* <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                            onPress={() => {
+                                setModalVisible(!modalVisible)
+                                setSearchPostData([]);
+
+                                props.userProfileResp._id !== props.searchPostData[positionInArray].user_id ?                      // USER - FOLLOW/UNFOLLOW
+                                    props.followReq({ follower_id: props.searchPostData[positionInArray].userDetails._id })    // USER - FOLLOW/UNFOLLOW
+                                    : props.deletePostReq(props.searchPostData[positionInArray]._id)
+
+                                    setPositionInArray(0);
+                            }}>
+
                             <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
+
                             <Text style={{
                                 color: Colors.white, marginLeft: normalise(15),
                                 fontSize: normalise(13),
                                 fontFamily: 'ProximaNova-Semibold',
-                            }}>Unfollow Shimshimmer</Text>
-                        </TouchableOpacity>
+                            }}>{! _.isEmpty(props.searchPostData) ? props.userProfileResp._id === props.searchPostData[positionInArray].user_id ? "Delete Post" :
+                                `Unfollow ${props.searchPostData[positionInArray].userDetails.username}` : null}</Text>
+
+                        </TouchableOpacity> */}
 
                     </View>
 
 
                     <TouchableOpacity onPress={() => {
                         setModalVisible(!modalVisible);
+                        setPositionInArray(0);
                     }}
 
                         style={{
@@ -396,27 +475,39 @@ function Search(props) {
     //END OF MODAL MORE PRESSED
 
 
-    if (songSearchText !== "") {
-        songDataEmpty = [...songsdata]
-    }
-    if (genreSearchText !== "") {
-        genreDataEmpty = [...genreData]
-    };
 
 
     // SEARCH AND CLEAR FUNCTIONS
-
     const search = (text) => {
         if (usersSearch) {
             if (text.length >= 1) {
-                props.userSearchReq({ keyword: text }, sendSong)
+                isInternetConnected()
+                    .then(() => { props.userSearchReq({ keyword: text }, sendSong) })
+                    .catch(() => { toast('Error', 'Please Connect To Internet') })
             }
-        };
+        }
+
+        else if (songSearch) {
+            if (text.length >= 1) {
+                isInternetConnected().then(() => { props.searchPost(text) })
+                    .catch(() => { toast('Error', 'Please Connect To Internet') })
+
+            }
+
+        }
     };
 
 
     const clearSearch = () => {
-        setSongData([]);
+        if (usersSearch) {
+            setSongData([]);
+        }
+
+        else if (songSearch) {
+            setSearchPostData([]);
+            setPositionInArray(0);
+        }
+
     };
 
 
@@ -570,7 +661,6 @@ function Search(props) {
                             clearSearch()
                             usersSearch ? setUsersSearchText("") : genreSearch ? setGenreSearchText("") :
                                 setSongSearchText("")
-                            genreSearch ? null : songDataEmpty = []
                         }}
                             style={{
                                 position: 'absolute', right: 0,
@@ -630,7 +720,7 @@ function Search(props) {
 
                 {songSearch ?               //SONG VIEW
 
-                    _.isEmpty(songDataEmpty) ?
+                    _.isEmpty(searchPostData) ?
 
                         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
 
@@ -654,17 +744,20 @@ function Search(props) {
                                     fontFamily: 'ProximaNova-Bold',
                                     color: Colors.white, fontSize: normalise(12),
                                     fontWeight: 'bold'
-                                }}> RESULTS (1)</Text>
+                                }}> RESULTS ({searchPostData.length})</Text>
 
                             </View>
 
 
                             <FlatList
                                 style={{ height: '70%' }}
-                                data={songDataEmpty}
+                                data={searchPostData}
                                 renderItem={renderSongData}
                                 keyExtractor={(item, index) => index.toString()}
                                 showsVerticalScrollIndicator={false} />
+
+                            {MorePressed()}
+
                         </View>
 
                     : null}
@@ -681,8 +774,6 @@ function Search(props) {
 
                     : null}
 
-
-                {MorePressed()}
 
             </SafeAreaView>
         </View>
@@ -701,7 +792,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         marginBottom: normalise(10),
-        height: normalise(220),
+        height: normalise(190),
         width: "95%",
         backgroundColor: Colors.darkerblack,
         borderRadius: 20,
@@ -729,7 +820,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
-        userSearch: state.UserReducer.userSearch
+        userSearch: state.UserReducer.userSearch,
+        postStatus: state.PostReducer.status,
+        searchPostData: state.PostReducer.searchPost,
+        savedSongResponse: state.SongReducer.savedSongResponse,
+        userProfileResp: state.UserReducer.userProfileResp,
     }
 };
 
@@ -741,6 +836,22 @@ const mapDispatchToProps = (dispatch) => {
 
         followReq: (payload) => {
             dispatch(userFollowUnfollowRequest(payload))
+        },
+
+        searchPost: (payload) => {
+            dispatch(searchPostReq(payload))
+        },
+
+        reactionOnPostRequest: (payload) => {
+            dispatch(reactionOnPostRequest(payload))
+        },
+
+        saveSongReq: (payload) => {
+            dispatch(saveSongRequest(payload))
+        },
+
+        deletePostReq: (payload) => {
+            dispatch(deletePostReq(payload))
         }
     }
 };

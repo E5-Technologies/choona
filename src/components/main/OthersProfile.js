@@ -84,6 +84,9 @@ function OthersProfile(props) {
                 toast('Oops', 'Something Went Wrong, Please Try Again')
                 break;
 
+            case HOME_PAGE_SUCCESS:
+                status = props.status
+                props.othersProfileReq(props.othersProfileresp._id);
 
         }
     };
@@ -217,15 +220,15 @@ function OthersProfile(props) {
                         <TouchableOpacity
                             style={{
                                 height: normalise(30), width: '45%', borderRadius: normalise(15),
-                                backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
+                                backgroundColor: props.othersProfileresp.isFollowing ? Colors.fadeblack : Colors.white,
                                 alignItems: 'center', justifyContent: 'center'
                             }} onPress={() => { setIsFollowing(!isFollowing), props.followReq({ follower_id: id }) }}>
 
                             <Text style={{
-                                fontSize: normalise(11), color: isFollowing ? Colors.white : Colors.black,
+                                fontSize: normalise(11), color: props.othersProfileresp.isFollowing ? Colors.white : Colors.black,
                                 fontFamily: 'ProximaNova-Bold'
                             }}>
-                                {isFollowing ? "FOLLOWING" : "FOLLOW"}
+                                {props.othersProfileresp.isFollowing ? "FOLLOWING" : "FOLLOW"}
                             </Text>
 
                         </TouchableOpacity>

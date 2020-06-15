@@ -36,13 +36,14 @@ let status;
 
 function HomeItemComments(props) {
 
+    const [type, setType] = useState(props.route.params.type);
     const [index, setIndex] = useState(props.route.params.index);
-    const [commentData, setCommentData] = useState(props.postData[index].comment);
-    const [image, setImage] = useState(props.postData[index].song_image);
-    const [username, setUserName] = useState(props.postData[index].userDetails.username);
-    const [userComment, setUserComment] = useState(props.postData[index].post_content);
-    const [time, setTime] = useState(props.postData[index].createdAt);
-    const [id, setId] = useState(props.postData[index]._id);
+    const [commentData, setCommentData] = useState(type === 'search' ? props.searchData[index].comment : props.postData[index].comment);
+    const [image, setImage] = useState(type === 'search' ? props.searchData[index].song_image : props.postData[index].song_image);
+    const [username, setUserName] = useState(type === 'search' ? props.searchData[index].userDetails.username : props.postData[index].userDetails.username);
+    const [userComment, setUserComment] = useState(type === 'search' ? props.searchData[index].post_content : props.postData[index].post_content);
+    const [time, setTime] = useState(type === 'search' ? props.searchData[index].createdAt : props.postData[index].createdAt);
+    const [id, setId] = useState( type === 'search' ? props.searchData[index]._id : props.postData[index]._id);
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
@@ -241,6 +242,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         postData: state.UserReducer.postData,
+        searchData: state.PostReducer.searchPost,
         commentResp: state.UserReducer.commentResp,
         userProfileResp: state.UserReducer.userProfileResp
     }

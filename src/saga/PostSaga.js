@@ -10,7 +10,11 @@ import {
 
     DELETE_POST_REQUEST,
     DELETE_POST_SUCCESS,
-    DELETE_POST_FAILURE
+    DELETE_POST_FAILURE,
+
+    SEARCH_POST_REQUEST,
+    SEARCH_POST_SUCCESS,
+    SEARCH_POST_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -89,13 +93,30 @@ export function* deletePostAction(action) {
         };
 
         const response = yield call(getApi, `post/delete/${action.payload}`, Header);
-        yield put({ type: DELETE_POST_SUCCESS, data: response.data.data});
+        yield put({ type: DELETE_POST_SUCCESS, data: response.data.data });
 
     } catch (error) {
         yield put({ type: DELETE_POST_FAILURE, error: error })
     }
 };
 
+
+export function* searchPostAction(action) {
+    try {
+        const items = yield select(getItems);
+        const Header = {
+            Accept: "application/json",
+            contenttype: "application/json",
+            accesstoken: items.token
+        };
+
+        const response = yield call(getApi, `post/list?keyword=${action.payload}`, Header);
+        yield put({ type: SEARCH_POST_SUCCESS, data: response.data.data });
+
+    } catch (error) {
+        yield put({ type: SEARCH_POST_FAILURE, error: error });
+    }
+};
 
 
 //WATCH FUNCTIONS
@@ -108,5 +129,9 @@ export function* watchCreatePostRequest() {
 };
 
 export function* watchdeletePostAction() {
-    yield takeLatest (DELETE_POST_REQUEST, deletePostAction)
+    yield takeLatest(DELETE_POST_REQUEST, deletePostAction)
 };
+
+export function* watchSearchPostAction() {
+    yield takeLatest (SEARCH_POST_REQUEST, searchPostAction)
+}

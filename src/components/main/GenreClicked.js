@@ -54,7 +54,9 @@ export default function GenreClicked(props) {
         return (
             <TouchableOpacity style={{ 
                 marginBottom: data.index === genreData.length - 1 ? normalise(30) : normalise(-2)
-            }}  onPress={()=>{props.navigation.navigate("GenreSongClicked")}}>
+            }}  
+            // onPress={()=>{props.navigation.navigate("GenreSongClicked")}}
+            >
                 
                 <Image source={data.item.image} style={{ height: normalise(140), width: normalise(140),
                 margin:normalise(6) }}

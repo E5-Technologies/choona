@@ -1,7 +1,8 @@
 import {
     SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
     CREATE_POST_REQUEST,
-    DELETE_POST_REQUEST
+    DELETE_POST_REQUEST,
+    SEARCH_POST_REQUEST
 }
     from './TypeConstants';
 
@@ -21,5 +22,9 @@ export const deletePostReq = (payload) => ({
     payload
 }); 
 
+export const searchPostReq = (payload) => ({
+    type: SEARCH_POST_REQUEST,
+    payload
+});
 
 

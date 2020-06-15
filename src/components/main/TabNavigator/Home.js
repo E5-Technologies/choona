@@ -44,7 +44,8 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-
+import { useScrollToTop } from '@react-navigation/native';
+import { FlatList } from 'react-native-gesture-handler';
 
 let status = "";
 let songStatus = "";
@@ -57,8 +58,11 @@ function Home(props) {
   const [modalReact, setModalReact] = useState("");
   const [modal1Visible, setModal1Visible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
+  const ref = React.useRef(null);
 
   let changePlayer = false;
+
+  useScrollToTop(ref);
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -121,6 +125,7 @@ function Home(props) {
       case USER_FOLLOW_UNFOLLOW_SUCCESS:
         status = props.status;
         props.homePage()
+        setPositionInArray(0);
         break;
 
       case USER_FOLLOW_UNFOLLOW_FAILURE:
@@ -372,13 +377,12 @@ function Home(props) {
 
           <View style={{ flex: 1 }}>
 
-            <SwipeListView
+            <FlatList
               data={props.postData}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => { index.toString() }}
-              disableRightSwipe={true}
-              rightOpenValue={-75} />
+              ref={ref} />
 
             {props.status === HOME_PAGE_SUCCESS ?
 
@@ -539,6 +543,7 @@ function Home(props) {
 
                   <TouchableOpacity onPress={() => {
                     setModalVisible(!modalVisible);
+                    setPositionInArray(0);
                   }}
 
                     style={{
