@@ -98,6 +98,16 @@ function HomeHeaderComponent(props) {
                         style={{ height: props.imagetwoheight, width: props.imagetwowidth }}
                         resizeMode="contain"
                     />
+                    {props.notRead ? <View style={{
+                        backgroundColor: Colors.red,
+                        height: 10,
+                        width: 10,
+                        borderRadius: 10,
+                        position: 'absolute',
+                        top: 0,
+                        right: -5
+                    }} /> : null}
+
                 </TouchableOpacity>}
         </View>
     )
@@ -123,7 +133,8 @@ HomeHeaderComponent.propTypes = {
     marginTop: PropTypes.number,
     height: PropTypes.number,
     borderRadius: PropTypes.number,
-    staticFirstImage: PropTypes.bool
+    staticFirstImage: PropTypes.bool,
+    read: PropTypes.bool
 };
 HomeHeaderComponent.defaultProps = {
     firstitemtext: true,
@@ -145,7 +156,8 @@ HomeHeaderComponent.defaultProps = {
     middleImageReq: false,
     marginTop: normalise(15),
     height: normalise(35),
-    staticFirstImage: true
+    staticFirstImage: true,
+    notRead: false
 
 }
 

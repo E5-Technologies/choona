@@ -59,6 +59,10 @@ import {
     FEATURED_SONG_SEARCH_SUCCESS,
     FEATURED_SONG_SEARCH_FAILURE,
 
+    GET_CHAT_LIST_REQUEST,
+    GET_CHAT_LIST_SUCCESS,
+    GET_CHAT_LIST_FAILURE,
+
     USER_LOGOUT_REQUEST,
     USER_LOGOUT_SUCCESS,
     USER_LOGOUT_FAILURE
@@ -236,7 +240,12 @@ export function* homePageAction(action) {
         };
 
         const response = yield call(getApi, 'post/list', Header);
-        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data })
+
+        const chatResponse = yield call(getApi, 'chat/list', Header)
+        yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
+
+        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data });
+        //yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
 
     } catch (error) {
         yield put({ type: HOME_PAGE_FAILURE, error: error })

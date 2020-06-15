@@ -46,6 +46,8 @@ import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
+import { func } from 'prop-types';
+
 
 let status = "";
 let songStatus = "";
@@ -285,6 +287,24 @@ function Home(props) {
     )
   };
 
+  function findIsNotRead() {
+    let hasUnseenMessage = false;
+    let arr = props.chatList;
+
+    for (var i = 0; i < arr.length; i++) {
+
+      chatObject = Object.values(arr[i])[0]
+
+      if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
+
+        return !Object.values(arr[i])[0].read;
+        break;
+      }
+    }
+
+    return hasUnseenMessage;
+  }
+
 
   return (
 
@@ -320,6 +340,7 @@ function Home(props) {
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
+          notRead={findIsNotRead()}
           onPressFirstItem={() => { props.navigation.navigate("Profile") }}
           onPressThirdItem={() => { props.navigation.navigate("Inbox") }} />
 
@@ -667,6 +688,8 @@ const mapStateToProps = (state) => {
     songStatus: state.SongReducer.status,
     savedSongResponse: state.SongReducer.savedSongResponse,
     playingSongRef: state.SongReducer.playingSongRef,
+    chatList: state.MessageReducer.chatList,
+    messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status
   }
 };
