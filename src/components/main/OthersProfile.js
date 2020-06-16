@@ -32,6 +32,7 @@ import _ from "lodash"
 
 
 let status;
+let changePlayer = true;
 
 function OthersProfile(props) {
 
@@ -262,7 +263,17 @@ function OthersProfile(props) {
                                 alignItems: 'center',
                                 height: normalise(50),
                             }}>
-                                <TouchableOpacity>
+                                <TouchableOpacity 
+                                onPress={() => {
+                                    props.navigation.navigate('Player', {
+                                        song_title: JSON.parse(props.othersProfileresp.feature_song)[0].song_name,
+                                        album_name: JSON.parse(props.othersProfileresp.feature_song)[0].album_name,
+                                        song_pic: JSON.parse(props.othersProfileresp.feature_song)[0].song_pic,
+                                        uri: JSON.parse(props.othersProfileresp.feature_song)[0].song_uri,
+                                        artist: JSON.parse(props.othersProfileresp.feature_song)[0].album_name,
+                                        changePlayer: changePlayer
+                                    })
+                                }}>
                                     <Image source={{ uri: JSON.parse(props.othersProfileresp.feature_song)[0].song_pic }}
                                         style={{ height: normalise(40), width: normalise(40) }} />
 
