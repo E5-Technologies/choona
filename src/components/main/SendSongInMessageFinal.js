@@ -39,6 +39,8 @@ function SendSongInMessageFinal(props) {
     const [title1, setTitle1] = useState(props.route.params.title)
     const [title2, setTitle2] = useState(props.route.params.title2);
     const [usersData, setUserData] = useState(props.route.params.users);
+    const [fromAddAnotherSong, setFromAddAnotherSong] = useState(props.route.params.fromAddAnotherSong)
+    const [index, setIndex] = useState(props.route.params.index);
 
     if (status === "" || status !== props.status) {
         switch (props.status) {
@@ -147,11 +149,22 @@ function SendSongInMessageFinal(props) {
                     title={"SEND SONG"}
                     thirditemtext={true}
                     texttwo={"SEND"}
-                    onPressFirstItem={() => { props.navigation.goBack() }}
+                    onPressFirstItem={() => {
+                        if (fromAddAnotherSong) {
+                            props.navigation.replace('InsideaMessage', { index: index })
+                        } else {
+                            props.navigation.goBack();
+                        }
+                    }}
                     onPressThirdItem={() => {
                         if (search.trim() != "") {
                             sendMessage();
-                            props.navigation.goBack();
+                            if (fromAddAnotherSong) {
+                                props.navigation.replace('InsideaMessage', { index: index })
+                            } else {
+                                props.navigation.goBack();
+                            }
+
                         } else {
                             toast("Error", "Please type in a message to send");
                         }

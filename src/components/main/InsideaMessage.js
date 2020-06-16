@@ -85,9 +85,9 @@ function InsideaMessage(props) {
         let data = _.filter(props.chatData, (item) => {
             return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
         });
-        
+
         setChatData(data);
-    
+
     };
 
     return (
@@ -95,7 +95,7 @@ function InsideaMessage(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <Loader visible={props.status === CHAT_LOAD_REQUEST} />
-            
+
             <StatusBar />
 
             <SafeAreaView style={{ flex: 1 }}>
@@ -163,11 +163,15 @@ function InsideaMessage(props) {
                     shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                     shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
                     justifyContent: 'center', borderColor: Colors.grey,
-                }}  onPress={()=>{props.navigation.navigate('AddAnotherSong', {
-                    users: [{_id: chatData[0].receiver_id === props.userProfileResp._id ? chatData[0].sender_id :
-                        chatData[0].receiver_id, username: props.chatList[index].username, full_name:props.chatList[index].full_name,
-                        profile_image: props.chatList[index].profile_image }]
-                })}}>
+                }} onPress={() => {
+                    props.navigation.replace('AddAnotherSong', {
+                        users: [{
+                            _id: chatData[0].receiver_id === props.userProfileResp._id ? chatData[0].sender_id :
+                                chatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
+                            profile_image: props.chatList[index].profile_image,
+                        }], index: index
+                    })
+                }}>
 
                     <Text style={{
                         marginLeft: normalise(10), color: Colors.gray, fontSize: normalise(14),

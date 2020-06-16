@@ -48,6 +48,7 @@ function AddAnotherSong(props) {
     const [usersToSend, setUsersToSend] = useState(props.route.params.users);
     const [result, setResult] = useState([]);
     const [index, setIndex] = useState([])
+    const [indexOfArray, setIndexOfArray] = useState(props.route.params.index);
 
 
     let post = false;
@@ -86,7 +87,8 @@ function AddAnotherSong(props) {
                     image: props.registerType === 'spotify' ? result[index].album.images[0].url : result[index].artworkUrl100,
                     title: props.registerType === 'spotify' ? result[index].name : result[index].trackName,
                     title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].artistName,
-                    users: usersToSend, details: result[index], registerType: props.registerType
+                    users: usersToSend, details: result[index], registerType: props.registerType, 
+                    fromAddAnotherSong: true, index: indexOfArray
                 })
                 break;
 
@@ -156,7 +158,7 @@ function AddAnotherSong(props) {
                     imagetwo={ImagePath.newmessage}
                     imagetwoheight={25}
                     imagetwowidth={25}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                    onPressFirstItem={() => { props.navigation.replace('InsideaMessage', { index: indexOfArray }) }} />
 
                 <View style={{ width: '92%', alignSelf: 'center', }}>
 
