@@ -116,7 +116,8 @@ function AddSongsInMessage(props) {
                     image: props.registerType === 'spotify' ? result[index].album.images[0].url : result[index].artworkUrl100,
                     title: props.registerType === 'spotify' ? result[index].name : result[index].trackName,
                     title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].artistName,
-                    users: usersToSEndSong, details: result[index], registerType: props.registerType
+                    users: usersToSEndSong, details: result[index], registerType: props.registerType,
+                    fromAddAnotherSong: false, index: 0
                 })
                 break;
 
