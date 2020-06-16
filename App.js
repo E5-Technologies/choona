@@ -50,6 +50,7 @@ import GenreClicked from './src/components/main/GenreClicked';
 import GenreSongClicked from './src/components/main/GenreSongClicked';
 import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 import FeaturedTrack from './src/components/main/FeaturedTrack';
+import AddAnotherSong from './src/components/main/AddAnotherSong';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -208,6 +209,7 @@ const App = () => {
             <Stack.Screen name="GenreClicked" component={GenreClicked} />
             <Stack.Screen name="GenreSongClicked" component={GenreSongClicked} />
             <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
+            <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
           </Stack.Navigator>
         }
 
