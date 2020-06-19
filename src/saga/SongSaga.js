@@ -14,7 +14,11 @@ import {
 
     SAVE_SONG_REFERENCE_REQUEST,
     SAVE_SONG_REFERENCE_SUCCESS,
-    SAVE_SONG_REFERENCE_FAILURE
+    SAVE_SONG_REFERENCE_FAILURE,
+
+    TOP_50_SONGS_REQUEST,
+    TOP_50_SONGS_SUCCESS,
+    TOP_50_SONGS_FAILURE
 
 } from '../action/TypeConstants';
 import { getApi, postApi } from '../utils/helpers/ApiRequest';
@@ -84,12 +88,35 @@ export function* unsaveSongAction(action) {
 
 export function* saveSongRefAction(action) {
     try {
-        yield put({type: SAVE_SONG_REFERENCE_SUCCESS, data: action.object})
+        yield put({ type: SAVE_SONG_REFERENCE_SUCCESS, data: action.object })
 
     } catch (error) {
-        yield put ({type: SAVE_SONG_REFERENCE_FAILURE, error: error})
+        yield put({ type: SAVE_SONG_REFERENCE_FAILURE, error: error })
     }
 };
+
+export function* getTop50Song() {
+    const items = yield select(getItems);
+
+    const Header = {
+        Accept: "application/json",
+        contenttype: "application/json",
+        accesstoken: items.token
+    };
+
+    try {
+
+        let response = yield call(getApi, 'post/topfifty', Header)
+        yield put({ type: TOP_50_SONGS_SUCCESS, data: response })
+
+    }
+    catch (error) {
+        yield put({ type: TOP_50_SONGS_FAILURE, error: error })
+
+    }
+
+
+}
 
 
 
@@ -109,4 +136,8 @@ export function* watchunsaveSongAction() {
 
 export function* watchsaveSongRefAction() {
     yield takeLatest(SAVE_SONG_REFERENCE_REQUEST, saveSongRefAction)
+};
+
+export function* watchTop50SongsAction() {
+    yield takeLatest(TOP_50_SONGS_REQUEST, getTop50Song)
 };
