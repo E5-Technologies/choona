@@ -113,6 +113,8 @@ function SendSongInMessageFinal(props) {
                 receiver_id: item._id,
                 song_name: title1,
                 artist_name: title2,
+                album_name: props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
+                props.route.params.details.collectionName,
                 image: imgsource,
                 song_uri: props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
                     props.route.params.details.previewUrl,

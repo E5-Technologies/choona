@@ -31,6 +31,7 @@ import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash'
 
 let status = ""
+let changePlayer = true;
 
 function InsideaMessage(props) {
 
@@ -76,6 +77,15 @@ function InsideaMessage(props) {
                 title={data.item.song_name}
                 singer={data.item.artist_name}
                 comments={data.item.message}
+                onPressImage={()=>{ 
+                    props.navigation.navigate('Player', {
+                    song_title: data.item.song_name,
+                    album_name: data.item.album_name,
+                    song_pic: data.item.image,
+                    uri: data.item.song_uri ,
+                    artist:data.item.artist_name,
+                    changePlayer: changePlayer
+                })}}
                 marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
         )
     }
