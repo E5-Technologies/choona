@@ -14,7 +14,11 @@ import {
 
     SEARCH_POST_REQUEST,
     SEARCH_POST_SUCCESS,
-    SEARCH_POST_FAILURE
+    SEARCH_POST_FAILURE,
+
+    GET_POST_FROM_TOP_50_REQUEST,
+    GET_POST_FROM_TOP_50_SUCCESS,
+    GET_POST_FROM_TOP_50_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -110,11 +114,12 @@ export function* searchPostAction(action) {
             accesstoken: items.token
         };
 
-        const response = yield call(getApi, `post/list?keyword=${action.payload}`, Header);
-        yield put({ type: SEARCH_POST_SUCCESS, data: response.data.data });
+        const response = yield call(getApi, `post/list?keyword=${action.text}`, Header);
+        yield put({ type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS, data: response.data.data });
+
 
     } catch (error) {
-        yield put({ type: SEARCH_POST_FAILURE, error: error });
+        yield put({ type: action.flag ? SEARCH_POST_FAILURE : GET_POST_FROM_TOP_50_FAILURE, error: error });
     }
 };
 
@@ -133,5 +138,9 @@ export function* watchdeletePostAction() {
 };
 
 export function* watchSearchPostAction() {
-    yield takeLatest (SEARCH_POST_REQUEST, searchPostAction)
+    yield takeLatest(SEARCH_POST_REQUEST, searchPostAction)
+}
+
+export function* watchGetPostFromTop50() {
+    yield takeLatest(GET_POST_FROM_TOP_50_REQUEST, searchPostAction)
 }

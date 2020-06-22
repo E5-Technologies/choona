@@ -27,9 +27,11 @@ import {
     USER_FOLLOW_UNFOLLOW_FAILURE,
     SEARCH_POST_REQUEST, SEARCH_POST_SUCCESS,
     SEARCH_POST_FAILURE,
+    TOP_50_SONGS_REQUEST, TOP_50_SONGS_SUCCESS,
+    TOP_50_SONGS_FAILURE
 } from '../../../action/TypeConstants';
 import { userSearchRequest, userFollowUnfollowRequest, reactionOnPostRequest } from '../../../action/UserAction';
-import { saveSongRequest } from '../../../action/SongAction';
+import { saveSongRequest, getTop50SongsRequest } from '../../../action/SongAction';
 import { searchPostReq } from '../../../action/PostAction';
 import { deletePostReq } from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
@@ -37,44 +39,16 @@ import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
-
-let genreData = [
-    {
-        title: "Electronic/Dance"
-    },
-    {
-        title: "Pop"
-    },
-    {
-        title: "Rock"
-    },
-    {
-        title: "Country Music"
-    },
-    {
-        title: "R & B"
-    },
-    {
-        title: "Indie"
-    },
-    {
-        title: "Rap"
-    },
-    {
-        title: "Afro"
-    },
-
-];
-
-
 let status;
 let postStatus;
+let top50Status;
 
 function Search(props) {
 
     const [usersSearch, setUsersSearch] = useState(true);
     const [genreSearch, setGenreSearch] = useState(false);
     const [songSearch, setSongSearch] = useState(false);
+
 
     const [usersSearchText, setUsersSearchText] = useState("");
     const [genreSearchText, setGenreSearchText] = useState("");
@@ -83,6 +57,7 @@ function Search(props) {
 
     const [songData, setSongData] = useState([]);       // user search data...ignore the naming
     const [searchPostData, setSearchPostData] = useState([]);   //search post data
+    const [top50, setTop50] = useState([]);  //top 50 data 
 
     const [positionInArray, setPositionInArray] = useState(0);
     const [modal1Visible, setModal1Visible] = useState(false);
@@ -92,7 +67,7 @@ function Search(props) {
 
     let changePlayer = false;
     let sendSong = false;
-
+    let flag = true;
 
     // useEffect(() => {
     //     const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -141,7 +116,6 @@ function Search(props) {
                 toast('Opps', 'Something went wrong, Please try again')
                 status = props.status
                 break;
-
         }
     };
 
@@ -166,8 +140,28 @@ function Search(props) {
         }
     };
 
-    // RENDER FUNCTION FLATLIST 
+    if (top50Status === "" || top50Status !== props.top50SongsStatus) {
 
+        switch (props.top50SongsStatus) {
+
+            case TOP_50_SONGS_REQUEST:
+                top50Status = props.top50SongsStatus
+                break;
+
+            case TOP_50_SONGS_SUCCESS:
+                top50Status = props.top50SongsStatus
+                setTop50(props.top50SongsResponse)
+                break;
+
+            case TOP_50_SONGS_FAILURE:
+                top50Status = props.top50SongsStatus
+                console.log("ERROR", props.error.response)
+                break;
+        }
+    };
+
+
+    // RENDER FUNCTION FLATLIST 
     function renderUserData(data) {
         return (
             <ActivityListItem
@@ -251,22 +245,17 @@ function Search(props) {
     function renderGenreData(data) {
         return (
             <TouchableOpacity style={{
-                width: '88%', alignSelf: 'center', flexDirection: 'row',
-                alignItems: 'center', justifyContent: 'space-between', paddingTop: normalise(20),
-                paddingBottom: normalise(20),
-                marginBottom: data.index === genreData.length - 1 ? normalise(30) : normalise(0),
-                borderBottomWidth: 0.5, borderBottomColor: Colors.activityBorderColor
-            }} onPress={() => { props.navigation.navigate("GenreClicked", { data: data.item.title }) }}>
+                marginBottom: data.index === top50.length - 1 ? normalise(30) : normalise(-2),
+            }}
+            onPress={()=>{props.navigation.navigate("GenreSongClicked", {data: data.item._id})}}
+            >
 
-                <Text style={{
-                    fontFamily: 'ProximaNova-Semibold',
-                    fontSize: normalise(15), color: Colors.white, marginLeft: normalise(5)
-                }}>{data.item.title}</Text>
-
-                <Image source={ImagePath.backicon} style={{
-                    height: normalise(10), width: normalise(10),
-                    transform: [{ rotate: '180deg' },], marginRight: normalise(5)
-                }} resizeMode='contain' />
+                <Image source={{uri: data.item.song_image}}
+                    style={{
+                        height: normalise(140), width: normalise(140),
+                        margin: normalise(6)
+                    }}
+                    resizeMode="contain" />
             </TouchableOpacity>
         )
     };
@@ -489,7 +478,7 @@ function Search(props) {
 
         else if (songSearch) {
             if (text.length >= 1) {
-                isInternetConnected().then(() => { props.searchPost(text) })
+                isInternetConnected().then(() => { props.searchPost(text, flag) })
                     .catch(() => { toast('Error', 'Please Connect To Internet') })
 
             }
@@ -518,6 +507,10 @@ function Search(props) {
             <StatusBar />
 
             <Loader visible={props.status === USER_SEARCH_REQUEST} />
+
+            <Loader visible={props.postStatus === SEARCH_POST_REQUEST} />
+
+            <Loader visible={props.top50SongsStatus === TOP_50_SONGS_REQUEST} />
 
             <Loader visible={bool} />
 
@@ -569,14 +562,17 @@ function Search(props) {
                     <TouchableOpacity
                         style={{
                             backgroundColor: Colors.fadeblack,
-                            width: "33%",
+                            width: "34%",
                             height: normalise(40),
                             justifyContent: 'flex-end'
                         }}
                         onPress={() => {
+                            props.getTop50SongReq()
                             setUsersSearch(false),
                                 setGenreSearch(true),
                                 setSongSearch(false)
+
+
                         }}
                     >
                         <Text
@@ -587,7 +583,7 @@ function Search(props) {
                                 top: normalise(14),
                                 left: normalise(26),
                                 fontSize: normalise(12)
-                            }}>GENRES</Text>
+                            }}>TOP 50</Text>
 
                         {genreSearch ? <Image
                             source={ImagePath.gradient_border_horizontal}
@@ -642,7 +638,7 @@ function Search(props) {
                         color: Colors.white,
                         paddingLeft: normalise(30)
                     }} value={usersSearch ? usersSearchText : genreSearch ? genreSearchText : songSearchText}
-                        placeholder={usersSearch ? "Search Users" : genreSearch ? "Search Genres" : "Search Songs"}
+                        placeholder={usersSearch ? "Search Users" : genreSearch ? "Search Top 50 Songs " : "Search Songs"}
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
                             search(text)
@@ -766,10 +762,12 @@ function Search(props) {
                 {genreSearch ?              //GENRE VIEW
 
                     <FlatList
-                        style={{ height: '70%' }}
-                        data={genreData}
+                        //style={{ height: '70%' }}
+                        style={{alignSelf:'center'}}
+                        data={top50}
                         renderItem={renderGenreData}
                         keyExtractor={(item, index) => index.toString()}
+                        numColumns={2}
                         showsVerticalScrollIndicator={false} />
 
                     : null}
@@ -825,6 +823,9 @@ const mapStateToProps = (state) => {
         searchPostData: state.PostReducer.searchPost,
         savedSongResponse: state.SongReducer.savedSongResponse,
         userProfileResp: state.UserReducer.userProfileResp,
+        top50SongsResponse: state.SongReducer.top50SongsResponse,
+        top50SongsStatus: state.SongReducer.status,
+        error: state.SongReducer.error
     }
 };
 
@@ -838,8 +839,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(userFollowUnfollowRequest(payload))
         },
 
-        searchPost: (payload) => {
-            dispatch(searchPostReq(payload))
+        searchPost: (text, flag) => {
+            dispatch(searchPostReq(text, flag))
         },
 
         reactionOnPostRequest: (payload) => {
@@ -852,6 +853,9 @@ const mapDispatchToProps = (dispatch) => {
 
         deletePostReq: (payload) => {
             dispatch(deletePostReq(payload))
+        },
+        getTop50SongReq: () => {
+            dispatch(getTop50SongsRequest())
         }
     }
 };

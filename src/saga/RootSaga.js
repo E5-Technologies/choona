@@ -8,12 +8,14 @@ import {
     watchfeaturedTrackSearchAction, watchUserLogoutAction
 } from './UserSaga'
 
-import { watchSearchSongsForPostRequest, watchCreatePostRequest, watchdeletePostAction,
-watchSearchPostAction } from './PostSaga'
+import {
+    watchSearchSongsForPostRequest, watchCreatePostRequest, watchdeletePostAction,
+    watchSearchPostAction, watchGetPostFromTop50
+} from './PostSaga'
 
 import {
     watchsaveSongAction, watchsavedSongListAction, watchunsaveSongAction,
-    watchsaveSongRefAction
+    watchsaveSongRefAction, watchTop50SongsAction
 } from './SongSaga';
 
 import {
@@ -54,6 +56,8 @@ function* RootSaga() {
         watchfeaturedTrackSearchAction(),
         watchUserLogoutAction(),
         watchSearchPostAction(),
+        watchTop50SongsAction(),
+        watchGetPostFromTop50()
 
     ])
 }

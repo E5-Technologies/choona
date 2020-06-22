@@ -2,7 +2,8 @@ import {
     SAVE_SONGS_REQUEST,
     SAVED_SONGS_LIST_REQUEST,
     UNSAVE_SONG_REQUEST,
-    SAVE_SONG_REFERENCE_REQUEST
+    SAVE_SONG_REFERENCE_REQUEST,
+    TOP_50_SONGS_REQUEST
 } from '../action/TypeConstants';
 
 
@@ -25,3 +26,7 @@ export const saveSongRefReq = (object) => ({
     type: SAVE_SONG_REFERENCE_REQUEST,
     object
 });
+
+export const getTop50SongsRequest = () =>({
+    type: TOP_50_SONGS_REQUEST
+})

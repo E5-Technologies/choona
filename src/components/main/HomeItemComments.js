@@ -38,12 +38,25 @@ function HomeItemComments(props) {
 
     const [type, setType] = useState(props.route.params.type);
     const [index, setIndex] = useState(props.route.params.index);
-    const [commentData, setCommentData] = useState(type === 'search' ? props.searchData[index].comment : props.postData[index].comment);
-    const [image, setImage] = useState(type === 'search' ? props.searchData[index].song_image : props.postData[index].song_image);
-    const [username, setUserName] = useState(type === 'search' ? props.searchData[index].userDetails.username : props.postData[index].userDetails.username);
-    const [userComment, setUserComment] = useState(type === 'search' ? props.searchData[index].post_content : props.postData[index].post_content);
-    const [time, setTime] = useState(type === 'search' ? props.searchData[index].createdAt : props.postData[index].createdAt);
-    const [id, setId] = useState( type === 'search' ? props.searchData[index]._id : props.postData[index]._id);
+    
+    const [commentData, setCommentData] = useState(type === 'search' ? props.searchData[index].comment :
+        type === 'top50' ? props.getPostFromTop50[index].comment : props.postData[index].comment);
+
+    const [image, setImage] = useState(type === 'search' ? props.searchData[index].song_image :
+        type === 'top50' ? props.getPostFromTop50[index].song_image : props.postData[index].song_image);
+
+    const [username, setUserName] = useState(type === 'search' ? props.searchData[index].userDetails.username :
+        type === 'top50' ? props.getPostFromTop50[index].userDetails.username : props.postData[index].userDetails.username);
+
+    const [userComment, setUserComment] = useState(type === 'search' ? props.searchData[index].post_content :
+        type === 'top50' ? props.getPostFromTop50[index].post_content : props.postData[index].post_content);
+
+    const [time, setTime] = useState(type === 'search' ? props.searchData[index].createdAt :
+        type === 'top50' ? props.getPostFromTop50[index].createdAt : props.postData[index].createdAt);
+
+    const [id, setId] = useState(type === 'search' ? props.searchData[index]._id :
+        type === 'top50' ? props.getPostFromTop50[index]._id : props.postData[index]._id);
+
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
 
@@ -70,7 +83,7 @@ function HomeItemComments(props) {
             case COMMENT_ON_POST_SUCCESS:
                 status = props.status
                 setCommentText("")
-                let data = props.commentResp.comment[props.commentResp.comment.length-1]
+                let data = props.commentResp.comment[props.commentResp.comment.length - 1]
                 data.profile_image = props.userProfileResp.profile_image
                 commentData.push(data);
                 setArrayLength(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
@@ -244,7 +257,8 @@ const mapStateToProps = (state) => {
         postData: state.UserReducer.postData,
         searchData: state.PostReducer.searchPost,
         commentResp: state.UserReducer.commentResp,
-        userProfileResp: state.UserReducer.userProfileResp
+        userProfileResp: state.UserReducer.userProfileResp,
+        getPostFromTop50: state.PostReducer.getPostFromTop50,
     }
 };
 

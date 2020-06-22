@@ -14,7 +14,11 @@ import {
 
     SEARCH_POST_REQUEST,
     SEARCH_POST_SUCCESS,
-    SEARCH_POST_FAILURE
+    SEARCH_POST_FAILURE,
+
+    GET_POST_FROM_TOP_50_REQUEST,
+    GET_POST_FROM_TOP_50_SUCCESS,
+    GET_POST_FROM_TOP_50_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -25,7 +29,8 @@ const initialState = {
     createPostResponse: {},
     chooseSongToSend: [],
     deletePostResp: {},
-    searchPost: []
+    searchPost: [],
+    getPostFromTop50: []
 }
 
 const PostReducer = (state = initialState, action) => {
@@ -115,6 +120,26 @@ const PostReducer = (state = initialState, action) => {
             };
 
         case SEARCH_POST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case GET_POST_FROM_TOP_50_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case GET_POST_FROM_TOP_50_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                getPostFromTop50: action.data,
+            };
+
+        case GET_POST_FROM_TOP_50_FAILURE:
             return {
                 ...state,
                 status: action.type,
