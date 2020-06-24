@@ -5,7 +5,7 @@ import {
     watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction,
     watchhomePageAction, watchcommentOnPostAction, watchfollowerListAction,
     watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction,
-    watchfeaturedTrackSearchAction, watchUserLogoutAction
+    watchfeaturedTrackSearchAction, watchUserLogoutAction, watchgetUsersFromHomeAction
 } from './UserSaga'
 
 import {
@@ -57,7 +57,8 @@ function* RootSaga() {
         watchUserLogoutAction(),
         watchSearchPostAction(),
         watchTop50SongsAction(),
-        watchGetPostFromTop50()
+        watchGetPostFromTop50(),
+        watchgetUsersFromHomeAction(),
 
     ])
 }

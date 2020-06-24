@@ -77,15 +77,18 @@ function InsideaMessage(props) {
                 title={data.item.song_name}
                 singer={data.item.artist_name}
                 comments={data.item.message}
-                onPressImage={()=>{ 
+                onPressImage={() => {
                     props.navigation.navigate('Player', {
-                    song_title: data.item.song_name,
-                    album_name: data.item.album_name,
-                    song_pic: data.item.image,
-                    uri: data.item.song_uri ,
-                    artist:data.item.artist_name,
-                    changePlayer: changePlayer
-                })}}
+                        song_title: data.item.song_name,
+                        album_name: data.item.album_name,
+                        song_pic: data.item.image,
+                        uri: data.item.song_uri,
+                        artist: data.item.artist_name,
+                        changePlayer: changePlayer,
+                        // originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                        //     undefined,
+                    })
+                }}
                 marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
         )
     }

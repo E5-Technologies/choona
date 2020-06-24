@@ -114,7 +114,8 @@ export function* searchPostAction(action) {
             accesstoken: items.token
         };
 
-        const response = yield call(getApi, `post/list?keyword=${action.text}`, Header);
+        const text = action.text.replace('&','');
+        const response = yield call(getApi, `post/list?keyword=${encodeURI(text)}`, Header);
         yield put({ type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS, data: response.data.data });
 
 

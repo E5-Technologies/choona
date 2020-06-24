@@ -103,7 +103,8 @@ function FeaturedTrack(props) {
                         song_uri: props.registerType === 'spotify' ? data.item.preview_url : data.item.previewUrl,
                         album_name: props.registerType === 'spotify' ? data.item.album.name : data.item.collectionName,
                         song_pic: props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.artworkUrl100,
-                        album_name: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName
+                        artist_name: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
+                        original_song_uri: props.registerType === "spotify" ? data.item.external_urls.spotify : data.item.trackViewUrl
                     }];
                     formdata.append("feature_song", JSON.stringify(array))
                     props.editProfileReq(formdata);
