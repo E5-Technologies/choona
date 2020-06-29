@@ -49,7 +49,9 @@ function AddSong(props) {
             "song_image": imgsource,
             "artist_name": title2,
             "album_name": props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
-                props.route.params.details.collectionName
+                props.route.params.details.collectionName,
+            "original_song_uri": props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
+                props.route.params.details.trackViewUrl
         };
 
 

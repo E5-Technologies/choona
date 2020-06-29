@@ -88,7 +88,7 @@ function AddAnotherSong(props) {
                     title: props.registerType === 'spotify' ? result[index].name : result[index].trackName,
                     title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].artistName,
                     users: usersToSend, details: result[index], registerType: props.registerType, 
-                    fromAddAnotherSong: true, index: indexOfArray
+                    fromAddAnotherSong: true, index: indexOfArray, fromHome: false
                 })
                 break;
 
@@ -108,7 +108,7 @@ function AddAnotherSong(props) {
         })
         props.createChatTokenRequest(userIds);
     };
-    
+
 
     function singerList(artists) {
 
@@ -229,7 +229,7 @@ function AddAnotherSong(props) {
                         keyExtractor={(item, index) => { index.toString() }}
                         showsVerticalScrollIndicator={false}
                     />
-                    }
+                }
 
             </SafeAreaView>
         </View >

@@ -57,7 +57,11 @@ import {
 
     USER_LOGOUT_REQUEST,
     USER_LOGOUT_SUCCESS,
-    USER_LOGOUT_FAILURE
+    USER_LOGOUT_FAILURE,
+
+    GET_USER_FROM_HOME_REQUEST,
+    GET_USER_FROM_HOME_SUCCESS,
+    GET_USER_FROM_HOME_FAILURE
 }
     from '../action/TypeConstants';
 import moment from 'moment'
@@ -82,6 +86,7 @@ const initialState = {
     activityListToday: [],
     sendSongUserSearch: [],
     featuredSongSearchResp: [],
+    userSearchFromHome: [],
     userLogoutResp: {}
 }
 
@@ -250,7 +255,7 @@ const UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 status: action.type,
-                postData: _.sortBy(action.data,"createdAt").reverse()
+                postData: _.sortBy(action.data, "createdAt").reverse()
             };
 
         case HOME_PAGE_FAILURE:
@@ -418,6 +423,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case USER_LOGOUT_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case GET_USER_FROM_HOME_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case GET_USER_FROM_HOME_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                userSearchFromHome: action.data
+            };
+
+        case GET_USER_FROM_HOME_FAILURE:
             return {
                 ...state,
                 status: action.type,

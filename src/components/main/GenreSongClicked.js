@@ -206,7 +206,9 @@ function GenreSongClicked(props) {
             reactions: data.item.reaction,
             id: data.item._id,
             artist: data.item.artist_name,
-            changePlayer: changePlayer
+            changePlayer: changePlayer,
+            originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+            registerType: data.item.userDetails.register_type
 
           })
         }}

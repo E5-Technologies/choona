@@ -13,7 +13,8 @@ import {
     REACTION_ON_POST_REQUEST,
     ACTIVITY_LIST_REQUEST,
     FEATURED_SONG_SEARCH_REQUEST,
-    USER_LOGOUT_REQUEST
+    USER_LOGOUT_REQUEST,
+    GET_USER_FROM_HOME_REQUEST
 }
     from './TypeConstants';
 
@@ -91,6 +92,10 @@ export const userLogoutReq = () => ({
     type: USER_LOGOUT_REQUEST
 });
 
+export const getUsersFromHome = (payload) => ({
+    type: GET_USER_FROM_HOME_REQUEST,
+    payload
+});
 
 
 

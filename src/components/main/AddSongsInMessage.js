@@ -117,7 +117,7 @@ function AddSongsInMessage(props) {
                     title: props.registerType === 'spotify' ? result[index].name : result[index].trackName,
                     title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].artistName,
                     users: usersToSEndSong, details: result[index], registerType: props.registerType,
-                    fromAddAnotherSong: false, index: 0
+                    fromAddAnotherSong: false, index: 0, fromHome: false
                 })
                 break;
 
@@ -135,7 +135,7 @@ function AddSongsInMessage(props) {
             userIds.push(users._id);
         })
         props.createChatTokenRequest(userIds);
-    }
+    };
 
     function singerList(artists) {
 

@@ -358,7 +358,7 @@ function Profile(props) {
                             width: '90%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'space-between', height: normalise(50),
                         }}>
-                           <View style={{ flexDirection: 'row', alignItems:'center' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                                 <TouchableOpacity onPress={() => {
                                     props.navigation.navigate('Player', {
@@ -368,8 +368,10 @@ function Profile(props) {
                                         username: props.userProfileResp.username,
                                         profile_pic: props.userProfileResp.profile_image,
                                         uri: JSON.parse(props.userProfileResp.feature_song)[0].song_uri,
-                                        artist: JSON.parse(props.userProfileResp.feature_song)[0].album_name,
-                                        changePlayer: changePlayer
+                                        artist: JSON.parse(props.userProfileResp.feature_song)[0].artist_name,
+                                        changePlayer: changePlayer,
+                                        // originalUri: JSON.parse(props.userProfileResp.feature_song)[0].hasOwnProperty("original_song_uri")?
+                                        // JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri : undefined
                                     })
                                 }}>
 

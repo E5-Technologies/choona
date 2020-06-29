@@ -41,6 +41,8 @@ function SendSongInMessageFinal(props) {
     const [usersData, setUserData] = useState(props.route.params.users);
     const [fromAddAnotherSong, setFromAddAnotherSong] = useState(props.route.params.fromAddAnotherSong)
     const [index, setIndex] = useState(props.route.params.index);
+    const [type, setType] = useState(props.route.params.fromHome);
+
 
     if (status === "" || status !== props.status) {
         switch (props.status) {
@@ -113,11 +115,18 @@ function SendSongInMessageFinal(props) {
                 receiver_id: item._id,
                 song_name: title1,
                 artist_name: title2,
-                album_name: props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
-                props.route.params.details.collectionName,
+
+                album_name: type ? props.route.params.details.album_name : props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
+                    props.route.params.details.collectionName,
+
                 image: imgsource,
-                song_uri: props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
+
+                song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
                     props.route.params.details.previewUrl,
+
+                original_song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
+                    props.route.params.details.trackViewUrl,
+
                 read: false,
                 time: moment().toString()
             }

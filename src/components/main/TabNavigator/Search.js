@@ -223,7 +223,9 @@ function Search(props) {
                         reactions: data.item.reaction,
                         id: data.item._id,
                         artist: data.item.artist_name,
-                        changePlayer: changePlayer
+                        changePlayer: changePlayer,
+                        originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+                        registerType: data.item.userDetails.register_type
 
                     })
                 }}
@@ -247,10 +249,10 @@ function Search(props) {
             <TouchableOpacity style={{
                 marginBottom: data.index === top50.length - 1 ? normalise(30) : normalise(-2),
             }}
-            onPress={()=>{props.navigation.navigate("GenreSongClicked", {data: data.item._id})}}
+                onPress={() => { props.navigation.navigate("GenreSongClicked", { data: data.item._id }) }}
             >
 
-                <Image source={{uri: data.item.song_image}}
+                <Image source={{ uri: data.item.song_image }}
                     style={{
                         height: normalise(140), width: normalise(140),
                         margin: normalise(6)
@@ -763,7 +765,7 @@ function Search(props) {
 
                     <FlatList
                         //style={{ height: '70%' }}
-                        style={{alignSelf:'center'}}
+                        style={{ alignSelf: 'center' }}
                         data={top50}
                         renderItem={renderGenreData}
                         keyExtractor={(item, index) => index.toString()}

@@ -40,7 +40,7 @@ function Followers(props) {
 
     const [bool, setBool] = useState(false)
 
-    const [followerList, setFollowerList] = useState([]);
+    const [followerList, setFollowerList] = useState([]); 
 
     useEffect(() => {
         props.navigation.addListener('focus', (payload) => {

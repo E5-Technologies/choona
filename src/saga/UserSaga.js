@@ -65,7 +65,11 @@ import {
 
     USER_LOGOUT_REQUEST,
     USER_LOGOUT_SUCCESS,
-    USER_LOGOUT_FAILURE
+    USER_LOGOUT_FAILURE,
+
+    GET_USER_FROM_HOME_REQUEST,
+    GET_USER_FROM_HOME_SUCCESS,
+    GET_USER_FROM_HOME_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -396,13 +400,32 @@ export function* userLogoutAction(action) {
         };
 
         const response = yield call(getApi, 'user/logout', Header);
-        yield call (AsyncStorage.removeItem, constants.CHOONACREDS);
-        
+        yield call(AsyncStorage.removeItem, constants.CHOONACREDS);
+
         yield put({ type: USER_LOGOUT_SUCCESS, data: response.data.data });
-        yield put({ type: ASYNC_STORAGE_CLEAR, token: null, registerType: null  });
+        yield put({ type: ASYNC_STORAGE_CLEAR, token: null, registerType: null });
 
     } catch (error) {
         yield put({ type: USER_LOGOUT_FAILURE, error: error })
+    }
+};
+
+
+export function* getUsersFromHomeAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call(postApi, 'user/search', action.payload, Header)
+        yield put({ type: GET_USER_FROM_HOME_SUCCESS, data: response.data.data})
+
+    } catch (error) {
+        yield put({ type: GET_USER_FROM_HOME_FAILURE, error: error })
     }
 };
 
@@ -467,4 +490,8 @@ export function* watchfeaturedTrackSearchAction() {
 
 export function* watchUserLogoutAction() {
     yield takeLatest(USER_LOGOUT_REQUEST, userLogoutAction)
+};
+
+export function* watchgetUsersFromHomeAction() {
+    yield takeLatest(GET_USER_FROM_HOME_REQUEST, getUsersFromHomeAction)
 };
