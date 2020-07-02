@@ -35,7 +35,6 @@ let status;
 function Contact(props) {
 
     const [search, setSearch] = useState("")
-    let changePlayer = true;
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -100,12 +99,10 @@ function Contact(props) {
                   song_title: data.item.song_name,
                   album_name: data.item.album_name,
                   song_pic: data.item.song_image,
-                  username: props.userProfileResp.username,
-                  profile_pic: props.userProfileResp.profile_image,
-                  uri: data.item.song_uri,
+                  originalUri: data.item.song_uri,
                   id: data.item.post_id,
                   artist: data.item.artist_name,
-                  changePlayer: changePlayer
+                  changePlayer: true
                 })}} 
                 />
         )

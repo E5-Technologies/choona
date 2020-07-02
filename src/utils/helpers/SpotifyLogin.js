@@ -10,7 +10,12 @@ const config = {
     redirectUrl: constants.spotify_redirect_uri,
     scopes: [
         'user-read-email',
-        'user-read-private'
+        'user-read-private',
+        'user-read-playback-position',
+        'user-modify-playback-state',
+        'user-read-currently-playing',
+        'user-read-playback-state',
+        'streaming'
     ],
     serviceConfiguration: {
         authorizationEndpoint: constants.spotify_authorize_uri,
@@ -58,8 +63,6 @@ export const getSpotifyToken = async () => {
         let currentTime = moment().utc().format(`YYYY-MM-DDTHH:mm:ssZ`);
 
         if (accessTokenExpirationDate > currentTime) {
-
-            console.log("HERE")
 
             return `Bearer ${accessToken}`;
 

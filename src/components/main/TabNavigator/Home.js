@@ -641,11 +641,13 @@ function Home(props) {
 
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
 
-      <Loader visible={props.status === HOME_PAGE_REQUEST} />
+    
 
       <StatusBar />
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
+
+      <Loader visible={props.status != HOME_PAGE_SUCCESS} />
 
         {/* { modalVisible ? 
                     <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>
@@ -812,7 +814,7 @@ function Home(props) {
                     <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
                       onPress={() => {
                         let saveSongObject = {
-                          song_uri: props.postData[positionInArray].song_uri,
+                          song_uri: props.postData[positionInArray].original_song_uri,
                           song_name: props.postData[positionInArray].song_name,
                           song_image: props.postData[positionInArray].song_image,
                           artist_name: props.postData[positionInArray].artist_name,
@@ -849,7 +851,7 @@ function Home(props) {
 
                     <TouchableOpacity
                       onPress={() => {
-                        Clipboard.setString(props.postData[positionInArray].song_uri);
+                        Clipboard.setString(props.postData[positionInArray].original_song_uri);
                         setModalVisible(!modalVisible);
 
                         setTimeout(() => {

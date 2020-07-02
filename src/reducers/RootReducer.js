@@ -4,13 +4,15 @@ import UserReducer from '../reducers/UserReducer'
 import PostReducer from './PostReducer'
 import SongReducer from './SongReducer';
 import MessageReducer from './MessageReducer'
+import PlayerReducer from './PlayerReducer'
 
 const allReducers = combineReducers({
     TokenReducer: TokenReducer,
     UserReducer: UserReducer,
     PostReducer: PostReducer,
     SongReducer: SongReducer,
-    MessageReducer: MessageReducer
+    MessageReducer: MessageReducer,
+    PlayerReducer: PlayerReducer
 });
 
 

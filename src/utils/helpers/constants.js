@@ -12,5 +12,7 @@ export default {
     BASE_URL: "http://choona.dedicateddevelopers.us/api",
     APPLE: "APPLETOKEN",
     appleGetTokenApi: 'http://choona.dedicateddevelopers.us/api/applemusic/token',
+    spotifyPlayerBaseUrl: "https://api.spotify.com/v1/me/player/",
+    
     
 }

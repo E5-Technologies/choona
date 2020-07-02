@@ -295,7 +295,6 @@ function GenreSongClicked(props) {
               }}>Send Song</Text>
             </TouchableOpacity>
 
-
             <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 Clipboard.setString(props.getPostFromTop50[positionInArray].song_uri);
@@ -350,7 +349,6 @@ function GenreSongClicked(props) {
     )
   };
   //END OF MODAL MORE PRESSED
-
 
   return (
 

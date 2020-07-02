@@ -34,7 +34,6 @@ let status = "";
 function Profile(props) {
 
     const [modalVisible, setModalVisible] = useState(false);
-    let changePlayer = true;
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -142,14 +141,14 @@ function Profile(props) {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={{ marginTop: normalise(18) }}>
                             <Text style={{
                                 color: Colors.white,
                                 fontSize: normalise(13),
                                 fontFamily: 'ProximaNova-Semibold',
                             }}>Change Password</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
 
                         <TouchableOpacity style={{ marginTop: normalise(18) }}
@@ -365,11 +364,9 @@ function Profile(props) {
                                         song_title: JSON.parse(props.userProfileResp.feature_song)[0].song_name,
                                         album_name: JSON.parse(props.userProfileResp.feature_song)[0].album_name,
                                         song_pic: JSON.parse(props.userProfileResp.feature_song)[0].song_pic,
-                                        username: props.userProfileResp.username,
-                                        profile_pic: props.userProfileResp.profile_image,
-                                        uri: JSON.parse(props.userProfileResp.feature_song)[0].song_uri,
+                                        originalUri: JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri,
                                         artist: JSON.parse(props.userProfileResp.feature_song)[0].artist_name,
-                                        changePlayer: changePlayer,
+                                        changePlayer: true,
                                         // originalUri: JSON.parse(props.userProfileResp.feature_song)[0].hasOwnProperty("original_song_uri")?
                                         // JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri : undefined
                                     })
@@ -508,7 +505,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         marginBottom: normalise(10),
-        height: normalise(220),
+        height: normalise(180),
         width: "95%",
         backgroundColor: Colors.darkerblack,
         borderRadius: 20,

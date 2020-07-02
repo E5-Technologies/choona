@@ -31,7 +31,6 @@ import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash'
 
 let status = ""
-let changePlayer = true;
 
 function InsideaMessage(props) {
 
@@ -82,9 +81,9 @@ function InsideaMessage(props) {
                         song_title: data.item.song_name,
                         album_name: data.item.album_name,
                         song_pic: data.item.image,
-                        uri: data.item.song_uri,
+                        originalUri: data.item.song_uri,
                         artist: data.item.artist_name,
-                        changePlayer: changePlayer,
+                        changePlayer: true,
                         // originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                         //     undefined,
                     })

@@ -23,6 +23,11 @@ import {
     watchgetChatListAction, watchLoadMessages
 } from './MessageSaga';
 
+import {
+    watchGetCurrentPlayerPostionRequest, watchResumePlayerRequest,
+    watchPlayPlayerRequest, watchSeekToPlayerRequest
+} from './PlayerSaga';
+
 
 function* RootSaga() {
 
@@ -59,6 +64,10 @@ function* RootSaga() {
         watchTop50SongsAction(),
         watchGetPostFromTop50(),
         watchgetUsersFromHomeAction(),
+        watchGetCurrentPlayerPostionRequest(),
+        watchResumePlayerRequest(),
+        watchPlayPlayerRequest(),
+        watchSeekToPlayerRequest()
 
     ])
 }

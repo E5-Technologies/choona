@@ -23,6 +23,15 @@ export async function getSpotifyApi(url, header) {
     });
 }
 
+export async function putSpotifyApi(url, payload, header) {
+
+    console.log("URL: ", `${url}`)
+
+    return await axios.put(`${url}`, payload, {
+        headers: header
+    });
+}
+
 export async function postSpotifyApi(url, payload, header) {
 
     console.log("URL: ", `${url}`)
@@ -35,7 +44,7 @@ export async function postSpotifyApi(url, payload, header) {
 export async function postApi(url, payload, header) {
 
     console.log("URL: ", `${constants.BASE_URL}/${url}`)
-   
+
     return await axios.post(`${constants.BASE_URL}/${url}`, payload, {
         headers: {
             'Accept': header.Accept,
@@ -45,8 +54,8 @@ export async function postApi(url, payload, header) {
     });
 };
 
-export async function getAppleDevelopersToken(url , header) {
-   
+export async function getAppleDevelopersToken(url, header) {
+
     console.log("URL: ", `${url}`);
 
     return await axios.get(url);

@@ -14,7 +14,8 @@ import {
     KeyboardAvoidingView,
     Dimensions,
     Modal,
-    Linking
+    Linking,
+    Alert
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -29,27 +30,54 @@ import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import moment from 'moment';
 import {
-    COMMENT_ON_POST_REQUEST, COMMENT_ON_POST_SUCCESS,
+    COMMENT_ON_POST_REQUEST,
+    COMMENT_ON_POST_SUCCESS,
     COMMENT_ON_POST_FAILURE,
 
-    SAVE_SONGS_REQUEST, SAVE_SONGS_SUCCESS,
+    SAVE_SONGS_REQUEST,
+    SAVE_SONGS_SUCCESS,
     SAVE_SONGS_FAILURE,
+
+    GET_CURRENT_PLAYER_POSITION_REQUEST,
+    GET_CURRENT_PLAYER_POSITION_SUCCESS,
+    GET_CURRENT_PLAYER_POSITION_FAILURE,
+
+    RESUME_PLAYER_REQUEST,
+    RESUME_PLAYER_SUCCESS,
+    RESUME_PLAYER_FAILURE,
+
+    PAUSE_PLAYER_REQUEST,
+    PAUSE_PLAYER_SUCCESS,
+    PAUSE_PLAYER_FAILURE,
+
+    PLAYER_SEEK_TO_REQUEST,
+    PLAYER_SEEK_TO_SUCCESS,
+    PLAYER_SEEK_TO_FAILURE,
+
 } from '../../action/TypeConstants';
 import { commentOnPostReq } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
+import {
+    getCurrentPlayerPostionAction,
+    playerResumeRequest,
+    playerPauseRequest,
+    playerSeekToRequest
+} from '../../action/PlayerAction';
 import Loader from '../../widgets/AuthLoader';
+import { call } from 'redux-saga/effects';
 
 let RbSheetRef;
 
 let status;
 let songStatus;
+let playerStatus;
 
 function Player(props) {
 
     // PLAYER 
-    const [playVisible, setPlayVisible] = useState(false);
-    const [uri, setUri] = useState(props.route.params.uri);
+    const [playVisible, setPlayVisible] = useState(true);
+    //const [uri, setUri] = useState(props.route.params.uri);
     const [trackRef, setTrackRef] = useState("");
     const [songTitle, setSongTitle] = useState(props.route.params.song_title);
     const [albumTitle, setAlbumTitle] = useState(props.route.params.album_name);
@@ -58,8 +86,13 @@ function Player(props) {
 
     const [username, setUsername] = useState(props.route.params.username);
     const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
+
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
+    const [curentTimeForSlider, setCurentTimeForSlider] = useState(0);
+    const [totalTimeForSlider, setTotalTimeForSlider] = useState(0);
+
+
     const [reactions, setSReactions] = useState(props.route.params.changePlayer ? [] : props.route.params.reactions);
 
     //COMMENT ON POST
@@ -77,20 +110,24 @@ function Player(props) {
 
     let track;
 
+    //Prithviraj's variables.
+    const [firstTimePlay, setFirstTimePlay] = useState(true)
 
+    var myVar;
 
     useEffect(() => {
-        // const unsuscribe = props.navigation.addListener('focus', (payload) => {
-        // Sound.setActive(true)
-        Sound.setCategory('Playback', false);
-        playSongOnLoad()
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
 
+            myVar = setInterval(() => {
+                props.getCurrentPlayerPostionAction();
+            }, 2000)
 
-        // });
+        });
 
-        // return () => {
-        //     unsuscribe();
-        // }
+        return () => {
+            clearInterval(myVar),
+                unsuscribe();
+        }
     }, []);
 
 
@@ -141,180 +178,177 @@ function Player(props) {
         }
     };
 
+    if (playerStatus === "" || props.playerStatus !== playerStatus) {
 
-    // PLAY SONG ON LOAD
-    const playSongOnLoad = () => {
+        switch (props.playerStatus) {
 
-        if (props.playingSongRef === "") {
+            case GET_CURRENT_PLAYER_POSITION_REQUEST:
+                playerStatus = props.playerStatus;
+                break;
 
-            console.log('first time')
-            playSong();
+            case GET_CURRENT_PLAYER_POSITION_SUCCESS:
+                playerStatus = props.playerStatus;
+                if (props.currentPlayerPositionResponse != "") {
 
-        } else {
-
-            if (global.playerReference !== null) {
-
-                if (global.playerReference._filename === uri) {
-                    console.log('Already Playing');
-                    console.log(global.playerReference);
-                    setTimeout(() => {
-                        changeTime(global.playerReference);
-                        let time = global.playerReference.getDuration();
-                        setplayerDuration(time);
-                        setBool(false);
-                        global.playerReference.pause();
-                        global.playerReference.play((success) => {
-                            if (success) {
-                                console.log('Playback End')
-                                setPlayVisible(true);
-                            }
-                        })
-                    }, 100)
-
+                    if (originalUri === props.currentPlayerPositionResponse.item.external_urls.spotify) {
+                        setPlayVisible(false);
+                        setFirstTimePlay(false);
+                        setPlayerCurrentTime(msToTime(props.currentPlayerPositionResponse.progress_ms));
+                        setCurentTimeForSlider(props.currentPlayerPositionResponse.progress_ms);
+                        setplayerDuration(msToTime(props.currentPlayerPositionResponse.item.duration_ms - props.currentPlayerPositionResponse.progress_ms));
+                        setTotalTimeForSlider(props.currentPlayerPositionResponse.item.duration_ms);
+                    } else {
+                        setPlayerCurrentTime(0);
+                        setCurentTimeForSlider(0);
+                        setplayerDuration(0);
+                        setTotalTimeForSlider(0);
+                        toast("Success", "Some other song is being played in the spotify app")
+                    }
                 }
+                break;
 
-                else {
-                    console.log('reset');
-                    global.playerReference.release();
-                    global.playerReference = null;
-                    playSong();
+            case GET_CURRENT_PLAYER_POSITION_FAILURE:
+                playerStatus = props.playerStatus;
+                toast('Oops', 'Something Went Wrong');
+                break;
+
+            case PLAYER_SEEK_TO_REQUEST:
+                playerStatus = props.playerStatus;
+                break;
+
+            case PLAYER_SEEK_TO_SUCCESS:
+                playerStatus = props.playerStatus;
+                break;
+
+            case PLAYER_SEEK_TO_FAILURE:
+                playerStatus = props.playerStatus;
+                if (props.playerError === 403) {
+                    spotifyPremiumAlert();
+                } else {
+                    toast('Oops', 'Something Went Wrong');
                 }
+                break;
 
-            } else {
-                console.log('reset2');
-                playSong();
-            }
+            case RESUME_PLAYER_REQUEST:
+                playerStatus = props.playerStatus;
+                break;
 
-        };
-    };
+            case RESUME_PLAYER_SUCCESS:
+                playerStatus = props.playerStatus;
+                break;
 
-
-    // PLAY SONG
-    const playSong = () => {
-
-        if (uri === null) {
-            setBool(false);
-            setPlayVisible(true);
-            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
-        } else {
-
-            track = new Sound(uri, "", (err) => {
-                if (err) {
-                    console.log(err);
-                    setPlayVisible(true);
+            case RESUME_PLAYER_FAILURE:
+                playerStatus = props.playerStatus;
+                if (props.playerError === 403) {
+                    spotifyPremiumAlert();
+                } else {
+                    toast('Oops', 'Something Went Wrong');
+                    
                 }
-                else {
-                    console.log('Loaded')
-                    setBool(false);
-                    changeTime(track);
+                break;
 
+            case PAUSE_PLAYER_REQUEST:
+                playerStatus = props.playerStatus;
+                break;
 
-                    let saveSongResObj = {}
-                    saveSongResObj.uri = uri,
-                        saveSongResObj.song_name = songTitle,
-                        saveSongResObj.album_name = albumTitle,
-                        saveSongResObj.song_pic = pic,
-                        saveSongResObj.username = username,
-                        saveSongResObj.profile_pic = profilePic,
-                        saveSongResObj.commentData = commentData
-                    saveSongResObj.reactionData = reactions
-                    saveSongResObj.id = id,
-                        saveSongResObj.artist = artist,
-                        saveSongResObj.changePlayer = changePlayer
-                    saveSongResObj.originalUri = originalUri
+            case PAUSE_PLAYER_SUCCESS:
+                playerStatus = props.playerStatus; 
+                break;
 
-
-                    props.saveSongRefReq(saveSongResObj);
-                    global.playerReference = track;
-
-                    let res = track.getDuration();
-                    setplayerDuration(res);
-
-                    track.play((success) => {
-                        if (success) {
-                            console.log('PlayBack End')
-                            setPlayVisible(true);
-                        }
-                        else {
-                            console.log('NOOOOOOOO')
-                        }
-                    });
-                };
-            });
-
-            setTrackRef(track);
+            case PAUSE_PLAYER_FAILURE:
+                playerStatus = props.playerStatus;
+                if (props.playerError === 403) {
+                    spotifyPremiumAlert();
+                } else {
+                    toast('Oops', 'Something Went Wrong');
+                }
+                break;
 
         }
+    }
 
+    function msToTime(duration) {
+        var milliseconds = parseInt((duration % 1000) / 100),
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return minutes + ":" + seconds;
     }
 
 
-    // PAUSE AND PLAY
-    function playing() {
+    //PlayInSpotify 
+    
+    const playInSpotify = () => {
 
-        if (uri === null) {
-            setBool(false);
-            setPlayVisible(true);
-            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
-        } else {
+        if (firstTimePlay) {
 
-            if (playVisible == true) {
-
-                setPlayVisible(false)
-
-                global.playerReference.play((success) => {
-                    if (success) {
-                        console.log('PlayBack End!')
-                        setPlayVisible(true);
-                    }
-                    else {
-                        console.log('NOOOOOOOO')
-                    }
-                });
-
-            } else {
-
-                setPlayVisible(true)
-
-                global.playerReference.pause(() => {
-                    console.log('paused');
-                })
-            }
-        }
-
-
-    };
-
-
-    //REWIND AND FORWARD
-    const toggleTime = (type) => {
-
-        if (uri === null) {
-            setBool(false);
-            setPlayVisible(true);
-            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
-        } else {
-
-            if (type === 'backward') {
-                // trackRef.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-                // if (currentTime > 5) {
-                if (playerCurrentTime > 5) {
-                    global.playerReference.setCurrentTime(playerCurrentTime - 5)
-                    setPlayerCurrentTime(playerCurrentTime - 5)
-                }
-                // }
+            if (originalUri !== undefined) {
+                Linking.canOpenURL(originalUri)
+                    .then((supported) => {
+                        if (supported) {
+                            Linking.openURL(originalUri)
+                                .then(() => {
+                                    console.log('success');
+                                })
+                                .catch(() => {
+                                    console.log('failed');
+                                })
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('not supported')
+                    });
             }
             else {
-                //global.playerReference.getCurrentTime((seconds) => { setCurrentTime(seconds), console.log(seconds) })
-                if (playerCurrentTime < 25) {
-                    global.playerReference.setCurrentTime(playerCurrentTime + 5)
-                    setPlayerCurrentTime(playerCurrentTime + 5)
-                }
+                console.log('No Link Present, Old posts');
             }
-        }
-    };
 
+        } else {
+
+            if (playVisible) {
+                props.playerResumeRequest();
+            } else {
+                props.playerPauseRequest();
+            }
+            
+            //spotifyPremiumAlert();
+        }
+    }
+
+    function spotifyPremiumAlert() {
+
+        Alert.alert(
+            'Opps!',
+            'You need premuim subscription of Spotify for this action',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                {
+                    text: 'OK', onPress: () => Linking.canOpenURL("https://www.spotify.com/premium/")
+                        .then((supported) => {
+                            if (supported) {
+                                Linking.openURL("https://www.spotify.com/premium/")
+                                    .then(() => {
+                                        console.log('success');
+                                    })
+                                    .catch(() => {
+                                        console.log('failed');
+                                    })
+                            }
+                        })
+                }
+            ],
+            { cancelable: false }
+        );
+    }
 
     // RENDER FLATLIST DATA
     function renderFlatlistData(data) {
@@ -442,32 +476,7 @@ function Player(props) {
             </RBSheet>
         )
     };
-
-
-    // CHANGE TIME
-    const changeTime = (ref) => {
-
-        setInterval(() => {
-            ref.getCurrentTime((seconds) => { setPlayerCurrentTime(seconds) })
-        }, 1000)
-
-    };
-
-
-    // ON SILIDE SLIDER
-    const onSliderSlide = (time) => {
-
-        if (uri === null) {
-            setBool(false);
-            setPlayVisible(true);
-            toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
-        } else {
-            setPlayerCurrentTime(0)
-            setPlayerCurrentTime(time);
-            global.playerReference.setCurrentTime(time);
-        }
-    };
-
+ 
 
     const renderModalMorePressed = () => {
         return (
@@ -615,7 +624,7 @@ function Player(props) {
             <KeyboardAvoidingView style={{ flex: 1 }}>
                 <StatusBar />
 
-                <Loader visible={bool} />
+                {/* <Loader visible={bool} /> */}
 
                 <SafeAreaView style={{ flex: 1, }}>
 
@@ -695,14 +704,11 @@ function Player(props) {
                                 borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
                                 borderColor: Colors.grey, shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
                                 shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
-                            }}   >
-
+                            }}>
 
                             <Image source={{ uri: pic.replace("100x100bb.jpg", "500x500bb.jpg") }}
                                 style={{ height: normalise(265), width: normalise(290), borderRadius: normalise(15) }}
                                 resizeMode="cover" />
-
-
 
                         </TouchableOpacity>
 
@@ -743,14 +749,14 @@ function Player(props) {
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
-                                {playerCurrentTime > 9 ? "00:" : "00:0"}{playerCurrentTime.toFixed(0)}
+                                {playerCurrentTime}
                             </Text>
 
                             <Text style={{
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
-                                -00:{playerDuration.toFixed(0)}
+                                -{playerDuration}
                             </Text>
 
                         </View>
@@ -758,19 +764,18 @@ function Player(props) {
                         <Slider
                             style={{ width: '90%', height: 40, alignSelf: "center", }}
                             minimumValue={0}
-                            maximumValue={30}
+                            maximumValue={totalTimeForSlider}
                             step={1}
-                            value={playerCurrentTime}
+                            value={curentTimeForSlider}
                             minimumTrackTintColor="#FFFFFF"
                             maximumTrackTintColor="#000000"
-                            onSlidingComplete={(number) => { onSliderSlide(number) }}
                         />
 
                         <View style={{
                             flexDirection: 'row', alignSelf: 'center', width: '70%',
                             justifyContent: 'space-around', marginTop: normalise(15), alignItems: 'center'
                         }}>
-                            <TouchableOpacity onPress={() => { toggleTime('backward') }}>
+                            <TouchableOpacity onPress={() => { props.playerSeekToRequest(curentTimeForSlider - 5000) }}>
                                 <Image source={ImagePath.backwardicon}
                                     style={{ height: normalise(18), width: normalise(18) }}
                                     resizeMode="contain" />
@@ -778,27 +783,20 @@ function Player(props) {
 
                             <TouchableOpacity
                                 onPress={() => {
-                                    playing()
+                                    playInSpotify()
                                 }}
                                 style={{
                                     height: normalise(60), width: normalise(60), alignItems: 'center', justifyContent: 'center',
                                     backgroundColor: Colors.white, borderRadius: normalise(30)
                                 }}>
-                                {playVisible == true ?
-                                    <Image source={ImagePath.playicon}
-                                        style={{ height: normalise(20), width: normalise(20) }}
-                                        resizeMode="contain" />
-                                    :
 
-                                    <Image source={ImagePath.pauseicon}
-                                        style={{ height: normalise(20), width: normalise(20) }}
-                                        resizeMode="contain" />
+                                <Image source={playVisible ? ImagePath.playicon : ImagePath.pauseicon}
+                                    style={{ height: normalise(20), width: normalise(20) }} />
 
-                                }
 
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => { toggleTime('forward') }}>
+                            <TouchableOpacity onPress={() => { props.playerSeekToRequest(curentTimeForSlider + 5000) }}>
                                 <Image source={ImagePath.forwardicon}
                                     style={{ height: normalise(18), width: normalise(18) }}
                                     resizeMode="contain" />
@@ -831,7 +829,7 @@ function Player(props) {
                                     backgroundColor: Colors.fadeblack, borderRadius: normalise(5)
                                 }} onPress={() => {
                                     let saveSongObject = {
-                                        song_uri: uri,
+                                        song_uri: originalUri,
                                         song_name: songTitle,
                                         song_image: pic,
                                         artist_name: artist,
@@ -866,7 +864,7 @@ function Player(props) {
                                     height: normalise(40), width: normalise(115), alignItems: 'center', justifyContent: 'center',
                                     backgroundColor: Colors.fadeblack, borderRadius: normalise(10)
                                 }} onPress={() => {
-                                    if (RbSheetRef) RbSheetRef.open()
+                                    if (RbSheetRef) RbSheetRef.open();
                                 }}>
 
 
@@ -884,41 +882,6 @@ function Player(props) {
 
                                 </TouchableOpacity>
                             </View>}
-
-                        {/* <TouchableOpacity style={{
-                            width: '90%', alignSelf: 'center', backgroundColor: Colors.fadeblack,
-                            height: normalise(50), marginTop: normalise(40), alignItems: 'center',
-                            justifyContent: 'center',
-                            borderTopRightRadius: normalise(8), borderTopLeftRadius: normalise(8),
-                            marginBottom: normalise(20),
-                        }} onPress={() => { props.navigation.goBack() }}>
-
-                            <View style={{
-                                width: '90%', alignSelf: 'center', flexDirection: 'row',
-                                justifyContent: 'space-between', alignItems: 'center',
-                            }}>
-
-
-                                <Image source={ImagePath.donw_arrow_solid}
-                                    style={{
-                                        height: normalise(10), width: normalise(10),
-                                    }} resizeMode='contain' />
-
-
-                                <Text style={{
-                                    color: Colors.white, fontSize: normalise(12),
-                                    fontFamily: 'ProximaNova-Extrabld'
-                                }}>MINIMISE PLAYER</Text>
-
-
-                                <Image source={ImagePath.donw_arrow_solid}
-                                    style={{
-                                        height: normalise(10), width: normalise(10),
-                                    }} resizeMode='contain' />
-
-
-                            </View>
-                        </TouchableOpacity> */}
 
                         {RbSheet()}
                         {renderModalMorePressed()}
@@ -940,7 +903,11 @@ const mapStateToProps = (state) => {
         userProfileResp: state.UserReducer.userProfileResp,
         songStatus: state.SongReducer.status,
         savedSongResponse: state.SongReducer.savedSongResponse,
-        playingSongRef: state.SongReducer.playingSongRef
+        playingSongRef: state.SongReducer.playingSongRef,
+        currentPlayerPositionResponse: state.PlayerReducer.currentPlayerPositionResponse,
+        playerStatus: state.PlayerReducer.status,
+        playerError: state.PlayerReducer.error,
+        seekToPlayerResponse: state.PlayerReducer.seekToPlayerResponse
     }
 };
 
@@ -957,6 +924,18 @@ const mapDispatchToProps = (dispatch) => {
         saveSongRefReq: (object) => {
             dispatch(saveSongRefReq(object))
         },
+        getCurrentPlayerPostionAction: () => {
+            dispatch(getCurrentPlayerPostionAction())
+        },
+        playerSeekToRequest: (seekTo) => {
+            dispatch(playerSeekToRequest(seekTo))
+        },
+        playerResumeRequest: () => {
+            dispatch(playerResumeRequest())
+        },
+        playerPauseRequest: () => {
+            dispatch(playerPauseRequest())
+        }
     }
 };
 
