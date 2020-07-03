@@ -16,6 +16,10 @@ import {
     CHAT_LOAD_SUCCESS,
     CHAT_LOAD_FAILURE,
 
+    SEARCH_MESSAGE_REQUEST,
+    SEARCH_MESSAGE_SUCCESS,
+    SEARCH_MESSAGE_FAILURE
+
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -25,8 +29,8 @@ const initialState = {
     sendChatResponse: {},
     chatList: [],
     chatData: [],
+    searchedChatData: []
 };
-
 const MessageReducer = (state = initialState, action) => {
     switch (action.type) {
 
@@ -102,10 +106,33 @@ const MessageReducer = (state = initialState, action) => {
                 ...state,
                 status: action.type,
                 chatData: action.chatResponse.data,
+                searchedChatData: action.chatResponse.data,
             };
 
 
         case CHAT_LOAD_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error,
+            };
+
+        case SEARCH_MESSAGE_REQUEST:
+            return {
+                ...state,
+                status: action.type,
+            };
+
+        case SEARCH_MESSAGE_SUCCESS:
+            
+            return {
+                ...state,
+                status: action.type,
+                searchedChatData: action.data,
+            };
+
+
+        case SEARCH_MESSAGE_FAILURE:
             return {
                 ...state,
                 status: action.type,

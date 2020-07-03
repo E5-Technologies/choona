@@ -1,6 +1,5 @@
 import { put, call, take, fork, takeLatest, select, all } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga'
-
 import {
 
     CREATE_CHAT_TOKEN_REQUEST,
@@ -19,15 +18,20 @@ import {
     CHAT_LOAD_SUCCESS,
     CHAT_LOAD_FAILURE,
 
+    SEARCH_MESSAGE_REQUEST,
+    SEARCH_MESSAGE_SUCCESS,
+    SEARCH_MESSAGE_FAILURE
+
 
 } from '../action/TypeConstants'
 import { postApi, getApi } from '../utils/helpers/ApiRequest'
-
+import _ from 'lodash'      
 import database from '@react-native-firebase/database';
 
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages')
 
 const getItems = state => state.TokenReducer;
+const getMessageReducer = state => state.MessageReducer;
 
 /**
  * This function is used getting the chat token of the user.
@@ -118,12 +122,12 @@ export function* getChatMessages(action) {
             dataSnapshot => {
                 var items = []
                 dataSnapshot.forEach(child => {
-                    
+
                     items.push(child.val())
 
-                    // if (action.payload.userId == child.val().receiver_id) {
-                    //     child.child("read").ref.set(true)
-                    // }
+                    if (action.payload.userId == child.val().receiver_id) {
+                        child.child("read").ref.set(true)
+                    }
 
                 })
 
@@ -162,6 +166,35 @@ export function* getChatMessages(action) {
 
 }
 
+export function* searchMessageAction(action) {
+    const items = yield select(getMessageReducer);
+
+    let seachData = yield call(filterfunction, items.chatData, action.payload)
+
+    try {
+        yield put({ type: SEARCH_MESSAGE_SUCCESS, keyword: action.payload, data: seachData });
+
+    } catch (error) {
+        yield put({ type: SEARCH_MESSAGE_FAILURE, error: error })
+    }
+};
+
+function filterfunction(data, keyword) {
+    return (
+        new Promise(function (resolve, reject) {
+            let filterdData = _.filter(data, (item) => {
+                return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
+            });
+            if (data != null) {
+                resolve(filterdData);
+            }
+            else
+                reject([])
+        })
+    );
+}
+
+
 
 export function* watchGetChatTokenRequest() {
     yield takeLatest(CREATE_CHAT_TOKEN_REQUEST, getChatTokenAction)
@@ -179,4 +212,6 @@ export function* watchLoadMessages() {
     yield takeLatest(CHAT_LOAD_REQUEST, getChatMessages)
 }
 
-
+export function* watchSeachMessageRequest() {
+    yield takeLatest(SEARCH_MESSAGE_REQUEST, searchMessageAction)
+}

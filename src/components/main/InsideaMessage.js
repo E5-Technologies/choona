@@ -16,7 +16,7 @@ import InsideMessegeHeader from '../../widgets/InsideMessegeHeader';
 import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../utils/MyStatusBar';
-import { loadChatMessageRequest } from '../../action/MessageAction'
+import { loadChatMessageRequest, searchMessageRequest } from '../../action/MessageAction'
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
@@ -24,6 +24,11 @@ import {
     CHAT_LOAD_REQUEST,
     CHAT_LOAD_SUCCESS,
     CHAT_LOAD_FAILURE,
+
+    SEARCH_MESSAGE_REQUEST,
+    SEARCH_MESSAGE_SUCCESS,
+    SEARCH_MESSAGE_FAILURE
+
 
 } from '../../action/TypeConstants'
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -46,27 +51,27 @@ function InsideaMessage(props) {
 
         return () => {
 
-            props.loadChatMessageRequest({ chatToken: props.chatList[index].chat_token, isMount: false })
+            props.loadChatMessageRequest({ chatToken: props.chatList[index].chat_token, isMount: false, userId: props.userProfileResp._id })
         }
     }, []);
 
-    if (status === "" || props.status !== status) {
-        switch (props.status) {
-            case CHAT_LOAD_REQUEST:
-                status = props.status
-                break;
+    // if (status === "" || props.status !== status) {
+    //     switch (props.status) {
+    //         case CHAT_LOAD_REQUEST:
+    //             status = props.status
+    //             break;
 
-            case CHAT_LOAD_SUCCESS:
-                status = props.status;
-                setChatData(props.chatData)
-                break;
+    //         case CHAT_LOAD_SUCCESS:
+    //             status = props.status;
+    //             setChatData(props.chatData)
+    //             break;
 
-            case CHAT_LOAD_FAILURE:
-                status = props.status
-                toast("Oops", "Something Went Wrong, Please Try Again")
-                break;
-        }
-    };
+    //         case CHAT_LOAD_FAILURE:
+    //             status = props.status
+    //             toast("Oops", "Something Went Wrong, Please Try Again")
+    //             break;
+    //     }
+    // };
 
 
     function renderItem(data) {
@@ -92,15 +97,15 @@ function InsideaMessage(props) {
         )
     }
 
-    function filterArray(keyword) {
+    // function filterArray(keyword) {
 
-        let data = _.filter(props.chatData, (item) => {
-            return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-        });
+    //     let data = _.filter(props.chatData, (item) => {
+    //         return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+    //     });
 
-        setChatData(data);
+    //     setChatData(data);
 
-    };
+    // };
 
     return (
 
@@ -135,7 +140,7 @@ function InsideaMessage(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), filterArray(text) }} />
+                        onChangeText={(text) => { setSearch(text), props.searchMessageRequest(text) }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -144,7 +149,7 @@ function InsideaMessage(props) {
                         }} resizeMode="contain" />
 
                     {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                        <TouchableOpacity onPress={() => { setSearch(""), props.searchMessageRequest("") }}
                             style={{
                                 position: 'absolute', right: 0,
                                 bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -159,7 +164,7 @@ function InsideaMessage(props) {
                 </View>
 
                 <SwipeListView
-                    data={chatData}
+                    data={props.searchedChatData}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => { index.toString() }}
@@ -178,8 +183,8 @@ function InsideaMessage(props) {
                 }} onPress={() => {
                     props.navigation.replace('AddAnotherSong', {
                         users: [{
-                            _id: chatData[0].receiver_id === props.userProfileResp._id ? chatData[0].sender_id :
-                                chatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
+                            _id: props.searchedChatData[0].receiver_id === props.userProfileResp._id ? props.searchedChatData[0].sender_id :
+                            props.searchedChatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
                             profile_image: props.chatList[index].profile_image,
                         }], index: index
                     })
@@ -202,6 +207,7 @@ const mapStateToProps = state => {
     return {
         chatList: state.MessageReducer.chatList,
         chatData: state.MessageReducer.chatData,
+        searchedChatData: state.MessageReducer.searchedChatData,
         userProfileResp: state.UserReducer.userProfileResp,
         status: state.MessageReducer.status,
         error: state.MessageReducer.error,
@@ -212,6 +218,9 @@ const mapDispatchToProps = dispatch => {
     return {
         loadChatMessageRequest: (payload) => {
             dispatch(loadChatMessageRequest(payload))
+        },
+        searchMessageRequest: (payload) => {
+            dispatch(searchMessageRequest(payload))
         },
     }
 }

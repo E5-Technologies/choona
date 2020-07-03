@@ -20,7 +20,7 @@ import {
 
 import {
     watchGetChatTokenRequest, watchSendChatMessageRequest,
-    watchgetChatListAction, watchLoadMessages
+    watchgetChatListAction, watchLoadMessages, watchSeachMessageRequest
 } from './MessageSaga';
 
 import {
@@ -67,7 +67,8 @@ function* RootSaga() {
         watchGetCurrentPlayerPostionRequest(),
         watchResumePlayerRequest(),
         watchPlayPlayerRequest(),
-        watchSeekToPlayerRequest()
+        watchSeekToPlayerRequest(),
+        watchSeachMessageRequest()
 
     ])
 }
