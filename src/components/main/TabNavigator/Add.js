@@ -96,6 +96,8 @@ function AddSong(props) {
                             profile_pic: "",
                             originalUri: props.registerType === "spotify" ? data.item.external_urls.spotify :
                                 data.item.trackViewUrl,
+                            uri: props.registerType === "spotify" ? data.item.preview_url :
+                            data.item.previewUrl,
                             id: "",
                             artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
                             changePlayer: true,

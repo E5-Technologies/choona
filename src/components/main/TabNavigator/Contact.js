@@ -99,7 +99,7 @@ function Contact(props) {
                   song_title: data.item.song_name,
                   album_name: data.item.album_name,
                   song_pic: data.item.song_image,
-                  originalUri: data.item.song_uri,
+                  uri: data.item.song_uri,
                   id: data.item.post_id,
                   artist: data.item.artist_name,
                   changePlayer: true

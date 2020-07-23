@@ -82,14 +82,14 @@ export default function Splash(props) {
     //VIEW
     return (
 
-        <ImageBackground source={ImagePath.Splash}
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.black }}>
             <StatusBar
-                backgroundColor={'#186e85'} />
+                backgroundColor={Colors.black} />
 
-            {/* <Image source={ImagePath.applogo}
-                style={{ height: normalise(60), width: '60%' }}
-                resizeMode='contain' /> */}
+            <Image source={ImagePath.appIcon512}
+                style={{ height: normalise(130), width: '60%' }}
+                resizeMode='contain' />
 
             <Text style={{
                 color: Colors.white,
@@ -101,6 +101,6 @@ export default function Splash(props) {
                 Copyright ©2020 CHOONA
                         </Text>
 
-        </ImageBackground>
+        </View>
     )
 }

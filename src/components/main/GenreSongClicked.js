@@ -53,7 +53,7 @@ function GenreSongClicked(props) {
 
       isInternetConnected()
         .then(() => {
-          props.searchPost(name, flag)
+          props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag)
         })
         .catch(() => {
           toast('Opps', 'Please Connect To Internet')

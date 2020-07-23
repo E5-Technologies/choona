@@ -160,9 +160,9 @@ function FeaturedTrack(props) {
                         borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
                         color: Colors.white, paddingLeft: normalise(30),
                     }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => {
+                       placeholder={"Search"}
+                       placeholderTextColor={Colors.darkgrey}
+                       onChangeText={(text) => {
                             if (text.length >= 1) {
                                 props.featuredSongSearchReq(text)
                             }

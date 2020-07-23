@@ -814,7 +814,7 @@ function Home(props) {
                     <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
                       onPress={() => {
                         let saveSongObject = {
-                          song_uri: props.postData[positionInArray].original_song_uri,
+                          song_uri: props.postData[positionInArray].song_uri,
                           song_name: props.postData[positionInArray].song_name,
                           song_image: props.postData[positionInArray].song_image,
                           artist_name: props.postData[positionInArray].artist_name,

@@ -252,7 +252,7 @@ function Search(props) {
                 onPress={() => { props.navigation.navigate("GenreSongClicked", { data: data.item._id }) }}
             >
 
-                <Image source={{ uri: data.item.song_image }}
+                <Image source={{ uri: data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg") }}
                     style={{
                         height: normalise(140), width: normalise(140),
                         margin: normalise(6)

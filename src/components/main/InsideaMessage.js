@@ -86,7 +86,7 @@ function InsideaMessage(props) {
                         song_title: data.item.song_name,
                         album_name: data.item.album_name,
                         song_pic: data.item.image,
-                        originalUri: data.item.song_uri,
+                        uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
                         artist: data.item.artist_name,
                         changePlayer: true,
                         // originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
@@ -184,7 +184,7 @@ function InsideaMessage(props) {
                     props.navigation.replace('AddAnotherSong', {
                         users: [{
                             _id: props.searchedChatData[0].receiver_id === props.userProfileResp._id ? props.searchedChatData[0].sender_id :
-                            props.searchedChatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
+                                props.searchedChatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
                             profile_image: props.chatList[index].profile_image,
                         }], index: index
                     })

@@ -186,7 +186,7 @@ function HomeItemReaction(props) {
                 />
             </View>
         )
-    }
+    }   
 
     return (
 

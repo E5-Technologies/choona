@@ -121,8 +121,11 @@ function SendSongInMessageFinal(props) {
 
                 image: imgsource,
 
-                song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
-                props.route.params.details.trackViewUrl,
+                song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
+                    props.route.params.details.previewUrl,
+
+                original_song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
+                    props.route.params.details.trackViewUrl,    
 
                 read: false,
                 time: moment().toString()
