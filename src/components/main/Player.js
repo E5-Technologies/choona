@@ -92,6 +92,8 @@ function Player(props) {
     const [curentTimeForSlider, setCurentTimeForSlider] = useState(0);
     const [totalTimeForSlider, setTotalTimeForSlider] = useState(0);
 
+    const [hasSongLoaded, setHasSongLoaded] = useState(false);
+
 
     const [reactions, setSReactions] = useState(props.route.params.changePlayer ? [] : props.route.params.reactions);
 
@@ -243,6 +245,7 @@ function Player(props) {
                 }
                 else {
                     console.log('Loaded')
+                    setHasSongLoaded(true)
                     setBool(false);
                     changeTime(track);
 
@@ -281,7 +284,6 @@ function Player(props) {
             });
 
             setTrackRef(track);
-
         }
 
 
@@ -769,7 +771,8 @@ function Player(props) {
 
                         <TouchableOpacity
                             onPress={() => {
-                                playing()
+                                if (hasSongLoaded)
+                                    playing()
                             }}
                             style={{
                                 marginTop: normalise(5),
@@ -785,7 +788,8 @@ function Player(props) {
 
                             <TouchableOpacity
                                 onPress={() => {
-                                    playing()
+                                    if (hasSongLoaded)
+                                        playing()
                                 }}
                                 style={{
                                     height: normalise(60), width: normalise(60), alignItems: 'center', justifyContent: 'center',
@@ -947,7 +951,6 @@ function Player(props) {
                                         style={{ height: normalise(20), width: normalise(20) }}
                                         resizeMode="contain" />
 
-
                                 </TouchableOpacity>
 
                                 <TouchableOpacity style={{
@@ -957,8 +960,6 @@ function Player(props) {
                                 }} onPress={() => {
                                     if (RbSheetRef) RbSheetRef.open();
                                 }}>
-
-
 
                                     <Image source={ImagePath.comment_grey}
                                         style={{ height: normalise(16), width: normalise(16) }}
@@ -973,6 +974,50 @@ function Player(props) {
 
                                 </TouchableOpacity>
                             </View>}
+
+                        <TouchableOpacity
+                            style={{
+                                flexDirection: 'row',
+                                height: normalise(40),
+                                width: normalise(150),
+                                alignSelf: 'center',
+                                alignItems: 'center', justifyContent: 'center',
+                                marginTop: normalise(30),
+                                backgroundColor: Colors.fadeblack,
+                                borderRadius: normalise(10)
+                            }}
+                            onPress={() => {
+                                if (originalUri !== undefined) {
+                                    Linking.canOpenURL(originalUri)
+                                        .then((supported) => {
+                                            if (supported) {
+                                                Linking.openURL(originalUri)
+                                                    .then(() => {
+                                                        console.log('success');
+                                                    })
+                                                    .catch(() => {
+                                                        console.log('failed');
+                                                    })
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            console.log('not supported')
+                                        });
+                                }
+                                else {
+                                    console.log('No Link Present, Old posts');
+                                }
+                            }}
+                        >
+                            <Image source={registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
+                                resizeMode='contain' />
+                            <Text style={{
+                                color: Colors.white, marginLeft: normalise(15),
+                                fontSize: normalise(13),
+                                fontFamily: 'ProximaNova-Semibold',
+                            }}>{registerType === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
+                        </TouchableOpacity>
 
                         {RbSheet()}
                         {renderModalMorePressed()}
