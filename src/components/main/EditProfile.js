@@ -6,6 +6,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    KeyboardAvoidingView,
     Image,
     Alert
 } from 'react-native';
@@ -26,17 +27,19 @@ import constants from '../../utils/helpers/constants';
 import { EDIT_PROFILE_REQUEST, EDIT_PROFILE_SUCCESS, EDIT_PROFILE_FAILURE } from '../../action/TypeConstants';
 import { editProfileRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
-
-
+import axios from 'axios';
 
 let status = "";
 function EditProfile(props) {
 
+    const [username, setUsername] = useState(props.userProfileResp.username);
     const [fullname, setFullname] = useState(props.userProfileResp.full_name);
+    const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp.phone);
     const [location, setLocation] = useState(props.userProfileResp.location);
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState(constants.profile_picture_base_url + props.userProfileResp.profile_image)
     const [imageDetails, setImageDetails] = useState("");
+    const [userNameAvailable, setUserNameAvailable] = useState(true);
 
 
     if (status === "" || props.status !== status) {
@@ -116,50 +119,93 @@ function EditProfile(props) {
 
     const updateProfile = () => {
 
-        let formdata = new FormData;
-
-        if (picture) {
-
-            let uploadPicture = {
-                name: imageDetails.filename === undefined ? 'xyz.jpg' : imageDetails.filename,
-                type: imageDetails.mime,
-                uri: profilePic
-            };
-
-            formdata.append("profile_image", uploadPicture);
-            formdata.append("full_name", fullname);
-            formdata.append("location", location);
-
-            isInternetConnected()
-                .then(() => {
-                    props.editProfileReq(formdata)
-                })
-                .catch((err) => {
-                    toast("Oops", "Please Connect To Internet")
-                })
-
-
+        if (username === "") {
+            alert("Please enter your username")
+        }
+        if (!userNameAvailable) {
+            alert("Please enter a valid username")
+        }
+        else if (fullname === "") {
+            alert("Please enter your name")
+        }
+        else if (phoneNumber === "") {
+            alert("Please enter your phone number")
+        }
+        else if (location === "") {
+            alert("Please enter your location")
+        }
+        else if (profilePic === "") {
+            alert("Please upload your profile picture")
         } else {
+            let formdata = new FormData;
 
-            formdata.append("full_name", fullname);
-            formdata.append("location", location);
+            if (picture) {
 
-            isInternetConnected()
-                .then(() => {
-                    props.editProfileReq(formdata)
-                })
-                .catch((err) => {
-                    toast("Oops", "Please Connect To Internet")
-                })
+                let uploadPicture = {
+                    name: imageDetails.filename === undefined ? 'xyz.jpg' : imageDetails.filename,
+                    type: imageDetails.mime,
+                    uri: profilePic
+                };
+
+                formdata.append("profile_image", uploadPicture);
+                formdata.append("full_name", fullname);
+                formdata.append("location", location);
+                formdata.append("username", username);
+                formdata.append("phone", phoneNumber);
+
+                isInternetConnected()
+                    .then(() => {
+                        props.editProfileReq(formdata)
+                    })
+                    .catch((err) => {
+                        toast("Oops", "Please Connect To Internet")
+                    })
+
+
+            } else {
+
+                formdata.append("full_name", fullname);
+                formdata.append("location", location);
+                formdata.append("username", username);
+                formdata.append("phone", phoneNumber);
+
+                isInternetConnected()
+                    .then(() => {
+                        props.editProfileReq(formdata)
+                    })
+                    .catch((err) => {
+                        toast("Oops", "Please Connect To Internet")
+                    })
+            }
         }
 
     };
+
+    const check = async (username) => {
+        await axios.post(constants.BASE_URL + '/user/available', { "username": username }, {
+            headers: {
+                Accept: "application/json",
+                contenttype: "application/json",
+            }
+        })
+            .then(res => {
+                setUserNameAvailable(res.data.status === 200)
+
+            })
+            .catch(err => {
+                setUserNameAvailable(false)
+            })
+    }
+
 
 
     //VIEW BEGINS
     return (
 
-        <View style={{ flex: 1, backgroundColor: Colors.black }}>
+        <KeyboardAvoidingView
+            style={{ flex: 1, backgroundColor: Colors.black, }}
+            behavior="height"
+        >
 
             <StatusBar />
 
@@ -167,69 +213,93 @@ function EditProfile(props) {
 
             <SafeAreaView style={{ flex: 1 }}>
 
-                <HeaderComponent
-                    firstitemtext={false}
-                    imageone={ImagePath.backicon}
-                    title={"EDIT PROFILE"}
-                    thirditemtext={true}
-                    texttwo={"SAVE"}
-                    onPressFirstItem={() => { props.navigation.goBack() }}
-                    onPressThirdItem={() => { updateProfile() }}
-                />
+                <ScrollView style={{ height: '90%' }} showsVerticalScrollIndicator={false}>
+
+                    <HeaderComponent
+                        firstitemtext={false}
+                        imageone={ImagePath.backicon}
+                        title={"EDIT PROFILE"}
+                        thirditemtext={true}
+                        texttwo={"SAVE"}
+                        onPressFirstItem={() => { props.navigation.goBack() }}
+                        onPressThirdItem={() => { updateProfile() }}
+                    />
 
 
-                <View style={{
-                    height: normalise(120), width: normalise(120), borderRadius: normalise(60),
-                    backgroundColor: Colors.fadeblack, alignSelf: 'center', marginTop: normalise(40),
-                    justifyContent: 'center', alignItems: 'center'
-                }}>
-
-                    <Image
-                        source={{ uri: profilePic }}
-                        style={{
-                            height: normalise(120), width: normalise(120),
-                            borderRadius: normalise(60)
-                        }}
-                        resizeMode='contain' />
-
-
-
-                </View>
-
-                <TouchableOpacity style={{ marginTop: normalise(10) }} onPress={() => { showPickerOptions() }}>
-
-                    <Text style={{
-                        color: Colors.white, fontSize: normalise(12),
-                        alignSelf: 'center', fontWeight: 'bold', textDecorationLine: 'underline'
+                    <View style={{
+                        height: normalise(120), width: normalise(120), borderRadius: normalise(60),
+                        backgroundColor: Colors.fadeblack, alignSelf: 'center', marginTop: normalise(40),
+                        justifyContent: 'center', alignItems: 'center'
                     }}>
-                        CHANGE PROFILE PIC
+
+                        <Image
+                            source={{ uri: profilePic }}
+                            style={{
+                                height: normalise(120), width: normalise(120),
+                                borderRadius: normalise(60)
+                            }}
+                            resizeMode='contain' />
+
+
+
+                    </View>
+
+                    <TouchableOpacity style={{ marginTop: normalise(10) }} onPress={() => { showPickerOptions() }}>
+
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(12),
+                            alignSelf: 'center', fontWeight: 'bold', textDecorationLine: 'underline'
+                        }}>
+                            CHANGE PROFILE PIC
                     </Text>
 
-                </TouchableOpacity>
+                    </TouchableOpacity>
 
 
-                <View style={{ width: '90%', alignSelf: 'center' }}>
+                    <View style={{ width: '90%', alignSelf: 'center' }}>
 
-                    <TextInputField text={"FULL NAME"}
-                        placeholder={"Enter Name"}
-                        maxLength={25}
-                        value={fullname}
-                        placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setFullname(text) }}
-                        borderColor={fullname === "" ? Colors.grey : Colors.white}
-                        marginTop={normalise(20)} />
+                        <TextInputField text={"CHOOSE USERNAME"}
+                            placeholder={"Enter Username"}
+                            placeholderTextColor={Colors.grey}
+                            marginTop={normalise(30)}
+                            tick_req={true}
+                            value={username}
+                            userNameAvailable={userNameAvailable}
+                            tick_visible={username}
+                            onChangeText={(text) => { setUsername(text), check(text) }}
+                        />
 
-                    <TextInputField text={"ENTER LOCATION"}
-                        placeholder={"Type Location"}
-                        value={location}
-                        placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setLocation(text) }}
-                        borderColor={location === "" ? Colors.grey : Colors.white} />
 
-                </View>
+                        <TextInputField text={"FULL NAME"}
+                            placeholder={"Enter Name"}
+                            maxLength={25}
+                            value={fullname}
+                            placeholderTextColor={Colors.grey}
+                            onChangeText={(text) => { setFullname(text) }}
+                            borderColor={fullname === "" ? Colors.grey : Colors.white}
+                            marginTop={normalise(20)} />
+
+
+                        <TextInputField text={"PHONE NUMBER"}
+                            placeholder={"Enter Phone number"}
+                            placeholderTextColor={Colors.grey}
+                            maxLength={10}
+                            isNumber={true}
+                            value={phoneNumber}
+                            onChangeText={(text) => { setPhoneNumber(text) }} />
+
+                        <TextInputField text={"ENTER LOCATION"}
+                            placeholder={"Type Location"}
+                            value={location}
+                            placeholderTextColor={Colors.grey}
+                            onChangeText={(text) => { setLocation(text) }}
+                            borderColor={location === "" ? Colors.grey : Colors.white} />
+
+                    </View>
+                </ScrollView>
 
             </SafeAreaView>
-        </View>
+        </KeyboardAvoidingView>
     )
 };
 

@@ -106,7 +106,7 @@ function FeaturedTrack(props) {
                         artist_name: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
                         original_song_uri: props.registerType === "spotify" ? data.item.external_urls.spotify : data.item.trackViewUrl
                     }];
-                    formdata.append("feature_song", JSON.stringify(array))
+                    formdata.append("feature_song", JSON.stringify(array))  
                     props.editProfileReq(formdata);
                 }}
                 onPressImage={() => {

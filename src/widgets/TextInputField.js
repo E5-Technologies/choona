@@ -46,6 +46,7 @@ function TextInputField(props) {
                 onBlur={() => setFocused(false)}
                 placeholder={props.placeholder}
                 maxLength={props.maxLength}
+                keyboardType={props.isNumber ? 'phone-pad' : 'default'}
                 autoCapitalize={props.autoCapitalize}
                 value={props.value}
                 placeholderTextColor={props.placeholderTextColor}
@@ -54,7 +55,7 @@ function TextInputField(props) {
 
             />
             {props.tick_req && props.tick_visible ? <Image
-                source={ImagePath.green_tick}
+                source={props.userNameAvailable ? ImagePath.green_tick : ImagePath.crossIcon}
                 style={{
                     position: 'absolute',
                     height: normalize(20),
@@ -86,6 +87,8 @@ TextInputField.propTypes = {
     borderColor: PropTypes.string,
     tick_req: PropTypes.bool,
     tick_visible: PropTypes.bool,
+    isNumber: PropTypes.bool,
+    userNameAvailable: PropTypes.bool,
 }
 
 TextInputField.defaultProps = {
@@ -102,4 +105,6 @@ TextInputField.defaultProps = {
     borderColor: Colors.grey,
     tick_req: false,
     tick_visible: false,
+    isNumber: false,
+    userNameAvailable: true,
 }

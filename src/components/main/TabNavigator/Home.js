@@ -641,13 +641,13 @@ function Home(props) {
 
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
 
-    
+
 
       <StatusBar />
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
 
-      <Loader visible={props.status != HOME_PAGE_SUCCESS} />
+        <Loader visible={props.status != HOME_PAGE_SUCCESS} />
 
         {/* { modalVisible ? 
                     <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>

@@ -23,7 +23,7 @@ import { reactionOnPostRequest, userFollowUnfollowRequest } from '../../action/U
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 
-const react = ["🔥", "😍", "💃", "🎉", "😂", "💯"]
+const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"]
 
 
 function HomeItemReaction(props) {

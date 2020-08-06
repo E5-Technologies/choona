@@ -72,10 +72,18 @@ function Profile(props) {
 
     function renderProfileData(data) {
         return (
-            <TouchableOpacity style={{
-                margin: normalise(4),
-                marginBottom: data.index === props.userProfileResp.post.length - 1 ? normalise(30) : normalise(5)
-            }}>
+            <TouchableOpacity
+                onPress={() => {
+                    props.navigation.navigate('PostListForUser', {
+                        profile_name: props.userProfileResp.full_name,
+                        posts: props.userProfileResp.post,
+                        index: data.index
+                    })
+                }}
+                style={{
+                    margin: normalise(4),
+                    marginBottom: data.index === props.userProfileResp.post.length - 1 ? normalise(30) : normalise(5)
+                }}>
                 <Image source={{
                     uri: props.userProfileResp.register_type === 'spotify' ? data.item.song_image :
                         data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")

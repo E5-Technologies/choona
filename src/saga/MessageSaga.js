@@ -131,8 +131,7 @@ export function* getChatMessages(action) {
 
                 })
 
-
-                console.log("CHATS", items.reverse())
+                console.log("CHATS", items)
 
                 var chatResponse = {
                     data: items.reverse(),

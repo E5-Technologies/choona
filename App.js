@@ -22,6 +22,7 @@ import Colors from './src/assests/Colors';
 import ImagePath from './src/assests/ImagePath';
 import normalise from './src/utils/helpers/Dimens';
 
+
 import Splash from './src/components/SplashComponent/Splash';
 
 import Login from './src/components/auth/Login';
@@ -51,6 +52,7 @@ import GenreSongClicked from './src/components/main/GenreSongClicked';
 import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
+import PostListForUser from './src/components/main/PostListForUser'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,6 +63,8 @@ const App = () => {
 
   const dispatch = useDispatch();
   const TokenReducer = useSelector(state => state.TokenReducer);
+  //const UserReducer = useSelector(state => state.UserReducer)
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -76,6 +80,8 @@ const App = () => {
   // );
 
   const BottomTab = () => {
+    const UserReducer = useSelector(state => state.UserReducer)
+
     return (
       <Tab.Navigator initialRouteName={"Home"}
         tabBarOptions={{
@@ -86,15 +92,15 @@ const App = () => {
           }
         }}
 
-        // tabBar={TabBar}
+      // tabBar={TabBar}
       >
 
         <Tab.Screen name="Home" component={Home}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image style={{
-                marginTop: Platform.OS === 'android' ? normalise(10) :  
-                Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                marginTop: Platform.OS === 'android' ? normalise(10) :
+                  Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
                 height: normalize(20), width: normalize(20),
                 height: normalize(20), width: normalize(20)
               }}
@@ -139,15 +145,32 @@ const App = () => {
         <Tab.Screen name="Notification" component={Notification}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Image style={{
-                marginTop: Platform.OS === 'android' ? normalise(10) : 
-               Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
-                height: normalize(20), width: normalize(20),
-                height: normalize(20), width: normalize(20),
-                marginRight: focused ? normalise(2) : null
-              }}
-                source={focused ? ImagePath.notificationactive : ImagePath.notificationinactive}
-                resizeMode='contain' />
+              <View>
+                <Image style={{
+                  marginTop: Platform.OS === 'android' ? normalise(10) :
+                    Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                  height: normalize(20), width: normalize(20)
+                }}
+                  source={focused ? ImagePath.notificationactive : ImagePath.notificationinactive}
+                  resizeMode='contain' >
+                </Image>
+                {UserReducer.userProfileResp.hasOwnProperty('isActivity') ?
+                  UserReducer.userProfileResp.isActivity ?
+                    <View
+                      style={{
+                        position: 'absolute',
+                        right: normalise(-2),
+                        top: normalise(-2),
+                        backgroundColor: Colors.red,
+                        borderRadius: normalize(8),
+                        height: 10,
+                        width: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    /> : null : null}
+
+              </View>
             ),
             tabBarLabel: ""
           }} />
@@ -156,8 +179,8 @@ const App = () => {
           options={{
             tabBarIcon: ({ focused }) => (
               <Image style={{
-                marginTop: Platform.OS === 'android' ? normalise(10) : 
-                 Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
+                marginTop: Platform.OS === 'android' ? normalise(10) :
+                  Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
                 height: normalize(20), width: normalize(20),
                 height: normalize(20), width: normalize(20)
               }}
@@ -210,6 +233,7 @@ const App = () => {
             <Stack.Screen name="GenreSongClicked" component={GenreSongClicked} />
             <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
             <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
+            <Stack.Screen name="PostListForUser" component={PostListForUser} />
           </Stack.Navigator>
         }
 

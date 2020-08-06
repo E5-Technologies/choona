@@ -94,10 +94,18 @@ function OthersProfile(props) {
 
     function renderProfileData(data) {
         return (
-            <TouchableOpacity style={{
-                margin: normalise(4),
-                marginBottom: data.index === props.othersProfileresp.post.length - 1 ? normalise(30) : normalise(5)
-            }}>
+            <TouchableOpacity
+                onPress={() => {
+                    props.navigation.navigate('PostListForUser', {
+                        profile_name: props.othersProfileresp.full_name,
+                        posts: props.othersProfileresp.post,
+                        index: data.index
+                    })
+                }}
+                style={{
+                    margin: normalise(4),
+                    marginBottom: data.index === props.othersProfileresp.post.length - 1 ? normalise(30) : normalise(5)
+                }}>
                 <Image source={{
                     uri: props.othersProfileresp.register_type === 'spotify' ? data.item.song_image :
                         data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg")

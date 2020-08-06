@@ -13,7 +13,7 @@ import Colors from '../../../assests/Colors';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import ImagePath from '../../../assests/ImagePath';
 import StatusBar from '../../../utils/MyStatusBar';
-import { activityListReq, userFollowUnfollowRequest } from '../../../action/UserAction';
+import { activityListReq, userFollowUnfollowRequest, getProfileRequest } from '../../../action/UserAction';
 import {
     ACTIVITY_LIST_REQUEST, ACTIVITY_LIST_SUCCESS,
     ACTIVITY_LIST_FAILURE,
@@ -27,6 +27,7 @@ import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import _ from 'lodash'
+import { editProfileRequest } from '../../../action/UserAction';
 
 let status;
 
@@ -36,7 +37,9 @@ function Notification(props) {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
-                    props.activityListReq()
+                    updateProfile(),
+                        props.activityListReq()
+                       
                 })
                 .catch(() => {
                     toast('Error', "Please Connect To Internet")
@@ -68,6 +71,21 @@ function Notification(props) {
         }
     };
 
+    const updateProfile = () => {
+
+        let formdata = new FormData;
+
+        formdata.append("isActivity", false);
+
+        isInternetConnected()
+            .then(() => {
+                props.editProfileReq(formdata),
+                props.getProfileReq();
+            })
+            .catch((err) => {
+                toast("Oops", "Please Connect To Internet")
+            })
+    }
 
     function renderTodayitem(data) {
 
@@ -254,7 +272,13 @@ const mapDispatchToProps = (dispatch) => {
         },
         followReq: (payload) => {
             dispatch(userFollowUnfollowRequest(payload))
-        }
+        },
+        editProfileReq: (payload) => {
+            dispatch(editProfileRequest(payload))
+        },
+        getProfileReq: () => {
+            dispatch(getProfileRequest())
+        },
     }
 };
 

@@ -28,7 +28,8 @@ import {
 import { signupRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
 import { register } from 'react-native-app-auth';
-
+import constants from '../../utils/helpers/constants'
+import axios from 'axios';
 
 let status = ""
 
@@ -52,11 +53,14 @@ function Login(props) {
 
     const dispatch = useDispatch()
 
-    const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
-        props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
+    // const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
+    //     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
+    const [username, setUsername] = useState("");
 
     const [fullname, setFullname] = useState(props.route.params.loginType === 'Spotify' ?
         "" : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`);
+
+    const [phoneNumber, setPhoneNumber] = useState('');
 
     const [imageDetails, setImageDetails] = useState({});
 
@@ -67,7 +71,9 @@ function Login(props) {
     const [profilePic, setProfilePic] = useState("")
 
 
-    const [userDetails, setUserDetails] = useState(props.route.params.userDetails)
+    const [userDetails, setUserDetails] = useState(props.route.params.userDetails);
+
+    const [userNameAvailable, setUserNameAvailable] = useState(true);
 
     console.log('DETAILS' + JSON.stringify(userDetails))
 
@@ -129,10 +135,16 @@ function Login(props) {
     const register = () => {
 
         if (username === "") {
-            alert("Please enter your user name")
+            alert("Please enter your username")
+        }
+        if(!userNameAvailable){
+            alert("Please enter a valid username")
         }
         else if (fullname === "") {
             alert("Please enter your name")
+        }
+        else if (phoneNumber === "") {
+            alert("Please enter your phone number")
         }
         else if (location === "") {
             alert("Please enter your location")
@@ -156,6 +168,7 @@ function Login(props) {
             formdata.append("profile_image", profileImage);
 
             formdata.append("username", username);
+            formdata.append("phone", phoneNumber);
 
             formdata.append("location", location);
 
@@ -166,7 +179,7 @@ function Login(props) {
             formdata.append("email", userDetails.email);
 
             formdata.append("deviceToken", "123456");
-            
+
             formdata.append("deviceType", Platform.OS);
 
             props.route.params.loginType === 'Spotify' ?
@@ -180,6 +193,22 @@ function Login(props) {
             console.log(formdata)
             props.signUpRequest(formdata);
         }
+    }
+
+    const check = async (username) => {
+        await axios.post(constants.BASE_URL + '/user/available', { "username": username }, {
+            headers: {
+                Accept: "application/json",
+                contenttype: "application/json",
+            }
+        })
+            .then(res => {
+                setUserNameAvailable(res.data.status === 200)
+
+            })
+            .catch(err => {
+                setUserNameAvailable(false)
+            })
     }
 
 
@@ -271,8 +300,9 @@ function Login(props) {
                         marginTop={normalise(30)}
                         tick_req={true}
                         value={username}
+                        userNameAvailable={userNameAvailable}
                         tick_visible={username}
-                        onChangeText={(text) => { setUsername(text) }}
+                        onChangeText={(text) => { setUsername(text), check(text) }}
                     />
 
                     <TextInputField text={"FULL NAME"}
@@ -281,6 +311,14 @@ function Login(props) {
                         maxLength={25}
                         value={fullname}
                         onChangeText={(text) => { setFullname(text) }} />
+
+                    <TextInputField text={"PHONE NUMBER"}
+                        placeholder={"Enter Phone number"}
+                        placeholderTextColor={Colors.grey}
+                        maxLength={10}
+                        isNumber={true}
+                        value={phoneNumber}
+                        onChangeText={(text) => { setPhoneNumber(text) }} />
 
                     <TextInputField text={"ENTER LOCATION"}
                         placeholder={"Type Location"}

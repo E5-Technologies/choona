@@ -21,7 +21,7 @@ import moment from "moment";
 
 function HomeItemList(props) {
 
-    const react = ["🔥", "😍", "💃", "🎉", "😂", "💯"]
+    const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"]
 
     const [plusVisible, setPlusVisible] = useState(false);
     const [numberOfLines, setNumberOfLines] = useState(3);
