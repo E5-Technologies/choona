@@ -61,7 +61,15 @@ import {
 
     GET_USER_FROM_HOME_REQUEST,
     GET_USER_FROM_HOME_SUCCESS,
-    GET_USER_FROM_HOME_FAILURE
+    GET_USER_FROM_HOME_FAILURE,
+
+    COUNTRY_CODE_REQUEST,
+    COUNTRY_CODE_SUCCESS,
+    COUNTRY_CODE_FAILURE,
+
+    TOP_5_FOLLOWED_USER_REQUEST,
+    TOP_5_FOLLOWED_USER_SUCCESS,
+    TOP_5_FOLLOWED_USER_FAILURE
 }
     from '../action/TypeConstants';
 import moment from 'moment'
@@ -87,7 +95,10 @@ const initialState = {
     sendSongUserSearch: [],
     featuredSongSearchResp: [],
     userSearchFromHome: [],
-    userLogoutResp: {}
+    userLogoutResp: {},
+    countryCodeRequest: [],
+    countryCodeOject: [],
+    top5FollowedResponse:[]
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -443,6 +454,46 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case GET_USER_FROM_HOME_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case COUNTRY_CODE_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case COUNTRY_CODE_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                countryCodeRequest: action.data,
+                countryCodeOject: action.data1
+            };
+
+        case COUNTRY_CODE_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+        case TOP_5_FOLLOWED_USER_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case TOP_5_FOLLOWED_USER_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                top5FollowedResponse: action.data,
+            };
+
+        case TOP_5_FOLLOWED_USER_FAILURE:
             return {
                 ...state,
                 status: action.type,

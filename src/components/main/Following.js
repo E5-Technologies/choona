@@ -19,10 +19,10 @@ import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import {
     FOLLOWING_LIST_REQUEST, FOLLOWING_LIST_SUCCESS, FOLLOWING_LIST_FAILURE,
-    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE
+    USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE, TOP_5_FOLLOWED_USER_REQUEST, TOP_5_FOLLOWED_USER_SUCCESS, TOP_5_FOLLOWED_USER_FAILURE
 }
     from '../../action/TypeConstants';
-import { followingListReq, userFollowUnfollowRequest } from '../../action/UserAction';
+import { followingListReq, userFollowUnfollowRequest, getTop5FollowedUserRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -40,12 +40,15 @@ function Following(props) {
     const [search, setSearch] = useState("")
     const [bool, setBool] = useState(false)
     const [followingList, setFollowingList] = useState([]);
+    const [top5followingList, setTop5FollowingList] = useState([]);
+
 
     useEffect(() => {
         props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
                     props.followingListReq(type, id)
+                    props.top5followingListReq()
                 })
                 .catch(() => {
                     toast('Error', "Please Connect To Internet")
@@ -81,6 +84,19 @@ function Following(props) {
                 break;
 
             case USER_FOLLOW_UNFOLLOW_FAILURE:
+                status = props.status
+                break;
+
+            case TOP_5_FOLLOWED_USER_REQUEST:
+                status = props.status
+                break;
+
+            case TOP_5_FOLLOWED_USER_SUCCESS:
+                status = props.status
+                setTop5FollowingList(props.top5FollowedResponse)
+                break;
+
+            case TOP_5_FOLLOWED_USER_FAILURE:
                 status = props.status
                 break;
         }
@@ -129,13 +145,45 @@ function Following(props) {
                         props.navigation.replace("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
-                    onPress={()=>{props.followReq({follower_id: data.item._id})}}
+                    onPress={() => { props.followReq({ follower_id: data.item._id }) }}
                 />
             );
         }
     };
 
+    function rendertop5FollowersItem(data) {
 
+        if (props.userProfileResp._id === data.item._id) {
+            return (
+
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={false}
+                    image2={"123"}
+                    marginBottom={data.index === props.top5FollowedResponse.length - 1 ? normalise(20) : 0}
+                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                />
+            );
+        } else {
+
+            return (
+
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={data.item.username}
+                    type={true}
+                    follow={data.item.isFollowing ? false : true}
+                    marginBottom={data.index === props.top5FollowedResponse.length - 1 ? normalise(20) : 0}
+                    onPressImage={() => {
+                        props.navigation.replace("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
+                    onPress={() => { props.followReq({ follower_id: data.item._id }) }}
+                />
+            );
+        }
+    };
 
     return (
 
@@ -189,12 +237,21 @@ function Following(props) {
 
                 </View>
 
+                {following == 0 ?
+                    <FlatList
+                        data={top5followingList}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        renderItem={rendertop5FollowersItem} />
 
-                <FlatList
-                    data={followingList}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item, index) => { index.toString() }}
-                    renderItem={renderFollowersItem} />
+                    :
+
+                    <FlatList
+                        data={followingList}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        renderItem={renderFollowersItem} />
+                }
 
 
 
@@ -208,6 +265,7 @@ const mapStateToProps = (state) => {
         status: state.UserReducer.status,
         followingData: state.UserReducer.followingData,
         userProfileResp: state.UserReducer.userProfileResp,
+        top5FollowedResponse: state.UserReducer.top5FollowedResponse,
     }
 };
 
@@ -219,7 +277,10 @@ const mapDispatchToProps = (dispatch) => {
 
         followReq: (payload) => {
             dispatch(userFollowUnfollowRequest(payload))
-        }
+        },
+        top5followingListReq: () => {
+            dispatch(getTop5FollowedUserRequest())
+        },
     }
 };
 

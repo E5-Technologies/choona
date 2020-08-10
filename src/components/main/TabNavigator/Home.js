@@ -57,7 +57,7 @@ import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import RBSheet from "react-native-raw-bottom-sheet";
-
+import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
 
 let status = "";
 let songStatus = "";
@@ -90,6 +90,10 @@ function Home(props) {
 
           props.getProfileReq(),
             props.homePage()
+            getDeviceToken()
+            .then((token) =>{
+              console.log(token)
+            })
 
         })
         .catch(() => {

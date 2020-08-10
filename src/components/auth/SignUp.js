@@ -23,14 +23,19 @@ import StatusBar from '../../utils/MyStatusBar';
 import {
     USER_SIGNUP_REQUEST, USER_SIGNUP_SUCCESS,
     USER_SIGNUP_FAILURE,
-    USER_LOGIN_FAILURE
+    USER_LOGIN_FAILURE,
+    COUNTRY_CODE_REQUEST,
+    COUNTRY_CODE_SUCCESS,
+    COUNTRY_CODE_FAILURE
 } from '../../action/TypeConstants';
-import { signupRequest } from '../../action/UserAction';
+import { signupRequest, getCountryCodeRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
 import { register } from 'react-native-app-auth';
 import constants from '../../utils/helpers/constants'
 import axios from 'axios';
-
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import Picker from '../../utils/helpers/Picker'
+import { getDeviceToken } from '../../utils/helpers/FirebaseToken'
 let status = ""
 
 function Login(props) {
@@ -48,10 +53,43 @@ function Login(props) {
             case USER_LOGIN_FAILURE:
                 status = props.status
                 break;
+
+            case COUNTRY_CODE_REQUEST:
+                status = props.status
+                break;
+
+            case COUNTRY_CODE_SUCCESS:
+                status = props.status
+                //console.log("COUNTRY", props.countryObject)
+                //setLocation(props.countryObject[0].name)
+                break;
+
+            case COUNTRY_CODE_FAILURE:
+                status = props.status
+                break;
         }
     };
 
-    const dispatch = useDispatch()
+    useEffect(() => {
+        isInternetConnected()
+            .then(() => {
+                props.countrycodeRequest()
+                getDeviceToken()
+                    .then((token) => {
+                        setDeviceToken(token)
+                        console.log(token)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+
+            })
+            .catch(() => {
+                toast('Check your Internet')
+            })
+    }, [])
+
+    // const dispatch = useDispatch()
 
     // const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
     //     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
@@ -64,8 +102,7 @@ function Login(props) {
 
     const [imageDetails, setImageDetails] = useState({});
 
-    const [location, setLocation] = useState(props.route.params.loginType === 'Spotify' ?
-        props.route.params.userDetails.country : "");
+    const [location, setLocation] = useState('Canada');
 
     const [picture, setPicture] = useState(false);
     const [profilePic, setProfilePic] = useState("")
@@ -75,7 +112,15 @@ function Login(props) {
 
     const [userNameAvailable, setUserNameAvailable] = useState(true);
 
-    console.log('DETAILS' + JSON.stringify(userDetails))
+    const [codePick, setCodePick] = useState('');
+    const [deviceToken, setDeviceToken] = useState('');
+
+
+
+    console.log("Location", location)
+
+
+    //console.log('DETAILS' + JSON.stringify(userDetails))
 
     // IMAGE PICKER OPTIONS
     const showPickerOptions = () => {
@@ -137,7 +182,7 @@ function Login(props) {
         if (username === "") {
             alert("Please enter your username")
         }
-        if(!userNameAvailable){
+        if (!userNameAvailable) {
             alert("Please enter a valid username")
         }
         else if (fullname === "") {
@@ -146,9 +191,9 @@ function Login(props) {
         else if (phoneNumber === "") {
             alert("Please enter your phone number")
         }
-        else if (location === "") {
-            alert("Please enter your location")
-        }
+        // else if (location === "") {
+        //     alert("Please enter your location")
+        // }
         else if (profilePic === "") {
             alert("Please upload your profile picture")
         }
@@ -178,7 +223,7 @@ function Login(props) {
 
             formdata.append("email", userDetails.email);
 
-            formdata.append("deviceToken", "123456");
+            formdata.append("deviceToken", deviceToken);
 
             formdata.append("deviceType", Platform.OS);
 
@@ -312,19 +357,52 @@ function Login(props) {
                         value={fullname}
                         onChangeText={(text) => { setFullname(text) }} />
 
-                    <TextInputField text={"PHONE NUMBER"}
-                        placeholder={"Enter Phone number"}
-                        placeholderTextColor={Colors.grey}
-                        maxLength={10}
-                        isNumber={true}
-                        value={phoneNumber}
-                        onChangeText={(text) => { setPhoneNumber(text) }} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
-                    <TextInputField text={"ENTER LOCATION"}
+
+                        <View>
+                            <Picker
+                                textColor={Colors.white}
+                                textSize={normalize(9)}
+                                emptySelectText="Select"
+                                editable={true}
+                                data={props.countryCodeRequest}
+                                selectedValue={codePick == '' ? props.countryCodeRequest[0] : codePick}
+                                onPickerItemSelected={(selectedvalue, index) => {
+                                    //console.log(index)
+                                    setLocation(props.countryObject[index].name)
+                                    // console.log(props.countryObject[index].name)
+                                    setCodePick(selectedvalue)
+                                }}
+                            //uniqueKey={"areaCode"}
+                            />
+
+                        </View>
+
+                        <TextInputField
+                            placeholder={"Enter Phone number"}
+                            placeholderTextColor={Colors.grey}
+                            width={normalize(200)}
+                            maxLength={10}
+                            isNumber={true}
+                            value={phoneNumber}
+                            onChangeText={(text) => { setPhoneNumber(text) }} />
+
+                        <Text style={{
+                            position: 'absolute',
+                            fontSize: normalize(12),
+                            top: 20,
+                            color: Colors.white,
+                            fontFamily: 'ProximaNova-Bold'
+                        }}>PHONE NUMBER</Text>
+                    </View>
+
+
+                    {/* <TextInputField text={"ENTER LOCATION"}
                         placeholder={"Type Location"}
                         placeholderTextColor={Colors.grey}
                         value={location}
-                        onChangeText={(text) => { setLocation(text) }} />
+                        onChangeText={(text) => { setLocation(text) }} /> */}
 
 
                     {props.route.params.loginType === "Spotify" ?
@@ -365,7 +443,9 @@ function Login(props) {
 const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
-        signupResponse: state.UserReducer.signupResponse
+        signupResponse: state.UserReducer.signupResponse,
+        countryCodeRequest: state.UserReducer.countryCodeRequest,
+        countryObject: state.UserReducer.countryCodeOject
     }
 };
 
@@ -373,6 +453,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         signUpRequest: (payload) => {
             dispatch(signupRequest(payload))
+        },
+        countrycodeRequest: () => {
+            dispatch(getCountryCodeRequest())
         }
     }
 };

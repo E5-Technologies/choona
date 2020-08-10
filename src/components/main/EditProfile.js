@@ -24,11 +24,21 @@ import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
-import { EDIT_PROFILE_REQUEST, EDIT_PROFILE_SUCCESS, EDIT_PROFILE_FAILURE } from '../../action/TypeConstants';
-import { editProfileRequest } from '../../action/UserAction';
+import {
+    EDIT_PROFILE_REQUEST,
+    EDIT_PROFILE_SUCCESS,
+    EDIT_PROFILE_FAILURE,
+
+    COUNTRY_CODE_REQUEST,
+    COUNTRY_CODE_SUCCESS,
+    COUNTRY_CODE_FAILURE
+
+
+} from '../../action/TypeConstants';
+import { editProfileRequest, getCountryCodeRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
-
+import Picker from '../../utils/helpers/Picker'
 let status = "";
 function EditProfile(props) {
 
@@ -40,7 +50,7 @@ function EditProfile(props) {
     const [profilePic, setProfilePic] = useState(constants.profile_picture_base_url + props.userProfileResp.profile_image)
     const [imageDetails, setImageDetails] = useState("");
     const [userNameAvailable, setUserNameAvailable] = useState(true);
-
+    const [codePick, setCodePick] = useState('');
 
     if (status === "" || props.status !== status) {
         switch (props.status) {
@@ -58,8 +68,39 @@ function EditProfile(props) {
                 status = props.status
                 toast("Oops", "Something Went Wrong, Please Try Again")
                 break;
+
+            case COUNTRY_CODE_REQUEST:
+                status = props.status
+                break;
+
+            case COUNTRY_CODE_SUCCESS:
+                status = props.status
+                props.countryObject.map((item,index) =>{
+                    if(item.name == location){
+                        setCodePick(item.flag+item.dial_code)
+                    }
+                })
+                break;
+
+            case COUNTRY_CODE_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+
+                break;
         }
     };
+
+    console.log(location)
+
+    useEffect(() => {
+        isInternetConnected()
+            .then(() => {
+                props.countrycodeRequest()
+            })
+            .catch(() => {
+                toast('Check your Internet')
+            })
+    }, [])
 
 
     // IMAGE PICKER OPTIONS
@@ -164,6 +205,7 @@ function EditProfile(props) {
 
             } else {
 
+
                 formdata.append("full_name", fullname);
                 formdata.append("location", location);
                 formdata.append("username", username);
@@ -213,7 +255,7 @@ function EditProfile(props) {
 
             <SafeAreaView style={{ flex: 1 }}>
 
-                <ScrollView style={{ height: '90%' }} showsVerticalScrollIndicator={false}>
+                <ScrollView showsVerticalScrollIndicator={false}>
 
                     <HeaderComponent
                         firstitemtext={false}
@@ -256,7 +298,7 @@ function EditProfile(props) {
                     </TouchableOpacity>
 
 
-                    <View style={{ width: '90%', alignSelf: 'center' }}>
+                    <View style={{ width: '90%', alignSelf: 'center', marginBottom: normalise(30) }}>
 
                         <TextInputField text={"CHOOSE USERNAME"}
                             placeholder={"Enter Username"}
@@ -279,21 +321,48 @@ function EditProfile(props) {
                             borderColor={fullname === "" ? Colors.grey : Colors.white}
                             marginTop={normalise(20)} />
 
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View>
+                                <Picker
+                                    textColor={Colors.white}
+                                    textSize={normalize(9)}
+                                    emptySelectText="Select"
+                                    editable={true}
+                                    data={props.countryCodeRequest}
+                                    selectedValue={codePick == '' ? props.countryCodeRequest[0] : codePick}
+                                    onPickerItemSelected={(selectedvalue, index) => {
+                                        //console.log(index)
+                                        setLocation(props.countryObject[index].name)
+                                        // console.log(props.countryObject[index].name)
+                                        setCodePick(selectedvalue)
+                                    }}
+                                />
+                            </View>
 
-                        <TextInputField text={"PHONE NUMBER"}
-                            placeholder={"Enter Phone number"}
-                            placeholderTextColor={Colors.grey}
-                            maxLength={10}
-                            isNumber={true}
-                            value={phoneNumber}
-                            onChangeText={(text) => { setPhoneNumber(text) }} />
+                            <TextInputField
+                                placeholder={"Enter Phone number"}
+                                placeholderTextColor={Colors.grey}
+                                maxLength={10}
+                                width={normalize(200)}
+                                isNumber={true}
+                                value={phoneNumber}
+                                onChangeText={(text) => { setPhoneNumber(text) }} />
 
-                        <TextInputField text={"ENTER LOCATION"}
+                            <Text style={{
+                                position: 'absolute',
+                                fontSize: normalize(12),
+                                top: 20,
+                                color: Colors.white,
+                                fontFamily: 'ProximaNova-Bold'
+                            }}>PHONE NUMBER</Text>
+                        </View>
+
+                        {/* <TextInputField text={"ENTER LOCATION"}
                             placeholder={"Type Location"}
                             value={location}
                             placeholderTextColor={Colors.grey}
                             onChangeText={(text) => { setLocation(text) }}
-                            borderColor={location === "" ? Colors.grey : Colors.white} />
+                            borderColor={location === "" ? Colors.grey : Colors.white} /> */}
 
                     </View>
                 </ScrollView>
@@ -306,7 +375,9 @@ function EditProfile(props) {
 const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
-        userProfileResp: state.UserReducer.userProfileResp
+        userProfileResp: state.UserReducer.userProfileResp,
+        countryCodeRequest: state.UserReducer.countryCodeRequest,
+        countryObject: state.UserReducer.countryCodeOject
     }
 };
 
@@ -314,6 +385,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         editProfileReq: (payload) => {
             dispatch(editProfileRequest(payload))
+        },
+        countrycodeRequest: () => {
+            dispatch(getCountryCodeRequest())
         }
     }
 };
