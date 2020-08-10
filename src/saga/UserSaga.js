@@ -69,7 +69,13 @@ import {
 
     GET_USER_FROM_HOME_REQUEST,
     GET_USER_FROM_HOME_SUCCESS,
-    GET_USER_FROM_HOME_FAILURE
+    GET_USER_FROM_HOME_FAILURE,
+    COUNTRY_CODE_REQUEST,
+    COUNTRY_CODE_SUCCESS,
+    COUNTRY_CODE_FAILURE,
+    TOP_5_FOLLOWED_USER_SUCCESS,
+    TOP_5_FOLLOWED_USER_FAILURE,
+    TOP_5_FOLLOWED_USER_REQUEST
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -422,12 +428,53 @@ export function* getUsersFromHomeAction(action) {
         };
 
         const response = yield call(postApi, 'user/search', action.payload, Header)
-        yield put({ type: GET_USER_FROM_HOME_SUCCESS, data: response.data.data})
+        yield put({ type: GET_USER_FROM_HOME_SUCCESS, data: response.data.data })
 
     } catch (error) {
         yield put({ type: GET_USER_FROM_HOME_FAILURE, error: error })
     }
 };
+
+export function* getCountryCodeAction(action) {
+    try {
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+        };
+
+        const response = yield call(getApi, 'country-code/list', Header);
+        let res = response.data.data.map((item) => {
+            let obj =item.flag + item.dial_code
+            return obj
+        })
+        //  console.log("THE CODE", res)
+        yield put({ type: COUNTRY_CODE_SUCCESS, data: res,data1:response.data.data });
+
+    } catch (error) {
+        yield put({ type: COUNTRY_CODE_FAILURE, error: error })
+    }
+};
+
+export function* getTop5FollowedUserAction(action) {
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+
+        };
+
+        const response = yield call(getApi, 'follower/top/list', Header);
+        //  console.log("THE CODE", res)
+        yield put({ type: TOP_5_FOLLOWED_USER_SUCCESS, data:response.data.data });
+
+    } catch (error) {
+        yield put({ type: TOP_5_FOLLOWED_USER_FAILURE, error: error })
+    }
+};
+
 
 
 //WATCH FUNCTIONS
@@ -494,4 +541,12 @@ export function* watchUserLogoutAction() {
 
 export function* watchgetUsersFromHomeAction() {
     yield takeLatest(GET_USER_FROM_HOME_REQUEST, getUsersFromHomeAction)
+};
+
+export function* watchCountryCodeAction() {
+    yield takeLatest(COUNTRY_CODE_REQUEST, getCountryCodeAction)
+};
+
+export function* watchTop5FollowedUserAction() {
+    yield takeLatest(TOP_5_FOLLOWED_USER_REQUEST, getTop5FollowedUserAction)
 };

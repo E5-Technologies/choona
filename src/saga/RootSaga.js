@@ -5,7 +5,9 @@ import {
     watchuserSearchAction, watchuserFollowOrUnfollowAction, watchothersProfileAction,
     watchhomePageAction, watchcommentOnPostAction, watchfollowerListAction,
     watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction,
-    watchfeaturedTrackSearchAction, watchUserLogoutAction, watchgetUsersFromHomeAction
+    watchfeaturedTrackSearchAction, watchUserLogoutAction, watchgetUsersFromHomeAction,
+    watchCountryCodeAction,watchTop5FollowedUserAction
+
 } from './UserSaga'
 
 import {
@@ -68,7 +70,9 @@ function* RootSaga() {
         watchResumePlayerRequest(),
         watchPlayPlayerRequest(),
         watchSeekToPlayerRequest(),
-        watchSeachMessageRequest()
+        watchSeachMessageRequest(),
+        watchCountryCodeAction(),
+        watchTop5FollowedUserAction()
 
     ])
 }

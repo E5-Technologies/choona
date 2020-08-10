@@ -14,7 +14,9 @@ import {
     ACTIVITY_LIST_REQUEST,
     FEATURED_SONG_SEARCH_REQUEST,
     USER_LOGOUT_REQUEST,
-    GET_USER_FROM_HOME_REQUEST
+    GET_USER_FROM_HOME_REQUEST,
+    COUNTRY_CODE_REQUEST,
+    TOP_5_FOLLOWED_USER_REQUEST
 }
     from './TypeConstants';
 
@@ -97,5 +99,12 @@ export const getUsersFromHome = (payload) => ({
     payload
 });
 
+export const getCountryCodeRequest = () =>({
+    type: COUNTRY_CODE_REQUEST,
+})
+
+export const getTop5FollowedUserRequest = () =>({
+    type: TOP_5_FOLLOWED_USER_REQUEST,
+})
 
 

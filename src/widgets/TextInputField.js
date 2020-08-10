@@ -16,7 +16,7 @@ function TextInputField(props) {
     }
 
     return (
-        <View style={{ width: '100%', marginTop: normalize(props.marginTop), marginBottom: normalize(props.marginBottom) }}>
+        <View style={{  marginTop: normalize(props.marginTop), marginBottom: normalize(props.marginBottom) }}>
 
 
             <Text style={{
@@ -29,7 +29,7 @@ function TextInputField(props) {
             <TextInput
 
                 style={{
-                    width: '100%',
+                    width: props.width,
                     marginTop: normalize(10),
                     fontFamily: 'ProximaNova-Semibold',
                     fontSize: normalize(12),
@@ -89,6 +89,7 @@ TextInputField.propTypes = {
     tick_visible: PropTypes.bool,
     isNumber: PropTypes.bool,
     userNameAvailable: PropTypes.bool,
+    width:PropTypes.bool
 }
 
 TextInputField.defaultProps = {
@@ -102,6 +103,7 @@ TextInputField.defaultProps = {
     marginTop: normalize(12),
     text: "",
     marginBottom: normalize(0),
+    width:'100%',
     borderColor: Colors.grey,
     tick_req: false,
     tick_visible: false,
