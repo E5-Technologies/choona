@@ -57,7 +57,7 @@ import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import RBSheet from "react-native-raw-bottom-sheet";
-import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
+// import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
 
 let status = "";
 let songStatus = "";
@@ -90,10 +90,10 @@ function Home(props) {
 
           props.getProfileReq(),
             props.homePage()
-            getDeviceToken()
-            .then((token) =>{
-              console.log(token)
-            })
+            // getDeviceToken()
+            // .then((token) =>{
+            //   console.log(token)
+            // })
 
         })
         .catch(() => {
@@ -360,7 +360,7 @@ function Home(props) {
 
     for (var i = 0; i < arr.length; i++) {
 
-      chatObject = Object.values(arr[i])[0]
+      let chatObject = Object.values(arr[i])[0]
 
       if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
 
@@ -651,7 +651,7 @@ function Home(props) {
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
 
-        <Loader visible={props.status != HOME_PAGE_SUCCESS} />
+        <Loader visible={props.status === HOME_PAGE_REQUEST} />
 
         {/* { modalVisible ? 
                     <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>

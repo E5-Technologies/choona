@@ -33,13 +33,14 @@ import {
     COUNTRY_CODE_SUCCESS,
     COUNTRY_CODE_FAILURE
 
-
 } from '../../action/TypeConstants';
 import { editProfileRequest, getCountryCodeRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
 import Picker from '../../utils/helpers/Picker'
 let status = "";
+
+
 function EditProfile(props) {
 
     const [username, setUsername] = useState(props.userProfileResp.username);
@@ -51,6 +52,23 @@ function EditProfile(props) {
     const [imageDetails, setImageDetails] = useState("");
     const [userNameAvailable, setUserNameAvailable] = useState(true);
     const [codePick, setCodePick] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getCountry();
+    }, []);
+
+
+    const getCountry = () => {
+        props.countryObject.map((item, index) => {
+            if (item.name === location) {
+                setCodePick(item.flag + item.dial_code);
+                console.log(item.flag + item.dial_code);
+                setLoading(false);
+            }
+        });
+    };
+
 
     if (status === "" || props.status !== status) {
         switch (props.status) {
@@ -68,39 +86,9 @@ function EditProfile(props) {
                 status = props.status
                 toast("Oops", "Something Went Wrong, Please Try Again")
                 break;
-
-            case COUNTRY_CODE_REQUEST:
-                status = props.status
-                break;
-
-            case COUNTRY_CODE_SUCCESS:
-                status = props.status
-                props.countryObject.map((item,index) =>{
-                    if(item.name == location){
-                        setCodePick(item.flag+item.dial_code)
-                    }
-                })
-                break;
-
-            case COUNTRY_CODE_FAILURE:
-                status = props.status
-                toast("Oops", "Something Went Wrong, Please Try Again")
-
-                break;
         }
     };
 
-    console.log(location)
-
-    useEffect(() => {
-        isInternetConnected()
-            .then(() => {
-                props.countrycodeRequest()
-            })
-            .catch(() => {
-                toast('Check your Internet')
-            })
-    }, [])
 
 
     // IMAGE PICKER OPTIONS
@@ -240,7 +228,6 @@ function EditProfile(props) {
     }
 
 
-
     //VIEW BEGINS
     return (
 
@@ -321,23 +308,26 @@ function EditProfile(props) {
                             borderColor={fullname === "" ? Colors.grey : Colors.white}
                             marginTop={normalise(20)} />
 
+
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View>
-                                <Picker
-                                    textColor={Colors.white}
-                                    textSize={normalize(9)}
-                                    emptySelectText="Select"
-                                    editable={true}
-                                    data={props.countryCodeRequest}
-                                    selectedValue={codePick == '' ? props.countryCodeRequest[0] : codePick}
-                                    onPickerItemSelected={(selectedvalue, index) => {
-                                        //console.log(index)
-                                        setLocation(props.countryObject[index].name)
-                                        // console.log(props.countryObject[index].name)
-                                        setCodePick(selectedvalue)
-                                    }}
-                                />
-                            </View>
+
+                            {loading ? null :
+                                <View>
+                                    <Picker
+                                        textColor={Colors.white}
+                                        textSize={normalize(9)}
+                                        emptySelectText="Select"
+                                        editable={true}
+                                        data={props.countryCodeRequest}
+                                        selectedValue={codePick == '' ? props.countryCodeRequest[0] : codePick}
+                                        onPickerItemSelected={(selectedvalue, index) => {
+                                            //console.log(index)
+                                            setLocation(props.countryObject[index].name)
+                                            // console.log(props.countryObject[index].name)
+                                            setCodePick(selectedvalue)
+                                        }}
+                                    />
+                                </View>}
 
                             <TextInputField
                                 placeholder={"Enter Phone number"}

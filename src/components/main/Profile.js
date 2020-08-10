@@ -21,9 +21,12 @@ import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
     USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS,
-    USER_PROFILE_FAILURE
+    USER_PROFILE_FAILURE,
+
+    COUNTRY_CODE_REQUEST, COUNTRY_CODE_SUCCESS,
+    COUNTRY_CODE_FAILURE
 } from '../../action/TypeConstants';
-import { getProfileRequest, userLogoutReq } from '../../action/UserAction';
+import { getProfileRequest, userLogoutReq, getCountryCodeRequest } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -34,12 +37,14 @@ let status = "";
 function Profile(props) {
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [flag, setFlag] = useState('');
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
-                    props.getProfileReq()
+                    props.getProfileReq();
+                    props.getCountryCode();
                 })
                 .catch(() => {
                     toast('Error', 'Please Connect To Internet')
@@ -65,10 +70,30 @@ function Profile(props) {
                 status = props.status
                 toast("Oops", "Something Went Wrong, Please Try Again")
                 break;
+
+            case COUNTRY_CODE_REQUEST:
+                status = props.status
+                break;
+
+            case COUNTRY_CODE_SUCCESS:
+                status = props.status
+                getLocationFlag(props.userProfileResp.location);
+                break;
+
+            case COUNTRY_CODE_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
         }
     };
 
 
+    function getLocationFlag(country) {
+        let index = props.countryCode.findIndex(obj => obj.name === country);
+        if (index !== -1) {
+            setFlag(props.countryCode[index].flag);
+        }
+    };
 
     function renderProfileData(data) {
         return (
@@ -211,6 +236,7 @@ function Profile(props) {
             <StatusBar />
 
             <Loader visible={props.status === USER_PROFILE_REQUEST} />
+            <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -277,7 +303,7 @@ function Profile(props) {
                             marginTop: normalise(2),
                             color: Colors.darkgrey, fontSize: normalise(11),
                             fontFamily: 'ProximaNovaAW07-Medium',
-                        }}>{props.userProfileResp.location}</Text>
+                        }}>{props.userProfileResp.location}  {flag}</Text>
 
 
                         <View style={{
@@ -485,6 +511,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         userProfileResp: state.UserReducer.userProfileResp,
+        countryCode: state.UserReducer.countryCodeOject
     }
 };
 
@@ -497,6 +524,10 @@ const mapDispatchToProps = (dispatch) => {
         logoutReq: () => {
             dispatch(userLogoutReq())
         },
+
+        getCountryCode: () => {
+            dispatch(getCountryCodeRequest())
+        }
 
     }
 };

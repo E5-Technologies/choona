@@ -19,9 +19,12 @@ import StatusBar from '../../utils/MyStatusBar';
 import {
     OTHERS_PROFILE_REQUEST, OTHERS_PROFILE_SUCCESS, OTHERS_PROFILE_FAILURE,
     USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE,
-    HOME_PAGE_REQUEST, HOME_PAGE_SUCCESS
+    HOME_PAGE_REQUEST, HOME_PAGE_SUCCESS,
+
+    COUNTRY_CODE_REQUEST, COUNTRY_CODE_SUCCESS,
+    COUNTRY_CODE_FAILURE
 } from '../../action/TypeConstants';
-import { othersProfileRequest, userFollowUnfollowRequest } from '../../action/UserAction';
+import { othersProfileRequest, userFollowUnfollowRequest, getCountryCodeRequest } from '../../action/UserAction';
 import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
 import { connect } from 'react-redux'
@@ -39,12 +42,14 @@ function OthersProfile(props) {
 
     const [id, setId] = useState(props.route.params.id);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [flag, setFlag] = useState('');
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
-                    props.othersProfileReq(id)
+                    props.othersProfileReq(id);
+                    props.getCountryCode();
                 })
                 .catch(() => {
                     toast('Error', 'Please Connect to Internet')
@@ -89,6 +94,27 @@ function OthersProfile(props) {
                 status = props.status
                 props.othersProfileReq(props.othersProfileresp._id);
 
+            case COUNTRY_CODE_REQUEST:
+                status = props.status
+                break;
+
+            case COUNTRY_CODE_SUCCESS:
+                status = props.status
+                getLocationFlag(props.othersProfileresp.location)
+                break;
+
+            case COUNTRY_CODE_FAILURE:
+                status = props.status
+                toast("Oops", "Something Went Wrong, Please Try Again")
+                break;
+        }
+    };
+
+
+    function getLocationFlag(country) {
+        let index = props.countryCode.findIndex(obj => obj.name === country);
+        if (index !== -1) {
+            setFlag(props.countryCode[index].flag);
         }
     };
 
@@ -134,7 +160,7 @@ function OthersProfile(props) {
             <StatusBar />
 
             {props.status === OTHERS_PROFILE_SUCCESS || props.status === USER_FOLLOW_UNFOLLOW_SUCCESS
-                || props.status === HOME_PAGE_SUCCESS
+                || props.status === HOME_PAGE_SUCCESS || props.status === COUNTRY_CODE_SUCCESS
 
                 ? <SafeAreaView style={{ flex: 1, }}>
 
@@ -179,7 +205,7 @@ function OthersProfile(props) {
                                 color: Colors.darkgrey, fontSize: normalise(11),
                                 fontFamily: 'ProximaNovaAW07-Medium',
 
-                            }}>{props.othersProfileresp.location}</Text>
+                            }}>{props.othersProfileresp.location}  {flag}</Text>
 
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: normalise(2), }}>
 
@@ -369,6 +395,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         othersProfileresp: state.UserReducer.othersProfileresp,
+        countryCode: state.UserReducer.countryCodeOject
     }
 };
 
@@ -379,6 +406,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         followReq: (payload) => {
             dispatch(userFollowUnfollowRequest(payload))
+        },
+        getCountryCode: () => {
+            dispatch(getCountryCodeRequest())
         }
     }
 };

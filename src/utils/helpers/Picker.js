@@ -152,8 +152,10 @@ function NewPicker(props) {
                     disabled={!props.editable}
                     ref={(ref) => setRef(ref)}
                     style={{ 
-                        height: normalize(45),
-                        width: normalize(80),
+                        height: normalize(35),
+                        width: normalize(70),
+                        justifyContent:'center',
+                        alignItems:'center'
                     }}
                     onPress={() => {
                         toggleShowDropdown()
@@ -162,7 +164,7 @@ function NewPicker(props) {
                         style={{
                             fontSize: normalize(props.textSize), color: props.textColor,
                             paddingRight: normalize(props.textPadding),
-                            textAlign: props.textAlign,marginTop:normalize(5.5),fontFamily: 'ProximaNova-Semibold',
+                            textAlign: props.textAlign, fontFamily: 'ProximaNova-Semibold',
                         }}>{text}</Text>
                 </TouchableOpacity> :
                 <Picker

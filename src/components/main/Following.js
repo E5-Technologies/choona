@@ -48,7 +48,6 @@ function Following(props) {
             isInternetConnected()
                 .then(() => {
                     props.followingListReq(type, id)
-                    props.top5followingListReq()
                 })
                 .catch(() => {
                     toast('Error', "Please Connect To Internet")
@@ -66,8 +65,9 @@ function Following(props) {
 
             case FOLLOWING_LIST_SUCCESS:
                 status = props.status
-                setFollowing(props.followingData.length)
-                setFollowingList(props.followingData)
+                setFollowing(props.followingData.length);
+                setFollowingList(props.followingData);
+                if (_.isEmpty(props.followingData)) { props.top5followingListReq() }
                 break;
 
             case FOLLOWING_LIST_FAILURE:
@@ -236,13 +236,36 @@ function Following(props) {
                         </TouchableOpacity>}
 
                 </View>
+            
+                
+                {_.isEmpty(props.followingData) ?
 
-                {following == 0 ?
-                    <FlatList
-                        data={top5followingList}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        renderItem={rendertop5FollowersItem} />
+                    <View style={{ flex: 1 }}>
+                        <View style={{ height: '45%', justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(15), textAlign:'center',
+                                fontFamily: 'ProximaNova-Bold', fontWeight: 'bold',
+                            }}>YOU DON'T FOLLOW ANYONE</Text>
+
+                            <Text style={{
+                                color: Colors.grey_text, fontSize: normalise(12), textAlign:'center',
+                                fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold', width:'80%', marginTop:normalise(5)
+                            }}>Choona is a lonely place when you aeen't following anyone, See if you already have friends by connecting below</Text>
+                        </View>
+
+
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
+                            fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold',
+                        }}>FOLLOW SOME OF OUR POPULAR USERS</Text>
+
+                        <FlatList
+                            style={{ marginTop: normalise(10) }}
+                            data={top5followingList}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            renderItem={rendertop5FollowersItem} />
+                    </View>
 
                     :
 

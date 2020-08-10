@@ -141,48 +141,7 @@ function Notification(props) {
 
     };
 
-    // function renderPreviousItem(data) {
-    //     if (data.item.activity_type === 'following') {
-    //         console.log(1)
-    //         return (
-    //             <ActivityListItem
-    //                 image={constants.profile_picture_base_url + data.item.profile_image}
-    //                 title={`${data.item.username} started following you`}
-    //                 follow={false}
-    //                 bottom={data.index === props.activityListToday.length - 1 ? true : false}
-    //                 marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-    //             // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-    //             />
-    //         );
-    //     }
-    //     else if (data.item.activity_type === 'reaction') {
-    //         return (
-    //             <ActivityListItem
-    //                 image={constants.profile_picture_base_url + data.item.profile_image}
-    //                 title={`${data.item.username} reacted ${data.item.text} on your post`}
-    //                 type={false}
-    //                 image2={data.item.image}
-    //                 bottom={data.index === props.activityListToday.length - 1 ? true : false}
-    //                 marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-    //             // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-    //             />
-    //         );
-    //     }
-    //     else {
-    //         return (
-    //             <ActivityListItem
-    //                 image={constants.profile_picture_base_url + data.item.profile_image}
-    //                 title={`${data.item.username} commented "${data.item.text}" on your post`}
-    //                 type={false}
-    //                 image2={data.item.image}
-    //                 bottom={data.index === props.activityListToday.length - 1 ? true : false}
-    //                 marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
-    //             // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-    //             />
-    //         )
-    //     }
-    // };
-
+    
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
