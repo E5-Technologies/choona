@@ -69,7 +69,11 @@ import {
 
     TOP_5_FOLLOWED_USER_REQUEST,
     TOP_5_FOLLOWED_USER_SUCCESS,
-    TOP_5_FOLLOWED_USER_FAILURE
+    TOP_5_FOLLOWED_USER_FAILURE,
+
+    GET_USERS_FROM_CONTACTS_REQUEST,
+    GET_USERS_FROM_CONTACTS_SUCCESS,
+    GET_USERS_FROM_CONTACTS_FAILURE
 }
     from '../action/TypeConstants';
 import moment from 'moment'
@@ -98,7 +102,8 @@ const initialState = {
     userLogoutResp: {},
     countryCodeRequest: [],
     countryCodeOject: [],
-    top5FollowedResponse:[]
+    top5FollowedResponse: [],
+    getUsersFromContact: [],
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -494,6 +499,26 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case TOP_5_FOLLOWED_USER_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case GET_USERS_FROM_CONTACTS_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case GET_USERS_FROM_CONTACTS_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                getUsersFromContact: action.data
+            };
+
+        case GET_USERS_FROM_CONTACTS_FAILURE:
             return {
                 ...state,
                 status: action.type,

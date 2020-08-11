@@ -70,12 +70,18 @@ import {
     GET_USER_FROM_HOME_REQUEST,
     GET_USER_FROM_HOME_SUCCESS,
     GET_USER_FROM_HOME_FAILURE,
+
     COUNTRY_CODE_REQUEST,
     COUNTRY_CODE_SUCCESS,
     COUNTRY_CODE_FAILURE,
+
     TOP_5_FOLLOWED_USER_SUCCESS,
     TOP_5_FOLLOWED_USER_FAILURE,
-    TOP_5_FOLLOWED_USER_REQUEST
+    TOP_5_FOLLOWED_USER_REQUEST,
+
+    GET_USERS_FROM_CONTACTS_REQUEST,
+    GET_USERS_FROM_CONTACTS_SUCCESS,
+    GET_USERS_FROM_CONTACTS_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -444,11 +450,11 @@ export function* getCountryCodeAction(action) {
 
         const response = yield call(getApi, 'country-code/list', Header);
         let res = response.data.data.map((item) => {
-            let obj =item.flag + item.dial_code
+            let obj = item.flag + item.dial_code
             return obj
         })
         //  console.log("THE CODE", res)
-        yield put({ type: COUNTRY_CODE_SUCCESS, data: res,data1:response.data.data });
+        yield put({ type: COUNTRY_CODE_SUCCESS, data: res, data1: response.data.data });
 
     } catch (error) {
         yield put({ type: COUNTRY_CODE_FAILURE, error: error })
@@ -468,13 +474,30 @@ export function* getTop5FollowedUserAction(action) {
 
         const response = yield call(getApi, 'follower/top/list', Header);
         //  console.log("THE CODE", res)
-        yield put({ type: TOP_5_FOLLOWED_USER_SUCCESS, data:response.data.data });
+        yield put({ type: TOP_5_FOLLOWED_USER_SUCCESS, data: response.data.data });
 
     } catch (error) {
         yield put({ type: TOP_5_FOLLOWED_USER_FAILURE, error: error })
     }
 };
 
+
+export function* getUsersFromContact(action) {
+    try {
+        const items = yield select(getItems);
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token
+        };
+
+        const response = yield call(postApi, 'user/phone', action.payload, Header);
+        yield put({ type: GET_USERS_FROM_CONTACTS_SUCCESS, data: response.data.data });
+
+    } catch (error) {
+        yield put({ type: GET_USERS_FROM_CONTACTS_FAILURE, error: error })
+    }
+};
 
 
 //WATCH FUNCTIONS
@@ -549,4 +572,8 @@ export function* watchCountryCodeAction() {
 
 export function* watchTop5FollowedUserAction() {
     yield takeLatest(TOP_5_FOLLOWED_USER_REQUEST, getTop5FollowedUserAction)
+};
+
+export function* watchgetUsersFromContact() {
+    yield takeLatest(GET_USERS_FROM_CONTACTS_REQUEST, getUsersFromContact)
 };

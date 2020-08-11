@@ -328,6 +328,8 @@ PODS:
   - react-native-app-auth (5.1.2):
     - AppAuth (= 1.2.0)
     - React
+  - react-native-contacts (5.2.5):
+    - React
   - react-native-netinfo (5.7.1):
     - React
   - react-native-safe-area-context (0.7.3):
@@ -475,6 +477,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-app-auth (from `../node_modules/react-native-app-auth`)
+  - react-native-contacts (from `../node_modules/react-native-contacts`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
@@ -566,6 +569,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-app-auth:
     :path: "../node_modules/react-native-app-auth"
+  react-native-contacts:
+    :path: "../node_modules/react-native-contacts"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -660,6 +665,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 1540d1c01bb493ae3124ed83351b1b6a155db7da
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
   react-native-app-auth: d7a1884e56c208d50c3fec8cb5a5b860a6ea1378
+  react-native-contacts: 0ed0dc4d5154c9181657837913bdfac6bba3469b
   react-native-netinfo: 38aefddbacc614a14b412ba653b355db49508e50
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   react-native-simple-toast: bed4715925bf2bf9443d1e08184bd8e7e3035670
@@ -689,6 +695,6 @@ SPEC CHECKSUMS:
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 39b4c2ee9b14758da6fd6cc040e8101e0637d79a
+PODFILE CHECKSUM: e64dd73665600df4597708fa0a27f76384bde0b7
 
 COCOAPODS: 1.8.4

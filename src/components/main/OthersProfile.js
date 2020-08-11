@@ -241,7 +241,7 @@ function OthersProfile(props) {
                             style={{
                                 height: normalise(30), width: '45%', borderRadius: normalise(15),
                                 backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
-                            }}>
+                            }} onPress={() => { props.navigation.navigate('AddSongsInMessage') }}>
 
                             <Text style={{
                                 color: Colors.white, fontSize: normalise(11), color: Colors.black,

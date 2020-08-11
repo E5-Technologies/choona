@@ -103,7 +103,7 @@ function MusicPlayerBar(props) {
                 style={{
                     width: '100%', height: normalize(45),
                     backgroundColor: Colors.fadeblack,
-                    opacity: 0.9, position:'absolute', bottom:0
+                    opacity: 0.9, position: 'absolute', bottom: 0
                 }}>
 
                 <Loader visible={bool} />
@@ -124,43 +124,42 @@ function MusicPlayerBar(props) {
                     backgroundColor: Colors.white
                 }} />
 
-
-                <View style={{
-                    width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between',
-                    marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8), flexDirection: 'row'
-                }}>
-
-                    <TouchableOpacity onPress={() => { onPress() }}>
-                        <Image source={{ uri: props.playingSongRef.song_pic }}
-                            style={{ height: normalize(25), width: normalize(25) }} />
-                    </TouchableOpacity>
-
+                <TouchableOpacity onPress={() => { onPress() }}>
                     <View style={{
-                        flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center',
-                        position: 'absolute', left: 50, width: '70%'
+                        width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between',
+                        marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8), flexDirection: 'row'
                     }}>
 
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Semibold',
-                            width: '100%',
-                        }} numberOfLines={1}>{props.playingSongRef.song_name}</Text>
+                        <TouchableOpacity onPress={() => { onPress() }}>
+                            <Image source={{ uri: props.playingSongRef.song_pic }}
+                                style={{ height: normalize(25), width: normalize(25) }} />
+                        </TouchableOpacity>
 
-                        <Text style={{
-                            color: Colors.grey_text, fontSize: normalise(10),
-                            fontFamily: 'ProximaNovaAW07-Medium', width: '100%',
-                        }} numberOfLines={1}>{props.playingSongRef.album_name}</Text>
+                        <View style={{
+                            flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center',
+                            position: 'absolute', left: 50, width: '70%'
+                        }}>
+
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(11),
+                                fontFamily: 'ProximaNova-Semibold',
+                                width: '100%',
+                            }} numberOfLines={1}>{props.playingSongRef.song_name}</Text>
+
+                            <Text style={{
+                                color: Colors.grey_text, fontSize: normalise(10),
+                                fontFamily: 'ProximaNovaAW07-Medium', width: '100%',
+                            }} numberOfLines={1}>{props.playingSongRef.album_name}</Text>
+                        </View>
+
+                        <TouchableOpacity onPress={() => { playOrPause() }}>
+                            <Image source={play ? ImagePath.pause : ImagePath.play}
+                                style={{ height: normalize(25), width: normalize(25) }}
+                                resizeMode={'contain'} />
+                        </TouchableOpacity>
+
                     </View>
-
-                    <TouchableOpacity onPress={() => { playOrPause() }}>
-                        <Image source={play ? ImagePath.pause : ImagePath.play}
-                            style={{ height: normalize(25), width: normalize(25) }}
-                            resizeMode={'contain'} />
-                    </TouchableOpacity>
-
-
-
-                </View>
+                </TouchableOpacity>
             </View> : null
     )
 

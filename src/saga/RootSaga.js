@@ -6,7 +6,7 @@ import {
     watchhomePageAction, watchcommentOnPostAction, watchfollowerListAction,
     watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction,
     watchfeaturedTrackSearchAction, watchUserLogoutAction, watchgetUsersFromHomeAction,
-    watchCountryCodeAction,watchTop5FollowedUserAction
+    watchCountryCodeAction, watchTop5FollowedUserAction, watchgetUsersFromContact
 
 } from './UserSaga'
 
@@ -72,7 +72,8 @@ function* RootSaga() {
         watchSeekToPlayerRequest(),
         watchSeachMessageRequest(),
         watchCountryCodeAction(),
-        watchTop5FollowedUserAction()
+        watchTop5FollowedUserAction(),
+        watchgetUsersFromContact(),
 
     ])
 }

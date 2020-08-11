@@ -72,10 +72,35 @@ export default function Splash(props) {
     };
 
 
+       // REQUEST CONTACT READ PERMISSION
+       async function contactReadPermission() {
+        try {
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+                title: "Choona Contacts Permission",
+                message: "Choona needs access to your contacts",
+                buttonNeutral: 'Ask Me Later',
+                buttonNegative: 'Cancel',
+                buttonPositive: 'OK',
+            });
+
+            if (granted === PermissionsAndroid.PERMISSIONS.GRANTED) {
+                console.log('Contacts Read Permisiion Given')
+            }
+            else {
+                console.log('Contacts Read Permisiion Denied')
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    };
+
+
     //MERGING FUNCTIONS
     async function requestAllpermissions() {
         await requestCameraPermission()
         await requestExternalReadPermission()
+        await contactReadPermission()
     };
 
 

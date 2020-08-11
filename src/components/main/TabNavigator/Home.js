@@ -57,6 +57,7 @@ import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import RBSheet from "react-native-raw-bottom-sheet";
+import Contacts from 'react-native-contacts';
 // import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
 
 let status = "";
@@ -76,6 +77,7 @@ function Home(props) {
   const [userSeach, setUserSeach] = useState("");
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
+  const [contactsLoading, setContactsLoading] = useState(false);
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -90,10 +92,10 @@ function Home(props) {
 
           props.getProfileReq(),
             props.homePage()
-            // getDeviceToken()
-            // .then((token) =>{
-            //   console.log(token)
-            // })
+          // getDeviceToken()
+          // .then((token) =>{
+          //   console.log(token)
+          // })
 
         })
         .catch(() => {
@@ -287,6 +289,30 @@ function Home(props) {
       })
   };
 
+
+  const getContacts = () => {
+    Contacts.getAll((err, contacts) => {
+      if (err) {
+        console.log(err);
+      }
+      else {
+        let contactsArray = contacts;
+        let finalArray = [];
+        setContactsLoading(false);
+        console.log(JSON.stringify(contacts));
+        contactsArray.map((item, index)=>{
+          item.phoneNumbers.map((item, index)=>{
+            let number = item.number.replace(/[- )(]/g,'');
+            let number1 = parseInt(number);
+            finalArray.push(number1);
+          })
+        });
+
+        console.log(finalArray);
+        props.navigation.navigate('UsersFromContacts', {data: finalArray})
+      }
+    })
+  };
 
   function renderItem(data) {
     return (
@@ -652,6 +678,7 @@ function Home(props) {
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
 
         <Loader visible={props.status === HOME_PAGE_REQUEST} />
+        <Loader visible={contactsLoading} />
 
         {/* { modalVisible ? 
                     <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>
@@ -706,24 +733,24 @@ function Home(props) {
                 fontWeight: 'bold'
               }}>CONNECT WITH FACEBOOK</Text>
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
 
             <TouchableOpacity style={{
               marginBottom: normalise(30),
-              marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
+              marginTop: normalise(40), height: normalise(50), width: '80%', alignSelf: 'center',
               borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
               shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
               shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
               justifyContent: 'center', borderColor: Colors.grey,
-            }}  >
+            }} onPress={() => { setContactsLoading(true), getContacts() }}>
 
               <Text style={{
                 marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
                 fontWeight: 'bold'
               }}>CHECK YOUR PHONEBOOK</Text>
 
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
           :
 

@@ -16,7 +16,8 @@ import {
     USER_LOGOUT_REQUEST,
     GET_USER_FROM_HOME_REQUEST,
     COUNTRY_CODE_REQUEST,
-    TOP_5_FOLLOWED_USER_REQUEST
+    TOP_5_FOLLOWED_USER_REQUEST,
+    GET_USERS_FROM_CONTACTS_REQUEST
 }
     from './TypeConstants';
 
@@ -101,10 +102,15 @@ export const getUsersFromHome = (payload) => ({
 
 export const getCountryCodeRequest = () =>({
     type: COUNTRY_CODE_REQUEST,
-})
+});
 
 export const getTop5FollowedUserRequest = () =>({
     type: TOP_5_FOLLOWED_USER_REQUEST,
-})
+});
+
+export const getUsersFromContacts = (payload) => ({
+    type: GET_USERS_FROM_CONTACTS_REQUEST,
+    payload
+});
 
 

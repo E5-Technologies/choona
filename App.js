@@ -52,7 +52,8 @@ import GenreSongClicked from './src/components/main/GenreSongClicked';
 import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
-import PostListForUser from './src/components/main/PostListForUser'
+import PostListForUser from './src/components/main/PostListForUser';
+import UsersFromContacts from './src/components/main/UsersFromContacts'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -234,6 +235,7 @@ const App = () => {
             <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
             <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
             <Stack.Screen name="PostListForUser" component={PostListForUser} />
+            <Stack.Screen name="UsersFromContacts" component={UsersFromContacts} />
           </Stack.Navigator>
         }
 
