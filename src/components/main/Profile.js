@@ -95,6 +95,7 @@ function Profile(props) {
         }
     };
 
+
     function renderProfileData(data) {
         return (
             <TouchableOpacity

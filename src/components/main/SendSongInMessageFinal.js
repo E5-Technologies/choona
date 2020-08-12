@@ -161,20 +161,22 @@ function SendSongInMessageFinal(props) {
                     thirditemtext={true}
                     texttwo={"SEND"}
                     onPressFirstItem={() => {
-                        if (fromAddAnotherSong) {
-                            props.navigation.replace('InsideaMessage', { index: index })
-                        } else {
-                            props.navigation.goBack();
-                        }
+                        // if (fromAddAnotherSong) {
+                        //     props.navigation.replace('InsideaMessage', { index: index })
+                        // } else {
+                        //     props.navigation.goBack();
+                        // }
+                        props.navigation.pop(2);
                     }}
                     onPressThirdItem={() => {
                         if (search.trim() != "") {
                             sendMessage();
-                            if (fromAddAnotherSong) {
-                                props.navigation.replace('InsideaMessage', { index: index })
-                            } else {
-                                props.navigation.goBack();
-                            }
+                            // if (fromAddAnotherSong) {
+                            //     props.navigation.replace('InsideaMessage', { index: index })
+                            // } else {
+                            //     props.navigation.goBack();
+                            // }
+                            props.navigation.pop(2);
 
                         } else {
                             toast("Error", "Please type in a message to send");

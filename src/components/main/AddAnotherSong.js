@@ -49,7 +49,7 @@ function AddAnotherSong(props) {
     const [result, setResult] = useState([]);
     const [index, setIndex] = useState([])
     const [indexOfArray, setIndexOfArray] = useState(props.route.params.index);
-
+    const [fromOthersProfile, setFromOthersProfile] = useState(props.route.params.othersProfile)
 
     let post = false;
 
@@ -87,8 +87,8 @@ function AddAnotherSong(props) {
                     image: props.registerType === 'spotify' ? result[index].album.images[0].url : result[index].artworkUrl100,
                     title: props.registerType === 'spotify' ? result[index].name : result[index].trackName,
                     title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].artistName,
-                    users: usersToSend, details: result[index], registerType: props.registerType, 
-                    fromAddAnotherSong: true, index: indexOfArray, fromHome: false
+                    users: usersToSend, details: result[index], registerType: props.registerType,
+                    fromAddAnotherSong: fromOthersProfile ? false : true, index: indexOfArray, fromHome: false
                 })
                 break;
 
@@ -149,7 +149,7 @@ function AddAnotherSong(props) {
                             originalUri: props.registerType === "spotify" ? data.item.external_urls.spotify :
                                 data.item.trackViewUrl,
                             uri: props.registerType === "spotify" ? data.item.preview_url :
-                            data.item.previewUrl,
+                                data.item.previewUrl,
                             id: "",
                             artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
                             changePlayer: true,
@@ -177,7 +177,9 @@ function AddAnotherSong(props) {
                     imagetwo={ImagePath.newmessage}
                     imagetwoheight={25}
                     imagetwowidth={25}
-                    onPressFirstItem={() => { props.navigation.replace('InsideaMessage', { index: indexOfArray }) }} />
+                    onPressFirstItem={() => {
+                        props.navigation.goBack() 
+                    }} />
 
                 <View style={{ width: '92%', alignSelf: 'center', }}>
 

@@ -77,13 +77,13 @@ function HomeItemReaction(props) {
         //     reactions[index].text = reaction;
         //     setReactionList(editArray(reactions))
         // } else {
-            reactions.push({
-                "user_id": userId,
-                "text": reaction,
-                "profile_image": props.userProfileResp.profile_image,
-                "username": props.userProfileResp.username
-            })
-            setReactionList(editArray(reactions))
+        reactions.push({
+            "user_id": userId,
+            "text": reaction,
+            "profile_image": props.userProfileResp.profile_image,
+            "username": props.userProfileResp.username
+        })
+        setReactionList(editArray(reactions))
         // }
 
     };
@@ -140,6 +140,8 @@ function HomeItemReaction(props) {
                     // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                     //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                     marginBottom={0}
+                    onPressImage={() => { props.navigation.navigate("Profile") }}
+                    TouchableOpacityDisabled={false}
                 />
             )
         } else {
@@ -152,7 +154,9 @@ function HomeItemReaction(props) {
                     // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                     //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                     marginBottom={0}
-                    onPress={()=>{props.followReq({follower_id: data.item.user_id})}}
+                    onPress={() => { props.followReq({ follower_id: data.item.user_id }) }}
+                    onPressImage={() => { props.navigation.navigate('OthersProfile', { id: data.item.user_id }) }}
+                    TouchableOpacityDisabled={false}
                 />
             )
         }
@@ -186,7 +190,7 @@ function HomeItemReaction(props) {
                 />
             </View>
         )
-    }   
+    }
 
     return (
 

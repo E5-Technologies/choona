@@ -431,7 +431,17 @@ function Player(props) {
                 name={data.item.username}
                 comment={data.item.text}
                 time={moment(data.item.createdAt).from()}
-                marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0} />
+                marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
+                onPressImage={() => {
+                    if (props.userProfileResp._id === data.item.user_id) {
+                        if (RbSheetRef) RbSheetRef.close();
+                        props.navigation.navigate('Profile')
+                    }
+                    else {
+                        if (RbSheetRef) RbSheetRef.close();
+                        props.navigation.navigate('OthersProfile', { id: data.item.user_id })
+                    }
+                }} />
         )
     };
 
@@ -742,27 +752,14 @@ function Player(props) {
                                 justifyContent: 'center', flexDirection: 'row'
                             }}>
 
-                                {changePlayer ? null :
-                                    <TouchableOpacity style={{
-                                        height: normalise(25), width: normalise(45),
-                                        borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.fadeblack,
-                                        justifyContent: 'center', alignItems: 'center'
-                                    }} onPress={() => { setModalVisible(!modalVisible) }}>
-                                        <Image
-                                            source={ImagePath.threedots}
-                                            style={{ height: normalise(15), width: normalise(15) }}
-                                            resizeMode='contain' />
-                                    </TouchableOpacity>}
-
-
                                 <TouchableOpacity style={{
                                     height: normalise(25), width: normalise(45),
-                                    borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.fadeblack,
+                                    borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.black,
                                     justifyContent: 'center', alignItems: 'center', marginLeft: normalise(10)
                                 }} onPress={() => { props.navigation.goBack() }}>
 
-                                    <Image source={ImagePath.donw_arrow_solid}
-                                        style={{ height: normalise(10), width: normalise(10) }}
+                                    <Image source={ImagePath.backicon}
+                                        style={{ height: normalise(15), width: normalise(15), transform:[{rotate:'-90deg'}] }}
                                         resizeMode='contain' />
                                 </TouchableOpacity>
 
@@ -812,25 +809,37 @@ function Player(props) {
                         }}>
 
                             <View style={{
-                                flexDirection: 'column', width: '90%', alignSelf: 'center',
+                                flexDirection: 'column', width: '80%', alignSelf: 'center',
                             }}>
 
                                 <Text style={{
-                                    color: Colors.white, fontSize: normalise(14),
+                                    color: Colors.white, fontSize: normalise(12),
                                     fontFamily: 'ProximaNova-Semibold',
                                     width: '90%',
                                 }} numberOfLines={1}>{songTitle}</Text>
 
                                 <Text style={{
-                                    color: Colors.grey_text, fontSize: normalise(12),
+                                    color: Colors.grey_text, fontSize: normalise(10),
                                     fontFamily: 'ProximaNovaAW07-Medium', width: '90%',
                                 }} numberOfLines={1}>{albumTitle}</Text>
 
                             </View>
-                            {changePlayer ? null :
+                            {/* {changePlayer ? null :
                                 <Image source={registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
                                     style={{ height: normalise(20), width: normalise(20), borderRadius: normalise(10) }}
-                                    resizeMode='contain' />}
+                                    resizeMode='contain' />} */}
+
+                            {changePlayer ? null :
+                                <TouchableOpacity style={{
+                                    height: normalise(25), width: normalise(45),
+                                    borderRadius: normalise(5), alignSelf: 'center', backgroundColor: Colors.fadeblack,
+                                    justifyContent: 'center', alignItems: 'center'
+                                }} onPress={() => { setModalVisible(!modalVisible) }}>
+                                    <Image
+                                        source={ImagePath.threedots}
+                                        style={{ height: normalise(15), width: normalise(15) }}
+                                        resizeMode='contain' />
+                                </TouchableOpacity>}
 
                         </View>
 
@@ -993,6 +1002,7 @@ function Player(props) {
                                             if (supported) {
                                                 Linking.openURL(originalUri)
                                                     .then(() => {
+                                                        console.log(originalUri);
                                                         console.log('success');
                                                     })
                                                     .catch(() => {

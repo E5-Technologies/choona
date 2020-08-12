@@ -38,24 +38,18 @@ function HomeItemComments(props) {
 
     const [type, setType] = useState(props.route.params.type);
     const [index, setIndex] = useState(props.route.params.index);
-    
-    const [commentData, setCommentData] = useState(type === 'search' ? props.searchData[index].comment :
-        type === 'top50' ? props.getPostFromTop50[index].comment : props.postData[index].comment);
 
-    const [image, setImage] = useState(type === 'search' ? props.searchData[index].song_image :
-        type === 'top50' ? props.getPostFromTop50[index].song_image : props.postData[index].song_image);
+    const [commentData, setCommentData] = useState(props.route.params.comment);
 
-    const [username, setUserName] = useState(type === 'search' ? props.searchData[index].userDetails.username :
-        type === 'top50' ? props.getPostFromTop50[index].userDetails.username : props.postData[index].userDetails.username);
+    const [image, setImage] = useState(props.route.params.image);
 
-    const [userComment, setUserComment] = useState(type === 'search' ? props.searchData[index].post_content :
-        type === 'top50' ? props.getPostFromTop50[index].post_content : props.postData[index].post_content);
+    const [username, setUserName] = useState(props.route.params.username);
 
-    const [time, setTime] = useState(type === 'search' ? props.searchData[index].createdAt :
-        type === 'top50' ? props.getPostFromTop50[index].createdAt : props.postData[index].createdAt);
+    const [userComment, setUserComment] = useState(props.route.params.userComment);
 
-    const [id, setId] = useState(type === 'search' ? props.searchData[index]._id :
-        type === 'top50' ? props.getPostFromTop50[index]._id : props.postData[index]._id);
+    const [time, setTime] = useState(props.route.params.time);
+
+    const [id, setId] = useState(props.route.params.id);
 
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
@@ -69,7 +63,16 @@ function HomeItemComments(props) {
                 comment={data.item.text}
                 time={moment(data.item.createdAt).from()}
                 marginBottom={data.index === commentData.length - 1 ?
-                    Platform.OS === 'android' ? normalise(80) : normalise(50) : normalise(0)} />
+                    Platform.OS === 'android' ? normalise(80) : normalise(50) : normalise(0)}
+                onPressImage={() => {
+                    if (props.userProfileResp._id === data.item.user_id) {
+                        props.navigation.navigate('Profile')
+                    }
+                    else {
+                        props.navigation.navigate('OthersProfile', { id: data.item.user_id })
+                    }
+                }}
+            />
         )
     };
 

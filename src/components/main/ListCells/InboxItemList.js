@@ -23,7 +23,13 @@ function InboxListItem(props) {
         if (props.onPress) {
             props.onPress()
         }
-    }
+    };
+
+    const onPressImage = () => {
+        if (props.onPressImage) {
+            props.onPressImage()
+        }
+    };
 
 
     return (
@@ -42,15 +48,15 @@ function InboxListItem(props) {
                 alignItems: 'center'
             }}>
 
-
-                <Image source={{uri: props.image}}
-                    style={{
-                        height: normalise(35),
-                        width: normalise(35),
-                        borderRadius: normalise(17),
-                    }}
-                    resizeMode="contain" />
-
+                <TouchableOpacity onPress={() => { onPressImage() }}>
+                    <Image source={{ uri: props.image }}
+                        style={{
+                            height: normalise(35),
+                            width: normalise(35),
+                            borderRadius: normalise(17),
+                        }}
+                        resizeMode="contain" />
+                </TouchableOpacity>
 
 
                 <View style={{
@@ -59,12 +65,13 @@ function InboxListItem(props) {
                     width: '75%',
                     justifyContent: 'flex-start'
                 }}>
-
-                    <Text style={{
-                        color: Colors.white, fontSize: normalise(11),
-                        fontFamily: 'ProximaNova-Bold',
-                    }} numberOfLines={1}>{props.title}</Text>
-
+                    <TouchableOpacity onPress={() => { onPressImage() }}>
+                        <Text style={{
+                            color: Colors.white, fontSize: normalise(11),
+                            fontFamily: 'ProximaNova-Bold',
+                        }} numberOfLines={1}>{props.title}</Text>
+                    </TouchableOpacity>
+                    
                     <Text style={{
                         marginTop: normalise(2),
                         color: props.read ? Colors.grey : Colors.white, fontSize: normalise(10),
@@ -102,7 +109,8 @@ InboxListItem.propTypes = {
     onPress: PropTypes.func,
     marginBottom: PropTypes.number,
     description: PropTypes.string,
-    read: PropTypes.bool
+    read: PropTypes.bool,
+    onPressImage: PropTypes.func
 
 };
 
@@ -112,6 +120,7 @@ InboxListItem.defaultProps = {
     onPress: null,
     marginBottom: 0,
     description: "",
-    read: false
+    read: false,
+    onPressImage: null
 
 }

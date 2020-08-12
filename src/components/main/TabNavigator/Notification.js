@@ -20,6 +20,8 @@ import {
 
     USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS,
     USER_FOLLOW_UNFOLLOW_FAILURE,
+    USER_PROFILE_REQUEST,
+    EDIT_PROFILE_REQUEST,
 } from '../../../action/TypeConstants';
 import { connect } from 'react-redux'
 import isInternetConnected from '../../../utils/helpers/NetInfo';
@@ -149,6 +151,8 @@ function Notification(props) {
             <StatusBar />
 
             <Loader visible={props.status === ACTIVITY_LIST_REQUEST} />
+            <Loader visible={props.status === USER_PROFILE_REQUEST} />
+            <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
             <SafeAreaView style={{ flex: 1 }}>
 

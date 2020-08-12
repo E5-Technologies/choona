@@ -67,13 +67,16 @@ function CommentList(props) {
                 <View style={{
                     flexDirection: 'row',
                     width: '87%',
-                    justifyContent: 'space-between'}}>
-                   
-                    <Text style={{
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'ProximaNova-Semibold',
-                    }}>{props.name}</Text>
+                    justifyContent: 'space-between'
+                }}>
+                    
+                    <TouchableOpacity onPress={() => { onPressImage() }}  >
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'ProximaNova-Semibold',
+                        }}>{props.name}</Text>
+                    </TouchableOpacity>
 
                     <Text style={{
                         color: Colors.grey_text,
@@ -89,8 +92,8 @@ function CommentList(props) {
                 color: Colors.white,
                 fontSize: 12,
                 marginTop: normalise(-15),
-                alignSelf:'flex-end',
-                width:'86.6%',
+                alignSelf: 'flex-end',
+                width: '86.6%',
                 textAlign: 'left',
                 fontFamily: 'ProximaNova-Regular'
             }}>{props.comment}</Text>

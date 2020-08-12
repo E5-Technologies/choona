@@ -233,7 +233,12 @@ function Search(props) {
                     props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
                 }}
                 onPressCommentbox={() => {
-                    props.navigation.navigate('HomeItemComments', { index: data.index, type: 'search' });
+                    props.navigation.navigate('HomeItemComments', {
+                        index: data.index, type: 'search',
+                        comment: data.item.comment, image: data.item.song_image,
+                        username: data.item.userDetails.username, userComment: data.item.post_content,
+                        time: data.item.createdAt, id: data.item._id
+                    });
                 }}
                 onPressSecondImage={() => {
                     setPositionInArray(data.index)
@@ -247,7 +252,8 @@ function Search(props) {
     function renderGenreData(data) {
         return (
             <TouchableOpacity style={{
-                marginBottom: data.index === top50.length - 1 ? normalise(30) : normalise(-2),
+                marginBottom: data.index === top50.length - 1 ? normalise(30) : normalise(4),
+                margin: normalise(6)
             }}
                 onPress={() => { props.navigation.navigate("GenreSongClicked", { data: data.item._id }) }}
             >
@@ -255,7 +261,6 @@ function Search(props) {
                 <Image source={{ uri: data.item.song_image.replace("100x100bb.jpg", "500x500bb.jpg") }}
                     style={{
                         height: normalise(140), width: normalise(140),
-                        margin: normalise(6)
                     }}
                     resizeMode="contain" />
             </TouchableOpacity>
@@ -486,6 +491,13 @@ function Search(props) {
             }
 
         }
+
+        else {
+            let search = _.filter(props.top50SongsResponse, (item) => {
+                return item._id.toLowerCase().indexOf(text.toLowerCase()) !== -1
+            });
+            setTop50(search);
+        }
     };
 
 
@@ -497,6 +509,10 @@ function Search(props) {
         else if (songSearch) {
             setSearchPostData([]);
             setPositionInArray(0);
+        }
+
+        else{
+            setTop50(props.top50SongsResponse)
         }
 
     };
@@ -549,7 +565,8 @@ function Search(props) {
                                 fontFamily: 'ProximaNova-Black',
                                 position: 'absolute',
                                 top: normalise(14),
-                                left: normalise(26),
+                                // left: normalise(26),
+                                alignSelf: 'center',
                                 fontSize: normalise(12)
                             }}>USERS</Text>
 
@@ -583,7 +600,8 @@ function Search(props) {
                                 fontFamily: 'ProximaNova-Black',
                                 position: 'absolute',
                                 top: normalise(14),
-                                left: normalise(26),
+                                // left: normalise(26),
+                                alignSelf: 'center',
                                 fontSize: normalise(12)
                             }}>TOP 50</Text>
 
@@ -613,7 +631,8 @@ function Search(props) {
                                 fontFamily: 'ProximaNova-Black',
                                 position: 'absolute',
                                 top: normalise(14),
-                                left: normalise(26),
+                                // left: normalise(26),
+                                alignSelf: 'center',
                                 fontSize: normalise(12)
                             }}>SONGS</Text>
 
@@ -765,7 +784,7 @@ function Search(props) {
 
                     <FlatList
                         //style={{ height: '70%' }}
-                        style={{ alignSelf: 'center' }}
+                        style={{ alignSelf: 'center', width: '90%'}}
                         data={top50}
                         renderItem={renderGenreData}
                         keyExtractor={(item, index) => index.toString()}

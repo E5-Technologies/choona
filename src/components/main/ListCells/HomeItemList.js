@@ -38,28 +38,28 @@ function HomeItemList(props) {
     if (props.reactions.length > 0) {
         props.reactions.map((item, index) => {
 
-             if(item.text === react[0]){
-               fire.push(item)
+            if (item.text === react[0]) {
+                fire.push(item)
             }
 
-            else if(item.text === react[1]){
-              heartEyes.push(item)
+            else if (item.text === react[1]) {
+                heartEyes.push(item)
             }
 
-            else if(item.text === react[2]){
-                dancingGirl.push(item)  
+            else if (item.text === react[2]) {
+                dancingGirl.push(item)
             }
 
-            else if(item.text === react[3]){
+            else if (item.text === react[3]) {
                 party.push(item)
             }
 
-            else if(item.text === react[4]){
-               laughing.push(item) 
+            else if (item.text === react[4]) {
+                laughing.push(item)
             }
 
-            else if(item.text === react[5]){
-                hundred.push(item) 
+            else if (item.text === react[5]) {
+                hundred.push(item)
             }
         })
     }
@@ -358,12 +358,13 @@ function HomeItemList(props) {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                     }}>
+                        <TouchableOpacity onPress={() => { onPressImage() }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: 14,
+                                fontFamily: 'ProximaNova-Semibold',
 
-                        <Text style={{
-                            color: Colors.white, fontSize: 14,
-                            fontFamily: 'ProximaNova-Semibold',
-
-                        }} numberOfLines={1}>{props.name}</Text>
+                            }} numberOfLines={1}>{props.name}</Text>
+                        </TouchableOpacity>
 
                         <Text style={{
                             color: Colors.grey_text,
@@ -431,8 +432,8 @@ function HomeItemList(props) {
                         <Text style={{
                             color: Colors.white, fontSize: 10,
                             fontFamily: "ProximaNova-Bold"
-                        }}>{ props.reactions.length > 1 ? `${props.reactions.length} REACTIONS`
-                        : `${props.reactions.length} REACTION`}</Text>
+                        }}>{props.reactions.length > 1 ? `${props.reactions.length} REACTIONS`
+                            : `${props.reactions.length} REACTION`}</Text>
 
                     </TouchableOpacity>
                 </View>

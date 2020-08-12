@@ -37,7 +37,7 @@ let status;
 
 function Inbox(props) {
 
-    
+
     const [search, setSearch] = useState("");
     const [mesageList, setMessageList] = useState("");
     const [bool, setBool] = useState(false);
@@ -105,6 +105,9 @@ function Inbox(props) {
                     ? true : Object.values(data.item)[0].read}
                 onPress={() => props.navigation.navigate('InsideaMessage', { index: data.index })}
                 marginBottom={data.index === props.chatList.length - 1 ? normalise(20) : 0}
+                onPressImage={() => {
+                    props.navigation.navigate('OthersProfile', { id: data.item.user_id })
+                }}
             />
         )
     }
@@ -191,7 +194,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.MessageReducer.status,
         chatList: state.MessageReducer.chatList,
-        error: state.MessageReducer.error
+        error: state.MessageReducer.error,
     }
 };
 

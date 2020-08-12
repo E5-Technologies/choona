@@ -75,7 +75,7 @@ function PostListForUser(props) {
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
 
     const [posts, setPosts] = useState(props.route.params.posts)
-   
+
     console.log(props.route.params.index)
 
     const ref = React.useRef(null);
@@ -321,7 +321,11 @@ function PostListForUser(props) {
                     props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
                 }}
                 onPressCommentbox={() => {
-                    props.navigation.navigate('HomeItemComments', { index: data.index });
+                    props.navigation.navigate('HomeItemComments', {
+                        index: data.index, comment: data.item.comment,
+                        image: data.item.song_image, username: data.item.userDetails.username, userComment: data.item.post_content,
+                        time: data.item.createdAt, id: data.item._id
+                    });
                 }}
                 onPressSecondImage={() => {
                     setPositionInArray(data.index)
@@ -613,7 +617,7 @@ function PostListForUser(props) {
             </RBSheet>
         )
     };
-    
+
 
     return (
 

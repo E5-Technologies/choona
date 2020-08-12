@@ -186,7 +186,7 @@ function InsideaMessage(props) {
                             _id: props.searchedChatData[0].receiver_id === props.userProfileResp._id ? props.searchedChatData[0].sender_id :
                                 props.searchedChatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
                             profile_image: props.chatList[index].profile_image,
-                        }], index: index
+                        }], index: index, othersProfile: false
                     })
                 }}>
 

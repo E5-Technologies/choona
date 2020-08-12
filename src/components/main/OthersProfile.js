@@ -241,7 +241,15 @@ function OthersProfile(props) {
                             style={{
                                 height: normalise(30), width: '45%', borderRadius: normalise(15),
                                 backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center'
-                            }} onPress={() => { props.navigation.navigate('AddSongsInMessage') }}>
+                            }} onPress={() => {
+                                props.navigation.navigate('AddAnotherSong', {
+                                    othersProfile: true,
+                                    index: 0, users: [{
+                                        _id: props.othersProfileresp._id, username: props.othersProfileresp.username,
+                                        full_name: props.othersProfileresp.full_name, profile_image: props.othersProfileresp.profile_image
+                                    }]
+                                });
+                            }}>
 
                             <Text style={{
                                 color: Colors.white, fontSize: normalise(11), color: Colors.black,

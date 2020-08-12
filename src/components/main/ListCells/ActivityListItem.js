@@ -18,7 +18,7 @@ import PropTypes from "prop-types";
 function ActivityListItem(props) {
 
     const [follow, setFollow] = useState(props.follow)
-    
+
     const onPress = () => {
         if (props.onPress) {
             props.onPress()
@@ -37,30 +37,33 @@ function ActivityListItem(props) {
             width: '90%',
             alignSelf: 'center',
             marginTop: props.marginTop,
-            marginBottom: props.marginBottom, 
+            marginBottom: props.marginBottom,
         }}>
 
             <View style={{
-                flexDirection: 'row', alignItems: 'center', 
-                justifyContent: 'space-between', marginTop:normalise(10),
-                marginBottom:normalise(10),
+                flexDirection: 'row', alignItems: 'center',
+                justifyContent: 'space-between', marginTop: normalise(10),
+                marginBottom: normalise(10),
             }}>
 
-                <TouchableOpacity 
-                onPress={() => { onPressImage() }}>
-                    <Image source={props.image === "" ? ImagePath.dp : { uri : props.image}}
+                <TouchableOpacity
+                    onPress={() => { onPressImage() }}>
+                    <Image source={props.image === "" ? ImagePath.dp : { uri: props.image }}
                         style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(35) }}
                         resizeMode="contain" />
                 </TouchableOpacity>
 
-                <Text style={{
-                    color: Colors.white, fontSize: normalise(11),
-                    width: props.type ? '50%' : '70%',
-                    fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
-                    marginRight: props.type ? normalise(10) : 0,
-                    textAlign: 'left'
-                }} numberOfLines={2}>{props.title}</Text>
-
+                <TouchableOpacity disabled={props.TouchableOpacityDisabled}
+                    style={{ width: props.type ? '50%' : '70%'}}
+                    onPress={() => { onPressImage() }}>
+                    <Text style={{
+                        color: Colors.white, fontSize: normalise(11),
+                        width: '90%',
+                        fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
+                        marginRight: props.type ? normalise(10) : 0,
+                        textAlign: 'left'
+                    }} numberOfLines={2}>{props.title}</Text>
+                </TouchableOpacity>
 
                 {props.type ?
                     <TouchableOpacity
@@ -88,8 +91,8 @@ function ActivityListItem(props) {
 
                     :
                     <TouchableOpacity>
-                        <Image source={props.image2 === "" ? ImagePath.dp2 : {uri: props.image2}} 
-                        style={{ height: normalise(35), width: normalise(35) }}
+                        <Image source={props.image2 === "" ? ImagePath.dp2 : { uri: props.image2 }}
+                            style={{ height: normalise(35), width: normalise(35) }}
                             resizeMode='contain' />
                     </TouchableOpacity>}
             </View>
@@ -118,7 +121,8 @@ ActivityListItem.propTypes = {
     follow: PropTypes.bool,
     marginBottom: PropTypes.number,
     onPressImage: PropTypes.bool,
-    marginTop: PropTypes.number
+    marginTop: PropTypes.number,
+    TouchableOpacityDisabled: PropTypes.bool
 };
 
 ActivityListItem.defaultProps = {
@@ -129,5 +133,6 @@ ActivityListItem.defaultProps = {
     type: true,
     marginBottom: 0,
     onPressImage: null,
-    marginTop: 0
+    marginTop: 0,
+    TouchableOpacityDisabled: true
 }
