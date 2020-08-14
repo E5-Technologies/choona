@@ -692,7 +692,7 @@ function Player(props) {
                                             .then((supported) => {
                                                 if (supported) {
                                                     console.log(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                    Linking.openURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
                                                         .then(() => {
                                                             console.log(originalUri);
                                                             console.log('success');
@@ -1114,7 +1114,7 @@ function Player(props) {
                                             .then((supported) => {
                                                 if (supported) {
                                                     console.log(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                    Linking.openURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
                                                         .then(() => {
                                                             console.log(originalUri);
                                                             console.log('success');
