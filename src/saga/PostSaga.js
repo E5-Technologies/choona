@@ -40,7 +40,6 @@ export function* searchSongsForPostAction(action) {
     let spotifyHeader = {
         "Authorization": items.registerType === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
     };
-
     try {
 
         if (items.registerType === "spotify") {

@@ -159,6 +159,7 @@ function SignUp(props) {
 
   //TOKEN FIREBASE
   function appleLoginWithOurServer(appleData) {
+
     getDeviceToken()
       .then((token) => {
         signInwithApple(appleData, token);

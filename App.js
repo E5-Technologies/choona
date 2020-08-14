@@ -9,7 +9,8 @@ import {
   StatusBar,
   Image,
   Platform,
-  Dimensions
+  Dimensions,
+  AppState
 
 } from 'react-native';
 
@@ -54,6 +55,11 @@ import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
 import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts'
+import { generateDeviceToken } from './src/utils/helpers/FirebaseToken';
+import isInternetConnected from './src/utils/helpers/NetInfo';
+import {
+  editProfileRequest
+} from './src/action/UserAction';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -70,8 +76,38 @@ const App = () => {
   useEffect(() => {
     setTimeout(() => {
       dispatch(getTokenRequest())
-    }, 3000)
+    }, 3000);
+
+    AppState.addEventListener('change', _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
+    }
+
   }, []);
+
+  function _handleAppStateChange() {
+
+    if (AppState.currentState.match(/inactive|background/)) {
+
+      let formdata = new FormData;
+
+      formdata.append("badge_count", 0);
+
+      isInternetConnected()
+        .then(() => {
+          dispatch(editProfileRequest(formdata))
+        })
+        .catch((err) => {
+          toast("Oops", "Please Connect To Internet")
+        })
+
+    } else if (AppState.currentState === 'active') {
+      
+      console.log("zxcv","App is in active Mode.")
+      
+    }
+  }
 
   // const TabBar = (props) => (
   //   <View>

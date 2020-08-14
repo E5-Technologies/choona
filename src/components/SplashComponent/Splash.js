@@ -8,15 +8,13 @@ import {
     TouchableOpacity,
     ImageBackground,
     Image,
+    Platform,
     PermissionsAndroid
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import { tokenRequest } from '../../action/index';
-import { useDispatch, useSelector } from 'react-redux';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import StatusBar from '../../utils/MyStatusBar';
-
 
 export default function Splash(props) {
 
@@ -72,8 +70,8 @@ export default function Splash(props) {
     };
 
 
-       // REQUEST CONTACT READ PERMISSION
-       async function contactReadPermission() {
+    // REQUEST CONTACT READ PERMISSION
+    async function contactReadPermission() {
         try {
             const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
                 title: "Choona Contacts Permission",
@@ -128,4 +126,4 @@ export default function Splash(props) {
 
         </View>
     )
-}
+};

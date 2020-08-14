@@ -92,10 +92,6 @@ function Home(props) {
 
           props.getProfileReq(),
             props.homePage()
-          // getDeviceToken()
-          // .then((token) =>{
-          //   console.log(token)
-          // })
 
         })
         .catch(() => {
@@ -107,6 +103,7 @@ function Home(props) {
       unsuscribe();
     }
   }, []);
+
 
   if (status === "" || props.status !== status) {
 
@@ -300,16 +297,16 @@ function Home(props) {
         let finalArray = [];
         setContactsLoading(false);
         console.log(JSON.stringify(contacts));
-        contactsArray.map((item, index)=>{
-          item.phoneNumbers.map((item, index)=>{
-            let number = item.number.replace(/[- )(]/g,'');
+        contactsArray.map((item, index) => {
+          item.phoneNumbers.map((item, index) => {
+            let number = item.number.replace(/[- )(]/g, '');
             let number1 = parseInt(number);
             finalArray.push(number1);
           })
         });
 
         console.log(finalArray);
-        props.navigation.navigate('UsersFromContacts', {data: finalArray})
+        props.navigation.navigate('UsersFromContacts', { data: finalArray })
       }
     })
   };
@@ -368,9 +365,11 @@ function Home(props) {
           props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
         }}
         onPressCommentbox={() => {
-          props.navigation.navigate('HomeItemComments', { index: data.index, comment: data.item.comment,
-          image: data.item.song_image, username: data.item.userDetails.username, userComment: data.item.post_content,
-          time: data.item.createdAt, id: data.item._id });
+          props.navigation.navigate('HomeItemComments', {
+            index: data.index, comment: data.item.comment,
+            image: data.item.song_image, username: data.item.userDetails.username, userComment: data.item.post_content,
+            time: data.item.createdAt, id: data.item._id
+          });
         }}
         onPressSecondImage={() => {
           setPositionInArray(data.index)

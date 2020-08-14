@@ -1,8 +1,8 @@
 import React from "react"
 import { Platform } from "react-native"
 
-// import firebase from 'react-native-firebase';
 import messaging from '@react-native-firebase/messaging';
+
 
 import AsyncStorage from '@react-native-community/async-storage';
 
