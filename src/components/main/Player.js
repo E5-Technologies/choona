@@ -66,6 +66,7 @@ import {
 } from '../../action/PlayerAction';
 import Loader from '../../widgets/AuthLoader';
 import { call } from 'redux-saga/effects';
+import { or } from 'react-native-reanimated';
 
 let RbSheetRef;
 
@@ -630,38 +631,94 @@ function Player(props) {
                         <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
                             onPress={() => {
 
-                                if (originalUri !== undefined) {
-                                    Linking.canOpenURL(originalUri)
-                                        .then((supported) => {
+                                if (props.userProfileResp.register_type === 'spotify') {
+                                    if (props.userProfileResp.register_type === registerType) {
+
+                                        Linking.canOpenURL(originalUri).then((supported) => {
                                             if (supported) {
                                                 Linking.openURL(originalUri)
                                                     .then(() => {
                                                         console.log('success');
                                                     })
-                                                    .catch(() => {
+                                                    .catch((err) => {
                                                         console.log('failed');
                                                     })
                                             }
+                                        }).catch((err) => {
+                                            console.log('not supported');
                                         })
-                                        .catch((err) => {
-                                            console.log('not supported')
-                                        });
+                                    }
+                                    else {
+                                        Linking.canOpenURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                            .then((supported) => {
+                                                if (supported) {
+                                                    console.log(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                        .then(() => {
+                                                            console.log(originalUri);
+                                                            console.log('success');
+                                                        })
+                                                        .catch(() => {
+                                                            console.log('failed');
+                                                        })
+                                                }
+                                            })
+                                            .catch((err) => {
+                                                console.log('not supported')
+                                            });
+                                    }
                                 }
+                                //FOR APPLE USERS
                                 else {
-                                    console.log('No Link Present, Old posts');
+
+                                    if (props.userProfileResp.register_type === registerType) {
+                                        console.log(originalUri);
+                                        Linking.canOpenURL(originalUri).then((supported) => {
+                                            if (supported) {
+                                                Linking.openURL(originalUri)
+                                                    .then(() => {
+                                                        console.log('success');
+                                                    })
+                                                    .catch((err) => {
+                                                        console.log('failed');
+                                                    })
+                                            }
+                                        }).catch((err) => {
+                                            console.log('not supported');
+                                        })
+                                    }
+                                    else {
+                                        Linking.canOpenURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
+                                            .then((supported) => {
+                                                if (supported) {
+                                                    console.log(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
+                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                        .then(() => {
+                                                            console.log(originalUri);
+                                                            console.log('success');
+                                                        })
+                                                        .catch(() => {
+                                                            console.log('failed');
+                                                        })
+                                                }
+                                            })
+                                            .catch((err) => {
+                                                console.log('not supported')
+                                            });
+                                    }
                                 }
 
                                 setModalVisible(!modalVisible)
                             }}
                         >
-                            <Image source={registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                            <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
                                 style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
                                 resizeMode='contain' />
                             <Text style={{
                                 color: Colors.white, marginLeft: normalise(15),
                                 fontSize: normalise(13),
                                 fontFamily: 'ProximaNova-Semibold',
-                            }}>{registerType === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
+                            }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -759,7 +816,7 @@ function Player(props) {
                                 }} onPress={() => { props.navigation.goBack() }}>
 
                                     <Image source={ImagePath.backicon}
-                                        style={{ height: normalise(15), width: normalise(15), transform:[{rotate:'-90deg'}] }}
+                                        style={{ height: normalise(15), width: normalise(15), transform: [{ rotate: '-90deg' }] }}
                                         resizeMode='contain' />
                                 </TouchableOpacity>
 
@@ -996,37 +1053,92 @@ function Player(props) {
                                 borderRadius: normalise(10)
                             }}
                             onPress={() => {
-                                if (originalUri !== undefined) {
-                                    Linking.canOpenURL(originalUri)
-                                        .then((supported) => {
+                                //FOR SPOTIFY USERS
+                                if (props.userProfileResp.register_type === 'spotify') {
+                                    if (props.userProfileResp.register_type === registerType) {
+
+                                        Linking.canOpenURL(originalUri).then((supported) => {
                                             if (supported) {
                                                 Linking.openURL(originalUri)
                                                     .then(() => {
-                                                        console.log(originalUri);
                                                         console.log('success');
                                                     })
-                                                    .catch(() => {
+                                                    .catch((err) => {
                                                         console.log('failed');
                                                     })
                                             }
+                                        }).catch((err) => {
+                                            console.log('not supported');
                                         })
-                                        .catch((err) => {
-                                            console.log('not supported')
-                                        });
+                                    }
+                                    else {
+                                        Linking.canOpenURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                            .then((supported) => {
+                                                if (supported) {
+                                                    console.log(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                        .then(() => {
+                                                            console.log(originalUri);
+                                                            console.log('success');
+                                                        })
+                                                        .catch(() => {
+                                                            console.log('failed');
+                                                        })
+                                                }
+                                            })
+                                            .catch((err) => {
+                                                console.log('not supported')
+                                            });
+                                    }
                                 }
+                                //FOR APPLE USERS
                                 else {
-                                    console.log('No Link Present, Old posts');
+                                    if (props.userProfileResp.register_type === registerType) {
+                                        console.log(originalUri);
+                                        Linking.canOpenURL(originalUri).then((supported) => {
+                                            if (supported) {
+                                                Linking.openURL(originalUri)
+                                                    .then(() => {
+                                                        console.log('success');
+                                                    })
+                                                    .catch((err) => {
+                                                        console.log('failed');
+                                                    })
+                                            }
+                                        }).catch((err) => {
+                                            console.log('not supported');
+                                        })
+                                    }
+                                    else {
+                                        Linking.canOpenURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
+                                            .then((supported) => {
+                                                if (supported) {
+                                                    console.log(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
+                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
+                                                        .then(() => {
+                                                            console.log(originalUri);
+                                                            console.log('success');
+                                                        })
+                                                        .catch(() => {
+                                                            console.log('failed');
+                                                        })
+                                                }
+                                            })
+                                            .catch((err) => {
+                                                console.log('not supported')
+                                            });
+                                    }
                                 }
                             }}
                         >
-                            <Image source={registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                            <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
                                 style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
                                 resizeMode='contain' />
                             <Text style={{
                                 color: Colors.white, marginLeft: normalise(15),
                                 fontSize: normalise(13),
                                 fontFamily: 'ProximaNova-Semibold',
-                            }}>{registerType === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
+                            }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
                         </TouchableOpacity>
 
                         {RbSheet()}
