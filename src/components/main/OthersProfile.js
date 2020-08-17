@@ -32,8 +32,6 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import _ from "lodash"
 
-
-
 let status;
 let changePlayer = true;
 
@@ -156,6 +154,8 @@ function OthersProfile(props) {
             <Loader visible={props.status === OTHERS_PROFILE_REQUEST} />
 
             <Loader visible={props.status === HOME_PAGE_REQUEST} />
+
+            <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
 
             <StatusBar />
 
@@ -311,11 +311,12 @@ function OthersProfile(props) {
                                             song_title: JSON.parse(props.othersProfileresp.feature_song)[0].song_name,
                                             album_name: JSON.parse(props.othersProfileresp.feature_song)[0].album_name,
                                             song_pic: JSON.parse(props.othersProfileresp.feature_song)[0].song_pic,
-                                            originalUri: JSON.parse(props.othersProfileresp.feature_song)[0].original_song_uri,
+                                            uri: JSON.parse(props.othersProfileresp.feature_song)[0].song_uri,
+                                            // originalUri: JSON.parse(props.othersProfileresp.feature_song)[0].original_song_uri,
                                             artist: JSON.parse(props.othersProfileresp.feature_song)[0].artist_name,
                                             changePlayer: changePlayer,
-                                            // originalUri: JSON.parse(props.othersProfileresp.feature_song)[0].hasOwnProperty("original_song_uri") ?
-                                            //     JSON.parse(props.othersProfileresp.feature_song)[0].original_song_uri : undefined
+                                            originalUri: JSON.parse(props.othersProfileresp.feature_song)[0].hasOwnProperty("original_song_uri") ?
+                                                JSON.parse(props.othersProfileresp.feature_song)[0].original_song_uri : undefined
                                         })
                                     }}>
                                     <Image source={{ uri: JSON.parse(props.othersProfileresp.feature_song)[0].song_pic }}

@@ -402,8 +402,8 @@ function Profile(props) {
                                         uri: JSON.parse(props.userProfileResp.feature_song)[0].song_uri,
                                         artist: JSON.parse(props.userProfileResp.feature_song)[0].artist_name,
                                         changePlayer: true,
-                                        // originalUri: JSON.parse(props.userProfileResp.feature_song)[0].hasOwnProperty("original_song_uri")?
-                                        // JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri : undefined
+                                        originalUri: JSON.parse(props.userProfileResp.feature_song)[0].hasOwnProperty("original_song_uri")?
+                                        JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri : undefined
                                     })
                                 }}>
 
