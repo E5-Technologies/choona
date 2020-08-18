@@ -40,6 +40,7 @@ export function* searchSongsForPostAction(action) {
     let spotifyHeader = {
         "Authorization": items.registerType === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
     };
+    
     try {
 
         if (items.registerType === "spotify") {
@@ -48,13 +49,13 @@ export function* searchSongsForPostAction(action) {
             yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items, post: action.post });
         }
         else {
-            const response = yield call(getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, spotifyHeader)
-            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results, post: action.post });
+            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/gb/search?term=${encodeURI(action.text)}&limit=20&types=songs`, spotifyHeader)
+            yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results.songs.data, post: action.post });
         }
 
     } catch (error) {
 
-        yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, data: error });
+        yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error });
     }
 };
 

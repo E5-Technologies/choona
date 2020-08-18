@@ -58,5 +58,7 @@ export async function getAppleDevelopersToken(url, header) {
 
     console.log("URL: ", `${url}`);
 
-    return await axios.get(url);
+    return await axios.get(url, {
+        headers: header
+    });
 };

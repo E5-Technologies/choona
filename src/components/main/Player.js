@@ -763,7 +763,7 @@ function Player(props) {
             <KeyboardAvoidingView style={{ flex: 1 }}>
                 <StatusBar />
 
-                {/* <Loader visible={bool} /> */}
+                <Loader visible={bool} />
 
                 <SafeAreaView style={{ flex: 1, }}>
 

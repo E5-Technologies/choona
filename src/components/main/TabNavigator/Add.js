@@ -70,41 +70,42 @@ function AddSong(props) {
 
         return (
             <SavedSongsListItem
-                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.artworkUrl100}
-                title={props.registerType === 'spotify' ? data.item.name : data.item.trackName}
-                singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName}
+                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" :  data.item.attributes.artwork.url.replace('{w}x{h}', '300x300')}
+                title={props.registerType === 'spotify' ? data.item.name : data.item.attributes.name}
+                singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName}
                 marginRight={normalise(50)}
                 marginBottom={data.index === props.spotifyResponse.length - 1 ? normalise(20) : 0}
                 change={true}
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
                     props.navigation.navigate("CreatePost", {
-                        image: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100,
-                        title: props.registerType === 'spotify' ? data.item.name : data.item.trackName,
-                        title2: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
+                        image: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                        title: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
+                        title2: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
                         details: data.item, registerType: props.registerType
                     })
                 }}
                 onPressImage={() => {
                     props.navigation.navigate("Player",
                         {
-                            song_title: props.registerType === 'spotify' ? data.item.name : data.item.trackName,
+                            song_title: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
                             album_name: props.registerType === "spotify" ? data.item.album.name :
-                                data.item.collectionName,
-                            song_pic: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100,
+                                data.item.attributes.albumName,
+                            song_pic: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
                             username: "",
                             profile_pic: "",
                             originalUri: props.registerType === "spotify" ? data.item.external_urls.spotify :
-                                data.item.trackViewUrl,
+                                data.item.attributes.url,
                             uri: props.registerType === "spotify" ? data.item.preview_url :
-                            data.item.previewUrl,
+                            data.item.attributes.previews[0].url,
                             id: "",
-                            artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
+                            artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
                             changePlayer: true,
                             registerType: props.registerType
                         })
                 }}
             />
+
         )
     };
 
