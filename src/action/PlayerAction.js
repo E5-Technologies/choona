@@ -3,6 +3,7 @@ import {
     RESUME_PLAYER_REQUEST,
     PAUSE_PLAYER_REQUEST,
     PLAYER_SEEK_TO_REQUEST,
+    GET_SONG_FROM_ISRC_REQUEST
 }
     from './TypeConstants';
 
@@ -23,4 +24,9 @@ export const playerSeekToRequest = (seekTo) => ({
     seekTo
 });
 
+export const getSongFromisrc = (regType, isrc) => ({
+    type: GET_SONG_FROM_ISRC_REQUEST,
+    regType,
+    isrc
+});
 

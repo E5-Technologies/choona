@@ -16,6 +16,9 @@ import {
     PLAYER_SEEK_TO_SUCCESS,
     PLAYER_SEEK_TO_FAILURE,
 
+    GET_SONG_FROM_ISRC_REQUEST,
+    GET_SONG_FROM_ISRC_SUCCESS,
+    GET_SONG_FROM_ISRC_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -25,7 +28,8 @@ const initialState = {
     currentPlayerPositionResponse: {},
     resumePlayerResponse: {},
     pausePlayerResponse: {},
-    seekToPlayerResponse: {}
+    seekToPlayerResponse: {},
+    getSongFromISRC: []
 }
 
 const PlayerReducer = (state = initialState, action) => {
@@ -110,6 +114,26 @@ const PlayerReducer = (state = initialState, action) => {
             };
 
         case PLAYER_SEEK_TO_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case GET_SONG_FROM_ISRC_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case GET_SONG_FROM_ISRC_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                getSongFromISRC: action.data,
+            };
+
+        case GET_SONG_FROM_ISRC_FAILURE:
             return {
                 ...state,
                 status: action.type,

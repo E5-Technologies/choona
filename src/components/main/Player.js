@@ -54,6 +54,10 @@ import {
     PLAYER_SEEK_TO_SUCCESS,
     PLAYER_SEEK_TO_FAILURE,
 
+    GET_SONG_FROM_ISRC_REQUEST,
+    GET_SONG_FROM_ISRC_SUCCESS,
+    GET_SONG_FROM_ISRC_FAILURE
+
 } from '../../action/TypeConstants';
 import { commentOnPostReq } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -62,11 +66,13 @@ import {
     getCurrentPlayerPostionAction,
     playerResumeRequest,
     playerPauseRequest,
-    playerSeekToRequest
+    playerSeekToRequest,
+    getSongFromisrc
 } from '../../action/PlayerAction';
 import Loader from '../../widgets/AuthLoader';
 import { call } from 'redux-saga/effects';
 import { or } from 'react-native-reanimated';
+import _ from 'lodash';
 
 let RbSheetRef;
 
@@ -87,6 +93,7 @@ function Player(props) {
 
     const [username, setUsername] = useState(props.route.params.username);
     const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
+    const [isrc, setisrc] = useState(props.route.params.isrc);
 
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
@@ -126,6 +133,7 @@ function Player(props) {
         //     }, 2000)
 
         // });
+        props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
         Sound.setCategory('Playback', false);
         playSongOnLoad();
 
@@ -183,6 +191,25 @@ function Player(props) {
         }
     };
 
+    if (playerStatus === "" || props.playerStatus !== playerStatus) {
+        switch (props.playerStatus) {
+
+            case GET_SONG_FROM_ISRC_REQUEST:
+                playerStatus = props.playerStatus
+                break;
+
+            case GET_SONG_FROM_ISRC_SUCCESS:
+                playerStatus = props.playerStatus;
+                break;
+
+            case GET_SONG_FROM_ISRC_FAILURE:
+                playerStatus = props.playerStatus;
+                toast('Oops', 'Something Went Wrong');
+                break;
+
+        }
+    };
+
 
     // PLAY SONG ON LOAD
     const playSongOnLoad = () => {
@@ -195,19 +222,20 @@ function Player(props) {
         } else {
 
             if (global.playerReference !== null) {
-
+                
                 if (global.playerReference._filename === uri) {
                     console.log('Already Playing');
                     console.log(global.playerReference);
                     setTimeout(() => {
                         changeTime(global.playerReference);
                         let time = global.playerReference.getDuration();
+                        setHasSongLoaded(true)
                         setplayerDuration(time);
                         setBool(false);
                         global.playerReference.pause();
                         global.playerReference.play((success) => {
                             if (success) {
-                                console.log('Playback End')
+                                console.log('Playback Endd')
                                 setPlayVisible(true);
                             }
                         })
@@ -299,7 +327,7 @@ function Player(props) {
             setPlayVisible(true);
             toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
         } else {
-
+            
             if (playVisible == true) {
 
                 setPlayVisible(false)
@@ -421,7 +449,59 @@ function Player(props) {
             ],
             { cancelable: false }
         );
-    }
+    };
+
+    //OPEN IN APPLE / SPOTIFY
+    const openInAppleORSpotify = () => {
+
+        if (!_.isEmpty(props.isrcResp)) {
+            if (props.userProfileResp.register_type === 'spotify') {
+                console.log('success - spotify');
+                console.log(props.isrcResp[0].external_urls.spotify)
+                Linking.canOpenURL(props.isrcResp[0].external_urls.spotify)
+                    .then((supported) => {
+                        if (supported) {
+                            Linking.openURL(props.isrcResp[0].external_urls.spotify)
+                                .then(() => {
+                                    console.log('success');
+                                })
+                                .catch(() => {
+                                    console.log('error')
+                                })
+                        }
+                    })
+                    .catch(() => {
+                        console.log('not supported')
+                    })
+
+            }
+            else {
+
+                console.log('success - apple');
+                console.log(props.isrcResp[0].attributes.url);
+                Linking.canOpenURL(props.isrcResp[0].attributes.url)
+                    .then((supported) => {
+                        if (supported) {
+                            Linking.openURL(props.isrcResp[0].attributes.url)
+                                .then(() => {
+                                    console.log('success');
+                                })
+                                .catch(() => {
+                                    console.log('error')
+                                })
+                        }
+                    })
+                    .catch(() => {
+                        console.log('not supported')
+                    })
+
+            }
+        }
+        else {
+            toast('', 'No Song Found');
+        }
+    };
+
 
     // RENDER FLATLIST DATA
     function renderFlatlistData(data) {
@@ -630,7 +710,7 @@ function Player(props) {
 
                         <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
                             onPress={() => {
-
+                                //FOR SPOTIFY USERS
                                 if (props.userProfileResp.register_type === 'spotify') {
                                     if (props.userProfileResp.register_type === registerType) {
 
@@ -649,28 +729,11 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        Linking.canOpenURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
-                                            .then((supported) => {
-                                                if (supported) {
-                                                    console.log(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
-                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
-                                                        .then(() => {
-                                                            console.log(originalUri);
-                                                            console.log('success');
-                                                        })
-                                                        .catch(() => {
-                                                            console.log('failed');
-                                                        })
-                                                }
-                                            })
-                                            .catch((err) => {
-                                                console.log('not supported')
-                                            });
+                                        openInAppleORSpotify();
                                     }
                                 }
                                 //FOR APPLE USERS
                                 else {
-
                                     if (props.userProfileResp.register_type === registerType) {
                                         console.log(originalUri);
                                         Linking.canOpenURL(originalUri).then((supported) => {
@@ -688,23 +751,8 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        Linking.canOpenURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                            .then((supported) => {
-                                                if (supported) {
-                                                    console.log(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                                    Linking.openURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                                        .then(() => {
-                                                            console.log(originalUri);
-                                                            console.log('success');
-                                                        })
-                                                        .catch(() => {
-                                                            console.log('failed');
-                                                        })
-                                                }
-                                            })
-                                            .catch((err) => {
-                                                console.log('not supported')
-                                            });
+                                        openInAppleORSpotify();
+
                                     }
                                 }
 
@@ -764,6 +812,8 @@ function Player(props) {
                 <StatusBar />
 
                 <Loader visible={bool} />
+
+                <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
 
                 <SafeAreaView style={{ flex: 1, }}>
 
@@ -1072,23 +1122,7 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        Linking.canOpenURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
-                                            .then((supported) => {
-                                                if (supported) {
-                                                    console.log(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
-                                                    Linking.openURL(`https://open.spotify.com/search/track:${encodeURI(songTitle + " ")}artist:${encodeURI(artist)}`)
-                                                        .then(() => {
-                                                            console.log(originalUri);
-                                                            console.log('success');
-                                                        })
-                                                        .catch(() => {
-                                                            console.log('failed');
-                                                        })
-                                                }
-                                            })
-                                            .catch((err) => {
-                                                console.log('not supported')
-                                            });
+                                        openInAppleORSpotify();
                                     }
                                 }
                                 //FOR APPLE USERS
@@ -1110,23 +1144,7 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        Linking.canOpenURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                            .then((supported) => {
-                                                if (supported) {
-                                                    console.log(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                                    Linking.openURL(`https://music.apple.com/us/search?term=${encodeURI(songTitle)}`)
-                                                        .then(() => {
-                                                            console.log(originalUri);
-                                                            console.log('success');
-                                                        })
-                                                        .catch(() => {
-                                                            console.log('failed');
-                                                        })
-                                                }
-                                            })
-                                            .catch((err) => {
-                                                console.log('not supported')
-                                            });
+                                        openInAppleORSpotify();
                                     }
                                 }
                             }}
@@ -1165,7 +1183,8 @@ const mapStateToProps = (state) => {
         currentPlayerPositionResponse: state.PlayerReducer.currentPlayerPositionResponse,
         playerStatus: state.PlayerReducer.status,
         playerError: state.PlayerReducer.error,
-        seekToPlayerResponse: state.PlayerReducer.seekToPlayerResponse
+        seekToPlayerResponse: state.PlayerReducer.seekToPlayerResponse,
+        isrcResp: state.PlayerReducer.getSongFromISRC
     }
 };
 
@@ -1193,6 +1212,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         playerPauseRequest: () => {
             dispatch(playerPauseRequest())
+        },
+        getSongFromIsrc: (regType, isrc) => {
+            dispatch(getSongFromisrc(regType, isrc))
         }
     }
 };

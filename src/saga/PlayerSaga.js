@@ -16,11 +16,16 @@ import {
     PLAYER_SEEK_TO_SUCCESS,
     PLAYER_SEEK_TO_FAILURE,
 
+    GET_SONG_FROM_ISRC_REQUEST,
+    GET_SONG_FROM_ISRC_SUCCESS,
+    GET_SONG_FROM_ISRC_FAILURE
+
 } from '../action/TypeConstants';
 import { getSpotifyApi, putSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
 import constants from '../utils/helpers/constants';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin'
 import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import { getSongFromisrc } from '../action/PlayerAction';
 
 const getItems = (state) => state.TokenReducer
 
@@ -136,6 +141,29 @@ export function* seekToPlayerAction(action) {
     }
 };
 
+export function* getSongFromIsrcAction(action) {
+    try {
+        const spotifyToken = yield call(getSpotifyToken);
+        const AppleToken = yield call(getAppleDevToken);
+
+        let spotifyHeader = {
+            "Authorization": action.regType === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
+        };
+
+        if (action.regType === 'spotify') {
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=isrc:${action.isrc}&type=track`, spotifyHeader);
+            yield put({ type: GET_SONG_FROM_ISRC_SUCCESS, data: response.data.tracks.items });
+        }
+        else {
+            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${action.isrc}`, spotifyHeader);
+            yield put({ type: GET_SONG_FROM_ISRC_SUCCESS, data: response.data.data });
+        }
+
+    } catch (error) {
+        yield put({ type: GET_SONG_FROM_ISRC_FAILURE, error: error })
+    }
+};
+
 
 //WATCH FUNCTIONS
 export function* watchGetCurrentPlayerPostionRequest() {
@@ -152,4 +180,8 @@ export function* watchPlayPlayerRequest() {
 
 export function* watchSeekToPlayerRequest() {
     yield takeLatest(PLAYER_SEEK_TO_REQUEST, seekToPlayerAction)
+};
+
+export function* watchgetSongFromIsrc() {
+    yield takeLatest(GET_SONG_FROM_ISRC_REQUEST, getSongFromIsrcAction)
 };

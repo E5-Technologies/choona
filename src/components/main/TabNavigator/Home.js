@@ -358,7 +358,8 @@ function Home(props) {
             artist: data.item.artist_name,
             changePlayer: changePlayer,
             originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
-            registerType: data.item.userDetails.register_type
+            registerType: data.item.userDetails.register_type,
+            isrc: data.item.isrc_code
           })
         }}
         onPressReactionbox={() => {
