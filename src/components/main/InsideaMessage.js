@@ -80,7 +80,7 @@ function InsideaMessage(props) {
                 image={data.item.image}
                 title={data.item.song_name}
                 singer={data.item.artist_name}
-                comments={data.item.message}
+                comments={`${data.item.message.length} Comments`}
                 onPressImage={() => {
                     props.navigation.navigate('Player', {
                         song_title: data.item.song_name,

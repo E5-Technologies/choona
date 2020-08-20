@@ -40,11 +40,13 @@ export function* searchSongsForPostAction(action) {
     let spotifyHeader = {
         "Authorization": items.registerType === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
     };
+
+    console.log("spotifyToken: "+JSON.stringify(spotifyToken))
     
     try {
 
         if (items.registerType === "spotify") {
-            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track`, spotifyHeader)
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track&market=GB`, spotifyHeader)
 
             yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items, post: action.post });
         }

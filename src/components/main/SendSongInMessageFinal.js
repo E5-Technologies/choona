@@ -110,7 +110,7 @@ function SendSongInMessageFinal(props) {
         usersData.map((item) => {
 
             var chatObject = {
-                message: search,
+                message: [{search}],
                 sender_id: props.userProfileResp._id,
                 receiver_id: item._id,
                 song_name: title1,
