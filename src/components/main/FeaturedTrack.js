@@ -89,9 +89,9 @@ function FeaturedTrack(props) {
 
         return (
             <SavedSongsListItem
-                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.artworkUrl100}
-                title={props.registerType === 'spotify' ? data.item.name : data.item.trackName}
-                singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName}
+                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300')}
+                title={props.registerType === 'spotify' ? data.item.name : data.item.attributes.name}
+                singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName}
                 marginRight={normalise(50)}
                 marginBottom={data.index === props.featuredTrackResp.length - 1 ? normalise(20) : 0}
                 change={true}
@@ -99,29 +99,32 @@ function FeaturedTrack(props) {
                 onPressSecondImage={() => {
                     let formdata = new FormData;
                     let array = [{
-                        song_name: props.registerType === 'spotify' ? data.item.name : data.item.trackName,
-                        song_uri: props.registerType === 'spotify' ? data.item.preview_url : data.item.previewUrl,
-                        album_name: props.registerType === 'spotify' ? data.item.album.name : data.item.collectionName,
-                        song_pic: props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.artworkUrl100,
-                        artist_name: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
-                        original_song_uri: props.registerType === "spotify" ? data.item.external_urls.spotify : data.item.trackViewUrl
+                        song_name: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
+                        song_uri: props.registerType === 'spotify' ? data.item.preview_url : data.item.attributes.previews[0].url,
+                        album_name: props.registerType === 'spotify' ? data.item.album.name : data.item.attributes.albumName,
+                        song_pic: props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                        artist_name: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
+                        original_song_uri: props.registerType === "spotify" ? data.item.external_urls.spotify : data.item.attributes.url,
+                        isrc_code: props.registerType === "spotify" ? data.item.external_ids.isrc : data.item.attributes.isrc
                     }];
-                    formdata.append("feature_song", JSON.stringify(array))  
+                    formdata.append("feature_song", JSON.stringify(array))
                     props.editProfileReq(formdata);
                 }}
                 onPressImage={() => {
                     props.navigation.navigate("Player",
                         {
-                            song_title: props.registerType === 'spotify' ? data.item.name : data.item.trackName,
+                            song_title: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
                             album_name: props.registerType === "spotify" ? data.item.album.name :
-                                data.item.collectionName,
-                            song_pic: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.artworkUrl100,
+                                data.item.attributes.albumName,
+                            song_pic: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
                             username: "",
                             profile_pic: "",
                             originalUri: props.registerType === "spotify" ? data.item.external_urls.spotify :
-                                data.item.trackViewUrl,
+                                data.item.attributes.url,
+                            uri: props.registerType === "spotify" ? data.item.preview_url :
+                                data.item.attributes.previews[0].url,
                             id: "",
-                            artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.artistName,
+                            artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
                             changePlayer: true,
                             registerType: props.registerType
                         })
@@ -160,9 +163,9 @@ function FeaturedTrack(props) {
                         borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
                         color: Colors.white, paddingLeft: normalise(30),
                     }} value={search}
-                       placeholder={"Search"}
-                       placeholderTextColor={Colors.darkgrey}
-                       onChangeText={(text) => {
+                        placeholder={"Search"}
+                        placeholderTextColor={Colors.darkgrey}
+                        onChangeText={(text) => {
                             if (text.length >= 1) {
                                 props.featuredSongSearchReq(text)
                             }

@@ -784,7 +784,8 @@ function Home(props) {
                     id: props.playingSongRef.id,
                     artist: props.playingSongRef.artist,
                     changePlayer: props.playingSongRef.changePlayer,
-                    originalUri: props.playingSongRef.originalUri
+                    originalUri: props.playingSongRef.originalUri,
+                    isrc: props.playingSongRef.isrc
                   })
               }} />
               : null}
@@ -853,6 +854,7 @@ function Home(props) {
                           artist_name: props.postData[positionInArray].artist_name,
                           album_name: props.postData[positionInArray].album_name,
                           post_id: props.postData[positionInArray]._id,
+                          isrc_code: props.postData[positionInArray].isrc_code
                         };
 
                         props.saveSongReq(saveSongObject);

@@ -393,8 +393,8 @@ export function* featuredTrackSearchAction(action) {
             yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items });
         }
         else {
-            const response = yield call(getAppleDevelopersToken, `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`, Header)
-            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.results });
+            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/gb/search?term=${encodeURI(action.text)}&limit=20&types=songs`, Header)
+            yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.results.songs.data });
         }
 
     } catch (error) {

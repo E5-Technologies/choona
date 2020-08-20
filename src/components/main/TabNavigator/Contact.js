@@ -102,7 +102,8 @@ function Contact(props) {
                   uri: data.item.song_uri,
                   id: data.item.post_id,
                   artist: data.item.artist_name,
-                  changePlayer: true
+                  changePlayer: true,
+                  isrc: data.item.isrc_code
                 })}} 
                 />
         )

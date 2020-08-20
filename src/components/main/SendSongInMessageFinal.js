@@ -117,15 +117,15 @@ function SendSongInMessageFinal(props) {
                 artist_name: title2,
 
                 album_name: type ? props.route.params.details.album_name : props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
-                    props.route.params.details.collectionName,
+                    props.route.params.details.attributes.albumName,
 
                 image: imgsource,
 
                 song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
-                    props.route.params.details.previewUrl,
+                    props.route.params.details.attributes.previews[0].url,
 
                 original_song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
-                    props.route.params.details.trackViewUrl,    
+                    props.route.params.details.attributes.url,    
 
                 read: false,
                 time: moment().toString()
@@ -139,7 +139,7 @@ function SendSongInMessageFinal(props) {
             chatTokens: props.chatTokenList,
             chatBody: chatBody
         }
-
+        
         props.sendChatMessageRequest(chatPayload);
         toast("Error", "Message sent successfully.")
         //props.navigation.goBack();

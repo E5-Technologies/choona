@@ -225,7 +225,8 @@ function Search(props) {
                         artist: data.item.artist_name,
                         changePlayer: changePlayer,
                         originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
-                        registerType: data.item.userDetails.register_type
+                        registerType: data.item.userDetails.register_type,
+                        isrc: data.item.isrc_code
 
                     })
                 }}
@@ -363,6 +364,7 @@ function Search(props) {
                                     artist_name: props.searchPostData[positionInArray].artist_name,
                                     album_name: props.searchPostData[positionInArray].album_name,
                                     post_id: props.searchPostData[positionInArray]._id,
+                                    isrc_code: props.searchPostData[positionInArray].isrc_code
                                 };
 
                                 props.saveSongReq(saveSongObject);
