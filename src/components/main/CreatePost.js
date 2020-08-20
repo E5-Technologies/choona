@@ -27,6 +27,8 @@ import {
 import { createPostRequest } from '../../action/PostAction';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import axios from 'axios';
+import constants from '../../utils/helpers/constants';
 
 
 let status;
@@ -34,9 +36,45 @@ let status;
 function AddSong(props) {
 
     const [search, setSearch] = useState("");
-    const [imgsource, setImgSource] = useState(props.route.params.image)
-    const [title1, setTitle1] = useState(props.route.params.title)
-    const [title2, setTitle2] = useState(props.route.params.title2)
+    const [imgsource, setImgSource] = useState(props.route.params.image);
+    const [title1, setTitle1] = useState(props.route.params.title);
+    const [title2, setTitle2] = useState(props.route.params.title2);
+    const [spotifyUrl, setSpotifyUrl] = useState('');
+
+
+    useEffect(() => {
+        if (props.route.params.registerType === 'spotify') {
+            const getSpotifyApi = async () => {
+                try {
+                    const res = await callApi();
+                    if (res.data.status === 200) {
+                        let suc = res.data.data.audio;
+                        setSpotifyUrl(suc);
+                    }
+                    else {
+                        toast('Oops', 'Something Went Wrong');
+                        props.navigation.goBack();
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+            };
+
+            getSpotifyApi();
+        };
+    }, []);
+
+
+    // GET SPOTIFY SONG URL
+    const callApi = async () => {
+        return await axios.get(`${constants.BASE_URL}/${`song/spotify/${props.route.params.details.id}`}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        });
+    };
 
     function createPost() {
 
@@ -44,7 +82,7 @@ function AddSong(props) {
             "post_content": search,
             "social_type": props.route.params.registerType === "spotify" ? "spotify" : 'apple',
             "song_name": title1,
-            "song_uri": props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
+            "song_uri": props.route.params.registerType === "spotify" ? spotifyUrl :
                 props.route.params.details.attributes.previews[0].url,
             "song_image": imgsource,
             "artist_name": title2,
@@ -55,7 +93,6 @@ function AddSong(props) {
             "isrc_code": props.route.params.registerType === "spotify" ? props.route.params.details.external_ids.isrc :
                 props.route.params.details.attributes.isrc
         };
-
 
 
         props.createPostRequest(payload);

@@ -73,6 +73,7 @@ import Loader from '../../widgets/AuthLoader';
 import { call } from 'redux-saga/effects';
 import { or } from 'react-native-reanimated';
 import _ from 'lodash';
+import axios from 'axios';
 
 let RbSheetRef;
 
@@ -117,6 +118,7 @@ function Player(props) {
 
     const [originalUri, setOriginalUri] = useState(props.route.params.originalUri);
     const [registerType, setRegisterType] = useState(props.route.params.registerType);
+    const [changePlayer2, setChanagePlayer2] = useState(props.route.params.changePlayer2);
 
     let track;
 
@@ -133,9 +135,36 @@ function Player(props) {
         //     }, 2000)
 
         // });
-        props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
         Sound.setCategory('Playback', false);
-        playSongOnLoad();
+        props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
+
+        if (changePlayer2) {
+            console.log('getting spotify song uri');
+            const getSpotifyApi = async () => {
+                try {
+                    const res = await callApi();
+                    console.log(res);
+                    if (res.data.status === 200) {
+                        let suc = res.data.data.audio;
+                        setUri(suc);
+                        playSongOnLoad(suc);
+                    }
+                    else {
+                        toast('Oops', 'Something Went Wrong');
+                        props.navigation.goBack();
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+            };
+
+            getSpotifyApi();
+        }
+
+        else {
+            playSongOnLoad();
+        }
 
         // return () => {
         //     clearInterval(myVar),
@@ -211,13 +240,23 @@ function Player(props) {
     };
 
 
+    // GET SPOTIFY SONG URL
+    const callApi = async () => {
+        return await axios.get(`${constants.BASE_URL}/${`song/spotify/${props.route.params.id}`}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        });
+    };
+
     // PLAY SONG ON LOAD
-    const playSongOnLoad = () => {
+    const playSongOnLoad = (songuri) => {
 
         if (props.playingSongRef === "") {
 
             console.log('first time')
-            playSong();
+            playSong(songuri);
 
         } else {
 
@@ -247,27 +286,34 @@ function Player(props) {
                     console.log('reset');
                     global.playerReference.release();
                     global.playerReference = null;
-                    playSong();
+                    playSong(songuri);
                 }
 
             } else {
                 console.log('reset2');
-                playSong();
+                playSong(songuri);
             }
 
         };
     };
 
     // PLAY SONG
-    const playSong = () => {
+    const playSong = (songuri) => {
 
-        if (uri === null) {
+        if (changePlayer2 && songuri === null) {
+            toast('Error', "Sorry, this track cannot be played as it does not have a proper link."),
+            setBool(false);
+            setPlayVisible(true);
+        }
+
+        else if (uri === null && changePlayer2 === undefined) {
             setBool(false);
             setPlayVisible(true);
             toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
-        } else {
+        }
+        else {
 
-            track = new Sound(uri, "", (err) => {
+            track = new Sound(changePlayer2 ? songuri : uri, "", (err) => {
                 if (err) {
                     console.log(err);
                     setPlayVisible(true);
@@ -292,7 +338,7 @@ function Player(props) {
                         saveSongResObj.artist = artist,
                         saveSongResObj.changePlayer = changePlayer
                     saveSongResObj.originalUri = originalUri,
-                    saveSongResObj.isrc = isrc
+                        saveSongResObj.isrc = isrc
 
 
                     props.saveSongRefReq(saveSongResObj);
