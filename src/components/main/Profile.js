@@ -38,6 +38,7 @@ function Profile(props) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [flag, setFlag] = useState('');
+    const [activity, setActivity] = useState(props.route.params.fromAct)
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -56,6 +57,8 @@ function Profile(props) {
         }
     });
 
+    console.log(props.route.params.fromAct);
+
     if (status === "" || props.status !== status) {
         switch (props.status) {
             case USER_PROFILE_REQUEST:
@@ -63,7 +66,11 @@ function Profile(props) {
                 break;
 
             case USER_PROFILE_SUCCESS:
-                status = props.status
+                status = props.status;
+                if (activity) {
+                    console.log('get index');
+                    getIndex();
+                }
                 break;
 
             case USER_PROFILE_FAILURE:
@@ -92,6 +99,21 @@ function Profile(props) {
         let index = props.countryCode.findIndex(obj => obj.name === country);
         if (index !== -1) {
             setFlag(props.countryCode[index].flag);
+        }
+    };
+
+
+    function getIndex() {
+        let index = props.userProfileResp.post.findIndex(obj => obj._id === props.route.params.postId);
+        if (index !== -1) {
+            props.navigation.replace('PostListForUser', {
+                profile_name: props.userProfileResp.full_name,
+                posts: props.userProfileResp.post,
+                index: index
+            })
+        }
+        else {
+            toast('Oops', 'Post not found');
         }
     };
 
@@ -402,8 +424,8 @@ function Profile(props) {
                                         uri: JSON.parse(props.userProfileResp.feature_song)[0].song_uri,
                                         artist: JSON.parse(props.userProfileResp.feature_song)[0].artist_name,
                                         changePlayer: true,
-                                        originalUri: JSON.parse(props.userProfileResp.feature_song)[0].hasOwnProperty("original_song_uri")?
-                                        JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri : undefined
+                                        originalUri: JSON.parse(props.userProfileResp.feature_song)[0].hasOwnProperty("original_song_uri") ?
+                                            JSON.parse(props.userProfileResp.feature_song)[0].original_song_uri : undefined
                                     })
                                 }}>
 

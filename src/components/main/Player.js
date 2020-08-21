@@ -569,7 +569,7 @@ function Player(props) {
                 onPressImage={() => {
                     if (props.userProfileResp._id === data.item.user_id) {
                         if (RbSheetRef) RbSheetRef.close();
-                        props.navigation.navigate('Profile')
+                        props.navigation.navigate('Profile', {fromAct: false})
                     }
                     else {
                         if (RbSheetRef) RbSheetRef.close();

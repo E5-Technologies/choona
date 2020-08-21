@@ -140,7 +140,7 @@ function HomeItemReaction(props) {
                     // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                     //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
                     marginBottom={0}
-                    onPressImage={() => { props.navigation.navigate("Profile") }}
+                    onPressImage={() => { props.navigation.navigate("Profile", {fromAct: false}) }}
                     TouchableOpacityDisabled={false}
                 />
             )

@@ -66,7 +66,7 @@ function HomeItemComments(props) {
                     Platform.OS === 'android' ? normalise(80) : normalise(50) : normalise(0)}
                 onPressImage={() => {
                     if (props.userProfileResp._id === data.item.user_id) {
-                        props.navigation.navigate('Profile')
+                        props.navigation.navigate('Profile', {fromAct: false})
                     }
                     else {
                         props.navigation.navigate('OthersProfile', { id: data.item.user_id })
