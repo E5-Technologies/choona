@@ -605,7 +605,7 @@ function InsideaMessage(props) {
 
 
                             <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
-                                //onPress={() => { setModalVisible(!modalVisible), bottomSheetRef.open() }}
+                                onPress={() => { setModalVisible(!modalVisible), bottomSheetRef.open() }}
                             >
                                 <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                                     resizeMode='contain' />
