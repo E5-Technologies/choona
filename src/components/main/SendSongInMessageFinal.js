@@ -29,6 +29,8 @@ import {
     SEND_CHAT_MESSAGE_FAILURE,
 
 } from '../../action/TypeConstants';
+import axios from 'axios';
+
 
 let status;
 
@@ -42,6 +44,42 @@ function SendSongInMessageFinal(props) {
     const [fromAddAnotherSong, setFromAddAnotherSong] = useState(props.route.params.fromAddAnotherSong)
     const [index, setIndex] = useState(props.route.params.index);
     const [type, setType] = useState(props.route.params.fromHome);
+    const [spotifyUrl, setSpotifyUrl] = useState(null);
+
+
+    useEffect(() => {
+        if (props.registerType === 'spotify' && props.route.params.details.preview_url === null) {
+            const getSpotifyApi = async () => {
+                try {
+                    const res = await callApi();
+                    if (res.data.status === 200) {
+                        let suc = res.data.data.audio;
+                        setSpotifyUrl(suc);
+                    }
+                    else {
+                        toast('Oops', 'Something Went Wrong');
+                        props.navigation.goBack();
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+            };
+
+            getSpotifyApi();
+        }
+    }, []);
+
+    
+    // GET SPOTIFY SONG URL
+    const callApi = async () => {
+        return await axios.get(`${constants.BASE_URL}/${`song/spotify/${props.route.params.details.id}`}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        });
+    };
 
 
     if (status === "" || status !== props.status) {
@@ -110,7 +148,7 @@ function SendSongInMessageFinal(props) {
         usersData.map((item) => {
 
             var chatObject = {
-                message: [{search}],
+                message: [{ search }],
                 sender_id: props.userProfileResp._id,
                 receiver_id: item._id,
                 song_name: title1,
@@ -121,11 +159,11 @@ function SendSongInMessageFinal(props) {
 
                 image: imgsource,
 
-                song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url :
-                    props.route.params.details.attributes.previews[0].url,
+                song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url === null ? spotifyUrl : 
+                 props.route.params.details.preview_url : props.route.params.details.attributes.previews[0].url,
 
                 original_song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
-                    props.route.params.details.attributes.url,    
+                    props.route.params.details.attributes.url,
 
                 read: false,
                 time: moment().toString()
@@ -139,7 +177,7 @@ function SendSongInMessageFinal(props) {
             chatTokens: props.chatTokenList,
             chatBody: chatBody
         }
-        
+
         props.sendChatMessageRequest(chatPayload);
         toast("Error", "Message sent successfully.")
         //props.navigation.goBack();
@@ -265,7 +303,7 @@ const mapStateToProps = (state) => {
         chatTokenList: state.MessageReducer.chatTokenList,
         sendChatResponse: state.MessageReducer.sendChatResponse,
         userProfileResp: state.UserReducer.userProfileResp,
-
+        registerType: state.TokenReducer.registerType
     }
 };
 
