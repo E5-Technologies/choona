@@ -24,6 +24,7 @@ import { loadChatMessageRequest, searchMessageRequest, deleteMessageRequest, cre
 import {
     getUsersFromHome
 } from '../../action/UserAction';
+import { saveSongRequest } from '../../action/SongAction';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
@@ -100,32 +101,32 @@ function InsideaMessage(props) {
     // };
     if (status === "" || props.status !== status) {
         switch (props.status) {
-    
-          case CREATE_CHAT_TOKEN_REQUEST:
-            status = props.status
-            break;
-    
-          case CREATE_CHAT_TOKEN_SUCCESS:
-            status = props.status
-    
-            setUserSearchData([]);
-            sesUsersToSEndSong([]);
-            setUserSeach("");
-            props.navigation.navigate('SendSongInMessageFinal', {
-              image: props.searchedChatData[positionInArray].image,
-              title: props.searchedChatData[positionInArray].song_name,
-              title2: props.searchedChatData[positionInArray].artist_name,
-              users: usersToSEndSong, details: props.searchedChatData[positionInArray], registerType: props.registerType,
-              fromAddAnotherSong: false, index: 0, fromHome: true, details: props.searchedChatData[positionInArray]
-            });
-            break;
-    
-          case CREATE_CHAT_TOKEN_FAILURE:
-            status = props.status;
-            toast("Error", "Something Went Wong, Please Try Again")
-            break;
+
+            case CREATE_CHAT_TOKEN_REQUEST:
+                status = props.status
+                break;
+
+            case CREATE_CHAT_TOKEN_SUCCESS:
+                status = props.status
+
+                setUserSearchData([]);
+                sesUsersToSEndSong([]);
+                setUserSeach("");
+                props.navigation.navigate('SendSongInMessageFinal', {
+                    image: props.searchedChatData[positionInArray].image,
+                    title: props.searchedChatData[positionInArray].song_name,
+                    title2: props.searchedChatData[positionInArray].artist_name,
+                    users: usersToSEndSong, details: props.searchedChatData[positionInArray], registerType: props.registerType,
+                    fromAddAnotherSong: false, index: 0, fromHome: true, details: props.searchedChatData[positionInArray]
+                });
+                break;
+
+            case CREATE_CHAT_TOKEN_FAILURE:
+                status = props.status;
+                toast("Error", "Something Went Wong, Please Try Again")
+                break;
         }
-      };
+    };
 
     if (userStatus === "" || props.userStatus !== userStatus) {
 
@@ -462,7 +463,7 @@ function InsideaMessage(props) {
 
             <SafeAreaView style={{ flex: 1 }}>
 
-            {renderAddToUsers()}
+                {renderAddToUsers()}
 
                 <InsideMessegeHeader
                     firstitemtext={false}
@@ -544,7 +545,7 @@ function InsideaMessage(props) {
 
                 </TouchableOpacity>
 
-               
+
 
                 <Modal
                     animationType="fade"
@@ -577,22 +578,22 @@ function InsideaMessage(props) {
                             }} />
 
                             <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
-                            //   onPress={() => {
-                            //     let saveSongObject = {
-                            //       song_uri: props.postData[positionInArray].song_uri,
-                            //       song_name: props.postData[positionInArray].song_name,
-                            //       song_image: props.postData[positionInArray].song_image,
-                            //       artist_name: props.postData[positionInArray].artist_name,
-                            //       album_name: props.postData[positionInArray].album_name,
-                            //       post_id: props.postData[positionInArray]._id,
-                            //       isrc_code: props.postData[positionInArray].isrc_code
-                            //     };
+                                onPress={() => {
+                                    let saveSongObject = {
+                                        song_uri: props.searchedChatData[positionInArray].song_uri,
+                                        song_name: props.searchedChatData[positionInArray].song_name,
+                                        song_image: props.searchedChatData[positionInArray].song_image,
+                                        artist_name: props.searchedChatData[positionInArray].artist_name,
+                                        album_name: props.searchedChatData[positionInArray].album_name,
+                                        post_id: "",
+                                        isrc_code: props.searchedChatData[positionInArray].isrc_code,
+                                        original_song_uri: props.searchedChatData[positionInArray].original_song_uri
+                                    };
 
-                            //     props.saveSongReq(saveSongObject);
-                            //     setModalVisible(!modalVisible)
+                                    props.saveSongReq(saveSongObject);
+                                    setModalVisible(!modalVisible)
 
-                            //   }}
-                            >
+                                }}>
 
                                 <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                                     resizeMode='contain' />
@@ -731,6 +732,9 @@ const mapDispatchToProps = dispatch => {
         },
         createChatTokenRequest: (payload) => {
             dispatch(createChatTokenRequest(payload))
+        },
+        saveSongReq: (payload) => {
+            dispatch(saveSongRequest(payload))
         },
     }
 }
