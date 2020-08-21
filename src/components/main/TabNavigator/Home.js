@@ -41,6 +41,7 @@ import {
   CREATE_CHAT_TOKEN_REQUEST,
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
+  COUNTRY_CODE_SUCCESS,
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest, homePageReq, reactionOnPostRequest, userFollowUnfollowRequest,
@@ -768,7 +769,8 @@ function Home(props) {
 
             {renderAddToUsers()}
 
-            {props.status === HOME_PAGE_SUCCESS ?
+            {props.status === HOME_PAGE_SUCCESS || props.status === USER_PROFILE_SUCCESS || 
+            props.status === COUNTRY_CODE_SUCCESS ?
 
               <MusicPlayerBar onPress={() => {
                 props.navigation.navigate("Player",

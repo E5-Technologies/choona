@@ -153,7 +153,9 @@ function AddAnotherSong(props) {
                             id: "",
                             artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
                             changePlayer: true,
-                            registerType: props.registerType
+                            registerType: props.registerType,
+                            changePlayer2: props.registerType === 'spotify' ? true : false,
+                            id: props.registerType === 'spotify' ? data.item.id : null
                         })
                 }}
             />

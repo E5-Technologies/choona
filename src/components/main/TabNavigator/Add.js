@@ -70,7 +70,7 @@ function AddSong(props) {
 
         return (
             <SavedSongsListItem
-                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" :  data.item.attributes.artwork.url.replace('{w}x{h}', '300x300')}
+                image={props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300')}
                 title={props.registerType === 'spotify' ? data.item.name : data.item.attributes.name}
                 singer={props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName}
                 marginRight={normalise(50)}
@@ -101,7 +101,9 @@ function AddSong(props) {
                             id: "",
                             artist: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
                             changePlayer: true,
-                            registerType: props.registerType
+                            registerType: props.registerType,
+                            changePlayer2: props.registerType === 'spotify' ? true : false,
+                            id: props.registerType === 'spotify' ? data.item.id : null
                         })
                 }}
             />
