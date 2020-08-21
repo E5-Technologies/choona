@@ -101,7 +101,7 @@ function Inbox(props) {
             <InboxListItem
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
-                description={Object.values(data.item)[0].message[0].text}
+                description={Object.values(data.item)[0].message[Object.values(data.item)[0].message.length-1].text}
                 read={data.item.user_id == Object.values(data.item)[0].receiver_id
                     ? true : Object.values(data.item)[0].read}
                 onPress={() => props.navigation.navigate('InsideaMessage', { index: data.index })}

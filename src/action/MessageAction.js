@@ -4,7 +4,8 @@ import {
     GET_CHAT_LIST_REQUEST,
     CHAT_LOAD_REQUEST,
     SEARCH_MESSAGE_REQUEST,
-    UPDATE_MESSEAGE_COMMENTS_REQUEST
+    UPDATE_MESSEAGE_COMMENTS_REQUEST,
+    DELETE_MESSAGE_REQUEST
 
 } from '../action/TypeConstants';
 
@@ -35,5 +36,10 @@ export const searchMessageRequest = payload => ({
 
 export const updateMessageCommentRequest = payload => ({
     type: UPDATE_MESSEAGE_COMMENTS_REQUEST,
+    payload: payload
+});
+
+export const deleteMessageRequest = payload => ({
+    type: DELETE_MESSAGE_REQUEST,
     payload: payload
 });

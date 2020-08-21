@@ -125,7 +125,6 @@ function Player(props) {
     const [key, setKey] = useState(props.route.params.key);
     const [chatToken, setChatToken] = useState(props.route.params.chatToken);
 
-    console.log("commentData: " + JSON.stringify(commentData));
     let track;
 
     //Prithviraj's variables.
@@ -569,7 +568,7 @@ function Player(props) {
                 onPressImage={() => {
                     if (props.userProfileResp._id === data.item.user_id) {
                         if (RbSheetRef) RbSheetRef.close();
-                        props.navigation.navigate('Profile', {fromAct: false})
+                        props.navigation.navigate('Profile', { fromAct: false })
                     }
                     else {
                         if (RbSheetRef) RbSheetRef.close();
@@ -688,7 +687,7 @@ function Player(props) {
                                         setArrayLength(`${tempData.length} ${tempData.length > 1 ? "COMMENTS" : "COMMENT"}`)
                                         setCommentData(tempData);
                                         setCommentText("");
-                                        
+
                                         updateMessagPayload = {
                                             ChatId: key,
                                             chatToken: chatToken,
@@ -1170,7 +1169,8 @@ function Player(props) {
                         {comingFromMessage ?
                             <TouchableOpacity style={{
                                 flexDirection: 'row',
-                                height: normalise(40), width: normalise(115), alignItems: 'center', justifyContent: 'center',
+                                height: normalise(40), width: normalise(115), alignItems: 'center',
+                                justifyContent: 'center', alignSelf:'center',
                                 backgroundColor: Colors.fadeblack, borderRadius: normalise(10)
                             }} onPress={() => {
                                 if (RbSheetRef) RbSheetRef.open();

@@ -31,7 +31,6 @@ import {
 } from '../../action/TypeConstants';
 import axios from 'axios';
 
-
 let status;
 
 function SendSongInMessageFinal(props) {
@@ -45,6 +44,8 @@ function SendSongInMessageFinal(props) {
     const [index, setIndex] = useState(props.route.params.index);
     const [type, setType] = useState(props.route.params.fromHome);
     const [spotifyUrl, setSpotifyUrl] = useState(null);
+
+    var bottomSheetRef;
 
 
     useEffect(() => {
@@ -171,6 +172,9 @@ function SendSongInMessageFinal(props) {
                 original_song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
                     props.route.params.details.attributes.url,
 
+                isrc_code: props.route.params.registerType === "spotify" ? props.route.params.details.external_ids.isrc :
+                    props.route.params.details.attributes.isrc,
+
                 read: false,
                 time: moment().toString()
             }
@@ -296,6 +300,7 @@ function SendSongInMessageFinal(props) {
                     showsVerticalScrollIndicator={false}
                 />
 
+                {renderAddToUsers()}
 
 
             </SafeAreaView>

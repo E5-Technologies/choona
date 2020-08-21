@@ -24,7 +24,11 @@ import {
 
     UPDATE_MESSEAGE_COMMENTS_REQUEST,
     UPDATE_MESSEAGE_COMMENTS_SUCCESS,
-    UPDATE_MESSEAGE_COMMENTS_FAILURE
+    UPDATE_MESSEAGE_COMMENTS_FAILURE,
+
+    DELETE_MESSAGE_REQUEST,
+    DELETE_MESSAGE_SUCCESS,
+    DELETE_MESSAGE_FAILURE
 
 
 } from '../action/TypeConstants'
@@ -229,7 +233,32 @@ export function* updateMessageCommentAction(action) {
     }
 }
 
+export function* deleteMessageAction(action) {
 
+    try {
+  
+      const channel = eventChannel(emiter => {
+        const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+          .child(action.payload.ChatId)
+          .remove((error) => {
+            emiter({ error: error || null })
+          })
+        // Return the shutdown method;
+        return () => {
+          listener.off()
+        }
+      });
+  
+      const { error } = yield take(channel)
+      if (error) {
+        yield put({ type: DELETE_MESSAGE_FAILURE, error: error })
+      } else {
+        yield put({ type: DELETE_MESSAGE_SUCCESS, data: 'Message Deleted successfully' })
+      }
+    } catch (error) {
+      yield put({ type: DELETE_MESSAGE_FAILURE, error: error });
+    }
+  }
 
 
 export function* watchGetChatTokenRequest() {
@@ -254,4 +283,8 @@ export function* watchSeachMessageRequest() {
 
 export function* watchUpdateMessageCommentRequest() {
     yield takeLatest(UPDATE_MESSEAGE_COMMENTS_REQUEST, updateMessageCommentAction)
+}
+
+export function* watchDeleteMessageRequest() {
+    yield takeLatest(DELETE_MESSAGE_REQUEST, deleteMessageAction)
 }

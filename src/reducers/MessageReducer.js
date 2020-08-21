@@ -22,8 +22,11 @@ import {
 
     UPDATE_MESSEAGE_COMMENTS_REQUEST,
     UPDATE_MESSEAGE_COMMENTS_SUCCESS,
-    UPDATE_MESSEAGE_COMMENTS_FAILURE
+    UPDATE_MESSEAGE_COMMENTS_FAILURE,
 
+    DELETE_MESSAGE_REQUEST,
+    DELETE_MESSAGE_SUCCESS,
+    DELETE_MESSAGE_FAILURE
 
 } from '../action/TypeConstants';
 
@@ -35,7 +38,8 @@ const initialState = {
     chatList: [],
     chatData: [],
     searchedChatData: [],
-    updatedMessageCommentResponse: {}
+    updatedMessageCommentResponse: {},
+    deleteMessageResponse: {}
 };
 const MessageReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -166,6 +170,29 @@ const MessageReducer = (state = initialState, action) => {
                 status: action.type,
                 error: action.error,
             };
+
+        case DELETE_MESSAGE_REQUEST:
+            return {
+                ...state,
+                status: action.type,
+            };
+
+        case DELETE_MESSAGE_SUCCESS:
+
+            return {
+                ...state,
+                status: action.type,
+                deleteMessageResponse: action.data,
+            };
+
+
+        case DELETE_MESSAGE_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error,
+            };
+
 
         default:
             return state;

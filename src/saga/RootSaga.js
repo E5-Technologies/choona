@@ -22,7 +22,8 @@ import {
 
 import {
     watchGetChatTokenRequest, watchSendChatMessageRequest,
-    watchgetChatListAction, watchLoadMessages, watchSeachMessageRequest,watchUpdateMessageCommentRequest
+    watchgetChatListAction, watchLoadMessages, watchSeachMessageRequest,
+    watchUpdateMessageCommentRequest, watchDeleteMessageRequest
 } from './MessageSaga';
 
 import {
@@ -75,7 +76,8 @@ function* RootSaga() {
         watchTop5FollowedUserAction(),
         watchgetUsersFromContact(),
         watchgetSongFromIsrc(),
-        watchUpdateMessageCommentRequest()
+        watchUpdateMessageCommentRequest(),
+        watchDeleteMessageRequest()
 
     ])
 }
