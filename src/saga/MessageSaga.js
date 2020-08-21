@@ -20,12 +20,16 @@ import {
 
     SEARCH_MESSAGE_REQUEST,
     SEARCH_MESSAGE_SUCCESS,
-    SEARCH_MESSAGE_FAILURE
+    SEARCH_MESSAGE_FAILURE,
+
+    UPDATE_MESSEAGE_COMMENTS_REQUEST,
+    UPDATE_MESSEAGE_COMMENTS_SUCCESS,
+    UPDATE_MESSEAGE_COMMENTS_FAILURE
 
 
 } from '../action/TypeConstants'
 import { postApi, getApi } from '../utils/helpers/ApiRequest'
-import _ from 'lodash'      
+import _ from 'lodash'
 import database from '@react-native-firebase/database';
 
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages')
@@ -123,7 +127,10 @@ export function* getChatMessages(action) {
                 var items = []
                 dataSnapshot.forEach(child => {
 
-                    items.push(child.val())
+                    items.push({
+                        ...child.val(),
+                        key: child.key,
+                    })
 
                     if (action.payload.userId == child.val().receiver_id) {
                         child.child("read").ref.set(true)
@@ -193,6 +200,36 @@ function filterfunction(data, keyword) {
     );
 }
 
+export function* updateMessageCommentAction(action) {
+
+    try {
+
+        const channel = eventChannel(emiter => {
+            const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+                .child(action.payload.ChatId)
+                .child("message")
+                .set(action.payload.message, (error) => {
+                    emiter({ error: error || null })
+                }
+                )
+            // Return the shutdown method;
+            return () => {
+                listener.off()
+            }
+        });
+
+        const { error } = yield take(channel)
+        if (error) {
+            yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error })
+        } else {
+            yield put({ type: UPDATE_MESSEAGE_COMMENTS_SUCCESS, data: 'Message Edited successfully' })
+        }
+    } catch (error) {
+        yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error });
+    }
+}
+
+
 
 
 export function* watchGetChatTokenRequest() {
@@ -213,4 +250,8 @@ export function* watchLoadMessages() {
 
 export function* watchSeachMessageRequest() {
     yield takeLatest(SEARCH_MESSAGE_REQUEST, searchMessageAction)
+}
+
+export function* watchUpdateMessageCommentRequest() {
+    yield takeLatest(UPDATE_MESSEAGE_COMMENTS_REQUEST, updateMessageCommentAction)
 }

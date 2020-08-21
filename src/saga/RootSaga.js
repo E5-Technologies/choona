@@ -22,7 +22,7 @@ import {
 
 import {
     watchGetChatTokenRequest, watchSendChatMessageRequest,
-    watchgetChatListAction, watchLoadMessages, watchSeachMessageRequest
+    watchgetChatListAction, watchLoadMessages, watchSeachMessageRequest,watchUpdateMessageCommentRequest
 } from './MessageSaga';
 
 import {
@@ -74,7 +74,8 @@ function* RootSaga() {
         watchCountryCodeAction(),
         watchTop5FollowedUserAction(),
         watchgetUsersFromContact(),
-        watchgetSongFromIsrc()
+        watchgetSongFromIsrc(),
+        watchUpdateMessageCommentRequest()
 
     ])
 }

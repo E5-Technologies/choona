@@ -75,12 +75,13 @@ function InsideaMessage(props) {
 
 
     function renderItem(data) {
+        console.log(data.item.key)
         return (
             <SavedSongsListItem
                 image={data.item.image}
                 title={data.item.song_name}
                 singer={data.item.artist_name}
-                comments={`${data.item.message.length} Comments`}
+                comments={`${data.item.message.length} ${data.item.message.length > 1 ? "COMMENTS" : "COMMENT"}`}
                 onPressImage={() => {
                     props.navigation.navigate('Player', {
                         song_title: data.item.song_name,
@@ -89,6 +90,10 @@ function InsideaMessage(props) {
                         uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
                         artist: data.item.artist_name,
                         changePlayer: true,
+                        comingFromMessage: true,
+                        comments: data.item.message,
+                        key: data.item.key,
+                        chatToken: props.chatList[index].chat_token
                         // originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                         //     undefined,
                     })

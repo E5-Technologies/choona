@@ -70,7 +70,7 @@ function SendSongInMessageFinal(props) {
         }
     }, []);
 
-    
+
     // GET SPOTIFY SONG URL
     const callApi = async () => {
         return await axios.get(`${constants.BASE_URL}/${`song/spotify/${props.route.params.details.id}`}`, {
@@ -148,7 +148,13 @@ function SendSongInMessageFinal(props) {
         usersData.map((item) => {
 
             var chatObject = {
-                message: [{ search }],
+                message: [{
+                    profile_image: props.userProfileResp.profile_image,
+                    text: search,
+                    username: props.userProfileResp.username,
+                    createdAt: moment().toString(),
+                    user_id: props.userProfileResp._id
+                }],
                 sender_id: props.userProfileResp._id,
                 receiver_id: item._id,
                 song_name: title1,
@@ -159,8 +165,8 @@ function SendSongInMessageFinal(props) {
 
                 image: imgsource,
 
-                song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url === null ? spotifyUrl : 
-                 props.route.params.details.preview_url : props.route.params.details.attributes.previews[0].url,
+                song_uri: type ? props.route.params.details.song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.preview_url === null ? spotifyUrl :
+                    props.route.params.details.preview_url : props.route.params.details.attributes.previews[0].url,
 
                 original_song_uri: type ? props.route.params.details.original_song_uri : props.route.params.registerType === "spotify" ? props.route.params.details.external_urls.spotify :
                     props.route.params.details.attributes.url,

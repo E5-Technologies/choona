@@ -69,6 +69,7 @@ import {
     playerSeekToRequest,
     getSongFromisrc
 } from '../../action/PlayerAction';
+import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
 import { call } from 'redux-saga/effects';
 import { or } from 'react-native-reanimated';
@@ -107,7 +108,7 @@ function Player(props) {
     const [reactions, setSReactions] = useState(props.route.params.changePlayer ? [] : props.route.params.reactions);
 
     //COMMENT ON POST
-    const [commentData, setCommentData] = useState(props.route.params.changePlayer ? [] : props.route.params.comments);
+    const [commentData, setCommentData] = useState(props.route.params.changePlayer ? (props.route.params.comingFromMessage ? props.route.params.comments : []) : props.route.params.comments);
     const [id, setId] = useState(props.route.params.id);
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`);
@@ -120,6 +121,11 @@ function Player(props) {
     const [registerType, setRegisterType] = useState(props.route.params.registerType);
     const [changePlayer2, setChanagePlayer2] = useState(props.route.params.changePlayer2);
 
+    const [comingFromMessage, setCommingFromMessage] = useState(props.route.params.comingFromMessage === undefined ? false : true)
+    const [key, setKey] = useState(props.route.params.key);
+    const [chatToken, setChatToken] = useState(props.route.params.chatToken);
+
+    console.log("commentData: " + JSON.stringify(commentData));
     let track;
 
     //Prithviraj's variables.
@@ -302,7 +308,7 @@ function Player(props) {
 
         if (changePlayer2 && songuri === null) {
             toast('Error', "Sorry, this track cannot be played as it does not have a proper link."),
-            setBool(false);
+                setBool(false);
             setPlayVisible(true);
         }
 
@@ -667,9 +673,31 @@ function Player(props) {
                                         post_id: id,
                                         text: commentText
                                     };
+                                    let updateMessagPayload = {};
+
+                                    if (comingFromMessage) {
+
+                                        let tempData = commentData;
+                                        tempData.push({
+                                            profile_image: props.userProfileResp.profile_image,
+                                            text: commentText,
+                                            username: props.userProfileResp.username,
+                                            createdAt: moment().toString(),
+                                            user_id: props.userProfileResp._id
+                                        });
+                                        setArrayLength(`${tempData.length} ${tempData.length > 1 ? "COMMENTS" : "COMMENT"}`)
+                                        setCommentData(tempData);
+                                        setCommentText("");
+                                        
+                                        updateMessagPayload = {
+                                            ChatId: key,
+                                            chatToken: chatToken,
+                                            message: commentData,
+                                        }
+                                    }
                                     isInternetConnected()
                                         .then(() => {
-                                            props.commentOnPost(commentObject)
+                                            comingFromMessage ? props.updateMessageCommentRequest(updateMessagPayload) : props.commentOnPost(commentObject)
                                         })
                                         .catch(() => {
                                             toast('Error', 'Please Connect To Internet')
@@ -1139,6 +1167,29 @@ function Player(props) {
                                 </TouchableOpacity>
                             </View>}
 
+                        {comingFromMessage ?
+                            <TouchableOpacity style={{
+                                flexDirection: 'row',
+                                height: normalise(40), width: normalise(115), alignItems: 'center', justifyContent: 'center',
+                                backgroundColor: Colors.fadeblack, borderRadius: normalise(10)
+                            }} onPress={() => {
+                                if (RbSheetRef) RbSheetRef.open();
+                            }}>
+
+                                <Image source={ImagePath.comment_grey}
+                                    style={{ height: normalise(16), width: normalise(16) }}
+                                    resizeMode="contain" />
+
+                                <Text style={{
+                                    fontSize: normalise(9), color: Colors.white, marginLeft: normalise(10),
+                                    fontFamily: 'ProximaNova-Bold'
+                                }}>
+                                    {arrayLength}
+                                </Text>
+
+                            </TouchableOpacity> : null}
+
+
 
                         {changePlayer ? null :
                             <TouchableOpacity
@@ -1265,7 +1316,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         getSongFromIsrc: (regType, isrc) => {
             dispatch(getSongFromisrc(regType, isrc))
-        }
+        },
+        updateMessageCommentRequest: (payload) => {
+            dispatch(updateMessageCommentRequest(payload))
+        },
     }
 };
 
