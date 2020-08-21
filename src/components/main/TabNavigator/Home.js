@@ -42,6 +42,7 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
   COUNTRY_CODE_SUCCESS,
+  OTHERS_PROFILE_SUCCESS,
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest, homePageReq, reactionOnPostRequest, userFollowUnfollowRequest,
@@ -333,7 +334,7 @@ function Home(props) {
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate("Profile")
+            props.navigation.navigate("Profile", {fromAct: false})
           }
           else {
             props.navigation.navigate("OthersProfile",
@@ -703,7 +704,7 @@ function Home(props) {
           imagetwowidth={25}
           middleImageReq={true}
           notRead={findIsNotRead()}
-          onPressFirstItem={() => { props.navigation.navigate("Profile") }}
+          onPressFirstItem={() => { props.navigation.navigate("Profile", {fromAct: false}) }}
           onPressThirdItem={() => { props.navigation.navigate("Inbox") }} />
 
 
@@ -770,7 +771,7 @@ function Home(props) {
             {renderAddToUsers()}
 
             {props.status === HOME_PAGE_SUCCESS || props.status === USER_PROFILE_SUCCESS || 
-            props.status === COUNTRY_CODE_SUCCESS ?
+            props.status === COUNTRY_CODE_SUCCESS || props.status === OTHERS_PROFILE_SUCCESS ?
 
               <MusicPlayerBar onPress={() => {
                 props.navigation.navigate("Player",

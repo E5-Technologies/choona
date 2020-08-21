@@ -128,7 +128,8 @@ function Following(props) {
                     type={false}
                     image2={"123"}
                     marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    onPressImage={() => { props.navigation.navigate("Profile", { fromAct: false }) }}
+                    TouchableOpacityDisabled={false}
                 />
             );
         } else {
@@ -146,6 +147,7 @@ function Following(props) {
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
                     onPress={() => { props.followReq({ follower_id: data.item._id }) }}
+                    TouchableOpacityDisabled={false}
                 />
             );
         }
@@ -162,7 +164,8 @@ function Following(props) {
                     type={false}
                     image2={"123"}
                     marginBottom={data.index === props.top5FollowedResponse.length - 1 ? normalise(20) : 0}
-                // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+                    onPressImage={() => { props.navigation.navigate("Profile", { fromAct: false }) }}
+                    TouchableOpacityDisabled={false}
                 />
             );
         } else {
@@ -180,6 +183,7 @@ function Following(props) {
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
                     onPress={() => { props.followReq({ follower_id: data.item._id }) }}
+                    TouchableOpacityDisabled={false}
                 />
             );
         }

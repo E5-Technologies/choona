@@ -41,7 +41,7 @@ function Notification(props) {
                 .then(() => {
                     updateProfile(),
                         props.activityListReq()
-                       
+
                 })
                 .catch(() => {
                     toast('Error', "Please Connect To Internet")
@@ -82,7 +82,7 @@ function Notification(props) {
         isInternetConnected()
             .then(() => {
                 props.editProfileReq(formdata),
-                props.getProfileReq();
+                    props.getProfileReq();
             })
             .catch((err) => {
                 toast("Oops", "Please Connect To Internet")
@@ -121,6 +121,7 @@ function Notification(props) {
                         props.navigation.navigate("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
+                    onPress={() => { props.navigation.navigate('Profile', { postId: data.item.post_id, fromAct: true }) }}
                 />
             );
         }
@@ -137,13 +138,14 @@ function Notification(props) {
                         props.navigation.navigate("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
+                    onPress={() => { props.navigation.navigate('Profile', { postId: data.item.post_id, fromAct: true })  }}
                 />
             )
         }
 
     };
 
-    
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>

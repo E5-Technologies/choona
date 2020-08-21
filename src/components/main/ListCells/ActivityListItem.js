@@ -54,7 +54,7 @@ function ActivityListItem(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity disabled={props.TouchableOpacityDisabled}
-                    style={{ width: props.type ? '50%' : '70%'}}
+                    style={{ width: props.type ? '50%' : '70%' }}
                     onPress={() => { onPressImage() }}>
                     <Text style={{
                         color: Colors.white, fontSize: normalise(11),
@@ -90,7 +90,7 @@ function ActivityListItem(props) {
                     </TouchableOpacity>
 
                     :
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => { onPress() }}>
                         <Image source={props.image2 === "" ? ImagePath.dp2 : { uri: props.image2 }}
                             style={{ height: normalise(35), width: normalise(35) }}
                             resizeMode='contain' />

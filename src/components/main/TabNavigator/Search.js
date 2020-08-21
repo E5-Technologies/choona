@@ -175,6 +175,7 @@ function Search(props) {
                         { id: data.item._id, following: data.item.isFollowing })
                 }}
                 onPress={() => { props.followReq({ follower_id: data.item._id }) }}
+                TouchableOpacityDisabled={false}
             />
         )
     };
@@ -199,7 +200,7 @@ function Search(props) {
                 }}
                 onPressImage={() => {
                     if (props.userProfileResp._id === data.item.user_id) {
-                        props.navigation.navigate("Profile")
+                        props.navigation.navigate("Profile", {fromAct: false})
                     }
                     else {
                         props.navigation.navigate("OthersProfile",

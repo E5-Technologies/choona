@@ -288,7 +288,7 @@ function PostListForUser(props) {
                 }}
                 onPressImage={() => {
                     if (props.userProfileResp._id === data.item.user_id) {
-                        props.navigation.navigate("Profile")
+                        props.navigation.navigate("Profile", {fromAct: false})
                     }
                     else {
                         props.navigation.navigate("OthersProfile",

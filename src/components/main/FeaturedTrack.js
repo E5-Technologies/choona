@@ -32,6 +32,8 @@ import {
 import { featuredSongSearchReq, editProfileRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import axios from 'axios';
+import constants from '../../utils/helpers/constants';
 
 let status;
 
@@ -39,7 +41,7 @@ function FeaturedTrack(props) {
 
     const [search, setSearch] = useState("");
     const [data, setData] = useState([]);
-
+    const [spotifyUrl, setSpotifyUrl] = useState('');
 
     if (status === "" || status !== props.status) {
         switch (props.status) {
@@ -85,6 +87,71 @@ function FeaturedTrack(props) {
         return names
     };
 
+
+    // GET SPOTIFY SONG URL
+    const callApi = async (id) => {
+        return await axios.get(`${constants.BASE_URL}/${`song/spotify/${id}`}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        });
+    };
+
+
+    const setFeaturedSong = (song) => {
+       
+        if (props.registerType === 'spotify') {
+
+            const getSpotifyApi = async () => {
+                try {
+                    const res = await callApi(song.id);
+                    if (res.data.status === 200) {
+                        let suc = res.data.data.audio;
+                        let formdata = new FormData;
+                        let array = [{
+                            song_name: props.registerType === 'spotify' ? song.name : song.attributes.name,
+                            song_uri: props.registerType === 'spotify' ? suc : song.attributes.previews[0].url,
+                            album_name: props.registerType === 'spotify' ? song.album.name : song.attributes.albumName,
+                            song_pic: props.registerType === 'spotify' ? song.album.images.length > 1 ? song.album.images[0].url : "qwe" : song.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                            artist_name: props.registerType === 'spotify' ? singerList(song.artists) : song.attributes.artistName,
+                            original_song_uri: props.registerType === "spotify" ? song.external_urls.spotify : song.attributes.url,
+                            isrc_code: props.registerType === "spotify" ? song.external_ids.isrc : song.attributes.isrc
+                        }];
+                        formdata.append("feature_song", JSON.stringify(array))
+                        props.editProfileReq(formdata);
+                    }
+                    else {
+                        toast('Oops', 'Something Went Wrong');
+                        props.navigation.goBack();
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+            };
+
+            getSpotifyApi();
+        }
+
+        else {
+
+            let formdata = new FormData;
+            let array = [{
+                song_name: props.registerType === 'spotify' ? song.name : song.attributes.name,
+                song_uri: props.registerType === 'spotify' ? suc : song.attributes.previews[0].url,
+                album_name: props.registerType === 'spotify' ? song.album.name : song.attributes.albumName,
+                song_pic: props.registerType === 'spotify' ? song.album.images.length > 1 ? song.album.images[0].url : "qwe" : song.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                artist_name: props.registerType === 'spotify' ? singerList(song.artists) : song.attributes.artistName,
+                original_song_uri: props.registerType === "spotify" ? song.external_urls.spotify : song.attributes.url,
+                isrc_code: props.registerType === "spotify" ? song.external_ids.isrc : song.attributes.isrc
+            }];
+            formdata.append("feature_song", JSON.stringify(array))
+            props.editProfileReq(formdata);
+        }
+    };
+
+
     function renderItem(data) {
 
         return (
@@ -97,18 +164,7 @@ function FeaturedTrack(props) {
                 change={true}
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
-                    let formdata = new FormData;
-                    let array = [{
-                        song_name: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
-                        song_uri: props.registerType === 'spotify' ? data.item.preview_url : data.item.attributes.previews[0].url,
-                        album_name: props.registerType === 'spotify' ? data.item.album.name : data.item.attributes.albumName,
-                        song_pic: props.registerType === 'spotify' ? data.item.album.images.length > 1 ? data.item.album.images[0].url : "qwe" : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
-                        artist_name: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
-                        original_song_uri: props.registerType === "spotify" ? data.item.external_urls.spotify : data.item.attributes.url,
-                        isrc_code: props.registerType === "spotify" ? data.item.external_ids.isrc : data.item.attributes.isrc
-                    }];
-                    formdata.append("feature_song", JSON.stringify(array))
-                    props.editProfileReq(formdata);
+                    setFeaturedSong(data.item)
                 }}
                 onPressImage={() => {
                     props.navigation.navigate("Player",
