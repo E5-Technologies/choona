@@ -125,6 +125,7 @@ function Player(props) {
     const [key, setKey] = useState(props.route.params.key);
     const [chatToken, setChatToken] = useState(props.route.params.chatToken);
 
+    // console.log("commentData: " + JSON.stringify(commentData));
     let track;
 
     //Prithviraj's variables.
@@ -1114,13 +1115,14 @@ function Player(props) {
                                     backgroundColor: Colors.fadeblack, borderRadius: normalise(5)
                                 }} onPress={() => {
                                     let saveSongObject = {
-                                        song_uri: originalUri,
+                                        song_uri: uri,
                                         song_name: songTitle,
                                         song_image: pic,
                                         artist_name: artist,
                                         album_name: albumTitle,
                                         post_id: id,
-                                        isrc_code: isrc
+                                        isrc_code: isrc,
+                                        original_song_uri: originalUri
                                     };
 
                                     props.saveSongReq(saveSongObject);

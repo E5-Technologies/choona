@@ -365,7 +365,8 @@ function Search(props) {
                                     artist_name: props.searchPostData[positionInArray].artist_name,
                                     album_name: props.searchPostData[positionInArray].album_name,
                                     post_id: props.searchPostData[positionInArray]._id,
-                                    isrc_code: props.searchPostData[positionInArray].isrc_code
+                                    isrc_code: props.searchPostData[positionInArray].isrc_code,
+                                    original_song_uri: props.searchPostData[positionInArray].original_song_uri
                                 };
 
                                 props.saveSongReq(saveSongObject);

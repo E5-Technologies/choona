@@ -857,7 +857,8 @@ function Home(props) {
                           artist_name: props.postData[positionInArray].artist_name,
                           album_name: props.postData[positionInArray].album_name,
                           post_id: props.postData[positionInArray]._id,
-                          isrc_code: props.postData[positionInArray].isrc_code
+                          isrc_code: props.postData[positionInArray].isrc_code,
+                          original_song_uri: props.postData[positionInArray].original_song_uri
                         };
 
                         props.saveSongReq(saveSongObject);
