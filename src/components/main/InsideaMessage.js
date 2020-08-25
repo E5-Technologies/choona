@@ -585,7 +585,7 @@ function InsideaMessage(props) {
                                         song_image: props.searchedChatData[positionInArray].song_image,
                                         artist_name: props.searchedChatData[positionInArray].artist_name,
                                         album_name: props.searchedChatData[positionInArray].album_name,
-                                        post_id: "",
+                                        post_id: props.searchedChatData[positionInArray].key,
                                         isrc_code: props.searchedChatData[positionInArray].isrc_code,
                                         original_song_uri: props.searchedChatData[positionInArray].original_song_uri
                                     };

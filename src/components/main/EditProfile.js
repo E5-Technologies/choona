@@ -78,7 +78,8 @@ function EditProfile(props) {
                 break;
 
             case EDIT_PROFILE_SUCCESS:
-                props.navigation.goBack()
+                toast("Oops", "Profile updated successfully.")
+                //props.navigation.goBack()
                 status = props.status
                 break;
 
@@ -171,7 +172,7 @@ function EditProfile(props) {
             if (picture) {
 
                 let uploadPicture = {
-                    name: imageDetails.filename === undefined ? 'xyz.jpg' : imageDetails.filename,
+                    name: imageDetails.filename === undefined || imageDetails.filename === null ? 'xyz.jpg' : imageDetails.filename,
                     type: imageDetails.mime,
                     uri: profilePic
                 };
@@ -181,6 +182,8 @@ function EditProfile(props) {
                 formdata.append("location", location);
                 formdata.append("username", username);
                 formdata.append("phone", phoneNumber);
+
+
 
                 isInternetConnected()
                     .then(() => {
@@ -332,7 +335,7 @@ function EditProfile(props) {
                             <TextInputField
                                 placeholder={"Enter Phone number"}
                                 placeholderTextColor={Colors.grey}
-                                maxLength={10}
+                                maxLength={15}
                                 width={normalize(200)}
                                 isNumber={true}
                                 value={phoneNumber}
