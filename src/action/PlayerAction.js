@@ -3,7 +3,9 @@ import {
     RESUME_PLAYER_REQUEST,
     PAUSE_PLAYER_REQUEST,
     PLAYER_SEEK_TO_REQUEST,
-    GET_SONG_FROM_ISRC_REQUEST
+    GET_SONG_FROM_ISRC_REQUEST,
+    GET_USER_PLAYLIST_REQUEST,
+    ADD_SONG_TO_PLAYLIST_REQUEST
 }
     from './TypeConstants';
 
@@ -28,5 +30,14 @@ export const getSongFromisrc = (regType, isrc) => ({
     type: GET_SONG_FROM_ISRC_REQUEST,
     regType,
     isrc
+});
+
+export const getUserPlaylist = () => ({
+    type: GET_USER_PLAYLIST_REQUEST,
+});
+
+export const addSongsToPlayListRequest = (payload) => ({
+    type: ADD_SONG_TO_PLAYLIST_REQUEST,
+    payload
 });
 

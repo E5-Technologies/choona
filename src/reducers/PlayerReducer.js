@@ -18,7 +18,15 @@ import {
 
     GET_SONG_FROM_ISRC_REQUEST,
     GET_SONG_FROM_ISRC_SUCCESS,
-    GET_SONG_FROM_ISRC_FAILURE
+    GET_SONG_FROM_ISRC_FAILURE,
+
+    GET_USER_PLAYLIST_REQUEST,
+    GET_USER_PLAYLIST_SUCCESS,
+    GET_USER_PLAYLIST_FAILURE,
+
+    ADD_SONG_TO_PLAYLIST_REQUEST,
+    ADD_SONG_TO_PLAYLIST_SUCCESS,
+    ADD_SONG_TO_PLAYLIST_FAILURE
 }
     from '../action/TypeConstants';
 
@@ -29,7 +37,9 @@ const initialState = {
     resumePlayerResponse: {},
     pausePlayerResponse: {},
     seekToPlayerResponse: {},
-    getSongFromISRC: []
+    getSongFromISRC: [],
+    getUserPlayList: [],
+    addSongToPlayListResponse: {}
 }
 
 const PlayerReducer = (state = initialState, action) => {
@@ -134,6 +144,46 @@ const PlayerReducer = (state = initialState, action) => {
             };
 
         case GET_SONG_FROM_ISRC_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case GET_USER_PLAYLIST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case GET_USER_PLAYLIST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                getUserPlayList: action.data,
+            };
+
+        case GET_USER_PLAYLIST_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                error: action.error
+            };
+
+        case ADD_SONG_TO_PLAYLIST_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case ADD_SONG_TO_PLAYLIST_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                addSongToPlayListResponse: action.data,
+            };
+
+        case ADD_SONG_TO_PLAYLIST_FAILURE:
             return {
                 ...state,
                 status: action.type,

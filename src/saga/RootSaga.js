@@ -28,7 +28,8 @@ import {
 
 import {
     watchGetCurrentPlayerPostionRequest, watchResumePlayerRequest,
-    watchPlayPlayerRequest, watchSeekToPlayerRequest, watchgetSongFromIsrc
+    watchPlayPlayerRequest, watchSeekToPlayerRequest, watchgetSongFromIsrc, 
+    watchGetPlayListOfUser, watchAddSongsToPlaylistRequest
 } from './PlayerSaga';
 
 
@@ -77,7 +78,9 @@ function* RootSaga() {
         watchgetUsersFromContact(),
         watchgetSongFromIsrc(),
         watchUpdateMessageCommentRequest(),
-        watchDeleteMessageRequest()
+        watchDeleteMessageRequest(),
+        watchGetPlayListOfUser(),
+        watchAddSongsToPlaylistRequest()
 
     ])
 }

@@ -57,6 +57,7 @@ import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts'
 import { generateDeviceToken } from './src/utils/helpers/FirebaseToken';
 import isInternetConnected from './src/utils/helpers/NetInfo';
+import AddToPlayListScreen from './src/components/main/AddToPlayListScreen'
 import {
   editProfileRequest
 } from './src/action/UserAction';
@@ -272,6 +273,7 @@ const App = () => {
             <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
             <Stack.Screen name="PostListForUser" component={PostListForUser} />
             <Stack.Screen name="UsersFromContacts" component={UsersFromContacts} />
+            <Stack.Screen name="AddToPlayListScreen" component={AddToPlayListScreen} />
           </Stack.Navigator>
         }
 

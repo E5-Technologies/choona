@@ -18,10 +18,18 @@ import {
 
     GET_SONG_FROM_ISRC_REQUEST,
     GET_SONG_FROM_ISRC_SUCCESS,
-    GET_SONG_FROM_ISRC_FAILURE
+    GET_SONG_FROM_ISRC_FAILURE,
+
+    GET_USER_PLAYLIST_REQUEST,
+    GET_USER_PLAYLIST_SUCCESS,
+    GET_USER_PLAYLIST_FAILURE,
+
+    ADD_SONG_TO_PLAYLIST_REQUEST,
+    ADD_SONG_TO_PLAYLIST_SUCCESS,
+    ADD_SONG_TO_PLAYLIST_FAILURE
 
 } from '../action/TypeConstants';
-import { getSpotifyApi, putSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
+import { getSpotifyApi, putSpotifyApi, getAppleDevelopersToken, postSpotifyApi } from "../utils/helpers/ApiRequest"
 import constants from '../utils/helpers/constants';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin'
 import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
@@ -164,6 +172,41 @@ export function* getSongFromIsrcAction(action) {
     }
 };
 
+export function* playListOfUserAction(action) {
+    try {
+        const spotifyToken = yield call(getSpotifyToken);
+        const AppleToken = yield call(getAppleDevToken);
+
+        let spotifyHeader = {
+            "Authorization": "spotify" === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
+        };
+
+        const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`, spotifyHeader);
+        yield put({ type: GET_USER_PLAYLIST_SUCCESS, data: response.data.items });
+
+
+    } catch (error) {
+        yield put({ type: GET_USER_PLAYLIST_FAILURE, error: error })
+    }
+};
+
+export function* addSongsToPlaylistAction(action) {
+    try {
+        const spotifyToken = yield call(getSpotifyToken);
+        const AppleToken = yield call(getAppleDevToken);
+
+        let spotifyHeader = {
+            "Authorization": "spotify" === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
+        };
+
+        const response = yield call(postSpotifyApi, `https://api.spotify.com/v1/playlists/`+action.payload.playListId+`/tracks`,{"uris":action.payload.songUri}, spotifyHeader);
+        yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
+
+
+    } catch (error) {
+        yield put({ type: ADD_SONG_TO_PLAYLIST_FAILURE, error: error })
+    }
+};
 
 //WATCH FUNCTIONS
 export function* watchGetCurrentPlayerPostionRequest() {
@@ -184,4 +227,12 @@ export function* watchSeekToPlayerRequest() {
 
 export function* watchgetSongFromIsrc() {
     yield takeLatest(GET_SONG_FROM_ISRC_REQUEST, getSongFromIsrcAction)
+};
+
+export function* watchGetPlayListOfUser() {
+    yield takeLatest(GET_USER_PLAYLIST_REQUEST, playListOfUserAction)
+};
+
+export function* watchAddSongsToPlaylistRequest() {
+    yield takeLatest(ADD_SONG_TO_PLAYLIST_REQUEST, addSongsToPlaylistAction)
 };

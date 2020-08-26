@@ -11,11 +11,10 @@ const config = {
     scopes: [
         'user-read-email',
         'user-read-private',
-        'user-read-playback-position',
-        'user-modify-playback-state',
-        'user-read-currently-playing',
-        'user-read-playback-state',
-        'streaming'
+        'playlist-read-private',
+        'playlist-read-collaborative',
+        'playlist-modify-public',
+        'playlist-modify-private'
     ],
     serviceConfiguration: {
         authorizationEndpoint: constants.spotify_authorize_uri,
