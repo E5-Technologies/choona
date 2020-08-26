@@ -201,7 +201,7 @@ function Login(props) {
         else {
 
             let profileImage = {
-                name: imageDetails.filename === undefined ? 'xyz.jpg' : imageDetails.filename,
+                name: imageDetails.filename === undefined || imageDetails.filename === null ? 'xyz.jpg' : imageDetails.filename,
                 type: imageDetails.mime,
                 uri: Platform.OS === "android" ? profilePic : profilePic.replace("file://", "")
             }
@@ -383,7 +383,7 @@ function Login(props) {
                             placeholder={"Enter Phone number"}
                             placeholderTextColor={Colors.grey}
                             width={normalize(200)}
-                            maxLength={10}
+                            maxLength={15}
                             isNumber={true}
                             value={phoneNumber}
                             onChangeText={(text) => { setPhoneNumber(text) }} />
