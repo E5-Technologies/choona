@@ -277,7 +277,8 @@ function GenreSongClicked(props) {
                   album_name: props.getPostFromTop50[positionInArray].album_name,
                   post_id: props.getPostFromTop50[positionInArray]._id,
                   isrc_code: props.getPostFromTop50[positionInArray].isrc_code,
-                  original_song_uri: props.getPostFromTop50[positionInArray].original_song_uri
+                  original_song_uri: props.getPostFromTop50[positionInArray].original_song_uri,
+                  original_reg_type: props.getPostFromTop50[positionInArray].userDetails.register_type,
                 };
 
                 props.saveSongReq(saveSongObject);

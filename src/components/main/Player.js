@@ -332,19 +332,20 @@ function Player(props) {
 
 
                     let saveSongResObj = {}
-                    saveSongResObj.uri = uri,
+                        saveSongResObj.uri = uri,
                         saveSongResObj.song_name = songTitle,
                         saveSongResObj.album_name = albumTitle,
                         saveSongResObj.song_pic = pic,
                         saveSongResObj.username = username,
                         saveSongResObj.profile_pic = profilePic,
                         saveSongResObj.commentData = commentData
-                    saveSongResObj.reactionData = reactions
-                    saveSongResObj.id = id,
+                        saveSongResObj.reactionData = reactions
+                        saveSongResObj.id = id,
                         saveSongResObj.artist = artist,
                         saveSongResObj.changePlayer = changePlayer
-                    saveSongResObj.originalUri = originalUri,
-                        saveSongResObj.isrc = isrc
+                        saveSongResObj.originalUri = originalUri,
+                        saveSongResObj.isrc = isrc,
+                        saveSongResObj.regType = registerType
 
 
                     props.saveSongRefReq(saveSongResObj);
@@ -1122,7 +1123,8 @@ function Player(props) {
                                         album_name: albumTitle,
                                         post_id: id,
                                         isrc_code: isrc,
-                                        original_song_uri: originalUri
+                                        original_song_uri: originalUri,
+                                        original_reg_type: registerType,
                                     };
 
                                     props.saveSongReq(saveSongObject);
@@ -1193,7 +1195,7 @@ function Player(props) {
 
 
 
-                        {changePlayer ? null :
+                        {/* {changePlayer ? null : */}
                             <TouchableOpacity
                                 style={{
                                     flexDirection: 'row',
@@ -1260,7 +1262,8 @@ function Player(props) {
                                     fontSize: normalise(13),
                                     fontFamily: 'ProximaNova-Semibold',
                                 }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
-                            </TouchableOpacity>}
+                            </TouchableOpacity>
+                            {/* } */}
 
                         {RbSheet()}
                         {renderModalMorePressed()}

@@ -788,7 +788,9 @@ function Home(props) {
                     artist: props.playingSongRef.artist,
                     changePlayer: props.playingSongRef.changePlayer,
                     originalUri: props.playingSongRef.originalUri,
-                    isrc: props.playingSongRef.isrc
+                    isrc: props.playingSongRef.isrc,
+                    registerType: props.playingSongRef.regType
+
                   })
               }} />
               : null}
@@ -858,7 +860,8 @@ function Home(props) {
                           album_name: props.postData[positionInArray].album_name,
                           post_id: props.postData[positionInArray]._id,
                           isrc_code: props.postData[positionInArray].isrc_code,
-                          original_song_uri: props.postData[positionInArray].original_song_uri
+                          original_song_uri: props.postData[positionInArray].original_song_uri,
+                          original_reg_type: props.postData[positionInArray].userDetails.register_type,
                         };
 
                         props.saveSongReq(saveSongObject);

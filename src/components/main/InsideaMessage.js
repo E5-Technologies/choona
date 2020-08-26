@@ -172,9 +172,11 @@ function InsideaMessage(props) {
                         comments: data.item.message,
                         key: data.item.key,
                         chatToken: props.chatList[index].chat_token,
-                        isrc: data.item.isrc_code
-                        // originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
-                        //     undefined,
+                        isrc: data.item.isrc_code,
+                        originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                            undefined,
+                        registerType: data.item.original_reg_type
+                        
                     })
                 }}
                 marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
@@ -588,7 +590,8 @@ function InsideaMessage(props) {
                                         chat_id: props.searchedChatData[positionInArray].key,
                                         type: "chat",
                                         isrc_code: props.searchedChatData[positionInArray].isrc_code,
-                                        original_song_uri: props.searchedChatData[positionInArray].original_song_uri
+                                        original_song_uri: props.searchedChatData[positionInArray].original_song_uri,
+                                        original_reg_type: props.searchedChatData[positionInArray].original_reg_type
                                     };
 
                                     props.saveSongReq(saveSongObject);

@@ -174,6 +174,8 @@ function SendSongInMessageFinal(props) {
                 isrc_code: type ? props.route.params.details.isrc_code : props.route.params.registerType === "spotify" ? props.route.params.details.external_ids.isrc :
                     props.route.params.details.attributes.isrc,
 
+                original_reg_type: props.registerType,
+
                 read: false,
                 time: moment().toString()
             }
