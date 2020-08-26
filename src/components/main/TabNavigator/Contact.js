@@ -646,77 +646,73 @@ function Contact(props) {
 
 
     //OPEN IN APPLE / SPOTIFY
-    const openInAppleORSpotify = () => {
+    const openInAppleORSpotify = async () => {
+        try {
+            const res = await callApi();
+            console.log(res);
 
-        const getSpotifyApi = async () => {
-            try {
-                const res = await callApi();
-                console.log(res);
+            if (res.status === 200) {
+                if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
 
-                if (res.status === 200) {
-                    if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
-
-                        if (props.userProfileResp.register_type === 'spotify') {
-                            console.log('success - spotify');
-                            console.log(res.data.tracks.items[0].external_urls.spotify)
-                            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-                                .then((supported) => {
-                                    if (supported) {
-                                        Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
-                                            .then(() => {
-                                                console.log('success');
-                                            })
-                                            .catch(() => {
-                                                console.log('error')
-                                            })
-                                    }
-                                })
-                                .catch(() => {
-                                    console.log('not supported')
-                                })
-                            setBool(false)
-                        }
-                        else {
-
-                            console.log('success - apple');
-                            console.log(res.data.data[0].attributes.url);
-                            Linking.canOpenURL(res.data.data[0].attributes.url)
-                                .then((supported) => {
-                                    if (supported) {
-                                        Linking.openURL(res.data.data[0].attributes.url)
-                                            .then(() => {
-                                                console.log('success');
-                                            })
-                                            .catch(() => {
-                                                console.log('error')
-                                            })
-                                    }
-                                })
-                                .catch(() => {
-                                    console.log('not supported')
-                                })
-                            setBool(false)
-                        }
-                    }
-
-                    else {
+                    if (props.userProfileResp.register_type === 'spotify') {
+                        console.log('success - spotify');
+                        console.log(res.data.tracks.items[0].external_urls.spotify)
+                        Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+                            .then((supported) => {
+                                if (supported) {
+                                    Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                                        .then(() => {
+                                            console.log('success');
+                                        })
+                                        .catch(() => {
+                                            console.log('error')
+                                        })
+                                }
+                            })
+                            .catch(() => {
+                                console.log('not supported')
+                            })
                         setBool(false)
-                        toast('', 'No Song Found');
                     }
+                    else {
 
+                        console.log('success - apple');
+                        console.log(res.data.data[0].attributes.url);
+                        Linking.canOpenURL(res.data.data[0].attributes.url)
+                            .then((supported) => {
+                                if (supported) {
+                                    Linking.openURL(res.data.data[0].attributes.url)
+                                        .then(() => {
+                                            console.log('success');
+                                        })
+                                        .catch(() => {
+                                            console.log('error')
+                                        })
+                                }
+                            })
+                            .catch(() => {
+                                console.log('not supported')
+                            })
+                        setBool(false)
+                    }
                 }
+
                 else {
                     setBool(false)
-                    toast('Oops', 'Something Went Wrong');
+                    toast('', 'No Song Found');
                 }
 
-            } catch (error) {
-                setBool(false)
-                console.log(error);
             }
-        };
+            else {
+                setBool(false)
+                toast('Oops', 'Something Went Wrong');
+            }
 
-        getSpotifyApi();
+        } catch (error) {
+            setBool(false)
+            console.log(error);
+        }
+
     };
 
     return (

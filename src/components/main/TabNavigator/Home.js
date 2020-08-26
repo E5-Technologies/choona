@@ -696,9 +696,8 @@ function Home(props) {
 
 
   //OPEN IN APPLE / SPOTIFY
-  const openInAppleORSpotify = () => {
+  const openInAppleORSpotify = async() => {
 
-    const getSpotifyApi = async () => {
       try {
         const res = await callApi();
         console.log(res);
@@ -764,9 +763,6 @@ function Home(props) {
         setBool(false)
         console.log(error);
       }
-    };
-
-    getSpotifyApi();
   };
 
   // VIEW
