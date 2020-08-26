@@ -701,21 +701,18 @@ function Contact(props) {
 
                     else {
                         setBool(false)
-                        setModalVisible(!modalVisible);
                         toast('', 'No Song Found');
                     }
 
                 }
                 else {
                     setBool(false)
-                    setModalVisible(!modalVisible);
                     toast('Oops', 'Something Went Wrong');
                 }
 
             } catch (error) {
                 setBool(false)
                 console.log(error);
-                setModalVisible(!modalVisible);
             }
         };
 
