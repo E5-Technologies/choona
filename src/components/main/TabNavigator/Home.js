@@ -10,7 +10,8 @@ import {
   Image,
   Modal,
   Platform,
-  Clipboard
+  Clipboard,
+  Linking
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -61,6 +62,9 @@ import { FlatList } from 'react-native-gesture-handler';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Contacts from 'react-native-contacts';
 // import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
+import axios from 'axios';
 
 let status = "";
 let songStatus = "";
@@ -80,6 +84,7 @@ function Home(props) {
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
+  const [bool, setBool] = useState(false);
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -334,7 +339,7 @@ function Home(props) {
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate("Profile", {fromAct: false})
+            props.navigation.navigate("Profile", { fromAct: false })
           }
           else {
             props.navigation.navigate("OthersProfile",
@@ -665,6 +670,101 @@ function Home(props) {
     )
   };
 
+
+  // GET ISRC CODE
+  const callApi = async () => {
+    if (props.registerType === 'spotify') {
+
+      const spotifyToken = await getSpotifyToken();
+
+      return await axios.get(`https://api.spotify.com/v1/search?q=isrc:${props.postData[positionInArray].isrc_code}&type=track`, {
+        headers: {
+          "Authorization": spotifyToken
+        }
+      });
+    }
+    else {
+      const AppleToken = await getAppleDevToken();
+
+      return await axios.get(`https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.postData[positionInArray].isrc_code}`, {
+        headers: {
+          "Authorization": AppleToken
+        }
+      });
+    }
+  };
+
+
+  //OPEN IN APPLE / SPOTIFY
+  const openInAppleORSpotify = async() => {
+
+      try {
+        const res = await callApi();
+        console.log(res);
+
+        if (res.status === 200) {
+          if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
+
+            if (props.userProfileResp.register_type === 'spotify') {
+              console.log('success - spotify');
+              console.log(res.data.tracks.items[0].external_urls.spotify)
+              Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+                .then((supported) => {
+                  if (supported) {
+                    Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                      .then(() => {
+                        console.log('success');
+                      })
+                      .catch(() => {
+                        console.log('error')
+                      })
+                  }
+                })
+                .catch(() => {
+                  console.log('not supported')
+                })
+              setBool(false)
+            }
+            else {
+
+              console.log('success - apple');
+              console.log(res.data.data[0].attributes.url);
+              Linking.canOpenURL(res.data.data[0].attributes.url)
+                .then((supported) => {
+                  if (supported) {
+                    Linking.openURL(res.data.data[0].attributes.url)
+                      .then(() => {
+                        console.log('success');
+                      })
+                      .catch(() => {
+                        console.log('error')
+                      })
+                  }
+                })
+                .catch(() => {
+                  console.log('not supported')
+                })
+              setBool(false)
+            }
+          }
+
+          else {
+            setBool(false)
+            toast('', 'No Song Found');
+          }
+
+        }
+        else {
+          setBool(false)
+          toast('Oops', 'Something Went Wrong');
+        }
+
+      } catch (error) {
+        setBool(false)
+        console.log(error);
+      }
+  };
+
   // VIEW
   return (
 
@@ -683,6 +783,7 @@ function Home(props) {
 
         <Loader visible={props.status === HOME_PAGE_REQUEST} />
         <Loader visible={contactsLoading} />
+        <Loader visible={bool} />
 
         {/* { modalVisible ? 
                     <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>
@@ -704,7 +805,7 @@ function Home(props) {
           imagetwowidth={25}
           middleImageReq={true}
           notRead={findIsNotRead()}
-          onPressFirstItem={() => { props.navigation.navigate("Profile", {fromAct: false}) }}
+          onPressFirstItem={() => { props.navigation.navigate("Profile", { fromAct: false }) }}
           onPressThirdItem={() => { props.navigation.navigate("Inbox") }} />
 
 
@@ -770,8 +871,8 @@ function Home(props) {
 
             {renderAddToUsers()}
 
-            {props.status === HOME_PAGE_SUCCESS || props.status === USER_PROFILE_SUCCESS || 
-            props.status === COUNTRY_CODE_SUCCESS || props.status === OTHERS_PROFILE_SUCCESS ?
+            {props.status === HOME_PAGE_SUCCESS || props.status === USER_PROFILE_SUCCESS ||
+              props.status === COUNTRY_CODE_SUCCESS || props.status === OTHERS_PROFILE_SUCCESS ?
 
               <MusicPlayerBar onPress={() => {
                 props.navigation.navigate("Player",
@@ -788,7 +889,9 @@ function Home(props) {
                     artist: props.playingSongRef.artist,
                     changePlayer: props.playingSongRef.changePlayer,
                     originalUri: props.playingSongRef.originalUri,
-                    isrc: props.playingSongRef.isrc
+                    isrc: props.playingSongRef.isrc,
+                    registerType: props.playingSongRef.regType
+
                   })
               }} />
               : null}
@@ -858,7 +961,8 @@ function Home(props) {
                           album_name: props.postData[positionInArray].album_name,
                           post_id: props.postData[positionInArray]._id,
                           isrc_code: props.postData[positionInArray].isrc_code,
-                          original_song_uri: props.postData[positionInArray].original_song_uri
+                          original_song_uri: props.postData[positionInArray].original_song_uri,
+                          original_reg_type: props.postData[positionInArray].userDetails.register_type,
                         };
 
                         props.saveSongReq(saveSongObject);
@@ -928,6 +1032,45 @@ function Home(props) {
                         fontFamily: 'ProximaNova-Semibold',
                       }}>{props.userProfileResp._id === props.postData[positionInArray].user_id ? "Delete Post" :
                         `Unfollow ${props.postData[positionInArray].userDetails.username}`}</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                      onPress={() => {
+                        if (props.postData[positionInArray].userDetails.register_type === props.registerType) {
+                          console.log('same reg type');
+                          setModalVisible(false)
+                          setBool(true),
+                            Linking.canOpenURL(props.postData[positionInArray].original_song_uri)
+                              .then(() => {
+                                Linking.openURL(props.postData[positionInArray].original_song_uri)
+                                  .then(() => {
+                                    console.log('success')
+                                    setBool(false)
+                                  }).catch(() => {
+                                    console.log('error')
+                                  })
+                              })
+                              .catch((err) => {
+                                console.log('unsupported')
+                              })
+                        }
+                        else {
+                          console.log('diffirent reg type');
+                          setModalVisible(false)
+                          setBool(true), openInAppleORSpotify();
+                        }
+
+                      }}
+                    >
+                      <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                        style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
+                        resizeMode='contain' />
+                      <Text style={{
+                        color: Colors.white, marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
                     </TouchableOpacity>
 
                   </View>
@@ -1022,7 +1165,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     marginBottom: normalise(10),
-    height: normalise(220),
+    height: normalise(260),
     width: "95%",
     backgroundColor: Colors.darkerblack,
     borderRadius: 20,

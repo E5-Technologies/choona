@@ -316,7 +316,10 @@ function OthersProfile(props) {
                                             artist: JSON.parse(props.othersProfileresp.feature_song)[0].artist_name,
                                             changePlayer: changePlayer,
                                             originalUri: JSON.parse(props.othersProfileresp.feature_song)[0].hasOwnProperty("original_song_uri") ?
-                                                JSON.parse(props.othersProfileresp.feature_song)[0].original_song_uri : undefined
+                                                JSON.parse(props.othersProfileresp.feature_song)[0].original_song_uri : undefined,
+                                            registerType: props.othersProfileresp.register_type,
+                                            isrc: JSON.parse(props.othersProfileresp.feature_song)[0].isrc_code
+
                                         })
                                     }}>
                                     <Image source={{ uri: JSON.parse(props.othersProfileresp.feature_song)[0].song_pic }}
