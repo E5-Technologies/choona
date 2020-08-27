@@ -8,6 +8,7 @@ import {
     Text,
     TouchableOpacity,
     FlatList,
+    Keyboard,
     Image,
     ImageBackground,
     TextInput
@@ -41,7 +42,7 @@ function Inbox(props) {
     const [search, setSearch] = useState("");
     const [mesageList, setMessageList] = useState("");
     const [bool, setBool] = useState(false);
-
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -113,6 +114,18 @@ function Inbox(props) {
         )
     }
 
+
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -148,7 +161,7 @@ function Inbox(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), filterArray(text) }} />
+                        onChangeText={(text) => { setSearch(text), filterArray(text), hideKeyboard() }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{

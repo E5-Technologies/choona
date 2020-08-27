@@ -6,6 +6,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Keyboard,
     TextInput,
     Image,
     FlatList
@@ -45,6 +46,7 @@ function SendSongInMessageFinal(props) {
     const [index, setIndex] = useState(props.route.params.index);
     const [type, setType] = useState(props.route.params.fromHome);
     const [spotifyUrl, setSpotifyUrl] = useState(null);
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
 
     useEffect(() => {
@@ -140,6 +142,17 @@ function SendSongInMessageFinal(props) {
 
         )
     };
+
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
 
     function sendMessage() {
 
@@ -247,7 +260,7 @@ function SendSongInMessageFinal(props) {
                         multiline={true}
                         placeholder={"Add a comment"}
                         placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setSearch(text) }} />
+                        onChangeText={(text) => { setSearch(text), hideKeyboard() }} />
 
                     <View style={{
                         marginTop: normalise(5), backgroundColor: Colors.darkerblack,

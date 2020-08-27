@@ -7,6 +7,7 @@ import {
     Text,
     TouchableOpacity,
     FlatList,
+    Keyboard,
     Image,
     ImageBackground,
     TextInput
@@ -37,6 +38,7 @@ function Followers(props) {
     const [type, setType] = useState(props.route.params.type);
     const [id, setId] = useState(props.route.params.id);
     const [search, setSearch] = useState("");
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
     const [bool, setBool] = useState(false)
 
@@ -134,6 +136,21 @@ function Followers(props) {
             )
         }
     }
+
+
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
+
+
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -162,7 +179,7 @@ function Followers(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), filterArray(text) }} />
+                        onChangeText={(text) => { setSearch(text), filterArray(text), hideKeyboard() }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{

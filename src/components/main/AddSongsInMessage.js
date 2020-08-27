@@ -7,6 +7,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Keyboard,
     FlatList,
     Image,
     ImageBackground,
@@ -55,7 +56,8 @@ function AddSongsInMessage(props) {
     const [result, setResult] = useState([]);
     const [userSearchData, setUserSearchData] = useState([]);
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-    const [index, setIndex] = useState([])
+    const [index, setIndex] = useState([]);
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
 
     let post = false;
@@ -128,6 +130,16 @@ function AddSongsInMessage(props) {
         }
     };
 
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
 
     function sendMessagesToUsers() {
         var userIds = []
@@ -322,7 +334,7 @@ function AddSongsInMessage(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), props.searchSongReq(text, post) }} />
+                        onChangeText={(text) => { setSearch(text), props.searchSongReq(text, post), hideKeyboard() }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -475,7 +487,7 @@ function AddSongsInMessage(props) {
                             }} value={userSeach}
                                 placeholder={"Search"}
                                 placeholderTextColor={Colors.grey_text}
-                                onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
+                                onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
 
                             <Image source={ImagePath.searchicongrey}
                                 style={{
