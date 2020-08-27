@@ -26,7 +26,15 @@ import {
 
     DELETE_MESSAGE_REQUEST,
     DELETE_MESSAGE_SUCCESS,
-    DELETE_MESSAGE_FAILURE
+    DELETE_MESSAGE_FAILURE,
+
+    CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS,
+    CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE,
+
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE
 
 } from '../action/TypeConstants';
 
@@ -191,6 +199,48 @@ const MessageReducer = (state = initialState, action) => {
                 ...state,
                 status: action.type,
                 error: action.error,
+            };
+
+        case CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                chatTokenList: action.data
+            };
+
+        case CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                chatTokenList: [],
+                error: action.error
+            };
+
+        case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                chatTokenList: action.data
+            };
+
+        case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                chatTokenList: [],
+                error: action.error
             };
 
 

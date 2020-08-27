@@ -1195,7 +1195,7 @@ function Player(props) {
 
 
 
-                        {changePlayer ? null :
+                        {/* {changePlayer ? null : */}
                             <View>
                                 <TouchableOpacity
                                     style={{
@@ -1264,7 +1264,8 @@ function Player(props) {
                                         fontFamily: 'ProximaNova-Semibold',
                                     }}>{props.userProfileResp.register_type === 'spotify' ? "OPEN ON SPOTIFY" : "OPEN ON APPLE"}</Text>
                                 </TouchableOpacity>
-
+                            
+                            {props.route.params.showPlaylist === false ? null :
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (props.userProfileResp.register_type === 'spotify')
@@ -1291,8 +1292,8 @@ function Player(props) {
                                         fontSize: normalise(13),
                                         fontFamily: 'ProximaNova-Semibold',
                                     }}>ADD TO PLAYLIST</Text>
-                                </TouchableOpacity>
-                            </View>}
+                                </TouchableOpacity>}
+                            </View>
 
 
                         {RbSheet()}

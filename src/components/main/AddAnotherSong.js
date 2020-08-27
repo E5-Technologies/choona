@@ -155,7 +155,8 @@ function AddAnotherSong(props) {
                             changePlayer: true,
                             registerType: props.registerType,
                             changePlayer2: props.registerType === 'spotify' ? true : false,
-                            id: props.registerType === 'spotify' ? data.item.id : null
+                            id: props.registerType === 'spotify' ? data.item.id : null,
+                            showPlaylist: false
                         })
                 }}
             />

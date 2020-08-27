@@ -5,7 +5,9 @@ import {
     CHAT_LOAD_REQUEST,
     SEARCH_MESSAGE_REQUEST,
     UPDATE_MESSEAGE_COMMENTS_REQUEST,
-    DELETE_MESSAGE_REQUEST
+    DELETE_MESSAGE_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST
 
 } from '../action/TypeConstants';
 
@@ -42,4 +44,14 @@ export const updateMessageCommentRequest = payload => ({
 export const deleteMessageRequest = payload => ({
     type: DELETE_MESSAGE_REQUEST,
     payload: payload
+});
+
+export const createChatTokenFromSearchRequest = (payload) => ({
+    type: CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST,
+    payload
+});
+
+export const createChatTokenFromSavedSongRequest = (payload) => ({
+    type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
+    payload
 });

@@ -98,7 +98,10 @@ function Home(props) {
         .then(() => {
 
           props.getProfileReq(),
-            props.homePage()
+            props.homePage();
+          setUserSearchData([]);
+          sesUsersToSEndSong([]);
+          setUserSeach("");
 
         })
         .catch(() => {
@@ -229,7 +232,7 @@ function Home(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus
-
+        console.log('home page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach("");
@@ -696,73 +699,73 @@ function Home(props) {
 
 
   //OPEN IN APPLE / SPOTIFY
-  const openInAppleORSpotify = async() => {
+  const openInAppleORSpotify = async () => {
 
-      try {
-        const res = await callApi();
-        console.log(res);
+    try {
+      const res = await callApi();
+      console.log(res);
 
-        if (res.status === 200) {
-          if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
+      if (res.status === 200) {
+        if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
 
-            if (props.userProfileResp.register_type === 'spotify') {
-              console.log('success - spotify');
-              console.log(res.data.tracks.items[0].external_urls.spotify)
-              Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-                .then((supported) => {
-                  if (supported) {
-                    Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
-                      .then(() => {
-                        console.log('success');
-                      })
-                      .catch(() => {
-                        console.log('error')
-                      })
-                  }
-                })
-                .catch(() => {
-                  console.log('not supported')
-                })
-              setBool(false)
-            }
-            else {
-
-              console.log('success - apple');
-              console.log(res.data.data[0].attributes.url);
-              Linking.canOpenURL(res.data.data[0].attributes.url)
-                .then((supported) => {
-                  if (supported) {
-                    Linking.openURL(res.data.data[0].attributes.url)
-                      .then(() => {
-                        console.log('success');
-                      })
-                      .catch(() => {
-                        console.log('error')
-                      })
-                  }
-                })
-                .catch(() => {
-                  console.log('not supported')
-                })
-              setBool(false)
-            }
-          }
-
-          else {
+          if (props.userProfileResp.register_type === 'spotify') {
+            console.log('success - spotify');
+            console.log(res.data.tracks.items[0].external_urls.spotify)
+            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+              .then((supported) => {
+                if (supported) {
+                  Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                    .then(() => {
+                      console.log('success');
+                    })
+                    .catch(() => {
+                      console.log('error')
+                    })
+                }
+              })
+              .catch(() => {
+                console.log('not supported')
+              })
             setBool(false)
-            toast('', 'No Song Found');
           }
+          else {
 
+            console.log('success - apple');
+            console.log(res.data.data[0].attributes.url);
+            Linking.canOpenURL(res.data.data[0].attributes.url)
+              .then((supported) => {
+                if (supported) {
+                  Linking.openURL(res.data.data[0].attributes.url)
+                    .then(() => {
+                      console.log('success');
+                    })
+                    .catch(() => {
+                      console.log('error')
+                    })
+                }
+              })
+              .catch(() => {
+                console.log('not supported')
+              })
+            setBool(false)
+          }
         }
+
         else {
           setBool(false)
-          toast('Oops', 'Something Went Wrong');
+          toast('', 'No Song Found');
         }
 
-      } catch (error) {
-        setBool(false)
-        console.log(error);
       }
+      else {
+        setBool(false)
+        toast('Oops', 'Something Went Wrong');
+      }
+
+    } catch (error) {
+      setBool(false)
+      console.log(error);
+    }
   };
 
   // VIEW
