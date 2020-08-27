@@ -1087,7 +1087,9 @@ function Home(props) {
                               isrc: props.postData[positionInArray].isrc_code
                             })
                         else
+                        setTimeout(() => {
                           toast("Oops", "Only, Spotify users can add to their playlist now.")
+                      }, 1000)
                       }}
                     >
                       <Image source={ImagePath.addicon}
