@@ -180,13 +180,24 @@ function SavedSongListItem(props) {
         }
     };
 
+    const onPressItem = () => {
+        if (props.onPressItem) {
+            props.onPressItem()
+        }
+    };
+
     return (
 
-        <View style={{
-            width: '90%', alignSelf: 'center',
-            marginTop: normalise(10),
-            marginBottom: props.marginBottom,
-        }}>
+        <TouchableOpacity
+            onPress={() => {
+                onPressItem();
+            }}
+            activeOpacity={1}
+            style={{
+                width: '90%', alignSelf: 'center',
+                marginTop: normalise(10),
+                marginBottom: props.marginBottom,
+            }}>
 
             <View style={{
                 flexDirection: 'row', alignItems: 'center',
@@ -194,7 +205,7 @@ function SavedSongListItem(props) {
             }}>
 
                 <TouchableOpacity onPress={() => { onPressImage() }}>
-                    <Image source={props.image===""?ImagePath.profiletrack4:{uri:props.image}}
+                    <Image source={props.image === "" ? ImagePath.profiletrack4 : { uri: props.image }}
                         style={{ height: normalise(40), width: normalise(40) }}
                         resizeMode="contain" />
 
@@ -233,7 +244,7 @@ function SavedSongListItem(props) {
 
                     <TouchableOpacity
                         style={{
-                           height: normalise(25),
+                            height: normalise(25),
                             width: normalise(25),
                         }}
                         onPress={() => { onPressSecondImage() }}>
@@ -267,7 +278,7 @@ function SavedSongListItem(props) {
                 borderBottomColor: Colors.activityBorderColor
             }} />
 
-        </View>
+        </TouchableOpacity>
 
     )
 }
@@ -285,7 +296,8 @@ SavedSongListItem.propTypes = {
     image2: PropTypes.string,
     onPressSecondImage: PropTypes.func,
     comments: PropTypes.bool,
-    marginRight: PropTypes.number
+    marginRight: PropTypes.number,
+    onPressItem: PropTypes.func
 };
 
 SavedSongListItem.defaultProps = {
@@ -299,5 +311,6 @@ SavedSongListItem.defaultProps = {
     image2: "",
     onPressSecondImage: null,
     comments: false,
-    marginRight: normalise(30)
+    marginRight: normalise(30),
+    onPressItem: null,
 }

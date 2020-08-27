@@ -46,12 +46,12 @@ export function* searchSongsForPostAction(action) {
     try {
 
         if (items.registerType === "spotify") {
-            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track&market=GB`, spotifyHeader)
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track&market=US`, spotifyHeader)
 
             yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.tracks.items, post: action.post });
         }
         else {
-            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/gb/search?term=${encodeURI(action.text)}&limit=20&types=songs`, spotifyHeader)
+            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/us/search?term=${encodeURI(action.text)}&limit=20&types=songs`, spotifyHeader)
             yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS, data: response.data.results.songs.data, post: action.post });
         }
 

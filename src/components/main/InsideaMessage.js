@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Modal,
     Clipboard,
+    Keyboard,
     Linking,
     FlatList,
     TextInput,
@@ -73,6 +74,7 @@ function InsideaMessage(props) {
     const [userSeach, setUserSeach] = useState("");
     const [userSearchData, setUserSearchData] = useState([]);
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
     var bottomSheetRef;
 
@@ -151,6 +153,17 @@ function InsideaMessage(props) {
         };
     };
 
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+
+    }
+
 
     function renderItem(data) {
 
@@ -159,10 +172,29 @@ function InsideaMessage(props) {
                 image={data.item.image}
                 title={data.item.song_name}
                 singer={data.item.artist_name}
-                comments={data.item.message[data.item.message.length-1].text}
+                comments={data.item.message[data.item.message.length - 1].text}
                 onPress={() => {
                     setModalVisible(true),
                         setPositionInArray(data.index)
+                }}
+                onPressItem={() => {
+                    props.navigation.navigate('Player', {
+                        song_title: data.item.song_name,
+                        album_name: data.item.album_name,
+                        song_pic: data.item.image,
+                        uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
+                        artist: data.item.artist_name,
+                        changePlayer: true,
+                        comingFromMessage: true,
+                        comments: data.item.message,
+                        key: data.item.key,
+                        chatToken: props.chatList[index].chat_token,
+                        isrc: data.item.isrc_code,
+                        originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                            undefined,
+                        registerType: data.item.original_reg_type
+
+                    })
                 }}
                 onPressImage={() => {
                     props.navigation.navigate('Player', {
@@ -404,7 +436,7 @@ function InsideaMessage(props) {
                         }} value={userSeach}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.grey_text}
-                            onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
+                            onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -460,94 +492,94 @@ function InsideaMessage(props) {
 
 
     // GET ISRC CODE
-  const callApi = async () => {
-    if (props.registerType === 'spotify') {
+    const callApi = async () => {
+        if (props.registerType === 'spotify') {
 
-      const spotifyToken = await getSpotifyToken();
+            const spotifyToken = await getSpotifyToken();
 
-      return await axios.get(`https://api.spotify.com/v1/search?q=isrc:${props.searchedChatData[positionInArray].isrc_code}&type=track`, {
-        headers: {
-          "Authorization": spotifyToken
-        }
-      });
-    }
-    else {
-      const AppleToken = await getAppleDevToken();
-
-      return await axios.get(`https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.searchedChatData[positionInArray].isrc_code}`, {
-        headers: {
-          "Authorization": AppleToken
-        }
-      });
-    }
-  };
-
-
-  //OPEN IN APPLE / SPOTIFY
-  const openInAppleORSpotify = async () => {
-
-    try {
-      const res = await callApi();
-      console.log(res);
-
-      if (res.status === 200) {
-        if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
-
-          if (props.userProfileResp.register_type === 'spotify') {
-            console.log('success - spotify');
-            console.log(res.data.tracks.items[0].external_urls.spotify)
-            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-              .then((supported) => {
-                if (supported) {
-                  Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
-                    .then(() => {
-                      console.log('success');
-                    })
-                    .catch(() => {
-                      console.log('error')
-                    })
+            return await axios.get(`https://api.spotify.com/v1/search?q=isrc:${props.searchedChatData[positionInArray].isrc_code}&type=track`, {
+                headers: {
+                    "Authorization": spotifyToken
                 }
-              })
-              .catch(() => {
-                console.log('not supported')
-              })
-            setBool(false)
-          }
-          else {
-
-            console.log('success - apple');
-            console.log(res.data.data[0].attributes.url);
-            Linking.canOpenURL(res.data.data[0].attributes.url)
-              .then((supported) => {
-                if (supported) {
-                  Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => {
-                      console.log('success');
-                    })
-                    .catch(() => {
-                      console.log('error')
-                    })
-                }
-              })
-              .catch(() => {
-                console.log('not supported')
-              })
-          }
+            });
         }
-
         else {
-          toast('', 'No Song Found');
+            const AppleToken = await getAppleDevToken();
+
+            return await axios.get(`https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.searchedChatData[positionInArray].isrc_code}`, {
+                headers: {
+                    "Authorization": AppleToken
+                }
+            });
         }
+    };
 
-      }
-      else {
-        toast('Oops', 'Something Went Wrong');
-      }
 
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    //OPEN IN APPLE / SPOTIFY
+    const openInAppleORSpotify = async () => {
+
+        try {
+            const res = await callApi();
+            console.log(res);
+
+            if (res.status === 200) {
+                if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
+
+                    if (props.userProfileResp.register_type === 'spotify') {
+                        console.log('success - spotify');
+                        console.log(res.data.tracks.items[0].external_urls.spotify)
+                        Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+                            .then((supported) => {
+                                if (supported) {
+                                    Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                                        .then(() => {
+                                            console.log('success');
+                                        })
+                                        .catch(() => {
+                                            console.log('error')
+                                        })
+                                }
+                            })
+                            .catch(() => {
+                                console.log('not supported')
+                            })
+                        setBool(false)
+                    }
+                    else {
+
+                        console.log('success - apple');
+                        console.log(res.data.data[0].attributes.url);
+                        Linking.canOpenURL(res.data.data[0].attributes.url)
+                            .then((supported) => {
+                                if (supported) {
+                                    Linking.openURL(res.data.data[0].attributes.url)
+                                        .then(() => {
+                                            console.log('success');
+                                        })
+                                        .catch(() => {
+                                            console.log('error')
+                                        })
+                                }
+                            })
+                            .catch(() => {
+                                console.log('not supported')
+                            })
+                    }
+                }
+
+                else {
+                    toast('', 'No Song Found');
+                }
+
+            }
+            else {
+                toast('Oops', 'Something Went Wrong');
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
 
@@ -584,7 +616,7 @@ function InsideaMessage(props) {
                     }} value={search}
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), props.searchMessageRequest(text) }} />
+                        onChangeText={(text) => { setSearch(text), props.searchMessageRequest(text), hideKeyboard() }} />
 
                     <Image source={ImagePath.searchicongrey}
                         style={{
@@ -762,19 +794,19 @@ function InsideaMessage(props) {
                                     if (props.searchedChatData[positionInArray].original_reg_type === props.registerType) {
                                         console.log('same reg type');
                                         setModalVisible(false)
-                                            Linking.canOpenURL(props.searchedChatData[positionInArray].original_song_uri)
-                                                .then(() => {
-                                                    Linking.openURL(props.searchedChatData[positionInArray].original_song_uri)
-                                                        .then(() => {
-                                                            console.log('success')
-                                                            
-                                                        }).catch(() => {
-                                                            console.log('error')
-                                                        })
-                                                })
-                                                .catch((err) => {
-                                                    console.log('unsupported')
-                                                })
+                                        Linking.canOpenURL(props.searchedChatData[positionInArray].original_song_uri)
+                                            .then(() => {
+                                                Linking.openURL(props.searchedChatData[positionInArray].original_song_uri)
+                                                    .then(() => {
+                                                        console.log('success')
+
+                                                    }).catch(() => {
+                                                        console.log('error')
+                                                    })
+                                            })
+                                            .catch((err) => {
+                                                console.log('unsupported')
+                                            })
                                     }
                                     else {
                                         console.log('diffirent reg type');

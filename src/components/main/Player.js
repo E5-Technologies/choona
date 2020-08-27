@@ -16,7 +16,8 @@ import {
     Modal,
     Linking,
     Alert,
-    Clipboard
+    Clipboard,
+    Keyboard
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -97,7 +98,7 @@ let messageStatus;
 function Player(props) {
 
     // PLAYER 
-    const [playVisible, setPlayVisible] = useState(false);
+    const [playVisible, setPlayVisible] = useState(true);
     const [uri, setUri] = useState(props.route.params.uri);
     const [trackRef, setTrackRef] = useState("");
     const [songTitle, setSongTitle] = useState(props.route.params.song_title);
@@ -116,7 +117,7 @@ function Player(props) {
     const [totalTimeForSlider, setTotalTimeForSlider] = useState(0);
 
     const [hasSongLoaded, setHasSongLoaded] = useState(false);
-
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
     const [reactions, setSReactions] = useState(props.route.params.changePlayer ? [] : props.route.params.reactions);
 
@@ -339,12 +340,12 @@ function Player(props) {
                         setplayerDuration(time);
                         setBool(false);
                         global.playerReference.pause();
-                        global.playerReference.play((success) => {
-                            if (success) {
-                                console.log('Playback Endd')
-                                setPlayVisible(true);
-                            }
-                        })
+                        // global.playerReference.play((success) => {
+                        //     if (success) {
+                        //         console.log('Playback Endd')
+                        //         setPlayVisible(true);
+                        //     }
+                        // })
                     }, 100)
 
                 }
@@ -416,15 +417,15 @@ function Player(props) {
                     let res = track.getDuration();
                     setplayerDuration(res);
 
-                    track.play((success) => {
-                        if (success) {
-                            console.log('PlayBack End')
-                            setPlayVisible(true);
-                        }
-                        else {
-                            console.log('NOOOOOOOO')
-                        }
-                    });
+                    // track.play((success) => {
+                    //     if (success) {
+                    //         console.log('PlayBack End')
+                    //         setPlayVisible(true);
+                    //     }
+                    //     else {
+                    //         console.log('NOOOOOOOO')
+                    //     }
+                    // });
                 };
             });
 
@@ -481,7 +482,16 @@ function Player(props) {
     };
 
 
+    function hideKeyboard() {
 
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    };
 
 
     function msToTime(duration) {
@@ -722,7 +732,7 @@ function Player(props) {
                             placeholder={"Add a comment..."}
                             value={commentText}
                             placeholderTextColor={Colors.white}
-                            onChangeText={(text) => { setCommentText(text) }} />
+                            onChangeText={(text) => { setCommentText(text), hideKeyboard() }} />
 
                         {commentText.length > 1 ?
                             <TouchableOpacity
@@ -1202,7 +1212,7 @@ function Player(props) {
                 }} value={userSeach}
                   placeholder={"Search"}
                   placeholderTextColor={Colors.grey_text}
-                  onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
+                  onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
     
                 <Image source={ImagePath.searchicongrey}
                   style={{

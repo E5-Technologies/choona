@@ -388,12 +388,12 @@ export function* featuredTrackSearchAction(action) {
         };
 
         if (items.registerType === "spotify") {
-            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track`, Header)
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/search?q=${encodeURI(action.text)}&type=track&market=US`, Header)
 
             yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.tracks.items });
         }
         else {
-            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/gb/search?term=${encodeURI(action.text)}&limit=20&types=songs`, Header)
+            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/catalog/us/search?term=${encodeURI(action.text)}&limit=20&types=songs`, Header)
             yield put({ type: FEATURED_SONG_SEARCH_SUCCESS, data: response.data.results.songs.data });
         }
 
