@@ -159,7 +159,7 @@ function InsideaMessage(props) {
                 image={data.item.image}
                 title={data.item.song_name}
                 singer={data.item.artist_name}
-                comments={`${data.item.message.length} ${data.item.message.length > 1 ? "COMMENTS" : "COMMENT"}`}
+                comments={data.item.message[data.item.message.length-1].text}
                 onPress={() => {
                     setModalVisible(true),
                         setPositionInArray(data.index)
