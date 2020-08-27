@@ -229,7 +229,11 @@ function SendSongInMessageFinal(props) {
                         // } else {
                         //     props.navigation.goBack();
                         // }
-                        props.navigation.pop(2);
+                        if (props.route.params.fromPlayer) {
+                            props.navigation.goBack()
+                        } else {
+                            props.navigation.pop(2)
+                        }
                     }}
                     onPressThirdItem={() => {
                         if (search.trim() != "") {
@@ -239,7 +243,15 @@ function SendSongInMessageFinal(props) {
                             // } else {
                             //     props.navigation.goBack();
                             // }
-                            props.navigation.pop(2);
+
+                            if (props.route.params.fromPlayer === true) {
+                                console.log('from player')
+                                props.navigation.goBack()
+                            } else {
+                                console.log('not from player')
+                                props.navigation.pop(2)
+                            }
+
 
                         } else {
                             toast("Error", "Please type in a message to send");

@@ -15,7 +15,8 @@ import {
     Dimensions,
     Modal,
     Linking,
-    Alert
+    Alert,
+    Clipboard
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -56,7 +57,15 @@ import {
 
     GET_SONG_FROM_ISRC_REQUEST,
     GET_SONG_FROM_ISRC_SUCCESS,
-    GET_SONG_FROM_ISRC_FAILURE
+    GET_SONG_FROM_ISRC_FAILURE,
+    
+    GET_USER_FROM_HOME_REQUEST,
+    GET_USER_FROM_HOME_SUCCESS,
+    GET_USER_FROM_HOME_FAILURE,
+
+    CREATE_CHAT_TOKEN_REQUEST,
+    CREATE_CHAT_TOKEN_SUCCESS,
+    CREATE_CHAT_TOKEN_FAILURE,
 
 } from '../../action/TypeConstants';
 import { commentOnPostReq } from '../../action/UserAction';
@@ -75,12 +84,15 @@ import { call } from 'redux-saga/effects';
 import { or } from 'react-native-reanimated';
 import _ from 'lodash';
 import axios from 'axios';
+import { createChatTokenRequest } from '../../action/MessageAction'
+import { getUsersFromHome } from '../../action/UserAction';
 
 let RbSheetRef;
 
 let status;
 let songStatus;
 let playerStatus;
+let messageStatus;
 
 function Player(props) {
 
@@ -96,6 +108,7 @@ function Player(props) {
     const [username, setUsername] = useState(props.route.params.username);
     const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
     const [isrc, setisrc] = useState(props.route.params.isrc);
+    const [details, setDetails] = useState(props.route.params.details)
 
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
@@ -127,9 +140,15 @@ function Player(props) {
 
     // console.log("commentData: " + JSON.stringify(commentData));
     let track;
-
+    var bottomSheetRef;
     //Prithviraj's variables.
     const [firstTimePlay, setFirstTimePlay] = useState(true)
+
+    // SEND SONG VARIABLES
+    const [userClicked, setUserClicked] = useState(false);
+    const [userSeach, setUserSeach] = useState("");
+    const [userSearchData, setUserSearchData] = useState([]);
+    const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
 
     var myVar;
 
@@ -200,6 +219,19 @@ function Player(props) {
                 toast('Oops', 'Something Went Wrong');
                 break;
 
+            case GET_USER_FROM_HOME_REQUEST:
+                status = props.status
+                break;
+
+            case GET_USER_FROM_HOME_SUCCESS:
+                status = props.status
+                setUserSearchData(props.userSearchFromHome)
+                break;
+
+            case GET_USER_FROM_HOME_FAILURE:
+                status = props.status
+                break;
+
         }
     };
 
@@ -244,6 +276,35 @@ function Player(props) {
 
         }
     };
+
+    if (messageStatus === "" || props.messageStatus !== messageStatus) {
+        switch (props.messageStatus) {
+    
+          case CREATE_CHAT_TOKEN_REQUEST:
+            messageStatus = props.messageStatus
+            break;
+    
+          case CREATE_CHAT_TOKEN_SUCCESS:
+            messageStatus = props.messageStatus
+            console.log('top50 page');
+            setUserSearchData([]);
+            sesUsersToSEndSong([]);
+            setUserSeach("");
+            props.navigation.navigate('SendSongInMessageFinal', {
+              image: pic,
+              title: songTitle,
+              title2: artist,
+              users: usersToSEndSong, details: details, registerType: props.regType,
+              fromAddAnotherSong: false, index: 0, fromHome: true, fromPlayer: true
+            });
+            break;
+    
+          case CREATE_CHAT_TOKEN_FAILURE:
+            messageStatus = props.messageStatus;
+            toast("Error", "Something Went Wong, Please Try Again")
+            break;
+        }
+      };
 
 
     // GET SPOTIFY SONG URL
@@ -345,7 +406,8 @@ function Player(props) {
                         saveSongResObj.changePlayer = changePlayer
                     saveSongResObj.originalUri = originalUri,
                         saveSongResObj.isrc = isrc,
-                        saveSongResObj.regType = registerType
+                        saveSongResObj.regType = registerType,
+                        saveSongResObj.details = details
 
 
                     props.saveSongRefReq(saveSongResObj);
@@ -749,7 +811,23 @@ function Player(props) {
                             marginBottom: normalise(12)
                         }} />
 
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                                let saveSongObject = {
+                                    song_uri: uri,
+                                    song_name: songTitle,
+                                    song_image: pic,
+                                    artist_name: artist,
+                                    album_name: albumTitle,
+                                    post_id: id,
+                                    isrc_code: isrc,
+                                    original_song_uri: originalUri,
+                                    original_reg_type: registerType,
+                                };
+
+                                props.saveSongReq(saveSongObject);
+                            }}>
 
                             <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
@@ -761,7 +839,8 @@ function Player(props) {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                        onPress={()=>{if (bottomSheetRef) { setModalVisible(false), bottomSheetRef.open() }}}>
                             <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
                             <Text style={{
@@ -772,7 +851,16 @@ function Player(props) {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                            onPress={() => {
+                                Clipboard.setString(originalUri);
+                                setModalVisible(!modalVisible);
+
+                                setTimeout(() => {
+                                    toast("Success", "Song copied to clipboard.")
+                                }, 1000);
+
+                            }}>
                             <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
                                 resizeMode='contain' />
                             <Text style={{
@@ -856,7 +944,9 @@ function Player(props) {
                                             isrc: isrc
                                         })
                                 else
-                                    toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                    setTimeout(() => {
+                                        toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                    }, 1000)
                             }}
                         >
                             <Image source={ImagePath.addicon}
@@ -902,7 +992,269 @@ function Player(props) {
                 </ImageBackground>
             </Modal>
         )
-    }
+    };
+
+
+    const searchUser = (text) => {
+        if (text.length >= 1) {
+          props.getusersFromHome({ keyword: text })
+        };
+      };
+    
+    
+      function sendMessagesToUsers() {
+        var userIds = []
+        usersToSEndSong.map((users) => {
+          userIds.push(users._id);
+        })
+        props.createChatTokenRequest(userIds);
+      };
+    
+    
+      // RENDER USER SEARCH FLATLIST DATA
+      function renderAddUsersToMessageItem(data) {
+    
+        return (
+          <TouchableOpacity style={{
+            marginTop: normalise(10),
+            width: "87%",
+            alignSelf: 'center'
+          }}
+            onPress={() => {
+    
+              if (usersToSEndSong.length > 0) {
+    
+                let idArray = [];
+    
+                usersToSEndSong.map((item, index) => {
+    
+                  idArray.push(item._id)
+    
+                });
+                if (idArray.includes(data.item._id)) {
+                  console.log('Already Exists');
+                }
+                else {
+                  let array = [...usersToSEndSong]
+                  array.push(data.item)
+                  sesUsersToSEndSong(array);
+                };
+    
+              } else {
+                let array = [...usersToSEndSong]
+                array.push(data.item)
+                sesUsersToSEndSong(array);
+              }
+            }}>
+    
+            <View style={{ flexDirection: 'row', }}>
+              <Image
+                source={{ uri: constants.profile_picture_base_url + data.item.profile_image }}
+                style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+              />
+              <View style={{ marginStart: normalise(10) }}>
+                <Text style={{ color: Colors.white }}>{data.item.full_name}</Text>
+                <Text style={{ color: Colors.white }}>{data.item.username}</Text>
+              </View>
+    
+            </View>
+            <View style={{
+              backgroundColor: Colors.grey,
+              height: 0.5,
+              marginTop: normalise(10)
+            }} />
+          </TouchableOpacity>
+    
+        )
+      };
+    
+    
+      // RENDER ADD TO FLATLIST DATA
+      function renderUsersToSendSongItem(data) {
+        return (
+          <TouchableOpacity style={{
+            height: normalize(30),
+            paddingHorizontal: normalise(18),
+            marginStart: normalise(20),
+            marginTop: normalise(5),
+            borderRadius: 25,
+            alignItems: 'center', justifyContent: "center",
+            backgroundColor: 'white',
+            marginEnd: data.index === usersToSEndSong.length - 1 ? normalise(20) : 0
+          }}>
+            <Text style={{ color: Colors.black, fontWeight: 'bold' }}>{data.item.username}</Text>
+            <TouchableOpacity style={{
+              position: 'absolute', right: 0, top: -4,
+              height: 25, width: 25,
+              borderRadius: 12
+            }}
+              onPress={() => {
+                let popArray = [...usersToSEndSong];
+                popArray.splice(data.index, 1)
+                sesUsersToSEndSong(popArray);
+              }}>
+    
+              <Image
+                source={ImagePath.crossIcon}
+                style={{
+                  marginTop: normalise(-1.5),
+                  marginStart: normalise(8.5),
+                  height: 25, width: 25,
+                }} />
+            </TouchableOpacity>
+    
+          </TouchableOpacity>
+        )
+      };
+    
+    
+      // BOTTOM SHEET FOR SELECTING USERS
+      const renderAddToUsers = () => {
+        return (
+          <RBSheet
+            ref={ref => {
+              if (ref) {
+                bottomSheetRef = ref;
+              }
+            }}
+            closeOnDragDown={true}
+            closeOnPressMask={true}
+            onClose={() => {
+              //sesUsersToSEndSong([]) 
+            }}
+            nestedScrollEnabled={true}
+            keyboardAvoidingViewEnabled={true}
+            height={normalize(500)}
+            duration={250}
+            customStyles={{
+              container: {
+                backgroundColor: Colors.black,
+                borderTopEndRadius: normalise(8),
+                borderTopStartRadius: normalise(8),
+              },
+              // wrapper: {
+              //     backgroundColor: 'rgba(87,97,145,0.5)'
+    
+              // },
+              draggableIcon: {
+                backgroundColor: Colors.grey,
+                width: normalise(70),
+                height: normalise(3)
+              }
+    
+            }}>
+    
+            <View
+              style={{ flex: 1 }}>
+    
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    
+                <View style={{ flexDirection: 'row', width: '75%', justifyContent: 'flex-end' }}>
+                  <Text style={{
+                    color: Colors.white,
+                    fontSize: normalise(14),
+                    fontWeight: 'bold',
+                    marginTop: normalise(10),
+                    textAlign: 'right'
+                  }}>
+                    ADD USERS TO MESSAGE</Text>
+    
+                  {userClicked ?
+                    <Text style={{
+                      color: Colors.white,
+                      marginTop: normalise(10),
+                      fontSize: normalise(14),
+                      fontWeight: 'bold',
+                    }}> (1)</Text> : null}
+    
+                </View>
+    
+                <TouchableOpacity
+                  onPress={() => {
+                    bottomSheetRef.close(),
+                      sendMessagesToUsers();
+                  }}>
+                  <Text style={{
+                    color: Colors.white,
+                    fontSize: normalise(12),
+                    fontWeight: 'bold',
+                    marginTop: normalise(10),
+                    marginEnd: normalise(15)
+    
+                  }}>
+                    {`NEXT`}</Text>
+                </TouchableOpacity>
+    
+              </View>
+    
+              <View style={{
+                width: '90%', alignSelf: 'center',
+                height: normalise(35), marginTop: normalise(20),
+                borderRadius: normalise(8),
+                backgroundColor: Colors.fadeblack,
+              }}>
+    
+                <TextInput style={{
+                  height: normalise(35),
+                  width: '85%',
+                  padding: normalise(10),
+                  color: Colors.white, paddingLeft: normalise(30)
+                }} value={userSeach}
+                  placeholder={"Search"}
+                  placeholderTextColor={Colors.grey_text}
+                  onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
+    
+                <Image source={ImagePath.searchicongrey}
+                  style={{
+                    height: normalise(15), width: normalise(15), bottom: normalise(25),
+                    paddingLeft: normalise(30)
+                  }} resizeMode="contain" />
+    
+                {userSeach === "" ? null :
+                  <TouchableOpacity onPress={() => { setUserSeach(""), setUserSearchData([]) }}
+                    style={{
+                      position: 'absolute', right: 0, top: normalise(12),
+                      paddingRight: normalise(10)
+                    }}>
+                    <Text style={{
+                      color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                    }}>CLEAR</Text>
+    
+                  </TouchableOpacity>}
+              </View>
+    
+    
+    
+              {usersToSEndSong.length > 0 ?       // ADD TO ARRAY FLATLIST
+                <FlatList
+                  style={{
+                    marginTop: normalise(10)
+                  }}
+                  horizontal={true}
+                  data={usersToSEndSong}
+                  renderItem={renderUsersToSendSongItem}
+                  keyExtractor={(item, index) => { index.toString() }}
+                  showsHorizontalScrollIndicator={false}
+                />
+                : null}
+    
+    
+              <FlatList       // USER SEARCH FLATLIST
+                style={{
+                  marginTop: usersToSEndSong.length > 0 ? normalise(20) : 0,
+                  height: '65%',
+                }}
+                data={userSearchData}
+                renderItem={renderAddUsersToMessageItem}
+                keyExtractor={(item, index) => { index.toString() }}
+                showsVerticalScrollIndicator={false}
+              />
+    
+    
+            </View>
+          </RBSheet>
+        )
+      };
 
 
     return (
@@ -1164,7 +1516,7 @@ function Player(props) {
                                 <TouchableOpacity style={{
                                     height: normalise(40), width: normalise(42), alignItems: 'center', justifyContent: 'center',
                                     backgroundColor: Colors.fadeblack, borderRadius: normalise(5)
-                                }}>
+                                }} onPress={()=>{if (bottomSheetRef) { setModalVisible(false), bottomSheetRef.open() }}}>
 
                                     <Image source={ImagePath.sendicon}
                                         style={{ height: normalise(20), width: normalise(20) }}
@@ -1220,75 +1572,75 @@ function Player(props) {
 
 
                         {/* {changePlayer ? null : */}
-                            <View>
-                                <TouchableOpacity
-                                    style={{
-                                        flexDirection: 'row',
-                                        height: normalise(40),
-                                        width: normalise(160),
-                                        alignSelf: 'center',
-                                        alignItems: 'center', justifyContent: 'center',
-                                        marginTop: normalise(30),
-                                        backgroundColor: Colors.fadeblack,
-                                        borderRadius: normalise(10)
-                                    }}
-                                    onPress={() => {
-                                        //FOR SPOTIFY USERS
-                                        if (props.userProfileResp.register_type === 'spotify') {
-                                            if (props.userProfileResp.register_type === registerType) {
+                        <View>
+                            <TouchableOpacity
+                                style={{
+                                    flexDirection: 'row',
+                                    height: normalise(40),
+                                    width: normalise(160),
+                                    alignSelf: 'center',
+                                    alignItems: 'center', justifyContent: 'center',
+                                    marginTop: normalise(30),
+                                    backgroundColor: Colors.fadeblack,
+                                    borderRadius: normalise(10)
+                                }}
+                                onPress={() => {
+                                    //FOR SPOTIFY USERS
+                                    if (props.userProfileResp.register_type === 'spotify') {
+                                        if (props.userProfileResp.register_type === registerType) {
 
-                                                Linking.canOpenURL(originalUri).then((supported) => {
-                                                    if (supported) {
-                                                        Linking.openURL(originalUri)
-                                                            .then(() => {
-                                                                console.log('success');
-                                                            })
-                                                            .catch((err) => {
-                                                                console.log('failed');
-                                                            })
-                                                    }
-                                                }).catch((err) => {
-                                                    console.log('not supported');
-                                                })
-                                            }
-                                            else {
-                                                openInAppleORSpotify();
-                                            }
+                                            Linking.canOpenURL(originalUri).then((supported) => {
+                                                if (supported) {
+                                                    Linking.openURL(originalUri)
+                                                        .then(() => {
+                                                            console.log('success');
+                                                        })
+                                                        .catch((err) => {
+                                                            console.log('failed');
+                                                        })
+                                                }
+                                            }).catch((err) => {
+                                                console.log('not supported');
+                                            })
                                         }
-                                        //FOR APPLE USERS
                                         else {
-                                            if (props.userProfileResp.register_type === registerType) {
-                                                console.log(originalUri);
-                                                Linking.canOpenURL(originalUri).then((supported) => {
-                                                    if (supported) {
-                                                        Linking.openURL(originalUri)
-                                                            .then(() => {
-                                                                console.log('success');
-                                                            })
-                                                            .catch((err) => {
-                                                                console.log('failed');
-                                                            })
-                                                    }
-                                                }).catch((err) => {
-                                                    console.log('not supported');
-                                                })
-                                            }
-                                            else {
-                                                openInAppleORSpotify();
-                                            }
+                                            openInAppleORSpotify();
                                         }
-                                    }}
-                                >
-                                    <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
-                                        style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
-                                        resizeMode='contain' />
-                                    <Text style={{
-                                        color: Colors.white, marginLeft: normalise(15),
-                                        fontSize: normalise(13),
-                                        fontFamily: 'ProximaNova-Semibold',
-                                    }}>{props.userProfileResp.register_type === 'spotify' ? "OPEN ON SPOTIFY" : "OPEN ON APPLE"}</Text>
-                                </TouchableOpacity>
-                            
+                                    }
+                                    //FOR APPLE USERS
+                                    else {
+                                        if (props.userProfileResp.register_type === registerType) {
+                                            console.log(originalUri);
+                                            Linking.canOpenURL(originalUri).then((supported) => {
+                                                if (supported) {
+                                                    Linking.openURL(originalUri)
+                                                        .then(() => {
+                                                            console.log('success');
+                                                        })
+                                                        .catch((err) => {
+                                                            console.log('failed');
+                                                        })
+                                                }
+                                            }).catch((err) => {
+                                                console.log('not supported');
+                                            })
+                                        }
+                                        else {
+                                            openInAppleORSpotify();
+                                        }
+                                    }
+                                }}
+                            >
+                                <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                    style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
+                                    resizeMode='contain' />
+                                <Text style={{
+                                    color: Colors.white, marginLeft: normalise(15),
+                                    fontSize: normalise(13),
+                                    fontFamily: 'ProximaNova-Semibold',
+                                }}>{props.userProfileResp.register_type === 'spotify' ? "OPEN ON SPOTIFY" : "OPEN ON APPLE"}</Text>
+                            </TouchableOpacity>
+
                             {props.route.params.showPlaylist === false ? null :
                                 <TouchableOpacity
                                     onPress={() => {
@@ -1317,11 +1669,12 @@ function Player(props) {
                                         fontFamily: 'ProximaNova-Semibold',
                                     }}>ADD TO PLAYLIST</Text>
                                 </TouchableOpacity>}
-                            </View>
+                        </View>
 
 
                         {RbSheet()}
                         {renderModalMorePressed()}
+                        {renderAddToUsers()}
 
                     </ScrollView>
                 </SafeAreaView>
@@ -1345,7 +1698,9 @@ const mapStateToProps = (state) => {
         playerStatus: state.PlayerReducer.status,
         playerError: state.PlayerReducer.error,
         seekToPlayerResponse: state.PlayerReducer.seekToPlayerResponse,
-        isrcResp: state.PlayerReducer.getSongFromISRC
+        isrcResp: state.PlayerReducer.getSongFromISRC,
+        userSearchFromHome: state.UserReducer.userSearchFromHome,
+        messageStatus: state.MessageReducer.status,
     }
 };
 
@@ -1362,23 +1717,37 @@ const mapDispatchToProps = (dispatch) => {
         saveSongRefReq: (object) => {
             dispatch(saveSongRefReq(object))
         },
+
         getCurrentPlayerPostionAction: () => {
             dispatch(getCurrentPlayerPostionAction())
         },
+
         playerSeekToRequest: (seekTo) => {
             dispatch(playerSeekToRequest(seekTo))
         },
+
         playerResumeRequest: () => {
             dispatch(playerResumeRequest())
         },
+
         playerPauseRequest: () => {
             dispatch(playerPauseRequest())
         },
+
         getSongFromIsrc: (regType, isrc) => {
             dispatch(getSongFromisrc(regType, isrc))
         },
+
         updateMessageCommentRequest: (payload) => {
             dispatch(updateMessageCommentRequest(payload))
+        },
+
+        getusersFromHome: (payload) => {
+            dispatch(getUsersFromHome(payload))
+        },
+
+        createChatTokenRequest: (payload) => {
+            dispatch(createChatTokenRequest(payload))
         },
     }
 };

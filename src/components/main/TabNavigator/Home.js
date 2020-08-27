@@ -369,7 +369,8 @@ function Home(props) {
             changePlayer: changePlayer,
             originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
             registerType: data.item.userDetails.register_type,
-            isrc: data.item.isrc_code
+            isrc: data.item.isrc_code,
+            details: data.item
           })
         }}
         onPressReactionbox={() => {
@@ -893,7 +894,8 @@ function Home(props) {
                     changePlayer: props.playingSongRef.changePlayer,
                     originalUri: props.playingSongRef.originalUri,
                     isrc: props.playingSongRef.isrc,
-                    registerType: props.playingSongRef.regType
+                    registerType: props.playingSongRef.regType,
+                    details: props.playingSongRef.details
 
                   })
               }} />
@@ -1087,7 +1089,9 @@ function Home(props) {
                               isrc: props.postData[positionInArray].isrc_code
                             })
                         else
+                        setTimeout(() => {
                           toast("Oops", "Only, Spotify users can add to their playlist now.")
+                      }, 1000)
                       }}
                     >
                       <Image source={ImagePath.addicon}
