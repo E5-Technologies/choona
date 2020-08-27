@@ -332,18 +332,18 @@ function Player(props) {
 
 
                     let saveSongResObj = {}
-                        saveSongResObj.uri = uri,
+                    saveSongResObj.uri = uri,
                         saveSongResObj.song_name = songTitle,
                         saveSongResObj.album_name = albumTitle,
                         saveSongResObj.song_pic = pic,
                         saveSongResObj.username = username,
                         saveSongResObj.profile_pic = profilePic,
                         saveSongResObj.commentData = commentData
-                        saveSongResObj.reactionData = reactions
-                        saveSongResObj.id = id,
+                    saveSongResObj.reactionData = reactions
+                    saveSongResObj.id = id,
                         saveSongResObj.artist = artist,
                         saveSongResObj.changePlayer = changePlayer
-                        saveSongResObj.originalUri = originalUri,
+                    saveSongResObj.originalUri = originalUri,
                         saveSongResObj.isrc = isrc,
                         saveSongResObj.regType = registerType
 
@@ -1195,58 +1195,41 @@ function Player(props) {
 
 
 
-                        {/* {changePlayer ? null : */}
-                            <TouchableOpacity
-                                style={{
-                                    flexDirection: 'row',
-                                    height: normalise(40),
-                                    width: normalise(150),
-                                    alignSelf: 'center',
-                                    alignItems: 'center', justifyContent: 'center',
-                                    marginTop: normalise(30),
-                                    backgroundColor: Colors.fadeblack,
-                                    borderRadius: normalise(10)
-                                }}
-                                onPress={() => {
-                                    //FOR SPOTIFY USERS
-                                    if (props.userProfileResp.register_type === 'spotify') {
-                                        if (props.userProfileResp.register_type === registerType) {
+                        {changePlayer ? null :
+                            <View>
+                                <TouchableOpacity
+                                    style={{
+                                        flexDirection: 'row',
+                                        height: normalise(40),
+                                        width: normalise(160),
+                                        alignSelf: 'center',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        marginTop: normalise(30),
+                                        backgroundColor: Colors.fadeblack,
+                                        borderRadius: normalise(10)
+                                    }}
+                                    onPress={() => {
+                                        //FOR SPOTIFY USERS
+                                        if (props.userProfileResp.register_type === 'spotify') {
+                                            if (props.userProfileResp.register_type === registerType) {
 
-                                            Linking.canOpenURL(originalUri).then((supported) => {
-                                                if (supported) {
-                                                    Linking.openURL(originalUri)
-                                                        .then(() => {
-                                                            console.log('success');
-                                                        })
-                                                        .catch((err) => {
-                                                            console.log('failed');
-                                                        })
-                                                }
-                                            }).catch((err) => {
-                                                console.log('not supported');
-                                            })
-                                        }
-                                        else {
-                                            openInAppleORSpotify();
-                                        }
-                                    }
-                                    //FOR APPLE USERS
-                                    else {
-                                        if (props.userProfileResp.register_type === registerType) {
-                                            console.log(originalUri);
-                                            Linking.canOpenURL(originalUri).then((supported) => {
-                                                if (supported) {
-                                                    Linking.openURL(originalUri)
-                                                        .then(() => {
-                                                            console.log('success');
-                                                        })
-                                                        .catch((err) => {
-                                                            console.log('failed');
-                                                        })
-                                                }
-                                            }).catch((err) => {
-                                                console.log('not supported');
-                                            })
+                                                Linking.canOpenURL(originalUri).then((supported) => {
+                                                    if (supported) {
+                                                        Linking.openURL(originalUri)
+                                                            .then(() => {
+                                                                console.log('success');
+                                                            })
+                                                            .catch((err) => {
+                                                                console.log('failed');
+                                                            })
+                                                    }
+                                                }).catch((err) => {
+                                                    console.log('not supported');
+                                                })
+                                            }
+                                            else {
+                                                openInAppleORSpotify();
+                                            }
                                         }
                                         //FOR APPLE USERS
                                         else {
@@ -1270,19 +1253,47 @@ function Player(props) {
                                                 openInAppleORSpotify();
                                             }
                                         }
-                                    }
-                                }}
-                            >
-                                <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
-                                    style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
-                                    resizeMode='contain' />
-                                <Text style={{
-                                    color: Colors.white, marginLeft: normalise(15),
-                                    fontSize: normalise(13),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
-                            </TouchableOpacity>
-                            {/* } */}
+                                    }}
+                                >
+                                    <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                        style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>{props.userProfileResp.register_type === 'spotify' ? "OPEN ON SPOTIFY" : "OPEN ON APPLE"}</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (props.userProfileResp.register_type === 'spotify')
+                                            props.navigation.navigate('AddToPlayListScreen', { originalUri: originalUri, registerType: registerType, isrc: isrc })
+                                        else
+                                            toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                    }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        height: normalise(40),
+                                        width: normalise(160),
+                                        alignSelf: 'center',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        marginTop: normalise(10),
+                                        backgroundColor: Colors.fadeblack,
+                                        borderRadius: normalise(10)
+                                    }}
+                                >
+                                    <Image source={ImagePath.add_white}
+                                        style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(18) }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>ADD TO PLAYLIST</Text>
+                                </TouchableOpacity>
+                            </View>}
+
 
                         {RbSheet()}
                         {renderModalMorePressed()}
