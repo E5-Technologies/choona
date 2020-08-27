@@ -271,7 +271,8 @@ function GenreSongClicked(props) {
             changePlayer: changePlayer,
             originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
             registerType: data.item.userDetails.register_type,
-            isrc: data.item.isrc_code
+            isrc: data.item.isrc_code,
+            details: data.item
 
           })
         }}
