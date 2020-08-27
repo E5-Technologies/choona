@@ -845,6 +845,30 @@ function Player(props) {
                             }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
                         </TouchableOpacity>
 
+                        <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                            onPress={() => {
+                                setModalVisible(!modalVisible)
+                                if (props.userProfileResp.register_type === 'spotify')
+                                    props.navigation.navigate('AddToPlayListScreen',
+                                        {
+                                            originalUri: originalUri,
+                                            registerType: registerType,
+                                            isrc: isrc
+                                        })
+                                else
+                                    toast("Oops", "Only, Spotify users can add to their playlist now.")
+                            }}
+                        >
+                            <Image source={ImagePath.addicon}
+                                style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
+                                resizeMode='contain' />
+                            <Text style={{
+                                color: Colors.white, marginLeft: normalise(15),
+                                fontSize: normalise(13),
+                                fontFamily: 'ProximaNova-Semibold',
+                            }}>Add to Playlist</Text>
+                        </TouchableOpacity>
+
                     </View>
 
 
@@ -1370,7 +1394,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         marginBottom: normalise(10),
-        height: normalise(220),
+        height: normalise(250),
         width: "95%",
         backgroundColor: Colors.darkerblack,
         borderRadius: 20,

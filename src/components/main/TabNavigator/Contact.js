@@ -4,6 +4,7 @@ import {
     StyleSheet,
     ScrollView,
     View, Modal, Linking,
+    Keyboard,
     Text, ImageBackground,
     TouchableOpacity,
     TextInput, FlatList,
@@ -64,6 +65,7 @@ function Contact(props) {
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
     const [contactsLoading, setContactsLoading] = useState(false);
     const [bool, setBool] = useState(false);
+    const [typingTimeout, setTypingTimeout] = useState(0);
 
     var bottomSheetRef;
 
@@ -313,6 +315,15 @@ function Contact(props) {
                         <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
                             onPress={() => {
                                 setModalVisible(!modalVisible)
+                                if (props.userProfileResp.register_type === 'spotify')
+                                    props.navigation.navigate('AddToPlayListScreen',
+                                        {
+                                            originalUri: props.savedSong[index].original_song_uri,
+                                            registerType: props.savedSong[index].original_reg_type,
+                                            isrc: props.savedSong[index].isrc_code
+                                        })
+                                else
+                                    toast("Oops", "Only, Spotify users can add to their playlist now.")
                             }}
                         >
                             <Image source={ImagePath.addicon}
@@ -567,7 +578,7 @@ function Contact(props) {
                         }} value={userSeach}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.grey_text}
-                            onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
+                            onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -715,6 +726,17 @@ function Contact(props) {
 
     };
 
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -747,6 +769,7 @@ function Contact(props) {
                         placeholder={"Search"}
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
+                            hideKeyboard(),
                             setSearch(text),
                                 props.getSavedSongs(text)
                         }} />

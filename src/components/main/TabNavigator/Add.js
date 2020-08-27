@@ -6,6 +6,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Keyboard,
     TextInput,
     Image,
     FlatList,
@@ -34,6 +35,8 @@ function AddSong(props) {
 
     const [search, setSearch] = useState("");
     const [data, setData] = useState([]);
+    const [typingTimeout, setTypingTimeout] = useState(0);
+
     let post = true
 
     if (status === "" || status !== props.status) {
@@ -111,6 +114,17 @@ function AddSong(props) {
         )
     };
 
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
+
 
     return (
 
@@ -145,7 +159,8 @@ function AddSong(props) {
                             if (text.length >= 1) {
                                 props.seachSongsForPostRequest(text, post)
                             }
-                            setSearch(text)
+                            setSearch(text),
+                            hideKeyboard()
                         }} />
 
                     <Image source={ImagePath.searchicongrey}

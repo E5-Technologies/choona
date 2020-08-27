@@ -6,6 +6,7 @@ import {
     View,
     Text,
     Image, Clipboard,
+    Keyboard,
     TextInput, ImageBackground,
     TouchableOpacity, Modal
 } from 'react-native';
@@ -65,18 +66,19 @@ function Search(props) {
     const [visible, setVisible] = useState(false);
     const [modalReact, setModalReact] = useState("");
 
+    const [typingTimeout, setTypingTimeout] = useState(0);
+
     let changePlayer = false;
     let sendSong = false;
     let flag = true;
 
     // useEffect(() => {
-    //     const unsuscribe = props.navigation.addListener('focus', (payload) => {
-    //         setSearchPostData([]);
-    //         setSongSearchText("");
-    //     });
+    //     var interval = setInterval(() => {
+    //         setKeyBoardDismiss(true);
+    //     }, 1000);
 
     //     return () => {
-    //         unsuscribe();
+    //         clearInterval(interval);
     //     }
     // }, []);
 
@@ -200,7 +202,7 @@ function Search(props) {
                 }}
                 onPressImage={() => {
                     if (props.userProfileResp._id === data.item.user_id) {
-                        props.navigation.navigate("Profile", {fromAct: false})
+                        props.navigation.navigate("Profile", { fromAct: false })
                     }
                     else {
                         props.navigation.navigate("OthersProfile",
@@ -516,11 +518,22 @@ function Search(props) {
             setPositionInArray(0);
         }
 
-        else{
+        else {
             setTop50(props.top50SongsResponse)
         }
 
     };
+
+    function hideKeyboard() {
+
+        if (typingTimeout) {
+            clearInterval(typingTimeout)
+        }
+        setTypingTimeout(setTimeout(() => {
+            Keyboard.dismiss();
+        }, 1500))
+        
+    }
 
 
     //VIEW
@@ -667,9 +680,10 @@ function Search(props) {
                         placeholder={usersSearch ? "Search Users" : genreSearch ? "Search Top 50 Songs " : "Search Songs"}
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
-                            search(text)
-                            usersSearch ? setUsersSearchText(text) : genreSearch ? setGenreSearchText(text) :
-                                setSongSearchText(text)
+                            hideKeyboard(),
+                                search(text),
+                                usersSearch ? setUsersSearchText(text) : genreSearch ? setGenreSearchText(text) :
+                                    setSongSearchText(text)
                         }} />
 
                     <Image source={ImagePath.searchicongrey}
@@ -789,7 +803,7 @@ function Search(props) {
 
                     <FlatList
                         //style={{ height: '70%' }}
-                        style={{ alignSelf: 'center', width: '90%'}}
+                        style={{ alignSelf: 'center', width: '90%' }}
                         data={top50}
                         renderItem={renderGenreData}
                         keyExtractor={(item, index) => index.toString()}

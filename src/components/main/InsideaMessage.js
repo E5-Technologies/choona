@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Modal,
     Clipboard,
+    Linking,
     FlatList,
     TextInput,
     Image
@@ -51,6 +52,9 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash'
 import RBSheet from "react-native-raw-bottom-sheet";
+import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
+import axios from 'axios';
 
 let status = ""
 let userStatus = "";
@@ -176,7 +180,7 @@ function InsideaMessage(props) {
                         originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                             undefined,
                         registerType: data.item.original_reg_type
-                        
+
                     })
                 }}
                 marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
@@ -455,6 +459,96 @@ function InsideaMessage(props) {
     };
 
 
+    // GET ISRC CODE
+  const callApi = async () => {
+    if (props.registerType === 'spotify') {
+
+      const spotifyToken = await getSpotifyToken();
+
+      return await axios.get(`https://api.spotify.com/v1/search?q=isrc:${props.searchedChatData[positionInArray].isrc_code}&type=track`, {
+        headers: {
+          "Authorization": spotifyToken
+        }
+      });
+    }
+    else {
+      const AppleToken = await getAppleDevToken();
+
+      return await axios.get(`https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.searchedChatData[positionInArray].isrc_code}`, {
+        headers: {
+          "Authorization": AppleToken
+        }
+      });
+    }
+  };
+
+
+  //OPEN IN APPLE / SPOTIFY
+  const openInAppleORSpotify = async () => {
+
+    try {
+      const res = await callApi();
+      console.log(res);
+
+      if (res.status === 200) {
+        if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
+
+          if (props.userProfileResp.register_type === 'spotify') {
+            console.log('success - spotify');
+            console.log(res.data.tracks.items[0].external_urls.spotify)
+            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+              .then((supported) => {
+                if (supported) {
+                  Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                    .then(() => {
+                      console.log('success');
+                    })
+                    .catch(() => {
+                      console.log('error')
+                    })
+                }
+              })
+              .catch(() => {
+                console.log('not supported')
+              })
+            setBool(false)
+          }
+          else {
+
+            console.log('success - apple');
+            console.log(res.data.data[0].attributes.url);
+            Linking.canOpenURL(res.data.data[0].attributes.url)
+              .then((supported) => {
+                if (supported) {
+                  Linking.openURL(res.data.data[0].attributes.url)
+                    .then(() => {
+                      console.log('success');
+                    })
+                    .catch(() => {
+                      console.log('error')
+                    })
+                }
+              })
+              .catch(() => {
+                console.log('not supported')
+              })
+          }
+        }
+
+        else {
+          toast('', 'No Song Found');
+        }
+
+      }
+      else {
+        toast('Oops', 'Something Went Wrong');
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -663,8 +757,69 @@ function InsideaMessage(props) {
                                 }}>Delete Song</Text>
                             </TouchableOpacity>
 
+                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                                onPress={() => {
+                                    if (props.searchedChatData[positionInArray].original_reg_type === props.registerType) {
+                                        console.log('same reg type');
+                                        setModalVisible(false)
+                                            Linking.canOpenURL(props.searchedChatData[positionInArray].original_song_uri)
+                                                .then(() => {
+                                                    Linking.openURL(props.searchedChatData[positionInArray].original_song_uri)
+                                                        .then(() => {
+                                                            console.log('success')
+                                                            
+                                                        }).catch(() => {
+                                                            console.log('error')
+                                                        })
+                                                })
+                                                .catch((err) => {
+                                                    console.log('unsupported')
+                                                })
+                                    }
+                                    else {
+                                        console.log('diffirent reg type');
+                                        setModalVisible(false)
+                                        openInAppleORSpotify();
+                                    }
+
+                                }}
+                            >
+                                <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                    style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
+                                    resizeMode='contain' />
+                                <Text style={{
+                                    color: Colors.white, marginLeft: normalise(15),
+                                    fontSize: normalise(13),
+                                    fontFamily: 'ProximaNova-Semibold',
+                                }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
+                            </TouchableOpacity>
 
 
+
+                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible)
+                                    if (props.userProfileResp.register_type === 'spotify')
+                                        props.navigation.navigate('AddToPlayListScreen',
+                                            {
+                                                originalUri: props.searchedChatData[positionInArray].original_song_uri,
+                                                registerType: props.searchedChatData[positionInArray].original_reg_type,
+                                                isrc: props.searchedChatData[positionInArray].isrc_code
+                                            })
+                                    else
+                                        toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                }}
+                            >
+                                <Image source={ImagePath.addicon}
+                                    style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
+                                    resizeMode='contain' />
+                                <Text style={{
+                                    color: Colors.white, marginLeft: normalise(15),
+                                    fontSize: normalise(13),
+                                    fontFamily: 'ProximaNova-Semibold',
+                                }}>Add to Playlist</Text>
+
+                            </TouchableOpacity>
 
                         </View>
 
@@ -754,7 +909,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         marginBottom: normalise(10),
-        height: normalise(220),
+        height: normalise(290),
         width: "95%",
         backgroundColor: Colors.darkerblack,
         borderRadius: 20,
