@@ -98,7 +98,10 @@ function Home(props) {
         .then(() => {
 
           props.getProfileReq(),
-            props.homePage()
+            props.homePage();
+          setUserSearchData([]);
+          sesUsersToSEndSong([]);
+          setUserSeach("");
 
         })
         .catch(() => {
@@ -229,7 +232,7 @@ function Home(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus
-
+        console.log('home page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach("");

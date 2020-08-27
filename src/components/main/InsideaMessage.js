@@ -112,7 +112,7 @@ function InsideaMessage(props) {
 
             case CREATE_CHAT_TOKEN_SUCCESS:
                 status = props.status
-
+                console.log('inside a message')
                 setUserSearchData([]);
                 sesUsersToSEndSong([]);
                 setUserSeach("");

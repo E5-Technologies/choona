@@ -28,8 +28,15 @@ import {
 
     DELETE_MESSAGE_REQUEST,
     DELETE_MESSAGE_SUCCESS,
-    DELETE_MESSAGE_FAILURE
+    DELETE_MESSAGE_FAILURE,
 
+    CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS,
+    CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE,
+
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE
 
 } from '../action/TypeConstants'
 import { postApi, getApi } from '../utils/helpers/ApiRequest'
@@ -258,7 +265,55 @@ export function* deleteMessageAction(action) {
     } catch (error) {
       yield put({ type: DELETE_MESSAGE_FAILURE, error: error });
     }
-  }
+  };
+
+
+  export function* getChatTokenFromSearchAction(action) {
+
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token,
+        }
+        let chatTokenResponse = yield call(postApi, 'chat/create', { "receiver_id": action.payload }, Header);
+
+        if (chatTokenResponse.data.status === 200)
+            yield put({ type: CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS, data: chatTokenResponse.data.data });
+        else
+            yield put({ type: CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE, error: chatTokenResponse.data });
+
+    } catch (error) {
+
+        yield put({ type: CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE, error: error });
+    }
+};
+
+
+export function* getChatTokenFromSavedSongAction(action) {
+
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token,
+        }
+        let chatTokenResponse = yield call(postApi, 'chat/create', { "receiver_id": action.payload }, Header);
+
+        if (chatTokenResponse.data.status === 200)
+            yield put({ type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS, data: chatTokenResponse.data.data });
+        else
+            yield put({ type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE, error: chatTokenResponse.data });
+
+    } catch (error) {
+
+        yield put({ type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE, error: error });
+    }
+};
 
 
 export function* watchGetChatTokenRequest() {
@@ -287,4 +342,12 @@ export function* watchUpdateMessageCommentRequest() {
 
 export function* watchDeleteMessageRequest() {
     yield takeLatest(DELETE_MESSAGE_REQUEST, deleteMessageAction)
+}
+
+export function* watchgetChatTokenFromSearchAction() {
+    yield takeLatest(CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST, getChatTokenFromSearchAction)
+}
+
+export function* watchgetChatTokenFromSavedSongAction() {
+    yield takeLatest(CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST, getChatTokenFromSavedSongAction)
 }

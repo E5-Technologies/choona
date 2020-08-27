@@ -26,9 +26,9 @@ import {
     GET_USER_FROM_HOME_REQUEST,
     GET_USER_FROM_HOME_SUCCESS,
     GET_USER_FROM_HOME_FAILURE,
-    CREATE_CHAT_TOKEN_REQUEST,
-    CREATE_CHAT_TOKEN_SUCCESS,
-    CREATE_CHAT_TOKEN_FAILURE,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE,
 } from '../../../action/TypeConstants';
 import { savedSongsListRequset, unsaveSongRequest } from '../../../action/SongAction';
 import Loader from '../../../widgets/AuthLoader';
@@ -41,7 +41,7 @@ import {
     getUsersFromHome
 } from '../../../action/UserAction';
 import constants from '../../../utils/helpers/constants';
-import { createChatTokenRequest } from '../../../action/MessageAction'
+import { createChatTokenFromSavedSongRequest } from '../../../action/MessageAction'
 import {
     getSongFromisrc
 } from '../../../action/PlayerAction';
@@ -63,7 +63,6 @@ function Contact(props) {
     const [userSeach, setUserSeach] = useState("");
     const [userSearchData, setUserSearchData] = useState([]);
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-    const [contactsLoading, setContactsLoading] = useState(false);
     const [bool, setBool] = useState(false);
     const [typingTimeout, setTypingTimeout] = useState(0);
 
@@ -74,6 +73,9 @@ function Contact(props) {
             isInternetConnected()
                 .then(() => {
                     props.getSavedSongs(search)
+                    setUserSearchData([]);
+                    sesUsersToSEndSong([]);
+                    setUserSeach("");
                 })
                 .catch(() => {
                     toast("Oops", "Please Connect To Internet")
@@ -145,13 +147,13 @@ function Contact(props) {
     if (messageStatus === "" || props.messageStatus !== messageStatus) {
         switch (props.messageStatus) {
 
-            case CREATE_CHAT_TOKEN_REQUEST:
+            case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST:
                 messageStatus = props.messageStatus
                 break;
 
-            case CREATE_CHAT_TOKEN_SUCCESS:
+            case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS:
                 messageStatus = props.messageStatus
-
+                console.log('saved song');
                 setUserSearchData([]);
                 sesUsersToSEndSong([]);
                 setUserSeach("");
@@ -164,7 +166,7 @@ function Contact(props) {
                 });
                 break;
 
-            case CREATE_CHAT_TOKEN_FAILURE:
+            case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE:
                 messageStatus = props.messageStatus;
                 toast("Error", "Something Went Wong, Please Try Again")
                 break;
@@ -914,7 +916,7 @@ const mapDistapchToProps = (dispatch) => {
             dispatch(getUsersFromHome(payload))
         },
         createChatTokenRequest: (payload) => {
-            dispatch(createChatTokenRequest(payload))
+            dispatch(createChatTokenFromSavedSongRequest(payload))
         },
         getSongFromIsrc: (regType, isrc) => {
             dispatch(getSongFromisrc(regType, isrc))
