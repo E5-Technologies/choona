@@ -113,7 +113,7 @@ function AddSongsInMessage(props) {
                 messageStatus = props.messageStatus
 
                 props.navigation.replace('SendSongInMessageFinal', {
-                    image: props.registerType === 'spotify' ? result[index].album.images[0].url : result[index].attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                    image: props.registerType === 'spotify' ? result[index].album.images[0].url : result[index].attributes.artwork.url.replace('{w}x{h}', '600x600'),
                     title: props.registerType === 'spotify' ? result[index].name : result[index].attributes.name,
                     title2: props.registerType === 'spotify' ? singerList(result[index].artists) : result[index].attributes.artistName,
                     users: usersToSEndSong, details: result[index], registerType: props.registerType,

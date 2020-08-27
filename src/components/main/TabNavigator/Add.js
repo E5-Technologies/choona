@@ -82,7 +82,7 @@ function AddSong(props) {
                 image2={ImagePath.addicon}
                 onPressSecondImage={() => {
                     props.navigation.navigate("CreatePost", {
-                        image: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                        image: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '600x600'),
                         title: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
                         title2: props.registerType === 'spotify' ? singerList(data.item.artists) : data.item.attributes.artistName,
                         details: data.item, registerType: props.registerType

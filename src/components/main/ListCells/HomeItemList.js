@@ -189,7 +189,7 @@ function HomeItemList(props) {
                 }}   >
 
 
-                <Image source={props.image === "" ? ImagePath.profiletrack1 : { uri: props.postType ? props.image : props.image.replace("300x300bb.jpg", "500x500bb.jpg") }}
+                <Image source={props.image === "" ? ImagePath.profiletrack1 : { uri: props.image }}
                     style={{ height: normalise(250), width: normalise(280), borderRadius: normalise(10) }}
                     resizeMode="cover" />
 
