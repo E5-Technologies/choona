@@ -4,6 +4,6 @@
 
 int main(int argc, char * argv[]) {
   @autoreleasepool {
-r    return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
   }
 }
