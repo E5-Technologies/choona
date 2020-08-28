@@ -180,6 +180,7 @@ export function* editProfileAction(action) {
         };
 
         const response = yield call(postApi, 'user/profile/update', action.payload, Header);
+        console.log("response: "+JSON.stringify(response))
         yield put({ type: EDIT_PROFILE_SUCCESS, data: response.data.data });
 
     } catch (error) {

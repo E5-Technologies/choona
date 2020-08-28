@@ -172,7 +172,7 @@ function FeaturedTrack(props) {
                             song_title: props.registerType === 'spotify' ? data.item.name : data.item.attributes.name,
                             album_name: props.registerType === "spotify" ? data.item.album.name :
                                 data.item.attributes.albumName,
-                            song_pic: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+                            song_pic: props.registerType === 'spotify' ? data.item.album.images[0].url : data.item.attributes.artwork.url.replace('{w}x{h}', '600x600'),
                             username: "",
                             profile_pic: "",
                             originalUri: props.registerType === "spotify" ? data.item.external_urls.spotify :
