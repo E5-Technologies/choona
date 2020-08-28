@@ -138,7 +138,7 @@ function AddSongsInMessage(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
     function sendMessagesToUsers() {
@@ -454,21 +454,22 @@ function AddSongsInMessage(props) {
 
                             </View>
 
-                            <TouchableOpacity
-                                onPress={() => {
-                                    bottomSheetRef.close(),
-                                        sendMessagesToUsers();
-                                }}>
-                                <Text style={{
-                                    color: Colors.white,
-                                    fontSize: normalise(12),
-                                    fontWeight: 'bold',
-                                    marginTop: normalise(10),
-                                    marginEnd: normalise(15)
+                            {usersToSEndSong.length > 0 ?
 
-                                }}>
-                                    {`NEXT`}</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        bottomSheetRef.close(),
+                                            sendMessagesToUsers();
+                                    }}>
+                                    <Text style={{
+                                        color: Colors.white,
+                                        fontSize: normalise(12),
+                                        fontWeight: 'bold',
+                                        marginTop: normalise(10),
+                                        marginEnd: normalise(15)
+                                    }}>
+                                        {`NEXT`}</Text>
+                                </TouchableOpacity> : null}
 
                         </View>
 
