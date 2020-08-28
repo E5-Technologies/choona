@@ -50,8 +50,9 @@ function Login(props) {
                 status = props.status
                 break;
 
-            case USER_LOGIN_FAILURE:
-                status = props.status
+            case USER_SIGNUP_FAILURE:
+                status = props.status;
+                toast("Oops", props.error.message)
                 break;
 
             case COUNTRY_CODE_REQUEST:
@@ -444,6 +445,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         signupResponse: state.UserReducer.signupResponse,
+        error: state.UserReducer.error,
         countryCodeRequest: state.UserReducer.countryCodeRequest,
         countryObject: state.UserReducer.countryCodeOject
     }

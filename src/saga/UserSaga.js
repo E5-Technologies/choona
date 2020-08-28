@@ -136,13 +136,19 @@ export function* UserSignUpAction(action) {
 
         const response = yield call(postApi, 'user/signup', action.payload, header)
 
-        yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({
-            "token": response.data.token,
-            "registerType": response.data.data.register_type
-        }))
+        if (response.status === 201)
+            yield put({ type: USER_SIGNUP_FAILURE, error: response.data });
+        else {
+            yield call(AsyncStorage.setItem, constants.CHOONACREDS, JSON.stringify({
+                "token": response.data.token,
+                "registerType": response.data.data.register_type
+            }))
 
-        yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
-        yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType: response.data.data.register_type })
+            yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
+            yield put({ type: ASYNC_STORAGE_SUCCESS, token: response.data.token, registerType: response.data.data.register_type })
+        }
+
+
 
     } catch (error) {
         yield put({ type: USER_SIGNUP_FAILURE, error: error })
@@ -180,8 +186,11 @@ export function* editProfileAction(action) {
         };
 
         const response = yield call(postApi, 'user/profile/update', action.payload, Header);
-        console.log("response: "+JSON.stringify(response))
-        yield put({ type: EDIT_PROFILE_SUCCESS, data: response.data.data });
+
+        if (response.status === 201)
+            yield put({ type: EDIT_PROFILE_FAILURE, error: response.data });
+        else
+            yield put({ type: EDIT_PROFILE_SUCCESS, data: response.data.data });
 
     } catch (error) {
         yield put({ type: EDIT_PROFILE_FAILURE, error: error })

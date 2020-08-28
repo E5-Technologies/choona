@@ -85,7 +85,7 @@ function EditProfile(props) {
 
             case EDIT_PROFILE_FAILURE:
                 status = props.status
-                toast("Oops", "Something Went Wrong, Please Try Again")
+                toast("Oops", props.error.message)
                 break;
         }
     };
@@ -369,6 +369,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.UserReducer.status,
         userProfileResp: state.UserReducer.userProfileResp,
+        error: state.UserReducer.error,
         countryCodeRequest: state.UserReducer.countryCodeRequest,
         countryObject: state.UserReducer.countryCodeOject
     }
