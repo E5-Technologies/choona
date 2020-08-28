@@ -71,7 +71,7 @@ function GenreSongClicked(props) {
       isInternetConnected()
         .then(() => {
           props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag),
-          setUserSearchData([]);
+            setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach("");
         })
@@ -358,7 +358,7 @@ function GenreSongClicked(props) {
 
 
             <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
-            onPress={() => { if (bottomSheetRef) { setModalVisible(false), bottomSheetRef.open() } }}>
+              onPress={() => { if (bottomSheetRef) { setModalVisible(false), bottomSheetRef.open() } }}>
               <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
                 resizeMode='contain' />
               <Text style={{
@@ -599,21 +599,22 @@ function GenreSongClicked(props) {
 
             </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                bottomSheetRef.close(),
-                  sendMessagesToUsers();
-              }}>
-              <Text style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                fontWeight: 'bold',
-                marginTop: normalise(10),
-                marginEnd: normalise(15)
+            {usersToSEndSong.length > 0 ?
+              <TouchableOpacity
+                onPress={() => {
+                  bottomSheetRef.close(),
+                    sendMessagesToUsers();
+                }}>
+                <Text style={{
+                  color: Colors.white,
+                  fontSize: normalise(12),
+                  fontWeight: 'bold',
+                  marginTop: normalise(10),
+                  marginEnd: normalise(15)
 
-              }}>
-                {`NEXT`}</Text>
-            </TouchableOpacity>
+                }}>
+                  {`NEXT`}</Text>
+              </TouchableOpacity> : null}
 
           </View>
 

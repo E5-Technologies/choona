@@ -325,9 +325,9 @@ function Contact(props) {
                                             isrc: props.savedSong[index].isrc_code
                                         })
                                 else
-                                setTimeout(() => {
-                                    toast("Oops", "Only, Spotify users can add to their playlist now.")
-                                }, 1000)
+                                    setTimeout(() => {
+                                        toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                    }, 1000)
                             }}
                         >
                             <Image source={ImagePath.addicon}
@@ -549,21 +549,22 @@ function Contact(props) {
 
                         </View>
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                bottomSheetRef.close(),
-                                    sendMessagesToUsers();
-                            }}>
-                            <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(12),
-                                fontWeight: 'bold',
-                                marginTop: normalise(10),
-                                marginEnd: normalise(15)
+                        {usersToSEndSong.length > 0 ?
+                            <TouchableOpacity
+                                onPress={() => {
+                                    bottomSheetRef.close(),
+                                        sendMessagesToUsers();
+                                }}>
+                                <Text style={{
+                                    color: Colors.white,
+                                    fontSize: normalise(12),
+                                    fontWeight: 'bold',
+                                    marginTop: normalise(10),
+                                    marginEnd: normalise(15)
 
-                            }}>
-                                {`NEXT`}</Text>
-                        </TouchableOpacity>
+                                }}>
+                                    {`NEXT`}</Text>
+                            </TouchableOpacity> : null}
 
                     </View>
 
@@ -738,7 +739,7 @@ function Contact(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
     return (
@@ -774,7 +775,7 @@ function Contact(props) {
                         placeholderTextColor={Colors.darkgrey}
                         onChangeText={(text) => {
                             hideKeyboard(),
-                            setSearch(text),
+                                setSearch(text),
                                 props.getSavedSongs(text)
                         }} />
 
