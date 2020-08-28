@@ -840,7 +840,9 @@ function InsideaMessage(props) {
                                                 isrc: props.searchedChatData[positionInArray].isrc_code
                                             })
                                     else
-                                        toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                        setTimeout(() => {
+                                            toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                        }, 1000)
                                 }}
                             >
                                 <Image source={ImagePath.addicon}
