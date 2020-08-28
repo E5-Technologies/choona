@@ -192,7 +192,8 @@ function InsideaMessage(props) {
                         isrc: data.item.isrc_code,
                         originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                             undefined,
-                        registerType: data.item.original_reg_type
+                        registerType: data.item.original_reg_type,
+                        details: data.item
 
                     })
                 }}
@@ -211,8 +212,8 @@ function InsideaMessage(props) {
                         isrc: data.item.isrc_code,
                         originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                             undefined,
-                        registerType: data.item.original_reg_type
-
+                        registerType: data.item.original_reg_type,
+                        details: data.item
                     })
                 }}
                 marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
