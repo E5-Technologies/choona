@@ -120,6 +120,7 @@ function UsersFromContacts(props) {
                     title={data.item.username}
                     type={true}
                     follow={!data.item.isFollowing}
+                    TouchableOpacityDisabled={false}
                     marginBottom={data.index === props.usersFromContacts.length - 1 ? normalise(20) : 0}
                     onPressImage={() => {
                         props.navigation.navigate("OthersProfile",

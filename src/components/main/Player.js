@@ -210,10 +210,15 @@ function Player(props) {
             case COMMENT_ON_POST_SUCCESS:
                 status = props.status
                 setCommentText("")
-                let data = props.commentResp.comment[props.commentResp.comment.length - 1]
-                data.profile_image = props.userProfileResp.profile_image
-                commentData.push(data);
-                setArrayLength(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
+                if (!_.isEmpty(props.commentResp.comment)) {
+                    let data = props.commentResp.comment[props.commentResp.comment.length - 1]
+                    data.profile_image = props.userProfileResp.profile_image
+                    commentData.push(data);
+                    setArrayLength(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`)
+                }
+                else {
+                    toast('Error', 'Oops could not find the post');
+                }
                 break;
 
             case COMMENT_ON_POST_FAILURE:
