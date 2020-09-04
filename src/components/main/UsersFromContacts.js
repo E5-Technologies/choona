@@ -9,7 +9,9 @@ import {
     FlatList,
     Image,
     ImageBackground,
-    TextInput
+    TextInput,
+    Keyboard,
+    TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -142,76 +144,80 @@ function UsersFromContacts(props) {
             <Loader visible={props.status === GET_USERS_FROM_CONTACTS_REQUEST} />
             <Loader visible={bool} />
 
-            <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
 
-                <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon} title={`USERS`}
-                    thirditemtext={true} texttwo={""}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                <SafeAreaView style={{ flex: 1 }}>
+
+                    <HeaderComponent firstitemtext={false}
+                        imageone={ImagePath.backicon} title={`USERS`}
+                        thirditemtext={true} texttwo={""}
+                        onPressFirstItem={() => { props.navigation.goBack() }} />
 
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <View style={{
+                        width: '92%',
+                        alignSelf: 'center',
+                    }}>
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => {
-                            setSearch(text), filterArray(text)
-                        }} />
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => {
+                                setSearch(text), filterArray(text)
+                            }} />
 
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
-
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => {
-                            setSearch(""), filterArray("")
-                        }}
+                        <Image source={ImagePath.searchicongrey}
                             style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                        </TouchableOpacity>}
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => {
+                                setSearch(""), filterArray("")
+                            }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                </View>
-
-
-                {_.isEmpty(usersList) ?
-
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
-                            fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold',
-                        }}>NO USERS FOUND</Text>
+                            </TouchableOpacity>}
 
                     </View>
 
-                    :
 
-                    <FlatList
-                        data={usersList}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        renderItem={renderUserItem} />
-                }
+                    {_.isEmpty(usersList) ?
+
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
+                                fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold',
+                            }}>NO USERS FOUND</Text>
+
+                        </View>
+
+                        :
+
+                        <FlatList
+                            data={usersList}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            renderItem={renderUserItem} />
+                    }
 
 
-            </SafeAreaView>
+                </SafeAreaView>
+
+            </TouchableWithoutFeedback>
         </View>
     )
 };

@@ -11,7 +11,8 @@ import {
     Keyboard,
     Image,
     ImageBackground,
-    TextInput
+    TextInput,
+    TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -95,14 +96,14 @@ function Inbox(props) {
         }, 800);
     };
 
-    function renderInboxItem(data) {    
-        console.log("message: "+ Object.values(data.item)[0].message.length)
+    function renderInboxItem(data) {
+        console.log("message: " + Object.values(data.item)[0].message.length)
 
         return (
             <InboxListItem
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
-                description={Object.values(data.item)[0].message[Object.values(data.item)[0].message.length-1].text}
+                description={Object.values(data.item)[0].message[Object.values(data.item)[0].message.length - 1].text}
                 read={data.item.user_id == Object.values(data.item)[0].receiver_id
                     ? true : Object.values(data.item)[0].read}
                 onPress={() => props.navigation.navigate('InsideaMessage', { index: data.index })}
@@ -134,72 +135,77 @@ function Inbox(props) {
             <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
             <Loader visible={bool} />
 
-            <SafeAreaView style={{ flex: 1, }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+                
+                <SafeAreaView style={{ flex: 1, }}>
 
-                <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon}
-                    title={`INBOX`}
-                    thirditemtext={false}
-                    imagetwo={ImagePath.newmessage}
-                    imagetwoheight={25}
-                    imagetwowidth={25}
-                    onPressFirstItem={() => { props.navigation.goBack() }}
-                    onPressThirdItem={() => {
-                        props.navigation.navigate('AddSongsInMessage')
-                    }}
-                />
+                    <HeaderComponent firstitemtext={false}
+                        imageone={ImagePath.backicon}
+                        title={`INBOX`}
+                        thirditemtext={false}
+                        imagetwo={ImagePath.newmessage}
+                        imagetwoheight={25}
+                        imagetwowidth={25}
+                        onPressFirstItem={() => { props.navigation.goBack() }}
+                        onPressThirdItem={() => {
+                            props.navigation.navigate('AddSongsInMessage')
+                        }}
+                    />
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <View style={{
+                        width: '92%',
+                        alignSelf: 'center',
+                    }}>
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), filterArray(text), hideKeyboard() }} />
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => { setSearch(text), filterArray(text) }} />
 
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
-
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                        <Image source={ImagePath.searchicongrey}
                             style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                        </TouchableOpacity>}
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                </View>
+                            </TouchableOpacity>}
 
-                {_.isEmpty(props.chatList) ?
-
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ color: Colors.white, fontSize: normalise(15) }}>No Messages</Text>
                     </View>
 
-                    : <FlatList
-                        data={mesageList}
-                        renderItem={renderInboxItem}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        showsVerticalScrollIndicator={false} />}
+                    {_.isEmpty(props.chatList) ?
+
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ color: Colors.white, fontSize: normalise(15) }}>No Messages</Text>
+                        </View>
+
+                        : <FlatList
+                            data={mesageList}
+                            renderItem={renderInboxItem}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            showsVerticalScrollIndicator={false} />}
 
 
 
 
-            </SafeAreaView>
+                </SafeAreaView>
+
+            </TouchableWithoutFeedback>
+
         </View>
     )
 };

@@ -7,11 +7,12 @@ import {
   Text, TextInput,
   ImageBackground,
   TouchableOpacity, KeyboardAvoidingView,
-  Image,
+  Image, TouchableWithoutFeedback,
   Modal,
   Platform,
   Clipboard,
-  Linking
+  Linking,
+  Keyboard
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -65,6 +66,7 @@ import Contacts from 'react-native-contacts';
 import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
+import { NativeModules } from 'react-native';
 
 let status = "";
 let songStatus = "";
@@ -1071,7 +1073,13 @@ function Home(props) {
                       else {
                         console.log('diffirent reg type');
                         setModalVisible(false)
-                        setBool(true), openInAppleORSpotify();
+                        setBool(true), 
+                        isInternetConnected().then(()=>{
+                          openInAppleORSpotify();
+                        })
+                        .catch(()=>{
+                          toast('', 'Please Connect To Internet')
+                        })
                       }
 
                     }}
@@ -1096,10 +1104,21 @@ function Home(props) {
                             registerType: props.postData[positionInArray].social_type,
                             isrc: props.postData[positionInArray].isrc_code
                           })
-                      else
-                        setTimeout(() => {
-                          toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        }, 1000)
+                      else {
+                        getAppleDevToken()
+                          .then((token) => {
+                            let newtoken = token.split(" ");
+                            NativeModules.Print.printValue(newtoken.pop(), (value) => {
+                              console.log(value);
+                            });
+                          })
+                          .catch((err) => {
+                            setModal1Visible(!modalVisible)
+                            setTimeout(() => {
+                              toast('Oops', 'Something Went Wrong');
+                            }, 1000);
+                          });
+                      }
                     }}
                   >
                     <Image source={ImagePath.addicon}

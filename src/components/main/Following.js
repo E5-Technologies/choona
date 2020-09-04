@@ -10,7 +10,8 @@ import {
     Keyboard,
     Image,
     ImageBackground,
-    TextInput
+    TextInput,
+    TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -210,91 +211,96 @@ function Following(props) {
             <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
             <Loader visible={bool} />
 
-            <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
 
-                <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon} title={`FOLLOWING (${following})`}
-                    thirditemtext={true} texttwo={""}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                <SafeAreaView style={{ flex: 1 }}>
+
+                    <HeaderComponent firstitemtext={false}
+                        imageone={ImagePath.backicon} title={`FOLLOWING (${following})`}
+                        thirditemtext={true} texttwo={""}
+                        onPressFirstItem={() => { props.navigation.goBack() }} />
 
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <View style={{
+                        width: '92%',
+                        alignSelf: 'center',
+                    }}>
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), filterArray(text), hideKeyboard() }} />
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => { setSearch(text), filterArray(text) }} />
 
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
-
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                        <Image source={ImagePath.searchicongrey}
                             style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                        </TouchableOpacity>}
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                </View>
-            
-                
-                {_.isEmpty(props.followingData) ?
+                            </TouchableOpacity>}
 
-                    <View style={{ flex: 1 }}>
-                        <View style={{ height: '45%', justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(15), textAlign:'center',
-                                fontFamily: 'ProximaNova-Bold', fontWeight: 'bold',
-                            }}>YOU DON'T FOLLOW ANYONE</Text>
-
-                            <Text style={{
-                                color: Colors.grey_text, fontSize: normalise(12), textAlign:'center',
-                                fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold', width:'80%', marginTop:normalise(5)
-                            }}>Choona is a lonely place when you aeen't following anyone, See if you already have friends by connecting below</Text>
-                        </View>
-
-
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
-                            fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold',
-                        }}>FOLLOW SOME OF OUR POPULAR USERS</Text>
-
-                        <FlatList
-                            style={{ marginTop: normalise(10) }}
-                            data={top5followingList}
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={(item, index) => { index.toString() }}
-                            renderItem={rendertop5FollowersItem} />
                     </View>
 
-                    :
 
-                    <FlatList
-                        data={followingList}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        renderItem={renderFollowersItem} />
-                }
+                    {_.isEmpty(props.followingData) ?
+
+                        <View style={{ flex: 1 }}>
+                            <View style={{ height: '45%', justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(15), textAlign: 'center',
+                                    fontFamily: 'ProximaNova-Bold', fontWeight: 'bold',
+                                }}>YOU DON'T FOLLOW ANYONE</Text>
+
+                                <Text style={{
+                                    color: Colors.grey_text, fontSize: normalise(12), textAlign: 'center',
+                                    fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold', width: '80%', marginTop: normalise(5)
+                                }}>Choona is a lonely place when you aeen't following anyone, See if you already have friends by connecting below</Text>
+                            </View>
+
+
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
+                                fontFamily: 'ProximaNova-Semibold', fontWeight: 'bold',
+                            }}>FOLLOW SOME OF OUR POPULAR USERS</Text>
+
+                            <FlatList
+                                style={{ marginTop: normalise(10) }}
+                                data={top5followingList}
+                                showsVerticalScrollIndicator={false}
+                                keyExtractor={(item, index) => { index.toString() }}
+                                renderItem={rendertop5FollowersItem} />
+                        </View>
+
+                        :
+
+                        <FlatList
+                            data={followingList}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            renderItem={renderFollowersItem} />
+                    }
 
 
 
-            </SafeAreaView>
+                </SafeAreaView>
+
+            </TouchableWithoutFeedback>
+
         </View>
     )
 };

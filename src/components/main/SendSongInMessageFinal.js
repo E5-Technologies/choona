@@ -272,7 +272,7 @@ function SendSongInMessageFinal(props) {
                         multiline={true}
                         placeholder={"Add a comment"}
                         placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setSearch(text), hideKeyboard() }} />
+                        onChangeText={(text) => { setSearch(text) }} />
 
                     <View style={{
                         marginTop: normalise(5), backgroundColor: Colors.darkerblack,

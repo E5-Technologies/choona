@@ -15,6 +15,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		194E6736DFD04AA0D56629E8 /* libPods-Choona.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7454185DA8D6720E0B230066 /* libPods-Choona.a */; };
+		19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */; };
+		19E8385624FF9ED1009D7A39 /* AppleUserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385524FF9ED1009D7A39 /* AppleUserToken.m */; };
 		1A2E18357D6D758D6D827073 /* libPods-Choona-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 785067749B632811726B9E7F /* libPods-Choona-tvOSTests.a */; };
 		265AC87D4B064B55AE11B766 /* ProximaNovaAW07-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -64,6 +66,9 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Choona/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Choona/main.m; sourceTree = "<group>"; };
 		1991461B2472869100DEC508 /* Choona.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Choona.entitlements; path = Choona/Choona.entitlements; sourceTree = "<group>"; };
+		19E8385224FF9E6E009D7A39 /* Choona-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Choona-Bridging-Header.h"; sourceTree = "<group>"; };
+		19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleUserToken.swift; sourceTree = "<group>"; };
+		19E8385524FF9ED1009D7A39 /* AppleUserToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppleUserToken.m; sourceTree = "<group>"; };
 		1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Light.otf"; path = "../assets/fonts/ProximaNovaA-Light.otf"; sourceTree = "<group>"; };
 		24F9CF820654EE3919DE075E /* Pods-Choona-ChoonaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		259D47194D3A585ED3EA6146 /* Pods-Choona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.debug.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.debug.xcconfig"; sourceTree = "<group>"; };
@@ -157,6 +162,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */,
+				19E8385224FF9E6E009D7A39 /* Choona-Bridging-Header.h */,
+				19E8385524FF9ED1009D7A39 /* AppleUserToken.m */,
 			);
 			name = Choona;
 			sourceTree = "<group>";
@@ -338,7 +346,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = H23W3EERLK;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -639,6 +647,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				19E8385624FF9ED1009D7A39 /* AppleUserToken.m in Sources */,
+				19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -692,6 +702,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 24F9CF820654EE3919DE075E /* Pods-Choona-ChoonaTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -715,6 +726,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE764F6DC7B347027A542609 /* Pods-Choona-ChoonaTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = ChoonaTests/Info.plist;
@@ -756,6 +768,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.webskitters.Choona;
 				PRODUCT_NAME = Choona;
 				PROVISIONING_PROFILE_SPECIFIER = ChoonaProvProfile_D_29/07/2020;
+				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -782,6 +795,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.webskitters.Choona;
 				PRODUCT_NAME = Choona;
 				PROVISIONING_PROFILE_SPECIFIER = ChoonaProvProfile_D_29/07/2020;
+				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -944,7 +958,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
@@ -997,7 +1011,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",

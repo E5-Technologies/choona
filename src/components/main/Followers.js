@@ -10,7 +10,8 @@ import {
     Keyboard,
     Image,
     ImageBackground,
-    TextInput
+    TextInput,
+    TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -160,56 +161,58 @@ function Followers(props) {
 
             <StatusBar />
 
-            <SafeAreaView style={{ flex: 1, }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+                <SafeAreaView style={{ flex: 1, }}>
 
-                <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon} title={`FOLLOWERS (${followerList.length})`}
-                    thirditemtext={true} texttwo={""}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                    <HeaderComponent firstitemtext={false}
+                        imageone={ImagePath.backicon} title={`FOLLOWERS (${followerList.length})`}
+                        thirditemtext={true} texttwo={""}
+                        onPressFirstItem={() => { props.navigation.goBack() }} />
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <View style={{
+                        width: '92%',
+                        alignSelf: 'center',
+                    }}>
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), filterArray(text), hideKeyboard() }} />
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => { setSearch(text), filterArray(text) }} />
 
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
-
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                        <Image source={ImagePath.searchicongrey}
                             style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                        </TouchableOpacity>}
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                </View>
+                            </TouchableOpacity>}
+
+                    </View>
 
 
-                <FlatList
-                    data={followerList}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item, index) => { index.toString() }}
-                    renderItem={renderFollowersItem} />
+                    <FlatList
+                        data={followerList}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        renderItem={renderFollowersItem} />
 
-            </SafeAreaView>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
         </View>
     )
 };

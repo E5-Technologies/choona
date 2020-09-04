@@ -8,7 +8,9 @@ import {
     TouchableOpacity,
     TextInput,
     Image,
-    FlatList
+    FlatList,
+    TouchableWithoutFeedback,
+    Keyboard
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -29,6 +31,7 @@ import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
+import isInternetConnected from '../../utils/helpers/NetInfo';
 
 
 let status;
@@ -40,18 +43,22 @@ function AddSong(props) {
     const [title1, setTitle1] = useState(props.route.params.title);
     const [title2, setTitle2] = useState(props.route.params.title2);
     const [spotifyUrl, setSpotifyUrl] = useState('');
+    const [bool, setBool] = useState(false);
 
 
     useEffect(() => {
         if (props.route.params.registerType === 'spotify') {
+            setBool(true);
             const getSpotifyApi = async () => {
                 try {
                     const res = await callApi();
                     if (res.data.status === 200) {
                         let suc = res.data.data.audio;
                         setSpotifyUrl(suc);
+                        setBool(false);
                     }
                     else {
+                        setBool(false);
                         toast('Oops', 'Something Went Wrong');
                         props.navigation.goBack();
                     }
@@ -61,7 +68,11 @@ function AddSong(props) {
                 }
             };
 
-            getSpotifyApi();
+            isInternetConnected().then(() => {
+                getSpotifyApi();
+            }).catch(() => {
+                toast('', 'Please Connect To Internet')
+            })
         };
     }, []);
 
@@ -123,74 +134,77 @@ function AddSong(props) {
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
 
             <Loader visible={props.status === CREATE_POST_REQUEST} />
+            <Loader visible={bool} />
 
             <StatusBar />
 
-            <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+                <SafeAreaView style={{ flex: 1 }}>
 
-                <HeaderComponent firstitemtext={true}
-                    textone={"CANCEL"}
-                    title={"CREATE POST"}
-                    thirditemtext={true}
-                    texttwo={"POST"}
-                    onPressFirstItem={() => { props.navigation.goBack() }}
-                    onPressThirdItem={() => { createPost() }}
-                />
+                    <HeaderComponent firstitemtext={true}
+                        textone={"CANCEL"}
+                        title={"CREATE POST"}
+                        thirditemtext={true}
+                        texttwo={"POST"}
+                        onPressFirstItem={() => { props.navigation.goBack() }}
+                        onPressThirdItem={() => { createPost() }}
+                    />
 
-                <View style={{ marginTop: normalise(20), width: '95%', alignSelf: 'center', }}>
+                    <View style={{ marginTop: normalise(20), width: '95%', alignSelf: 'center', }}>
 
-                    <TextInput style={{
-                        width: '100%',
-                        borderRadius: normalise(8), padding: normalise(10),
-                        color: Colors.white, fontWeight: '500'
-                    }} value={search}
-                        multiline={true}
-                        placeholder={"Add a caption..."}
-                        placeholderTextColor={Colors.grey}
-                        onChangeText={(text) => { setSearch(text) }} />
-
-                    <View style={{
-                        marginTop: normalise(5), backgroundColor: Colors.darkerblack,
-                        height: normalise(65), width: '100%', borderRadius: normalise(8), borderColor: Colors.fadeblack,
-                        borderWidth: normalise(1), justifyContent: 'center', alignItems: 'center'
-                    }}>
+                        <TextInput style={{
+                            width: '100%',
+                            borderRadius: normalise(8), padding: normalise(10),
+                            color: Colors.white, fontWeight: '500'
+                        }} value={search}
+                            multiline={true}
+                            placeholder={"Add a caption..."}
+                            placeholderTextColor={Colors.grey}
+                            onChangeText={(text) => { setSearch(text) }} />
 
                         <View style={{
-                            width: '90%', flexDirection: 'row', alignSelf: 'center',
-                            justifyContent: 'flex-start', alignItems: 'center',
+                            marginTop: normalise(5), backgroundColor: Colors.darkerblack,
+                            height: normalise(65), width: '100%', borderRadius: normalise(8), borderColor: Colors.fadeblack,
+                            borderWidth: normalise(1), justifyContent: 'center', alignItems: 'center'
                         }}>
 
-                            <TouchableOpacity>
-                                <Image source={{ uri: imgsource }}
-                                    style={{ height: normalise(40), width: normalise(40), borderRadius: normalise(5) }}
-                                    resizeMode='contain' />
-                            </TouchableOpacity>
-
                             <View style={{
-                                alignItems: 'flex-start',
-                                justifyContent: 'center', width: '85%'
+                                width: '90%', flexDirection: 'row', alignSelf: 'center',
+                                justifyContent: 'flex-start', alignItems: 'center',
                             }}>
-                                <Text style={{
-                                    marginLeft: normalise(20), color: Colors.white,
-                                    fontSize: normalise(11)
-                                }} numberOfLines={1} >{title1}</Text>
 
-                                <Text style={{
-                                    marginLeft: normalise(20), color: Colors.grey,
-                                    fontSize: normalise(10), width: '80%'
-                                }} numberOfLines={1} >{title2}</Text>
+                                <TouchableOpacity>
+                                    <Image source={{ uri: imgsource }}
+                                        style={{ height: normalise(40), width: normalise(40), borderRadius: normalise(5) }}
+                                        resizeMode='contain' />
+                                </TouchableOpacity>
+
+                                <View style={{
+                                    alignItems: 'flex-start',
+                                    justifyContent: 'center', width: '85%'
+                                }}>
+                                    <Text style={{
+                                        marginLeft: normalise(20), color: Colors.white,
+                                        fontSize: normalise(11)
+                                    }} numberOfLines={1} >{title1}</Text>
+
+                                    <Text style={{
+                                        marginLeft: normalise(20), color: Colors.grey,
+                                        fontSize: normalise(10), width: '80%'
+                                    }} numberOfLines={1} >{title2}</Text>
+
+                                </View>
+
 
                             </View>
-
-
                         </View>
+
                     </View>
 
-                </View>
 
 
-
-            </SafeAreaView>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
         </View>
     )
 }

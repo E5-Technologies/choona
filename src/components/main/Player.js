@@ -162,41 +162,47 @@ function Player(props) {
         //     }, 2000)
 
         // });
-        Sound.setCategory('Playback', false);
-        props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
+        isInternetConnected()
+            .then(() => {
+                Sound.setCategory('Playback', false);
+                props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
 
-        if (changePlayer2) {
-            console.log('getting spotify song uri');
-            const getSpotifyApi = async () => {
-                try {
-                    const res = await callApi();
-                    console.log(res);
-                    if (res.data.status === 200) {
-                        let suc = res.data.data.audio;
-                        setUri(suc);
-                        playSongOnLoad(suc);
-                    }
-                    else {
-                        toast('Oops', 'Something Went Wrong');
-                        props.navigation.goBack();
-                    }
+                if (changePlayer2) {
+                    console.log('getting spotify song uri');
+                    const getSpotifyApi = async () => {
+                        try {
+                            const res = await callApi();
+                            console.log(res);
+                            if (res.data.status === 200) {
+                                let suc = res.data.data.audio;
+                                setUri(suc);
+                                playSongOnLoad(suc);
+                            }
+                            else {
+                                toast('Oops', 'Something Went Wrong');
+                                props.navigation.goBack();
+                            }
 
-                } catch (error) {
-                    console.log(error)
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    };
+
+                    getSpotifyApi();
                 }
-            };
 
-            getSpotifyApi();
-        }
+                else {
+                    playSongOnLoad();
+                }
 
-        else {
-            playSongOnLoad();
-        }
-
-        // return () => {
-        //     clearInterval(myVar),
-        //         unsuscribe();
-        // }
+                // return () => {
+                //     clearInterval(myVar),
+                //         unsuscribe();
+                // }
+            })
+            .catch(() => {
+                toast('', 'Please Connect To Internet');
+            })
     }, []);
 
 
@@ -380,7 +386,7 @@ function Player(props) {
             setPlayVisible(true);
         }
 
-        else if (uri === null && changePlayer2 === undefined) {
+        else if (uri === null && changePlayer2 === undefined || uri === "" && changePlayer2 === undefined ) {
             setBool(false);
             setPlayVisible(true);
             toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
@@ -738,7 +744,7 @@ function Player(props) {
                             placeholder={"Add a comment..."}
                             value={commentText}
                             placeholderTextColor={Colors.white}
-                            onChangeText={(text) => { setCommentText(text), hideKeyboard() }} />
+                            onChangeText={(text) => { setCommentText(text) }} />
 
                         {commentText.length > 1 ?
                             <TouchableOpacity
@@ -908,6 +914,7 @@ function Player(props) {
 
                         <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
                             onPress={() => {
+                                setModalVisible(!modalVisible)
                                 //FOR SPOTIFY USERS
                                 if (props.userProfileResp.register_type === 'spotify') {
                                     if (props.userProfileResp.register_type === registerType) {
@@ -927,7 +934,12 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        openInAppleORSpotify();
+                                        isInternetConnected().then(()=>{
+                                            openInAppleORSpotify();
+                                          })
+                                          .catch(()=>{
+                                            toast('', 'Please Connect To Internet')
+                                          }) 
                                     }
                                 }
                                 //FOR APPLE USERS
@@ -949,12 +961,14 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        openInAppleORSpotify();
-
+                                        isInternetConnected().then(()=>{
+                                            openInAppleORSpotify();
+                                          })
+                                          .catch(()=>{
+                                            toast('', 'Please Connect To Internet')
+                                          }) 
                                     }
                                 }
-
-                                setModalVisible(!modalVisible)
                             }}
                         >
                             <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
@@ -1237,7 +1251,7 @@ function Player(props) {
                         }} value={userSeach}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.grey_text}
-                            onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
+                            onChangeText={(text) => { setUserSeach(text), searchUser(text)}} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -1702,7 +1716,12 @@ function Player(props) {
                                             })
                                         }
                                         else {
-                                            openInAppleORSpotify();
+                                            isInternetConnected().then(()=>{
+                                                openInAppleORSpotify();
+                                              })
+                                              .catch(()=>{
+                                                toast('', 'Please Connect To Internet')
+                                              }) 
                                         }
                                     }
                                     //FOR APPLE USERS
@@ -1724,7 +1743,12 @@ function Player(props) {
                                             })
                                         }
                                         else {
-                                            openInAppleORSpotify();
+                                            isInternetConnected().then(()=>{
+                                                openInAppleORSpotify();
+                                              })
+                                              .catch(()=>{
+                                                toast('', 'Please Connect To Internet')
+                                              }) 
                                         }
                                     }
                                 }}

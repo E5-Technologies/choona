@@ -9,7 +9,9 @@ import {
     TextInput,
     Image,
     FlatList,
-    Platform
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -201,94 +203,99 @@ function FeaturedTrack(props) {
 
             <Loader visible={props.status === FEATURED_SONG_SEARCH_REQUEST} />
 
-            <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
 
-                <HeaderComponent firstitemtext={false}
-                    imageone={ImagePath.backicon}
-                    onPressFirstItem={() => { props.navigation.goBack() }}
-                    textone={""}
-                    title={"PICK FEATURED TRACK"}
-                    thirditemtext={true}
-                    texttwo={""}
-                />
+                <SafeAreaView style={{ flex: 1 }}>
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <HeaderComponent firstitemtext={false}
+                        imageone={ImagePath.backicon}
+                        onPressFirstItem={() => { props.navigation.goBack() }}
+                        textone={""}
+                        title={"PICK FEATURED TRACK"}
+                        thirditemtext={true}
+                        texttwo={""}
+                    />
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => {
-                            if (text.length >= 1) {
-                                props.featuredSongSearchReq(text)
-                            }
-                            setSearch(text)
-                        }} />
-
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
-
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), setData([]) }}
-                            style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
-
-                        </TouchableOpacity>}
-
-                </View>
-
-                {_.isEmpty(data) ? null :
                     <View style={{
-                        flexDirection: 'row', alignItems: 'center', width: '90%', alignSelf: 'center',
-                        marginTop: normalise(5)
+                        width: '92%',
+                        alignSelf: 'center',
                     }}>
-                        <Image source={props.registerType === "spotify" ? ImagePath.spotifyicon : ImagePath.applemusic}
-                            style={{ height: normalise(20), width: normalise(20) }} />
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
-                            fontWeight: 'bold'
-                        }}>{` RESULTS (${props.featuredTrackResp.length})`}</Text>
 
-                    </View>}
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => {
+                                if (text.length >= 1) {
+                                    props.featuredSongSearchReq(text)
+                                }
+                                setSearch(text)
+                            }} />
 
+                        <Image source={ImagePath.searchicongrey}
+                            style={{
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                {_.isEmpty(data) ?
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => { setSearch(""), setData([]) }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
-
-                        <Image source={ImagePath.searchicongrey} style={{ height: normalise(35), width: normalise(35) }} />
-
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
-                            marginTop: normalise(20), width: '60%', textAlign: 'center'
-                        }}>Search for the song you want to share above.</Text>
+                            </TouchableOpacity>}
 
                     </View>
 
-                    : <FlatList
-                        style={{ marginTop: normalise(10) }}
-                        data={data}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => { index.toString() }}
-                        showsVerticalScrollIndicator={false}
-                    />}
+                    {_.isEmpty(data) ? null :
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center', width: '90%', alignSelf: 'center',
+                            marginTop: normalise(5)
+                        }}>
+                            <Image source={props.registerType === "spotify" ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                style={{ height: normalise(20), width: normalise(20) }} />
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(12), marginLeft: normalise(10),
+                                fontWeight: 'bold'
+                            }}>{` RESULTS (${props.featuredTrackResp.length})`}</Text>
 
-            </SafeAreaView>
+                        </View>}
+
+
+                    {_.isEmpty(data) ?
+
+                        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
+
+                            <Image source={ImagePath.searchicongrey} style={{ height: normalise(35), width: normalise(35) }} />
+
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(15), fontWeight: 'bold',
+                                marginTop: normalise(20), width: '60%', textAlign: 'center'
+                            }}>Search for the song you want to share above.</Text>
+
+                        </View>
+
+                        : <FlatList
+                            style={{ marginTop: normalise(10) }}
+                            data={data}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => { index.toString() }}
+                            showsVerticalScrollIndicator={false}
+                        />}
+
+                </SafeAreaView>
+
+            </TouchableWithoutFeedback>
+
         </View>
     )
 }

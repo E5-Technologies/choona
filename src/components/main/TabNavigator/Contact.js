@@ -8,7 +8,8 @@ import {
     Text, ImageBackground,
     TouchableOpacity,
     TextInput, FlatList,
-    Image, Clipboard
+    Image, Clipboard,
+    TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -298,7 +299,13 @@ function Contact(props) {
                                 }
                                 else {
                                     console.log('diffirent reg type');
-                                    setModalVisible(!modalVisible), setBool(true), openInAppleORSpotify();
+                                    setModalVisible(!modalVisible), setBool(true),
+                                        isInternetConnected().then(() => {
+                                            openInAppleORSpotify();
+                                        })
+                                            .catch(() => {
+                                                toast('', 'Please Connect To Internet')
+                                            })
                                 }
 
                             }}
@@ -583,7 +590,7 @@ function Contact(props) {
                         }} value={userSeach}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.grey_text}
-                            onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
+                            onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -752,106 +759,107 @@ function Contact(props) {
 
             <Loader visible={bool} />
 
-            <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+                <SafeAreaView style={{ flex: 1 }}>
 
-                <HeaderComponent firstitemtext={true}
-                    textone={""}
-                    title={"SAVED SONGS"}
-                    thirditemtext={true}
-                    texttwo={""}
-                />
+                    <HeaderComponent firstitemtext={true}
+                        textone={""}
+                        title={"SAVED SONGS"}
+                        thirditemtext={true}
+                        texttwo={""}
+                    />
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <View style={{
+                        width: '92%',
+                        alignSelf: 'center',
+                    }}>
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => {
-                            hideKeyboard(),
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => {
                                 setSearch(text),
-                                props.getSavedSongs(text)
-                        }} />
+                                    props.getSavedSongs(text)
+                            }} />
 
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
-
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => {
-                            setSearch(""),
-                                props.getSavedSongs("")
-                        }}
+                        <Image source={ImagePath.searchicongrey}
                             style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                        </TouchableOpacity>}
-
-                </View>
-
-                {_.isEmpty(props.savedSong) ?
-
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{
-                            marginBottom: '20%',
-                            marginTop: normalise(10), color: Colors.white,
-                            fontSize: normalise(12), fontWeight: 'bold'
-                        }}>NO SAVED SONGS</Text>
-                    </View>
-                    :
-                    <SwipeListView
-                        data={props.savedSong}
-                        renderItem={renderItem}
-                        showsVerticalScrollIndicator={false}
-                        renderHiddenItem={(rowData, rowMap) => (
-
-                            <TouchableOpacity style={{
-                                backgroundColor: Colors.red,
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: "space-evenly",
-                                height: normalise(39),
-                                width: normalise(42),
-                                marginTop: normalise(10),
-                                position: 'absolute', right: 21
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => {
+                                setSearch(""),
+                                    props.getSavedSongs("")
                             }}
-                                onPress={() => {
-                                    props.unsaveSongReq(rowData.item._id)
-                                    rowMap[rowData.item.key].closeRow()
-                                }}
-                            >
-
-                                <Image source={ImagePath.unsaved}
-                                    style={{ height: normalise(15), width: normalise(15), }}
-                                    resizeMode='contain' />
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
                                 <Text style={{
-                                    fontSize: normalise(8), color: Colors.white,
-                                    fontWeight: 'bold'
-                                }}>UNSAVE</Text>
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                            </TouchableOpacity>
-                        )}
+                            </TouchableOpacity>}
 
-                        keyExtractor={(item, index, rowData) => { index.toString() }}
-                        disableRightSwipe={true}
-                        rightOpenValue={-75} />
-                }
-            </SafeAreaView>
+                    </View>
 
+                    {_.isEmpty(props.savedSong) ?
+
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{
+                                marginBottom: '20%',
+                                marginTop: normalise(10), color: Colors.white,
+                                fontSize: normalise(12), fontWeight: 'bold'
+                            }}>NO SAVED SONGS</Text>
+                        </View>
+                        :
+                        <SwipeListView
+                            data={props.savedSong}
+                            renderItem={renderItem}
+                            showsVerticalScrollIndicator={false}
+                            renderHiddenItem={(rowData, rowMap) => (
+
+                                <TouchableOpacity style={{
+                                    backgroundColor: Colors.red,
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: "space-evenly",
+                                    height: normalise(39),
+                                    width: normalise(42),
+                                    marginTop: normalise(10),
+                                    position: 'absolute', right: 21
+                                }}
+                                    onPress={() => {
+                                        props.unsaveSongReq(rowData.item._id)
+                                        rowMap[rowData.item.key].closeRow()
+                                    }}
+                                >
+
+                                    <Image source={ImagePath.unsaved}
+                                        style={{ height: normalise(15), width: normalise(15), }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        fontSize: normalise(8), color: Colors.white,
+                                        fontWeight: 'bold'
+                                    }}>UNSAVE</Text>
+
+                                </TouchableOpacity>
+                            )}
+
+                            keyExtractor={(item, index, rowData) => { index.toString() }}
+                            disableRightSwipe={true}
+                            rightOpenValue={-75} />
+                    }
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
+            
             {renderModalMorePressed()}
             {renderAddToUsers()}
         </View>

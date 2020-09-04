@@ -13,7 +13,8 @@ import {
     Linking,
     FlatList,
     TextInput,
-    Image
+    Image,
+    TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -56,6 +57,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import axios from 'axios';
+import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status = ""
 let userStatus = "";
@@ -438,7 +440,7 @@ function InsideaMessage(props) {
                         }} value={userSeach}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.grey_text}
-                            onChangeText={(text) => { setUserSeach(text), searchUser(text), hideKeyboard() }} />
+                            onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -591,307 +593,314 @@ function InsideaMessage(props) {
 
             <StatusBar />
 
-            <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
 
-                {renderAddToUsers()}
+                <SafeAreaView style={{ flex: 1 }}>
 
-                <InsideMessegeHeader
-                    firstitemtext={false}
-                    imageone={constants.profile_picture_base_url + props.userProfileResp.profile_image}
-                    imagesecond={constants.profile_picture_base_url + props.chatList[index].profile_image}
-                    title={props.chatList[index].username}
-                    thirditemtext={false}
-                    // imagetwo={ImagePath.newmessage} 
-                    imagetwoheight={25}
-                    imagetwowidth={25}
-                    onPressFirstItem={() => { props.navigation.goBack() }} />
+                    {renderAddToUsers()}
 
-                <View style={{
-                    width: '92%',
-                    alignSelf: 'center',
-                }}>
+                    <InsideMessegeHeader
+                        firstitemtext={false}
+                        imageone={constants.profile_picture_base_url + props.userProfileResp.profile_image}
+                        imagesecond={constants.profile_picture_base_url + props.chatList[index].profile_image}
+                        title={props.chatList[index].username}
+                        thirditemtext={false}
+                        // imagetwo={ImagePath.newmessage} 
+                        imagetwoheight={25}
+                        imagetwowidth={25}
+                        onPressFirstItem={() => { props.navigation.goBack() }} />
 
-                    <TextInput style={{
-                        height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                        color: Colors.white, paddingLeft: normalise(30),
-                    }} value={search}
-                        placeholder={"Search"}
-                        placeholderTextColor={Colors.darkgrey}
-                        onChangeText={(text) => { setSearch(text), props.searchMessageRequest(text), hideKeyboard() }} />
+                    <View style={{
+                        width: '92%',
+                        alignSelf: 'center',
+                    }}>
 
-                    <Image source={ImagePath.searchicongrey}
-                        style={{
-                            height: normalise(15), width: normalise(15), bottom: normalise(25),
-                            paddingLeft: normalise(30)
-                        }} resizeMode="contain" />
+                        <TextInput style={{
+                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
+                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
+                            color: Colors.white, paddingLeft: normalise(30),
+                        }} value={search}
+                            placeholder={"Search"}
+                            placeholderTextColor={Colors.darkgrey}
+                            onChangeText={(text) => { setSearch(text), props.searchMessageRequest(text) }} />
 
-                    {search === "" ? null :
-                        <TouchableOpacity onPress={() => { setSearch(""), props.searchMessageRequest("") }}
+                        <Image source={ImagePath.searchicongrey}
                             style={{
-                                position: 'absolute', right: 0,
-                                bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                paddingRight: normalise(10)
-                            }}>
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
-                            }}>CLEAR</Text>
+                                height: normalise(15), width: normalise(15), bottom: normalise(25),
+                                paddingLeft: normalise(30)
+                            }} resizeMode="contain" />
 
-                        </TouchableOpacity>}
+                        {search === "" ? null :
+                            <TouchableOpacity onPress={() => { setSearch(""), props.searchMessageRequest("") }}
+                                style={{
+                                    position: 'absolute', right: 0,
+                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
+                                    paddingRight: normalise(10)
+                                }}>
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',
+                                }}>CLEAR</Text>
 
-                </View>
+                            </TouchableOpacity>}
 
-                <SwipeListView
-                    data={props.searchedChatData}
-                    renderItem={renderItem}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item, index) => { index.toString() }}
-                    disableRightSwipe={true}
-                    rightOpenValue={-75} />
+                    </View>
 
-
-
-                <TouchableOpacity style={{
-                    marginBottom: normalise(30),
-                    marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
-                    borderRadius: normalise(25), backgroundColor: Colors.white, borderWidth: normalise(0.5),
-                    shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-                    shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-                    justifyContent: 'center', borderColor: Colors.grey,
-                }} onPress={() => {
-                    props.navigation.replace('AddAnotherSong', {
-                        users: [{
-                            _id: props.searchedChatData[0].receiver_id === props.userProfileResp._id ? props.searchedChatData[0].sender_id :
-                                props.searchedChatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
-                            profile_image: props.chatList[index].profile_image,
-                        }], index: index, othersProfile: false
-                    })
-                }}>
-
-                    <Text style={{
-                        marginLeft: normalise(10), color: Colors.gray, fontSize: normalise(14),
-                        fontFamily: 'ProximaNova-Extrabld',
-                    }}>ADD ANOTHER SONG</Text>
-
-                </TouchableOpacity>
+                    <SwipeListView
+                        data={props.searchedChatData}
+                        renderItem={renderItem}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => { index.toString() }}
+                        disableRightSwipe={true}
+                        rightOpenValue={-75} />
 
 
 
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        //Alert.alert("Modal has been closed.");
-                    }}
-                >
-                    <ImageBackground
-                        source={ImagePath.page_gradient}
-                        style={styles.centeredView}
+                    <TouchableOpacity style={{
+                        marginBottom: normalise(30),
+                        marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
+                        borderRadius: normalise(25), backgroundColor: Colors.white, borderWidth: normalise(0.5),
+                        shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
+                        shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
+                        justifyContent: 'center', borderColor: Colors.grey,
+                    }} onPress={() => {
+                        props.navigation.replace('AddAnotherSong', {
+                            users: [{
+                                _id: props.searchedChatData[0].receiver_id === props.userProfileResp._id ? props.searchedChatData[0].sender_id :
+                                    props.searchedChatData[0].receiver_id, username: props.chatList[index].username, full_name: props.chatList[index].full_name,
+                                profile_image: props.chatList[index].profile_image,
+                            }], index: index, othersProfile: false
+                        })
+                    }}>
+
+                        <Text style={{
+                            marginLeft: normalise(10), color: Colors.gray, fontSize: normalise(14),
+                            fontFamily: 'ProximaNova-Extrabld',
+                        }}>ADD ANOTHER SONG</Text>
+
+                    </TouchableOpacity>
+
+
+
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            //Alert.alert("Modal has been closed.");
+                        }}
                     >
-
-                        <View
-                            style={styles.modalView}
+                        <ImageBackground
+                            source={ImagePath.page_gradient}
+                            style={styles.centeredView}
                         >
-                            <Text style={{
-                                color: Colors.white,
-                                fontSize: normalise(12),
-                                fontFamily: 'ProximaNova-Semibold',
 
-                            }}>MORE</Text>
+                            <View
+                                style={styles.modalView}
+                            >
+                                <Text style={{
+                                    color: Colors.white,
+                                    fontSize: normalise(12),
+                                    fontFamily: 'ProximaNova-Semibold',
 
-                            <View style={{
-                                backgroundColor: Colors.activityBorderColor,
-                                height: 0.5,
-                                marginTop: normalise(12),
-                                marginBottom: normalise(12)
-                            }} />
+                                }}>MORE</Text>
 
-                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
-                                onPress={() => {
-                                    let saveSongObject = {
-                                        song_uri: props.searchedChatData[positionInArray].song_uri,
-                                        song_name: props.searchedChatData[positionInArray].song_name,
-                                        song_image: props.searchedChatData[positionInArray].image,
-                                        artist_name: props.searchedChatData[positionInArray].artist_name,
-                                        album_name: props.searchedChatData[positionInArray].album_name,
-                                        chat_id: props.searchedChatData[positionInArray].key,
-                                        type: "chat",
-                                        isrc_code: props.searchedChatData[positionInArray].isrc_code,
-                                        original_song_uri: props.searchedChatData[positionInArray].original_song_uri,
-                                        original_reg_type: props.searchedChatData[positionInArray].original_reg_type
-                                    };
+                                <View style={{
+                                    backgroundColor: Colors.activityBorderColor,
+                                    height: 0.5,
+                                    marginTop: normalise(12),
+                                    marginBottom: normalise(12)
+                                }} />
 
-                                    props.saveSongReq(saveSongObject);
-                                    setModalVisible(!modalVisible)
+                                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                                    onPress={() => {
+                                        let saveSongObject = {
+                                            song_uri: props.searchedChatData[positionInArray].song_uri,
+                                            song_name: props.searchedChatData[positionInArray].song_name,
+                                            song_image: props.searchedChatData[positionInArray].image,
+                                            artist_name: props.searchedChatData[positionInArray].artist_name,
+                                            album_name: props.searchedChatData[positionInArray].album_name,
+                                            chat_id: props.searchedChatData[positionInArray].key,
+                                            type: "chat",
+                                            isrc_code: props.searchedChatData[positionInArray].isrc_code,
+                                            original_song_uri: props.searchedChatData[positionInArray].original_song_uri,
+                                            original_reg_type: props.searchedChatData[positionInArray].original_reg_type
+                                        };
+
+                                        props.saveSongReq(saveSongObject);
+                                        setModalVisible(!modalVisible)
+
+                                    }}>
+
+                                    <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>Save Song</Text>
+                                </TouchableOpacity>
+
+
+                                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                                    onPress={() => { setModalVisible(!modalVisible), bottomSheetRef.open() }}
+                                >
+                                    <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white,
+                                        fontSize: normalise(13), marginLeft: normalise(15),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>Send Song to another user</Text>
+                                </TouchableOpacity>
+
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Clipboard.setString(props.searchedChatData[positionInArray].original_song_uri);
+                                        setModalVisible(!modalVisible);
+                                        setPositionInArray(0)
+                                        setTimeout(() => {
+                                            toast("Success", "Song copied to clipboard.")
+                                        }, 1000);
+
+                                    }}
+                                    style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                                    <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>Copy Link</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                                    onPress={() => {
+                                        let deleteMessagPayload = {
+                                            ChatId: props.searchedChatData[positionInArray].key,
+                                            chatToken: props.chatList[index].chat_token,
+                                        }
+                                        props.deleteMessageRequest(deleteMessagPayload)
+                                        setModalVisible(!modalVisible);
+                                        setPositionInArray(0)
+                                    }}
+                                >
+
+                                    <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>Delete Song</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                                    onPress={() => {
+                                        if (props.searchedChatData[positionInArray].original_reg_type === props.registerType) {
+                                            console.log('same reg type');
+                                            setModalVisible(false)
+                                            Linking.canOpenURL(props.searchedChatData[positionInArray].original_song_uri)
+                                                .then(() => {
+                                                    Linking.openURL(props.searchedChatData[positionInArray].original_song_uri)
+                                                        .then(() => {
+                                                            console.log('success')
+
+                                                        }).catch(() => {
+                                                            console.log('error')
+                                                        })
+                                                })
+                                                .catch((err) => {
+                                                    console.log('unsupported')
+                                                })
+                                        }
+                                        else {
+                                            console.log('diffirent reg type');
+                                            setModalVisible(false)
+                                            isInternetConnected().then(() => {
+                                                openInAppleORSpotify();
+                                            })
+                                                .catch(() => {
+                                                    toast('', 'Please Connect To Internet')
+                                                })
+                                        }
+
+                                    }}
+                                >
+                                    <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                                        style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
+                                </TouchableOpacity>
+
+
+
+                                <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                                    onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        if (props.userProfileResp.register_type === 'spotify')
+                                            props.navigation.navigate('AddToPlayListScreen',
+                                                {
+                                                    originalUri: props.searchedChatData[positionInArray].original_song_uri,
+                                                    registerType: props.searchedChatData[positionInArray].original_reg_type,
+                                                    isrc: props.searchedChatData[positionInArray].isrc_code
+                                                })
+                                        else
+                                            setTimeout(() => {
+                                                toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                            }, 1000)
+                                    }}
+                                >
+                                    <Image source={ImagePath.addicon}
+                                        style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
+                                        resizeMode='contain' />
+                                    <Text style={{
+                                        color: Colors.white, marginLeft: normalise(15),
+                                        fontSize: normalise(13),
+                                        fontFamily: 'ProximaNova-Semibold',
+                                    }}>Add to Playlist</Text>
+
+                                </TouchableOpacity>
+
+                            </View>
+
+
+                            <TouchableOpacity onPress={() => {
+                                setModalVisible(!modalVisible);
+                                setPositionInArray(0)
+                            }}
+
+                                style={{
+                                    marginStart: normalise(20),
+                                    marginEnd: normalise(20),
+                                    marginBottom: normalise(20),
+                                    height: normalise(50),
+                                    width: "95%",
+                                    backgroundColor: Colors.darkerblack,
+                                    opacity: 10,
+                                    borderRadius: 20,
+                                    // padding: 35,
+                                    alignItems: "center",
+                                    justifyContent: 'center',
 
                                 }}>
 
-                                <Image source={ImagePath.boxicon} style={{ height: normalise(18), width: normalise(18), }}
-                                    resizeMode='contain' />
+
                                 <Text style={{
-                                    color: Colors.white, marginLeft: normalise(15),
-                                    fontSize: normalise(13),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>Save Song</Text>
-                            </TouchableOpacity>
-
-
-                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
-                                onPress={() => { setModalVisible(!modalVisible), bottomSheetRef.open() }}
-                            >
-                                <Image source={ImagePath.sendicon} style={{ height: normalise(18), width: normalise(18), }}
-                                    resizeMode='contain' />
-                                <Text style={{
-                                    color: Colors.white,
-                                    fontSize: normalise(13), marginLeft: normalise(15),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>Send Song to another user</Text>
-                            </TouchableOpacity>
-
-
-                            <TouchableOpacity
-                                onPress={() => {
-                                    Clipboard.setString(props.searchedChatData[positionInArray].original_song_uri);
-                                    setModalVisible(!modalVisible);
-                                    setPositionInArray(0)
-                                    setTimeout(() => {
-                                        toast("Success", "Song copied to clipboard.")
-                                    }, 1000);
-
-                                }}
-                                style={{ flexDirection: 'row', marginTop: normalise(18) }}>
-                                <Image source={ImagePath.more_copy} style={{ height: normalise(18), width: normalise(18), }}
-                                    resizeMode='contain' />
-                                <Text style={{
-                                    color: Colors.white, marginLeft: normalise(15),
-                                    fontSize: normalise(13),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>Copy Link</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
-                                onPress={() => {
-                                    let deleteMessagPayload = {
-                                        ChatId: props.searchedChatData[positionInArray].key,
-                                        chatToken: props.chatList[index].chat_token,
-                                    }
-                                    props.deleteMessageRequest(deleteMessagPayload)
-                                    setModalVisible(!modalVisible);
-                                    setPositionInArray(0)
-                                }}
-                            >
-
-                                <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
-                                    resizeMode='contain' />
-                                <Text style={{
-                                    color: Colors.white, marginLeft: normalise(15),
-                                    fontSize: normalise(13),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>Delete Song</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
-                                onPress={() => {
-                                    if (props.searchedChatData[positionInArray].original_reg_type === props.registerType) {
-                                        console.log('same reg type');
-                                        setModalVisible(false)
-                                        Linking.canOpenURL(props.searchedChatData[positionInArray].original_song_uri)
-                                            .then(() => {
-                                                Linking.openURL(props.searchedChatData[positionInArray].original_song_uri)
-                                                    .then(() => {
-                                                        console.log('success')
-
-                                                    }).catch(() => {
-                                                        console.log('error')
-                                                    })
-                                            })
-                                            .catch((err) => {
-                                                console.log('unsupported')
-                                            })
-                                    }
-                                    else {
-                                        console.log('diffirent reg type');
-                                        setModalVisible(false)
-                                        openInAppleORSpotify();
-                                    }
-
-                                }}
-                            >
-                                <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
-                                    style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
-                                    resizeMode='contain' />
-                                <Text style={{
-                                    color: Colors.white, marginLeft: normalise(15),
-                                    fontSize: normalise(13),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
-                            </TouchableOpacity>
-
-
-
-                            <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
-                                onPress={() => {
-                                    setModalVisible(!modalVisible)
-                                    if (props.userProfileResp.register_type === 'spotify')
-                                        props.navigation.navigate('AddToPlayListScreen',
-                                            {
-                                                originalUri: props.searchedChatData[positionInArray].original_song_uri,
-                                                registerType: props.searchedChatData[positionInArray].original_reg_type,
-                                                isrc: props.searchedChatData[positionInArray].isrc_code
-                                            })
-                                    else
-                                        setTimeout(() => {
-                                            toast("Oops", "Only, Spotify users can add to their playlist now.")
-                                        }, 1000)
-                                }}
-                            >
-                                <Image source={ImagePath.addicon}
-                                    style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
-                                    resizeMode='contain' />
-                                <Text style={{
-                                    color: Colors.white, marginLeft: normalise(15),
-                                    fontSize: normalise(13),
-                                    fontFamily: 'ProximaNova-Semibold',
-                                }}>Add to Playlist</Text>
+                                    fontSize: normalise(12),
+                                    fontFamily: 'ProximaNova-Bold',
+                                    color: Colors.white
+                                }}>CANCEL</Text>
 
                             </TouchableOpacity>
-
-                        </View>
-
-
-                        <TouchableOpacity onPress={() => {
-                            setModalVisible(!modalVisible);
-                            setPositionInArray(0)
-                        }}
-
-                            style={{
-                                marginStart: normalise(20),
-                                marginEnd: normalise(20),
-                                marginBottom: normalise(20),
-                                height: normalise(50),
-                                width: "95%",
-                                backgroundColor: Colors.darkerblack,
-                                opacity: 10,
-                                borderRadius: 20,
-                                // padding: 35,
-                                alignItems: "center",
-                                justifyContent: 'center',
-
-                            }}>
-
-
-                            <Text style={{
-                                fontSize: normalise(12),
-                                fontFamily: 'ProximaNova-Bold',
-                                color: Colors.white
-                            }}>CANCEL</Text>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </Modal>
-            </SafeAreaView>
-
+                        </ImageBackground>
+                    </Modal>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
 
         </View>
     )
