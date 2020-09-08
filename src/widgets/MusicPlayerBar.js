@@ -94,6 +94,13 @@ function MusicPlayerBar(props) {
     };
 
 
+    const onPressPlayOrPause = () => {
+        if (props.onPressPlayOrPause) {
+            props.onPressPlayOrPause()
+        }
+    };
+    
+
     return (
 
         props.playingSongRef !== "" ?
@@ -152,7 +159,7 @@ function MusicPlayerBar(props) {
                             }} numberOfLines={1}>{props.playingSongRef.album_name}</Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => { playOrPause() }}>
+                        <TouchableOpacity onPress={() => { playOrPause(), onPressPlayOrPause() }}>
                             <Image source={play ? ImagePath.pause : ImagePath.play}
                                 style={{ height: normalize(25), width: normalize(25) }}
                                 resizeMode={'contain'} />
@@ -167,11 +174,13 @@ function MusicPlayerBar(props) {
 
 
 MusicPlayerBar.propTypes = {
-    onPress: propTypes.func
+    onPress: propTypes.func,
+    onPressPlayOrPause: propTypes.func
 };
 
 MusicPlayerBar.defaultProps = {
-    onPress: null
+    onPress: null,
+    onPressPlayOrPause: null
 };
 
 const mapStateToProps = (state) => {

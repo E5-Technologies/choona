@@ -386,7 +386,7 @@ function Player(props) {
             setPlayVisible(true);
         }
 
-        else if (uri === null && changePlayer2 === undefined || uri === "" && changePlayer2 === undefined ) {
+        else if (uri === null && changePlayer2 === undefined || uri === "" && changePlayer2 === undefined) {
             setBool(false);
             setPlayVisible(true);
             toast('Error', "Sorry, this track cannot be played as it does not have a proper link.")
@@ -413,14 +413,15 @@ function Player(props) {
                         saveSongResObj.username = username,
                         saveSongResObj.profile_pic = profilePic,
                         saveSongResObj.commentData = commentData
-                    saveSongResObj.reactionData = reactions
-                    saveSongResObj.id = id,
+                        saveSongResObj.reactionData = reactions
+                        saveSongResObj.id = id,
                         saveSongResObj.artist = artist,
                         saveSongResObj.changePlayer = changePlayer
-                    saveSongResObj.originalUri = originalUri,
+                        saveSongResObj.originalUri = originalUri,
                         saveSongResObj.isrc = isrc,
                         saveSongResObj.regType = registerType,
-                        saveSongResObj.details = details
+                        saveSongResObj.details = details,
+                        saveSongResObj.showPlaylist = props.route.params.showPlaylist
 
 
                     props.saveSongRefReq(saveSongResObj);
@@ -934,12 +935,12 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        isInternetConnected().then(()=>{
+                                        isInternetConnected().then(() => {
                                             openInAppleORSpotify();
-                                          })
-                                          .catch(()=>{
-                                            toast('', 'Please Connect To Internet')
-                                          }) 
+                                        })
+                                            .catch(() => {
+                                                toast('', 'Please Connect To Internet')
+                                            })
                                     }
                                 }
                                 //FOR APPLE USERS
@@ -961,12 +962,12 @@ function Player(props) {
                                         })
                                     }
                                     else {
-                                        isInternetConnected().then(()=>{
+                                        isInternetConnected().then(() => {
                                             openInAppleORSpotify();
-                                          })
-                                          .catch(()=>{
-                                            toast('', 'Please Connect To Internet')
-                                          }) 
+                                        })
+                                            .catch(() => {
+                                                toast('', 'Please Connect To Internet')
+                                            })
                                     }
                                 }
                             }}
@@ -1251,7 +1252,7 @@ function Player(props) {
                         }} value={userSeach}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.grey_text}
-                            onChangeText={(text) => { setUserSeach(text), searchUser(text)}} />
+                            onChangeText={(text) => { setUserSeach(text), searchUser(text) }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -1716,12 +1717,12 @@ function Player(props) {
                                             })
                                         }
                                         else {
-                                            isInternetConnected().then(()=>{
+                                            isInternetConnected().then(() => {
                                                 openInAppleORSpotify();
-                                              })
-                                              .catch(()=>{
-                                                toast('', 'Please Connect To Internet')
-                                              }) 
+                                            })
+                                                .catch(() => {
+                                                    toast('', 'Please Connect To Internet')
+                                                })
                                         }
                                     }
                                     //FOR APPLE USERS
@@ -1743,12 +1744,12 @@ function Player(props) {
                                             })
                                         }
                                         else {
-                                            isInternetConnected().then(()=>{
+                                            isInternetConnected().then(() => {
                                                 openInAppleORSpotify();
-                                              })
-                                              .catch(()=>{
-                                                toast('', 'Please Connect To Internet')
-                                              }) 
+                                            })
+                                                .catch(() => {
+                                                    toast('', 'Please Connect To Internet')
+                                                })
                                         }
                                     }
                                 }}

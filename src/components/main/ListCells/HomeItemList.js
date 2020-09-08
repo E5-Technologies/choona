@@ -193,7 +193,7 @@ function HomeItemList(props) {
                     style={{ height: normalise(250), width: normalise(280), borderRadius: normalise(10) }}
                     resizeMode="cover" />
 
-                <Image source={ImagePath.play}
+                <Image source={props.play ? ImagePath.pause : ImagePath.play}
                     style={{
                         height: normalise(60), width: normalise(60), position: 'absolute',
                         marginLeft: normalise(10), marginTop: normalise(11)
@@ -469,7 +469,7 @@ HomeItemList.propTypes = {
     onPressReact4: PropTypes.func,
     onAddReaction: PropTypes.func,
     modalVisible: PropTypes.bool,
-
+    play: PropTypes.bool,
     postType: PropTypes.bool
 
 };
@@ -485,5 +485,6 @@ HomeItemList.defaultProps = {
     image2: "",
     onPressSecondImage: null,
     modalVisible: false,
-    postType: true
+    postType: true,
+    play: false
 }

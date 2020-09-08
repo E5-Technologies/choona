@@ -87,6 +87,9 @@ function Home(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
+  const [homeReq, setHomeReq] = useState(true);
+  const [postArray, setPostArray] = useState([]);
+  const [timeoutVar, setTimeoutVar] = useState(0);
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -99,6 +102,7 @@ function Home(props) {
       isInternetConnected()
         .then(() => {
 
+          setHomeReq(true);
           props.getProfileReq(),
             props.homePage();
           setUserSearchData([]);
@@ -140,6 +144,9 @@ function Home(props) {
 
       case HOME_PAGE_SUCCESS:
         status = props.status;
+        setPostArray(props.postData);
+        findPlayingSong(props.postData);
+        setHomeReq(false)
         break;
 
       case HOME_PAGE_FAILURE:
@@ -335,6 +342,7 @@ function Home(props) {
 
       <HomeItemList
         image={data.item.song_image}
+        play={postArray[data.index].playing}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
         comments={data.item.comment}
@@ -779,6 +787,73 @@ function Home(props) {
     }
   };
 
+
+  // GET PLAYER PLAYING STATE FOR PAUSE/PLAY ICON IN FEED
+  function getPlayerState() {
+    let isPlaying = null;
+    if (global.playerReference !== null && global.playerReference !== undefined) {
+      isPlaying = global.playerReference.isPlaying();
+    }
+    return isPlaying;
+  };
+
+
+  // FIND THE PLAYING SONG AND ADD THE PAUSE/PLAY ICON TO FEED
+  function findPlayingSong(postData) {
+    const res = getPlayerState();
+
+    // IF PLAYING
+    if (res === true && !props.playingSongRef.changePlayer) {
+        const myindex = postData.findIndex(obj => obj.song_uri === props.playingSongRef.uri);
+        let array = [...postData];
+
+        for (i = 0; i < array.length; i++) {
+          if (i === myindex) {
+
+            array[i].playing = true
+            let duration = global.playerReference.getDuration();
+            global.playerReference.getCurrentTime((seconds) => {
+              let timeout = (duration - seconds) * 1000;
+              console.log('timeout' + timeout);
+              clearTimeout(timeoutVar);
+              setTimeoutFunc(timeout);
+            });
+          }
+
+          else {
+            array[i].playing = false
+          }
+
+        };
+        setPostArray(array);
+        console.log(array);
+      
+    }
+    // NOT PLAYING
+    else {
+      console.log('player not playing or playing song is not in feed');
+
+      let array = [...postData];
+
+      for (i = 0; i < array.length; i++) {
+        array[i].playing = false
+      };
+      setPostArray(array);
+      console.log(array);
+    }
+  };
+
+
+  //SET TIMEOUT FOR PAUSE/PLAY ICON
+  function setTimeoutFunc(timeout) {
+    setTimeoutVar(setTimeout(() => {
+      console.log('now');
+      findPlayingSong(postArray);
+    }, timeout));
+  };
+
+
+
   // VIEW
   return (
 
@@ -795,7 +870,7 @@ function Home(props) {
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
 
-        <Loader visible={props.status === HOME_PAGE_REQUEST} />
+        <Loader visible={homeReq} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
 
@@ -881,7 +956,9 @@ function Home(props) {
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => { index.toString() }}
-              ref={ref} />
+              ref={ref}
+              extraData={postArray}
+               />
 
             {renderAddToUsers()}
 
@@ -905,10 +982,16 @@ function Home(props) {
                     originalUri: props.playingSongRef.originalUri,
                     isrc: props.playingSongRef.isrc,
                     registerType: props.playingSongRef.regType,
-                    details: props.playingSongRef.details
+                    details: props.playingSongRef.details,
+                    showPlaylist: props.playingSongRef.showPlaylist
 
                   })
-              }} />
+              }}
+                onPressPlayOrPause={() => {
+                  setTimeout(() => {
+                    findPlayingSong(postArray)
+                  }, 500)
+                }} />
               : null}
 
 
@@ -1073,13 +1156,13 @@ function Home(props) {
                       else {
                         console.log('diffirent reg type');
                         setModalVisible(false)
-                        setBool(true), 
-                        isInternetConnected().then(()=>{
-                          openInAppleORSpotify();
-                        })
-                        .catch(()=>{
-                          toast('', 'Please Connect To Internet')
-                        })
+                        setBool(true),
+                          isInternetConnected().then(() => {
+                            openInAppleORSpotify();
+                          })
+                            .catch(() => {
+                              toast('', 'Please Connect To Internet')
+                            })
                       }
 
                     }}
