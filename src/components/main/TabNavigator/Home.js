@@ -342,7 +342,7 @@ function Home(props) {
 
       <HomeItemList
         image={data.item.song_image}
-        play={postArray[data.index].playing}
+        play={_.isEmpty(postArray) ? false : postArray[data.index].playing}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
         comments={data.item.comment}
