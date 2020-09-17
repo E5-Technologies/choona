@@ -219,7 +219,7 @@ export function* addSongsToPlaylistAction(action) {
             yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
         }
         else {
-            const response = yield call(postSpotifyApi, `https://api.music.apple.com/v1/me/library/playlists/${action.payload.playListId}/tracks`, action.payload.obj , AppleHeader);
+            const response = yield call(postSpotifyApi, `https://api.music.apple.com/v1/me/library/playlists/${action.payload.playListId}/tracks`, {data : action.payload.obj} , AppleHeader);
             console.log(response);
             yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
         }

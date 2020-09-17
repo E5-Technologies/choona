@@ -39,7 +39,7 @@ import { connect } from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import constants from '../../utils/helpers/constants';
-
+import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status;
 let messageStatus;
@@ -55,6 +55,15 @@ function AddAnotherSong(props) {
 
     let post = false;
 
+    useEffect(()=>{
+       const unsuscribe = props.navigation.addListener('focus', (payload)=>{
+            setResult([]);
+        });
+
+        return()=>{
+            unsuscribe();
+        }
+    });
 
     if (status === "" || props.status !== status) {
         switch (props.status) {
@@ -197,7 +206,15 @@ function AddAnotherSong(props) {
                         }} value={search}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
-                            onChangeText={(text) => { setSearch(text), props.searchSongReq(text, post) }} />
+                            onChangeText={(text) => {
+                                if (text.length >= 1) {
+                                    isInternetConnected().then(() => {
+                                        setSearch(text), props.searchSongReq(text, post)
+                                    }).catch(() => {
+                                        toast('Error', 'Please Connect To Internet')
+                                    })
+                                }
+                            }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{

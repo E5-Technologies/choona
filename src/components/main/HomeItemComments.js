@@ -130,16 +130,16 @@ function HomeItemComments(props) {
                         alignItems: 'flex-start',
                     }}>
 
-                        <TouchableOpacity onPress={() => { onPressImage() }} style={{ justifyContent: 'center' }}>
+                        <TouchableOpacity style={{ justifyContent: 'center' }}>
                             <Image source={{ uri: image }}
                                 style={{ height: normalise(60), width: normalise(60), }}
                                 resizeMode="contain" />
 
-                            <Image source={ImagePath.play}
+                            {/* <Image source={ImagePath.play}
                                 style={{
                                     height: normalise(20), width: normalise(20), position: 'absolute',
                                     alignSelf: 'center'
-                                }} />
+                                }} /> */}
                         </TouchableOpacity>
 
 

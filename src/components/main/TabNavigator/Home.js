@@ -86,7 +86,7 @@ function Home(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
-  const [homeReq, setHomeReq] = useState(true);
+  // const [homeReq, setHomeReq] = useState(false);
   const [postArray, setPostArray] = useState([]);
   const [timeoutVar, setTimeoutVar] = useState(0);
 
@@ -101,9 +101,9 @@ function Home(props) {
       isInternetConnected()
         .then(() => {
 
-          setHomeReq(true);
+          
           props.getProfileReq(),
-            props.homePage();
+          props.homePage();
           setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach("");
@@ -139,18 +139,20 @@ function Home(props) {
 
       case HOME_PAGE_REQUEST:
         status = props.status;
+        // setHomeReq(true);
         break;
 
       case HOME_PAGE_SUCCESS:
         status = props.status;
         setPostArray(props.postData);
         findPlayingSong(props.postData);
-        setHomeReq(false)
+        console.log('calling success');
+        // setHomeReq(false);
         break;
 
       case HOME_PAGE_FAILURE:
         status = props.status;
-        setHomeReq(false)
+        // setHomeReq(false);
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
 
@@ -852,7 +854,7 @@ function Home(props) {
     }, timeout));
   };
 
-
+// console.log('homeReq'+homeReq)
 
   // VIEW
   return (
@@ -870,7 +872,7 @@ function Home(props) {
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
 
-        <Loader visible={homeReq} />
+        <Loader visible={props.status === HOME_PAGE_REQUEST} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
 

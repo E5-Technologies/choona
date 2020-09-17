@@ -243,10 +243,10 @@ function AddToPlayListScreen(props) {
                         }
                         else {
                             let addToPlayListObj = {
-                                obj: {
+                                obj: [{
                                     id: id,
                                     type: 'songs'
-                                },
+                                }],
                                 playListId: data.item.id
                             }
                             props.addSongsToPlayListRequest(props.registerType, addToPlayListObj, devToken, musicToken);

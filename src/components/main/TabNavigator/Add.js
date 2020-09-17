@@ -29,6 +29,8 @@ import {
 import { seachSongsForPostRequest } from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
+import isInternetConnected from '../../../utils/helpers/NetInfo';
+
 
 let status;
 
@@ -124,7 +126,7 @@ function AddSong(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
 
@@ -160,9 +162,13 @@ function AddSong(props) {
                             placeholderTextColor={Colors.darkgrey}
                             onChangeText={(text) => {
                                 if (text.length >= 1) {
-                                    props.seachSongsForPostRequest(text, post)
+                                    isInternetConnected().then(() => {
+                                        props.seachSongsForPostRequest(text, post);
+                                        setSearch(text)
+                                    }).catch(() => {
+                                        toast('Error', 'Please Connect To Internet')
+                                    })
                                 }
-                                setSearch(text)
                             }} />
 
                         <Image source={ImagePath.searchicongrey}
