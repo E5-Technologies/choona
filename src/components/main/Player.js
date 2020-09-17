@@ -421,7 +421,8 @@ function Player(props) {
                         saveSongResObj.isrc = isrc,
                         saveSongResObj.regType = registerType,
                         saveSongResObj.details = details,
-                        saveSongResObj.showPlaylist = props.route.params.showPlaylist
+                        saveSongResObj.showPlaylist = props.route.params.showPlaylist,
+                        saveSongResObj.comingFromMessage = props.route.params.comingFromMessage
 
 
                     props.saveSongRefReq(saveSongResObj);
@@ -996,6 +997,7 @@ function Player(props) {
                                     setTimeout(() => {
                                         toast("Oops", "Only, Spotify users can add to their playlist now.")
                                     }, 1000)
+                                // props.navigation.navigate("AddToPlayListScreen", { isrc: isrc })
                             }}
                         >
                             <Image source={ImagePath.addicon}
@@ -1771,6 +1773,7 @@ function Player(props) {
                                             props.navigation.navigate('AddToPlayListScreen', { originalUri: originalUri, registerType: registerType, isrc: isrc })
                                         else
                                             toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                        // props.navigation.navigate("AddToPlayListScreen", { isrc: isrc })
                                     }}
                                     style={{
                                         flexDirection: 'row',

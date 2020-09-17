@@ -37,22 +37,34 @@ import _ from 'lodash'
 import axios from 'axios';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
+import { NativeModules } from 'react-native';
 
 let status;
 
 function AddToPlayListScreen(props) {
 
-    const [originalUri, setOriginalUri] = useState(props.route.params.originalUri)
-    const [registerType, setRegisterType] = useState(props.route.params.registerType)
-    const [isrc, setIsrc] = useState(props.route.params.isrc)
+    const [originalUri, setOriginalUri] = useState(props.route.params.originalUri);
+    const [registerType, setRegisterType] = useState(props.route.params.registerType);
+    const [isrc, setIsrc] = useState(props.route.params.isrc);
+    const [bool, setBool] = useState(false);
+    const [id, setId] = useState(0);
 
-    console.log("originalUri:  " + originalUri + registerType + isrc)
+    let devToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IktKN0RKQjM3NjgifQ.eyJpYXQiOjE2MDAzMjM5MDksImV4cCI6MTYwMDMyNzUwOSwiaXNzIjoiSDIzVzNFRVJMSyJ9.9f5rO00a6z1Q1DVgMDeo9PUVbdh5S937KJxmBe-9Yw4hNr_Ug9xzxtcDZlRRNqqiMLgX-9zNNZ05DXor-3wSGQ';
+    let musicToken = 'Ai6D0TPiaMdnoCYBqv4K7ykJpmSqEcn9BanBjrvZi3BAoHuu/nZP4QLVdVSavZlfJk3/q9ASJAKFJQcop4lbWHKBrhlwnTOUnQG0vTOpCh8x8jzlgE06boY8aVaUex9ICGj+LMFd/p+SEwQQd0g1ca7IF89l2uQqVLoCgkUVy+rMZ2bcY+Rz/Jb0Qe33Zii7OxiHB9Xdr4YhCZmOaZCWEu+ZHEg/nxHg1gp2kSo0LkfKhRhGnw==';
+
+    console.log("originalUri:  " + originalUri + registerType + isrc);
 
     useEffect(() => {
         props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
-                    props.getUserPlaylist()
+                    if (props.registerType === "apple") {
+                        setBool(true);
+                        getTokens();
+                    }
+                    else {
+                        props.getUserPlaylist(props.registerType)
+                    }
                 })
                 .catch(() => {
                     toast('Error', "Please Connect To Internet")
@@ -86,7 +98,7 @@ function AddToPlayListScreen(props) {
                 toast("Oops", "Song successfully added to playlist")
                 isInternetConnected()
                     .then(() => {
-                        props.getUserPlaylist()
+                        props.getUserPlaylist(props.registerType, devToken, musicToken)
                     })
                     .catch(() => {
                         toast('Error', "Please Connect To Internet")
@@ -125,7 +137,7 @@ function AddToPlayListScreen(props) {
 
 
     //OPEN IN APPLE / SPOTIFY
-    const openInAppleORSpotify = (playListId) => {
+    const getAppleTrackIdFromIsrc = (playListId) => {
 
         const getSpotifyApi = async (playListId) => {
             try {
@@ -134,7 +146,6 @@ function AddToPlayListScreen(props) {
 
                 if (res.status === 200) {
                     if (!_.isEmpty(props.registerType === 'spotify' ? res.data.tracks.items : res.data.data)) {
-
                         if (props.registerType === 'spotify') {
 
                             let addToPlayListObj = {
@@ -143,32 +154,62 @@ function AddToPlayListScreen(props) {
                             }
                             isInternetConnected()
                                 .then(() => {
-                                    props.addSongsToPlayListRequest(addToPlayListObj)
+                                    props.addSongsToPlayListRequest(props.registerType, addToPlayListObj)
                                 })
                                 .catch(() => {
                                     toast('Error', "Please Connect To Internet")
                                 })
-                        }else{
-                            console.log("Coming soon")
                         }
- 
-                    }
+                        else {
 
+                            props.getUserPlaylist(props.registerType, devToken, musicToken);
+                            setId(res.data.data[0].id);
+                            setBool(false);
+                        }
+                    }
                     else {
-                        toast('', 'No Song Found');
+                        toast('', 'The selected song was not found');
+                        setBool(false);
                     }
 
                 }
                 else {
                     toast('Oops', 'Something Went Wrong');
+                    setBool(false);
                 }
 
             } catch (error) {
                 console.log(error);
+                setBool(false);
             }
         };
 
         getSpotifyApi(playListId);
+    };
+
+
+    // GET TOKENS FOR APPLE MUSIC
+    const getTokens = async () => {
+
+        const token = await getAppleDevToken()
+
+        if (token !== "") {
+            let newtoken = token.split(" ");
+            NativeModules.Print.printValue(newtoken.pop(), (value) => {
+                console.log(value);
+                if (value === "") {
+                    setId(1);
+                    toast("Error", "This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to avail this feature.");
+                    setBool(false);
+                }
+                else {
+                    getAppleTrackIdFromIsrc();
+                }
+            })
+        }
+        else {
+            toast('Oops', 'Something Went Wrong');
+        }
     };
 
     function renderPlayListItem(data) {
@@ -176,21 +217,40 @@ function AddToPlayListScreen(props) {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    
-                    if(registerType==='spotify'){
-                        let addToPlayListObj = {
-                            "songUri": [`spotify:track:${(originalUri.substring(originalUri.lastIndexOf("/") + 1))}`],
-                            "playListId": data.item.id
+                    if (props.registerType === 'spotify') {
+                        if (registerType === 'spotify') {
+                            let addToPlayListObj = {
+                                "songUri": [`spotify:track:${(originalUri.substring(originalUri.lastIndexOf("/") + 1))}`],
+                                "playListId": data.item.id
+                            }
+                            isInternetConnected()
+                                .then(() => {
+                                    props.addSongsToPlayListRequest(props.registerType, addToPlayListObj)
+                                })
+                                .catch(() => {
+                                    toast('Error', "Please Connect To Internet")
+                                })
+                        } else {
+                            getAppleTrackIdFromIsrc(data.item.id)
                         }
-                        isInternetConnected()
-                            .then(() => {
-                                props.addSongsToPlayListRequest(addToPlayListObj)
-                            })
-                            .catch(() => {
-                                toast('Error', "Please Connect To Internet")
-                            })
-                    }else{
-                        openInAppleORSpotify(data.item.id)
+                    }
+                    else {
+                        if (id === 0) {
+                            toast('', 'The selected song was not found');
+                        }
+                        else if (id === 1) {
+                            toast("Error", "This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to avail this feature.")
+                        }
+                        else {
+                            let addToPlayListObj = {
+                                obj: {
+                                    id: id,
+                                    type: 'songs'
+                                },
+                                playListId: data.item.id
+                            }
+                            props.addSongsToPlayListRequest(props.registerType, addToPlayListObj, devToken, musicToken);
+                        }
                     }
 
 
@@ -200,17 +260,18 @@ function AddToPlayListScreen(props) {
                     marginVertical: normalise(10),
                     marginHorizontal: normalise(10)
                 }}>
-                <Image source={data.item.images.length > 0 ? { uri: data.item.images[0].url } : ImagePath.appIcon512}
+                <Image source={props.registerType === "spotify" ? data.item.images.length > 0 ? { uri: data.item.images[0].url } : ImagePath.appIcon512
+                    : data.item.attributes.hasOwnProperty("artwork") ? { uri: data.item.attributes.artwork.url } : ImagePath.appIcon512}
                     style={{ height: normalise(50), width: normalise(50) }}
                     resizeMode="contain" />
 
                 <View style={{ marginHorizontal: normalise(10), alignSelf: 'center' }}>
                     <Text style={{
                         color: Colors.white
-                    }}>{data.item.name}</Text>
+                    }}>{props.registerType === 'spotify' ? data.item.name : data.item.attributes.name}</Text>
                     <Text style={{
                         color: Colors.grey_text
-                    }}>{`${data.item.tracks.total} Tracks`}</Text>
+                    }}>{props.registerType === 'spotify' ? `${data.item.tracks.total} Tracks` : data.item.type}</Text>
                 </View>
 
             </TouchableOpacity >
@@ -226,6 +287,7 @@ function AddToPlayListScreen(props) {
             <StatusBar />
 
             <Loader visible={props.status === GET_USER_PLAYLIST_REQUEST} />
+            <Loader visible={bool} />
 
             <SafeAreaView style={{ flex: 1 }}>
 
@@ -239,7 +301,7 @@ function AddToPlayListScreen(props) {
                         color: Colors.activityBorderColor,
                         marginTop: normalise(30),
                         marginHorizontal: normalise(10)
-                    }}>SPOTIFY</Text>
+                    }}>{props.registerType === 'spotify' ? "SPOTIFY" : 'APPLE MUSIC'}</Text>
 
                 {props.getUserPlayList.length < 1 ?
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -274,11 +336,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getUserPlaylist: () => {
-            dispatch(getUserPlaylist())
+        getUserPlaylist: (regType, devToken, musicToken) => {
+            dispatch(getUserPlaylist(regType, devToken, musicToken))
         },
-        addSongsToPlayListRequest: (payload) => {
-            dispatch(addSongsToPlayListRequest(payload))
+        addSongsToPlayListRequest: (regType, payload, devToken, musicToken) => {
+            dispatch(addSongsToPlayListRequest(regType, payload, devToken, musicToken))
         },
     }
 };

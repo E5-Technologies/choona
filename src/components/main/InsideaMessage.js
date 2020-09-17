@@ -853,6 +853,7 @@ function InsideaMessage(props) {
                                             setTimeout(() => {
                                                 toast("Oops", "Only, Spotify users can add to their playlist now.")
                                             }, 1000)
+                                        // props.navigation.navigate("AddToPlayListScreen", { isrc: props.searchedChatData[positionInArray].isrc_code })
                                     }}
                                 >
                                     <Image source={ImagePath.addicon}

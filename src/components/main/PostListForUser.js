@@ -912,7 +912,10 @@ function PostListForUser(props) {
                                                     isrc: posts[positionInArray].isrc_code
                                                 })
                                         else
+                                        setTimeout(()=>{
                                             toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                        }, 1000)    
+                                        // props.navigation.navigate("AddToPlayListScreen", { isrc: posts[positionInArray].isrc_code })
                                     }}
                                 >
                                     <Image source={ImagePath.addicon}

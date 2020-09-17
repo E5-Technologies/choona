@@ -181,9 +181,19 @@ export function* playListOfUserAction(action) {
             "Authorization": "spotify" === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
         };
 
-        const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`, spotifyHeader);
-        yield put({ type: GET_USER_PLAYLIST_SUCCESS, data: response.data.items });
+        let AppleHeader = {
+            "Music-User-Token": action.musicToken,
+            "Authorization": "Bearer " + action.devToken,
+        };
 
+        if (action.regType === 'spotify') {
+            const response = yield call(getSpotifyApi, `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`, spotifyHeader);
+            yield put({ type: GET_USER_PLAYLIST_SUCCESS, data: response.data.items });
+        }
+        else {
+            const response = yield call(getAppleDevelopersToken, `https://api.music.apple.com/v1/me/library/playlists`, AppleHeader);
+            yield put({ type: GET_USER_PLAYLIST_SUCCESS, data: response.data.data });
+        }
 
     } catch (error) {
         yield put({ type: GET_USER_PLAYLIST_FAILURE, error: error })
@@ -199,9 +209,20 @@ export function* addSongsToPlaylistAction(action) {
             "Authorization": "spotify" === "spotify" ? `${spotifyToken}` : `${AppleToken}`,
         };
 
-        const response = yield call(postSpotifyApi, `https://api.spotify.com/v1/playlists/`+action.payload.playListId+`/tracks`,{"uris":action.payload.songUri}, spotifyHeader);
-        yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
+        let AppleHeader = {
+            "Music-User-Token": action.musicToken,
+            "Authorization": "Bearer " + action.devToken,
+        };
 
+        if (action.regType === 'spotify') {
+            const response = yield call(postSpotifyApi, `https://api.spotify.com/v1/playlists/` + action.payload.playListId + `/tracks`, { "uris": action.payload.songUri }, spotifyHeader);
+            yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
+        }
+        else {
+            const response = yield call(postSpotifyApi, `https://api.music.apple.com/v1/me/library/playlists/${action.payload.playListId}/tracks`, action.payload.obj , AppleHeader);
+            console.log(response);
+            yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
+        }
 
     } catch (error) {
         yield put({ type: ADD_SONG_TO_PLAYLIST_FAILURE, error: error })

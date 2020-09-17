@@ -32,12 +32,18 @@ export const getSongFromisrc = (regType, isrc) => ({
     isrc
 });
 
-export const getUserPlaylist = () => ({
+export const getUserPlaylist = (regType, devToken, musicToken) => ({
     type: GET_USER_PLAYLIST_REQUEST,
+    regType,
+    devToken,
+    musicToken
 });
 
-export const addSongsToPlayListRequest = (payload) => ({
+export const addSongsToPlayListRequest = (regType, payload, devToken, musicToken) => ({
     type: ADD_SONG_TO_PLAYLIST_REQUEST,
-    payload
+    regType,
+    payload,
+    devToken,
+    musicToken
 });
 

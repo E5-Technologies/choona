@@ -335,6 +335,7 @@ function Contact(props) {
                                     setTimeout(() => {
                                         toast("Oops", "Only, Spotify users can add to their playlist now.")
                                     }, 1000)
+                                // props.navigation.navigate("AddToPlayListScreen", { isrc: props.savedSong[index].isrc_code })
                             }}
                         >
                             <Image source={ImagePath.addicon}

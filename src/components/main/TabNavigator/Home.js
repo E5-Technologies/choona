@@ -66,7 +66,6 @@ import Contacts from 'react-native-contacts';
 import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
-import { NativeModules } from 'react-native';
 
 let status = "";
 let songStatus = "";
@@ -151,6 +150,7 @@ function Home(props) {
 
       case HOME_PAGE_FAILURE:
         status = props.status;
+        setHomeReq(false)
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
 
@@ -804,30 +804,30 @@ function Home(props) {
 
     // IF PLAYING
     if (res === true && !props.playingSongRef.changePlayer) {
-        const myindex = postData.findIndex(obj => obj.song_uri === props.playingSongRef.uri);
-        let array = [...postData];
+      const myindex = postData.findIndex(obj => obj.song_uri === props.playingSongRef.uri);
+      let array = [...postData];
 
-        for (i = 0; i < array.length; i++) {
-          if (i === myindex) {
+      for (i = 0; i < array.length; i++) {
+        if (i === myindex) {
 
-            array[i].playing = true
-            let duration = global.playerReference.getDuration();
-            global.playerReference.getCurrentTime((seconds) => {
-              let timeout = (duration - seconds) * 1000;
-              console.log('timeout' + timeout);
-              clearTimeout(timeoutVar);
-              setTimeoutFunc(timeout);
-            });
-          }
+          array[i].playing = true
+          let duration = global.playerReference.getDuration();
+          global.playerReference.getCurrentTime((seconds) => {
+            let timeout = (duration - seconds) * 1000;
+            console.log('timeout' + timeout);
+            clearTimeout(timeoutVar);
+            setTimeoutFunc(timeout);
+          });
+        }
 
-          else {
-            array[i].playing = false
-          }
+        else {
+          array[i].playing = false
+        }
 
-        };
-        setPostArray(array);
-        console.log(array);
-      
+      };
+      setPostArray(array);
+      console.log(array);
+
     }
     // NOT PLAYING
     else {
@@ -958,7 +958,7 @@ function Home(props) {
               keyExtractor={(item, index) => { index.toString() }}
               ref={ref}
               extraData={postArray}
-               />
+            />
 
             {renderAddToUsers()}
 
@@ -983,7 +983,8 @@ function Home(props) {
                     isrc: props.playingSongRef.isrc,
                     registerType: props.playingSongRef.regType,
                     details: props.playingSongRef.details,
-                    showPlaylist: props.playingSongRef.showPlaylist
+                    showPlaylist: props.playingSongRef.showPlaylist,
+                    comingFromMessage: props.playingSongRef.comingFromMessage
 
                   })
               }}
@@ -1188,19 +1189,10 @@ function Home(props) {
                             isrc: props.postData[positionInArray].isrc_code
                           })
                       else {
-                        getAppleDevToken()
-                          .then((token) => {
-                            let newtoken = token.split(" ");
-                            NativeModules.Print.printValue(newtoken.pop(), (value) => {
-                              console.log(value);
-                            });
-                          })
-                          .catch((err) => {
-                            setModal1Visible(!modalVisible)
-                            setTimeout(() => {
-                              toast('Oops', 'Something Went Wrong');
-                            }, 1000);
-                          });
+                        setTimeout(() => {
+                          toast("Oops", "Only, Spotify users can add to their playlist now.")
+                        }, 1000)
+                        // props.navigation.navigate("AddToPlayListScreen", { isrc: props.postData[positionInArray].isrc_code })
                       }
                     }}
                   >
