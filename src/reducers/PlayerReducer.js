@@ -26,7 +26,9 @@ import {
 
     ADD_SONG_TO_PLAYLIST_REQUEST,
     ADD_SONG_TO_PLAYLIST_SUCCESS,
-    ADD_SONG_TO_PLAYLIST_FAILURE
+    ADD_SONG_TO_PLAYLIST_FAILURE,
+
+    ASYNC_STORAGE_CLEAR
 }
     from '../action/TypeConstants';
 
@@ -189,6 +191,9 @@ const PlayerReducer = (state = initialState, action) => {
                 status: action.type,
                 error: action.error
             };
+
+        case ASYNC_STORAGE_CLEAR:
+            return initialState;
 
 
         default:

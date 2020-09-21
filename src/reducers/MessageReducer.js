@@ -34,7 +34,9 @@ import {
 
     CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
     CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
-    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE,
+
+    ASYNC_STORAGE_CLEAR
 
 } from '../action/TypeConstants';
 
@@ -242,6 +244,9 @@ const MessageReducer = (state = initialState, action) => {
                 chatTokenList: [],
                 error: action.error
             };
+
+        case ASYNC_STORAGE_CLEAR:
+            return initialState;
 
 
         default:

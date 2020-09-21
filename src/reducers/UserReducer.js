@@ -73,7 +73,9 @@ import {
 
     GET_USERS_FROM_CONTACTS_REQUEST,
     GET_USERS_FROM_CONTACTS_SUCCESS,
-    GET_USERS_FROM_CONTACTS_FAILURE
+    GET_USERS_FROM_CONTACTS_FAILURE,
+
+    ASYNC_STORAGE_CLEAR
 }
     from '../action/TypeConstants';
 import moment from 'moment'
@@ -539,6 +541,9 @@ const UserReducer = (state = initialState, action) => {
                 status: action.type,
                 error: action.error
             };
+
+        case ASYNC_STORAGE_CLEAR:
+            return initialState;
 
         default:
             return state;

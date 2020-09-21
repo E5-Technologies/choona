@@ -351,7 +351,7 @@ function Home(props) {
 
       <HomeItemList
         image={data.item.song_image}
-        play={_.isEmpty(postArray) ? false : postArray[data.index].playing}
+        play={_.isEmpty(postArray) ? false : props.postData.length === postArray.length ? postArray[data.index].playing : false}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
         comments={data.item.comment}
@@ -363,16 +363,20 @@ function Home(props) {
         modalVisible={modal1Visible}
         postType={data.item.social_type === "spotify"}
         onReactionPress={(reaction) => {
-          hitreact(reaction),
-            sendReaction(data.item._id, reaction);
+          if (!homeReq) {
+            hitreact(reaction),
+              sendReaction(data.item._id, reaction);
+          }
         }}
         onPressImage={() => {
-          if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate("Profile", { fromAct: false })
-          }
-          else {
-            props.navigation.navigate("OthersProfile",
-              { id: data.item.user_id })
+          if (!homeReq) {
+            if (props.userProfileResp._id === data.item.user_id) {
+              props.navigation.navigate("Profile", { fromAct: false })
+            }
+            else {
+              props.navigation.navigate("OthersProfile",
+                { id: data.item.user_id })
+            }
           }
         }}
 
@@ -380,38 +384,46 @@ function Home(props) {
           hitreact1(modal1Visible)
         }}
         onPressMusicbox={() => {
-          props.navigation.navigate('Player', {
-            comments: data.item.comment,
-            song_title: data.item.song_name,
-            album_name: data.item.album_name,
-            song_pic: data.item.song_image,
-            username: data.item.userDetails.username,
-            profile_pic: data.item.userDetails.profile_image,
-            time: data.item.time, title: data.item.title,
-            uri: data.item.song_uri,
-            reactions: data.item.reaction,
-            id: data.item._id,
-            artist: data.item.artist_name,
-            changePlayer: changePlayer,
-            originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
-            registerType: data.item.userDetails.register_type,
-            isrc: data.item.isrc_code,
-            details: data.item
-          })
+          if (!homeReq) {
+            props.navigation.navigate('Player', {
+              comments: data.item.comment,
+              song_title: data.item.song_name,
+              album_name: data.item.album_name,
+              song_pic: data.item.song_image,
+              username: data.item.userDetails.username,
+              profile_pic: data.item.userDetails.profile_image,
+              time: data.item.time, title: data.item.title,
+              uri: data.item.song_uri,
+              reactions: data.item.reaction,
+              id: data.item._id,
+              artist: data.item.artist_name,
+              changePlayer: changePlayer,
+              originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+              registerType: data.item.userDetails.register_type,
+              isrc: data.item.isrc_code,
+              details: data.item
+            });
+          }
         }}
         onPressReactionbox={() => {
-          props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
+          if (!homeReq) {
+            props.navigation.navigate('HomeItemReactions', { reactions: data.item.reaction, post_id: data.item._id })
+          }
         }}
         onPressCommentbox={() => {
-          props.navigation.navigate('HomeItemComments', {
-            index: data.index, comment: data.item.comment,
-            image: data.item.song_image, username: data.item.userDetails.username, userComment: data.item.post_content,
-            time: data.item.createdAt, id: data.item._id
-          });
+          if (!homeReq) {
+            props.navigation.navigate('HomeItemComments', {
+              index: data.index, comment: data.item.comment,
+              image: data.item.song_image, username: data.item.userDetails.username, userComment: data.item.post_content,
+              time: data.item.createdAt, id: data.item._id
+            });
+          }
         }}
         onPressSecondImage={() => {
-          setPositionInArray(data.index)
-          setModalVisible(true)
+          if (!homeReq) {
+            setPositionInArray(data.index)
+            setModalVisible(true)
+          }
         }}
         marginBottom={data.index === props.postData.length - 1 ? normalise(60) : 0} />
       // </TouchableOpacity>
@@ -810,7 +822,7 @@ function Home(props) {
   // FIND THE PLAYING SONG AND ADD THE PAUSE/PLAY ICON TO FEED
   function findPlayingSong(postData) {
     const res = getPlayerState();
-
+    
     // IF PLAYING
     if (res === true && !props.playingSongRef.changePlayer) {
       const myindex = postData.findIndex(obj => obj.song_uri === props.playingSongRef.uri);

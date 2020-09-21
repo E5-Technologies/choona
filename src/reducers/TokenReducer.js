@@ -45,9 +45,11 @@ const TokenReducer = (state = initialState, action) => {
         case ASYNC_STORAGE_CLEAR:
             return {
                 ...state,
-                status: action.type,
+                status: "",
                 token: action.token,
-                registerType: action.registerType
+                registerType: "",
+                loading: false,
+                error: {}
             };
 
         case GET_TOKEN_REQUEST:

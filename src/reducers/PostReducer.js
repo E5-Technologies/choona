@@ -18,7 +18,9 @@ import {
 
     GET_POST_FROM_TOP_50_REQUEST,
     GET_POST_FROM_TOP_50_SUCCESS,
-    GET_POST_FROM_TOP_50_FAILURE
+    GET_POST_FROM_TOP_50_FAILURE,
+
+    ASYNC_STORAGE_CLEAR
 }
     from '../action/TypeConstants';
 
@@ -145,6 +147,9 @@ const PostReducer = (state = initialState, action) => {
                 status: action.type,
                 error: action.error
             };
+
+        case ASYNC_STORAGE_CLEAR:
+            return initialState;
 
         default:
             return state;
