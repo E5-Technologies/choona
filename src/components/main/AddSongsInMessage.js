@@ -66,15 +66,15 @@ function AddSongsInMessage(props) {
 
     var bottomSheetRef;
 
-    useEffect(()=>{
-        const unsuscribe = props.navigation.addListener('focus', (payload)=>{
-             setResult([]);
-         });
- 
-         return()=>{
-             unsuscribe();
-         }
-     });
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+            setResult([]);
+        });
+
+        return () => {
+            unsuscribe();
+        }
+    });
 
     if (status === "" || props.status !== status) {
         switch (props.status) {
@@ -347,9 +347,10 @@ function AddSongsInMessage(props) {
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
                             onChangeText={(text) => {
+                                setSearch(text);
                                 if (text.length >= 1) {
                                     isInternetConnected().then(() => {
-                                        setSearch(text), props.searchSongReq(text, post)
+                                        props.searchSongReq(text, post)
                                     }).catch(() => {
                                         toast('Error', 'Please Connect To Internet')
                                     })

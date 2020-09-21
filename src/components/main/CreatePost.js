@@ -118,6 +118,7 @@ function AddSong(props) {
                 break;
 
             case CREATE_POST_SUCCESS:
+                props.navigation.popToTop();
                 props.navigation.replace("bottomTab", { screen: "Home" })
                 status = props.status
                 break;

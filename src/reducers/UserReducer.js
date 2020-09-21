@@ -90,6 +90,7 @@ const initialState = {
     followUnfollowResp: {},
     othersProfileresp: {},
     postData: [],
+    currentPage: "",
     commentResp: {},
     followerData: [],
     followingData: [],
@@ -268,11 +269,25 @@ const UserReducer = (state = initialState, action) => {
             };
 
         case HOME_PAGE_SUCCESS:
-            return {
-                ...state,
-                status: action.type,
-                postData: _.sortBy(action.data, "createdAt").reverse()
-            };
+
+            if (action.offset === 1) {
+                return {
+                    ...state,
+                    status: action.type,
+                    postData: _.sortBy(action.data, "createdAt").reverse(),
+                    currentPage: action.currentpage
+                };
+            }
+            else {
+                let array = [...state.postData, ...action.data];
+                console.log(array);
+                return {
+                    ...state,
+                    status: action.type,
+                    postData: _.sortBy(array, "createdAt").reverse(),
+                    currentPage: action.currentpage
+                }
+            }
 
         case HOME_PAGE_FAILURE:
             return {

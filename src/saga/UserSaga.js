@@ -265,12 +265,12 @@ export function* homePageAction(action) {
             accesstoken: items.token
         };
 
-        const response = yield call(getApi, 'post/list', Header);
+        const response = yield call(getApi, `post/list?page=${action.offset}`, Header);
 
         const chatResponse = yield call(getApi, 'chat/list', Header)
         yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
 
-        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data });
+        yield put({ type: HOME_PAGE_SUCCESS, data: response.data.data, offset: action.offset, currentpage: response.data.page });
         //yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
 
     } catch (error) {

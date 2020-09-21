@@ -12,7 +12,7 @@ import {
   Platform,
   Clipboard,
   Linking,
-  Keyboard
+  Keyboard, ActivityIndicator
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -86,9 +86,11 @@ function Home(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
-  // const [homeReq, setHomeReq] = useState(false);
+  const [homeReq, setHomeReq] = useState(true);
   const [postArray, setPostArray] = useState([]);
   const [timeoutVar, setTimeoutVar] = useState(0);
+  const [onScrolled, setOnScrolled] = useState(false);
+  const [offset, setOffset] = useState(1);
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -100,14 +102,19 @@ function Home(props) {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
       isInternetConnected()
         .then(() => {
-
-          
+          console.log('home use Effect');
+          setHomeReq(true);
+          setOnScrolled(false);
+          setOffset(1);
           props.getProfileReq(),
-          props.homePage();
+            props.homePage(1);
           setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach("");
 
+          if (ref.current !== null) {
+            ref.current.scrollToIndex({ animated: true, index: 0 })
+          }
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet')
@@ -139,7 +146,6 @@ function Home(props) {
 
       case HOME_PAGE_REQUEST:
         status = props.status;
-        // setHomeReq(true);
         break;
 
       case HOME_PAGE_SUCCESS:
@@ -147,18 +153,18 @@ function Home(props) {
         setPostArray(props.postData);
         findPlayingSong(props.postData);
         console.log('calling success');
-        // setHomeReq(false);
+        setHomeReq(false);
         break;
 
       case HOME_PAGE_FAILURE:
         status = props.status;
-        // setHomeReq(false);
+        setHomeReq(false);
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
 
       case REACTION_ON_POST_SUCCESS:
         status = props.status;
-        props.homePage()
+        props.homePage(1)
         break;
 
       case USER_FOLLOW_UNFOLLOW_REQUEST:
@@ -167,7 +173,7 @@ function Home(props) {
 
       case USER_FOLLOW_UNFOLLOW_SUCCESS:
         status = props.status;
-        props.homePage()
+        props.homePage(1)
         setPositionInArray(0);
         break;
 
@@ -218,12 +224,13 @@ function Home(props) {
     switch (props.postStatus) {
 
       case DELETE_POST_REQUEST:
+        setHomeReq(true);
         postStatus = props.postStatus
         break;
 
       case DELETE_POST_SUCCESS:
         postStatus = props.postStatus
-        props.homePage()
+        props.homePage(1)
         setPositionInArray(0);
         break;
 
@@ -854,7 +861,7 @@ function Home(props) {
     }, timeout));
   };
 
-// console.log('homeReq'+homeReq)
+  //console.log('homeReq' + homeReq)
 
   // VIEW
   return (
@@ -872,7 +879,7 @@ function Home(props) {
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
 
-        <Loader visible={props.status === HOME_PAGE_REQUEST} />
+        <Loader visible={homeReq} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
 
@@ -956,10 +963,39 @@ function Home(props) {
             <FlatList
               data={props.postData}
               renderItem={renderItem}
+              windowSize={150}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => { index.toString() }}
               ref={ref}
               extraData={postArray}
+              onEndReached={() => {
+                if (onScrolled) {
+                  if (offset + 1 === props.currentPage + 1) {
+                    setOffset(offset + 1);
+                    props.homePage(offset + 1);
+                    setOnScrolled(false);
+                  }
+                }
+              }}
+              onEndReachedThreshold={0}
+              initialNumToRender={10}
+              onMomentumScrollBegin={() => { setOnScrolled(true) }}
+              ListFooterComponent={
+
+                props.status === HOME_PAGE_REQUEST ?
+                  <ActivityIndicator size={'large'} style={{
+                    alignSelf: 'center', marginBottom: normalise(50),
+                    marginTop: normalise(-40)
+                  }} />
+                  : null
+
+              }
+              getItemLayout={(data, index) => (
+                { length: 250, offset: normalise(385) * index, index }
+              )}
+              onScrollToIndexFailed={(val) => {
+                console.log(val)
+              }}
             />
 
             {renderAddToUsers()}
@@ -1339,6 +1375,7 @@ const mapStateToProps = (state) => {
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
+    currentPage: state.UserReducer.currentPage
   }
 };
 
@@ -1348,8 +1385,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(getProfileRequest())
     },
 
-    homePage: () => {
-      dispatch(homePageReq())
+    homePage: (offset) => {
+      dispatch(homePageReq(offset))
     },
 
     saveSongReq: (payload) => {

@@ -119,7 +119,7 @@ function PostListForUser(props) {
 
             case REACTION_ON_POST_SUCCESS:
                 status = props.status;
-                props.homePage()
+                props.homePage(1)
                 break;
 
             case USER_FOLLOW_UNFOLLOW_REQUEST:
@@ -128,7 +128,7 @@ function PostListForUser(props) {
 
             case USER_FOLLOW_UNFOLLOW_SUCCESS:
                 status = props.status;
-                props.homePage()
+                props.homePage(1)
                 setPositionInArray(0);
                 break;
 
@@ -1072,8 +1072,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(getProfileRequest())
         },
 
-        homePage: () => {
-            dispatch(homePageReq())
+        homePage: (offset) => {
+            dispatch(homePageReq(offset))
         },
 
         saveSongReq: (payload) => {

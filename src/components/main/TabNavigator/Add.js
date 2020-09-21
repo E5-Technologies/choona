@@ -161,10 +161,10 @@ function AddSong(props) {
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
                             onChangeText={(text) => {
+                                setSearch(text)
                                 if (text.length >= 1) {
                                     isInternetConnected().then(() => {
                                         props.seachSongsForPostRequest(text, post);
-                                        setSearch(text)
                                     }).catch(() => {
                                         toast('Error', 'Please Connect To Internet')
                                     })

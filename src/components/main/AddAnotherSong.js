@@ -55,12 +55,12 @@ function AddAnotherSong(props) {
 
     let post = false;
 
-    useEffect(()=>{
-       const unsuscribe = props.navigation.addListener('focus', (payload)=>{
+    useEffect(() => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
             setResult([]);
         });
 
-        return()=>{
+        return () => {
             unsuscribe();
         }
     });
@@ -207,9 +207,10 @@ function AddAnotherSong(props) {
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
                             onChangeText={(text) => {
+                                setSearch(text);
                                 if (text.length >= 1) {
                                     isInternetConnected().then(() => {
-                                        setSearch(text), props.searchSongReq(text, post)
+                                        props.searchSongReq(text, post)
                                     }).catch(() => {
                                         toast('Error', 'Please Connect To Internet')
                                     })

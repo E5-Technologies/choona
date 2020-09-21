@@ -56,8 +56,9 @@ export const othersProfileRequest = (id) => ({
     id
 });
 
-export const homePageReq = () => ({
-    type: HOME_PAGE_REQUEST
+export const homePageReq = (offset) => ({
+    type: HOME_PAGE_REQUEST,
+    offset
 });
 
 export const commentOnPostReq = (payload) => ({
