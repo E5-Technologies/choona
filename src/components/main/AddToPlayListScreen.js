@@ -49,8 +49,8 @@ function AddToPlayListScreen(props) {
     const [bool, setBool] = useState(false);
     const [id, setId] = useState(0);
 
-    let devToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IktKN0RKQjM3NjgifQ.eyJpYXQiOjE2MDAzMjM5MDksImV4cCI6MTYwMDMyNzUwOSwiaXNzIjoiSDIzVzNFRVJMSyJ9.9f5rO00a6z1Q1DVgMDeo9PUVbdh5S937KJxmBe-9Yw4hNr_Ug9xzxtcDZlRRNqqiMLgX-9zNNZ05DXor-3wSGQ';
-    let musicToken = 'Ai6D0TPiaMdnoCYBqv4K7ykJpmSqEcn9BanBjrvZi3BAoHuu/nZP4QLVdVSavZlfJk3/q9ASJAKFJQcop4lbWHKBrhlwnTOUnQG0vTOpCh8x8jzlgE06boY8aVaUex9ICGj+LMFd/p+SEwQQd0g1ca7IF89l2uQqVLoCgkUVy+rMZ2bcY+Rz/Jb0Qe33Zii7OxiHB9Xdr4YhCZmOaZCWEu+ZHEg/nxHg1gp2kSo0LkfKhRhGnw==';
+    let devToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IktKN0RKQjM3NjgifQ.eyJpYXQiOjE2MDA4NzAyODksImV4cCI6MTYwMDg3Mzg4OSwiaXNzIjoiSDIzVzNFRVJMSyJ9.lUaaKmS3vxoXvFYqLF257VN10lQ_6jG9wNXzdnSOVyit2eZDdYZA1IsvsXmNhJA_e_rzMcNkK4btZmZ7Ne7wvg';
+    let musicToken = 'Ariuqk58JeyKVb+1eiam5EAPQiIrTPPWeLK05LDuaJXP69WWll1UroE34wVQ2IvKHv0kR3RrVJkhr122pMbfGnkUSICThncHQekz/DWBrQnbJLbaJx3OP7PqDQxdtbEMn7GXXQ5jyLVe8d2CqJU/ppYxWSfiLlwDmuWEOKyawFq5FDzkcbOEAePws9iKgPMaNuQOwF5K4xp9Do9ih1+Jg1Ea7l2LlXwou4UWuSuMxA3UV4Tlsw==';
 
     console.log("originalUri:  " + originalUri + registerType + isrc);
 

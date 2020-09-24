@@ -776,14 +776,23 @@ function InsideaMessage(props) {
 
                                 <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
                                     onPress={() => {
-                                        let deleteMessagPayload = {
-                                            ChatId: props.searchedChatData[positionInArray].key,
-                                            chatToken: props.chatList[index].chat_token,
+                                        if (props.chatData.length > 1) {
+                                            let deleteMessagPayload = {
+                                                ChatId: props.searchedChatData[positionInArray].key,
+                                                chatToken: props.chatList[index].chat_token,
+                                            }
+                                            props.deleteMessageRequest(deleteMessagPayload)
+                                            setModalVisible(!modalVisible);
+                                            setPositionInArray(0)
                                         }
-                                        props.deleteMessageRequest(deleteMessagPayload)
-                                        setModalVisible(!modalVisible);
-                                        setPositionInArray(0)
-                                    }}
+                                        else{
+                                            setModalVisible(!modalVisible);
+                                            setTimeout(()=>{
+                                                toast('','Last Message of a converstaion cannot be deleted');
+                                            },1000);
+                                        }
+                                    }
+                                    }
                                 >
 
                                     <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
