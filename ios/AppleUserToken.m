@@ -9,5 +9,5 @@
 #import "React/RCTBridgeModule.h"
 
 @interface RCT_EXTERN_MODULE(Print, NSObject)
-RCT_EXTERN_METHOD(printValue: (NSString *)abc callback:(RCTResponseSenderBlock))
+RCT_EXTERN_METHOD(printValue: (NSString *)developerToken callback:(RCTResponseSenderBlock))
 @end
