@@ -183,7 +183,7 @@ export function* playListOfUserAction(action) {
 
         let AppleHeader = {
             "Music-User-Token": action.musicToken,
-            "Authorization": "Bearer " + action.devToken,
+            "Authorization": action.devToken,
         };
 
         if (action.regType === 'spotify') {
@@ -211,7 +211,7 @@ export function* addSongsToPlaylistAction(action) {
 
         let AppleHeader = {
             "Music-User-Token": action.musicToken,
-            "Authorization": "Bearer " + action.devToken,
+            "Authorization": action.devToken,
         };
 
         if (action.regType === 'spotify') {

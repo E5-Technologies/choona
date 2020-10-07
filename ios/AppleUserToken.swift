@@ -20,7 +20,8 @@ class Print: UIViewController {
   var appleMusicUserToken = ""
   
    @objc
-   func printValue(_ developerToken : String, callback: RCTResponseSenderBlock) {
+   func printValue(_ developerToken : String,  resolve: @escaping RCTPromiseResolveBlock,
+                   rejecter reject: @escaping RCTPromiseRejectBlock) {
     
     authorizationManager = AuthorizationManager(appleMusicManager: appleMusicManager)
     notificationCenter.addObserver(self,
@@ -29,10 +30,70 @@ class Print: UIViewController {
                                    object: nil)
     SharedClass.shared.developerToken = developerToken
    
-  
+    //var musicUserToken = musicToken()
     
-    callback([musicToken()])
+//    if musicUserToken != ""{
+//        resolve(musicUserToken)
+//      }else{
+//        print("HERE IS ELSE",musicUserToken)
+//      }
+    
+    if let _ = SharedClass.shared.developerToken{
+        let developerToken = SharedClass.shared.developerToken
+        let cloudServiceController = SKCloudServiceController()
+        SKCloudServiceController.requestAuthorization { status in
+            print(status)
+            guard status == .authorized else {
+                print(status)
+                return
+            }
+            print(status)
+        }
+        
+        cloudServiceController.requestCapabilities { capabilities, error in
+            guard capabilities.contains(.musicCatalogPlayback) else {
+                print(error?.localizedDescription)
+                self.authorizationManager!.requestCloudServiceAuthorization()
+                
+                self.authorizationManager!.requestMediaLibraryAuthorization()
+                return
+                
+            }
+            print(capabilities)
+        }
+        
+        cloudServiceController.requestUserToken(forDeveloperToken: developerToken!, completionHandler: { token, error in
+            
+            guard let token = token else {
+                print(error?.localizedDescription)
+                reject("E_COUNT", "User Token blank", error)
+                return }
+            UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
+            UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
+            self.appleMusicUserToken = token
+            print("Music User Token:", token)
+            resolve(token)
+           
+        })
+    }
+  
+      
   }
+  
+  
+//  @objc
+//  func decrement(
+//    _ resolve: RCTPromiseResolveBlock,
+//    rejecter reject: RCTPromiseRejectBlock
+//  ) -> Void {
+//
+//  }
+  
+  
+  
+  
+  
+  
   
   override func viewDidLoad() {
       super.viewDidLoad()
@@ -63,7 +124,8 @@ class Print: UIViewController {
           DispatchQueue.main.async {
               // self.tableView.reloadData()
               print("yyyyy")
-              self.musicToken()
+            self.appleMusicUserToken = self.musicToken()
+              
           }
       }
   }

@@ -48,9 +48,11 @@ function AddToPlayListScreen(props) {
     const [isrc, setIsrc] = useState(props.route.params.isrc);
     const [bool, setBool] = useState(false);
     const [id, setId] = useState(0);
+    const [devToken, setDevToken] = useState("");
+    const [musicToken, setMusicToken] = useState("");
 
-    let devToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IktKN0RKQjM3NjgifQ.eyJpYXQiOjE2MDA4NzAyODksImV4cCI6MTYwMDg3Mzg4OSwiaXNzIjoiSDIzVzNFRVJMSyJ9.lUaaKmS3vxoXvFYqLF257VN10lQ_6jG9wNXzdnSOVyit2eZDdYZA1IsvsXmNhJA_e_rzMcNkK4btZmZ7Ne7wvg';
-    let musicToken = 'Ariuqk58JeyKVb+1eiam5EAPQiIrTPPWeLK05LDuaJXP69WWll1UroE34wVQ2IvKHv0kR3RrVJkhr122pMbfGnkUSICThncHQekz/DWBrQnbJLbaJx3OP7PqDQxdtbEMn7GXXQ5jyLVe8d2CqJU/ppYxWSfiLlwDmuWEOKyawFq5FDzkcbOEAePws9iKgPMaNuQOwF5K4xp9Do9ih1+Jg1Ea7l2LlXwou4UWuSuMxA3UV4Tlsw==';
+    //let devToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IktKN0RKQjM3NjgifQ.eyJpYXQiOjE2MDA4NzAyODksImV4cCI6MTYwMDg3Mzg4OSwiaXNzIjoiSDIzVzNFRVJMSyJ9.lUaaKmS3vxoXvFYqLF257VN10lQ_6jG9wNXzdnSOVyit2eZDdYZA1IsvsXmNhJA_e_rzMcNkK4btZmZ7Ne7wvg';
+    //let musicToken = 'Ariuqk58JeyKVb+1eiam5EAPQiIrTPPWeLK05LDuaJXP69WWll1UroE34wVQ2IvKHv0kR3RrVJkhr122pMbfGnkUSICThncHQekz/DWBrQnbJLbaJx3OP7PqDQxdtbEMn7GXXQ5jyLVe8d2CqJU/ppYxWSfiLlwDmuWEOKyawFq5FDzkcbOEAePws9iKgPMaNuQOwF5K4xp9Do9ih1+Jg1Ea7l2LlXwou4UWuSuMxA3UV4Tlsw==';
 
     console.log("originalUri:  " + originalUri + registerType + isrc);
 
@@ -137,9 +139,9 @@ function AddToPlayListScreen(props) {
 
 
     //OPEN IN APPLE / SPOTIFY
-    const getAppleTrackIdFromIsrc = (playListId) => {
+    const getAppleTrackIdFromIsrc = (playListId, devToken, musicToken) => {
 
-        const getSpotifyApi = async (playListId) => {
+        const getSpotifyApi = async (playListId, devToken, musicToken) => {
             try {
                 const res = await callApi();
                 console.log(res);
@@ -184,7 +186,7 @@ function AddToPlayListScreen(props) {
             }
         };
 
-        getSpotifyApi(playListId);
+        getSpotifyApi(playListId, devToken, musicToken);
     };
 
 
@@ -195,17 +197,21 @@ function AddToPlayListScreen(props) {
 
         if (token !== "") {
             let newtoken = token.split(" ");
-            NativeModules.Print.printValue(newtoken.pop(), (value) => {
-                console.log(value);
-                if (value === "") {
+            NativeModules.Print.printValue(newtoken.pop()).then(res => {
+                console.log("This is the value: " + res);
+                if (res === "") {
                     setId(1);
                     toast("Error", "This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to avail this feature.");
                     setBool(false);
                 }
                 else {
-                    getAppleTrackIdFromIsrc();
+                    setDevToken(token);
+                    setMusicToken(res);
+                    getAppleTrackIdFromIsrc("", token, res);
                 }
-            })
+            }
+
+            ).catch(e => console.log(e.message, e.code))
         }
         else {
             toast('Oops', 'Something Went Wrong');
@@ -231,7 +237,7 @@ function AddToPlayListScreen(props) {
                                     toast('Error', "Please Connect To Internet")
                                 })
                         } else {
-                            getAppleTrackIdFromIsrc(data.item.id)
+                            getAppleTrackIdFromIsrc(data.item.id, "", "");
                         }
                     }
                     else {
