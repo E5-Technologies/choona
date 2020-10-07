@@ -994,10 +994,10 @@ function Player(props) {
                                             isrc: isrc
                                         })
                                 else
-                                    setTimeout(() => {
-                                        toast("Oops", "Only, Spotify users can add to their playlist now.")
-                                    }, 1000)
-                                // props.navigation.navigate("AddToPlayListScreen", { isrc: isrc })
+                                    // setTimeout(() => {
+                                    //     toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                    // }, 1000)
+                                props.navigation.navigate("AddToPlayListScreen", { isrc: isrc })
                             }}
                         >
                             <Image source={ImagePath.addicon}
@@ -1772,8 +1772,8 @@ function Player(props) {
                                         if (props.userProfileResp.register_type === 'spotify')
                                             props.navigation.navigate('AddToPlayListScreen', { originalUri: originalUri, registerType: registerType, isrc: isrc })
                                         else
-                                            toast("Oops", "Only, Spotify users can add to their playlist now.")
-                                        // props.navigation.navigate("AddToPlayListScreen", { isrc: isrc })
+                                            // toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                        props.navigation.navigate("AddToPlayListScreen", { isrc: isrc })
                                     }}
                                     style={{
                                         flexDirection: 'row',

@@ -199,6 +199,7 @@ function AddToPlayListScreen(props) {
             let newtoken = token.split(" ");
             NativeModules.Print.printValue(newtoken.pop()).then(res => {
                 console.log("This is the value: " + res);
+
                 if (res === "") {
                     setId(1);
                     toast("Error", "This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to avail this feature.");
@@ -211,7 +212,11 @@ function AddToPlayListScreen(props) {
                 }
             }
 
-            ).catch(e => console.log(e.message, e.code))
+            ).catch((err) => {
+                setId(1);
+                toast("Error", "This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to avail this feature.");
+                setBool(false);
+            })
         }
         else {
             toast('Oops', 'Something Went Wrong');
