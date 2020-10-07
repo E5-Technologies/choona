@@ -1192,7 +1192,7 @@ function Home(props) {
                           .then((token) => {
                             let newtoken = token.split(" ");
                             NativeModules.Print.printValue(newtoken.pop(), (value) => {
-                              console.log(value);
+                              console.log("Apple user token: "+value);
                             });
                           })
                           .catch((err) => {

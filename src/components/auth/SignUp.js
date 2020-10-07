@@ -138,7 +138,10 @@ function Login(props) {
 
     // IMAGE PICKER FROM GALLERY
     const pickImagefromGallery = () => {
-        ImagePicker.openPicker({
+
+        
+        
+       ImagePicker.openPicker({
             width: 500,
             height: 500,
             cropping: true,
@@ -161,6 +164,9 @@ function Login(props) {
 
     //IMAGE PICKER FROM CAMERA
     const pickImagewithCamera = () => {
+
+        
+
         ImagePicker.openCamera({
             cropping: true,
             width: 500,

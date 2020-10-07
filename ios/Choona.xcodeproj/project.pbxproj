@@ -14,6 +14,9 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		192E78D02511126700E9B916 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CE2511126600E9B916 /* AppleMusicManager.swift */; };
+		192E78D12511126700E9B916 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CF2511126700E9B916 /* AuthorizationManager.swift */; };
+		192E78D3251112E300E9B916 /* SharedClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78D2251112E300E9B916 /* SharedClass.swift */; };
 		194E6736DFD04AA0D56629E8 /* libPods-Choona.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7454185DA8D6720E0B230066 /* libPods-Choona.a */; };
 		19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */; };
 		19E8385624FF9ED1009D7A39 /* AppleUserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385524FF9ED1009D7A39 /* AppleUserToken.m */; };
@@ -65,6 +68,9 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Choona/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Choona/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Choona/main.m; sourceTree = "<group>"; };
+		192E78CE2511126600E9B916 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleMusicManager.swift; sourceTree = "<group>"; };
+		192E78CF2511126700E9B916 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManager.swift; sourceTree = "<group>"; };
+		192E78D2251112E300E9B916 /* SharedClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedClass.swift; sourceTree = "<group>"; };
 		1991461B2472869100DEC508 /* Choona.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Choona.entitlements; path = Choona/Choona.entitlements; sourceTree = "<group>"; };
 		19E8385224FF9E6E009D7A39 /* Choona-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Choona-Bridging-Header.h"; sourceTree = "<group>"; };
 		19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleUserToken.swift; sourceTree = "<group>"; };
@@ -153,6 +159,9 @@
 		13B07FAE1A68108700A75B9A /* Choona */ = {
 			isa = PBXGroup;
 			children = (
+				192E78D2251112E300E9B916 /* SharedClass.swift */,
+				192E78CE2511126600E9B916 /* AppleMusicManager.swift */,
+				192E78CF2511126700E9B916 /* AuthorizationManager.swift */,
 				0B128C732486631C007D7886 /* GoogleService-Info.plist */,
 				1991461B2472869100DEC508 /* Choona.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -648,8 +657,11 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				19E8385624FF9ED1009D7A39 /* AppleUserToken.m in Sources */,
+				192E78D3251112E300E9B916 /* SharedClass.swift in Sources */,
+				192E78D02511126700E9B916 /* AppleMusicManager.swift in Sources */,
 				19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				192E78D12511126700E9B916 /* AuthorizationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -750,6 +762,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ayan Sarkar (WNH29TY9X5)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = H23W3EERLK;
@@ -759,6 +772,7 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = Choona/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -767,7 +781,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.webskitters.Choona;
 				PRODUCT_NAME = Choona;
-				PROVISIONING_PROFILE_SPECIFIER = ChoonaProvProfile_D_29/07/2020;
+				PROVISIONING_PROFILE_SPECIFIER = ChoonaProvProfile_D_14/09/2020;
 				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -786,6 +800,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = H23W3EERLK;
 				INFOPLIST_FILE = Choona/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -794,7 +809,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.webskitters.Choona;
 				PRODUCT_NAME = Choona;
-				PROVISIONING_PROFILE_SPECIFIER = ChoonaProvProfile_D_29/07/2020;
+				PROVISIONING_PROFILE_SPECIFIER = ChoonaProvProfile_D_14/09/2020;
 				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
