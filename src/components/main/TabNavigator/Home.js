@@ -12,7 +12,9 @@ import {
   Platform,
   Clipboard,
   Linking,
-  Keyboard, ActivityIndicator
+  Keyboard, ActivityIndicator,
+  RefreshControl,
+  FlatList
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -44,11 +46,11 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
   COUNTRY_CODE_SUCCESS,
-  OTHERS_PROFILE_SUCCESS, EDIT_PROFILE_SUCCESS
+  OTHERS_PROFILE_SUCCESS, EDIT_PROFILE_SUCCESS, DUMMY_ACTION_SUCCESS
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest, homePageReq, reactionOnPostRequest, userFollowUnfollowRequest,
-  getUsersFromHome
+  getUsersFromHome, dummyRequest
 } from '../../../action/UserAction';
 import { saveSongRequest } from '../../../action/SongAction';
 import { deletePostReq } from '../../../action/PostAction';
@@ -59,7 +61,6 @@ import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
-import { FlatList } from 'react-native-gesture-handler';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Contacts from 'react-native-contacts';
 // import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
@@ -86,11 +87,12 @@ function Home(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
-  const [homeReq, setHomeReq] = useState(true);
+  const [homeReq, setHomeReq] = useState(false);
   const [postArray, setPostArray] = useState([]);
   const [timeoutVar, setTimeoutVar] = useState(0);
   const [onScrolled, setOnScrolled] = useState(false);
   const [offset, setOffset] = useState(1);
+  const [refresing, setRefresing] = useState(false);
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -99,24 +101,28 @@ function Home(props) {
   useScrollToTop(ref);
 
   useEffect(() => {
+    setHomeReq(true);
+    setOffset(1);
+    props.homePage(1);
+
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
       isInternetConnected()
         .then(() => {
           console.log('home use Effect');
-          setHomeReq(true);
           setOnScrolled(false);
-          setOffset(1);
           props.getProfileReq(),
-            props.homePage(1);
-          setUserSearchData([]);
+            setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach("");
-
-          if (ref.current !== null) {
-            ref.current.scrollToIndex({ animated: true, index: 0 })
+          if (!homeReq) {
+            props.dummyRequest();
           }
+          // if (ref.current !== null) {
+          //   ref.current.scrollToIndex({ animated: true, index: 0 })
+          // }
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err)
           toast('Error', 'Please Connect To Internet')
         })
     });
@@ -154,6 +160,7 @@ function Home(props) {
         findPlayingSong(props.postData);
         console.log('calling success');
         setHomeReq(false);
+        setRefresing(false);
         break;
 
       case HOME_PAGE_FAILURE:
@@ -193,6 +200,11 @@ function Home(props) {
 
       case GET_USER_FROM_HOME_FAILURE:
         status = props.status
+        break;
+
+      case DUMMY_ACTION_SUCCESS:
+        status = props.status
+        findPlayingSong(props.postData);
         break;
     };
   };
@@ -873,7 +885,12 @@ function Home(props) {
     }, timeout));
   };
 
-  //console.log('homeReq' + homeReq)
+
+  //PULL TO REFRESH
+  const onRefresh = () => {
+    setRefresing(true);
+    props.homePage(1)
+  };
 
   // VIEW
   return (
@@ -1008,6 +1025,15 @@ function Home(props) {
               onScrollToIndexFailed={(val) => {
                 console.log(val)
               }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refresing}
+                  onRefresh={onRefresh}
+                  colors={[Colors.black]}
+                  progressBackgroundColor={Colors.white}
+                  title={'Refresing...'}
+                  titleColor={Colors.white} />
+              }
             />
 
             {renderAddToUsers()}
@@ -1041,7 +1067,7 @@ function Home(props) {
               }}
                 onPressPlayOrPause={() => {
                   setTimeout(() => {
-                    findPlayingSong(postArray)
+                    findPlayingSong(props.postData)
                   }, 500)
                 }} />
               : null}
@@ -1424,6 +1450,10 @@ const mapDispatchToProps = (dispatch) => {
 
     createChatTokenRequest: (payload) => {
       dispatch(createChatTokenRequest(payload))
+    },
+
+    dummyRequest: () => {
+      dispatch(dummyRequest())
     },
   }
 };

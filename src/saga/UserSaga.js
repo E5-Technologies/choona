@@ -81,7 +81,11 @@ import {
 
     GET_USERS_FROM_CONTACTS_REQUEST,
     GET_USERS_FROM_CONTACTS_SUCCESS,
-    GET_USERS_FROM_CONTACTS_FAILURE
+    GET_USERS_FROM_CONTACTS_FAILURE,
+
+    DUMMY_ACTION_REQUEST,
+    DUMMY_ACTION_SUCCESS,
+    DUMMY_ACTION_FAILURE
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -510,6 +514,11 @@ export function* getUsersFromContact(action) {
 };
 
 
+export function* dummyRequestAction(action) {
+    yield put ({type: DUMMY_ACTION_SUCCESS})
+};
+
+
 //WATCH FUNCTIONS
 
 export function* watchLoginRequest() {
@@ -586,4 +595,8 @@ export function* watchTop5FollowedUserAction() {
 
 export function* watchgetUsersFromContact() {
     yield takeLatest(GET_USERS_FROM_CONTACTS_REQUEST, getUsersFromContact)
+};
+
+export function* watchDummyAction() {
+    yield takeLatest(DUMMY_ACTION_REQUEST, dummyRequestAction)
 };

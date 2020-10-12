@@ -6,7 +6,8 @@ import {
     watchhomePageAction, watchcommentOnPostAction, watchfollowerListAction,
     watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction,
     watchfeaturedTrackSearchAction, watchUserLogoutAction, watchgetUsersFromHomeAction,
-    watchCountryCodeAction, watchTop5FollowedUserAction, watchgetUsersFromContact
+    watchCountryCodeAction, watchTop5FollowedUserAction, watchgetUsersFromContact,
+    watchDummyAction
 
 } from './UserSaga'
 
@@ -29,7 +30,7 @@ import {
 
 import {
     watchGetCurrentPlayerPostionRequest, watchResumePlayerRequest,
-    watchPlayPlayerRequest, watchSeekToPlayerRequest, watchgetSongFromIsrc, 
+    watchPlayPlayerRequest, watchSeekToPlayerRequest, watchgetSongFromIsrc,
     watchGetPlayListOfUser, watchAddSongsToPlaylistRequest
 } from './PlayerSaga';
 
@@ -83,7 +84,8 @@ function* RootSaga() {
         watchGetPlayListOfUser(),
         watchAddSongsToPlaylistRequest(),
         watchgetChatTokenFromSearchAction(),
-        watchgetChatTokenFromSavedSongAction()
+        watchgetChatTokenFromSavedSongAction(),
+        watchDummyAction()
 
     ])
 }

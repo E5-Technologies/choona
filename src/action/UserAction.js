@@ -17,7 +17,8 @@ import {
     GET_USER_FROM_HOME_REQUEST,
     COUNTRY_CODE_REQUEST,
     TOP_5_FOLLOWED_USER_REQUEST,
-    GET_USERS_FROM_CONTACTS_REQUEST
+    GET_USERS_FROM_CONTACTS_REQUEST,
+    DUMMY_ACTION_REQUEST
 }
     from './TypeConstants';
 
@@ -114,4 +115,7 @@ export const getUsersFromContacts = (payload) => ({
     payload
 });
 
+export const dummyRequest = () => ({
+    type : DUMMY_ACTION_REQUEST
+});
 

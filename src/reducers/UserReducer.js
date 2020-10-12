@@ -75,6 +75,10 @@ import {
     GET_USERS_FROM_CONTACTS_SUCCESS,
     GET_USERS_FROM_CONTACTS_FAILURE,
 
+    DUMMY_ACTION_REQUEST,
+    DUMMY_ACTION_SUCCESS,
+    DUMMY_ACTION_FAILURE,
+
     ASYNC_STORAGE_CLEAR
 }
     from '../action/TypeConstants';
@@ -540,6 +544,24 @@ const UserReducer = (state = initialState, action) => {
                 ...state,
                 status: action.type,
                 error: action.error
+            };
+
+        case DUMMY_ACTION_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case DUMMY_ACTION_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+            };
+
+        case DUMMY_ACTION_FAILURE:
+            return {
+                ...state,
+                status: action.type,
             };
 
         case ASYNC_STORAGE_CLEAR:
