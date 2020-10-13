@@ -160,7 +160,7 @@ function Inbox(props) {
                         <TextInput style={{
                             height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
                             borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                            color: Colors.white, paddingLeft: normalise(30),
+                            color: Colors.white, paddingLeft: normalise(30), paddingRight:normalise(50)
                         }} value={search}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
