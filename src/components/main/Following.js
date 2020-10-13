@@ -24,7 +24,7 @@ import {
     USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE, TOP_5_FOLLOWED_USER_REQUEST, TOP_5_FOLLOWED_USER_SUCCESS, TOP_5_FOLLOWED_USER_FAILURE
 }
     from '../../action/TypeConstants';
-import { followingListReq, userFollowUnfollowRequest, getTop5FollowedUserRequest } from '../../action/UserAction';
+import { followingListReq, userFollowUnfollowRequest, getTop5FollowedUserRequest, followingSearchReq } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -38,15 +38,15 @@ function Following(props) {
 
     const [type, setType] = useState(props.route.params.type)
     const [id, setId] = useState(props.route.params.id)
-    const [following, setFollowing] = useState("")
+    // const [following, setFollowing] = useState("")
     const [search, setSearch] = useState("")
     const [bool, setBool] = useState(false)
-    const [followingList, setFollowingList] = useState([]);
+    // const [followingList, setFollowingList] = useState([]);
     const [top5followingList, setTop5FollowingList] = useState([]);
     const [typingTimeout, setTypingTimeout] = useState(0);
 
     useEffect(() => {
-        props.navigation.addListener('focus', (payload) => {
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
             isInternetConnected()
                 .then(() => {
                     props.followingListReq(type, id)
@@ -54,8 +54,12 @@ function Following(props) {
                 .catch(() => {
                     toast('Error', "Please Connect To Internet")
                 })
-        })
-    });
+        });
+
+        return () => {
+            unsuscribe();
+        }
+    }, []);
 
 
     if (status === "" || props.status !== status) {
@@ -67,8 +71,8 @@ function Following(props) {
 
             case FOLLOWING_LIST_SUCCESS:
                 status = props.status
-                setFollowing(props.followingData.length);
-                setFollowingList(props.followingData);
+                // setFollowing(props.followingData.length);
+                // setFollowingList(props.followingData);
                 if (_.isEmpty(props.followingData)) { props.top5followingListReq() }
                 break;
 
@@ -104,19 +108,19 @@ function Following(props) {
         }
     };
 
-    function filterArray(keyword) {
+    // function filterArray(keyword) {
 
-        let data = _.filter(props.followingData, (item) => {
-            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-        });
-        console.log(data);
-        setFollowingList([]);
-        setBool(true);
-        setTimeout(() => {
-            setFollowingList(data);
-            setBool(false);
-        }, 800);
-    };
+    //     let data = _.filter(props.followingData, (item) => {
+    //         return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+    //     });
+    //     console.log(data);
+    //     setFollowingList([]);
+    //     setBool(true);
+    //     setTimeout(() => {
+    //         setFollowingList(data);
+    //         setBool(false);
+    //     }, 800);
+    // };
 
 
     function renderFollowersItem(data) {
@@ -130,7 +134,7 @@ function Following(props) {
                     type={false}
                     image2={"123"}
                     marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
-                    onPressImage={() => { props.navigation.navigate("Profile", { fromAct: false }) }}
+                    onPressImage={() => { props.navigation.push("Profile", { fromAct: false }) }}
                     TouchableOpacityDisabled={false}
                 />
             );
@@ -145,7 +149,7 @@ function Following(props) {
                     follow={data.item.isFollowing ? false : true}
                     marginBottom={data.index === props.followingData.length - 1 ? normalise(20) : 0}
                     onPressImage={() => {
-                        props.navigation.replace("OthersProfile",
+                        props.navigation.push("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
                     onPress={() => { props.followReq({ follower_id: data.item._id }) }}
@@ -199,7 +203,7 @@ function Following(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
     return (
@@ -216,7 +220,7 @@ function Following(props) {
                 <SafeAreaView style={{ flex: 1 }}>
 
                     <HeaderComponent firstitemtext={false}
-                        imageone={ImagePath.backicon} title={`FOLLOWING (${following})`}
+                        imageone={ImagePath.backicon} title={`FOLLOWING (${props.followingData.length})`}
                         thirditemtext={true} texttwo={""}
                         onPressFirstItem={() => { props.navigation.goBack() }} />
 
@@ -233,7 +237,7 @@ function Following(props) {
                         }} value={search}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
-                            onChangeText={(text) => { setSearch(text), filterArray(text) }} />
+                            onChangeText={(text) => { setSearch(text), props.followingSearch(text) }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -242,7 +246,7 @@ function Following(props) {
                             }} resizeMode="contain" />
 
                         {search === "" ? null :
-                            <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                            <TouchableOpacity onPress={() => { setSearch(""), props.followingSearch("") }}
                                 style={{
                                     position: 'absolute', right: 0,
                                     bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -289,7 +293,7 @@ function Following(props) {
                         :
 
                         <FlatList
-                            data={followingList}
+                            data={props.followingData}
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => { index.toString() }}
                             renderItem={renderFollowersItem} />
@@ -323,8 +327,13 @@ const mapDispatchToProps = (dispatch) => {
         followReq: (payload) => {
             dispatch(userFollowUnfollowRequest(payload))
         },
+        
         top5followingListReq: () => {
             dispatch(getTop5FollowedUserRequest())
+        },
+
+        followingSearch: (search) => {
+            dispatch(followingSearchReq(search))
         },
     }
 };

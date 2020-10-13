@@ -18,7 +18,9 @@ import {
     COUNTRY_CODE_REQUEST,
     TOP_5_FOLLOWED_USER_REQUEST,
     GET_USERS_FROM_CONTACTS_REQUEST,
-    DUMMY_ACTION_REQUEST
+    DUMMY_ACTION_REQUEST,
+    FOLLOWER_SEARCH_REQUEST,
+    FOLLOWING_SEARCH_REQUEST,
 }
     from './TypeConstants';
 
@@ -117,5 +119,15 @@ export const getUsersFromContacts = (payload) => ({
 
 export const dummyRequest = () => ({
     type : DUMMY_ACTION_REQUEST
+});
+
+export const followerSearchReq = (search) => ({
+    type : FOLLOWER_SEARCH_REQUEST,
+    search
+});
+
+export const followingSearchReq = (search) => ({
+    type : FOLLOWING_SEARCH_REQUEST,
+    search
 });
 

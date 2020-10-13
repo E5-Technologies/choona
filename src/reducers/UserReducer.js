@@ -77,7 +77,12 @@ import {
 
     DUMMY_ACTION_REQUEST,
     DUMMY_ACTION_SUCCESS,
-    DUMMY_ACTION_FAILURE,
+
+    FOLLOWING_SEARCH_REQUEST,
+    FOLLOWING_SEARCH_SUCCESS,
+
+    FOLLOWER_SEARCH_REQUEST,
+    FOLLOWER_SEARCH_SUCCESS,
 
     ASYNC_STORAGE_CLEAR
 }
@@ -99,7 +104,9 @@ const initialState = {
     currentPage: "",
     commentResp: {},
     followerData: [],
+    followerDataCopy: [], //for manual searching
     followingData: [],
+    followingDataCopy: [], // for manual searching
     reactionResp: {},
     activityListPrevious: [],
     activityListToday: [],
@@ -326,7 +333,8 @@ const UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 status: action.type,
-                followerData: []
+                followerData: [],
+                followerDataCopy: []
             };
 
         case FOLLOWER_LIST_SUCCESS:
@@ -334,6 +342,7 @@ const UserReducer = (state = initialState, action) => {
                 ...state,
                 status: action.type,
                 followerData: action.data,
+                followerDataCopy: action.data
             };
 
         case FOLLOWER_LIST_FAILURE:
@@ -347,7 +356,8 @@ const UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 status: action.type,
-                followingData: []
+                followingData: [],
+                followingDataCopy: []
             };
 
         case FOLLOWING_LIST_SUCCESS:
@@ -355,6 +365,7 @@ const UserReducer = (state = initialState, action) => {
                 ...state,
                 status: action.type,
                 followingData: action.data,
+                followingDataCopy: action.data
             };
 
         case FOLLOWING_LIST_FAILURE:
@@ -558,10 +569,30 @@ const UserReducer = (state = initialState, action) => {
                 status: action.type,
             };
 
-        case DUMMY_ACTION_FAILURE:
+        case FOLLOWER_SEARCH_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case FOLLOWER_SEARCH_SUCCESS:
             return {
                 ...state,
                 status: action.type,
+                followerData: action.data
+            };
+
+        case FOLLOWING_SEARCH_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case FOLLOWING_SEARCH_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                followingData: action.data
             };
 
         case ASYNC_STORAGE_CLEAR:

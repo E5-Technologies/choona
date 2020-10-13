@@ -24,7 +24,7 @@ import {
     USER_FOLLOW_UNFOLLOW_REQUEST, USER_FOLLOW_UNFOLLOW_SUCCESS, USER_FOLLOW_UNFOLLOW_FAILURE
 }
     from '../../action/TypeConstants';
-import { followerListReq, userFollowUnfollowRequest } from '../../action/UserAction';
+import { followerListReq, userFollowUnfollowRequest, followerSearchReq } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -43,19 +43,23 @@ function Followers(props) {
 
     const [bool, setBool] = useState(false)
 
-    const [followerList, setFollowerList] = useState([]);
+    // const [followerList, setFollowerList] = useState([]);
 
     useEffect(() => {
-        props.navigation.addListener('focus', (payload) => {
-            isInternetConnected()
-                .then(() => {
-                    props.followListReq(type, id)
-                })
-                .catch(() => {
-                    toast('Error', "Please Connect To Internet")
-                })
-        })
-    });
+        const unsuscribe = props.navigation.addListener('focus', (payload) => {
+        isInternetConnected()
+            .then(() => {
+                props.followListReq(type, id)
+            })
+            .catch(() => {
+                toast('Error', "Please Connect To Internet")
+            })
+        });
+
+        return () => {
+            unsuscribe();
+        }
+    }, []);
 
 
     if (status === "" || props.status !== status) {
@@ -67,7 +71,7 @@ function Followers(props) {
 
             case FOLLOWER_LIST_SUCCESS:
                 status = props.status
-                setFollowerList(props.followerData);
+                // setFollowerList(props.followerData);
                 break;
 
             case FOLLOWER_LIST_FAILURE:
@@ -89,19 +93,19 @@ function Followers(props) {
         }
     };
 
-    function filterArray(keyword) {
+    // function filterArray(keyword) {
 
-        let data = _.filter(props.followerData, (item) => {
-            return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-        });
-        console.log(data);
-        setFollowerList([]);
-        setBool(true);
-        setTimeout(() => {
-            setFollowerList(data);
-            setBool(false);
-        }, 800);
-    };
+    //     let data = _.filter(props.followerData, (item) => {
+    //         return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+    //     });
+    //     console.log(data);
+    //     setFollowerList([]);
+    //     setBool(true);
+    //     setTimeout(() => {
+    //         setFollowerList(data);
+    //         setBool(false);
+    //     }, 800);
+    // };
 
     function renderFollowersItem(data) {
 
@@ -114,7 +118,7 @@ function Followers(props) {
                     type={false}
                     image2={'123'}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
-                    onPressImage={() => { props.navigation.navigate("Profile", { fromAct: false }) }}
+                    onPressImage={() => { props.navigation.push("Profile", { fromAct: false }) }}
                     TouchableOpacityDisabled={false}
                 />
             )
@@ -128,7 +132,7 @@ function Followers(props) {
                     follow={!data.item.isFollowing}
                     marginBottom={data.index === props.followerData.length - 1 ? normalise(20) : 0}
                     onPressImage={() => {
-                        props.navigation.replace("OthersProfile",
+                        props.navigation.push("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
                     }}
                     onPress={() => { props.followReq({ follower_id: data.item._id }) }}
@@ -147,7 +151,7 @@ function Followers(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
 
@@ -165,7 +169,7 @@ function Followers(props) {
                 <SafeAreaView style={{ flex: 1, }}>
 
                     <HeaderComponent firstitemtext={false}
-                        imageone={ImagePath.backicon} title={`FOLLOWERS (${followerList.length})`}
+                        imageone={ImagePath.backicon} title={`FOLLOWERS (${props.followerData.length})`}
                         thirditemtext={true} texttwo={""}
                         onPressFirstItem={() => { props.navigation.goBack() }} />
 
@@ -181,7 +185,7 @@ function Followers(props) {
                         }} value={search}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
-                            onChangeText={(text) => { setSearch(text), filterArray(text) }} />
+                            onChangeText={(text) => { setSearch(text), props.followerSearch(text) }} />
 
                         <Image source={ImagePath.searchicongrey}
                             style={{
@@ -190,7 +194,7 @@ function Followers(props) {
                             }} resizeMode="contain" />
 
                         {search === "" ? null :
-                            <TouchableOpacity onPress={() => { setSearch(""), filterArray("") }}
+                            <TouchableOpacity onPress={() => { setSearch(""), props.followerSearch("") }}
                                 style={{
                                     position: 'absolute', right: 0,
                                     bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
@@ -206,7 +210,7 @@ function Followers(props) {
 
 
                     <FlatList
-                        data={followerList}
+                        data={props.followerData}
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => { index.toString() }}
                         renderItem={renderFollowersItem} />
@@ -234,6 +238,10 @@ const mapDispatchToProps = (dispatch) => {
 
         followReq: (payload) => {
             dispatch(userFollowUnfollowRequest(payload))
+        },
+
+        followerSearch: (search) => {
+            dispatch(followerSearchReq(search))
         }
     }
 };

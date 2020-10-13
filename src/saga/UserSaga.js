@@ -85,7 +85,12 @@ import {
 
     DUMMY_ACTION_REQUEST,
     DUMMY_ACTION_SUCCESS,
-    DUMMY_ACTION_FAILURE
+
+    FOLLOWING_SEARCH_REQUEST,
+    FOLLOWING_SEARCH_SUCCESS,
+
+    FOLLOWER_SEARCH_REQUEST,
+    FOLLOWER_SEARCH_SUCCESS
 
 } from '../action/TypeConstants';
 import { postApi, getApi, getSpotifyApi, getAppleDevelopersToken } from "../utils/helpers/ApiRequest"
@@ -93,9 +98,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin'
 import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import _ from 'lodash';
+
 
 const getItems = (state) => state.TokenReducer
-
+const userReducer = (state) => state.UserReducer
 
 export function* loginAction(action) {
 
@@ -515,7 +522,29 @@ export function* getUsersFromContact(action) {
 
 
 export function* dummyRequestAction(action) {
-    yield put ({type: DUMMY_ACTION_SUCCESS})
+    yield put({ type: DUMMY_ACTION_SUCCESS })
+};
+
+
+export function* followerSearchAction(action) {
+    const followerData = yield select(userReducer);
+
+    const result = _.filter(followerData.followerDataCopy, (item) => {
+        return item.username.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
+    });
+
+    yield put ({type: FOLLOWER_SEARCH_SUCCESS, data: result})
+};
+
+
+export function* followingSearchAction(action) {
+    const followingData = yield select(userReducer);
+
+    const result = _.filter(followingData.followingDataCopy, (item) => {
+        return item.username.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
+    });
+
+    yield put ({type: FOLLOWING_SEARCH_SUCCESS, data: result})
 };
 
 
@@ -599,4 +628,12 @@ export function* watchgetUsersFromContact() {
 
 export function* watchDummyAction() {
     yield takeLatest(DUMMY_ACTION_REQUEST, dummyRequestAction)
+};
+
+export function* watchFollowerSearch() {
+    yield takeLatest(FOLLOWER_SEARCH_REQUEST, followerSearchAction)
+};
+
+export function* watchFollowingSearch() {
+    yield takeLatest(FOLLOWING_SEARCH_REQUEST, followingSearchAction)
 };

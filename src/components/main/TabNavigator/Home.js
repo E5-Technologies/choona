@@ -889,6 +889,7 @@ function Home(props) {
   //PULL TO REFRESH
   const onRefresh = () => {
     setRefresing(true);
+    setOffset(1);
     props.homePage(1)
   };
 

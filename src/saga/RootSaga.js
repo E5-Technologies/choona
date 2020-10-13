@@ -7,7 +7,7 @@ import {
     watchfollowingListAction, watchReactionOnPostAction, watchactivityListAction,
     watchfeaturedTrackSearchAction, watchUserLogoutAction, watchgetUsersFromHomeAction,
     watchCountryCodeAction, watchTop5FollowedUserAction, watchgetUsersFromContact,
-    watchDummyAction
+    watchDummyAction, watchFollowerSearch, watchFollowingSearch
 
 } from './UserSaga'
 
@@ -85,7 +85,9 @@ function* RootSaga() {
         watchAddSongsToPlaylistRequest(),
         watchgetChatTokenFromSearchAction(),
         watchgetChatTokenFromSavedSongAction(),
-        watchDummyAction()
+        watchDummyAction(),
+        watchFollowerSearch(),
+        watchFollowingSearch()
 
     ])
 }
