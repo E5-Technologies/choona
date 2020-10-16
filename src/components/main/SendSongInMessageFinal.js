@@ -128,8 +128,17 @@ function SendSongInMessageFinal(props) {
                         style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
                     />
                     <View style={{ marginStart: normalise(10) }}>
-                        <Text style={{ color: Colors.white }}>{data.item.full_name}</Text>
-                        <Text style={{ color: Colors.white }}>{data.item.username}</Text>
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'ProximaNova-Semibold'
+                        }}>{data.item.full_name}</Text>
+
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'ProximaNova-Semibold'
+                        }}>{data.item.username}</Text>
                     </View>
 
                 </View>
@@ -151,7 +160,7 @@ function SendSongInMessageFinal(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
     function sendMessage() {
@@ -188,7 +197,7 @@ function SendSongInMessageFinal(props) {
                     props.route.params.details.attributes.isrc,
 
                 original_reg_type: type ? props.route.params.details.hasOwnProperty("social_type") ?
-                props.route.params.details.social_type : props.route.params.details.original_reg_type : props.registerType,
+                    props.route.params.details.social_type : props.route.params.details.original_reg_type : props.registerType,
 
                 read: false,
                 time: moment().toString()
@@ -236,26 +245,26 @@ function SendSongInMessageFinal(props) {
                         }
                     }}
                     onPressThirdItem={() => {
-                        if (search.trim() != "") {
-                            sendMessage();
-                            // if (fromAddAnotherSong) {
-                            //     props.navigation.replace('InsideaMessage', { index: index })
-                            // } else {
-                            //     props.navigation.goBack();
-                            // }
+                        // if (search.trim() != "") {
+                        sendMessage();
+                        // if (fromAddAnotherSong) {
+                        //     props.navigation.replace('InsideaMessage', { index: index })
+                        // } else {
+                        //     props.navigation.goBack();
+                        // }
 
-                            if (props.route.params.fromPlayer === true) {
-                                console.log('from player')
-                                props.navigation.goBack()
-                            } else {
-                                console.log('not from player')
-                                props.navigation.pop(2)
-                            }
-
-
+                        if (props.route.params.fromPlayer === true) {
+                            console.log('from player')
+                            props.navigation.goBack()
                         } else {
-                            toast("Error", "Please type in a message to send");
+                            console.log('not from player')
+                            props.navigation.pop(2)
                         }
+
+
+                        // } else {
+                        //     toast("Error", "Please type in a message to send");
+                        // }
 
                     }}
                 />
@@ -320,7 +329,7 @@ function SendSongInMessageFinal(props) {
                 >Sending song to:</Text>
 
                 <FlatList       // USER SEARCH FLATLIST
-                    style={{ marginTop: usersData.length > 0 ? normalise(20) : 0 }}
+                    // style={{ marginTop: usersData.length > 0 ? normalise(20) : 0 }}
                     data={usersData}
                     renderItem={renderAddUsersToMessageItem}
                     keyExtractor={(item, index) => { index.toString() }}

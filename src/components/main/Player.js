@@ -1534,7 +1534,7 @@ function Player(props) {
 
                             <View style={{
                                 flexDirection: 'row', width: '90%', alignSelf: 'center',
-                                justifyContent: 'space-between', marginTop: normalise(30), alignItems: 'center'
+                                justifyContent: 'space-between', marginTop: normalise(10), alignItems: 'center'
                             }}>
 
                                 <TouchableOpacity style={{
@@ -1617,6 +1617,7 @@ function Player(props) {
                                 justifyContent: 'space-between',
                                 width: '90%',
                                 alignSelf: 'center',
+                                marginTop:normalise(10)
                             }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <TouchableOpacity style={{

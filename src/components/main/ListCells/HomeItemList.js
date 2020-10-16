@@ -116,7 +116,7 @@ function HomeItemList(props) {
         <View style={{
             width: normalise(285),
             alignSelf: 'center',
-            marginTop: normalise(15),
+            marginTop: normalise(10),
             marginBottom: props.marginBottom
         }}>
 

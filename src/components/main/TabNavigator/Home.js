@@ -505,8 +505,17 @@ function Home(props) {
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View style={{ marginStart: normalise(10) }}>
-            <Text style={{ color: Colors.white }}>{data.item.full_name}</Text>
-            <Text style={{ color: Colors.white }}>{data.item.username}</Text>
+            <Text style={{
+              color: Colors.white,
+              fontSize: 14,
+              fontFamily: 'ProximaNova-Semibold'
+            }}>{data.item.full_name}</Text>
+
+            <Text style={{
+              color: Colors.white,
+              fontSize: 14,
+              fontFamily: 'ProximaNova-Semibold'
+            }}>{data.item.username}</Text>
           </View>
 
         </View>
@@ -991,6 +1000,7 @@ function Home(props) {
           <View style={{ flex: 1 }}>
 
             <FlatList
+              style={{ marginTop: normalise(10) }}
               data={props.postData}
               renderItem={renderItem}
               windowSize={150}
@@ -1032,7 +1042,7 @@ function Home(props) {
                   onRefresh={onRefresh}
                   colors={[Colors.black]}
                   progressBackgroundColor={Colors.white}
-                  title={'Refresing...'}
+                  title={'Refreshing...'}
                   titleColor={Colors.white} />
               }
             />

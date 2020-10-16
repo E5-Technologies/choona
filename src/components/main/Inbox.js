@@ -70,7 +70,7 @@ function Inbox(props) {
 
             case GET_CHAT_LIST_SUCCESS:
                 status = props.status;
-                setMessageList(props.chatList)
+                sortArray(props.chatList)
                 break;
 
             case GET_CHAT_LIST_FAILURE:
@@ -78,6 +78,17 @@ function Inbox(props) {
                 toast('Error', 'Something Went Wrong, Please Try Again');
                 break;
         }
+    };
+
+    function sortArray(value) {
+        
+        const res = value.sort((a, b) => {
+            // console.log('yooo' + new Date(Object.values(a)[0].time))
+            return new Date(Object.values(b)[0].time) - new Date(Object.values(a)[0].time)
+        });
+        // console.log('Sort' + JSON.stringify(res));
+        setMessageList(res);
+
     };
 
     function filterArray(keyword) {
@@ -124,7 +135,7 @@ function Inbox(props) {
         setTypingTimeout(setTimeout(() => {
             Keyboard.dismiss();
         }, 1500))
-        
+
     }
 
     return (
@@ -136,7 +147,7 @@ function Inbox(props) {
             <Loader visible={bool} />
 
             <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
-                
+
                 <SafeAreaView style={{ flex: 1, }}>
 
                     <HeaderComponent firstitemtext={false}
@@ -160,7 +171,7 @@ function Inbox(props) {
                         <TextInput style={{
                             height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
                             borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                            color: Colors.white, paddingLeft: normalise(30), paddingRight:normalise(50)
+                            color: Colors.white, paddingLeft: normalise(30), paddingRight: normalise(50)
                         }} value={search}
                             placeholder={"Search"}
                             placeholderTextColor={Colors.darkgrey}
