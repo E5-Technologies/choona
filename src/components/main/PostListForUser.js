@@ -374,21 +374,23 @@ function PostListForUser(props) {
 
                     if (usersToSEndSong.length > 0) {
 
-                        let idArray = [];
+                        // let idArray = [];
 
-                        usersToSEndSong.map((item, index) => {
+                        // usersToSEndSong.map((item, index) => {
 
-                            idArray.push(item._id)
+                        //     idArray.push(item._id)
 
-                        });
-                        if (idArray.includes(data.item._id)) {
-                            console.log('Already Exists');
-                        }
-                        else {
-                            let array = [...usersToSEndSong]
-                            array.push(data.item)
-                            sesUsersToSEndSong(array);
-                        };
+                        // });
+                        // if (idArray.includes(data.item._id)) {
+                        //     console.log('Already Exists');
+                        // }
+                        // else {
+                        //     let array = [...usersToSEndSong]
+                        //     array.push(data.item)
+                        //     sesUsersToSEndSong(array);
+                        // };
+
+                        toast('Error', 'You can select one user at a time');
 
                     } else {
                         let array = [...usersToSEndSong]
@@ -403,8 +405,17 @@ function PostListForUser(props) {
                         style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
                     />
                     <View style={{ marginStart: normalise(10) }}>
-                        <Text style={{ color: Colors.white }}>{data.item.full_name}</Text>
-                        <Text style={{ color: Colors.white }}>{data.item.username}</Text>
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'ProximaNova-Semibold'
+                        }}>{data.item.full_name}</Text>
+
+                        <Text style={{
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'ProximaNova-Semibold'
+                        }}>{data.item.username}</Text>
                     </View>
 
                 </View>
@@ -523,7 +534,7 @@ function PostListForUser(props) {
                                 marginTop: normalise(10),
                                 textAlign: 'right'
                             }}>
-                                ADD USERS TO MESSAGE</Text>
+                                ADD USER TO MESSAGE</Text>
 
                             {userClicked ?
                                 <Text style={{
@@ -595,7 +606,8 @@ function PostListForUser(props) {
                     {usersToSEndSong.length > 0 ?       // ADD TO ARRAY FLATLIST
                         <FlatList
                             style={{
-                                marginTop: normalise(10)
+                                marginTop: normalise(10),
+                                maxHeight: normalise(50),
                             }}
                             horizontal={true}
                             data={usersToSEndSong}
@@ -608,8 +620,8 @@ function PostListForUser(props) {
 
                     <FlatList       // USER SEARCH FLATLIST
                         style={{
-                            marginTop: usersToSEndSong.length > 0 ? normalise(20) : 0,
                             height: '65%',
+                            marginTop: usersToSEndSong.length > 0 ? 0 : normalise(5)
                         }}
                         data={userSearchData}
                         renderItem={renderAddUsersToMessageItem}
@@ -912,10 +924,10 @@ function PostListForUser(props) {
                                                     isrc: posts[positionInArray].isrc_code
                                                 })
                                         else
-                                        // setTimeout(()=>{
-                                        //     toast("Oops", "Only, Spotify users can add to their playlist now.")
-                                        // }, 1000)    
-                                        props.navigation.navigate("AddToPlayListScreen", { isrc: posts[positionInArray].isrc_code })
+                                            // setTimeout(()=>{
+                                            //     toast("Oops", "Only, Spotify users can add to their playlist now.")
+                                            // }, 1000)    
+                                            props.navigation.navigate("AddToPlayListScreen", { isrc: posts[positionInArray].isrc_code })
                                     }}
                                 >
                                     <Image source={ImagePath.addicon}

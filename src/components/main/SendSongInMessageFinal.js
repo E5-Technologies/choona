@@ -114,7 +114,7 @@ function SendSongInMessageFinal(props) {
 
         return (
             <TouchableOpacity style={{
-                marginTop: normalise(10),
+                marginTop: normalise(5),
                 width: "87%",
                 alignSelf: 'center'
             }}
