@@ -470,10 +470,23 @@ export function* getCountryCodeAction(action) {
         };
 
         const response = yield call(getApi, 'country-code/list', Header);
+        
+        let  UK = response.data.data.findIndex(obj => obj.dial_code === "+44" );
+        let  USA = response.data.data.findIndex(obj => obj.dial_code === "+1" );
+
         let res = response.data.data.map((item) => {
             let obj = item.flag + item.dial_code
             return obj
         })
+
+        let ukcode = res[UK];
+        let usacode = res[USA];
+
+        res.splice(UK, 1);
+        res.splice(USA, 1);
+
+        res[1] = usacode;
+        res.unshift(ukcode);
         //  console.log("THE CODE", res)
         yield put({ type: COUNTRY_CODE_SUCCESS, data: res, data1: response.data.data });
 
@@ -533,7 +546,7 @@ export function* followerSearchAction(action) {
         return item.username.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
     });
 
-    yield put ({type: FOLLOWER_SEARCH_SUCCESS, data: result})
+    yield put({ type: FOLLOWER_SEARCH_SUCCESS, data: result })
 };
 
 
@@ -544,7 +557,7 @@ export function* followingSearchAction(action) {
         return item.username.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
     });
 
-    yield put ({type: FOLLOWING_SEARCH_SUCCESS, data: result})
+    yield put({ type: FOLLOWING_SEARCH_SUCCESS, data: result })
 };
 
 
