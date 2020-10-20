@@ -556,7 +556,7 @@ function Contact(props) {
                                 marginTop: normalise(10),
                                 textAlign: 'right'
                             }}>
-                                ADD USER TO MESSAGE</Text>
+                                SELECT USER TO SEND TO</Text>
 
                             {userClicked ?
                                 <Text style={{
