@@ -92,6 +92,8 @@ function Search(props) {
     let flag = true;
     var bottomSheetRef;
 
+    const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
+
     useEffect(() => {
         const unsuscribe = props.navigation.addListener('focus', (payload) => {
             setUserSearchData([]);
@@ -347,9 +349,14 @@ function Search(props) {
 
     // SEND REACTION
     function sendReaction(id, reaction) {
+
+        const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
+            reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+
         let reactionObject = {
             post_id: id,
-            text: reaction
+            text: reaction,
+            text_match: myReaction
         };
         isInternetConnected()
             .then(() => {

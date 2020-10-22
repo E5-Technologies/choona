@@ -225,7 +225,7 @@ function PostListForUser(props) {
     };
 
 
-    const react = ["🔥", "🕺", "💃", "😳", "❤️"]
+    const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
     let val = 0
 
     function hitreact(x) {
@@ -255,9 +255,14 @@ function PostListForUser(props) {
 
 
     function sendReaction(id, reaction) {
+
+        const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
+            reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+
         let reactionObject = {
             post_id: id,
-            text: reaction
+            text: reaction,
+            text_match: myReaction
         };
         isInternetConnected()
             .then(() => {
@@ -704,6 +709,7 @@ function PostListForUser(props) {
                 <View style={{ flex: 1 }}>
 
                     <FlatList
+                        style={{ marginTop: normalise(10) }}
                         data={posts}
                         renderItem={renderItem}
                         initialScrollIndex={props.route.params.index}

@@ -65,6 +65,8 @@ function GenreSongClicked(props) {
   let changePlayer = false;
   var bottomSheetRef;
 
+  const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
+
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', (payload) => {
 
@@ -96,7 +98,7 @@ function GenreSongClicked(props) {
 
       case REACTION_ON_POST_SUCCESS:
         userStatus = props.userStatus
-        props.searchPost(name, flag)
+        props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag)
         break;
 
       case REACTION_ON_POST_FAILURE:
@@ -105,7 +107,7 @@ function GenreSongClicked(props) {
 
       case HOME_PAGE_SUCCESS:
         userStatus = props.userStatus
-        props.searchPost(name, flag)
+        props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag)
         break;
 
       case GET_USER_FROM_HOME_REQUEST:
@@ -175,9 +177,14 @@ function GenreSongClicked(props) {
 
   // SEND REACTION
   function sendReaction(id, reaction) {
+
+    const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
+      reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+
     let reactionObject = {
       post_id: id,
-      text: reaction
+      text: reaction,
+      text_match: myReaction
     };
     isInternetConnected()
       .then(() => {
@@ -723,7 +730,7 @@ function GenreSongClicked(props) {
             </View>
             :
             <FlatList
-              style={{ paddingTop: normalise(20) }}
+              style={{ marginTop:normalise(10) }}
               data={props.getPostFromTop50}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => { index.toString() }}

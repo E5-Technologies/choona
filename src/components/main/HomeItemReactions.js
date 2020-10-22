@@ -25,7 +25,7 @@ import { reactionOnPostRequest, userFollowUnfollowRequest } from '../../action/U
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 
-const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"]
+const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
 
 
 function HomeItemReaction(props) {
@@ -73,27 +73,32 @@ function HomeItemReaction(props) {
 
         console.log("REACTIONS: " + JSON.stringify(reactions))
 
-        // let index = _.findIndex(reactions, function (item) { return item.user_id == userId; })
+        let index = _.findIndex(reactions, function (item) { return item.user_id == userId && item.text == reaction; })
 
-        // if (index != -1) {
-        //     reactions[index].text = reaction;
-        //     setReactionList(editArray(reactions))
-        // } else {
-        reactions.push({
-            "user_id": userId,
-            "text": reaction,
-            "profile_image": props.userProfileResp.profile_image,
-            "username": props.userProfileResp.username
-        })
-        setReactionList(editArray(reactions))
-        // }
+        if (index != -1) {
+            reactions.splice(index, 1);
+            setReactionList(editArray(reactions))
+        } else {
+            reactions.push({
+                "user_id": userId,
+                "text": reaction,
+                "profile_image": props.userProfileResp.profile_image,
+                "username": props.userProfileResp.username
+            })
+            setReactionList(editArray(reactions))
+        }
 
     };
 
     const reactionOnPost = (reaction, id) => {
+
+        const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
+            reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+
         let reactionObject = {
             post_id: id,
-            text: reaction
+            text: reaction,
+            text_match: myReaction
         };
         isInternetConnected()
             .then(() => {
@@ -141,7 +146,7 @@ function HomeItemReaction(props) {
                     //  bottom={data.index === reaction1.length - 1 ? true : false} 
                     // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                     //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-                    marginBottom={0}
+                    marginBottom={data.index == reactionList.length - 1 ? normalise(40) : 0}
                     onPressImage={() => { props.navigation.navigate("Profile", { fromAct: false }) }}
                     TouchableOpacityDisabled={false}
                 />
@@ -155,7 +160,7 @@ function HomeItemReaction(props) {
                     //  bottom={data.index === reaction1.length - 1 ? true : false} 
                     // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
                     //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-                    marginBottom={0}
+                    marginBottom={data.index == reactionList.length - 1 ? normalise(40) : 0}
                     onPress={() => { props.followReq({ follower_id: data.item.user_id }) }}
                     onPressImage={() => { props.navigation.navigate('OthersProfile', { id: data.item.user_id }) }}
                     TouchableOpacityDisabled={false}
