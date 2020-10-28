@@ -92,8 +92,8 @@ function HomeItemReaction(props) {
 
     const reactionOnPost = (reaction, id) => {
 
-        const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
-            reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+        const myReaction = reaction == react[0] ? "A" : reaction == react[1] ? "B" : reaction == react[2] ? "C" :
+            reaction == react[3] ? "D" : reaction == react[4] ? 'E' : "F";
 
         let reactionObject = {
             post_id: id,
