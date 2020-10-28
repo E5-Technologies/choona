@@ -228,12 +228,32 @@ function PostListForUser(props) {
     const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
     let val = 0
 
-    function hitreact(x) {
-        setVisible(true)
-        setModalReact(x)
-        setTimeout(() => {
-            setVisible(false)
-        }, 2000);
+    function hitreact(x, rindex) {
+
+        if (!_.isEmpty(posts[rindex].reaction)) {
+            console.log('here');
+
+            const present = posts[rindex].reaction.some(obj => obj.user_id.includes(props.userProfileResp._id) && obj.text.includes(x))
+
+            if (present) {
+                console.log('nooo');
+            }
+            else {
+                setVisible(true)
+                setModalReact(x)
+                setTimeout(() => {
+                    setVisible(false)
+                }, 2000);
+            }
+
+        }
+        else {
+            setVisible(true)
+            setModalReact(x)
+            setTimeout(() => {
+                setVisible(false)
+            }, 2000);
+        }
     };
 
     function hitreact1(modal1Visible) {
@@ -290,7 +310,7 @@ function PostListForUser(props) {
                 modalVisible={modal1Visible}
                 postType={data.item.social_type === "spotify"}
                 onReactionPress={(reaction) => {
-                    hitreact(reaction),
+                    hitreact(reaction, data.index),
                         sendReaction(data.item._id, reaction);
                 }}
                 onPressImage={() => {

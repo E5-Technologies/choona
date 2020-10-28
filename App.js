@@ -23,6 +23,12 @@ import Colors from './src/assests/Colors';
 import ImagePath from './src/assests/ImagePath';
 import normalise from './src/utils/helpers/Dimens';
 
+import {
+  getChatListRequest,
+} from './src/action/MessageAction';
+
+import {
+getProfileRequest} from './src/action/UserAction';
 
 import Splash from './src/components/SplashComponent/Splash';
 
@@ -104,9 +110,12 @@ const App = () => {
         })
 
     } else if (AppState.currentState === 'active') {
-      
-      console.log("zxcv","App is in active Mode.")
-      
+
+  getChatListRequest,
+      dispatch(getChatListRequest())
+      dispatch(getProfileRequest())
+      console.log("zxcv", "App is in active Mode.")
+
     }
   }
 

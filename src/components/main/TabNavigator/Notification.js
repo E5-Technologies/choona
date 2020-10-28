@@ -82,7 +82,9 @@ function Notification(props) {
         isInternetConnected()
             .then(() => {
                 props.editProfileReq(formdata),
+                setTimeout(()=>{
                     props.getProfileReq();
+                },1000);
             })
             .catch((err) => {
                 toast("Oops", "Please Connect To Internet")
@@ -99,7 +101,7 @@ function Notification(props) {
                     title={`${data.item.username} started following you`}
                     follow={!data.item.isFollowing}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
-                    marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
+                    marginBottom={data.index === props.activityListToday.length - 1 ? normalise(4) : normalise(0)}
                     onPressImage={() => {
                         props.navigation.navigate("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
@@ -116,7 +118,7 @@ function Notification(props) {
                     type={false}
                     image2={data.item.image}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
-                    marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
+                    marginBottom={data.index === props.activityListToday.length - 1 ? normalise(4) : normalise(0)}
                     onPressImage={() => {
                         props.navigation.navigate("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
@@ -133,7 +135,7 @@ function Notification(props) {
                     type={false}
                     image2={data.item.image}
                     bottom={data.index === props.activityListToday.length - 1 ? true : false}
-                    marginBottom={data.index === props.activityListToday.length - 1 ? normalise(10) : normalise(0)}
+                    marginBottom={data.index === props.activityListToday.length - 1 ? normalise(4) : normalise(0)}
                     onPressImage={() => {
                         props.navigation.navigate("OthersProfile",
                             { id: data.item._id, following: data.item.isFollowing })
@@ -163,7 +165,8 @@ function Notification(props) {
                     fontFamily: ('ProximaNova-Black'),
                     color: Colors.white,
                     marginTop: normalise(10),
-                    alignSelf: 'center'
+                    alignSelf: 'center',
+                    marginBottom: normalise(10)
                 }}> ACTIVITY</Text>
 
 
@@ -199,8 +202,8 @@ function Notification(props) {
 
                         {_.isEmpty(props.activityListPrevious) ? null :
                             <View style={{
-                                marginTop: normalise(10), flexDirection: 'row',
-                                width: '100%', height: normalise(40), alignItems: 'center', backgroundColor: Colors.fadeblack
+                                flexDirection: 'row', width: '100%', height: normalise(40),
+                                alignItems: 'center', backgroundColor: Colors.fadeblack
                             }}>
 
                                 <Text style={{
@@ -210,6 +213,7 @@ function Notification(props) {
                             </View>}
 
                         <FlatList
+                            style={{ marginBottom: normalise(5) }}
                             data={props.activityListPrevious}
                             renderItem={renderTodayitem}
                             keyExtractor={(item, index) => { index.toString() }}

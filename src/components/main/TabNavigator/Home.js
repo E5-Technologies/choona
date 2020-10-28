@@ -267,13 +267,15 @@ function Home(props) {
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach("");
-        props.navigation.navigate('SendSongInMessageFinal', {
-          image: props.postData[positionInArray].song_image,
-          title: props.postData[positionInArray].song_name,
-          title2: props.postData[positionInArray].artist_name,
-          users: usersToSEndSong, details: props.postData[positionInArray], registerType: props.registerType,
-          fromAddAnotherSong: false, index: 0, fromHome: true, details: props.postData[positionInArray]
-        });
+        if (!_.isEmpty(props.postData)) {
+          props.navigation.navigate('SendSongInMessageFinal', {
+            image: props.postData[positionInArray].song_image,
+            title: props.postData[positionInArray].song_name,
+            title2: props.postData[positionInArray].artist_name,
+            users: usersToSEndSong, details: props.postData[positionInArray], registerType: props.registerType,
+            fromAddAnotherSong: false, index: 0, fromHome: true, details: props.postData[positionInArray]
+          });
+        }
         break;
 
       case CREATE_CHAT_TOKEN_FAILURE:
@@ -287,12 +289,34 @@ function Home(props) {
   const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
   let val = 0
 
-  function hitreact(x) {
-    setVisible(true)
-    setModalReact(x)
-    setTimeout(() => {
-      setVisible(false)
-    }, 2000);
+  function hitreact(x, rindex) {
+    console.log('this' + JSON.stringify(props.postData[rindex]));
+    if (!_.isEmpty(props.postData[rindex].reaction)) {
+      console.log('here');
+      
+      const present =  props.postData[rindex].reaction.some(obj =>  obj.user_id.includes(props.userProfileResp._id) && obj.text.includes(x) )
+
+        if (present) {
+          console.log('nooo');
+        }
+        else {
+          console.log('2');
+          setVisible(true)
+          setModalReact(x)
+          setTimeout(() => {
+            setVisible(false)
+          }, 2000);
+        }
+
+    }
+    else {
+      console.log('3');
+      setVisible(true)
+      setModalReact(x)
+      setTimeout(() => {
+        setVisible(false)
+      }, 2000);
+    }
   };
 
   function hitreact1(modal1Visible) {
@@ -314,9 +338,9 @@ function Home(props) {
 
 
   function sendReaction(id, reaction) {
-    
+
     const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
-    reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+      reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
 
     let reactionObject = {
       post_id: id,
@@ -382,7 +406,7 @@ function Home(props) {
         postType={data.item.social_type === "spotify"}
         onReactionPress={(reaction) => {
           if (!homeReq) {
-            hitreact(reaction),
+            hitreact(reaction, data.index),
               sendReaction(data.item._id, reaction);
           }
         }}
