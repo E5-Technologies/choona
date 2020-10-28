@@ -267,13 +267,15 @@ function Home(props) {
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach("");
-        props.navigation.navigate('SendSongInMessageFinal', {
-          image: props.postData[positionInArray].song_image,
-          title: props.postData[positionInArray].song_name,
-          title2: props.postData[positionInArray].artist_name,
-          users: usersToSEndSong, details: props.postData[positionInArray], registerType: props.registerType,
-          fromAddAnotherSong: false, index: 0, fromHome: true, details: props.postData[positionInArray]
-        });
+        if (!_.isEmpty(props.postData)) {
+          props.navigation.navigate('SendSongInMessageFinal', {
+            image: props.postData[positionInArray].song_image,
+            title: props.postData[positionInArray].song_name,
+            title2: props.postData[positionInArray].artist_name,
+            users: usersToSEndSong, details: props.postData[positionInArray], registerType: props.registerType,
+            fromAddAnotherSong: false, index: 0, fromHome: true, details: props.postData[positionInArray]
+          });
+        }
         break;
 
       case CREATE_CHAT_TOKEN_FAILURE:
@@ -314,9 +316,9 @@ function Home(props) {
 
 
   function sendReaction(id, reaction) {
-    
+
     const myReaction = reaction == react[0] ? "fire" : reaction == react[1] ? "love" : reaction == react[2] ? "dance_girl" :
-    reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
+      reaction == react[3] ? "dance" : reaction == react[4] ? 'sleeping' : "thumbs";
 
     let reactionObject = {
       post_id: id,

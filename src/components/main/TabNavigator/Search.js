@@ -50,7 +50,7 @@ import {
 } from '../../../action/UserAction';
 import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import RBSheet from "react-native-raw-bottom-sheet";
-
+import Contacts from 'react-native-contacts';
 
 let status;
 let postStatus;
@@ -86,6 +86,7 @@ function Search(props) {
     const [userSeach, setUserSeach] = useState("");
     const [userSearchData, setUserSearchData] = useState([]);
     const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
+    const [contactsLoading, setContactsLoading] = useState(false);
 
     let changePlayer = false;
     let sendSong = false;
@@ -891,6 +892,39 @@ function Search(props) {
     };
 
 
+    const getContacts = () => {
+        Contacts.getAll((err, contacts) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                let contactsArray = contacts;
+                let finalArray = [];
+                setContactsLoading(false);
+                console.log(JSON.stringify(contacts));
+                contactsArray.map((item, index) => {
+                    item.phoneNumbers.map((item, index) => {
+                        let number = item.number.replace(/[- )(]/g, '');
+                        let check = number.charAt(0);
+                        let number1 = parseInt(number);
+                        if (check === 0) {
+                            finalArray.push(number1);
+                        }
+                        else {
+                            let updatednumber = `0${number1}`
+                            finalArray.push(updatednumber);
+                        }
+                    })
+                });
+
+                console.log(finalArray);
+                props.navigation.navigate('UsersFromContacts', { data: finalArray })
+            }
+        })
+    };
+
+
+
 
     //VIEW
     return (
@@ -903,6 +937,8 @@ function Search(props) {
             <Loader visible={props.postStatus === SEARCH_POST_REQUEST} />
 
             <Loader visible={props.top50SongsStatus === TOP_50_SONGS_REQUEST} />
+
+            <Loader visible={contactsLoading} />
 
             <Loader visible={bool} />
 
@@ -1081,6 +1117,22 @@ function Search(props) {
                                     color: Colors.white, fontSize: normalise(15), fontWeight: '500',
                                     marginTop: normalise(20), width: '68%', textAlign: 'center'
                                 }}>Search for users via username or their full name</Text>
+
+                                <TouchableOpacity style={{
+                                    marginBottom: normalise(30),
+                                    marginTop: normalise(40), height: normalise(50), width: '80%', alignSelf: 'center',
+                                    borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
+                                    shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
+                                    shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
+                                    justifyContent: 'center', borderColor: Colors.grey,
+                                }} onPress={() => { setContactsLoading(true), getContacts() }}>
+
+                                    <Text style={{
+                                        marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
+                                        fontWeight: 'bold'
+                                    }}>CHECK YOUR PHONEBOOK</Text>
+
+                                </TouchableOpacity>
 
                             </View>
 
