@@ -67,6 +67,8 @@ import AddToPlayListScreen from './src/components/main/AddToPlayListScreen'
 import {
   editProfileRequest
 } from './src/action/UserAction';
+import firebase from '@react-native-firebase/messaging';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -85,10 +87,16 @@ const App = () => {
       dispatch(getTokenRequest())
     }, 3000);
 
+    const unsuscribe = firebase().onMessage(async () => {
+      dispatch(getChatListRequest());
+      dispatch(getProfileRequest());
+    });
+
     AppState.addEventListener('change', _handleAppStateChange);
 
     return () => {
       AppState.removeEventListener('change', _handleAppStateChange);
+      unsuscribe();
     }
 
   }, []);
@@ -117,7 +125,8 @@ const App = () => {
       console.log("zxcv", "App is in active Mode.")
 
     }
-  }
+  };
+
 
   // const TabBar = (props) => (
   //   <View>

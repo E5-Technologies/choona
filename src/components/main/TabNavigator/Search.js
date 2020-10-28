@@ -1153,14 +1153,28 @@ function Search(props) {
 
                     {genreSearch ?              //GENRE VIEW
 
-                        <FlatList
-                            //style={{ height: '70%' }}
-                            style={{ alignSelf: 'center', width: '90%' }}
-                            data={top50}
-                            renderItem={renderGenreData}
-                            keyExtractor={(item, index) => index.toString()}
-                            numColumns={2}
-                            showsVerticalScrollIndicator={false} />
+                        _.isEmpty(top50) ?
+
+                            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", }}>
+
+                                {/* <Image source={ImagePath.music_icon} style={{ height: normalise(40), width: normalise(40) }}
+                                    resizeMode='contain' /> */}
+
+                                <Text style={{
+                                    color: Colors.white, fontSize: normalise(15), fontWeight: '500',
+                                    marginTop: normalise(20), width: '68%', textAlign: 'center'
+                                }}>No songs are posted today</Text>
+
+                            </View> :
+
+                            <FlatList
+                                //style={{ height: '70%' }}
+                                style={{ alignSelf: 'center', width: '90%' }}
+                                data={top50}
+                                renderItem={renderGenreData}
+                                keyExtractor={(item, index) => index.toString()}
+                                numColumns={2}
+                                showsVerticalScrollIndicator={false} />
 
                         : null}
 
