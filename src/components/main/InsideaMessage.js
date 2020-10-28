@@ -191,6 +191,7 @@ function InsideaMessage(props) {
                         comments: data.item.message,
                         key: data.item.key,
                         chatToken: props.chatList[index].chat_token,
+                        receiver_id: props.chatList[index].user_id,
                         isrc: data.item.isrc_code,
                         originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                             undefined,
@@ -211,6 +212,7 @@ function InsideaMessage(props) {
                         comments: data.item.message,
                         key: data.item.key,
                         chatToken: props.chatList[index].chat_token,
+                        receiver_id: props.chatList[index].user_id,
                         isrc: data.item.isrc_code,
                         originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
                             undefined,

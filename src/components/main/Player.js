@@ -109,7 +109,8 @@ function Player(props) {
     const [username, setUsername] = useState(props.route.params.username);
     const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
     const [isrc, setisrc] = useState(props.route.params.isrc);
-    const [details, setDetails] = useState(props.route.params.details)
+    const [details, setDetails] = useState(props.route.params.details);
+    const [reveiverId, setReceiverId] = useState(props.route.params.receiver_id);
 
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
@@ -780,6 +781,9 @@ function Player(props) {
                                             ChatId: key,
                                             chatToken: chatToken,
                                             message: commentData,
+                                            reveiverId: reveiverId,
+                                            songTitle: songTitle,
+                                            artist: artist
                                         }
                                     }
                                     isInternetConnected()

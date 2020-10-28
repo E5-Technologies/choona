@@ -215,6 +215,14 @@ export function* updateMessageCommentAction(action) {
 
     try {
 
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token,
+        }
+
         const channel = eventChannel(emiter => {
             const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
                 .child(action.payload.ChatId)
@@ -233,6 +241,15 @@ export function* updateMessageCommentAction(action) {
         if (error) {
             yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error })
         } else {
+            let updateMessageResponse = yield call(postApi, 'chat/sendPush',
+                {
+                    "receiver_id": action.payload.reveiverId,
+                    "song_name": action.payload.songTitle,
+                    "artist_name": action.payload.artist,
+                }, Header);
+
+            console.log("updateMessageResponse: " + JSON.stringify(updateMessageResponse))
+
             yield put({ type: UPDATE_MESSEAGE_COMMENTS_SUCCESS, data: 'Message Edited successfully' })
         }
     } catch (error) {
@@ -243,32 +260,32 @@ export function* updateMessageCommentAction(action) {
 export function* deleteMessageAction(action) {
 
     try {
-  
-      const channel = eventChannel(emiter => {
-        const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
-          .child(action.payload.ChatId)
-          .remove((error) => {
-            emiter({ error: error || null })
-          })
-        // Return the shutdown method;
-        return () => {
-          listener.off()
+
+        const channel = eventChannel(emiter => {
+            const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+                .child(action.payload.ChatId)
+                .remove((error) => {
+                    emiter({ error: error || null })
+                })
+            // Return the shutdown method;
+            return () => {
+                listener.off()
+            }
+        });
+
+        const { error } = yield take(channel)
+        if (error) {
+            yield put({ type: DELETE_MESSAGE_FAILURE, error: error })
+        } else {
+            yield put({ type: DELETE_MESSAGE_SUCCESS, data: 'Message Deleted successfully' })
         }
-      });
-  
-      const { error } = yield take(channel)
-      if (error) {
-        yield put({ type: DELETE_MESSAGE_FAILURE, error: error })
-      } else {
-        yield put({ type: DELETE_MESSAGE_SUCCESS, data: 'Message Deleted successfully' })
-      }
     } catch (error) {
-      yield put({ type: DELETE_MESSAGE_FAILURE, error: error });
+        yield put({ type: DELETE_MESSAGE_FAILURE, error: error });
     }
-  };
+};
 
 
-  export function* getChatTokenFromSearchAction(action) {
+export function* getChatTokenFromSearchAction(action) {
 
     try {
         const items = yield select(getItems);
