@@ -198,36 +198,33 @@ function GenreSongClicked(props) {
 
 
   // HIT REACT
-  function hitreact(x) {
-    setVisible(true)
-    setModalReact(x)
-    setTimeout(() => {
-      setVisible(false)
-    }, 2000);
+  function hitreact(x, rindex) {
+
+    if (!_.isEmpty(props.getPostFromTop50[rindex].reaction)) {
+      console.log('here');
+
+      const present = props.getPostFromTop50[rindex].reaction.some(obj => obj.user_id.includes(props.userProfileResp._id) && obj.text.includes(x))
+
+      if (present) {
+        console.log('nooo');
+      }
+      else {
+        setVisible(true)
+        setModalReact(x)
+        setTimeout(() => {
+          setVisible(false)
+        }, 2000);
+      }
+
+    }
+    else {
+      setVisible(true)
+      setModalReact(x)
+      setTimeout(() => {
+        setVisible(false)
+      }, 2000);
+    }
   };
-
-
-
-  // SHOW REACTION MODAL
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    onRequestClose={() => {
-      //Alert.alert("Modal has been closed.");
-    }}
-  >
-    <View style={{
-      flex: 1,
-      backgroundColor: '#000000',
-      opacity: 0.9,
-      justifyContent: "center",
-      alignItems: "center",
-    }}>
-      <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
-    </View>
-  </Modal>
-
 
 
   // FLATLIST RENDER FUNCTION
@@ -246,7 +243,7 @@ function GenreSongClicked(props) {
         modalVisible={modal1Visible}
         postType={data.item.social_type === "spotify"}
         onReactionPress={(reaction) => {
-          hitreact(reaction),
+          hitreact(reaction, data.index),
             sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
@@ -730,7 +727,7 @@ function GenreSongClicked(props) {
             </View>
             :
             <FlatList
-              style={{ marginTop:normalise(10) }}
+              style={{ marginTop: normalise(10) }}
               data={props.getPostFromTop50}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => { index.toString() }}
@@ -738,6 +735,26 @@ function GenreSongClicked(props) {
 
         {MorePressed()}
         {renderAddToUsers()}
+
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={visible}
+          onRequestClose={() => {
+            //Alert.alert("Modal has been closed.");
+          }}
+        >
+          <View style={{
+            flex: 1,
+            backgroundColor: '#000000',
+            opacity: 0.9,
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+            <Text style={{ fontSize: Platform.OS === 'android' ? normalise(70) : normalise(100) }}>{modalReact}</Text>
+          </View>
+        </Modal>
 
       </SafeAreaView>
     </View>

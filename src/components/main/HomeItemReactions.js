@@ -111,13 +111,37 @@ function HomeItemReaction(props) {
 
 
     function hitreact(x) {
-        addOrChangeReaction(x)
-        reactionOnPost(x, postId)
-        setModalVisible(true)
-        setModalReact(x)
-        setTimeout(() => {
-            setModalVisible(false)
-        }, 2000);
+
+        if (!_.isEmpty(reactionList)) {
+            console.log('here' + JSON.stringify(reactionList));
+
+            const present = reactionList.some(obj =>  obj.header.includes(x) && obj.data.some(obj1 => obj1.user_id === userId))
+
+            if (present) {
+                console.log('nooo');
+                addOrChangeReaction(x)
+                reactionOnPost(x, postId)
+            }
+            else {
+                addOrChangeReaction(x)
+                reactionOnPost(x, postId)
+                setModalVisible(true)
+                setModalReact(x)
+                setTimeout(() => {
+                    setModalVisible(false)
+                }, 2000);
+            }
+
+        }
+        else {
+            addOrChangeReaction(x)
+            reactionOnPost(x, postId)
+            setModalVisible(true)
+            setModalReact(x)
+            setTimeout(() => {
+                setModalVisible(false)
+            }, 2000);
+        }
     }
 
     function hitreact1() {

@@ -289,12 +289,34 @@ function Home(props) {
   const react = ["🔥", "😍", "💃", "🕺", "🤤", "👍"];
   let val = 0
 
-  function hitreact(x) {
-    setVisible(true)
-    setModalReact(x)
-    setTimeout(() => {
-      setVisible(false)
-    }, 2000);
+  function hitreact(x, rindex) {
+    console.log('this' + JSON.stringify(props.postData[rindex]));
+    if (!_.isEmpty(props.postData[rindex].reaction)) {
+      console.log('here');
+      
+      const present =  props.postData[rindex].reaction.some(obj =>  obj.user_id.includes(props.userProfileResp._id) && obj.text.includes(x) )
+
+        if (present) {
+          console.log('nooo');
+        }
+        else {
+          console.log('2');
+          setVisible(true)
+          setModalReact(x)
+          setTimeout(() => {
+            setVisible(false)
+          }, 2000);
+        }
+
+    }
+    else {
+      console.log('3');
+      setVisible(true)
+      setModalReact(x)
+      setTimeout(() => {
+        setVisible(false)
+      }, 2000);
+    }
   };
 
   function hitreact1(modal1Visible) {
@@ -384,7 +406,7 @@ function Home(props) {
         postType={data.item.social_type === "spotify"}
         onReactionPress={(reaction) => {
           if (!homeReq) {
-            hitreact(reaction),
+            hitreact(reaction, data.index),
               sendReaction(data.item._id, reaction);
           }
         }}
