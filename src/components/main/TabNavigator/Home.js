@@ -1263,7 +1263,7 @@ function Home(props) {
                       fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Semibold',
                     }}>{!_.isEmpty(props.userProfileResp) ? props.userProfileResp._id === props.postData[positionInArray].user_id ? "Delete Post" :
-                    `Unfollow ${props.postData[positionInArray].userDetails.username}` : ""}ƒ</Text>
+                      `Unfollow ${props.postData[positionInArray].userDetails.username}` : ""}ƒ</Text>
                   </TouchableOpacity>
 
 
@@ -1301,14 +1301,14 @@ function Home(props) {
 
                     }}
                   >
-                    <Image source={props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
+                    <Image source={!_.isEmpty(props.userProfileResp) ? props.userProfileResp.register_type === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic : ""}
                       style={{ height: normalise(18), width: normalise(18), borderRadius: normalise(9) }}
                       resizeMode='contain' />
                     <Text style={{
                       color: Colors.white, marginLeft: normalise(15),
                       fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Semibold',
-                    }}>{props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple"}</Text>
+                    }}>{!_.isEmpty(props.userProfileResp) ? props.userProfileResp.register_type === 'spotify' ? "Open on Spotify" : "Open on Apple" : ""}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
