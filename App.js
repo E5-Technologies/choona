@@ -68,6 +68,7 @@ import {
   editProfileRequest
 } from './src/action/UserAction';
 import firebase from '@react-native-firebase/messaging';
+import _ from 'lodash'
 
 
 const Stack = createStackNavigator();
@@ -210,7 +211,7 @@ const App = () => {
                   source={focused ? ImagePath.notificationactive : ImagePath.notificationinactive}
                   resizeMode='contain' >
                 </Image>
-                {UserReducer.userProfileResp.hasOwnProperty('isActivity') ?
+                {!_.isEmpty(UserReducer.userProfileResp)?
                   UserReducer.userProfileResp.isActivity ?
                     <View
                       style={{

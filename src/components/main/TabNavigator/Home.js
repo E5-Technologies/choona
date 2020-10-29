@@ -485,18 +485,21 @@ function Home(props) {
     let hasUnseenMessage = false;
     let arr = props.chatList;
 
-    for (var i = 0; i < arr.length; i++) {
+    if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
+      for (var i = 0; i < arr.length; i++) {
 
-      let chatObject = Object.values(arr[i])[0]
+        let chatObject = Object.values(arr[i])[0]
 
-      if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
+        if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
 
-        return !Object.values(arr[i])[0].read;
-        break;
+          return !Object.values(arr[i])[0].read;
+          break;
+        }
       }
+
+      return hasUnseenMessage;
     }
 
-    return hasUnseenMessage;
   };
 
 
@@ -972,7 +975,7 @@ function Home(props) {
         <HomeHeaderComponent
           firstitemtext={false}
           marginTop={0}
-          imageone={constants.profile_picture_base_url + props.userProfileResp.profile_image}
+          imageone={_.isEmpty(props.userProfileResp) ? "" : constants.profile_picture_base_url + props.userProfileResp.profile_image}
           staticFirstImage={false}
           imageoneheight={30}
           imageonewidth={30}
