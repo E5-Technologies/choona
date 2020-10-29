@@ -1262,8 +1262,8 @@ function Home(props) {
                       color: Colors.white, marginLeft: normalise(15),
                       fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Semibold',
-                    }}>{props.userProfileResp._id === props.postData[positionInArray].user_id ? "Delete Post" :
-                      `Unfollow ${props.postData[positionInArray].userDetails.username}`}</Text>
+                    }}>{!_.isEmpty(props.userProfileResp) ? props.userProfileResp._id === props.postData[positionInArray].user_id ? "Delete Post" :
+                    `Unfollow ${props.postData[positionInArray].userDetails.username}` : ""}ƒ</Text>
                   </TouchableOpacity>
 
 
