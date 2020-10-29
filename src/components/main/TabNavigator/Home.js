@@ -293,20 +293,20 @@ function Home(props) {
     console.log('this' + JSON.stringify(props.postData[rindex]));
     if (!_.isEmpty(props.postData[rindex].reaction)) {
       console.log('here');
-      
-      const present =  props.postData[rindex].reaction.some(obj =>  obj.user_id.includes(props.userProfileResp._id) && obj.text.includes(x) )
 
-        if (present) {
-          console.log('nooo');
-        }
-        else {
-          console.log('2');
-          setVisible(true)
-          setModalReact(x)
-          setTimeout(() => {
-            setVisible(false)
-          }, 2000);
-        }
+      const present = props.postData[rindex].reaction.some(obj => obj.user_id.includes(props.userProfileResp._id) && obj.text.includes(x))
+
+      if (present) {
+        console.log('nooo');
+      }
+      else {
+        console.log('2');
+        setVisible(true)
+        setModalReact(x)
+        setTimeout(() => {
+          setVisible(false)
+        }, 2000);
+      }
 
     }
     else {
@@ -366,7 +366,7 @@ function Home(props) {
         let contactsArray = contacts;
         let finalArray = [];
         setContactsLoading(false);
-        console.log(JSON.stringify(contacts));
+        //console.log(JSON.stringify(contacts));
         contactsArray.map((item, index) => {
           item.phoneNumbers.map((item, index) => {
             let number = item.number.replace(/[- )(]/g, '');
@@ -376,8 +376,16 @@ function Home(props) {
               finalArray.push(number1);
             }
             else {
-              let updatednumber = `0${number1}`
-              finalArray.push(updatednumber);
+              const converToString = number1.toString()
+              const myVar = number1.toString().substring(0, 2);
+              if (myVar === "44") {
+                let backToInt = converToString.replace("44", "0");
+                finalArray.push(backToInt);
+              }
+              else {
+                let updatednumber = `0${number1}`
+                finalArray.push(updatednumber);
+              }
             }
           })
         });

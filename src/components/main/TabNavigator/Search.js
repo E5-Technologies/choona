@@ -896,7 +896,7 @@ function Search(props) {
                 let contactsArray = contacts;
                 let finalArray = [];
                 setContactsLoading(false);
-                console.log(JSON.stringify(contacts));
+                //console.log(JSON.stringify(contacts));
                 contactsArray.map((item, index) => {
                     item.phoneNumbers.map((item, index) => {
                         let number = item.number.replace(/[- )(]/g, '');
@@ -906,8 +906,16 @@ function Search(props) {
                             finalArray.push(number1);
                         }
                         else {
-                            let updatednumber = `0${number1}`
-                            finalArray.push(updatednumber);
+                            const converToString = number1.toString()
+                            const myVar = number1.toString().substring(0, 2);
+                            if (myVar === "44") {
+                                let backToInt = converToString.replace("44", "0");
+                                finalArray.push(backToInt);
+                            }
+                            else {
+                                let updatednumber = `0${number1}`
+                                finalArray.push(updatednumber);
+                            }
                         }
                     })
                 });
