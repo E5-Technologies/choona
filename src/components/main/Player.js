@@ -123,7 +123,7 @@ function Player(props) {
     const [reactions, setSReactions] = useState(props.route.params.changePlayer ? [] : props.route.params.reactions);
 
     //COMMENT ON POST
-    const [commentData, setCommentData] = useState(props.route.params.changePlayer ? (props.route.params.comingFromMessage ? props.route.params.comments : []) : props.route.params.comments);
+    const [commentData, setCommentData] = useState(props.route.params.changePlayer ? (props.route.params.comingFromMessage ? getArrayLength(props.route.params.comments) : []) : props.route.params.comments);
     const [id, setId] = useState(props.route.params.id);
     const [commentText, setCommentText] = useState("");
     const [arrayLength, setArrayLength] = useState(`${commentData.length} ${commentData.length > 1 ? "COMMENTS" : "COMMENT"}`);
@@ -320,6 +320,16 @@ function Player(props) {
         }
     };
 
+    //COMING FROM MESSAGE ARRAY LENGTH
+    function getArrayLength (message) {
+        let msg_array = [];
+        message.map((item, index)=>{
+            if(item.text !== ""){
+                msg_array.push(item);
+            }
+        });
+        return msg_array
+    };
 
     // GET SPOTIFY SONG URL
     const callApi = async () => {
