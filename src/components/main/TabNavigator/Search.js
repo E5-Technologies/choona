@@ -908,8 +908,8 @@ function Search(props) {
                         else {
                             const converToString = number1.toString()
                             const myVar = number1.toString().substring(0, 2);
-                            if (myVar === "44") {
-                                let backToInt = converToString.replace("44", "0");
+                            if (myVar === "44" || myVar === "91") {
+                                let backToInt = converToString.replace(myVar, "0");
                                 finalArray.push(backToInt);
                             }
                             else {

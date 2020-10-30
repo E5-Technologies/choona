@@ -412,8 +412,6 @@ const UserReducer = (state = initialState, action) => {
 
             action.data.map((item, index) => {
                 let postTime = moment(item.createdAt).format('MM-DD-YYYY')
-                console.log(time)
-                console.log(postTime)
 
                 if (postTime < time) {
                     previous.push(item)

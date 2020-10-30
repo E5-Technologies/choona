@@ -148,6 +148,63 @@ function Notification(props) {
     };
 
 
+    function renderPreviousItem(data) {
+
+        if (data.item.activity_type === 'following') {
+
+            return (
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={`${data.item.username} started following you`}
+                    follow={!data.item.isFollowing}
+                    bottom={data.index === props.activityListPrevious.length - 1 ? true : false}
+                    marginBottom={data.index === props.activityListPrevious.length - 1 ? normalise(4) : normalise(0)}
+                    onPressImage={() => {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
+                    onPress={() => { props.followReq({ follower_id: data.item._id }) }}
+                />
+            );
+        }
+        else if (data.item.activity_type === 'reaction') {
+            return (
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={`${data.item.username} reacted ${data.item.text} on your post`}
+                    type={false}
+                    image2={data.item.image}
+                    bottom={data.index === props.activityListPrevious.length - 1 ? true : false}
+                    marginBottom={data.index === props.activityListPrevious.length - 1 ? normalise(4) : normalise(0)}
+                    onPressImage={() => {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
+                    onPress={() => { props.navigation.navigate('Profile', { postId: data.item.post_id, fromAct: true }) }}
+                />
+            );
+        }
+        else {
+            return (
+                <ActivityListItem
+                    image={constants.profile_picture_base_url + data.item.profile_image}
+                    title={`${data.item.username} commented "${data.item.text}" on your post`}
+                    type={false}
+                    image2={data.item.image}
+                    bottom={data.index === props.activityListPrevious.length - 1 ? true : false}
+                    marginBottom={data.index === props.activityListPrevious.length - 1 ? normalise(4) : normalise(0)}
+                    onPressImage={() => {
+                        props.navigation.navigate("OthersProfile",
+                            { id: data.item._id, following: data.item.isFollowing })
+                    }}
+                    onPress={() => { props.navigation.navigate('Profile', { postId: data.item.post_id, fromAct: true })  }}
+                />
+            )
+        }
+
+    };
+
+
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -215,7 +272,7 @@ function Notification(props) {
                         <FlatList
                             style={{ marginBottom: normalise(5) }}
                             data={props.activityListPrevious}
-                            renderItem={renderTodayitem}
+                            renderItem={renderPreviousItem}
                             keyExtractor={(item, index) => { index.toString() }}
                             showsVerticalScrollIndicator={false}
                         />

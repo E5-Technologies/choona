@@ -98,12 +98,12 @@ function ActivityListItem(props) {
             </View>
 
 
-            {/* {props.bottom ? null : */}
-            <View style={{
-                borderBottomWidth: 0.5,
-                borderBottomColor: Colors.activityBorderColor
-            }} />
-            {/* } */}
+            {props.bottom ? null :
+                <View style={{
+                    borderBottomWidth: 0.5,
+                    borderBottomColor: Colors.activityBorderColor
+                }} />
+            }
 
 
         </View>
