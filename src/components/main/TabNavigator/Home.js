@@ -482,6 +482,7 @@ function Home(props) {
 
 
   function findIsNotRead() {
+
     let hasUnseenMessage = false;
     let arr = props.chatList;
 
@@ -492,8 +493,12 @@ function Home(props) {
 
         if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
 
-          return !Object.values(arr[i])[0].read;
-          break;
+         // console.log("OBJECT VALUE" + JSON.stringify(Object.values(arr[i])[0]))
+
+          hasUnseenMessage = !Object.values(arr[i])[0].read;
+          if (hasUnseenMessage)
+            break;
+
         }
       }
 
@@ -1263,7 +1268,7 @@ function Home(props) {
                       fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Semibold',
                     }}>{!_.isEmpty(props.userProfileResp) ? props.userProfileResp._id === props.postData[positionInArray].user_id ? "Delete Post" :
-                      `Unfollow ${props.postData[positionInArray].userDetails.username}` : ""}ƒ</Text>
+                      `Unfollow ${props.postData[positionInArray].userDetails.username}` : ""}</Text>
                   </TouchableOpacity>
 
 
