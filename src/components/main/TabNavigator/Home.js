@@ -378,13 +378,20 @@ function Home(props) {
             else {
               const converToString = number1.toString()
               const myVar = number1.toString().substring(0, 2);
-              if (myVar === "44" || myVar === "91") {
-                let backToInt = converToString.replace(myVar, "0");
+              const threeDigitVar = number1.toString().substring(0, 3);
+
+              if (threeDigitVar === "440") {
+                let backToInt = converToString.replace(threeDigitVar, "0");
                 finalArray.push(backToInt);
-              }
-              else {
-                let updatednumber = `0${number1}`
-                finalArray.push(updatednumber);
+              } else {
+                if (myVar === "44" || myVar === "91") {
+                  let backToInt = converToString.replace(myVar, "0");
+                  finalArray.push(backToInt);
+                }
+                else {
+                  let updatednumber = `0${number1}`
+                  finalArray.push(updatednumber);
+                }
               }
             }
           })
@@ -493,7 +500,7 @@ function Home(props) {
 
         if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
 
-         // console.log("OBJECT VALUE" + JSON.stringify(Object.values(arr[i])[0]))
+          // console.log("OBJECT VALUE" + JSON.stringify(Object.values(arr[i])[0]))
 
           hasUnseenMessage = !Object.values(arr[i])[0].read;
           if (hasUnseenMessage)

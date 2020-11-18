@@ -110,7 +110,8 @@ function Player(props) {
     const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
     const [isrc, setisrc] = useState(props.route.params.isrc);
     const [details, setDetails] = useState(props.route.params.details);
-    const [reveiverId, setReceiverId] = useState(props.route.params.receiver_id);
+    const [receiverId, setReceiverId] = useState(props.route.params.receiver_id);
+    const [senderId, setSenderId] = useState(props.route.params.sender_id);
 
     const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
     const [playerDuration, setplayerDuration] = useState(0);
@@ -791,7 +792,8 @@ function Player(props) {
                                             ChatId: key,
                                             chatToken: chatToken,
                                             message: commentData,
-                                            reveiverId: reveiverId,
+                                            receiverId: receiverId,
+                                            senderId: senderId,
                                             songTitle: songTitle,
                                             artist: artist
                                         }

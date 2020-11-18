@@ -226,8 +226,13 @@ export function* updateMessageCommentAction(action) {
         const channel = eventChannel(emiter => {
             const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
                 .child(action.payload.ChatId)
-                .child("message")
-                .set(action.payload.message, (error) => {
+                .update({
+                    "message": action.payload.message,
+                    "read": false,
+                    "receiver_id": action.payload.receiverId,
+                    "sender_id": action.payload.senderId,
+
+                }, (error) => {
                     emiter({ error: error || null })
                 }
                 )
@@ -237,18 +242,64 @@ export function* updateMessageCommentAction(action) {
             }
         });
 
-        const { error } = yield take(channel)
+        // const ReadUnreadchannel = eventChannel(emiter => {
+        //     const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+        //         .child(action.payload.ChatId)
+        //         .child("read")
+        //         .set(false, (error) => {
+        //             emiter({ error: error || null })
+        //         }
+        //         )
+        //     // Return the shutdown method;
+        //     return () => {
+        //         listener.off()
+        //     }
+        // });
+
+        // const receiverIdChannel = eventChannel(emiter => {
+        //     const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+        //         .child(action.payload.ChatId)
+        //         .child("receiver_id")
+        //         .set(action.payload.receiverId, (error) => {
+        //             emiter({ error: error || null })
+        //         }
+        //         )
+        //     // Return the shutdown method;
+        //     return () => {
+        //         listener.off()
+        //     }
+        // });
+
+        // const senderIdchannel = eventChannel(emiter => {
+        //     const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+        //         .child(action.payload.ChatId)
+        //         .child("sender_id")
+        //         .set(action.payload.senderId, (error) => {
+        //             emiter({ error: error || null })
+        //         }
+        //         )
+        //     // Return the shutdown method;
+        //     return () => {
+        //         listener.off()
+        //     }
+        // });
+
+        const { error } = yield take(channel);
+        // const { readUnReadError } = yield take(ReadUnreadchannel);
+        // const { receiverIdError } = yield take(receiverIdChannel);
+        // const { senderIdError } = yield take(senderIdchannel);
+
         if (error) {
             yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error })
         } else {
-            let updateMessageResponse = yield call(postApi, 'chat/sendPush',
-                {
-                    "receiver_id": action.payload.reveiverId,
-                    "song_name": action.payload.songTitle,
-                    "artist_name": action.payload.artist,
-                }, Header);
+            // let updateMessageResponse = yield call(postApi, 'chat/sendPush',
+            //     {
+            //         "receiver_id": action.payload.reveiverId,
+            //         "song_name": action.payload.songTitle,
+            //         "artist_name": action.payload.artist,
+            //     }, Header);
 
-            console.log("updateMessageResponse: " + JSON.stringify(updateMessageResponse))
+            // console.log("updateMessageResponse: " + JSON.stringify(updateMessageResponse))
 
             yield put({ type: UPDATE_MESSEAGE_COMMENTS_SUCCESS, data: 'Message Edited successfully' })
         }

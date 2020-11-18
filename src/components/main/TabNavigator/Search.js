@@ -908,13 +908,20 @@ function Search(props) {
                         else {
                             const converToString = number1.toString()
                             const myVar = number1.toString().substring(0, 2);
-                            if (myVar === "44" || myVar === "91") {
-                                let backToInt = converToString.replace(myVar, "0");
+                            const threeDigitVar = number1.toString().substring(0, 3);
+
+                            if (threeDigitVar === "440") {
+                                let backToInt = converToString.replace(threeDigitVar, "0");
                                 finalArray.push(backToInt);
-                            }
-                            else {
-                                let updatednumber = `0${number1}`
-                                finalArray.push(updatednumber);
+                            } else {
+                                if (myVar === "44" || myVar === "91") {
+                                    let backToInt = converToString.replace(myVar, "0");
+                                    finalArray.push(backToInt);
+                                }
+                                else {
+                                    let updatednumber = `0${number1}`
+                                    finalArray.push(updatednumber);
+                                }
                             }
                         }
                     })
