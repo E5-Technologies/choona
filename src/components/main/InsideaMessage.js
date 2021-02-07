@@ -169,61 +169,124 @@ function InsideaMessage(props) {
 
     function renderItem(data) {
 
-        return (
-            <SavedSongsListItem
-                image={data.item.image}
-                title={data.item.song_name}
-                singer={data.item.artist_name}
-                comments={data.item.message[data.item.message.length - 1].text}
-                onPress={() => {
-                    setModalVisible(true),
-                        setPositionInArray(data.index)
-                }}
-                onPressItem={() => {
-                    props.navigation.navigate('Player', {
-                        song_title: data.item.song_name,
-                        album_name: data.item.album_name,
-                        song_pic: data.item.image,
-                        uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
-                        artist: data.item.artist_name,
-                        changePlayer: true,
-                        comingFromMessage: true,
-                        comments: data.item.message,
-                        key: data.item.key,
-                        chatToken: props.chatList[index].chat_token,
-                        receiver_id: props.userProfileResp._id === data.item.receiver_id ? data.item.sender_id : data.item.receiver_id, //data.item.sender_id
-                        sender_id: props.userProfileResp._id, //data.item.receiver_id
-                        isrc: data.item.isrc_code,
-                        originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
-                            undefined,
-                        registerType: data.item.original_reg_type,
-                        details: data.item
+        console.log(JSON.stringify(data.item.userDeletedArr));
 
-                    })
-                }}
-                onPressImage={() => {
-                    props.navigation.navigate('Player', {
-                        song_title: data.item.song_name,
-                        album_name: data.item.album_name,
-                        song_pic: data.item.image,
-                        uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
-                        artist: data.item.artist_name,
-                        changePlayer: true,
-                        comingFromMessage: true,
-                        comments: data.item.message,
-                        key: data.item.key,
-                        chatToken: props.chatList[index].chat_token,
-                        receiver_id: props.userProfileResp._id === data.item.receiver_id ? data.item.sender_id : data.item.receiver_id, //data.item.sender_id
-                        sender_id: props.userProfileResp._id, //data.item.receiver_id
-                        isrc: data.item.isrc_code,
-                        originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
-                            undefined,
-                        registerType: data.item.original_reg_type,
-                        details: data.item
-                    })
-                }}
-                marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />
+        return (
+            <View>
+                {data.item.hasOwnProperty("userDeletedArr") ?
+                    data.item.userDeletedArr.includes(props.userProfileResp._id) ? null :
+                        <SavedSongsListItem
+                            image={data.item.image}
+                            title={data.item.song_name}
+                            singer={data.item.artist_name}
+                            comments={data.item.message[data.item.message.length - 1].text}
+                            onPress={() => {
+                                setModalVisible(true),
+                                    setPositionInArray(data.index)
+                            }}
+                            onPressItem={() => {
+                                props.navigation.navigate('Player', {
+                                    song_title: data.item.song_name,
+                                    album_name: data.item.album_name,
+                                    song_pic: data.item.image,
+                                    uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
+                                    artist: data.item.artist_name,
+                                    changePlayer: true,
+                                    comingFromMessage: true,
+                                    comments: data.item.message,
+                                    key: data.item.key,
+                                    chatToken: props.chatList[index].chat_token,
+                                    receiver_id: props.userProfileResp._id === data.item.receiver_id ? data.item.sender_id : data.item.receiver_id, //data.item.sender_id
+                                    sender_id: props.userProfileResp._id, //data.item.receiver_id
+                                    isrc: data.item.isrc_code,
+                                    originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                                        undefined,
+                                    registerType: data.item.original_reg_type,
+                                    details: data.item
+
+                                })
+                            }}
+                            onPressImage={() => {
+                                props.navigation.navigate('Player', {
+                                    song_title: data.item.song_name,
+                                    album_name: data.item.album_name,
+                                    song_pic: data.item.image,
+                                    uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
+                                    artist: data.item.artist_name,
+                                    changePlayer: true,
+                                    comingFromMessage: true,
+                                    comments: data.item.message,
+                                    key: data.item.key,
+                                    chatToken: props.chatList[index].chat_token,
+                                    receiver_id: props.userProfileResp._id === data.item.receiver_id ? data.item.sender_id : data.item.receiver_id, //data.item.sender_id
+                                    sender_id: props.userProfileResp._id, //data.item.receiver_id
+                                    isrc: data.item.isrc_code,
+                                    originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                                        undefined,
+                                    registerType: data.item.original_reg_type,
+                                    details: data.item
+                                })
+                            }}
+                            marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} /> :
+                    <SavedSongsListItem
+                        image={data.item.image}
+                        title={data.item.song_name}
+                        singer={data.item.artist_name}
+                        comments={data.item.message[data.item.message.length - 1].text}
+                        onPress={() => {
+                            setModalVisible(true),
+                                setPositionInArray(data.index)
+                        }}
+                        onPressItem={() => {
+                            props.navigation.navigate('Player', {
+                                song_title: data.item.song_name,
+                                album_name: data.item.album_name,
+                                song_pic: data.item.image,
+                                uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
+                                artist: data.item.artist_name,
+                                changePlayer: true,
+                                comingFromMessage: true,
+                                comments: data.item.message,
+                                key: data.item.key,
+                                chatToken: props.chatList[index].chat_token,
+                                receiver_id: props.userProfileResp._id === data.item.receiver_id ? data.item.sender_id : data.item.receiver_id, //data.item.sender_id
+                                sender_id: props.userProfileResp._id, //data.item.receiver_id
+                                isrc: data.item.isrc_code,
+                                originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                                    undefined,
+                                registerType: data.item.original_reg_type,
+                                details: data.item
+
+                            })
+                        }}
+                        onPressImage={() => {
+                            props.navigation.navigate('Player', {
+                                song_title: data.item.song_name,
+                                album_name: data.item.album_name,
+                                song_pic: data.item.image,
+                                uri: data.item.hasOwnProperty('song_uri') ? data.item.song_uri : null,
+                                artist: data.item.artist_name,
+                                changePlayer: true,
+                                comingFromMessage: true,
+                                comments: data.item.message,
+                                key: data.item.key,
+                                chatToken: props.chatList[index].chat_token,
+                                receiver_id: props.userProfileResp._id === data.item.receiver_id ? data.item.sender_id : data.item.receiver_id, //data.item.sender_id
+                                sender_id: props.userProfileResp._id, //data.item.receiver_id
+                                isrc: data.item.isrc_code,
+                                originalUri: data.item.hasOwnProperty('original_song_uri') ? data.item.original_song_uri :
+                                    undefined,
+                                registerType: data.item.original_reg_type,
+                                details: data.item
+                            })
+                        }}
+                        marginBottom={data.index === chatData.length - 1 ? normalise(20) : 0} />}
+
+            </View>
         )
+
+
+
     }
 
     // function filterArray(keyword) {

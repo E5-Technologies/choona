@@ -25,7 +25,8 @@ import {
     watchGetChatTokenRequest, watchSendChatMessageRequest,
     watchgetChatListAction, watchLoadMessages, watchSeachMessageRequest,
     watchUpdateMessageCommentRequest, watchDeleteMessageRequest,
-    watchgetChatTokenFromSearchAction, watchgetChatTokenFromSavedSongAction
+    watchgetChatTokenFromSearchAction, watchgetChatTokenFromSavedSongAction,
+    watchDeleteConversationAction
 } from './MessageSaga';
 
 import {
@@ -87,7 +88,8 @@ function* RootSaga() {
         watchgetChatTokenFromSavedSongAction(),
         watchDummyAction(),
         watchFollowerSearch(),
-        watchFollowingSearch()
+        watchFollowingSearch(),
+        watchDeleteConversationAction()
 
     ])
 }

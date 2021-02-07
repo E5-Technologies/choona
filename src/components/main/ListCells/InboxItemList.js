@@ -31,6 +31,11 @@ function InboxListItem(props) {
         }
     };
 
+    const onPressDelete = () => {
+        if (props.onPressImage) {
+            props.onPressDelete()
+        }
+    };
 
     return (
 
@@ -42,48 +47,66 @@ function InboxListItem(props) {
             marginBottom: props.marginBottom,
         }} onPress={() => { onPress() }}  >
 
+
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
-
-                <TouchableOpacity onPress={() => { onPressImage() }}>
-                    <Image source={{ uri: props.image }}
-                        style={{
-                            height: normalise(35),
-                            width: normalise(35),
-                            borderRadius: normalise(17),
-                        }}
-                        resizeMode="contain" />
-                </TouchableOpacity>
-
-
-                <View style={{
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    width: '75%',
-                    justifyContent: 'flex-start'
-                }}>
+                <View style={{ flexDirection: 'row', width:'80%' }}>
                     <TouchableOpacity onPress={() => { onPressImage() }}>
-                        <Text style={{
-                            color: Colors.white, fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Bold',
-                        }} numberOfLines={1}>{props.title}</Text>
+                        <Image source={{ uri: props.image }}
+                            style={{
+                                height: normalise(35),
+                                width: normalise(35),
+                                borderRadius: normalise(17),
+                            }}
+                            resizeMode="contain" />
                     </TouchableOpacity>
-                    
-                    <Text style={{
-                        marginTop: normalise(2),
-                        color: props.read ? Colors.grey : Colors.white, fontSize: normalise(10),
-                        fontFamily: 'ProximaNovaAW07-Medium'
-                    }} numberOfLines={2} >{props.description}</Text>
+
+                    <View style={{
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        width: '70%',
+                        alignSelf:'center',
+                        marginHorizontal: normalise(10),
+                        justifyContent: 'flex-start'
+                    }}>
+                        <TouchableOpacity onPress={() => { onPressImage() }}>
+                            <Text style={{
+                                color: Colors.white, fontSize: normalise(11),
+                                fontFamily: 'ProximaNova-Bold',
+                            }} numberOfLines={1}>{props.title}</Text>
+                        </TouchableOpacity>
+
+                        <Text style={{
+                            marginTop: normalise(2),
+                            color: props.read ? Colors.grey : Colors.white, fontSize: normalise(10),
+                            fontFamily: 'ProximaNovaAW07-Medium'
+                        }} numberOfLines={2} >{props.description}</Text>
+
+
+
+                    </View>
+
+                    <View style={{
+                        height: normalise(12), width: normalise(12), borderRadius: normalise(6), alignSelf:'center',
+                        backgroundColor: props.read ? Colors.black : Colors.red
+                    }} />
 
                 </View>
+                <TouchableOpacity style={{
+                    height: normalise(25), width: normalise(45),
+                    borderRadius: normalise(5), alignSelf: 'center',
+                    backgroundColor: Colors.fadeblack,
+                    marginHorizontal: normalise(5),
+                    justifyContent: 'center', alignItems: 'center'
+                }} onPress={() => { onPressDelete() }} >
 
-                <View style={{
-                    height: normalise(12), width: normalise(12), borderRadius: normalise(6),
-                    backgroundColor: props.read ? Colors.black : Colors.red
-                }} />
+                    <Image source={ImagePath.threedots} style={{ height: normalise(15), width: normalise(15) }}
+                        resizeMode='contain' />
+
+                </TouchableOpacity>
 
             </View>
 
@@ -110,7 +133,8 @@ InboxListItem.propTypes = {
     marginBottom: PropTypes.number,
     description: PropTypes.string,
     read: PropTypes.bool,
-    onPressImage: PropTypes.func
+    onPressImage: PropTypes.func,
+    onPressDelete: PropTypes.func,
 
 };
 
@@ -121,6 +145,7 @@ InboxListItem.defaultProps = {
     marginBottom: 0,
     description: "",
     read: false,
-    onPressImage: null
+    onPressImage: null,
+    onPressDelete: null,
 
 }

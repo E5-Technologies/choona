@@ -36,6 +36,10 @@ import {
     CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
     CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE,
 
+    DELETE_CONVERSATION_REQUEST,
+    DELETE_CONVERSATION_SUCCESS,
+    DELETE_CONVERSATION_FAILURE,
+
     ASYNC_STORAGE_CLEAR
 
 } from '../action/TypeConstants';
@@ -49,7 +53,8 @@ const initialState = {
     chatData: [],
     searchedChatData: [],
     updatedMessageCommentResponse: {},
-    deleteMessageResponse: {}
+    deleteMessageResponse: {},
+    deleteCoversationResponse: []
 };
 const MessageReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -243,6 +248,26 @@ const MessageReducer = (state = initialState, action) => {
                 status: action.type,
                 chatTokenList: [],
                 error: action.error
+            };
+
+        case DELETE_CONVERSATION_REQUEST:
+            return {
+                ...state,
+                status: action.type
+            };
+
+        case DELETE_CONVERSATION_SUCCESS:
+            return {
+                ...state,
+                status: action.type,
+                deleteCoversationResponse: action.data
+            };
+
+        case DELETE_CONVERSATION_FAILURE:
+            return {
+                ...state,
+                status: action.type,
+                chatTokenList: [],
             };
 
         case ASYNC_STORAGE_CLEAR:

@@ -1,4 +1,3 @@
-
 import React, { useEffect, Fragment, useState, useRef } from 'react';
 import {
     SafeAreaView,
@@ -22,11 +21,9 @@ import {
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from "react-native-raw-bottom-sheet";
-import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
@@ -87,6 +84,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { createChatTokenRequest } from '../../action/MessageAction'
 import { getUsersFromHome } from '../../action/UserAction';
+import MusicPlayer from '../../widgets/MusicPlayer';
 
 let RbSheetRef;
 
@@ -166,7 +164,6 @@ function Player(props) {
         // });
         isInternetConnected()
             .then(() => {
-                Sound.setCategory('Playback', false);
                 props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
 
                 if (changePlayer2) {
@@ -205,6 +202,13 @@ function Player(props) {
             .catch(() => {
                 toast('', 'Please Connect To Internet');
             })
+
+        // return () => {
+        //     // if (isPlayingVar !== null) {
+        //     console.log('bye');
+        //     clearInterval(myVar);
+        //     // }
+        // }
     }, []);
 
 
@@ -322,10 +326,10 @@ function Player(props) {
     };
 
     //COMING FROM MESSAGE ARRAY LENGTH
-    function getArrayLength (message) {
+    function getArrayLength(message) {
         let msg_array = [];
-        message.map((item, index)=>{
-            if(item.text !== ""){
+        message.map((item, index) => {
+            if (item.text !== "") {
                 msg_array.push(item);
             }
         });
@@ -363,15 +367,15 @@ function Player(props) {
                         setHasSongLoaded(true)
                         setplayerDuration(time);
                         setBool(false);
-                        global.playerReference.pause();
+                        // global.playerReference.pause();
                         // global.playerReference.play((success) => {
                         //     if (success) {
                         //         console.log('Playback Endd')
                         //         setPlayVisible(true);
                         //     }
                         // })
-                    }, 100)
 
+                    }, 100)
                 }
 
                 else {
@@ -405,17 +409,9 @@ function Player(props) {
         }
         else {
 
-            track = new Sound(changePlayer2 ? songuri : uri, "", (err) => {
-                if (err) {
-                    console.log(err);
-                    setPlayVisible(true);
-                }
-                else {
-                    console.log('Loaded')
-                    setHasSongLoaded(true)
-                    setBool(false);
-                    changeTime(track);
-
+            MusicPlayer(changePlayer2 ? songuri : uri, false)
+                .then((track) => {
+                    console.log('Loaded');
 
                     let saveSongResObj = {}
                     saveSongResObj.uri = uri,
@@ -438,28 +434,19 @@ function Player(props) {
 
 
                     props.saveSongRefReq(saveSongResObj);
-                    global.playerReference = track;
-
+                    setHasSongLoaded(true)
+                    setBool(false);
+                    changeTime(track);
                     let res = track.getDuration();
                     setplayerDuration(res);
+                    setTrackRef(track);
+                })
+                .catch((err) => {
+                    console.log('MusicPlayer Error', err)
+                })
 
-                    // track.play((success) => {
-                    //     if (success) {
-                    //         console.log('PlayBack End')
-                    //         setPlayVisible(true);
-                    //     }
-                    //     else {
-                    //         console.log('NOOOOOOOO')
-                    //     }
-                    // });
-                };
-            });
-
-            setTrackRef(track);
         }
-
-
-    }
+    };
 
 
     // PAUSE AND PLAY
@@ -1726,7 +1713,8 @@ function Player(props) {
                                     alignItems: 'center', justifyContent: 'center',
                                     marginTop: normalise(30),
                                     backgroundColor: Colors.fadeblack,
-                                    borderRadius: normalise(10)
+                                    borderRadius: normalise(10),
+                                    marginBottom: props.route.params.showPlaylist === false ? normalise(20) : 0
                                 }}
                                 onPress={() => {
                                     //FOR SPOTIFY USERS
@@ -1812,7 +1800,8 @@ function Player(props) {
                                         alignItems: 'center', justifyContent: 'center',
                                         marginTop: normalise(10),
                                         backgroundColor: Colors.fadeblack,
-                                        borderRadius: normalise(10)
+                                        borderRadius: normalise(10),
+                                        marginBottom: normalise(20)
                                     }}
                                 >
                                     <Image source={ImagePath.add_white}

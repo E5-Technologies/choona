@@ -36,12 +36,17 @@ import {
 
     CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
     CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
-    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE
+    CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE,
+
+    DELETE_CONVERSATION_REQUEST,
+    DELETE_CONVERSATION_SUCCESS,
+    DELETE_CONVERSATION_FAILURE
 
 } from '../action/TypeConstants'
 import { postApi, getApi } from '../utils/helpers/ApiRequest'
 import _ from 'lodash'
 import database from '@react-native-firebase/database';
+import moment from "moment";
 
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages')
 
@@ -231,6 +236,7 @@ export function* updateMessageCommentAction(action) {
                     "read": false,
                     "receiver_id": action.payload.receiverId,
                     "sender_id": action.payload.senderId,
+                    "time": moment().toString()
 
                 }, (error) => {
                     emiter({ error: error || null })
@@ -242,64 +248,20 @@ export function* updateMessageCommentAction(action) {
             }
         });
 
-        // const ReadUnreadchannel = eventChannel(emiter => {
-        //     const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
-        //         .child(action.payload.ChatId)
-        //         .child("read")
-        //         .set(false, (error) => {
-        //             emiter({ error: error || null })
-        //         }
-        //         )
-        //     // Return the shutdown method;
-        //     return () => {
-        //         listener.off()
-        //     }
-        // });
-
-        // const receiverIdChannel = eventChannel(emiter => {
-        //     const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
-        //         .child(action.payload.ChatId)
-        //         .child("receiver_id")
-        //         .set(action.payload.receiverId, (error) => {
-        //             emiter({ error: error || null })
-        //         }
-        //         )
-        //     // Return the shutdown method;
-        //     return () => {
-        //         listener.off()
-        //     }
-        // });
-
-        // const senderIdchannel = eventChannel(emiter => {
-        //     const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
-        //         .child(action.payload.ChatId)
-        //         .child("sender_id")
-        //         .set(action.payload.senderId, (error) => {
-        //             emiter({ error: error || null })
-        //         }
-        //         )
-        //     // Return the shutdown method;
-        //     return () => {
-        //         listener.off()
-        //     }
-        // });
-
         const { error } = yield take(channel);
-        // const { readUnReadError } = yield take(ReadUnreadchannel);
-        // const { receiverIdError } = yield take(receiverIdChannel);
-        // const { senderIdError } = yield take(senderIdchannel);
 
         if (error) {
             yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error })
         } else {
-            // let updateMessageResponse = yield call(postApi, 'chat/sendPush',
-            //     {
-            //         "receiver_id": action.payload.reveiverId,
-            //         "song_name": action.payload.songTitle,
-            //         "artist_name": action.payload.artist,
-            //     }, Header);
 
-            // console.log("updateMessageResponse: " + JSON.stringify(updateMessageResponse))
+            let updateMessageResponse = yield call(postApi, 'chat/sendPush',
+                {
+                    "receiverId": action.payload.receiverId,
+                    "song_name": action.payload.songTitle,
+                    "artist_name": action.payload.artist,
+                }, Header);
+
+            console.log("updateMessageResponse: " + JSON.stringify(updateMessageResponse))
 
             yield put({ type: UPDATE_MESSEAGE_COMMENTS_SUCCESS, data: 'Message Edited successfully' })
         }
@@ -383,6 +345,28 @@ export function* getChatTokenFromSavedSongAction(action) {
     }
 };
 
+export function* deleteConversationAction(action) {
+
+    try {
+        const items = yield select(getItems);
+
+        const Header = {
+            Accept: 'application/json',
+            contenttype: 'application/json',
+            accesstoken: items.token,
+        }
+        let chatTokenResponse = yield call(postApi, 'chat/removenew', action.payload, Header);
+
+        if (chatTokenResponse.data.status === 200)
+            yield put({ type: DELETE_CONVERSATION_SUCCESS, data: chatTokenResponse.data.data });
+        else
+            yield put({ type: DELETE_CONVERSATION_FAILURE, error: chatTokenResponse.data });
+
+    } catch (error) {
+
+        yield put({ type: DELETE_CONVERSATION_FAILURE, error: error });
+    }
+};
 
 export function* watchGetChatTokenRequest() {
     yield takeLatest(CREATE_CHAT_TOKEN_REQUEST, getChatTokenAction)
@@ -418,4 +402,8 @@ export function* watchgetChatTokenFromSearchAction() {
 
 export function* watchgetChatTokenFromSavedSongAction() {
     yield takeLatest(CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST, getChatTokenFromSavedSongAction)
+}
+
+export function* watchDeleteConversationAction() {
+    yield takeLatest(DELETE_CONVERSATION_REQUEST, deleteConversationAction)
 }

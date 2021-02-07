@@ -12,6 +12,7 @@ import {
     Image,
     ImageBackground,
     TextInput,
+    Alert,
     TouchableWithoutFeedback
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
@@ -25,9 +26,12 @@ import moment from "moment";
 import { connect } from 'react-redux';
 import {
     GET_CHAT_LIST_REQUEST, GET_CHAT_LIST_SUCCESS,
-    GET_CHAT_LIST_FAILURE
+    GET_CHAT_LIST_FAILURE,
+    DELETE_CONVERSATION_REQUEST,
+    DELETE_CONVERSATION_SUCCESS,
+    DELETE_CONVERSATION_FAILURE
 } from '../../action/TypeConstants';
-import { getChatListRequest } from '../../action/MessageAction';
+import { getChatListRequest, deleteConversationRequest } from '../../action/MessageAction';
 import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -77,11 +81,32 @@ function Inbox(props) {
                 status = props.status
                 toast('Error', 'Something Went Wrong, Please Try Again');
                 break;
+
+            case DELETE_CONVERSATION_REQUEST:
+                status = props.status
+                break;
+
+            case DELETE_CONVERSATION_SUCCESS:
+                status = props.status;
+
+                isInternetConnected()
+                    .then(() => {
+                        props.getChatListReq();
+                    })
+                    .catch((err) => {
+                        toast('Error', 'Please Connect To Internet')
+                    });
+                break;
+
+            case DELETE_CONVERSATION_FAILURE:
+                status = props.status
+                toast('Error', 'Something Went Wrong, Please Try Again');
+                break;
         }
     };
 
     function sortArray(value) {
-        
+
         const res = value.sort((a, b) => {
             // console.log('yooo' + new Date(Object.values(a)[0].time))
             return new Date(Object.values(b)[0].time) - new Date(Object.values(a)[0].time)
@@ -108,20 +133,31 @@ function Inbox(props) {
     };
 
     function renderInboxItem(data) {
-        console.log("message: " + Object.values(data.item)[0].message.length)
+        console.log("message: " + data.item.message.length)
 
         return (
             <InboxListItem
                 image={constants.profile_picture_base_url + data.item.profile_image}
                 title={data.item.username}
-                description={Object.values(data.item)[0].message[Object.values(data.item)[0].message.length - 1].text}
-                read={data.item.user_id == Object.values(data.item)[0].receiver_id
-                    ? true : Object.values(data.item)[0].read}
+                description={data.item.message[data.item.message.length - 1].text}
+                read={data.item.user_id == data.item.receiver_id
+                    ? true : data.item.read}
                 onPress={() => props.navigation.navigate('InsideaMessage', { index: data.index })}
                 marginBottom={data.index === props.chatList.length - 1 ? normalise(20) : 0}
                 onPressImage={() => {
                     props.navigation.navigate('OthersProfile', { id: data.item.user_id })
                 }}
+                onPressDelete={() => Alert.alert('Do you want to delete this conversation?', '', [
+                    { text: 'No', },
+
+                    {
+                        text: 'Delete',
+                        onPress: () => {
+                            props.deleteConversationRequest({"chat_token":data.item.chat_token});
+                        },
+                        style: 'destructive'
+                    }
+                ])}
             />
         )
     }
@@ -233,7 +269,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getChatListReq: () => {
             dispatch(getChatListRequest())
-        }
+        },
+        deleteConversationRequest: (payload) => {
+            dispatch(deleteConversationRequest(payload))
+        },
     }
 };
 

@@ -181,7 +181,7 @@ function SendSongInMessageFinal(props) {
                 receiver_id: item._id,
                 song_name: title1,
                 artist_name: title2,
-
+                
                 album_name: type ? props.route.params.details.album_name : props.route.params.registerType === "spotify" ? props.route.params.details.album.name :
                     props.route.params.details.attributes.albumName,
 
@@ -200,7 +200,7 @@ function SendSongInMessageFinal(props) {
                     props.route.params.details.social_type : props.route.params.details.original_reg_type : props.registerType,
 
                 read: false,
-                time: moment().toString()
+                time: moment().toString(),
             }
 
             chatBody.push(chatObject);

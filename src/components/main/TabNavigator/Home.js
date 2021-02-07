@@ -46,13 +46,13 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
   COUNTRY_CODE_SUCCESS,
-  OTHERS_PROFILE_SUCCESS, EDIT_PROFILE_SUCCESS, DUMMY_ACTION_SUCCESS
+  OTHERS_PROFILE_SUCCESS, EDIT_PROFILE_SUCCESS, DUMMY_ACTION_SUCCESS, DUMMY_ACTION_REQUEST
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest, homePageReq, reactionOnPostRequest, userFollowUnfollowRequest,
   getUsersFromHome, dummyRequest
 } from '../../../action/UserAction';
-import { saveSongRequest } from '../../../action/SongAction';
+import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
 import { deletePostReq } from '../../../action/PostAction';
 import { createChatTokenRequest } from '../../../action/MessageAction'
 import { connect } from 'react-redux'
@@ -67,6 +67,8 @@ import Contacts from 'react-native-contacts';
 import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
+import MusicPlayer from '../../../widgets/MusicPlayer';
+
 
 let status = "";
 let songStatus = "";
@@ -203,6 +205,10 @@ function Home(props) {
         status = props.status
         break;
 
+      case DUMMY_ACTION_REQUEST:
+        status = props.status;
+        break;
+
       case DUMMY_ACTION_SUCCESS:
         status = props.status
         findPlayingSong(props.postData);
@@ -230,6 +236,7 @@ function Home(props) {
         songStatus = props.status
         toast("Oops", "Something Went Wrong, Please Try Again")
         break;
+
     }
   };
 
@@ -403,6 +410,147 @@ function Home(props) {
     })
   };
 
+
+  const playSong = (data) => {
+
+    if (props.playingSongRef === "") {
+
+      console.log('first time')
+
+      MusicPlayer(data.item.song_uri, true)
+        .then((track) => {
+          console.log('Loaded');
+
+          let saveSongResObj = {}
+          saveSongResObj.uri = data.item.song_uri,
+            saveSongResObj.song_name = data.item.song_name,
+            saveSongResObj.album_name = data.item.album_name,
+            saveSongResObj.song_pic = data.item.song_image,
+            saveSongResObj.username = data.item.userDetails.username,
+            saveSongResObj.profile_pic = data.item.userDetails.profile_image,
+            saveSongResObj.commentData = data.item.comment
+          saveSongResObj.reactionData = data.item.reaction
+          saveSongResObj.id = data.item._id,
+            saveSongResObj.artist = data.item.artist_name,
+            saveSongResObj.changePlayer = changePlayer
+          saveSongResObj.originalUri = data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+            saveSongResObj.isrc = data.item.isrc_code,
+            saveSongResObj.regType = data.item.userDetails.register_type,
+            saveSongResObj.details = data.item,
+            saveSongResObj.showPlaylist = true,
+            saveSongResObj.comingFromMessage = undefined
+
+          props.saveSongRefReq(saveSongResObj);
+          props.dummyRequest()
+        })
+        .catch((err) => {
+          console.log('MusicPlayer Error', err)
+        })
+
+    } else {
+
+      if (global.playerReference !== null) {
+
+        if (global.playerReference._filename === data.item.song_uri) {
+          console.log("Alreday Playing");
+
+          if (global.playerReference.isPlaying()) {
+            global.playerReference.pause();
+
+            setTimeout(() => {
+              findPlayingSong(props.postData)
+            }, 500);
+          }
+          else {
+
+            global.playerReference.play((success) => {
+              if (success) {
+                console.log('PlayBack End')
+              }
+              else {
+                console.log('NOOOOOOOO')
+              }
+            });
+
+            setTimeout(() => {
+              findPlayingSong(props.postData)
+            }, 500);
+          }
+        }
+
+        else {
+          console.log('reset');
+          global.playerReference.release();
+          global.playerReference = null;
+          MusicPlayer(data.item.song_uri, true)
+            .then((track) => {
+              console.log('Loaded');
+
+              let saveSongResObj = {}
+              saveSongResObj.uri = data.item.song_uri,
+                saveSongResObj.song_name = data.item.song_name,
+                saveSongResObj.album_name = data.item.album_name,
+                saveSongResObj.song_pic = data.item.song_image,
+                saveSongResObj.username = data.item.userDetails.username,
+                saveSongResObj.profile_pic = data.item.userDetails.profile_image,
+                saveSongResObj.commentData = data.item.comment
+              saveSongResObj.reactionData = data.item.reaction
+              saveSongResObj.id = data.item._id,
+                saveSongResObj.artist = data.item.artist_name,
+                saveSongResObj.changePlayer = changePlayer
+              saveSongResObj.originalUri = data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+                saveSongResObj.isrc = data.item.isrc_code,
+                saveSongResObj.regType = data.item.userDetails.register_type,
+                saveSongResObj.details = data.item,
+                saveSongResObj.showPlaylist = true,
+                saveSongResObj.comingFromMessage = undefined
+
+              props.saveSongRefReq(saveSongResObj);
+              props.dummyRequest()
+            })
+            .catch((err) => {
+              console.log('MusicPlayer Error', err)
+            })
+
+        }
+
+      } else {
+        console.log('reset2');
+        MusicPlayer(data.item.song_uri, true)
+          .then((track) => {
+            console.log('Loaded');
+
+            let saveSongResObj = {}
+            saveSongResObj.uri = data.item.song_uri,
+              saveSongResObj.song_name = data.item.song_name,
+              saveSongResObj.album_name = data.item.album_name,
+              saveSongResObj.song_pic = data.item.song_image,
+              saveSongResObj.username = data.item.userDetails.username,
+              saveSongResObj.profile_pic = data.item.userDetails.profile_image,
+              saveSongResObj.commentData = data.item.comment
+            saveSongResObj.reactionData = data.item.reaction
+            saveSongResObj.id = data.item._id,
+              saveSongResObj.artist = data.item.artist_name,
+              saveSongResObj.changePlayer = changePlayer
+            saveSongResObj.originalUri = data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+              saveSongResObj.isrc = data.item.isrc_code,
+              saveSongResObj.regType = data.item.userDetails.register_type,
+              saveSongResObj.details = data.item,
+              saveSongResObj.showPlaylist = true,
+              saveSongResObj.comingFromMessage = undefined
+
+            props.saveSongRefReq(saveSongResObj);
+            props.dummyRequest()
+          })
+          .catch((err) => {
+            console.log('MusicPlayer Error', err)
+          })
+
+      }
+    }
+  };
+
+
   function renderItem(data) {
     return (
 
@@ -442,24 +590,27 @@ function Home(props) {
         }}
         onPressMusicbox={() => {
           if (!homeReq) {
-            props.navigation.navigate('Player', {
-              comments: data.item.comment,
-              song_title: data.item.song_name,
-              album_name: data.item.album_name,
-              song_pic: data.item.song_image,
-              username: data.item.userDetails.username,
-              profile_pic: data.item.userDetails.profile_image,
-              time: data.item.time, title: data.item.title,
-              uri: data.item.song_uri,
-              reactions: data.item.reaction,
-              id: data.item._id,
-              artist: data.item.artist_name,
-              changePlayer: changePlayer,
-              originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
-              registerType: data.item.userDetails.register_type,
-              isrc: data.item.isrc_code,
-              details: data.item
-            });
+
+            playSong(data);
+
+            // props.navigation.navigate('Player', {
+            //   comments: data.item.comment,
+            //   song_title: data.item.song_name,
+            //   album_name: data.item.album_name,
+            //   song_pic: data.item.song_image,
+            //   username: data.item.userDetails.username,
+            //   profile_pic: data.item.userDetails.profile_image,
+            //   time: data.item.time, title: data.item.title,
+            //   uri: data.item.song_uri,
+            //   reactions: data.item.reaction,
+            //   id: data.item._id,
+            //   artist: data.item.artist_name,
+            //   changePlayer: changePlayer,
+            //   originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
+            //   registerType: data.item.userDetails.register_type,
+            //   isrc: data.item.isrc_code,
+            //   details: data.item
+            // });
           }
         }}
         onPressReactionbox={() => {
@@ -491,18 +642,15 @@ function Home(props) {
   function findIsNotRead() {
 
     let hasUnseenMessage = false;
-    let arr = props.chatList;
+    var arr = props.chatList;
 
     if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
+
       for (var i = 0; i < arr.length; i++) {
 
-        let chatObject = Object.values(arr[i])[0]
+        if (props.userProfileResp._id == arr[i].receiver_id) {
 
-        if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
-
-          // console.log("OBJECT VALUE" + JSON.stringify(Object.values(arr[i])[0]))
-
-          hasUnseenMessage = !Object.values(arr[i])[0].read;
+          hasUnseenMessage = !arr[i].read;
           if (hasUnseenMessage)
             break;
 
@@ -1108,7 +1256,7 @@ function Home(props) {
 
             {props.status === HOME_PAGE_SUCCESS || props.status === USER_PROFILE_SUCCESS ||
               props.status === COUNTRY_CODE_SUCCESS || props.status === OTHERS_PROFILE_SUCCESS ||
-              props.status === EDIT_PROFILE_SUCCESS ?
+              props.status === EDIT_PROFILE_SUCCESS || props.status === DUMMY_ACTION_SUCCESS ?
 
               <MusicPlayerBar onPress={() => {
                 props.navigation.navigate("Player",
@@ -1522,6 +1670,10 @@ const mapDispatchToProps = (dispatch) => {
 
     dummyRequest: () => {
       dispatch(dummyRequest())
+    },
+
+    saveSongRefReq: (object) => {
+      dispatch(saveSongRefReq(object))
     },
   }
 };

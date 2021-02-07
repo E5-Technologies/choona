@@ -50,8 +50,8 @@
 			</dict>
 		</dict>
 	</dict>
-  <key>NSAppleMusicUsageDescription</key>
-  <string>Demonstrating using StoreKit and MediaPlayer APIs.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Demonstrating using StoreKit and MediaPlayer APIs.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app would like to access your device camera to let you click pictures for profile pictures</string>
 	<key>NSContactsUsageDescription</key>

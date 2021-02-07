@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { useDispatch, useSelector } from 'react-redux'
 import { getTokenRequest } from './src/action/index';
@@ -28,7 +28,8 @@ import {
 } from './src/action/MessageAction';
 
 import {
-getProfileRequest} from './src/action/UserAction';
+  getProfileRequest
+} from './src/action/UserAction';
 
 import Splash from './src/components/SplashComponent/Splash';
 
@@ -88,16 +89,16 @@ const App = () => {
       dispatch(getTokenRequest())
     }, 3000);
 
-    const unsuscribe = firebase().onMessage(async () => {
-      dispatch(getChatListRequest());
-      dispatch(getProfileRequest());
-    });
+    // const unsuscribe = firebase().onMessage(async () => {
+    //   dispatch(getChatListRequest());
+    //   dispatch(getProfileRequest());
+    // });
 
     AppState.addEventListener('change', _handleAppStateChange);
 
     return () => {
       AppState.removeEventListener('change', _handleAppStateChange);
-      unsuscribe();
+      // unsuscribe();
     }
 
   }, []);
@@ -120,8 +121,8 @@ const App = () => {
 
     } else if (AppState.currentState === 'active') {
 
-  getChatListRequest,
-      dispatch(getChatListRequest())
+      getChatListRequest,
+        dispatch(getChatListRequest())
       dispatch(getProfileRequest())
       console.log("zxcv", "App is in active Mode.")
 
@@ -137,6 +138,7 @@ const App = () => {
   // );
 
   const BottomTab = () => {
+    
     const UserReducer = useSelector(state => state.UserReducer)
 
     return (
@@ -206,12 +208,12 @@ const App = () => {
                 <Image style={{
                   marginTop: Platform.OS === 'android' ? normalise(10) :
                     Dimensions.get('window').height > 736 ? normalise(0) : normalise(10),
-                  height: normalize(20), width: normalize(20)
+                  height: normalize(20), width: normalize(20), marginRight: focused ? Platform.OS === 'android' ? normalise(2.8) : normalise(2) : normalise(0)
                 }}
                   source={focused ? ImagePath.notificationactive : ImagePath.notificationinactive}
                   resizeMode='contain' >
                 </Image>
-                {!_.isEmpty(UserReducer.userProfileResp)?
+                {!_.isEmpty(UserReducer.userProfileResp) ?
                   UserReducer.userProfileResp.isActivity ?
                     <View
                       style={{
@@ -279,7 +281,7 @@ const App = () => {
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
             <Stack.Screen name="Inbox" component={Inbox} />
-            <Stack.Screen name="Player" component={Player} />
+            <Stack.Screen name="Player" component={Player} options={{cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} />
             <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
             <Stack.Screen name="HomeItemList" component={HomeItemList} />
             <Stack.Screen name="HomeItemComments" component={HomeItemComments} />
