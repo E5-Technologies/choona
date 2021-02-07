@@ -706,7 +706,7 @@ function PostListForUser(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <HeaderComponent
         firstitemtext={false}

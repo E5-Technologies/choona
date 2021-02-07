@@ -278,7 +278,7 @@ function Login(props) {
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: Colors.black}}
       behavior="height">
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center'}}>
         <ScrollView

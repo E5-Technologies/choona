@@ -109,14 +109,12 @@ export default function Splash(props) {
         justifyContent: 'center',
         backgroundColor: Colors.black,
       }}>
-      <StatusBar backgroundColor={Colors.black} />
-
+      <StatusBar backgroundColor={Colors.darkerblack} />
       <Image
         source={ImagePath.appIcon512}
         style={{height: normalise(130), width: '60%'}}
         resizeMode="contain"
       />
-
       <Text
         style={{
           color: Colors.white,
@@ -125,7 +123,7 @@ export default function Splash(props) {
           fontFamily: 'ProximaNova-Bold',
           bottom: 20,
         }}>
-        Copyright ©2020 CHOONA
+        Copyright ©{new Date().getFullYear()} CHOONA
       </Text>
     </View>
   );

@@ -43,7 +43,7 @@ MyStatusBar.propTypes = {
 };
 
 MyStatusBar.defaultProps = {
-  backgroundColor: Colors.black,
+  backgroundColor: Colors.darkerblack,
   barStyle: 'light-content',
   height: 20,
   opacity: null,

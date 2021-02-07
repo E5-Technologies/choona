@@ -233,7 +233,7 @@ function Following(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
       <Loader visible={bool} />

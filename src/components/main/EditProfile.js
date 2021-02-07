@@ -236,7 +236,7 @@ function EditProfile(props) {
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: Colors.black}}
       behavior="height">
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 

@@ -259,7 +259,7 @@ function HomeItemReaction(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <TouchableWithoutFeedback
         onPress={() => {

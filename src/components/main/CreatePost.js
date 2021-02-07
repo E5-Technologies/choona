@@ -140,7 +140,7 @@ function AddSong(props) {
       <Loader visible={props.status === CREATE_POST_REQUEST} />
       <Loader visible={bool} />
 
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <TouchableWithoutFeedback
         onPress={() => {

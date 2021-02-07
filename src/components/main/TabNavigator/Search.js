@@ -1019,7 +1019,7 @@ function Search(props) {
   //VIEW
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
 

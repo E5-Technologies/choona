@@ -269,7 +269,7 @@ function Notification(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === ACTIVITY_LIST_REQUEST} />
       <Loader visible={props.status === USER_PROFILE_REQUEST} />

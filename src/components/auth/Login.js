@@ -218,7 +218,7 @@ function SignUp(props) {
       {Platform.OS === 'android' ? (
         <MyStatusBar />
       ) : (
-        <StatusBar barStyle={'light-content'} />
+        <StatusBar backgroundColor={Colors.darkerblack} />
       )}
 
       <View style={{height: '50%'}}>

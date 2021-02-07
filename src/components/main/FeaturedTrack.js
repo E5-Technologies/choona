@@ -264,7 +264,7 @@ function FeaturedTrack(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === FEATURED_SONG_SEARCH_REQUEST} />
 

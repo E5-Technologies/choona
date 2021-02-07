@@ -239,7 +239,7 @@ function SendSongInMessageFinal(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{flex: 1}}>
         <HeaderComponent

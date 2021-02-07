@@ -1163,18 +1163,12 @@ function Home(props) {
       }}>
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
 
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{flex: 1, position: 'relative'}}>
         <Loader visible={homeReq} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
-
-        {/* { modalVisible ? 
-                    <Image source={ImagePath.homelightbg} style={{opacity:0.1,position:'relative'}}/>
-                    :null
-                }   */}
-
         <HomeHeaderComponent
           firstitemtext={false}
           marginTop={0}

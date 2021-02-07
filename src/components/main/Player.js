@@ -1433,7 +1433,7 @@ function Player(props) {
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
       <KeyboardAvoidingView style={{flex: 1}}>
-        <StatusBar />
+        <StatusBar backgroundColor={Colors.black} />
 
         <Loader visible={bool} />
 

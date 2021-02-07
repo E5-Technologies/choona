@@ -169,7 +169,7 @@ function Followers(props) {
       <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
       <Loader visible={bool} />
 
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <TouchableWithoutFeedback
         onPress={() => {

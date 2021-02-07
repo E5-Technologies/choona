@@ -168,7 +168,7 @@ function OthersProfile(props) {
 
       <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
 
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       {props.status === OTHERS_PROFILE_SUCCESS ||
       props.status === USER_FOLLOW_UNFOLLOW_SUCCESS ||

@@ -150,7 +150,8 @@ function UserPostSongList(props) {
 
   return (
     <Fragment>
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
+
       <View
         style={{
           flexDirection: 'row',

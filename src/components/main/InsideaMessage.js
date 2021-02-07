@@ -739,7 +739,7 @@ function InsideaMessage(props) {
     <View style={{flex: 1, backgroundColor: Colors.black}}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
 
-      <StatusBar />
+      <StatusBar backgroundColor={Colors.darkerblack} />
 
       <TouchableWithoutFeedback
         onPress={() => {
