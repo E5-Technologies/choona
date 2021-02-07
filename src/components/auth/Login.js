@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, {useEffect, Fragment, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,22 +10,25 @@ import {
   ImageBackground,
   Image,
   Platform,
-  Alert
+  Alert,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import { loginWithSpotify, getSpotifyToken } from '../../utils/helpers/SpotifyLogin'
+import {
+  loginWithSpotify,
+  getSpotifyToken,
+} from '../../utils/helpers/SpotifyLogin';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
-  USER_LOGIN_FAILURE
-} from '../../action/TypeConstants'
-import { loginRequest } from '../../action/UserAction'
+  USER_LOGIN_FAILURE,
+} from '../../action/TypeConstants';
+import {loginRequest} from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import { connect } from 'react-redux';
-import _ from 'lodash'
+import {connect} from 'react-redux';
+import _ from 'lodash';
 import appleAuth, {
   AppleButton,
   AppleAuthError,
@@ -34,75 +37,69 @@ import appleAuth, {
   AppleAuthCredentialState,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import { getDeviceToken } from '../../utils/helpers/FirebaseToken'
+import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
 
 let user = null;
-let status = "";
+let status = '';
 
 function SignUp(props) {
-
   const [userDetails, setUserDetails] = useState({});
   const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
-  const [loginType, setLoginType] = useState("");
+  const [loginType, setLoginType] = useState('');
 
   useEffect(() => {
     fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
       updateCredentialStateForUser(`Error: ${error.code}`),
     );
-    return () => { };
+    return () => {};
   }, []);
 
-
   function spotifyLogin() {
+    loginWithSpotify()
+      .then(value => {
+        if (!_.isEmpty(value)) {
+          setUserDetails(value);
 
-    loginWithSpotify().then((value) => {
+          getDeviceToken()
+            .then(token => {
+              let payload = {
+                social_id: value.id,
+                social_type: 'spotify',
+                deviceToken: token,
+                deviceType: Platform.OS,
+              };
 
-      if (!_.isEmpty(value)) {
+              props.loginRequest(payload);
+            })
+            .catch(err => {
+              let payload = {
+                social_id: value.id,
+                social_type: 'spotify',
+                deviceToken: '',
+                deviceType: Platform.OS,
+              };
 
-        setUserDetails(value)
-
-        getDeviceToken()
-          .then((token) => {
-
-            let payload = {
-              social_id: value.id,
-              social_type: 'spotify',
-              deviceToken: token,
-              deviceType: Platform.OS
-            }
-
-            props.loginRequest(payload);
-
-          })
-          .catch((err) => {
-
-            let payload = {
-              social_id: value.id,
-              social_type: 'spotify',
-              deviceToken: '',
-              deviceType: Platform.OS
-            }
-
-            props.loginRequest(payload);
-
-          })
-
-      }
-
-    }).catch((error) => { console.log(error) })
-
-  };
-
+              props.loginRequest(payload);
+            });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
   //ON APLLE BUTTON PRESS
   async function onAppleButtonPress(updateCredentialStateForUser) {
-    setLoginType("Apple")
+    setLoginType('Apple');
     console.warn('Beginning Apple Authentication');
     // start a login request
     try {
       const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: AppleAuthRequestOperation.LOGIN,
-        requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+        requestedScopes: [
+          AppleAuthRequestScope.EMAIL,
+          AppleAuthRequestScope.FULL_NAME,
+        ],
       });
 
       console.log('appleAuthRequestResponse', appleAuthRequestResponse);
@@ -122,7 +119,7 @@ function SignUp(props) {
       );
 
       if (identityToken) {
-        appleLoginWithOurServer(appleAuthRequestResponse)
+        appleLoginWithOurServer(appleAuthRequestResponse);
         console.log(nonce, identityToken);
       } else {
         // no token - failed sign-in?
@@ -140,8 +137,7 @@ function SignUp(props) {
         console.error(error);
       }
     }
-  };
-
+  }
 
   //FETCH AND UPDATE CRED STATE
   async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
@@ -155,127 +151,138 @@ function SignUp(props) {
         updateCredentialStateForUser(credentialState);
       }
     }
-  };
+  }
 
   //TOKEN FIREBASE
   function appleLoginWithOurServer(appleData) {
-
     getDeviceToken()
-      .then((token) => {
+      .then(token => {
         signInwithApple(appleData, token);
       })
-      .catch((err) => {
-        signInwithApple(appleData, "");
-      })
-
-  };
-
+      .catch(err => {
+        signInwithApple(appleData, '');
+      });
+  }
 
   // API REQUEST
   function signInwithApple(appleData, token) {
-
     // isInternetConnected().then(() => {
 
-    var appleSignUpObject = {}
+    var appleSignUpObject = {};
 
-    appleSignUpObject.social_id = ("user" in appleData) ? appleData.user : "";
-    appleSignUpObject.social_type = "apple";
+    appleSignUpObject.social_id = 'user' in appleData ? appleData.user : '';
+    appleSignUpObject.social_type = 'apple';
     appleSignUpObject.deviceType = Platform.OS;
     appleSignUpObject.deviceToken = token;
 
-    console.log("Apple ", appleData)
+    console.log('Apple ', appleData);
     props.loginRequest(appleSignUpObject);
-    setUserDetails(appleData)
+    setUserDetails(appleData);
 
     // }).catch(() => {
     //   console.log('Error', 'Please connect to internet')
     // });
-
-  };
+  }
   //APPLE SIGN IN END
 
-
-
-  if (status === "" || props.status !== status) {
+  if (status === '' || props.status !== status) {
     switch (props.status) {
-
       case USER_LOGIN_REQUEST:
-        status = props.status
+        status = props.status;
         break;
 
       case USER_LOGIN_SUCCESS:
-        status = props.status
+        status = props.status;
         break;
 
       case USER_LOGIN_FAILURE:
-        status = props.status
+        status = props.status;
 
         if (props.error.status === 201) {
-          props.navigation.navigate("SignUp", { userDetails: userDetails, loginType: loginType })
+          props.navigation.navigate('SignUp', {
+            userDetails: userDetails,
+            loginType: loginType,
+          });
         } else {
-          alert(props.error.message)
+          alert(props.error.message);
         }
 
         break;
     }
-  };
+  }
 
   console.log(loginType);
   //VIEW
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{flex: 1, backgroundColor: Colors.black}}>
+      {Platform.OS === 'android' ? (
+        <MyStatusBar />
+      ) : (
+        <StatusBar barStyle={'light-content'} />
+      )}
 
-      {Platform.OS === 'android' ? <MyStatusBar /> : <StatusBar barStyle={'light-content'} />}
-
-      <View style={{ height: '50%' }}>
+      <View style={{height: '50%'}}>
         <Image
           source={ImagePath.albumsPic}
-
-          style={{ height: '90%', width: '100%', alignItems: "center", justifyContent: 'center', }}
+          style={{
+            height: '90%',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         />
 
-        <Image source={ImagePath.applogo}
-          style={{ height: normalise(60), width: '60%', alignSelf: 'center', }}
-          resizeMode='contain' />
+        <Image
+          source={ImagePath.applogo}
+          style={{height: normalise(60), width: '60%', alignSelf: 'center'}}
+          resizeMode="contain"
+        />
       </View>
 
-
-      <View style={{
-        height: Platform.OS === 'android' ? '45%' : '50%', flexDirection: 'column', alignItems: 'center',
-        justifyContent: 'flex-end'
-      }}>
-
-        <TouchableOpacity style={{
-          height: normalise(50), width: '80%', alignSelf: 'center',
-          borderRadius: normalise(25),
-          backgroundColor: Colors.darkerblack,
-          borderWidth: normalise(0.5),
-          borderColor: Colors.grey,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 5, },
-          shadowOpacity: 0.36,
-          shadowRadius: 6.68,
-          elevation: 11,
-          flexDirection: 'row',
+      <View
+        style={{
+          height: Platform.OS === 'android' ? '45%' : '50%',
+          flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center'
-        }} onPress={() => {
-          spotifyLogin(), setLoginType('Spotify')
-        }}  >
+          justifyContent: 'flex-end',
+        }}>
+        <TouchableOpacity
+          style={{
+            height: normalise(50),
+            width: '80%',
+            alignSelf: 'center',
+            borderRadius: normalise(25),
+            backgroundColor: Colors.darkerblack,
+            borderWidth: normalise(0.5),
+            borderColor: Colors.grey,
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: 5},
+            shadowOpacity: 0.36,
+            shadowRadius: 6.68,
+            elevation: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            spotifyLogin(), setLoginType('Spotify');
+          }}>
+          <Image
+            source={ImagePath.spotifyicon}
+            style={{height: normalise(22), width: normalise(22)}}
+            resizeMode="contain"
+          />
 
-          <Image source={ImagePath.spotifyicon}
-            style={{ height: normalise(22), width: normalise(22) }}
-            resizeMode='contain' />
-
-          <Text style={{
-            marginLeft: normalise(10),
-            color: Colors.white,
-            fontSize: normalise(12),
-            fontFamily: 'ProximaNova-Extrabld',
-          }}>LOGIN WITH SPOTIFY</Text>
-
+          <Text
+            style={{
+              marginLeft: normalise(10),
+              color: Colors.white,
+              fontSize: normalise(12),
+              fontFamily: 'ProximaNova-Extrabld',
+            }}>
+            LOGIN WITH SPOTIFY
+          </Text>
         </TouchableOpacity>
-
 
         {/* <TouchableOpacity style={{
                     marginBottom: normalise(40),
@@ -298,7 +305,7 @@ function SignUp(props) {
 
                 </TouchableOpacity> */}
 
-        {Platform.OS === 'ios' ?
+        {Platform.OS === 'ios' ? (
           <AppleButton
             style={{
               marginTop: normalise(10),
@@ -310,30 +317,30 @@ function SignUp(props) {
             buttonStyle={AppleButton.Style.WHITE}
             buttonType={AppleButton.Type.SIGN_IN}
             onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
-          /> : null}
-
+          />
+        ) : null}
       </View>
-
     </View>
-  )
+  );
 }
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-
     status: state.UserReducer.status,
     error: state.UserReducer.error,
     loginResponse: state.UserReducer.loginResponse,
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    loginRequest: (payload) => {
-      dispatch(loginRequest(payload))
+    loginRequest: payload => {
+      dispatch(loginRequest(payload));
     },
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignUp);
