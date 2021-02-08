@@ -134,13 +134,10 @@ const App = () => {
           inactiveBackgroundColor: Colors.darkerblack,
           safeAreaInsets: {bottom: 0},
           style: {
-            height: Platform.OS === 'android' ? normalise(45) : normalise(60),
-            borderTopColor: Colors.darkerblack,
+            height: Platform.OS === 'android' ? normalise(45) : normalise(77),
+            borderTopColor: Colors.fadeblack,
           },
-        }}
-
-        // tabBar={TabBar}
-      >
+        }}>
         <Tab.Screen
           name="Home"
           component={Home}
@@ -154,8 +151,8 @@ const App = () => {
                       : Dimensions.get('window').height > 736
                       ? normalise(0)
                       : normalise(10),
-                  height: normalize(20),
-                  width: normalize(20),
+                  height: normalise(20),
+                  width: normalise(20),
                 }}
                 source={focused ? ImagePath.homeactive : ImagePath.homeinactive}
                 resizeMode="contain"
@@ -164,7 +161,6 @@ const App = () => {
             tabBarLabel: '',
           }}
         />
-
         <Tab.Screen
           name="Search"
           component={Search}
@@ -178,8 +174,8 @@ const App = () => {
                       : Dimensions.get('window').height > 736
                       ? normalise(0)
                       : normalise(10),
-                  height: normalize(20),
-                  width: normalize(20),
+                  height: normalise(20),
+                  width: normalise(20),
                 }}
                 source={
                   focused ? ImagePath.searchactive : ImagePath.searchinactive
@@ -190,7 +186,6 @@ const App = () => {
             tabBarLabel: '',
           }}
         />
-
         <Tab.Screen
           name="Add"
           component={AddSong}
@@ -204,10 +199,8 @@ const App = () => {
                       : Dimensions.get('window').height > 736
                       ? normalise(0)
                       : normalise(10),
-                  height: normalize(20),
-                  width: normalize(20),
-                  height: normalize(35),
-                  width: normalize(35),
+                  height: normalise(72),
+                  width: normalise(72),
                 }}
                 source={focused ? ImagePath.addbtn : ImagePath.addbtn}
                 resizeMode="contain"
@@ -216,7 +209,6 @@ const App = () => {
             tabBarLabel: '',
           }}
         />
-
         <Tab.Screen
           name="Notification"
           component={Notification}
@@ -231,13 +223,8 @@ const App = () => {
                         : Dimensions.get('window').height > 736
                         ? normalise(0)
                         : normalise(10),
-                    height: normalize(20),
-                    width: normalize(20),
-                    marginRight: focused
-                      ? Platform.OS === 'android'
-                        ? normalise(2.8)
-                        : normalise(2)
-                      : normalise(0),
+                    height: normalise(20),
+                    width: normalise(20),
                   }}
                   source={
                     focused
