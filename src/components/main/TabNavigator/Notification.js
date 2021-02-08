@@ -9,6 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
+import HeaderComponent from '../../../widgets/HeaderComponent';
 import Colors from '../../../assests/Colors';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import ImagePath from '../../../assests/ImagePath';
@@ -276,18 +277,13 @@ function Notification(props) {
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
       <SafeAreaView style={{flex: 1}}>
-        <Text
-          style={{
-            fontSize: normalise(15),
-            fontFamily: 'ProximaNova-Black',
-            color: Colors.white,
-            marginTop: normalise(10),
-            alignSelf: 'center',
-            marginBottom: normalise(10),
-          }}>
-          {' '}
-          ACTIVITY
-        </Text>
+        <HeaderComponent
+          firstitemtext={true}
+          textone={''}
+          title={'ACTIVITY'}
+          thirditemtext={true}
+          texttwo={''}
+        />
 
         {_.isEmpty(props.activityListToday) &&
         _.isEmpty(props.activityListPrevious) ? (

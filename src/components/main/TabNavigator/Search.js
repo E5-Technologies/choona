@@ -1048,7 +1048,7 @@ function Search(props) {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginTop: normalise(15),
+              // marginTop: normalise(15),
             }}>
             <TouchableOpacity
               style={{

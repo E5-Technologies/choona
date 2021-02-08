@@ -24,12 +24,12 @@ const HeaderStyles = StyleSheet.create({
     width: '100%',
   },
   headerIcon: {
-    height: normalise(24),
-    width: normalise(24),
+    height: normalise(20),
+    width: normalise(20),
   },
   headerItemText: {
     color: Colors.white,
-    fontSize: normalise(13),
+    fontSize: normalise(11),
     fontFamily: 'ProximaNova-Bold',
   },
   headerText: {

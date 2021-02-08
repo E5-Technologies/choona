@@ -1275,7 +1275,7 @@ function Home(props) {
         ) : (
           <View style={{flex: 1}}>
             <FlatList
-              style={{marginTop: normalise(10)}}
+              // style={{marginTop: normalise(10)}}
               data={props.postData}
               renderItem={renderItem}
               windowSize={150}

@@ -261,7 +261,6 @@ function HomeItemReaction(props) {
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -274,9 +273,6 @@ function HomeItemReaction(props) {
             marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
             title={` ${props.route.params.reactions.length} REACTIONS`}
             thirditemtext={false}
-            // imagetwo={ImagePath.newmessage}
-            imagetwoheight={25}
-            imagetwowidth={25}
             onPressFirstItem={() => {
               props.navigation.goBack();
             }}
@@ -441,7 +437,7 @@ function HomeItemReaction(props) {
           </View>
 
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
@@ -457,7 +453,6 @@ function HomeItemReaction(props) {
               </Text>
             </View>
           </Modal>
-
           {modal1Visible == true ? (
             <View
               style={{

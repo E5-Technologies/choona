@@ -6,6 +6,7 @@ import ImagePath from '../assests/ImagePath';
 import PropTypes from 'prop-types';
 
 import HeaderStyles from '../styles/header';
+import Colors from '../assests/Colors';
 
 function InsideMessegeHeader(props) {
   function onPressFirstItem() {
@@ -54,6 +55,8 @@ function InsideMessegeHeader(props) {
             <Image
               source={{uri: props.imagesecond}}
               style={{
+                borderWidth: normalise(0.5),
+                borderColor: Colors.darkerblack,
                 height: normalise(25),
                 width: normalise(25),
                 marginLeft: normalise(-5),

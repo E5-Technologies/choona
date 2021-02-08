@@ -15,7 +15,7 @@ import {
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HomeHeaderComponent';
+import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {connect} from 'react-redux';
@@ -116,21 +116,18 @@ function HomeItemComments(props) {
 
   return (
     <KeyboardAvoidingView
-      behavior="height"
-      style={{flex: 1, backgroundColor: Colors.black}}>
+      style={{flex: 1, backgroundColor: Colors.darkerblack}}
+      behavior="height">
+      <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
       <StatusBar backgroundColor={Colors.darkerblack} />
       <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          //imagesecond={ImagePath.dp}
           title={arrayLength}
           thirditemtext={false}
           marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
-          // imagetwo={ImagePath.newmessage}
-          imagetwoheight={25}
-          imagetwowidth={25}
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}

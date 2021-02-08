@@ -234,28 +234,28 @@ function EditProfile(props) {
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: Colors.black}}
+      style={{flex: 1, backgroundColor: Colors.darkerblack}}
       behavior="height">
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      <StatusBar />
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{flex: 1}}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath.backicon}
-            title={'EDIT PROFILE'}
-            thirditemtext={true}
-            texttwo={'SAVE'}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
-            }}
-            onPressThirdItem={() => {
-              updateProfile();
-            }}
-          />
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.black}}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={'EDIT PROFILE'}
+          thirditemtext={true}
+          texttwo={'SAVE'}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+          onPressThirdItem={() => {
+            updateProfile();
+          }}
+        />
 
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
               height: normalise(120),
