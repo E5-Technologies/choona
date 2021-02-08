@@ -156,8 +156,6 @@ const App = () => {
                       : normalise(10),
                   height: normalize(20),
                   width: normalize(20),
-                  height: normalize(20),
-                  width: normalize(20),
                 }}
                 source={focused ? ImagePath.homeactive : ImagePath.homeinactive}
                 resizeMode="contain"

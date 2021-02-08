@@ -31,6 +31,7 @@ import {
 } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import HeaderComponent from '../../widgets/HeaderComponent';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -266,7 +267,7 @@ function HomeItemReaction(props) {
           Keyboard.dismiss();
         }}>
         <SafeAreaView style={{flex: 1}}>
-          <HomeHeaderComponent
+          <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
             //imagesecond={ImagePath.dp}

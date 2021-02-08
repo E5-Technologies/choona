@@ -53,7 +53,13 @@ function HomeItemComments(props) {
 
   const [commentText, setCommentText] = useState('');
   const [arrayLength, setArrayLength] = useState(
-    `${commentData.length} ${commentData.length > 1 ? 'COMMENTS' : 'COMMENT'}`,
+    `${commentData.length} ${
+      commentData.length > 1
+        ? 'COMMENTS'
+        : commentData < 1
+        ? 'COMMENTS'
+        : 'COMMENT'
+    }`,
   );
 
   function renderItem(data) {
@@ -113,7 +119,7 @@ function HomeItemComments(props) {
       behavior="height"
       style={{flex: 1, backgroundColor: Colors.black}}>
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
-
+      <StatusBar backgroundColor={Colors.darkerblack} />
       <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={false}
@@ -129,7 +135,6 @@ function HomeItemComments(props) {
             props.navigation.goBack();
           }}
         />
-
         <View
           style={{
             width: '90%',

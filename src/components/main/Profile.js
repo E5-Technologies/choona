@@ -267,7 +267,7 @@ function Profile(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      <StatusBar backgroundColor={Colors.black} />
 
       <Loader visible={props.status === USER_PROFILE_REQUEST} />
       <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
