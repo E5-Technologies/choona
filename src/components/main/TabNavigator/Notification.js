@@ -298,7 +298,6 @@ function Notification(props) {
             {_.isEmpty(props.activityListToday) ? null : (
               <View
                 style={{
-                  marginTop: normalise(12),
                   flexDirection: 'row',
                   width: '100%',
                   height: normalise(40),
