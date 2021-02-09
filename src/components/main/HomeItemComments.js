@@ -1,8 +1,6 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   StatusBar,
@@ -34,22 +32,16 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 let status;
 
 function HomeItemComments(props) {
-  const [type, setType] = useState(props.route.params.type);
-  const [index, setIndex] = useState(props.route.params.index);
+  // const [type, setType] = useState(props.route.params.type);
+  // const [index, setIndex] = useState(props.route.params.index);
 
-  const [commentData, setCommentData] = useState(props.route.params.comment);
+  const [commentData] = useState(props.route.params.comment);
+  const [image] = useState(props.route.params.image);
+  const [username] = useState(props.route.params.username);
+  const [userComment] = useState(props.route.params.userComment);
 
-  const [image, setImage] = useState(props.route.params.image);
-
-  const [username, setUserName] = useState(props.route.params.username);
-
-  const [userComment, setUserComment] = useState(
-    props.route.params.userComment,
-  );
-
-  const [time, setTime] = useState(props.route.params.time);
-
-  const [id, setId] = useState(props.route.params.id);
+  const [time] = useState(props.route.params.time);
+  const [id] = useState(props.route.params.id);
 
   const [commentText, setCommentText] = useState('');
   const [arrayLength, setArrayLength] = useState(
@@ -134,10 +126,11 @@ function HomeItemComments(props) {
         />
         <View
           style={{
-            width: '90%',
-            alignSelf: 'center',
-            marginTop: normalise(15),
-            marginBottom: props.marginBottom,
+            // width: '90%',
+            // alignSelf: 'center',
+            paddingLeft: normalise(16),
+            paddingRight: normalise(16),
+            marginTop: normalise(12),
           }}>
           <View
             style={{
@@ -202,8 +195,8 @@ function HomeItemComments(props) {
 
           <View
             style={{
-              marginTop: normalise(10),
-              borderBottomWidth: normalise(1),
+              marginTop: normalise(12),
+              borderBottomWidth: normalise(0.5),
               borderBottomColor: Colors.activityBorderColor,
             }}
           />

@@ -254,7 +254,7 @@ function SignUp(props) {
             borderRadius: normalise(25),
             backgroundColor: Colors.darkerblack,
             borderWidth: normalise(0.5),
-            borderColor: Colors.grey,
+            borderColor: Colors.activityBorderColor,
             shadowColor: '#000',
             shadowOffset: {width: 0, height: 5},
             shadowOpacity: 0.36,

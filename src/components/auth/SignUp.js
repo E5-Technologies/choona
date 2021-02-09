@@ -464,7 +464,7 @@ function Login(props) {
                 height: normalize(45),
                 borderRadius: normalize(10),
                 borderWidth: normalise(1),
-                borderColor: Colors.grey,
+                borderColor: Colors.activityBorderColor,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',

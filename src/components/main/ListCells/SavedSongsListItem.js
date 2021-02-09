@@ -180,7 +180,7 @@ function SavedSongListItem(props) {
       style={{
         width: '90%',
         alignSelf: 'center',
-        marginTop: normalise(10),
+        marginTop: normalise(16),
         marginBottom: props.marginBottom,
       }}>
       <View
@@ -197,7 +197,11 @@ function SavedSongListItem(props) {
             source={
               props.image === '' ? ImagePath.profiletrack4 : {uri: props.image}
             }
-            style={{height: normalise(40), width: normalise(40)}}
+            style={{
+              height: normalise(40),
+              width: normalise(40),
+              borderRadius: normalise(4),
+            }}
             resizeMode="contain"
           />
 
@@ -223,7 +227,7 @@ function SavedSongListItem(props) {
           <Text
             style={{
               color: Colors.white,
-              fontSize: normalise(11),
+              fontSize: normalise(12),
               fontFamily: 'ProximaNova-Semibold',
             }}
             numberOfLines={1}>
@@ -234,8 +238,8 @@ function SavedSongListItem(props) {
           <Text
             style={{
               color: Colors.grey,
-              fontSize: normalise(10),
-              fontFamily: 'ProximaNovaAW07-Medium',
+              fontSize: normalise(11),
+              fontFamily: 'ProximaNova-Regular',
             }}
             numberOfLines={1}>
             {' '}
@@ -306,7 +310,7 @@ function SavedSongListItem(props) {
 
       <View
         style={{
-          marginTop: normalise(10),
+          marginTop: normalise(16),
           borderBottomWidth: 0.5,
           borderBottomColor: Colors.activityBorderColor,
         }}

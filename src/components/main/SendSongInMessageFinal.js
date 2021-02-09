@@ -145,13 +145,15 @@ function SendSongInMessageFinal(props) {
             </Text>
           </View>
         </View>
-        <View
-          style={{
-            backgroundColor: Colors.grey,
-            height: 0.5,
-            marginTop: normalise(10),
-          }}
-        />
+        {data.item[index] > 0 && (
+          <View
+            style={{
+              backgroundColor: Colors.activityBorderColor,
+              height: 0.5,
+              marginTop: normalise(10),
+            }}
+          />
+        )}
       </TouchableOpacity>
     );
   }
@@ -309,8 +311,8 @@ function SendSongInMessageFinal(props) {
               height: normalise(65),
               width: '100%',
               borderRadius: normalise(8),
-              borderColor: Colors.fadeblack,
-              borderWidth: normalise(1),
+              // borderColor: Colors.fadeblack,
+              // borderWidth: normalise(1),
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -366,8 +368,9 @@ function SendSongInMessageFinal(props) {
 
         <Text
           style={{
-            color: Colors.grey,
+            color: Colors.white,
             margin: normalise(15),
+            marginBottom: normalise(5),
           }}>
           Sending song to:
         </Text>

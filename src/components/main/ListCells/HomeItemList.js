@@ -106,7 +106,11 @@ function HomeItemList(props) {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
           <Image
             source={
               props.postType
@@ -114,9 +118,9 @@ function HomeItemList(props) {
                 : ImagePath.apple_icon_round
             }
             style={{
-              height: normalise(24),
-              width: normalise(24),
-              borderRadius: normalise(12),
+              height: normalise(20),
+              width: normalise(20),
+              borderRadius: normalise(10),
             }}
             resizeMode="contain"
           />
@@ -125,7 +129,7 @@ function HomeItemList(props) {
             style={{
               flexDirection: 'column',
               alignItems: 'flex-start',
-              marginStart: normalise(5),
+              marginStart: normalise(4),
               width: normalise(200),
             }}>
             <Text
@@ -191,8 +195,6 @@ function HomeItemList(props) {
           alignSelf: 'center',
           borderRadius: normalise(10),
           backgroundColor: Colors.darkerblack,
-          borderWidth: normalise(0.5),
-          borderColor: Colors.grey,
           shadowColor: '#000',
           shadowOffset: {width: 0, height: 5},
           shadowOpacity: 0.36,
@@ -482,7 +484,7 @@ function HomeItemList(props) {
             color: Colors.white,
             fontSize: 12,
             fontFamily: 'ProximaNovaAW07-Medium',
-            bottom: 6,
+            bottom: 10,
             width: '90.6%',
             alignSelf: 'flex-end',
             textAlign: 'left',
@@ -501,7 +503,7 @@ function HomeItemList(props) {
                 color: Colors.white,
                 fontSize: 12,
                 fontFamily: 'ProximaNovaAW07-Medium',
-                bottom: 6,
+                bottom: 10,
                 width: '90.6%',
                 alignSelf: 'flex-end',
                 textAlign: 'left',
@@ -518,7 +520,7 @@ function HomeItemList(props) {
             justifyContent: 'space-between',
             marginStart:
               Platform.OS === 'android' ? normalize(25) : normalise(24),
-            marginTop: normalise(5),
+            marginTop: normalise(0),
           }}>
           <TouchableOpacity
             style={{

@@ -42,8 +42,8 @@ function ActivityListItem(props) {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginTop: normalise(10),
-          marginBottom: normalise(10),
+          marginTop: normalise(24),
+          marginBottom: normalise(24),
         }}>
         <TouchableOpacity
           onPress={() => {
@@ -52,9 +52,9 @@ function ActivityListItem(props) {
           <Image
             source={props.image === '' ? ImagePath.dp : {uri: props.image}}
             style={{
-              height: normalise(35),
-              width: normalise(35),
-              borderRadius: normalise(35),
+              height: normalise(32),
+              width: normalise(32),
+              borderRadius: normalise(16),
             }}
             resizeMode="contain"
           />
@@ -69,10 +69,9 @@ function ActivityListItem(props) {
           <Text
             style={{
               color: Colors.white,
-              fontSize: normalise(11),
+              fontSize: normalise(13),
               width: '90%',
-              fontFamily: 'ProximaNova-Regular',
-              fontWeight: 'bold',
+              fontFamily: 'ProximaNova-Bold',
               marginRight: props.type ? normalise(10) : 0,
               textAlign: 'left',
             }}
@@ -84,9 +83,9 @@ function ActivityListItem(props) {
         {props.type ? (
           <TouchableOpacity
             style={{
-              height: normalise(25),
-              width: normalise(80),
-              borderRadius: normalise(12),
+              height: normalise(32),
+              width: normalise(90),
+              borderRadius: normalise(16),
               backgroundColor: follow ? Colors.white : Colors.fadeblack,
               justifyContent: 'center',
               alignItems: 'center',
@@ -98,8 +97,7 @@ function ActivityListItem(props) {
               <Text
                 style={{
                   color: Colors.black,
-                  fontWeight: 'bold',
-                  fontFamily: 'ProximaNova-Regular',
+                  fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
                 FOLLOW
@@ -108,8 +106,7 @@ function ActivityListItem(props) {
               <Text
                 style={{
                   color: Colors.white,
-                  fontWeight: 'bold',
-                  fontFamily: 'ProximaNova-Regular',
+                  fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
                 FOLLOWING

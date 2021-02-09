@@ -29,9 +29,9 @@ function TextInputField(props) {
       }}>
       <Text
         style={{
-          fontSize: normalize(12),
+          fontSize: normalize(10),
           color: Colors.white,
-          fontFamily: 'ProximaNova-Bold',
+          fontFamily: 'ProximaNova-SemiBold',
         }}>
         {props.text}
       </Text>
@@ -45,10 +45,10 @@ function TextInputField(props) {
           backgroundColor: Colors.fadeblack,
           height: normalize(45),
           borderRadius: normalize(5),
-          borderWidth: normalize(1),
+          borderWidth: normalize(0.5),
           padding: normalize(5),
-          paddingLeft: normalize(20),
-          borderColor: focused ? Colors.white : Colors.grey,
+          paddingLeft: normalize(16),
+          borderColor: focused ? Colors.white : Colors.fadeblack,
           color: Colors.white,
         }}
         onFocus={() => {
@@ -75,7 +75,7 @@ function TextInputField(props) {
             position: 'absolute',
             height: normalize(20),
             width: normalize(20),
-            top: normalize(38),
+            top: normalize(35),
             right: normalize(10),
           }}
         />

@@ -268,7 +268,7 @@ function Following(props) {
                 marginTop: normalise(20),
                 padding: normalise(10),
                 color: Colors.white,
-                paddingLeft: normalise(30),
+                paddingLeft: normalise(35),
               }}
               value={search}
               placeholder={'Search'}
@@ -281,10 +281,10 @@ function Following(props) {
             <Image
               source={ImagePath.searchicongrey}
               style={{
-                height: normalise(15),
-                width: normalise(15),
+                height: normalise(16),
+                width: normalise(16),
                 bottom: normalise(25),
-                paddingLeft: normalise(30),
+                paddingLeft: normalise(40),
               }}
               resizeMode="contain"
             />

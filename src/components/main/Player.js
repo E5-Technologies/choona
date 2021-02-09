@@ -678,25 +678,8 @@ function Player(props) {
                 alignItems: 'center',
                 marginTop: normalise(15),
                 borderBottomWidth: 0.5,
-                borderColor: Colors.grey,
+                borderColor: Colors.activityBorderColor,
               }}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (RbSheetRef) {
-                    RbSheetRef.close();
-                  }
-                }}>
-                <Image
-                  source={ImagePath.donw_arrow_solid}
-                  style={{
-                    height: normalise(10),
-                    width: normalise(10),
-                    marginBottom: normalise(10),
-                  }}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={() => {
                   if (RbSheetRef) {

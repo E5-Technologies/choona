@@ -324,7 +324,9 @@ function EditProfile(props) {
               onChangeText={text => {
                 setFullname(text);
               }}
-              borderColor={fullname === '' ? Colors.grey : Colors.white}
+              borderColor={
+                fullname === '' ? Colors.activityBorderColor : Colors.white
+              }
               marginTop={normalise(20)}
             />
 

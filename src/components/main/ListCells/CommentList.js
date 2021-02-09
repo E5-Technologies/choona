@@ -1,35 +1,14 @@
-import React, {useEffect, Fragment, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import React from 'react';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import PropTypes from 'prop-types';
 
 function CommentList(props) {
-  const onPress = () => {
-    if (props.onPress) {
-      props.onPress();
-    }
-  };
-
   const onPressImage = () => {
     if (props.onPressImage) {
       props.onPressImage();
-    }
-  };
-
-  const onPressSecondImage = () => {
-    if (props.onPressSecondImage) {
-      props.onPressSecondImage();
     }
   };
 
@@ -51,7 +30,7 @@ function CommentList(props) {
               onPressImage();
             }}>
             <Image
-              source={props.image == '' ? ImagePath.dp1 : {uri: props.image}}
+              source={props.image === '' ? ImagePath.dp1 : {uri: props.image}}
               style={{
                 height: normalise(30),
                 width: normalise(30),
