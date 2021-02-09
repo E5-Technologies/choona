@@ -701,10 +701,15 @@ function Contact(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
+                  backgroundColor: Colors.darkerblack,
+                  padding: 6,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  top: normalise(12),
-                  paddingRight: normalise(10),
+                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  marginRight: normalise(10),
                 }}>
                 <Text
                   style={{
@@ -924,10 +929,15 @@ function Contact(props) {
                   setSearch(''), props.getSavedSongs('');
                 }}
                 style={{
+                  backgroundColor: Colors.darkerblack,
+                  padding: 6,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                  paddingRight: normalise(10),
+                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  marginRight: normalise(10),
                 }}>
                 <Text
                   style={{
