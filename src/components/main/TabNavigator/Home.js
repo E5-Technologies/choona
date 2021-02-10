@@ -938,7 +938,7 @@ function Home(props) {
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
                   marginRight: normalise(10),
                 }}>
                 <Text
