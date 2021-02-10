@@ -185,7 +185,7 @@ function Search(props) {
 
       case TOP_50_SONGS_FAILURE:
         top50Status = props.top50SongsStatus;
-        console.log('ERROR', props.error.response);
+        // console.log('ERROR', props.error.response);
         break;
     }
   }
@@ -215,7 +215,7 @@ function Search(props) {
 
       case CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS:
         messageStatus = props.messageStatus;
-        console.log('search page');
+        // console.log('search page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -405,7 +405,7 @@ function Search(props) {
   // HIT REACT
   function hitreact(x, rindex) {
     if (!_.isEmpty(props.searchPostData[rindex].reaction)) {
-      console.log('here');
+      // console.log('here');
 
       const present = props.searchPostData[rindex].reaction.some(
         obj =>
@@ -414,7 +414,7 @@ function Search(props) {
       );
 
       if (present) {
-        console.log('nooo');
+        // console.log('nooo');
       } else {
         setVisible(true);
         setModalReact(x);
@@ -695,7 +695,7 @@ function Search(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //     console.log('Already Exists');
+            //     // console.log('Already Exists');
             // }
             // else {
             //     let array = [...usersToSEndSong]
@@ -981,12 +981,12 @@ function Search(props) {
   const getContacts = () => {
     Contacts.getAll((err, contacts) => {
       if (err) {
-        console.log(err);
+        // console.log(err);
       } else {
         let contactsArray = contacts;
         let finalArray = [];
         setContactsLoading(false);
-        //console.log(JSON.stringify(contacts));
+        //// console.log(JSON.stringify(contacts));
         contactsArray.map((item, index) => {
           item.phoneNumbers.map((item, index) => {
             let number = item.number.replace(/[- )(]/g, '');
@@ -1015,7 +1015,7 @@ function Search(props) {
           });
         });
 
-        console.log(finalArray);
+        // console.log(finalArray);
         props.navigation.navigate('UsersFromContacts', {data: finalArray});
       }
     });

@@ -150,7 +150,7 @@ function Player(props) {
   const [key, setKey] = useState(props.route.params.key);
   const [chatToken, setChatToken] = useState(props.route.params.chatToken);
 
-  // console.log("commentData: " + JSON.stringify(commentData));
+  // // console.log("commentData: " + JSON.stringify(commentData));
   let track;
   var bottomSheetRef;
   //Prithviraj's variables.
@@ -177,11 +177,11 @@ function Player(props) {
         props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
 
         if (changePlayer2) {
-          console.log('getting spotify song uri');
+          // console.log('getting spotify song uri');
           const getSpotifyApi = async () => {
             try {
               const res = await callApi();
-              console.log(res);
+              // console.log(res);
               if (res.data.status === 200) {
                 let suc = res.data.data.audio;
                 setUri(suc);
@@ -191,7 +191,7 @@ function Player(props) {
                 props.navigation.goBack();
               }
             } catch (error) {
-              console.log(error);
+              // console.log(error);
             }
           };
 
@@ -211,7 +211,7 @@ function Player(props) {
 
     // return () => {
     //     // if (isPlayingVar !== null) {
-    //     console.log('bye');
+    //     // console.log('bye');
     //     clearInterval(myVar);
     //     // }
     // }
@@ -306,7 +306,7 @@ function Player(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus;
-        console.log('top50 page');
+        // console.log('top50 page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -358,13 +358,13 @@ function Player(props) {
   // PLAY SONG ON LOAD
   const playSongOnLoad = songuri => {
     if (props.playingSongRef === '') {
-      console.log('first time');
+      // console.log('first time');
       playSong(songuri);
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === uri) {
-          console.log('Already Playing');
-          console.log(global.playerReference);
+          // console.log('Already Playing');
+          // console.log(global.playerReference);
           setTimeout(() => {
             changeTime(global.playerReference);
             let time = global.playerReference.getDuration();
@@ -374,19 +374,19 @@ function Player(props) {
             // global.playerReference.pause();
             // global.playerReference.play((success) => {
             //     if (success) {
-            //         console.log('Playback Endd')
+            //         // console.log('Playback Endd')
             //         setPlayVisible(true);
             //     }
             // })
           }, 100);
         } else {
-          console.log('reset');
+          // console.log('reset');
           global.playerReference.release();
           global.playerReference = null;
           playSong(songuri);
         }
       } else {
-        console.log('reset2');
+        // console.log('reset2');
         playSong(songuri);
       }
     }
@@ -414,7 +414,7 @@ function Player(props) {
     } else {
       MusicPlayer(changePlayer2 ? songuri : uri, false)
         .then(track => {
-          console.log('Loaded');
+          // console.log('Loaded');
 
           let saveSongResObj = {};
           (saveSongResObj.uri = uri),
@@ -445,7 +445,7 @@ function Player(props) {
           setTrackRef(track);
         })
         .catch(err => {
-          console.log('MusicPlayer Error', err);
+          // console.log('MusicPlayer Error', err);
         });
     }
   };
@@ -465,17 +465,17 @@ function Player(props) {
 
         global.playerReference.play(success => {
           if (success) {
-            console.log('PlayBack End!');
+            // console.log('PlayBack End!');
             setPlayVisible(true);
           } else {
-            console.log('NOOOOOOOO');
+            // console.log('NOOOOOOOO');
           }
         });
       } else {
         setPlayVisible(true);
 
         global.playerReference.pause(() => {
-          console.log('paused');
+          // console.log('paused');
         });
       }
     }
@@ -524,18 +524,18 @@ function Player(props) {
             if (supported) {
               Linking.openURL(originalUri)
                 .then(() => {
-                  console.log('success');
+                  // console.log('success');
                 })
                 .catch(() => {
-                  console.log('failed');
+                  // console.log('failed');
                 });
             }
           })
           .catch(err => {
-            console.log('not supported');
+            // console.log('not supported');
           });
       } else {
-        console.log('No Link Present, Old posts');
+        // console.log('No Link Present, Old posts');
       }
     } else {
       if (playVisible) {
@@ -566,10 +566,10 @@ function Player(props) {
                 if (supported) {
                   Linking.openURL('https://www.spotify.com/premium/')
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('failed');
+                      // console.log('failed');
                     });
                 }
               },
@@ -584,40 +584,40 @@ function Player(props) {
   const openInAppleORSpotify = () => {
     if (!_.isEmpty(props.isrcResp)) {
       if (props.userProfileResp.register_type === 'spotify') {
-        console.log('success - spotify');
-        console.log(props.isrcResp[0].external_urls.spotify);
+        // console.log('success - spotify');
+        // console.log(props.isrcResp[0].external_urls.spotify);
         Linking.canOpenURL(props.isrcResp[0].external_urls.spotify)
           .then(supported => {
             if (supported) {
               Linking.openURL(props.isrcResp[0].external_urls.spotify)
                 .then(() => {
-                  console.log('success');
+                  // console.log('success');
                 })
                 .catch(() => {
-                  console.log('error');
+                  // console.log('error');
                 });
             }
           })
           .catch(() => {
-            console.log('not supported');
+            // console.log('not supported');
           });
       } else {
-        console.log('success - apple');
-        console.log(props.isrcResp[0].attributes.url);
+        // console.log('success - apple');
+        // console.log(props.isrcResp[0].attributes.url);
         Linking.canOpenURL(props.isrcResp[0].attributes.url)
           .then(supported => {
             if (supported) {
               Linking.openURL(props.isrcResp[0].attributes.url)
                 .then(() => {
-                  console.log('success');
+                  // console.log('success');
                 })
                 .catch(() => {
-                  console.log('error');
+                  // console.log('error');
                 });
             }
           })
           .catch(() => {
-            console.log('not supported');
+            // console.log('not supported');
           });
       }
     } else {
@@ -801,6 +801,7 @@ function Player(props) {
                     color: Colors.white,
                     fontSize: normalise(10),
                     fontWeight: 'bold',
+                    top: normalise(-2),
                   }}>
                   POST
                 </Text>
@@ -956,15 +957,15 @@ function Player(props) {
                         if (supported) {
                           Linking.openURL(originalUri)
                             .then(() => {
-                              console.log('success');
+                              // console.log('success');
                             })
                             .catch(err => {
-                              console.log('failed');
+                              // console.log('failed');
                             });
                         }
                       })
                       .catch(err => {
-                        console.log('not supported');
+                        // console.log('not supported');
                       });
                   } else {
                     isInternetConnected()
@@ -979,21 +980,21 @@ function Player(props) {
                 //FOR APPLE USERS
                 else {
                   if (props.userProfileResp.register_type === registerType) {
-                    console.log(originalUri);
+                    // console.log(originalUri);
                     Linking.canOpenURL(originalUri)
                       .then(supported => {
                         if (supported) {
                           Linking.openURL(originalUri)
                             .then(() => {
-                              console.log('success');
+                              // console.log('success');
                             })
                             .catch(err => {
-                              console.log('failed');
+                              // console.log('failed');
                             });
                         }
                       })
                       .catch(err => {
-                        console.log('not supported');
+                        // console.log('not supported');
                       });
                   } else {
                     isInternetConnected()
@@ -1135,7 +1136,7 @@ function Player(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //     console.log('Already Exists');
+            //     // console.log('Already Exists');
             // }
             // else {
             //     let array = [...usersToSEndSong]
@@ -1968,15 +1969,15 @@ function Player(props) {
                           if (supported) {
                             Linking.openURL(originalUri)
                               .then(() => {
-                                console.log('success');
+                                // console.log('success');
                               })
                               .catch(err => {
-                                console.log('failed');
+                                // console.log('failed');
                               });
                           }
                         })
                         .catch(err => {
-                          console.log('not supported');
+                          // console.log('not supported');
                         });
                     } else {
                       isInternetConnected()
@@ -1991,21 +1992,21 @@ function Player(props) {
                   //FOR APPLE USERS
                   else {
                     if (props.userProfileResp.register_type === registerType) {
-                      console.log(originalUri);
+                      // console.log(originalUri);
                       Linking.canOpenURL(originalUri)
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
                               .then(() => {
-                                console.log('success');
+                                // console.log('success');
                               })
                               .catch(err => {
-                                console.log('failed');
+                                // console.log('failed');
                               });
                           }
                         })
                         .catch(err => {
-                          console.log('not supported');
+                          // console.log('not supported');
                         });
                     } else {
                       isInternetConnected()

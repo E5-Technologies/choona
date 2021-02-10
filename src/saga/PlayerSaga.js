@@ -297,7 +297,7 @@ export function* addSongsToPlaylistAction(action) {
         {data: action.payload.obj},
         AppleHeader,
       );
-      console.log(response);
+      // console.log(response);
       yield put({type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data});
     }
   } catch (error) {

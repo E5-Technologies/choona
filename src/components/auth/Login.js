@@ -84,7 +84,7 @@ function SignUp(props) {
         }
       })
       .catch(error => {
-        console.log(error);
+        // console.log(error);
       });
   }
 
@@ -102,7 +102,7 @@ function SignUp(props) {
         ],
       });
 
-      console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+      // console.log('appleAuthRequestResponse', appleAuthRequestResponse);
 
       const {
         user: newUser,
@@ -120,13 +120,13 @@ function SignUp(props) {
 
       if (identityToken) {
         appleLoginWithOurServer(appleAuthRequestResponse);
-        console.log(nonce, identityToken);
+        // console.log(nonce, identityToken);
       } else {
         // no token - failed sign-in?
       }
 
       if (realUserStatus === AppleAuthRealUserStatus.LIKELY_REAL) {
-        console.log("I'm a real person!");
+        // console.log("I'm a real person!");
       }
 
       console.warn(`Apple Authentication Completed, ${user}, ${email}`);
@@ -175,12 +175,12 @@ function SignUp(props) {
     appleSignUpObject.deviceType = Platform.OS;
     appleSignUpObject.deviceToken = token;
 
-    console.log('Apple ', appleData);
+    // console.log('Apple ', appleData);
     props.loginRequest(appleSignUpObject);
     setUserDetails(appleData);
 
     // }).catch(() => {
-    //   console.log('Error', 'Please connect to internet')
+    //   // console.log('Error', 'Please connect to internet')
     // });
   }
   //APPLE SIGN IN END
@@ -211,7 +211,7 @@ function SignUp(props) {
     }
   }
 
-  console.log(loginType);
+  // console.log(loginType);
   //VIEW
   return (
     <View style={{flex: 1, backgroundColor: Colors.black}}>
@@ -253,7 +253,7 @@ function SignUp(props) {
             alignSelf: 'center',
             borderRadius: normalise(25),
             backgroundColor: Colors.darkerblack,
-            borderWidth: normalise(0.5),
+            borderWidth: normalise(1),
             borderColor: Colors.activityBorderColor,
             shadowColor: '#000',
             shadowOffset: {width: 0, height: 5},

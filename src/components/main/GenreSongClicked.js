@@ -149,7 +149,7 @@ function GenreSongClicked(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus;
-        console.log('top50 page');
+        // console.log('top50 page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -206,7 +206,7 @@ function GenreSongClicked(props) {
   // HIT REACT
   function hitreact(x, rindex) {
     if (!_.isEmpty(props.getPostFromTop50[rindex].reaction)) {
-      console.log('here');
+      // console.log('here');
 
       const present = props.getPostFromTop50[rindex].reaction.some(
         obj =>
@@ -215,7 +215,7 @@ function GenreSongClicked(props) {
       );
 
       if (present) {
-        console.log('nooo');
+        // console.log('nooo');
       } else {
         setVisible(true);
         setModalReact(x);
@@ -502,7 +502,7 @@ function GenreSongClicked(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //   console.log('Already Exists');
+            //   // console.log('Already Exists');
             // }
             // else {
             //   let array = [...usersToSEndSong]

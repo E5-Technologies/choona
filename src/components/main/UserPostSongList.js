@@ -48,7 +48,7 @@ function UserPostSongList(props) {
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
 
-  console.log(postData);
+  // console.log(postData);
 
   function hitreact1(modal1Visible) {
     if (modal1Visible == true) {

@@ -498,7 +498,7 @@ export function* getCountryCodeAction(action) {
 
     res[1] = usacode;
     res.unshift(ukcode);
-    //  console.log("THE CODE", res)
+    //  // console.log("THE CODE", res)
     yield put({
       type: COUNTRY_CODE_SUCCESS,
       data: res,
@@ -520,7 +520,7 @@ export function* getTop5FollowedUserAction(action) {
     };
 
     const response = yield call(getApi, 'follower/top/list', Header);
-    //  console.log("THE CODE", res)
+    //  // console.log("THE CODE", res)
     yield put({type: TOP_5_FOLLOWED_USER_SUCCESS, data: response.data.data});
   } catch (error) {
     yield put({type: TOP_5_FOLLOWED_USER_FAILURE, error: error});

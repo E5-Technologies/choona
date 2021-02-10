@@ -117,7 +117,7 @@ function InsideaMessage(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         status = props.status;
-        console.log('inside a message');
+        // console.log('inside a message');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -171,7 +171,7 @@ function InsideaMessage(props) {
   }
 
   function renderItem(data) {
-    console.log(JSON.stringify(data.item.userDeletedArr));
+    // console.log(JSON.stringify(data.item.userDeletedArr));
 
     return (
       <View>
@@ -347,7 +347,7 @@ function InsideaMessage(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //     console.log('Already Exists');
+            //     // console.log('Already Exists');
             // }
             // else {
             //     let array = [...usersToSEndSong]
@@ -679,7 +679,7 @@ function InsideaMessage(props) {
   const openInAppleORSpotify = async () => {
     try {
       const res = await callApi();
-      console.log(res);
+      // console.log(res);
 
       if (res.status === 200) {
         if (
@@ -690,8 +690,8 @@ function InsideaMessage(props) {
           )
         ) {
           if (props.userProfileResp.register_type === 'spotify') {
-            console.log('success - spotify');
-            console.log(res.data.tracks.items[0].external_urls.spotify);
+            // console.log('success - spotify');
+            // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
               .then(supported => {
                 if (supported) {
@@ -699,34 +699,34 @@ function InsideaMessage(props) {
                     res.data.tracks.items[0].external_urls.spotify,
                   )
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('error');
+                      // console.log('error');
                     });
                 }
               })
               .catch(() => {
-                console.log('not supported');
+                // console.log('not supported');
               });
             setBool(false);
           } else {
-            console.log('success - apple');
-            console.log(res.data.data[0].attributes.url);
+            // console.log('success - apple');
+            // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
               .then(supported => {
                 if (supported) {
                   Linking.openURL(res.data.data[0].attributes.url)
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('error');
+                      // console.log('error');
                     });
                 }
               })
               .catch(() => {
-                console.log('not supported');
+                // console.log('not supported');
               });
           }
         } else {
@@ -736,7 +736,7 @@ function InsideaMessage(props) {
         toast('Oops', 'Something Went Wrong');
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -1063,7 +1063,7 @@ function InsideaMessage(props) {
                       props.searchedChatData[positionInArray]
                         .original_reg_type === props.registerType
                     ) {
-                      console.log('same reg type');
+                      // console.log('same reg type');
                       setModalVisible(false);
                       Linking.canOpenURL(
                         props.searchedChatData[positionInArray]
@@ -1075,17 +1075,17 @@ function InsideaMessage(props) {
                               .original_song_uri,
                           )
                             .then(() => {
-                              console.log('success');
+                              // console.log('success');
                             })
                             .catch(() => {
-                              console.log('error');
+                              // console.log('error');
                             });
                         })
                         .catch(err => {
-                          console.log('unsupported');
+                          // console.log('unsupported');
                         });
                     } else {
-                      console.log('diffirent reg type');
+                      // console.log('diffirent reg type');
                       setModalVisible(false);
                       isInternetConnected()
                         .then(() => {

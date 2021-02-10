@@ -265,7 +265,7 @@ const UserReducer = (state = initialState, action) => {
         };
       } else {
         let array = [...state.postData, ...action.data];
-        console.log(array);
+        // console.log(array);
         return {
           ...state,
           status: action.type,

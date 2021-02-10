@@ -90,7 +90,7 @@ function UsersFromContacts(props) {
     let data = _.filter(props.usersFromContacts, item => {
       return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
     });
-    console.log(data);
+    // console.log(data);
     setUsersList([]);
     setBool(true);
     setTimeout(() => {

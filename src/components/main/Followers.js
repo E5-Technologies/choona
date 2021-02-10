@@ -102,7 +102,7 @@ function Followers(props) {
   //     let data = _.filter(props.followerData, (item) => {
   //         return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
   //     });
-  //     console.log(data);
+  //     // console.log(data);
   //     setFollowerList([]);
   //     setBool(true);
   //     setTimeout(() => {

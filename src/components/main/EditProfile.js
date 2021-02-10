@@ -63,7 +63,7 @@ function EditProfile(props) {
     props.countryObject.map((item, index) => {
       if (item.name === location) {
         setCodePick(item.flag + item.dial_code);
-        console.log(item.flag + item.dial_code);
+        // console.log(item.flag + item.dial_code);
         setLoading(false);
       }
     });
@@ -124,13 +124,13 @@ function EditProfile(props) {
       includeExif: true,
     })
       .then(image => {
-        console.log(`IMAGE: ${JSON.stringify(image)}`);
+        // console.log(`IMAGE: ${JSON.stringify(image)}`);
         setPicture(true);
         setImageDetails(image);
         setProfilePic(image.path);
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -149,7 +149,7 @@ function EditProfile(props) {
         setProfilePic(image.path);
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -344,9 +344,9 @@ function EditProfile(props) {
                       codePick == '' ? props.countryCodeRequest[0] : codePick
                     }
                     onPickerItemSelected={(selectedvalue, index) => {
-                      //console.log(index)
+                      //// console.log(index)
                       setLocation(props.countryObject[index].name);
-                      // console.log(props.countryObject[index].name)
+                      // // console.log(props.countryObject[index].name)
                       setCodePick(selectedvalue);
                     }}
                   />

@@ -9,7 +9,7 @@ export const getAppleDevToken = async () => {
 
     if (creds === null) {
       const token = await getAppleDevelopersToken(constants.appleGetTokenApi);
-      console.log('Dev Token First' + token);
+      // console.log('Dev Token First' + token);
       await AsyncStorage.setItem(
         constants.APPLE,
         JSON.stringify({
@@ -20,7 +20,7 @@ export const getAppleDevToken = async () => {
 
       return `Bearer ${token.data.token}`;
     } else {
-      console.log('Dev Token' + creds);
+      // console.log('Dev Token' + creds);
       const devToken = JSON.parse(creds).token;
       const tokenexp = JSON.parse(creds).token_exp;
       const currentTime = moment()
@@ -28,7 +28,7 @@ export const getAppleDevToken = async () => {
         .format(`YYYY-MM-DDTHH:mm:sssZ`);
 
       if (currentTime > tokenexp) {
-        console.log('token expired');
+        // console.log('token expired');
         const token = await getAppleDevelopersToken(constants.appleGetTokenApi);
         await AsyncStorage.setItem(
           constants.APPLE,
@@ -39,7 +39,7 @@ export const getAppleDevToken = async () => {
         );
         return `Bearer ${token.data.token}`;
       } else {
-        console.log('token working');
+        // console.log('token working');
         return `Bearer ${devToken}`;
       }
     }

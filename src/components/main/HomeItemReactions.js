@@ -77,7 +77,7 @@ function HomeItemReaction(props) {
   function addOrChangeReaction(reaction) {
     let reactions = props.route.params.reactions;
 
-    console.log('REACTIONS: ' + JSON.stringify(reactions));
+    // console.log('REACTIONS: ' + JSON.stringify(reactions));
 
     let index = _.findIndex(reactions, function(item) {
       return item.user_id == userId && item.text == reaction;
@@ -127,7 +127,7 @@ function HomeItemReaction(props) {
 
   function hitreact(x) {
     if (!_.isEmpty(reactionList)) {
-      console.log('here' + JSON.stringify(reactionList));
+      // console.log('here' + JSON.stringify(reactionList));
 
       const present = reactionList.some(
         obj =>
@@ -136,7 +136,7 @@ function HomeItemReaction(props) {
       );
 
       if (present) {
-        console.log('nooo');
+        // console.log('nooo');
         addOrChangeReaction(x);
         reactionOnPost(x, postId);
       } else {
@@ -170,7 +170,7 @@ function HomeItemReaction(props) {
   }
 
   function renderItem(data) {
-    console.log(data);
+    // console.log(data);
     if (props.userProfileResp._id === data.item.user_id) {
       return (
         <ActivityListItem

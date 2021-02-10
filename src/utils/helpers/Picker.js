@@ -64,7 +64,7 @@ function NewPicker(props) {
       } else {
         onSelectItem(props.data[itemIndex], itemIndex);
       }
-      console.log('ITEM', props.data[itemIndex]);
+      // console.log('ITEM', props.data[itemIndex]);
       if (props.onPickerItemSelected) {
         props.onPickerItemSelected(props.data[itemIndex], itemIndex);
       }
@@ -107,7 +107,7 @@ function NewPicker(props) {
               <TouchableOpacity
                 style={{padding: normalize(10)}}
                 onPress={() => {
-                  console.log('JJJ');
+                  // console.log('JJJ');
                   onDone();
                 }}>
                 <Text style={{fontSize: normalize(12), color: Colors.blue}}>

@@ -58,7 +58,7 @@ function AddSong(props) {
             props.navigation.goBack();
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       };
 

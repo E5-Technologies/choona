@@ -91,7 +91,7 @@ export function* getChatTokenAction(action) {
  * @param {Object} action  provide payload for chat
  */
 export function* sendChatMessageAction(action) {
-  console.log('SEND_CHAT_REQ', action.payload);
+  // console.log('SEND_CHAT_REQ', action.payload);
 
   try {
     action.payload.chatTokens.map((chatToken, index) => {
@@ -149,7 +149,7 @@ export function* getChatMessages(action) {
           }
         });
 
-        console.log('CHATS', items);
+        // console.log('CHATS', items);
 
         var chatResponse = {
           data: items.reverse(),
@@ -256,9 +256,9 @@ export function* updateMessageCommentAction(action) {
         Header,
       );
 
-      console.log(
-        'updateMessageResponse: ' + JSON.stringify(updateMessageResponse),
-      );
+      // console.log(
+      //   'updateMessageResponse: ' + JSON.stringify(updateMessageResponse),
+      // );
 
       yield put({
         type: UPDATE_MESSEAGE_COMMENTS_SUCCESS,

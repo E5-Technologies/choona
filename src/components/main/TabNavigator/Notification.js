@@ -302,7 +302,7 @@ function Notification(props) {
                   width: '100%',
                   height: normalise(40),
                   alignItems: 'center',
-                  backgroundColor: Colors.fadeblack,
+                  backgroundColor: Colors.darkerblack,
                 }}>
                 <Text
                   style={{
@@ -333,7 +333,7 @@ function Notification(props) {
                   width: '100%',
                   height: normalise(40),
                   alignItems: 'center',
-                  backgroundColor: Colors.fadeblack,
+                  backgroundColor: Colors.darkerblack,
                 }}>
                 <Text
                   style={{

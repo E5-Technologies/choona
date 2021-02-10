@@ -148,7 +148,7 @@ function Contact(props) {
 
       case CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS:
         messageStatus = props.messageStatus;
-        console.log('saved song');
+        // console.log('saved song');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -312,7 +312,7 @@ function Contact(props) {
                   props.savedSong[index].original_reg_type ===
                   props.registerType
                 ) {
-                  console.log('same reg type');
+                  // console.log('same reg type');
                   setModalVisible(!modalVisible),
                     setBool(true),
                     Linking.canOpenURL(props.savedSong[index].original_song_uri)
@@ -321,18 +321,18 @@ function Contact(props) {
                           props.savedSong[index].original_song_uri,
                         )
                           .then(() => {
-                            console.log('success');
+                            // console.log('success');
                             setBool(false);
                           })
                           .catch(() => {
-                            console.log('error');
+                            // console.log('error');
                           });
                       })
                       .catch(err => {
-                        console.log('unsupported');
+                        // console.log('unsupported');
                       });
                 } else {
-                  console.log('diffirent reg type');
+                  // console.log('diffirent reg type');
                   setModalVisible(!modalVisible),
                     setBool(true),
                     isInternetConnected()
@@ -473,7 +473,7 @@ function Contact(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //     console.log('Already Exists');
+            //     // console.log('Already Exists');
             // }
             // else {
             //     let array = [...usersToSEndSong]
@@ -791,7 +791,7 @@ function Contact(props) {
   const openInAppleORSpotify = async () => {
     try {
       const res = await callApi();
-      console.log(res);
+      // console.log(res);
 
       if (res.status === 200) {
         if (
@@ -802,8 +802,8 @@ function Contact(props) {
           )
         ) {
           if (props.userProfileResp.register_type === 'spotify') {
-            console.log('success - spotify');
-            console.log(res.data.tracks.items[0].external_urls.spotify);
+            // console.log('success - spotify');
+            // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
               .then(supported => {
                 if (supported) {
@@ -811,34 +811,34 @@ function Contact(props) {
                     res.data.tracks.items[0].external_urls.spotify,
                   )
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('error');
+                      // console.log('error');
                     });
                 }
               })
               .catch(() => {
-                console.log('not supported');
+                // console.log('not supported');
               });
             setBool(false);
           } else {
-            console.log('success - apple');
-            console.log(res.data.data[0].attributes.url);
+            // console.log('success - apple');
+            // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
               .then(supported => {
                 if (supported) {
                   Linking.openURL(res.data.data[0].attributes.url)
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('error');
+                      // console.log('error');
                     });
                 }
               })
               .catch(() => {
-                console.log('not supported');
+                // console.log('not supported');
               });
             setBool(false);
           }
@@ -852,7 +852,7 @@ function Contact(props) {
       }
     } catch (error) {
       setBool(false);
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -970,38 +970,38 @@ function Contact(props) {
               data={props.savedSong}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
-              renderHiddenItem={(rowData, rowMap) => (
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: Colors.red,
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                    height: normalise(39),
-                    width: normalise(42),
-                    marginTop: normalise(10),
-                    position: 'absolute',
-                    right: 21,
-                  }}
-                  onPress={() => {
-                    props.unsaveSongReq(rowData.item._id);
-                    rowMap[rowData.item.key].closeRow();
-                  }}>
-                  <Image
-                    source={ImagePath.unsaved}
-                    style={{height: normalise(15), width: normalise(15)}}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      fontSize: normalise(8),
-                      color: Colors.white,
-                      fontWeight: 'bold',
-                    }}>
-                    UNSAVE
-                  </Text>
-                </TouchableOpacity>
-              )}
+              // renderHiddenItem={(rowData, rowMap) => (
+              //   <TouchableOpacity
+              //     style={{
+              //       backgroundColor: Colors.red,
+              //       flexDirection: 'column',
+              //       alignItems: 'center',
+              //       justifyContent: 'space-evenly',
+              //       height: normalise(39),
+              //       width: normalise(42),
+              //       marginTop: normalise(10),
+              //       position: 'absolute',
+              //       right: 21,
+              //     }}
+              //     onPress={() => {
+              //       props.unsaveSongReq(rowData.item._id);
+              //       rowMap[rowData.item.key].closeRow();
+              //     }}>
+              //     <Image
+              //       source={ImagePath.unsaved}
+              //       style={{height: normalise(15), width: normalise(15)}}
+              //       resizeMode="contain"
+              //     />
+              //     <Text
+              //       style={{
+              //         fontSize: normalise(8),
+              //         color: Colors.white,
+              //         fontWeight: 'bold',
+              //       }}>
+              //       UNSAVE
+              //     </Text>
+              //   </TouchableOpacity>
+              // )}
               keyExtractor={(item, index, rowData) => {
                 index.toString();
               }}

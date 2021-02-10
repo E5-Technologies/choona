@@ -40,7 +40,7 @@ export function* searchSongsForPostAction(action) {
       items.registerType === 'spotify' ? `${spotifyToken}` : `${AppleToken}`,
   };
 
-  console.log('header: ' + JSON.stringify(spotifyHeader));
+  // console.log('header: ' + JSON.stringify(spotifyHeader));
 
   try {
     if (items.registerType === 'spotify') {

@@ -15,9 +15,9 @@ export default function MusicPlayer(trackUri, autoplay) {
         if (autoplay) {
           track.play(success => {
             if (success) {
-              console.log('PlayBack End');
+              // console.log('PlayBack End');
             } else {
-              console.log('NOOOOOOOO');
+              // console.log('NOOOOOOOO');
             }
           });
         }

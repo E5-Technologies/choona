@@ -36,12 +36,12 @@ export default function Splash(props) {
       );
 
       if (granted === PermissionsAndroid.PERMISSIONS.GRANTED) {
-        console.log('Camera Permission Given');
+        // console.log('Camera Permission Given');
       } else {
-        console.log('Camera Permisiion Denied');
+        // console.log('Camera Permisiion Denied');
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -60,12 +60,12 @@ export default function Splash(props) {
       );
 
       if (granted === PermissionsAndroid.PERMISSIONS.GRANTED) {
-        console.log('External Read Permisiion Given');
+        // console.log('External Read Permisiion Given');
       } else {
-        console.log('External Read Permisiion Denied');
+        // console.log('External Read Permisiion Denied');
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -84,12 +84,12 @@ export default function Splash(props) {
       );
 
       if (granted === PermissionsAndroid.PERMISSIONS.GRANTED) {
-        console.log('Contacts Read Permisiion Given');
+        // console.log('Contacts Read Permisiion Given');
       } else {
-        console.log('Contacts Read Permisiion Denied');
+        // console.log('Contacts Read Permisiion Denied');
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 

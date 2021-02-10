@@ -123,7 +123,7 @@ function Following(props) {
   //     let data = _.filter(props.followingData, (item) => {
   //         return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
   //     });
-  //     console.log(data);
+  //     // console.log(data);
   //     setFollowingList([]);
   //     setBool(true);
   //     setTimeout(() => {

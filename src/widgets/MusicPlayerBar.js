@@ -68,11 +68,11 @@ function MusicPlayerBar(props) {
     const res = ref.isPlaying();
     if (res) {
       ref.pause();
-      console.log('paused');
+      // console.log('paused');
     } else {
       ref.play(success => {
         if (success) {
-          console.log('Playback End');
+          // console.log('Playback End');
         }
       });
     }

@@ -85,7 +85,7 @@ function PostListForUser(props) {
 
   const [posts, setPosts] = useState(props.route.params.posts);
 
-  console.log(props.route.params.index);
+  // console.log(props.route.params.index);
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -203,7 +203,7 @@ function PostListForUser(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus;
-        console.log('profile page');
+        // console.log('profile page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -233,7 +233,7 @@ function PostListForUser(props) {
 
   function hitreact(x, rindex) {
     if (!_.isEmpty(posts[rindex].reaction)) {
-      console.log('here');
+      // console.log('here');
 
       const present = posts[rindex].reaction.some(
         obj =>
@@ -242,7 +242,7 @@ function PostListForUser(props) {
       );
 
       if (present) {
-        console.log('nooo');
+        // console.log('nooo');
       } else {
         setVisible(true);
         setModalReact(x);
@@ -412,7 +412,7 @@ function PostListForUser(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //     console.log('Already Exists');
+            //     // console.log('Already Exists');
             // }
             // else {
             //     let array = [...usersToSEndSong]
@@ -748,7 +748,7 @@ function PostListForUser(props) {
 
           {/* <TouchableOpacity style={{
     height: normalise(50), width: '80%',
-    borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
+    borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(1),
     shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
     shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
     alignItems: 'center', justifyContent: 'center'
@@ -794,7 +794,7 @@ function PostListForUser(props) {
               index,
             })}
             onScrollToIndexFailed={val => {
-              console.log(val);
+              // console.log(val);
             }}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => {
@@ -1001,7 +1001,7 @@ function PostListForUser(props) {
                       props.postData[positionInArray].userDetails
                         .register_type === props.registerType
                     ) {
-                      console.log('same reg type');
+                      // console.log('same reg type');
                       setModalVisible(false);
 
                       Linking.canOpenURL(
@@ -1012,19 +1012,19 @@ function PostListForUser(props) {
                             props.postData[positionInArray].original_song_uri,
                           )
                             .then(() => {
-                              console.log('success');
+                              // console.log('success');
                               setBool(false);
                             })
                             .catch(() => {
-                              console.log('error');
+                              // console.log('error');
                             });
                         })
                         .catch(err => {
-                          console.log('unsupported');
+                          // console.log('unsupported');
                         });
                     }
                     // else {
-                    //     console.log('diffirent reg type');
+                    //     // console.log('diffirent reg type');
                     //     setModalVisible(false)
                     //     openInAppleORSpotify();
                     // }

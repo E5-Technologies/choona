@@ -124,7 +124,7 @@ function Home(props) {
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
-          console.log('home use Effect');
+          // console.log('home use Effect');
           setOnScrolled(false);
           props.getProfileReq(), setUserSearchData([]);
           sesUsersToSEndSong([]);
@@ -137,7 +137,7 @@ function Home(props) {
           // }
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           toast('Error', 'Please Connect To Internet');
         });
     });
@@ -170,7 +170,7 @@ function Home(props) {
         status = props.status;
         setPostArray(props.postData);
         findPlayingSong(props.postData);
-        console.log('calling success');
+        // console.log('calling success');
         setHomeReq(false);
         setRefresing(false);
         break;
@@ -274,7 +274,7 @@ function Home(props) {
 
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus;
-        console.log('home page');
+        // console.log('home page');
         setUserSearchData([]);
         sesUsersToSEndSong([]);
         setUserSeach('');
@@ -305,9 +305,9 @@ function Home(props) {
   let val = 0;
 
   function hitreact(x, rindex) {
-    console.log('this' + JSON.stringify(props.postData[rindex]));
+    // console.log('this' + JSON.stringify(props.postData[rindex]));
     if (!_.isEmpty(props.postData[rindex].reaction)) {
-      console.log('here');
+      // console.log('here');
 
       const present = props.postData[rindex].reaction.some(
         obj =>
@@ -316,9 +316,9 @@ function Home(props) {
       );
 
       if (present) {
-        console.log('nooo');
+        // console.log('nooo');
       } else {
-        console.log('2');
+        // console.log('2');
         setVisible(true);
         setModalReact(x);
         setTimeout(() => {
@@ -326,7 +326,7 @@ function Home(props) {
         }, 2000);
       }
     } else {
-      console.log('3');
+      // console.log('3');
       setVisible(true);
       setModalReact(x);
       setTimeout(() => {
@@ -378,12 +378,12 @@ function Home(props) {
   const getContacts = () => {
     Contacts.getAll((err, contacts) => {
       if (err) {
-        console.log(err);
+        // console.log(err);
       } else {
         let contactsArray = contacts;
         let finalArray = [];
         setContactsLoading(false);
-        //console.log(JSON.stringify(contacts));
+        //// console.log(JSON.stringify(contacts));
         contactsArray.map((item, index) => {
           item.phoneNumbers.map((item, index) => {
             let number = item.number.replace(/[- )(]/g, '');
@@ -412,7 +412,7 @@ function Home(props) {
           });
         });
 
-        console.log(finalArray);
+        // console.log(finalArray);
         props.navigation.navigate('UsersFromContacts', {data: finalArray});
       }
     });
@@ -420,11 +420,11 @@ function Home(props) {
 
   const playSong = data => {
     if (props.playingSongRef === '') {
-      console.log('first time');
+      // console.log('first time');
 
       MusicPlayer(data.item.song_uri, true)
         .then(track => {
-          console.log('Loaded');
+          // console.log('Loaded');
 
           let saveSongResObj = {};
           (saveSongResObj.uri = data.item.song_uri),
@@ -452,12 +452,12 @@ function Home(props) {
           props.dummyRequest();
         })
         .catch(err => {
-          console.log('MusicPlayer Error', err);
+          // console.log('MusicPlayer Error', err);
         });
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === data.item.song_uri) {
-          console.log('Alreday Playing');
+          // console.log('Alreday Playing');
 
           if (global.playerReference.isPlaying()) {
             global.playerReference.pause();
@@ -468,9 +468,9 @@ function Home(props) {
           } else {
             global.playerReference.play(success => {
               if (success) {
-                console.log('PlayBack End');
+                // console.log('PlayBack End');
               } else {
-                console.log('NOOOOOOOO');
+                // console.log('NOOOOOOOO');
               }
             });
 
@@ -479,12 +479,12 @@ function Home(props) {
             }, 500);
           }
         } else {
-          console.log('reset');
+          // console.log('reset');
           global.playerReference.release();
           global.playerReference = null;
           MusicPlayer(data.item.song_uri, true)
             .then(track => {
-              console.log('Loaded');
+              // console.log('Loaded');
 
               let saveSongResObj = {};
               (saveSongResObj.uri = data.item.song_uri),
@@ -513,14 +513,14 @@ function Home(props) {
               props.dummyRequest();
             })
             .catch(err => {
-              console.log('MusicPlayer Error', err);
+              // console.log('MusicPlayer Error', err);
             });
         }
       } else {
-        console.log('reset2');
+        // console.log('reset2');
         MusicPlayer(data.item.song_uri, true)
           .then(track => {
-            console.log('Loaded');
+            // console.log('Loaded');
 
             let saveSongResObj = {};
             (saveSongResObj.uri = data.item.song_uri),
@@ -549,7 +549,7 @@ function Home(props) {
             props.dummyRequest();
           })
           .catch(err => {
-            console.log('MusicPlayer Error', err);
+            // console.log('MusicPlayer Error', err);
           });
       }
     }
@@ -690,7 +690,7 @@ function Home(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //   console.log('Already Exists');
+            //   // console.log('Already Exists');
             // }
             // else {
             //   let array = [...usersToSEndSong]
@@ -856,7 +856,6 @@ function Home(props) {
                 }}>
                 SELECT USER TO SEND TO
               </Text>
-
               {userClicked ? (
                 <Text
                   style={{
@@ -1023,7 +1022,7 @@ function Home(props) {
   const openInAppleORSpotify = async () => {
     try {
       const res = await callApi();
-      console.log(res);
+      // console.log(res);
 
       if (res.status === 200) {
         if (
@@ -1034,8 +1033,8 @@ function Home(props) {
           )
         ) {
           if (props.userProfileResp.register_type === 'spotify') {
-            console.log('success - spotify');
-            console.log(res.data.tracks.items[0].external_urls.spotify);
+            // console.log('success - spotify');
+            // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
               .then(supported => {
                 if (supported) {
@@ -1043,34 +1042,34 @@ function Home(props) {
                     res.data.tracks.items[0].external_urls.spotify,
                   )
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('error');
+                      // console.log('error');
                     });
                 }
               })
               .catch(() => {
-                console.log('not supported');
+                // console.log('not supported');
               });
             setBool(false);
           } else {
-            console.log('success - apple');
-            console.log(res.data.data[0].attributes.url);
+            // console.log('success - apple');
+            // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
               .then(supported => {
                 if (supported) {
                   Linking.openURL(res.data.data[0].attributes.url)
                     .then(() => {
-                      console.log('success');
+                      // console.log('success');
                     })
                     .catch(() => {
-                      console.log('error');
+                      // console.log('error');
                     });
                 }
               })
               .catch(() => {
-                console.log('not supported');
+                // console.log('not supported');
               });
             setBool(false);
           }
@@ -1084,7 +1083,7 @@ function Home(props) {
       }
     } catch (error) {
       setBool(false);
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -1117,7 +1116,7 @@ function Home(props) {
           let duration = global.playerReference.getDuration();
           global.playerReference.getCurrentTime(seconds => {
             let timeout = (duration - seconds) * 1000;
-            console.log('timeout' + timeout);
+            // console.log('timeout' + timeout);
             clearTimeout(timeoutVar);
             setTimeoutFunc(timeout);
           });
@@ -1126,11 +1125,11 @@ function Home(props) {
         }
       }
       setPostArray(array);
-      console.log(array);
+      // console.log(array);
     }
     // NOT PLAYING
     else {
-      console.log('player not playing or playing song is not in feed');
+      // console.log('player not playing or playing song is not in feed');
 
       let array = [...postData];
 
@@ -1138,7 +1137,7 @@ function Home(props) {
         array[i].playing = false;
       }
       setPostArray(array);
-      console.log(array);
+      // console.log(array);
     }
   }
 
@@ -1146,7 +1145,7 @@ function Home(props) {
   function setTimeoutFunc(timeout) {
     setTimeoutVar(
       setTimeout(() => {
-        console.log('now');
+        // console.log('now');
         findPlayingSong(postArray);
       }, timeout),
     );
@@ -1322,7 +1321,7 @@ function Home(props) {
                 index,
               })}
               onScrollToIndexFailed={val => {
-                console.log(val);
+                // console.log(val);
               }}
               refreshControl={
                 <RefreshControl
@@ -1565,7 +1564,7 @@ function Home(props) {
                         props.postData[positionInArray].userDetails
                           .register_type === props.registerType
                       ) {
-                        console.log('same reg type');
+                        // console.log('same reg type');
                         setModalVisible(false);
                         setBool(true),
                           Linking.canOpenURL(
@@ -1577,18 +1576,18 @@ function Home(props) {
                                   .original_song_uri,
                               )
                                 .then(() => {
-                                  console.log('success');
+                                  // console.log('success');
                                   setBool(false);
                                 })
                                 .catch(() => {
-                                  console.log('error');
+                                  // console.log('error');
                                 });
                             })
                             .catch(err => {
-                              console.log('unsupported');
+                              // console.log('unsupported');
                             });
                       } else {
-                        console.log('diffirent reg type');
+                        // console.log('diffirent reg type');
                         setModalVisible(false);
                         setBool(true),
                           isInternetConnected()

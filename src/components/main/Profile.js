@@ -61,7 +61,7 @@ function Profile(props) {
     };
   });
 
-  console.log(props.route.params.fromAct);
+  // console.log(props.route.params.fromAct);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -72,7 +72,7 @@ function Profile(props) {
       case USER_PROFILE_SUCCESS:
         status = props.status;
         if (activity) {
-          console.log('get index');
+          // console.log('get index');
           getIndex();
         }
         break;

@@ -106,12 +106,12 @@ function Inbox(props) {
 
   function sortArray(value) {
     const res = value.sort((a, b) => {
-      // console.log('yooo' + new Date(Object.values(a)[0].time))
+      // // console.log('yooo' + new Date(Object.values(a)[0].time))
       return (
         new Date(Object.values(b)[0].time) - new Date(Object.values(a)[0].time)
       );
     });
-    // console.log('Sort' + JSON.stringify(res));
+    // // console.log('Sort' + JSON.stringify(res));
     setMessageList(res);
   }
 
@@ -123,7 +123,7 @@ function Inbox(props) {
       );
     });
 
-    console.log(data);
+    // console.log(data);
     setMessageList([]);
     setBool(true);
     setTimeout(() => {
@@ -133,7 +133,7 @@ function Inbox(props) {
   }
 
   function renderInboxItem(data) {
-    console.log('message: ' + data.item.message.length);
+    // console.log('message: ' + data.item.message.length);
 
     return (
       <InboxListItem

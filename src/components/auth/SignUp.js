@@ -61,7 +61,7 @@ function Login(props) {
 
       case COUNTRY_CODE_SUCCESS:
         status = props.status;
-        //console.log("COUNTRY", props.countryObject)
+        //// console.log("COUNTRY", props.countryObject)
         //setLocation(props.countryObject[0].name)
         break;
 
@@ -78,10 +78,10 @@ function Login(props) {
         getDeviceToken()
           .then(token => {
             setDeviceToken(token);
-            console.log(token);
+            // console.log(token);
           })
           .catch(error => {
-            console.log(error);
+            // console.log(error);
           });
       })
       .catch(() => {
@@ -121,9 +121,9 @@ function Login(props) {
   const [codePick, setCodePick] = useState('');
   const [deviceToken, setDeviceToken] = useState('');
 
-  console.log('Location', location);
+  // console.log('Location', location);
 
-  //console.log('DETAILS' + JSON.stringify(userDetails))
+  //// console.log('DETAILS' + JSON.stringify(userDetails))
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
@@ -161,13 +161,13 @@ function Login(props) {
       includeExif: true,
     })
       .then(image => {
-        console.log(`IMAGE: ${JSON.stringify(image)}`);
+        // console.log(`IMAGE: ${JSON.stringify(image)}`);
         setImageDetails(image);
         setPicture(true);
         setProfilePic(image.path);
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -186,7 +186,7 @@ function Login(props) {
         setProfilePic(image.path);
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -248,7 +248,7 @@ function Login(props) {
         ? formdata.append('register_type', 'spotify')
         : formdata.append('register_type', 'apple');
 
-      console.log(formdata);
+      // console.log(formdata);
       props.signUpRequest(formdata);
     }
   };
@@ -418,9 +418,9 @@ function Login(props) {
                   codePick == '' ? props.countryCodeRequest[0] : codePick
                 }
                 onPickerItemSelected={(selectedvalue, index) => {
-                  //console.log(index)
+                  //// console.log(index)
                   setLocation(props.countryObject[index].name);
-                  // console.log(props.countryObject[index].name)
+                  // // console.log(props.countryObject[index].name)
                   setCodePick(selectedvalue);
                 }}
                 //uniqueKey={"areaCode"}

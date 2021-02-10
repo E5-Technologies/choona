@@ -62,7 +62,7 @@ function SendSongInMessageFinal(props) {
             props.navigation.goBack();
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       };
 
@@ -88,25 +88,25 @@ function SendSongInMessageFinal(props) {
   if (status === '' || status !== props.status) {
     switch (props.status) {
       case SEND_CHAT_MESSAGE_REQUEST:
-        console.log('HERE SEND');
+        // console.log('HERE SEND');
         status = props.status;
         break;
 
       case SEND_CHAT_MESSAGE_SUCCESS:
         status = props.status;
-        console.log('HERE SEND');
+        // console.log('HERE SEND');
 
         break;
 
       case SEND_CHAT_MESSAGE_FAILURE:
         status = props.status;
-        console.log('HERE FAIL');
+        // console.log('HERE FAIL');
         toast('Error', 'Something Went Wong, Please Try Again');
         break;
     }
   }
 
-  console.log(usersData);
+  // console.log(usersData);
 
   // RENDER USER SEARCH FLATLIST DATA
   function renderAddUsersToMessageItem(data) {
@@ -272,10 +272,10 @@ function SendSongInMessageFinal(props) {
             // }
 
             if (props.route.params.fromPlayer === true) {
-              console.log('from player');
+              // console.log('from player');
               props.navigation.goBack();
             } else {
-              console.log('not from player');
+              // console.log('not from player');
               props.navigation.pop(2);
             }
 

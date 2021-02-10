@@ -29,11 +29,11 @@ export const getDeviceToken = () => {
       messaging()
         .requestPermission()
         .then(() => {
-          console.log('TOKEN TOKEN');
+          // console.log('TOKEN TOKEN');
           messaging()
             .getAPNSToken()
             .then(value => {
-              console.log('TOKEN: ', value);
+              // console.log('TOKEN: ', value);
               if (value) {
                 //alert("Token:\n"+value)
                 AsyncStorage.setItem(deviceToken, value);
@@ -71,32 +71,32 @@ export const getDeviceToken = () => {
         .getToken()
         .then(value => {
           if (value) {
-            //console.log(value)
+            //// console.log(value)
             AsyncStorage.setItem(deviceToken, value);
             resolve(value);
           } else {
             AsyncStorage.getItem(deviceToken)
               .then(value => {
                 if (value) {
-                  //console.log(value)
+                  //// console.log(value)
                   resolve(value);
                 } else resolve(DUMMY_TOKEN);
               })
               .catch(error => {
-                //console.log(error)
+                //// console.log(error)
                 reject('Token could not be generated');
               });
           }
         })
         .catch(error => {
-          //console.log(error)
+          //// console.log(error)
           AsyncStorage.getItem(deviceToken)
             .then(value => {
               if (value) resolve(value);
               else resolve(DUMMY_TOKEN);
             })
             .catch(error => {
-              //console.log(error)
+              //// console.log(error)
               reject('Token could not be generated');
             });
         });
