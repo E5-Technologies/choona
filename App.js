@@ -134,7 +134,7 @@ const App = () => {
           inactiveBackgroundColor: Colors.darkerblack,
           safeAreaInsets: {bottom: 0},
           style: {
-            height: Platform.OS === 'android' ? normalise(45) : normalise(77),
+            height: Platform.OS === 'android' ? normalise(45) : normalise(60),
             borderTopColor: Colors.fadeblack,
           },
         }}>
@@ -199,8 +199,8 @@ const App = () => {
                       : Dimensions.get('window').height > 736
                       ? normalise(0)
                       : normalise(10),
-                  height: normalise(72),
-                  width: normalise(72),
+                  height: normalise(56),
+                  width: normalise(56),
                 }}
                 source={focused ? ImagePath.addbtn : ImagePath.addbtn}
                 resizeMode="contain"
