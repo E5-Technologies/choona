@@ -92,7 +92,7 @@ function ReactionList(props) {
         style={{
           marginTop: normalise(10),
           borderBottomWidth: normalise(1),
-          borderBottomColor: Colors.grey,
+          borderBottomColor: Colors.activityBorderColor,
         }}
       />
     </View>

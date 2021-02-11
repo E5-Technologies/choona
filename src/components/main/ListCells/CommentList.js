@@ -88,7 +88,7 @@ function CommentList(props) {
       <View
         style={{
           marginTop: normalise(15),
-          borderBottomWidth: 0.5,
+          borderBottomWidth: normalise(0.5),
           borderBottomColor: Colors.activityBorderColor,
         }}
       />

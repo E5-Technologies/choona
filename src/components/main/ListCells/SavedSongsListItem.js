@@ -311,7 +311,7 @@ function SavedSongListItem(props) {
       <View
         style={{
           marginTop: normalise(16),
-          borderBottomWidth: 0.5,
+          borderBottomWidth: normalise(0.5),
           borderBottomColor: Colors.activityBorderColor,
         }}
       />

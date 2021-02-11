@@ -130,7 +130,7 @@ function ActivityListItem(props) {
       {props.bottom ? null : (
         <View
           style={{
-            borderBottomWidth: 0.5,
+            borderBottomWidth: normalise(0.5),
             borderBottomColor: Colors.activityBorderColor,
           }}
         />

@@ -860,7 +860,7 @@ function InsideaMessage(props) {
               borderWidth: normalise(0.5),
               shadowColor: '#000',
               shadowOffset: {width: 0, height: 4},
-              shadowOpacity: 1,
+              shadowOpacity: 0.5,
               shadowRadius: 9,
               elevation: 11,
               flexDirection: 'row',
