@@ -1280,14 +1280,14 @@ function Search(props) {
                     backgroundColor: Colors.darkerblack,
                     borderWidth: normalise(0.5),
                     shadowColor: '#000',
-                    shadowOffset: {width: 0, height: 5},
-                    shadowOpacity: 0.36,
-                    shadowRadius: 6.68,
+                    shadowOffset: {width: 0, height: 4},
+                    shadowOpacity: 1,
+                    shadowRadius: 9,
                     elevation: 11,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderColor: Colors.grey,
+                    borderColor: Colors.darkerblack,
                   }}
                   onPress={() => {
                     setContactsLoading(true), getContacts();

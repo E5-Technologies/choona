@@ -218,14 +218,16 @@ function SignUp(props) {
       {Platform.OS === 'android' ? (
         <MyStatusBar />
       ) : (
-        <StatusBar backgroundColor={Colors.darkerblack} />
+        <StatusBar
+          backgroundColor={Colors.darkerblack}
+          barStyle={'light-content'}
+        />
       )}
 
       <View style={{height: '50%'}}>
         <Image
           source={ImagePath.albumsPic}
           style={{
-            height: '90%',
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
@@ -234,7 +236,7 @@ function SignUp(props) {
 
         <Image
           source={ImagePath.applogo}
-          style={{height: normalise(60), width: '60%', alignSelf: 'center'}}
+          style={{height: normalise(40), alignSelf: 'center'}}
           resizeMode="contain"
         />
       </View>
@@ -245,16 +247,17 @@ function SignUp(props) {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'flex-end',
+          paddingHorizontal: normalise(16),
         }}>
         <TouchableOpacity
           style={{
-            height: normalise(50),
-            width: '80%',
+            height: normalise(56),
+            width: '100%',
             alignSelf: 'center',
-            borderRadius: normalise(25),
+            borderRadius: normalise(28),
             backgroundColor: Colors.darkerblack,
             borderWidth: normalise(1),
-            borderColor: Colors.activityBorderColor,
+            borderColor: Colors.darkerblack,
             shadowColor: '#000',
             shadowOffset: {width: 0, height: 5},
             shadowOpacity: 0.36,
@@ -269,7 +272,12 @@ function SignUp(props) {
           }}>
           <Image
             source={ImagePath.spotifyicon}
-            style={{height: normalise(22), width: normalise(22)}}
+            style={{
+              height: normalise(32),
+              width: normalise(32),
+              position: 'absolute',
+              left: 12,
+            }}
             resizeMode="contain"
           />
 
@@ -278,34 +286,59 @@ function SignUp(props) {
               marginLeft: normalise(10),
               color: Colors.white,
               fontSize: normalise(12),
-              fontFamily: 'ProximaNova-Extrabld',
+              fontFamily: 'ProximaNova-Bold',
             }}>
             LOGIN WITH SPOTIFY
           </Text>
         </TouchableOpacity>
 
-        {/* <TouchableOpacity style={{
-                    marginBottom: normalise(40),
-                    marginTop: normalise(20), height: normalise(50), width: '80%', alignSelf: 'center',
-                    borderRadius: normalise(25), backgroundColor: Colors.white, borderWidth: normalise(0.5),
-                    shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-                    shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
-                }} onPress={() => { props.navigation.navigate("SignUp") }}   >
-
-                    <Image source={ImagePath.applemusic}
-                        style={{ height: normalise(25), width: normalise(25) }}
-                        resizeMode='contain' />
-
-                    <Text style={{
-                        marginLeft: normalise(10),
-                        color: Colors.black,
-                        fontSize: normalise(12),
-                        fontFamily: 'ProximaNova-Extrabld',
-                    }}>LOGIN WITH APPLE MUSIC</Text>
-
-                </TouchableOpacity> */}
-
         {Platform.OS === 'ios' ? (
+          <TouchableOpacity
+            style={{
+              marginBottom: normalise(40),
+              marginTop: normalise(20),
+              height: normalise(56),
+              width: '100%',
+              alignSelf: 'center',
+              borderRadius: normalise(28),
+              backgroundColor: Colors.white,
+              borderWidth: normalise(0.5),
+              shadowColor: '#000',
+              shadowOffset: {width: 0, height: 5},
+              shadowOpacity: 0.36,
+              shadowRadius: 6.68,
+              elevation: 11,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              props.navigation.navigate('SignUp');
+            }}>
+            <Image
+              source={ImagePath.applemusic}
+              style={{
+                height: normalise(32),
+                width: normalise(32),
+                position: 'absolute',
+                left: 12,
+              }}
+              resizeMode="contain"
+            />
+
+            <Text
+              style={{
+                marginLeft: normalise(10),
+                color: Colors.black,
+                fontSize: normalise(12),
+                fontFamily: 'ProximaNova-Bold',
+              }}>
+              LOGIN WITH APPLE MUSIC
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+
+        {/* {Platform.OS === 'ios' ? (
           <AppleButton
             style={{
               marginTop: normalise(10),
@@ -318,7 +351,7 @@ function SignUp(props) {
             buttonType={AppleButton.Type.SIGN_IN}
             onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
           />
-        ) : null}
+        ) : null} */}
       </View>
     </View>
   );

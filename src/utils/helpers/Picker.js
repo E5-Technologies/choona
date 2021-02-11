@@ -155,9 +155,7 @@ function NewPicker(props) {
         backgroundColor: Colors.fadeblack,
         height: normalize(45),
         borderRadius: normalize(5),
-        borderWidth: normalize(1),
         padding: normalize(5),
-        borderColor: Colors.grey,
         marginTop: Platform.OS == 'android' ? normalize(43.5) : normalize(37),
       }}>
       {props.placeholder != '' ? (

@@ -117,7 +117,7 @@ TextInputField.defaultProps = {
   text: '',
   marginBottom: normalize(0),
   width: '100%',
-  borderColor: Colors.grey,
+  borderColor: Colors.darkerblack,
   tick_req: false,
   tick_visible: false,
   isNumber: false,

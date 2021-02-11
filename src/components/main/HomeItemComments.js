@@ -128,9 +128,18 @@ function HomeItemComments(props) {
           style={{
             // width: '90%',
             // alignSelf: 'center',
+            backgroundColor: Colors.darkerblack,
             paddingLeft: normalise(16),
             paddingRight: normalise(16),
-            marginTop: normalise(12),
+            paddingTop: normalise(12),
+            borderBottomWidth: normalise(0.5),
+            borderColor: Colors.fadeblack,
+            paddingBottom: normalise(12),
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: 4},
+            shadowOpacity: 0.5,
+            shadowRadius: 8,
+            elevation: 11,
           }}>
           <View
             style={{
@@ -193,13 +202,13 @@ function HomeItemComments(props) {
             </View>
           </View>
 
-          <View
+          {/* <View
             style={{
               marginTop: normalise(12),
-              borderBottomWidth: normalise(0.5),
+              // borderBottomWidth: normalise(0.5),
               borderBottomColor: Colors.activityBorderColor,
             }}
-          />
+          /> */}
         </View>
 
         <SwipeListView
