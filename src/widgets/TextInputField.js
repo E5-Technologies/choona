@@ -48,7 +48,11 @@ function TextInputField(props) {
           borderWidth: normalize(0.5),
           padding: normalize(5),
           paddingLeft: normalize(16),
-          borderColor: focused ? Colors.white : Colors.fadeblack,
+          borderColor: !props.userNameAvailable
+            ? Colors.red
+            : focused
+            ? Colors.white
+            : Colors.fadeblack,
           color: Colors.white,
         }}
         onFocus={() => {
