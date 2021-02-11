@@ -677,7 +677,7 @@ function Player(props) {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 marginTop: normalise(15),
-                borderBottomWidth: 0.5,
+                borderBottomWidth: normalise(0.5),
                 borderColor: Colors.activityBorderColor,
               }}>
               <TouchableOpacity
