@@ -705,7 +705,13 @@ function Home(props) {
             sesUsersToSEndSong(array);
           }
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            borderColor: Colors.activityBorderColor,
+            borderBottomWidth: normalise(0.5),
+            paddingBottom: normalise(10),
+          }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
@@ -732,13 +738,6 @@ function Home(props) {
             </Text>
           </View>
         </View>
-        <View
-          style={{
-            backgroundColor: Colors.grey,
-            height: 0.5,
-            marginTop: normalise(10),
-          }}
-        />
       </TouchableOpacity>
     );
   }

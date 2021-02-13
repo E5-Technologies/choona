@@ -434,7 +434,13 @@ function PostListForUser(props) {
             }}
             style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              borderColor: Colors.activityBorderColor,
+              borderBottomWidth: normalise(0.5),
+              paddingBottom: normalise(10),
+            }}>
             <Text
               style={{
                 color: Colors.white,
@@ -443,7 +449,6 @@ function PostListForUser(props) {
               }}>
               {data.item.full_name}
             </Text>
-
             <Text
               style={{
                 color: Colors.white,
@@ -454,13 +459,6 @@ function PostListForUser(props) {
             </Text>
           </View>
         </View>
-        <View
-          style={{
-            backgroundColor: Colors.grey,
-            height: 0.5,
-            marginTop: normalise(10),
-          }}
-        />
       </TouchableOpacity>
     );
   }

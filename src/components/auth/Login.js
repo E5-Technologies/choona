@@ -312,9 +312,7 @@ function SignUp(props) {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => {
-              props.navigation.navigate('SignUp');
-            }}>
+            onPress={() => onAppleButtonPress(updateCredentialStateForUser)}>
             <Image
               source={ImagePath.applemusic}
               style={{
