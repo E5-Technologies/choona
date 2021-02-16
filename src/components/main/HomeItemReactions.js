@@ -229,7 +229,7 @@ function HomeItemReaction(props) {
             width: '100%',
             height: normalise(42),
             justifyContent: 'center',
-            backgroundColor: Colors.fadeblack,
+            backgroundColor: Colors.darkerblack,
           }}>
           <Text
             style={{

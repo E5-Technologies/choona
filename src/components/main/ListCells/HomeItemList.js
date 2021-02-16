@@ -190,7 +190,7 @@ function HomeItemList(props) {
           props.onPressMusicbox();
         }}
         style={{
-          height: normalise(250),
+          height: normalise(280),
           width: normalise(280),
           alignSelf: 'center',
           borderRadius: normalise(10),
@@ -209,7 +209,7 @@ function HomeItemList(props) {
             props.image === '' ? ImagePath.profiletrack1 : {uri: props.image}
           }
           style={{
-            height: normalise(250),
+            height: normalise(280),
             width: normalise(280),
             borderRadius: normalise(10),
           }}
@@ -266,6 +266,7 @@ function HomeItemList(props) {
                 position: 'absolute',
                 right: 0,
                 alignItems: 'center',
+                justifyContent: 'center',
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{fontFamily: 'ProximaNova-Semibold'}}>
@@ -291,6 +292,7 @@ function HomeItemList(props) {
                 position: 'absolute',
                 right: 0,
                 alignItems: 'center',
+                justifyContent: 'center',
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{fontFamily: 'ProximaNova-Semibold'}}>
@@ -316,6 +318,7 @@ function HomeItemList(props) {
                 position: 'absolute',
                 right: 0,
                 alignItems: 'center',
+                justifyContent: 'center',
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{fontFamily: 'ProximaNova-Semibold'}}>
@@ -341,6 +344,7 @@ function HomeItemList(props) {
                 position: 'absolute',
                 right: 0,
                 alignItems: 'center',
+                justifyContent: 'center',
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{fontFamily: 'ProximaNova-Semibold'}}>
@@ -366,6 +370,7 @@ function HomeItemList(props) {
                 position: 'absolute',
                 right: 0,
                 alignItems: 'center',
+                justifyContent: 'center',
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{fontFamily: 'ProximaNova-Semibold'}}>
@@ -391,6 +396,7 @@ function HomeItemList(props) {
                 position: 'absolute',
                 right: 0,
                 alignItems: 'center',
+                justifyContent: 'center',
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{fontFamily: 'ProximaNova-Semibold'}}>

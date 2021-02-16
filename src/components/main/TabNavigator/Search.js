@@ -352,7 +352,7 @@ function Search(props) {
       <TouchableOpacity
         style={{
           marginBottom:
-            data.index === top50.length - 1 ? normalise(30) : normalise(4),
+            data.index === top50.length - 1 ? normalise(30) : normalise(8),
           margin: normalise(6),
         }}
         onPress={() => {
@@ -1424,8 +1424,12 @@ function Search(props) {
               </View>
             ) : (
               <FlatList
-                //style={{ height: '70%' }}
-                style={{alignSelf: 'center', width: '90%'}}
+                style={{
+                  alignSelf: 'center',
+                  paddingLeft: normalise(8),
+                  paddingLeft: normalise(8),
+                  width: '100%',
+                }}
                 data={top50}
                 renderItem={renderGenreData}
                 keyExtractor={(item, index) => index.toString()}

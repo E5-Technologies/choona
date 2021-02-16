@@ -42,8 +42,8 @@ function ActivityListItem(props) {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginTop: normalise(24),
-          marginBottom: normalise(24),
+          marginTop: normalise(16),
+          marginBottom: normalise(16),
         }}>
         <TouchableOpacity
           onPress={() => {
