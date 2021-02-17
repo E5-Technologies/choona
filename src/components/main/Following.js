@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -40,7 +40,7 @@ import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 
 let status;
@@ -137,14 +137,14 @@ function Following(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={false}
           image2={'123'}
           marginBottom={
             data.index === props.followingData.length - 1 ? normalise(20) : 0
           }
           onPressImage={() => {
-            props.navigation.push('Profile', {fromAct: false});
+            props.navigation.push('Profile', { fromAct: false });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -153,7 +153,7 @@ function Following(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={true}
           follow={data.item.isFollowing ? false : true}
           marginBottom={
@@ -166,7 +166,7 @@ function Following(props) {
             });
           }}
           onPress={() => {
-            props.followReq({follower_id: data.item._id});
+            props.followReq({ follower_id: data.item._id });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -179,7 +179,7 @@ function Following(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={false}
           image2={'123'}
           marginBottom={
@@ -188,7 +188,7 @@ function Following(props) {
               : 0
           }
           onPressImage={() => {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -197,7 +197,7 @@ function Following(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={true}
           follow={data.item.isFollowing ? false : true}
           marginBottom={
@@ -212,7 +212,7 @@ function Following(props) {
             });
           }}
           onPress={() => {
-            props.followReq({follower_id: data.item._id});
+            props.followReq({ follower_id: data.item._id });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -232,7 +232,7 @@ function Following(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
@@ -242,7 +242,7 @@ function Following(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -318,7 +318,7 @@ function Following(props) {
           </View>
 
           {_.isEmpty(props.followingData) ? (
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <View
                 style={{
                   height: '45%',
@@ -363,7 +363,7 @@ function Following(props) {
               </Text>
 
               <FlatList
-                style={{marginTop: normalise(10)}}
+                style={{ marginTop: normalise(10) }}
                 data={top5followingList}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item, index) => {

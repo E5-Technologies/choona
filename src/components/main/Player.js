@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState, useRef} from 'react';
+import React, { useEffect, Fragment, useState, useRef } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -26,7 +26,7 @@ import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import moment from 'moment';
 import {
@@ -58,9 +58,9 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
-import {commentOnPostReq} from '../../action/UserAction';
+import { commentOnPostReq } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {saveSongRequest, saveSongRefReq} from '../../action/SongAction';
+import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
 import {
   getCurrentPlayerPostionAction,
   playerResumeRequest,
@@ -68,14 +68,14 @@ import {
   playerSeekToRequest,
   getSongFromisrc,
 } from '../../action/PlayerAction';
-import {updateMessageCommentRequest} from '../../action/MessageAction';
+import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
-import {call} from 'redux-saga/effects';
-import {or} from 'react-native-reanimated';
+import { call } from 'redux-saga/effects';
+import { or } from 'react-native-reanimated';
 import _ from 'lodash';
 import axios from 'axios';
-import {createChatTokenRequest} from '../../action/MessageAction';
-import {getUsersFromHome} from '../../action/UserAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
+import { getUsersFromHome } from '../../action/UserAction';
 import MusicPlayer from '../../widgets/MusicPlayer';
 
 let RbSheetRef;
@@ -576,7 +576,7 @@ function Player(props) {
             ),
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   }
 
@@ -638,10 +638,12 @@ function Player(props) {
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             if (RbSheetRef) RbSheetRef.close();
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           } else {
             if (RbSheetRef) RbSheetRef.close();
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }
         }}
       />
@@ -669,8 +671,9 @@ function Player(props) {
             borderTopStartRadius: normalise(8),
           },
         }}>
-        <KeyboardAvoidingView style={{flex: 1, backgroundColor: Colors.black}}>
-          <View style={{width: '95%', alignSelf: 'center'}}>
+        <KeyboardAvoidingView
+          style={{ flex: 1, backgroundColor: Colors.black }}>
+          <View style={{ width: '95%', alignSelf: 'center' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -716,7 +719,7 @@ function Player(props) {
             </View>
 
             <FlatList
-              style={{height: '60%'}}
+              style={{ height: '60%' }}
               data={commentData}
               renderItem={renderFlatlistData}
               keyExtractor={(item, index) => {
@@ -845,7 +848,7 @@ function Player(props) {
             />
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(10)}}
+              style={{ flexDirection: 'row', marginTop: normalise(10) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
 
@@ -882,7 +885,7 @@ function Player(props) {
               }}>
               <Image
                 source={ImagePath.boxicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -897,7 +900,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -905,7 +908,7 @@ function Player(props) {
               }}>
               <Image
                 source={ImagePath.sendicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -920,7 +923,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 Clipboard.setString(originalUri);
                 setModalVisible(!modalVisible);
@@ -931,7 +934,7 @@ function Player(props) {
               }}>
               <Image
                 source={ImagePath.more_copy}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -946,7 +949,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 //FOR SPOTIFY USERS
@@ -1034,7 +1037,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 if (props.userProfileResp.register_type === 'spotify')
@@ -1105,7 +1108,7 @@ function Player(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -1162,9 +1165,9 @@ function Player(props) {
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -1204,7 +1207,7 @@ function Player(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -1269,8 +1272,9 @@ function Player(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -1370,7 +1374,7 @@ function Player(props) {
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
                   marginRight: normalise(10),
                 }}>
                 <Text
@@ -1419,15 +1423,15 @@ function Player(props) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
-      <KeyboardAvoidingView style={{flex: 1}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <StatusBar backgroundColor={Colors.black} />
 
         <Loader visible={bool} />
 
         <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
 
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <ScrollView>
             <View
               style={{
@@ -1439,7 +1443,7 @@ function Player(props) {
                 justifyContent: changePlayer ? 'flex-end' : 'space-between',
               }}>
               {changePlayer ? null : (
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     source={{
                       uri: constants.profile_picture_base_url + profilePic,
@@ -1509,7 +1513,7 @@ function Player(props) {
                     style={{
                       height: normalise(15),
                       width: normalise(15),
-                      transform: [{rotate: '-90deg'}],
+                      transform: [{ rotate: '-90deg' }],
                     }}
                     resizeMode="contain"
                   />
@@ -1531,7 +1535,7 @@ function Player(props) {
                 borderWidth: normalise(0.5),
                 borderColor: Colors.grey,
                 shadowColor: '#000',
-                shadowOffset: {width: 0, height: 5},
+                shadowOffset: { width: 0, height: 5 },
                 shadowOpacity: 0.36,
                 shadowRadius: 6.68,
                 elevation: 11,
@@ -1540,7 +1544,7 @@ function Player(props) {
                 justifyContent: 'center',
               }}>
               <Image
-                source={{uri: pic.replace('100x100bb.jpg', '500x500bb.jpg')}}
+                source={{ uri: pic.replace('100x100bb.jpg', '500x500bb.jpg') }}
                 style={{
                   height: normalise(265),
                   width: normalise(290),
@@ -1566,7 +1570,7 @@ function Player(props) {
                   source={
                     playVisible ? ImagePath.playicon : ImagePath.pauseicon
                   }
-                  style={{height: normalise(20), width: normalise(20)}}
+                  style={{ height: normalise(20), width: normalise(20) }}
                 />
               </TouchableOpacity>
             </TouchableOpacity>
@@ -1629,7 +1633,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.threedots}
-                    style={{height: normalise(15), width: normalise(15)}}
+                    style={{ height: normalise(15), width: normalise(15) }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1651,7 +1655,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.threedots}
-                    style={{height: normalise(15), width: normalise(15)}}
+                    style={{ height: normalise(15), width: normalise(15) }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1754,7 +1758,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.reactionicon}
-                    style={{height: normalise(20), width: normalise(20)}}
+                    style={{ height: normalise(20), width: normalise(20) }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1785,7 +1789,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.boxicon}
-                    style={{height: normalise(20), width: normalise(20)}}
+                    style={{ height: normalise(20), width: normalise(20) }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1806,7 +1810,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.sendicon}
-                    style={{height: normalise(20), width: normalise(20)}}
+                    style={{ height: normalise(20), width: normalise(20) }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1826,7 +1830,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.comment_grey}
-                    style={{height: normalise(16), width: normalise(16)}}
+                    style={{ height: normalise(16), width: normalise(16) }}
                     resizeMode="contain"
                   />
 
@@ -1852,7 +1856,7 @@ function Player(props) {
                   alignSelf: 'center',
                   marginTop: normalise(10),
                 }}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
                     style={{
                       height: normalise(40),
@@ -1880,7 +1884,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.boxicon}
-                      style={{height: normalise(20), width: normalise(20)}}
+                      style={{ height: normalise(20), width: normalise(20) }}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1902,7 +1906,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.sendicon}
-                      style={{height: normalise(20), width: normalise(20)}}
+                      style={{ height: normalise(20), width: normalise(20) }}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1924,7 +1928,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.comment_grey}
-                    style={{height: normalise(16), width: normalise(16)}}
+                    style={{ height: normalise(16), width: normalise(16) }}
                     resizeMode="contain"
                   />
 

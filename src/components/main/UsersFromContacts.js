@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -35,7 +35,7 @@ import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 
 let status;
@@ -49,7 +49,7 @@ function UsersFromContacts(props) {
   useEffect(() => {
     isInternetConnected()
       .then(() => {
-        props.getUsersFromContacts({phone: numberArray});
+        props.getUsersFromContacts({ phone: numberArray });
       })
       .catch(() => {
         toast('Error', 'Please Connect To Internet');
@@ -104,7 +104,7 @@ function UsersFromContacts(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={false}
           image2={'123'}
           marginBottom={
@@ -119,7 +119,7 @@ function UsersFromContacts(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={true}
           follow={!data.item.isFollowing}
           TouchableOpacityDisabled={false}
@@ -135,7 +135,7 @@ function UsersFromContacts(props) {
             });
           }}
           onPress={() => {
-            props.followReq({follower_id: data.item._id});
+            props.followReq({ follower_id: data.item._id });
           }}
         />
       );
@@ -143,7 +143,7 @@ function UsersFromContacts(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_USERS_FROM_CONTACTS_REQUEST} />
@@ -153,7 +153,7 @@ function UsersFromContacts(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -230,7 +230,11 @@ function UsersFromContacts(props) {
 
           {_.isEmpty(usersList) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Text
                 style={{
                   color: Colors.white,

@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,11 +19,11 @@ import Colors from '../../../assests/Colors';
 import StatusBar from '../../../utils/MyStatusBar';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import ImagePath from '../../../assests/ImagePath';
-import {FlatList} from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import HomeItemList from '../ListCells/HomeItemList';
 import _ from 'lodash';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   USER_SEARCH_REQUEST,
   USER_SEARCH_SUCCESS,
@@ -53,14 +53,14 @@ import {
   saveSongRequest,
   getTop50SongsRequest,
 } from '../../../action/SongAction';
-import {searchPostReq} from '../../../action/PostAction';
-import {deletePostReq} from '../../../action/PostAction';
+import { searchPostReq } from '../../../action/PostAction';
+import { deletePostReq } from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
-import {getUsersFromHome} from '../../../action/UserAction';
-import {createChatTokenFromSearchRequest} from '../../../action/MessageAction';
+import { getUsersFromHome } from '../../../action/UserAction';
+import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
 
@@ -245,7 +245,7 @@ function Search(props) {
     return (
       <ActivityListItem
         image={constants.profile_picture_base_url + data.item.profile_image}
-        title={data.item.username}
+        user={data.item.username}
         follow={data.item.isFollowing ? false : true}
         bottom={data.index === props.userSearch.length - 1 ? true : false}
         marginBottom={
@@ -260,7 +260,7 @@ function Search(props) {
           });
         }}
         onPress={() => {
-          props.followReq({follower_id: data.item._id});
+          props.followReq({ follower_id: data.item._id });
         }}
         TouchableOpacityDisabled={false}
       />
@@ -286,9 +286,11 @@ function Search(props) {
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           } else {
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }
         }}
         onAddReaction={() => {
@@ -356,7 +358,9 @@ function Search(props) {
           margin: normalise(6),
         }}
         onPress={() => {
-          props.navigation.navigate('GenreSongClicked', {data: data.item._id});
+          props.navigation.navigate('GenreSongClicked', {
+            data: data.item._id,
+          });
         }}>
         <Image
           source={{
@@ -464,7 +468,7 @@ function Search(props) {
             />
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(10)}}
+              style={{ flexDirection: 'row', marginTop: normalise(10) }}
               onPress={() => {
                 let saveSongObject = {
                   song_uri: props.searchPostData[positionInArray].song_uri,
@@ -487,7 +491,7 @@ function Search(props) {
               }}>
               <Image
                 source={ImagePath.boxicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -502,7 +506,7 @@ function Search(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -510,7 +514,7 @@ function Search(props) {
               }}>
               <Image
                 source={ImagePath.sendicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -525,7 +529,7 @@ function Search(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 Clipboard.setString(
                   props.searchPostData[positionInArray].song_uri,
@@ -538,7 +542,7 @@ function Search(props) {
               }}>
               <Image
                 source={ImagePath.more_copy}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -616,7 +620,7 @@ function Search(props) {
       if (text.length >= 1) {
         isInternetConnected()
           .then(() => {
-            props.userSearchReq({keyword: text}, sendSong);
+            props.userSearchReq({ keyword: text }, sendSong);
           })
           .catch(() => {
             toast('Error', 'Please Connect To Internet');
@@ -664,7 +668,7 @@ function Search(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -721,9 +725,9 @@ function Search(props) {
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -763,7 +767,7 @@ function Search(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -828,8 +832,9 @@ function Search(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -1015,14 +1020,14 @@ function Search(props) {
         });
 
         // console.log(finalArray);
-        props.navigation.navigate('UsersFromContacts', {data: finalArray});
+        props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
   };
 
   //VIEW
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
@@ -1039,7 +1044,7 @@ function Search(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={true}
             textone={''}
@@ -1082,7 +1087,7 @@ function Search(props) {
               {usersSearch ? (
                 <Image
                   source={ImagePath.gradient_border_horizontal}
-                  style={{width: '100%', height: normalise(2)}}
+                  style={{ width: '100%', height: normalise(2) }}
                 />
               ) : null}
             </TouchableOpacity>
@@ -1116,7 +1121,7 @@ function Search(props) {
               {genreSearch ? (
                 <Image
                   source={ImagePath.gradient_border_horizontal}
-                  style={{width: '100%', height: normalise(2)}}
+                  style={{ width: '100%', height: normalise(2) }}
                 />
               ) : null}
             </TouchableOpacity>
@@ -1149,7 +1154,7 @@ function Search(props) {
               {songSearch ? (
                 <Image
                   source={ImagePath.gradient_border_horizontal}
-                  style={{width: '100%', height: normalise(2)}}
+                  style={{ width: '100%', height: normalise(2) }}
                 />
               ) : null}
             </TouchableOpacity>
@@ -1252,7 +1257,7 @@ function Search(props) {
                 }}>
                 <Image
                   source={ImagePath.user}
-                  style={{height: normalise(40), width: normalise(40)}}
+                  style={{ height: normalise(40), width: normalise(40) }}
                   resizeMode="contain"
                 />
 
@@ -1279,7 +1284,7 @@ function Search(props) {
                     backgroundColor: Colors.darkerblack,
                     borderWidth: normalise(0.5),
                     shadowColor: '#000',
-                    shadowOffset: {width: 0, height: 4},
+                    shadowOffset: { width: 0, height: 4 },
                     shadowOpacity: 0.5,
                     shadowRadius: 9,
                     elevation: 11,
@@ -1326,7 +1331,7 @@ function Search(props) {
                 </View>
 
                 <FlatList
-                  style={{height: '70%'}}
+                  style={{ height: '70%' }}
                   data={songData}
                   renderItem={renderUserData}
                   keyExtractor={(item, index) => index.toString()}
@@ -1346,7 +1351,7 @@ function Search(props) {
                 }}>
                 <Image
                   source={ImagePath.music_icon}
-                  style={{height: normalise(40), width: normalise(40)}}
+                  style={{ height: normalise(40), width: normalise(40) }}
                   resizeMode="contain"
                 />
 
@@ -1386,7 +1391,7 @@ function Search(props) {
                 </View>
 
                 <FlatList
-                  style={{height: '70%'}}
+                  style={{ height: '70%' }}
                   data={searchPostData}
                   renderItem={renderSongData}
                   keyExtractor={(item, index) => index.toString()}

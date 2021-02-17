@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -29,13 +29,13 @@ import {
   USER_PROFILE_REQUEST,
   EDIT_PROFILE_REQUEST,
 } from '../../../action/TypeConstants';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import _ from 'lodash';
-import {editProfileRequest} from '../../../action/UserAction';
+import { editProfileRequest } from '../../../action/UserAction';
 
 let status;
 
@@ -95,7 +95,8 @@ function Notification(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`${data.item.username} started following you`}
+          title={`started following you`}
+          user={data.item.username}
           follow={!data.item.isFollowing}
           bottom={
             data.index === props.activityListToday.length - 1 ? true : false
@@ -112,7 +113,7 @@ function Notification(props) {
             });
           }}
           onPress={() => {
-            props.followReq({follower_id: data.item._id});
+            props.followReq({ follower_id: data.item._id });
           }}
         />
       );
@@ -120,7 +121,8 @@ function Notification(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`${data.item.username} reacted ${data.item.text} on your post`}
+          reaction={data.item.text}
+          user={data.item.username}
           type={false}
           image2={data.item.image}
           bottom={
@@ -149,9 +151,8 @@ function Notification(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`${data.item.username} commented "${
-            data.item.text
-          }" on your post`}
+          user={data.item.username}
+          comment={data.item.text}
           type={false}
           image2={data.item.image}
           bottom={
@@ -184,7 +185,8 @@ function Notification(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`${data.item.username} started following you`}
+          title={`started following you`}
+          user={data.item.username}
           follow={!data.item.isFollowing}
           bottom={
             data.index === props.activityListPrevious.length - 1 ? true : false
@@ -201,7 +203,7 @@ function Notification(props) {
             });
           }}
           onPress={() => {
-            props.followReq({follower_id: data.item._id});
+            props.followReq({ follower_id: data.item._id });
           }}
         />
       );
@@ -209,7 +211,8 @@ function Notification(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`${data.item.username} reacted ${data.item.text} on your post`}
+          reaction={data.item.text}
+          user={data.item.username}
           type={false}
           image2={data.item.image}
           bottom={
@@ -238,9 +241,8 @@ function Notification(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`${data.item.username} commented "${
-            data.item.text
-          }" on your post`}
+          user={data.item.username}
+          comment={data.item.text}
           type={false}
           image2={data.item.image}
           bottom={
@@ -269,14 +271,14 @@ function Notification(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === ACTIVITY_LIST_REQUEST} />
       <Loader visible={props.status === USER_PROFILE_REQUEST} />
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={''}
@@ -288,8 +290,8 @@ function Notification(props) {
         {_.isEmpty(props.activityListToday) &&
         _.isEmpty(props.activityListPrevious) ? (
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{color: Colors.white, fontSize: normalise(15)}}>
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: Colors.white, fontSize: normalise(15) }}>
               No Activity
             </Text>
           </View>
@@ -349,7 +351,7 @@ function Notification(props) {
             )}
 
             <FlatList
-              style={{marginBottom: normalise(5)}}
+              style={{ marginBottom: normalise(5) }}
               data={props.activityListPrevious}
               renderItem={renderPreviousItem}
               keyExtractor={(item, index) => {

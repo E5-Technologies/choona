@@ -72,6 +72,7 @@ const ImagePath = {
   apple_icon_round: require('./images/apple_icon_round.png'),
   pause: require('./images/pause.png'),
   appIcon512: require('./images/appIcon512.png'),
+  addPostIllus: require('./images/addPostIllus.png'),
 };
 
 export default ImagePath;

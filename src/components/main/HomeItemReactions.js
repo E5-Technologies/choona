@@ -1,8 +1,7 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Image,
   Modal,
@@ -19,12 +18,10 @@ import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ActivityListItem from './ListCells/ActivityListItem';
 import ImagePath from '../../assests/ImagePath';
-import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
-import nexHeader from '../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import constants from '../../utils/helpers/constants';
-import {connect} from 'react-redux';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import { connect } from 'react-redux';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import {
   reactionOnPostRequest,
   userFollowUnfollowRequest,
@@ -37,10 +34,10 @@ const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
 function HomeItemReaction(props) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [modal1Visible, setModal1Visible] = useState(false);
+  const [modal1Visible] = useState(false);
   const [modalReact, setModalReact] = useState('');
   const [search, setSearch] = useState('');
-  const [postId, setPostId] = useState(props.route.params.post_id);
+  const [postId] = useState(props.route.params.post_id);
   const [reactionList, setReactionList] = useState(
     editArray(props.route.params.reactions),
   );
@@ -53,8 +50,8 @@ function HomeItemReaction(props) {
     array.map((item, index) => {
       let reactionObject = {};
 
-      reactionObject['header'] = item.text;
-      reactionObject.data = _.filter(array, {text: item.text});
+      reactionObject.header = item.text;
+      reactionObject.data = _.filter(array, { text: item.text });
 
       editedList.push(reactionObject);
 
@@ -68,7 +65,7 @@ function HomeItemReaction(props) {
 
   function getFilteredData(keyword) {
     let filterdData = _.filter(props.route.params.reactions, function(item) {
-      return item.username.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
+      return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
     });
 
     setReactionList(editArray(filterdData));
@@ -80,10 +77,10 @@ function HomeItemReaction(props) {
     // console.log('REACTIONS: ' + JSON.stringify(reactions));
 
     let index = _.findIndex(reactions, function(item) {
-      return item.user_id == userId && item.text == reaction;
+      return item.user_id === userId && item.text === reaction;
     });
 
-    if (index != -1) {
+    if (index !== -1) {
       reactions.splice(index, 1);
       setReactionList(editArray(reactions));
     } else {
@@ -99,15 +96,15 @@ function HomeItemReaction(props) {
 
   const reactionOnPost = (reaction, id) => {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -126,6 +123,7 @@ function HomeItemReaction(props) {
   };
 
   function hitreact(x) {
+    console.log(x);
     if (!_.isEmpty(reactionList)) {
       // console.log('here' + JSON.stringify(reactionList));
 
@@ -159,15 +157,15 @@ function HomeItemReaction(props) {
     }
   }
 
-  function hitreact1() {
-    if (modal1Visible == true) {
-      setModal1Visible(false);
-    } else {
-      setModal1Visible(true);
-    }
+  // function hitreact1() {
+  //   if (modal1Visible === true) {
+  //     setModal1Visible(false);
+  //   } else {
+  //     setModal1Visible(true);
+  //   }
 
-    //  setModalReact(x)
-  }
+  //   //  setModalReact(x)
+  // }
 
   function renderItem(data) {
     // console.log(data);
@@ -175,17 +173,17 @@ function HomeItemReaction(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={false}
           image2={'123'}
           //  bottom={data.index === reaction1.length - 1 ? true : false}
           // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
           //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
           marginBottom={
-            data.index == reactionList.length - 1 ? normalise(40) : 0
+            data.index === reactionList.length - 1 ? normalise(40) : 0
           }
           onPressImage={() => {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -194,19 +192,21 @@ function HomeItemReaction(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           follow={!data.item.isFollowing}
           //  bottom={data.index === reaction1.length - 1 ? true : false}
           // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
           //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
           marginBottom={
-            data.index == reactionList.length - 1 ? normalise(40) : 0
+            data.index === reactionList.length - 1 ? normalise(40) : 0
           }
           onPress={() => {
-            props.followReq({follower_id: data.item.user_id});
+            props.followReq({ follower_id: data.item.user_id });
           }}
           onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -259,13 +259,13 @@ function HomeItemReaction(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -278,7 +278,7 @@ function HomeItemReaction(props) {
             }}
           />
 
-          <View style={{width: '92%', alignSelf: 'center'}}>
+          <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
               style={{
                 height: normalise(35),
@@ -355,10 +355,10 @@ function HomeItemReaction(props) {
               }}>
               <Image
                 source={ImagePath.blankreactionbg}
-                style={{height: normalise(225), width: normalise(225)}}
+                style={{ height: normalise(225), width: normalise(225) }}
                 resizeMode="contain"
               />
-              <Text style={{fontSize: normalise(12), color: Colors.white}}>
+              <Text style={{ fontSize: normalise(12), color: Colors.white }}>
                 No results found, please try again later.
               </Text>
               {/* <Text style={{ fontSize: normalise(12), color: Colors.white }}>another name</Text> */}
@@ -390,7 +390,7 @@ function HomeItemReaction(props) {
               onPress={() => {
                 hitreact(react[0]);
               }}>
-              <Text style={{fontSize: normalise(30), fontWeight: 'bold'}}>
+              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
                 {react[0]}
               </Text>
             </TouchableOpacity>
@@ -399,7 +399,7 @@ function HomeItemReaction(props) {
               onPress={() => {
                 hitreact(react[1]);
               }}>
-              <Text style={{fontSize: normalise(30), fontWeight: 'bold'}}>
+              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
                 {react[1]}
               </Text>
             </TouchableOpacity>
@@ -408,7 +408,7 @@ function HomeItemReaction(props) {
               onPress={() => {
                 hitreact(react[2]);
               }}>
-              <Text style={{fontSize: normalise(30), fontWeight: 'bold'}}>
+              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
                 {react[2]}
               </Text>
             </TouchableOpacity>
@@ -417,7 +417,7 @@ function HomeItemReaction(props) {
               onPress={() => {
                 hitreact(react[3]);
               }}>
-              <Text style={{fontSize: normalise(30), fontWeight: 'bold'}}>
+              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
                 {react[3]}
               </Text>
             </TouchableOpacity>
@@ -426,7 +426,7 @@ function HomeItemReaction(props) {
               onPress={() => {
                 hitreact(react[4]);
               }}>
-              <Text style={{fontSize: normalise(30), fontWeight: 'bold'}}>
+              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
                 {react[4]}
               </Text>
             </TouchableOpacity>
@@ -435,7 +435,7 @@ function HomeItemReaction(props) {
               onPress={() => {
                 hitreact(react[5]);
               }}>
-              <Text style={{fontSize: normalise(30), fontWeight: 'bold'}}>
+              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
                 {react[5]}
               </Text>
             </TouchableOpacity>
@@ -458,7 +458,7 @@ function HomeItemReaction(props) {
               </Text>
             </View>
           </Modal>
-          {modal1Visible == true ? (
+          {modal1Visible === true ? (
             <View
               style={{
                 position: 'absolute',

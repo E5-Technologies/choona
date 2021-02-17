@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -50,7 +50,7 @@ function ActivityListItem(props) {
             onPressImage();
           }}>
           <Image
-            source={props.image === '' ? ImagePath.dp : {uri: props.image}}
+            source={props.image === '' ? ImagePath.dp : { uri: props.image }}
             style={{
               height: normalise(32),
               width: normalise(32),
@@ -62,7 +62,7 @@ function ActivityListItem(props) {
 
         <TouchableOpacity
           disabled={props.TouchableOpacityDisabled}
-          style={{width: props.type ? '50%' : '70%'}}
+          style={{ width: props.type ? '50%' : '70%' }}
           onPress={() => {
             onPressImage();
           }}>
@@ -71,12 +71,38 @@ function ActivityListItem(props) {
               color: Colors.white,
               fontSize: normalise(13),
               width: '90%',
-              fontFamily: 'ProximaNova-Bold',
               marginRight: props.type ? normalise(10) : 0,
               textAlign: 'left',
             }}
             numberOfLines={2}>
-            {props.title}
+            {props.title ? (
+              <>
+                <Text style={{ fontFamily: 'ProximaNova-Bold' }}>
+                  {props.user}{' '}
+                </Text>
+                {props.title}
+              </>
+            ) : props.reaction ? (
+              <>
+                <Text style={{ fontFamily: 'ProximaNova-Bold' }}>
+                  {props.user}{' '}
+                </Text>
+                reacted {props.reaction} on your post
+              </>
+            ) : props.comment ? (
+              <>
+                <Text style={{ fontFamily: 'ProximaNova-Bold' }}>
+                  {props.user}{' '}
+                </Text>
+                commented "{props.comment}"" on your post
+              </>
+            ) : props.user ? (
+              <Text style={{ fontFamily: 'ProximaNova-Bold' }}>
+                {props.user}
+              </Text>
+            ) : (
+              ''
+            )}
           </Text>
         </TouchableOpacity>
 
@@ -119,8 +145,10 @@ function ActivityListItem(props) {
               onPress();
             }}>
             <Image
-              source={props.image2 === '' ? ImagePath.dp2 : {uri: props.image2}}
-              style={{height: normalise(35), width: normalise(35)}}
+              source={
+                props.image2 === '' ? ImagePath.dp2 : { uri: props.image2 }
+              }
+              style={{ height: normalise(35), width: normalise(35) }}
               resizeMode="contain"
             />
           </TouchableOpacity>

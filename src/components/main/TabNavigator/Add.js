@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,13 +20,13 @@ import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from './../ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
   SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 } from '../../../action/TypeConstants';
-import {seachSongsForPostRequest} from '../../../action/PostAction';
+import { seachSongsForPostRequest } from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
@@ -170,7 +170,7 @@ function AddSong(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
@@ -179,7 +179,7 @@ function AddSong(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={true}
             textone={''}
@@ -194,18 +194,20 @@ function AddSong(props) {
               alignSelf: 'center',
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '100%',
                 backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(8),
-                marginTop: normalise(20),
+                marginTop: normalise(16),
                 padding: normalise(10),
                 color: Colors.white,
                 paddingLeft: normalise(30),
               }}
               value={search}
-              placeholder={'Search'}
+              placeholder={'Search songs...'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
                 setSearch(text);
@@ -275,7 +277,7 @@ function AddSong(props) {
                     ? ImagePath.spotifyicon
                     : ImagePath.applemusic
                 }
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
               />
               <Text
                 style={{
@@ -289,27 +291,40 @@ function AddSong(props) {
 
           {_.isEmpty(data) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Image
-                source={ImagePath.searchicongrey}
-                style={{height: normalise(35), width: normalise(35)}}
-              />
-
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+              }}>
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: normalise(15),
-                  fontWeight: 'bold',
-                  marginTop: normalise(20),
+                  fontSize: normalise(13),
+                  // fontWeight: 'bold',
+                  marginTop: normalise(-50),
                   width: '60%',
                   textAlign: 'center',
                 }}>
                 Search for the song you want to share above.
               </Text>
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: normalise(-50),
+                }}>
+                <Image
+                  source={ImagePath.addPostIllus}
+                  style={{ height: normalise(156), width: '100%' }}
+                  resizeMode="cover"
+                />
+              </View>
             </View>
           ) : (
             <FlatList
-              style={{marginTop: normalise(10)}}
+              style={{ marginTop: normalise(10) }}
               data={data}
               renderItem={renderItem}
               keyExtractor={(item, index) => {

@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -36,7 +36,7 @@ import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 
 let status;
@@ -116,14 +116,14 @@ function Followers(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={false}
           image2={'123'}
           marginBottom={
             data.index === props.followerData.length - 1 ? normalise(20) : 0
           }
           onPressImage={() => {
-            props.navigation.push('Profile', {fromAct: false});
+            props.navigation.push('Profile', { fromAct: false });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -132,7 +132,7 @@ function Followers(props) {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
-          title={data.item.username}
+          user={data.item.username}
           type={true}
           follow={!data.item.isFollowing}
           marginBottom={
@@ -145,7 +145,7 @@ function Followers(props) {
             });
           }}
           onPress={() => {
-            props.followReq({follower_id: data.item._id});
+            props.followReq({ follower_id: data.item._id });
           }}
           TouchableOpacityDisabled={false}
         />
@@ -165,7 +165,7 @@ function Followers(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
       <Loader visible={bool} />
 
@@ -175,7 +175,7 @@ function Followers(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}

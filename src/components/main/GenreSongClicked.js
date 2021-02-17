@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,10 +19,13 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import HomeItemList from './ListCells/HomeItemList';
-import {connect} from 'react-redux';
-import {searchPostReq} from '../../action/PostAction';
-import {saveSongRequest} from '../../action/SongAction';
-import {reactionOnPostRequest, getUsersFromHome} from '../../action/UserAction';
+import { connect } from 'react-redux';
+import { searchPostReq } from '../../action/PostAction';
+import { saveSongRequest } from '../../action/SongAction';
+import {
+  reactionOnPostRequest,
+  getUsersFromHome,
+} from '../../action/UserAction';
 import {
   GET_POST_FROM_TOP_50_REQUEST,
   GET_POST_FROM_TOP_50_SUCCESS,
@@ -43,7 +46,7 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {createChatTokenRequest} from '../../action/MessageAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
 import constants from '../../utils/helpers/constants';
 
 let status;
@@ -252,9 +255,11 @@ function GenreSongClicked(props) {
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           } else {
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }
         }}
         onAddReaction={() => {
@@ -346,7 +351,7 @@ function GenreSongClicked(props) {
             />
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(10)}}
+              style={{ flexDirection: 'row', marginTop: normalise(10) }}
               onPress={() => {
                 let saveSongObject = {
                   song_uri: props.getPostFromTop50[positionInArray].song_uri,
@@ -371,7 +376,7 @@ function GenreSongClicked(props) {
               }}>
               <Image
                 source={ImagePath.boxicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -386,7 +391,7 @@ function GenreSongClicked(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -394,7 +399,7 @@ function GenreSongClicked(props) {
               }}>
               <Image
                 source={ImagePath.sendicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -409,7 +414,7 @@ function GenreSongClicked(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 Clipboard.setString(
                   props.getPostFromTop50[positionInArray].song_uri,
@@ -422,7 +427,7 @@ function GenreSongClicked(props) {
               }}>
               <Image
                 source={ImagePath.more_copy}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -471,7 +476,7 @@ function GenreSongClicked(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -528,9 +533,9 @@ function GenreSongClicked(props) {
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -570,7 +575,7 @@ function GenreSongClicked(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -635,8 +640,9 @@ function GenreSongClicked(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -785,12 +791,12 @@ function GenreSongClicked(props) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -805,14 +811,18 @@ function GenreSongClicked(props) {
         {props.status === GET_POST_FROM_TOP_50_SUCCESS ? (
           _.isEmpty(props.getPostFromTop50) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{fontSize: normalise(12), color: Colors.white}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{ fontSize: normalise(12), color: Colors.white }}>
                 NO POSTS
               </Text>
             </View>
           ) : (
             <FlatList
-              style={{marginTop: normalise(10)}}
+              style={{ marginTop: normalise(10) }}
               data={props.getPostFromTop50}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => {
