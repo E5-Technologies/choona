@@ -502,7 +502,7 @@ function HomeItemList(props) {
                 color: Colors.white,
                 fontSize: normalise(10),
                 fontFamily: 'ProximaNova-Regular',
-                alignSelf: 'flex-end',
+                alignSelf: 'flex-start',
                 textAlign: 'left',
               }}>
               {props.content}

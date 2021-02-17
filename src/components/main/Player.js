@@ -630,7 +630,7 @@ function Player(props) {
   function renderFlatlistData(data) {
     return (
       <CommentList
-        width={'100%'}
+        // width={'100%'}
         image={constants.profile_picture_base_url + data.item.profile_image}
         name={data.item.username}
         comment={data.item.text}
@@ -668,21 +668,27 @@ function Player(props) {
         customStyles={{
           container: {
             minHeight: Dimensions.get('window').height / 2.2,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
+            // borderTopEndRadius: normalise(12),
+            // borderTopStartRadius: normalise(12),
           },
         }}>
         <KeyboardAvoidingView
           style={{ flex: 1, backgroundColor: Colors.black }}>
-          <View style={{ width: '95%', alignSelf: 'center' }}>
+          <View style={{ width: '100%', alignSelf: 'center' }}>
             <View
               style={{
+                backgroundColor: Colors.black,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginTop: normalise(15),
+                padding: normalise(16),
                 borderBottomWidth: normalise(0.5),
                 borderColor: Colors.activityBorderColor,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.5,
+                shadowRadius: 8,
+                elevation: 11,
               }}>
               <TouchableOpacity
                 onPress={() => {
@@ -695,7 +701,6 @@ function Player(props) {
                     fontSize: normalise(12),
                     color: Colors.white,
                     fontFamily: 'ProximaNova-Bold',
-                    marginBottom: normalise(10),
                   }}>
                   {arrayLength}
                 </Text>
@@ -712,7 +717,7 @@ function Player(props) {
                   style={{
                     height: normalise(10),
                     width: normalise(10),
-                    marginBottom: normalise(10),
+                    // marginBottom: normalise(10),
                   }}
                   resizeMode="contain"
                 />
@@ -738,6 +743,7 @@ function Player(props) {
                 borderRadius: normalise(17),
                 marginTop: normalise(10),
                 padding: normalise(10),
+                paddingHorizontal: normalise(16),
                 color: Colors.white,
                 paddingRight: normalise(50),
               }}
@@ -753,9 +759,8 @@ function Player(props) {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  right: 0,
+                  right: normalise(16),
                   bottom: normalise(10),
-                  paddingRight: normalise(10),
                 }}
                 onPress={() => {
                   let commentObject = {
@@ -824,6 +829,7 @@ function Player(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           //Alert.alert("Modal has been closed.");
         }}>
@@ -831,28 +837,9 @@ function Player(props) {
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              MORE
-            </Text>
-
-            <View
-              style={{
-                backgroundColor: Colors.activityBorderColor,
-                height: 0.5,
-                marginTop: normalise(12),
-                marginBottom: normalise(12),
-              }}
-            />
-
             <TouchableOpacity
               style={{
                 flexDirection: 'row',
-                marginTop: normalise(10),
                 alignItems: 'center',
               }}
               onPress={() => {
@@ -1095,34 +1082,34 @@ function Player(props) {
                 Add to Playlist
               </Text>
             </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-            style={{
-              marginStart: normalise(20),
-              marginEnd: normalise(20),
-              marginBottom: normalise(20),
-              height: normalise(50),
-              width: '95%',
-              backgroundColor: Colors.darkerblack,
-              opacity: 10,
-              borderRadius: 20,
-              // padding: 35,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
               style={{
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Bold',
-                color: Colors.white,
+                // marginStart: normalise(20),
+                // marginEnd: normalise(20),
+                marginTop: normalise(24),
+                marginBottom: normalise(20),
+                height: normalise(40),
+                // width: '95%',
+                backgroundColor: Colors.fadeblack,
+                opacity: 10,
+                borderRadius: 6,
+                // padding: 35,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-              CANCEL
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  color: Colors.white,
+                }}>
+                CANCEL
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
       </Modal>
     );
@@ -2218,13 +2205,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    marginBottom: normalise(10),
-    height: normalise(250),
-    width: '95%',
+    // marginBottom: normalise(10),
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
     backgroundColor: Colors.darkerblack,
     borderRadius: 20,
+    // margin: 20,
     padding: 20,
-    paddingTop: normalise(20),
+    paddingTop: normalise(24),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   openButton: {
     backgroundColor: '#F194FF',

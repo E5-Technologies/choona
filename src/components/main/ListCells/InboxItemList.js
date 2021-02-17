@@ -40,7 +40,7 @@ function InboxListItem(props) {
         height: normalise(45),
         alignSelf: 'center',
         marginTop: normalise(10),
-        marginBottom: props.marginBottom,
+        marginBottom: normalise(10),
       }}
       onPress={() => {
         onPress();
@@ -52,20 +52,20 @@ function InboxListItem(props) {
           alignItems: 'center',
         }}>
         <View style={{ flexDirection: 'row', width: '80%' }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               onPressImage();
-            }}>
-            <Image
-              source={{ uri: props.image }}
-              style={{
-                height: normalise(35),
-                width: normalise(35),
-                borderRadius: normalise(17),
-              }}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
+            }}> */}
+          <Image
+            source={{ uri: props.image }}
+            style={{
+              height: normalise(30),
+              width: normalise(30),
+              borderRadius: normalise(17),
+            }}
+            resizeMode="contain"
+          />
+          {/* </TouchableOpacity> */}
 
           <View
             style={{
@@ -76,27 +76,27 @@ function InboxListItem(props) {
               marginHorizontal: normalise(10),
               justifyContent: 'flex-start',
             }}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 onPressImage();
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(11),
-                  fontFamily: 'ProximaNova-Bold',
-                }}
-                numberOfLines={1}>
-                {props.title}
-              </Text>
-            </TouchableOpacity>
+              }}> */}
+            <Text
+              style={{
+                color: Colors.white,
+                fontSize: normalise(11),
+                fontFamily: 'ProximaNova-Bold',
+              }}
+              numberOfLines={1}>
+              {props.title}
+            </Text>
+            {/* </TouchableOpacity> */}
 
             <Text
               style={{
                 marginTop: normalise(2),
-                color: props.read ? Colors.grey : Colors.white,
+                color: props.read ? Colors.darkgrey : Colors.white,
                 fontSize: normalise(10),
-                fontFamily: 'ProximaNovaAW07-Medium',
+                fontFamily: 'ProximaNova-Regular',
               }}
               numberOfLines={2}>
               {props.description}

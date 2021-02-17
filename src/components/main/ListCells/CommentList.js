@@ -54,7 +54,7 @@ function CommentList(props) {
             <Text
               style={{
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: normalise(11),
                 fontFamily: 'ProximaNova-Semibold',
               }}>
               {props.name}
@@ -64,8 +64,8 @@ function CommentList(props) {
           <Text
             style={{
               color: Colors.grey_text,
-              fontSize: 12,
-              fontFamily: 'ProximaNovaAW07-Medium',
+              fontSize: normalise(10),
+              fontFamily: 'ProximaNova-Regular',
             }}>
             {props.time}
           </Text>
@@ -75,7 +75,7 @@ function CommentList(props) {
       <Text
         style={{
           color: Colors.white,
-          fontSize: 12,
+          fontSize: normalise(11),
           marginTop: normalise(-15),
           alignSelf: 'flex-end',
           width: '86.6%',

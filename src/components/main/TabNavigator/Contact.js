@@ -207,6 +207,7 @@ function Contact(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           //Alert.alert("Modal has been closed.");
         }}>
@@ -214,28 +215,9 @@ function Contact(props) {
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              MORE
-            </Text>
-
-            <View
-              style={{
-                backgroundColor: Colors.activityBorderColor,
-                height: 0.5,
-                marginTop: normalise(12),
-                marginBottom: normalise(12),
-              }}
-            />
-
             <TouchableOpacity
               style={{
                 flexDirection: 'row',
-                marginTop: normalise(10),
                 alignItems: 'center',
               }}
               onPress={() => {
@@ -425,34 +407,35 @@ function Contact(props) {
                 Add to Playlist
               </Text>
             </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-            style={{
-              marginStart: normalise(20),
-              marginEnd: normalise(20),
-              marginBottom: normalise(20),
-              height: normalise(50),
-              width: '95%',
-              backgroundColor: Colors.darkerblack,
-              opacity: 10,
-              borderRadius: 20,
-              // padding: 35,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
               style={{
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Bold',
-                color: Colors.white,
+                // marginStart: normalise(20),
+                // marginEnd: normalise(20),
+                marginTop: normalise(24),
+                marginBottom: normalise(20),
+                height: normalise(40),
+                // width: '95%',
+                backgroundColor: Colors.fadeblack,
+                opacity: 10,
+                borderRadius: 6,
+                // padding: 35,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-              CANCEL
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  color: Colors.white,
+                }}>
+                CANCEL
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
       </Modal>
     );
@@ -1051,13 +1034,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    marginBottom: normalise(10),
-    height: normalise(260),
-    width: '95%',
+    // marginBottom: normalise(10),
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
     backgroundColor: Colors.darkerblack,
     borderRadius: 20,
+    // margin: 20,
     padding: 20,
-    paddingTop: normalise(20),
+    paddingTop: normalise(24),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   openButton: {
     backgroundColor: '#F194FF',

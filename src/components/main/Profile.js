@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,7 +18,7 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   USER_PROFILE_REQUEST,
@@ -164,46 +164,31 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {}}>
         <ImageBackground
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              PROFILE MENU
-            </Text>
-
-            <View
-              style={{
-                backgroundColor: Colors.activityBorderColor,
-                height: 0.5,
-                marginTop: normalise(12),
-                marginBottom: normalise(12),
-              }}
-            />
-
-            <TouchableOpacity style={{marginTop: normalise(10)}}>
+            <TouchableOpacity>
               <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
+                  textAlign: 'center',
                 }}>
                 Privacy Policy
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{marginTop: normalise(18)}}>
+            <TouchableOpacity style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
+                  textAlign: 'center',
                 }}>
                 Terms of Usage
               </Text>
@@ -219,7 +204,7 @@ function Profile(props) {
                         </TouchableOpacity> */}
 
             <TouchableOpacity
-              style={{marginTop: normalise(18)}}
+              style={{ marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible), props.logoutReq();
               }}>
@@ -228,51 +213,52 @@ function Profile(props) {
                   color: Colors.red,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
+                  textAlign: 'center',
                 }}>
                 Logout
               </Text>
             </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-            style={{
-              marginStart: normalise(20),
-              marginEnd: normalise(20),
-              marginBottom: normalise(20),
-              height: normalise(50),
-              width: '95%',
-              backgroundColor: Colors.darkerblack,
-              opacity: 10,
-              borderRadius: 20,
-              // padding: 35,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
               style={{
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Bold',
-                color: Colors.white,
+                // marginStart: normalise(20),
+                // marginEnd: normalise(20),
+                marginBottom: normalise(20),
+                height: normalise(40),
+                // width: '95%',
+                backgroundColor: Colors.fadeblack,
+                opacity: 10,
+                borderRadius: 6,
+                // padding: 35,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: normalise(24),
               }}>
-              CANCEL
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  color: Colors.white,
+                }}>
+                CANCEL
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
       </Modal>
     );
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.black} />
 
       <Loader visible={props.status === USER_PROFILE_REQUEST} />
       <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -281,15 +267,15 @@ function Profile(props) {
             alignSelf: 'center',
             justifyContent: 'space-between',
           }}>
-          <View style={{marginTop: normalise(10)}}>
+          <View style={{ marginTop: normalise(10) }}>
             <TouchableOpacity
-              style={{marginRight: normalise(10)}}
+              style={{ marginRight: normalise(10) }}
               onPress={() => {
                 props.navigation.goBack();
               }}>
               <Image
                 source={ImagePath.backicon}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -301,13 +287,13 @@ function Profile(props) {
               marginTop: normalise(10),
             }}>
             <TouchableOpacity
-              style={{marginRight: normalise(10)}}
+              style={{ marginRight: normalise(10) }}
               onPress={() => {
                 props.navigation.navigate('EditProfile');
               }}>
               <Image
                 source={ImagePath.settings}
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -318,7 +304,7 @@ function Profile(props) {
               }}>
               <Image
                 source={ImagePath.iconmenu}
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -389,7 +375,7 @@ function Profile(props) {
               }}>
               <TouchableOpacity
                 onPress={() => {
-                  props.navigation.push('Following', {type: 'user', id: ''});
+                  props.navigation.push('Following', { type: 'user', id: '' });
                 }}>
                 <Text
                   style={{
@@ -410,7 +396,7 @@ function Profile(props) {
 
               <TouchableOpacity
                 onPress={() => {
-                  props.navigation.push('Followers', {type: 'user', id: ''});
+                  props.navigation.push('Followers', { type: 'user', id: '' });
                 }}>
                 <Text
                   style={{
@@ -510,7 +496,7 @@ function Profile(props) {
                 justifyContent: 'space-between',
                 height: normalise(50),
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity
                   onPress={() => {
                     props.navigation.navigate('Player', {
@@ -544,7 +530,7 @@ function Profile(props) {
                       uri: JSON.parse(props.userProfileResp.feature_song)[0]
                         .song_pic,
                     }}
-                    style={{height: normalise(40), width: normalise(40)}}
+                    style={{ height: normalise(40), width: normalise(40) }}
                   />
                   <Image
                     source={ImagePath.play}
@@ -618,7 +604,7 @@ function Profile(props) {
 
         {_.isEmpty(props.userProfileResp.post) ? (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <View
               style={{
                 height: '50%',
@@ -665,7 +651,7 @@ function Profile(props) {
                   backgroundColor: Colors.white,
                 }}
                 onPress={() => {
-                  props.navigation.replace('bottomTab', {screen: 'Add'});
+                  props.navigation.replace('bottomTab', { screen: 'Add' });
                 }}>
                 <Text
                   style={{
@@ -680,7 +666,7 @@ function Profile(props) {
           </View>
         ) : (
           <FlatList
-            style={{paddingTop: normalise(10)}}
+            style={{ paddingTop: normalise(10) }}
             data={props.userProfileResp.post}
             renderItem={renderProfileData}
             keyExtractor={(item, index) => {
@@ -733,13 +719,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    marginBottom: normalise(10),
-    height: normalise(180),
-    width: '95%',
+    // marginBottom: normalise(10),
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
     backgroundColor: Colors.darkerblack,
-    borderRadius: 20,
+    // margin: 20,
     padding: 20,
-    paddingTop: normalise(20),
+    paddingTop: normalise(24),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   openButton: {
     backgroundColor: '#F194FF',

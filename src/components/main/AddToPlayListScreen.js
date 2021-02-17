@@ -346,8 +346,10 @@ function AddToPlayListScreen(props) {
 
         <Text
           style={{
-            color: Colors.activityBorderColor,
+            color: Colors.white,
+            fontFamily: 'ProximaNova-Bold',
             marginTop: normalise(30),
+            fontSize: normalise(12),
             marginHorizontal: normalise(10),
           }}>
           {props.registerType === 'spotify' ? 'SPOTIFY' : 'APPLE MUSIC'}

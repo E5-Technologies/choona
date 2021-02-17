@@ -1417,7 +1417,6 @@ function Home(props) {
                   <TouchableOpacity
                     style={{
                       flexDirection: 'row',
-                      // marginTop: normalise(10),
                       alignItems: 'center',
                     }}
                     onPress={() => {
@@ -1686,7 +1685,7 @@ function Home(props) {
                     style={{
                       // marginStart: normalise(20),
                       // marginEnd: normalise(20),
-                      marginTop: normalise(16),
+                      marginTop: normalise(24),
                       marginBottom: normalise(20),
                       height: normalise(40),
                       // width: '95%',
@@ -1778,19 +1777,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  // centeredView: {
-  //   flex: 1,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   marginTop: 22
-  // },
-  // modalView: {
-  //   margin: 20,
-  //   backgroundColor: "white",
-  //   borderRadius: 20,
-  //   padding: 35,
-  //   alignItems: "center",
-  // },
   openButton: {
     backgroundColor: '#F194FF',
     borderRadius: 20,

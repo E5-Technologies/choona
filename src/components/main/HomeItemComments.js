@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -15,15 +15,15 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
-import {SwipeListView} from 'react-native-swipe-list-view';
-import {connect} from 'react-redux';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import {
   COMMENT_ON_POST_REQUEST,
   COMMENT_ON_POST_SUCCESS,
   COMMENT_ON_POST_FAILURE,
 } from '../../action/TypeConstants';
-import {commentOnPostReq} from '../../action/UserAction';
+import { commentOnPostReq } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -70,9 +70,11 @@ function HomeItemComments(props) {
         }
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           } else {
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }
         }}
       />
@@ -108,12 +110,12 @@ function HomeItemComments(props) {
 
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: Colors.darkerblack}}
+      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
       behavior="height">
       <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -136,7 +138,7 @@ function HomeItemComments(props) {
             borderColor: Colors.fadeblack,
             paddingBottom: normalise(12),
             shadowColor: '#000',
-            shadowOffset: {width: 0, height: 4},
+            shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.5,
             shadowRadius: 8,
             elevation: 11,
@@ -146,10 +148,10 @@ function HomeItemComments(props) {
               flexDirection: 'row',
               alignItems: 'flex-start',
             }}>
-            <TouchableOpacity style={{justifyContent: 'center'}}>
+            <TouchableOpacity style={{ justifyContent: 'center' }}>
               <Image
-                source={{uri: image}}
-                style={{height: normalise(60), width: normalise(60)}}
+                source={{ uri: image }}
+                style={{ height: normalise(60), width: normalise(60) }}
                 resizeMode="contain"
               />
 
@@ -160,7 +162,7 @@ function HomeItemComments(props) {
                                 }} /> */}
             </TouchableOpacity>
 
-            <View style={{marginLeft: normalise(10)}}>
+            <View style={{ marginLeft: normalise(10) }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -180,7 +182,7 @@ function HomeItemComments(props) {
                   style={{
                     marginEnd: normalise(12.5),
                     color: Colors.grey_text,
-                    fontSize: 12,
+                    fontSize: normalise(10),
                     fontFamily: 'ProximaNovaAW07-Medium',
                   }}>
                   {moment(time).from()}
@@ -192,7 +194,7 @@ function HomeItemComments(props) {
                   style={{
                     width: normalise(218),
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: normalise(11),
                     marginTop: normalise(2),
                     fontFamily: 'ProximaNovaAW07-Medium',
                   }}>
@@ -224,7 +226,7 @@ function HomeItemComments(props) {
 
         <View
           style={{
-            width: '95%',
+            width: '90%',
             backgroundColor: Colors.fadeblack,
             borderColor: Colors.activityBorderColor,
             borderWidth: 1,
@@ -235,7 +237,7 @@ function HomeItemComments(props) {
             alignSelf: 'center',
             alignItems: 'center',
             position: 'absolute',
-            bottom: normalise(15),
+            bottom: normalise(20),
             justifyContent: 'space-between',
           }}>
           <TextInput
@@ -243,11 +245,11 @@ function HomeItemComments(props) {
             style={{
               width: '80%',
               maxHeight: normalise(100),
-              fontSize: normalise(12),
+              fontSize: normalise(11),
               color: Colors.white,
               marginTop: Platform.OS === 'android' ? 0 : normalise(6),
-              marginStart: normalise(10),
-              paddingBottom: normalise(11),
+              marginStart: normalise(16),
+              paddingBottom: normalise(10),
             }}
             value={commentText}
             placeholder={'Add a comment...'}
