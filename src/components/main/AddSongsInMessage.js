@@ -440,7 +440,7 @@ function AddSongsInMessage(props) {
                   setSearch(''), setResult([]);
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

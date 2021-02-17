@@ -698,7 +698,7 @@ function Contact(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
@@ -926,7 +926,7 @@ function Contact(props) {
                   setSearch(''), props.getSavedSongs('');
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

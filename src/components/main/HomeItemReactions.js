@@ -306,7 +306,7 @@ function HomeItemReaction(props) {
                   setSearch(''), getFilteredData('');
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

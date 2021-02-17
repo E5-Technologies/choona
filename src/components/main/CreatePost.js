@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,13 +19,13 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAILURE,
 } from '../../action/TypeConstants';
-import {createPostRequest} from '../../action/PostAction';
+import { createPostRequest } from '../../action/PostAction';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
@@ -124,7 +124,7 @@ function AddSong(props) {
 
       case CREATE_POST_SUCCESS:
         props.navigation.popToTop();
-        props.navigation.replace('bottomTab', {screen: 'Home'});
+        props.navigation.replace('bottomTab', { screen: 'Home' });
         status = props.status;
         break;
 
@@ -136,7 +136,7 @@ function AddSong(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <Loader visible={props.status === CREATE_POST_REQUEST} />
       <Loader visible={bool} />
 
@@ -146,7 +146,7 @@ function AddSong(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={true}
             textone={'CANCEL'}
@@ -160,25 +160,27 @@ function AddSong(props) {
               createPost();
             }}
           />
-
           <View
             style={{
               marginTop: normalise(20),
-              width: '95%',
-              alignSelf: 'center',
+              marginHorizontal: normalise(16),
+              // width: '95%',
+              // alignSelf: 'center',
             }}>
             <TextInput
               style={{
                 width: '100%',
-                borderRadius: normalise(8),
-                padding: normalise(10),
+                // borderRadius: normalise(8),
+                // padding: normalise(10),
                 color: Colors.white,
-                fontWeight: '500',
+                fontWeight: '400',
+                marginHorizontal: normalise(10),
+                marginBottom: normalise(10),
               }}
               value={search}
               multiline={true}
               placeholder={'Add a caption...'}
-              placeholderTextColor={Colors.grey}
+              placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
                 setSearch(text);
               }}
@@ -186,13 +188,11 @@ function AddSong(props) {
 
             <View
               style={{
-                marginTop: normalise(5),
+                marginTop: normalise(10),
                 backgroundColor: Colors.darkerblack,
                 height: normalise(65),
                 width: '100%',
-                borderRadius: normalise(8),
-                borderColor: Colors.fadeblack,
-                borderWidth: normalise(1),
+                borderRadius: normalise(6),
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
@@ -206,11 +206,11 @@ function AddSong(props) {
                 }}>
                 <TouchableOpacity>
                   <Image
-                    source={{uri: imgsource}}
+                    source={{ uri: imgsource }}
                     style={{
                       height: normalise(40),
                       width: normalise(40),
-                      borderRadius: normalise(5),
+                      borderRadius: normalise(6),
                     }}
                     resizeMode="contain"
                   />
@@ -224,9 +224,11 @@ function AddSong(props) {
                   }}>
                   <Text
                     style={{
-                      marginLeft: normalise(20),
+                      marginLeft: normalise(10),
+                      fontWeight: '600',
                       color: Colors.white,
                       fontSize: normalise(11),
+                      marginBottom: normalise(2),
                     }}
                     numberOfLines={1}>
                     {title1}
@@ -234,7 +236,7 @@ function AddSong(props) {
 
                   <Text
                     style={{
-                      marginLeft: normalise(20),
+                      marginLeft: normalise(10),
                       color: Colors.grey,
                       fontSize: normalise(10),
                       width: '80%',

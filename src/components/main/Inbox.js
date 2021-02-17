@@ -253,7 +253,7 @@ function Inbox(props) {
                   setSearch(''), filterArray('');
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

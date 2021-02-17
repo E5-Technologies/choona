@@ -930,7 +930,7 @@ function Home(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

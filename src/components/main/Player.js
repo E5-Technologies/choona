@@ -1367,7 +1367,7 @@ function Player(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
@@ -1428,16 +1428,13 @@ function Player(props) {
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <StatusBar backgroundColor={Colors.black} />
-
         <Loader visible={bool} />
-
         <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
-
         <SafeAreaView style={{ flex: 1 }}>
           <ScrollView>
             <View
               style={{
-                marginHorizontal: normalise(15),
+                marginHorizontal: normalise(24),
                 width: normalise(290),
                 marginTop: normalise(15),
                 flexDirection: 'row',
@@ -1457,22 +1454,20 @@ function Player(props) {
                     }}
                     resizeMode="contain"
                   />
-
                   <View
                     style={{
                       flexDirection: 'column',
                       alignItems: 'flex-start',
-                      marginLeft: normalise(5),
+                      marginLeft: normalise(8),
                     }}>
                     <Text
                       style={{
-                        color: Colors.grey,
+                        color: Colors.darkgrey,
                         fontSize: normalise(8),
-                        fontFamily: 'ProximaNova-Bold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}
                       numberOfLines={1}>
-                      {' '}
-                      POSTED BY{' '}
+                      Posted by{' '}
                     </Text>
 
                     <Text
@@ -1482,7 +1477,6 @@ function Player(props) {
                         fontFamily: 'ProximaNova-Semibold',
                       }}
                       numberOfLines={1}>
-                      {' '}
                       {username}{' '}
                     </Text>
                   </View>
@@ -1495,6 +1489,7 @@ function Player(props) {
                   backgroundColor: Colors.black,
                   justifyContent: 'center',
                   flexDirection: 'row',
+                  marginRight: normalise(16),
                 }}>
                 <TouchableOpacity
                   style={{
@@ -1505,7 +1500,7 @@ function Player(props) {
                     backgroundColor: Colors.black,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginLeft: normalise(10),
+                    // marginLeft: normalise(10),
                   }}
                   onPress={() => {
                     props.navigation.goBack();
@@ -1516,75 +1511,77 @@ function Player(props) {
                       height: normalise(15),
                       width: normalise(15),
                       transform: [{ rotate: '-90deg' }],
+                      opacity: 0.5,
                     }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
               </View>
             </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                if (hasSongLoaded) playing();
-              }}
-              style={{
-                marginTop: normalise(5),
-                height: normalise(265),
-                width: normalise(290),
-                alignSelf: 'center',
-                borderRadius: normalise(25),
-                backgroundColor: Colors.darkerblack,
-                borderWidth: normalise(0.5),
-                borderColor: Colors.grey,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 5 },
-                shadowOpacity: 0.36,
-                shadowRadius: 6.68,
-                elevation: 11,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={{ uri: pic.replace('100x100bb.jpg', '500x500bb.jpg') }}
-                style={{
-                  height: normalise(265),
-                  width: normalise(290),
-                  borderRadius: normalise(15),
-                }}
-                resizeMode="cover"
-              />
-
+            <View style={{ paddingHorizontal: normalise(16) }}>
               <TouchableOpacity
                 onPress={() => {
                   if (hasSongLoaded) playing();
                 }}
                 style={{
-                  height: normalise(60),
-                  width: normalise(60),
+                  marginTop: normalise(5),
+                  // height: normalise(290),
+                  // width: normalise(290),
+                  aspectRatio: 1,
+                  width: '100%',
+                  alignSelf: 'center',
+                  // borderRadius: normalise(21),
+                  backgroundColor: Colors.darkerblack,
+                  elevation: 11,
+                  flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: Colors.white,
-                  borderRadius: normalise(30),
-                  position: 'absolute',
                 }}>
                 <Image
-                  source={
-                    playVisible ? ImagePath.playicon : ImagePath.pauseicon
-                  }
-                  style={{ height: normalise(20), width: normalise(20) }}
+                  source={{
+                    uri: pic.replace('100x100bb.jpg', '500x500bb.jpg'),
+                  }}
+                  style={{
+                    // height: normalise(290),
+                    // width: normalise(290),
+                    // borderRadius: normalise(15),
+                    aspectRatio: 1,
+                    width: '100%',
+                  }}
+                  resizeMode="cover"
                 />
-              </TouchableOpacity>
-            </TouchableOpacity>
 
+                <TouchableOpacity
+                  onPress={() => {
+                    if (hasSongLoaded) playing();
+                  }}
+                  style={{
+                    height: normalise(60),
+                    width: normalise(60),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: Colors.white,
+                    borderRadius: normalise(30),
+                    position: 'absolute',
+                  }}>
+                  <Image
+                    source={
+                      playVisible ? ImagePath.playicon : ImagePath.pauseicon
+                    }
+                    style={{ height: normalise(20), width: normalise(20) }}
+                  />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                width: '90%',
+                // width: '90%',
                 alignSelf: 'center',
-                marginTop: normalise(15),
+                marginTop: normalise(16),
+                marginHorizontal: normalise(24),
               }}>
               <View
                 style={{
@@ -1605,9 +1602,9 @@ function Player(props) {
 
                 <Text
                   style={{
-                    color: Colors.grey_text,
-                    fontSize: normalise(10),
-                    fontFamily: 'ProximaNovaAW07-Medium',
+                    color: Colors.darkgrey,
+                    fontSize: normalise(9),
+                    fontFamily: 'ProximaNova-Regular',
                     width: '90%',
                   }}
                   numberOfLines={1}>
@@ -1616,7 +1613,7 @@ function Player(props) {
               </View>
               {/* {changePlayer ? null :
                                 <Image source={registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
-                                    style={{ height: normalise(20), width: normalise(20), borderRadius: normalise(10) }}
+                                    style={{ height: normalise(20), width: normalise(20), borderRadius: normalise(8), }}
                                     resizeMode='contain' />} */}
 
               {changePlayer ? null : (
@@ -1684,22 +1681,27 @@ function Player(props) {
                             </Text>
 
                         </View> */}
-
-            <Slider
+            <View
               style={{
-                width: '90%',
-                height: 40,
-                alignSelf: 'center',
-                marginTop: normalise(5),
-              }}
-              minimumValue={0}
-              maximumValue={30}
-              step={1}
-              thumbTintColor="#99000000"
-              value={playerCurrentTime}
-              minimumTrackTintColor="#FFFFFF"
-              maximumTrackTintColor="#000000"
-            />
+                marginHorizontal: normalise(24),
+              }}>
+              <Slider
+                style={{
+                  width: '100%',
+                  height: 40,
+                  alignSelf: 'center',
+                  marginTop: normalise(5),
+                }}
+                minimumValue={0}
+                maximumValue={30}
+                animationType={'spring'}
+                step={1}
+                thumbTintColor="#99000000"
+                value={playerCurrentTime}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+              />
+            </View>
 
             {/* <View style={{
                             flexDirection: 'row', alignSelf: 'center', width: '70%',
@@ -1737,11 +1739,12 @@ function Player(props) {
               <View
                 style={{
                   flexDirection: 'row',
-                  width: '90%',
+                  width: '100%',
                   alignSelf: 'center',
                   justifyContent: 'space-between',
                   marginTop: normalise(10),
                   alignItems: 'center',
+                  paddingHorizontal: normalise(24),
                 }}>
                 <TouchableOpacity
                   style={{
@@ -1821,18 +1824,20 @@ function Player(props) {
                   style={{
                     flexDirection: 'row',
                     height: normalise(40),
-                    width: normalise(115),
+                    // width: normalise(115),
+                    paddingLeft: normalise(16),
+                    paddingRight: normalise(16),
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: Colors.fadeblack,
-                    borderRadius: normalise(10),
+                    borderRadius: normalise(8),
                   }}
                   onPress={() => {
                     if (RbSheetRef) RbSheetRef.open();
                   }}>
                   <Image
                     source={ImagePath.comment_grey}
-                    style={{ height: normalise(16), width: normalise(16) }}
+                    style={{ height: normalise(20), width: normalise(20) }}
                     resizeMode="contain"
                   />
 
@@ -1840,7 +1845,7 @@ function Player(props) {
                     style={{
                       fontSize: normalise(9),
                       color: Colors.white,
-                      marginLeft: normalise(10),
+                      marginLeft: normalise(8),
                       fontFamily: 'ProximaNova-Bold',
                     }}>
                     {arrayLength}
@@ -1923,7 +1928,7 @@ function Player(props) {
                     justifyContent: 'center',
                     alignSelf: 'center',
                     backgroundColor: Colors.fadeblack,
-                    borderRadius: normalise(10),
+                    borderRadius: normalise(8),
                   }}
                   onPress={() => {
                     if (RbSheetRef) RbSheetRef.open();
@@ -1947,23 +1952,21 @@ function Player(props) {
               </View>
             ) : null}
 
-            {/* {changePlayer ? null : */}
+            {/* Play Button */}
             <View>
               <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   height: normalise(40),
-                  width: normalise(160),
+                  minWidth: normalise(150),
+                  paddingLeft: normalise(16),
+                  paddingRight: normalise(16),
                   alignSelf: 'center',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginTop: normalise(30),
+                  marginTop: normalise(10),
                   backgroundColor: Colors.fadeblack,
-                  borderRadius: normalise(10),
-                  marginBottom:
-                    props.route.params.showPlaylist === false
-                      ? normalise(20)
-                      : 0,
+                  borderRadius: normalise(8),
                 }}
                 onPress={() => {
                   //FOR SPOTIFY USERS
@@ -2040,13 +2043,14 @@ function Player(props) {
                 <Text
                   style={{
                     color: Colors.white,
-                    marginLeft: normalise(15),
+                    marginLeft: normalise(8),
                     fontSize: normalise(13),
                     fontFamily: 'ProximaNova-Semibold',
+                    textTransform: 'uppercase',
                   }}>
                   {props.userProfileResp.register_type === 'spotify'
-                    ? 'OPEN ON SPOTIFY'
-                    : 'OPEN ON APPLE'}
+                    ? 'Play on Spotify'
+                    : 'Play on Apple'}
                 </Text>
               </TouchableOpacity>
 
@@ -2068,14 +2072,16 @@ function Player(props) {
                   style={{
                     flexDirection: 'row',
                     height: normalise(40),
-                    width: normalise(160),
+                    minWidth: normalise(150),
+                    paddingLeft: normalise(16),
+                    paddingRight: normalise(16),
                     alignSelf: 'center',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginTop: normalise(10),
                     backgroundColor: Colors.fadeblack,
-                    borderRadius: normalise(10),
-                    marginBottom: normalise(20),
+                    borderRadius: normalise(8),
+                    // marginBottom: normalise(20),
                   }}>
                   <Image
                     source={ImagePath.add_white}
@@ -2089,7 +2095,7 @@ function Player(props) {
                   <Text
                     style={{
                       color: Colors.white,
-                      marginLeft: normalise(15),
+                      marginLeft: normalise(8),
                       fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Semibold',
                     }}>

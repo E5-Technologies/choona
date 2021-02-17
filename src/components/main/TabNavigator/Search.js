@@ -929,7 +929,7 @@ function Search(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
@@ -1229,7 +1229,7 @@ function Search(props) {
                     : setSongSearchText('');
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

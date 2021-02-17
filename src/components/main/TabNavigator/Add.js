@@ -1,8 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -143,7 +141,6 @@ function AddSong(props) {
               props.registerType === 'spotify'
                 ? data.item.preview_url
                 : data.item.attributes.previews[0].url,
-            id: '',
             artist:
               props.registerType === 'spotify'
                 ? singerList(data.item.artists)
@@ -241,7 +238,7 @@ function AddSong(props) {
                   setSearch(''), setData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.darkerblack,
+                  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

@@ -180,8 +180,8 @@ function SavedSongListItem(props) {
       style={{
         width: '90%',
         alignSelf: 'center',
-        marginBottom: normalise(16),
-        marginTop: normalise(16),
+        marginBottom: normalise(12),
+        marginTop: normalise(12),
         // marginBottom: props.marginBottom,
       }}>
       <View

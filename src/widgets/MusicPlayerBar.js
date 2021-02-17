@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -24,7 +24,7 @@ import {
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
 import ImagePath from '../assests/ImagePath';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
@@ -141,8 +141,8 @@ function MusicPlayerBar(props) {
               onPress();
             }}>
             <Image
-              source={{uri: props.playingSongRef.song_pic}}
-              style={{height: normalize(25), width: normalize(25)}}
+              source={{ uri: props.playingSongRef.song_pic }}
+              style={{ height: normalize(25), width: normalize(25) }}
             />
           </TouchableOpacity>
 
@@ -184,7 +184,7 @@ function MusicPlayerBar(props) {
             }}>
             <Image
               source={play ? ImagePath.pause : ImagePath.play}
-              style={{height: normalize(25), width: normalize(25)}}
+              style={{ height: normalize(25), width: normalize(25) }}
               resizeMode={'contain'}
             />
           </TouchableOpacity>
