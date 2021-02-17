@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -32,12 +33,12 @@ import {
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import axios from 'axios';
-import {getSpotifyToken} from '../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../utils/helpers/AppleDevToken';
-import {NativeModules} from 'react-native';
+import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
+import { NativeModules } from 'react-native';
 
 let status;
 
@@ -292,17 +293,17 @@ function AddToPlayListScreen(props) {
           source={
             props.registerType === 'spotify'
               ? data.item.images.length > 0
-                ? {uri: data.item.images[0].url}
+                ? { uri: data.item.images[0].url }
                 : ImagePath.appIcon512
               : data.item.attributes.hasOwnProperty('artwork')
-              ? {uri: data.item.attributes.artwork.url}
+              ? { uri: data.item.attributes.artwork.url }
               : ImagePath.appIcon512
           }
-          style={{height: normalise(50), width: normalise(50)}}
+          style={{ height: normalise(50), width: normalise(50) }}
           resizeMode="contain"
         />
 
-        <View style={{marginHorizontal: normalise(10), alignSelf: 'center'}}>
+        <View style={{ marginHorizontal: normalise(10), alignSelf: 'center' }}>
           <Text
             style={{
               color: Colors.white,
@@ -325,13 +326,13 @@ function AddToPlayListScreen(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_USER_PLAYLIST_REQUEST} />
       <Loader visible={bool} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -354,7 +355,7 @@ function AddToPlayListScreen(props) {
 
         {props.getUserPlayList.length < 1 ? (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text
               style={{
                 color: Colors.white,
@@ -366,13 +367,14 @@ function AddToPlayListScreen(props) {
           </View>
         ) : (
           <FlatList
-            style={{marginTop: normalise(10)}}
+            style={{ marginTop: normalise(10) }}
             data={props.getUserPlayList}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => {
               index.toString();
             }}
             renderItem={renderPlayListItem}
+            ItemSeparatorComponent={Seperator}
           />
         )}
       </SafeAreaView>

@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -21,9 +22,9 @@ import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {seachSongsForPostRequest} from '../../action/PostAction';
-import {userSearchRequest} from '../../action/UserAction';
-import {createChatTokenRequest} from '../../action/MessageAction';
+import { seachSongsForPostRequest } from '../../action/PostAction';
+import { userSearchRequest } from '../../action/UserAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -35,7 +36,7 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import constants from '../../utils/helpers/constants';
@@ -178,7 +179,7 @@ function AddSongsInMessage(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.userSearchReq({keyword: text}, sendSong);
+      props.userSearchReq({ keyword: text }, sendSong);
     }
   };
 
@@ -290,17 +291,15 @@ function AddSongsInMessage(props) {
         <View
           style={{
             flexDirection: 'row',
-            borderColor: Colors.activityBorderColor,
-            borderBottomWidth: normalise(0.5),
             paddingBottom: normalise(10),
           }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -340,7 +339,7 @@ function AddSongsInMessage(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -372,7 +371,7 @@ function AddSongsInMessage(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
@@ -381,7 +380,7 @@ function AddSongsInMessage(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -395,7 +394,7 @@ function AddSongsInMessage(props) {
             }}
           />
 
-          <View style={{width: '92%', alignSelf: 'center'}}>
+          <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
               style={{
                 height: normalise(35),
@@ -478,7 +477,7 @@ function AddSongsInMessage(props) {
                     ? ImagePath.spotifyicon
                     : ImagePath.applemusic
                 }
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
               />
               <Text
                 style={{
@@ -495,10 +494,14 @@ function AddSongsInMessage(props) {
 
           {_.isEmpty(result) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Image
                 source={ImagePath.searchicongrey}
-                style={{height: normalise(25), width: normalise(25)}}
+                style={{ height: normalise(25), width: normalise(25) }}
               />
 
               <Text
@@ -515,13 +518,14 @@ function AddSongsInMessage(props) {
             </View>
           ) : (
             <FlatList
-              style={{marginTop: normalise(10)}}
+              style={{ marginTop: normalise(10) }}
               data={result}
               renderItem={renderItem}
               keyExtractor={(item, index) => {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           )}
 
@@ -556,9 +560,12 @@ function AddSongsInMessage(props) {
                 height: normalise(3),
               },
             }}>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -681,6 +688,7 @@ function AddSongsInMessage(props) {
                     index.toString();
                   }}
                   showsHorizontalScrollIndicator={false}
+                  ItemSeparatorComponent={Seperator}
                 />
               ) : null}
 
@@ -695,6 +703,7 @@ function AddSongsInMessage(props) {
                   index.toString();
                 }}
                 showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={Seperator}
               />
             </View>
           </RBSheet>

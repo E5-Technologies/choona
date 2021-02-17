@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -21,9 +22,9 @@ import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {seachSongsForPostRequest} from '../../action/PostAction';
-import {userSearchRequest} from '../../action/UserAction';
-import {createChatTokenRequest} from '../../action/MessageAction';
+import { seachSongsForPostRequest } from '../../action/PostAction';
+import { userSearchRequest } from '../../action/UserAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -32,7 +33,7 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import constants from '../../utils/helpers/constants';
@@ -212,7 +213,7 @@ function AddAnotherSong(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
@@ -221,7 +222,7 @@ function AddAnotherSong(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -235,7 +236,7 @@ function AddAnotherSong(props) {
             }}
           />
 
-          <View style={{width: '92%', alignSelf: 'center'}}>
+          <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
               style={{
                 height: normalise(35),
@@ -318,7 +319,7 @@ function AddAnotherSong(props) {
                     ? ImagePath.spotifyicon
                     : ImagePath.applemusic
                 }
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
               />
               <Text
                 style={{
@@ -335,10 +336,14 @@ function AddAnotherSong(props) {
 
           {_.isEmpty(result) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Image
                 source={ImagePath.searchicongrey}
-                style={{height: normalise(25), width: normalise(25)}}
+                style={{ height: normalise(25), width: normalise(25) }}
               />
 
               <Text
@@ -355,13 +360,14 @@ function AddAnotherSong(props) {
             </View>
           ) : (
             <FlatList
-              style={{marginTop: normalise(10)}}
+              style={{ marginTop: normalise(10) }}
               data={result}
               renderItem={renderItem}
               keyExtractor={(item, index) => {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           )}
         </SafeAreaView>

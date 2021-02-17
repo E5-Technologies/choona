@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,7 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -22,7 +23,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
 import HomeItemList from '../../components/main/ListCells/HomeItemList';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../widgets/MusicPlayerBar';
 import {
   USER_PROFILE_REQUEST,
@@ -55,15 +56,15 @@ import {
   userFollowUnfollowRequest,
   getUsersFromHome,
 } from '../../action/UserAction';
-import {saveSongRequest} from '../../action/SongAction';
-import {deletePostReq} from '../../action/PostAction';
-import {createChatTokenRequest} from '../../action/MessageAction';
-import {connect} from 'react-redux';
+import { saveSongRequest } from '../../action/SongAction';
+import { deletePostReq } from '../../action/PostAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 
 import constants from '../../utils/helpers/constants';
-import {useScrollToTop} from '@react-navigation/native';
+import { useScrollToTop } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 let status = '';
@@ -318,9 +319,11 @@ function PostListForUser(props) {
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           } else {
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }
         }}
         onAddReaction={() => {
@@ -399,7 +402,7 @@ function PostListForUser(props) {
       <TouchableOpacity
         style={{
           marginTop: normalise(10),
-          width: '87%',
+          width: '100%',
           alignSelf: 'center',
         }}
         onPress={() => {
@@ -427,18 +430,16 @@ function PostListForUser(props) {
             sesUsersToSEndSong(array);
           }
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View
             style={{
               flexDirection: 'row',
-              borderColor: Colors.activityBorderColor,
-              borderBottomWidth: normalise(0.5),
               paddingBottom: normalise(10),
             }}>
             <Text
@@ -479,7 +480,7 @@ function PostListForUser(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -512,7 +513,7 @@ function PostListForUser(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -558,8 +559,9 @@ function PostListForUser(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -659,7 +661,7 @@ function PostListForUser(props) {
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
                   marginRight: normalise(10),
                 }}>
                 <Text
@@ -701,6 +703,7 @@ function PostListForUser(props) {
               index.toString();
             }}
             showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
           />
         </View>
       </RBSheet>
@@ -708,7 +711,7 @@ function PostListForUser(props) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <HeaderComponent
@@ -723,7 +726,8 @@ function PostListForUser(props) {
       />
 
       {_.isEmpty(posts) ? (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Image
             source={ImagePath.noposts}
             style={{
@@ -780,9 +784,9 @@ function PostListForUser(props) {
   </TouchableOpacity> */}
         </View>
       ) : (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <FlatList
-            style={{marginTop: normalise(10)}}
+            style={{ marginTop: normalise(10) }}
             data={posts}
             renderItem={renderItem}
             initialScrollIndex={props.route.params.index}
@@ -879,7 +883,7 @@ function PostListForUser(props) {
                 />
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(10)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(10) }}
                   onPress={() => {
                     let saveSongObject = {
                       song_uri: posts[positionInArray].song_uri,
@@ -895,7 +899,7 @@ function PostListForUser(props) {
                   }}>
                   <Image
                     source={ImagePath.boxicon}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -910,7 +914,7 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     if (bottomSheetRef) {
                       setModalVisible(false), bottomSheetRef.open();
@@ -918,7 +922,7 @@ function PostListForUser(props) {
                   }}>
                   <Image
                     source={ImagePath.sendicon}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -943,10 +947,10 @@ function PostListForUser(props) {
                       toast('Success', 'Song copied to clipboard.');
                     }, 1000);
                   }}
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}>
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                   <Image
                     source={ImagePath.more_copy}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -961,7 +965,7 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
 
@@ -973,7 +977,7 @@ function PostListForUser(props) {
                   }}>
                   <Image
                     source={ImagePath.more_unfollow}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -993,7 +997,7 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     if (
                       props.postData[positionInArray].userDetails
@@ -1054,7 +1058,7 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     if (props.userProfileResp.register_type === 'spotify')

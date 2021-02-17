@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -51,13 +51,13 @@ function InboxListItem(props) {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <View style={{flexDirection: 'row', width: '80%'}}>
+        <View style={{ flexDirection: 'row', width: '80%' }}>
           <TouchableOpacity
             onPress={() => {
               onPressImage();
             }}>
             <Image
-              source={{uri: props.image}}
+              source={{ uri: props.image }}
               style={{
                 height: normalise(35),
                 width: normalise(35),
@@ -129,21 +129,11 @@ function InboxListItem(props) {
           }}>
           <Image
             source={ImagePath.threedots}
-            style={{height: normalise(15), width: normalise(15)}}
+            style={{ height: normalise(15), width: normalise(15) }}
             resizeMode="contain"
           />
         </TouchableOpacity>
       </View>
-
-      {/* {props.bottom ? null : */}
-      <View
-        style={{
-          height: 0.5,
-          backgroundColor: Colors.activityBorderColor,
-          marginTop: normalise(10),
-        }}
-      />
-      {/* } */}
     </TouchableOpacity>
   );
 }

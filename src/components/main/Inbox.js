@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,6 +14,7 @@ import {
   Alert,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -22,7 +23,7 @@ import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
 import moment from 'moment';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   GET_CHAT_LIST_REQUEST,
   GET_CHAT_LIST_SUCCESS,
@@ -144,17 +145,17 @@ function Inbox(props) {
           data.item.user_id == data.item.receiver_id ? true : data.item.read
         }
         onPress={() =>
-          props.navigation.navigate('InsideaMessage', {index: data.index})
+          props.navigation.navigate('InsideaMessage', { index: data.index })
         }
         marginBottom={
           data.index === props.chatList.length - 1 ? normalise(20) : 0
         }
         onPressImage={() => {
-          props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+          props.navigation.navigate('OthersProfile', { id: data.item.user_id });
         }}
         onPressDelete={() =>
           Alert.alert('Do you want to delete this conversation?', '', [
-            {text: 'No'},
+            { text: 'No' },
 
             {
               text: 'Delete',
@@ -183,7 +184,7 @@ function Inbox(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
@@ -193,7 +194,7 @@ function Inbox(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -276,8 +277,12 @@ function Inbox(props) {
 
           {_.isEmpty(props.chatList) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color: Colors.white, fontSize: normalise(15)}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{ color: Colors.white, fontSize: normalise(15) }}>
                 No Messages
               </Text>
             </View>
@@ -289,6 +294,7 @@ function Inbox(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           )}
         </SafeAreaView>

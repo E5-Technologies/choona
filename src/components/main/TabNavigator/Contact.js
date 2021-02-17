@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,12 +16,13 @@ import {
   Clipboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from '../ListCells/SavedSongsListItem';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../../utils/MyStatusBar';
 import {
   SAVED_SONGS_LIST_REQUEST,
@@ -43,16 +44,16 @@ import {
 } from '../../../action/SongAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {getUsersFromHome} from '../../../action/UserAction';
+import { getUsersFromHome } from '../../../action/UserAction';
 import constants from '../../../utils/helpers/constants';
-import {createChatTokenFromSavedSongRequest} from '../../../action/MessageAction';
-import {getSongFromisrc} from '../../../action/PlayerAction';
-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+import { createChatTokenFromSavedSongRequest } from '../../../action/MessageAction';
+import { getSongFromisrc } from '../../../action/PlayerAction';
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 
 let status;
@@ -179,9 +180,6 @@ function Contact(props) {
         image={data.item.song_image}
         title={data.item.song_name}
         singer={data.item.artist_name}
-        marginBottom={
-          data.index === props.savedSong.length - 1 ? normalise(20) : 0
-        }
         onPressImage={() => {
           props.navigation.navigate('Player', {
             song_title: data.item.song_name,
@@ -235,14 +233,14 @@ function Contact(props) {
             />
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(10)}}
+              style={{ flexDirection: 'row', marginTop: normalise(10) }}
               onPress={() => {
                 props.unsaveSongReq(props.savedSong[index]._id),
                   setModalVisible(!modalVisible);
               }}>
               <Image
                 source={ImagePath.boxicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -257,7 +255,7 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -265,7 +263,7 @@ function Contact(props) {
               }}>
               <Image
                 source={ImagePath.sendicon}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -280,7 +278,7 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 Clipboard.setString(props.savedSong[index].original_song_uri);
                 setModalVisible(!modalVisible);
@@ -291,7 +289,7 @@ function Contact(props) {
               }}>
               <Image
                 source={ImagePath.more_copy}
-                style={{height: normalise(18), width: normalise(18)}}
+                style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
               <Text
@@ -306,7 +304,7 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 if (
                   props.savedSong[index].original_reg_type ===
@@ -371,7 +369,7 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{flexDirection: 'row', marginTop: normalise(18)}}
+              style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 if (props.userProfileResp.register_type === 'spotify')
@@ -442,7 +440,7 @@ function Contact(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -488,12 +486,12 @@ function Contact(props) {
             sesUsersToSEndSong(array);
           }
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View
             style={{
@@ -540,7 +538,7 @@ function Contact(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -605,8 +603,9 @@ function Contact(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -866,7 +865,7 @@ function Contact(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
@@ -877,7 +876,7 @@ function Contact(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={true}
             textone={''}
@@ -951,7 +950,11 @@ function Contact(props) {
 
           {_.isEmpty(props.savedSong) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Text
                 style={{
                   marginBottom: '20%',
@@ -968,6 +971,7 @@ function Contact(props) {
               data={props.savedSong}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
               // renderHiddenItem={(rowData, rowMap) => (
               //   <TouchableOpacity
               //     style={{

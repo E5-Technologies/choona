@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,6 +11,8 @@ import {
   Image,
   FlatList,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
+
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -19,8 +21,8 @@ import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import constants from '../../utils/helpers/constants';
-import {connect} from 'react-redux';
-import {sendChatMessageRequest} from '../../action/MessageAction';
+import { connect } from 'react-redux';
+import { sendChatMessageRequest } from '../../action/MessageAction';
 import moment from 'moment';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import {
@@ -118,14 +120,14 @@ function SendSongInMessageFinal(props) {
           alignSelf: 'center',
         }}
         onPress={() => {}}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -145,15 +147,6 @@ function SendSongInMessageFinal(props) {
             </Text>
           </View>
         </View>
-        {data.item[index] > 0 && (
-          <View
-            style={{
-              backgroundColor: Colors.activityBorderColor,
-              height: 0.5,
-              marginTop: normalise(10),
-            }}
-          />
-        )}
       </TouchableOpacity>
     );
   }
@@ -240,10 +233,10 @@ function SendSongInMessageFinal(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={'CANCEL'}
@@ -286,7 +279,11 @@ function SendSongInMessageFinal(props) {
         />
 
         <View
-          style={{marginTop: normalise(20), width: '92%', alignSelf: 'center'}}>
+          style={{
+            marginTop: normalise(20),
+            width: '92%',
+            alignSelf: 'center',
+          }}>
           <TextInput
             style={{
               width: '100%',
@@ -326,7 +323,7 @@ function SendSongInMessageFinal(props) {
               }}>
               <TouchableOpacity>
                 <Image
-                  source={{uri: imgsource}}
+                  source={{ uri: imgsource }}
                   style={{
                     height: normalise(40),
                     width: normalise(40),
@@ -383,6 +380,7 @@ function SendSongInMessageFinal(props) {
             index.toString();
           }}
           showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={Seperator}
         />
       </SafeAreaView>
     </View>

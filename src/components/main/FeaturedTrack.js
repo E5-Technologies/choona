@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -20,7 +21,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   FEATURED_SONG_SEARCH_REQUEST,
   FEATURED_SONG_SEARCH_SUCCESS,
@@ -263,7 +264,7 @@ function FeaturedTrack(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === FEATURED_SONG_SEARCH_REQUEST} />
@@ -272,7 +273,7 @@ function FeaturedTrack(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -366,7 +367,7 @@ function FeaturedTrack(props) {
                     ? ImagePath.spotifyicon
                     : ImagePath.applemusic
                 }
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
               />
               <Text
                 style={{
@@ -380,10 +381,14 @@ function FeaturedTrack(props) {
 
           {_.isEmpty(data) ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Image
                 source={ImagePath.searchicongrey}
-                style={{height: normalise(35), width: normalise(35)}}
+                style={{ height: normalise(35), width: normalise(35) }}
               />
 
               <Text
@@ -400,13 +405,14 @@ function FeaturedTrack(props) {
             </View>
           ) : (
             <FlatList
-              style={{marginTop: normalise(10)}}
+              style={{ marginTop: normalise(10) }}
               data={data}
               renderItem={renderItem}
               keyExtractor={(item, index) => {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           )}
         </SafeAreaView>

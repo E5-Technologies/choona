@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,16 +20,17 @@ import {
   RefreshControl,
   FlatList,
 } from 'react-native';
+import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
-import {SwipeListView} from 'react-native-swipe-list-view';
-import {normalizeUnits} from 'moment';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import {
   USER_PROFILE_REQUEST,
@@ -68,20 +69,20 @@ import {
   getUsersFromHome,
   dummyRequest,
 } from '../../../action/UserAction';
-import {saveSongRequest, saveSongRefReq} from '../../../action/SongAction';
-import {deletePostReq} from '../../../action/PostAction';
-import {createChatTokenRequest} from '../../../action/MessageAction';
-import {connect} from 'react-redux';
+import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
+import { deletePostReq } from '../../../action/PostAction';
+import { createChatTokenRequest } from '../../../action/MessageAction';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-import {useScrollToTop} from '@react-navigation/native';
+import { useScrollToTop } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
 // import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import MusicPlayer from '../../../widgets/MusicPlayer';
 
@@ -413,7 +414,7 @@ function Home(props) {
         });
 
         // console.log(finalArray);
-        props.navigation.navigate('UsersFromContacts', {data: finalArray});
+        props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
   };
@@ -585,7 +586,7 @@ function Home(props) {
         onPressImage={() => {
           if (!homeReq) {
             if (props.userProfileResp._id === data.item.user_id) {
-              props.navigation.navigate('Profile', {fromAct: false});
+              props.navigation.navigate('Profile', { fromAct: false });
             } else {
               props.navigation.navigate('OthersProfile', {
                 id: data.item.user_id,
@@ -708,17 +709,15 @@ function Home(props) {
         <View
           style={{
             flexDirection: 'row',
-            borderColor: Colors.activityBorderColor,
-            borderBottomWidth: normalise(0.5),
             paddingBottom: normalise(10),
           }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -758,7 +757,7 @@ function Home(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -791,7 +790,7 @@ function Home(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -837,8 +836,9 @@ function Home(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -980,6 +980,7 @@ function Home(props) {
               index.toString();
             }}
             showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
           />
         </View>
       </RBSheet>
@@ -1168,7 +1169,7 @@ function Home(props) {
 
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{flex: 1, position: 'relative'}}>
+      <SafeAreaView style={{ flex: 1, position: 'relative' }}>
         <Loader visible={homeReq} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
@@ -1193,7 +1194,7 @@ function Home(props) {
           middleImageReq={true}
           notRead={findIsNotRead()}
           onPressFirstItem={() => {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           }}
           onPressThirdItem={() => {
             props.navigation.navigate('Inbox');
@@ -1202,7 +1203,7 @@ function Home(props) {
 
         {_.isEmpty(props.postData) ? (
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Image
               source={ImagePath.noposts}
               style={{
@@ -1252,7 +1253,7 @@ function Home(props) {
                 backgroundColor: Colors.darkerblack,
                 borderWidth: normalise(0.5),
                 shadowColor: '#000',
-                shadowOffset: {width: 0, height: 4},
+                shadowOffset: { width: 0, height: 4 },
                 shadowOpacity: 0.5,
                 shadowRadius: 9,
                 elevation: 11,
@@ -1276,7 +1277,7 @@ function Home(props) {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FlatList
               // style={{marginTop: normalise(10)}}
               data={props.postData}
@@ -1429,7 +1430,7 @@ function Home(props) {
                   />
 
                   <TouchableOpacity
-                    style={{flexDirection: 'row', marginTop: normalise(10)}}
+                    style={{ flexDirection: 'row', marginTop: normalise(10) }}
                     onPress={() => {
                       let saveSongObject = {
                         song_uri: props.postData[positionInArray].song_uri,
@@ -1452,7 +1453,7 @@ function Home(props) {
                     }}>
                     <Image
                       source={ImagePath.boxicon}
-                      style={{height: normalise(18), width: normalise(18)}}
+                      style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
                     <Text
@@ -1467,7 +1468,7 @@ function Home(props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{flexDirection: 'row', marginTop: normalise(18)}}
+                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
                     onPress={() => {
                       if (bottomSheetRef) {
                         setModalVisible(false), bottomSheetRef.open();
@@ -1475,7 +1476,7 @@ function Home(props) {
                     }}>
                     <Image
                       source={ImagePath.sendicon}
-                      style={{height: normalise(18), width: normalise(18)}}
+                      style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
                     <Text
@@ -1500,10 +1501,10 @@ function Home(props) {
                         toast('Success', 'Song copied to clipboard.');
                       }, 1000);
                     }}
-                    style={{flexDirection: 'row', marginTop: normalise(18)}}>
+                    style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                     <Image
                       source={ImagePath.more_copy}
-                      style={{height: normalise(18), width: normalise(18)}}
+                      style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
                     <Text
@@ -1518,7 +1519,7 @@ function Home(props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{flexDirection: 'row', marginTop: normalise(18)}}
+                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
                     onPress={() => {
                       setModalVisible(!modalVisible);
 
@@ -1534,7 +1535,7 @@ function Home(props) {
                     }}>
                     <Image
                       source={ImagePath.more_unfollow}
-                      style={{height: normalise(18), width: normalise(18)}}
+                      style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
                     <Text
@@ -1557,7 +1558,7 @@ function Home(props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{flexDirection: 'row', marginTop: normalise(18)}}
+                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
                     onPress={() => {
                       if (
                         props.postData[positionInArray].userDetails
@@ -1629,7 +1630,7 @@ function Home(props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{flexDirection: 'row', marginTop: normalise(18)}}
+                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
                     onPress={() => {
                       setModalVisible(!modalVisible);
                       if (props.userProfileResp.register_type === 'spotify')

@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,12 +16,13 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import InsideMessegeHeader from '../../widgets/InsideMessegeHeader';
 import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../utils/MyStatusBar';
 import {
   loadChatMessageRequest,
@@ -29,9 +30,9 @@ import {
   deleteMessageRequest,
   createChatTokenRequest,
 } from '../../action/MessageAction';
-import {getUsersFromHome} from '../../action/UserAction';
-import {saveSongRequest} from '../../action/SongAction';
-import {connect} from 'react-redux';
+import { getUsersFromHome } from '../../action/UserAction';
+import { saveSongRequest } from '../../action/SongAction';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   CHAT_LOAD_REQUEST,
@@ -51,8 +52,8 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {getSpotifyToken} from '../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../utils/helpers/AppleDevToken';
+import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
@@ -373,9 +374,9 @@ function InsideaMessage(props) {
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
+            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
-          <View style={{marginStart: normalise(10)}}>
+          <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
@@ -415,7 +416,7 @@ function InsideaMessage(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
+        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -448,7 +449,7 @@ function InsideaMessage(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({keyword: text});
+      props.getusersFromHome({ keyword: text });
     }
   };
 
@@ -494,8 +495,9 @@ function InsideaMessage(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -740,7 +742,7 @@ function InsideaMessage(props) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
 
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -749,7 +751,7 @@ function InsideaMessage(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           {renderAddToUsers()}
 
           <InsideMessegeHeader
@@ -845,6 +847,7 @@ function InsideaMessage(props) {
             }}
             disableRightSwipe={true}
             rightOpenValue={-75}
+            ItemSeparatorComponent={Seperator}
           />
 
           <TouchableOpacity
@@ -858,7 +861,7 @@ function InsideaMessage(props) {
               backgroundColor: Colors.white,
               borderWidth: normalise(0.5),
               shadowColor: '#000',
-              shadowOffset: {width: 0, height: 4},
+              shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.5,
               shadowRadius: 9,
               elevation: 11,
@@ -926,7 +929,7 @@ function InsideaMessage(props) {
                 />
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(10)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(10) }}
                   onPress={() => {
                     let saveSongObject = {
                       song_uri:
@@ -955,7 +958,7 @@ function InsideaMessage(props) {
                   }}>
                   <Image
                     source={ImagePath.boxicon}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -970,13 +973,13 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     setModalVisible(!modalVisible), bottomSheetRef.open();
                   }}>
                   <Image
                     source={ImagePath.sendicon}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -1001,10 +1004,10 @@ function InsideaMessage(props) {
                       toast('Success', 'Song copied to clipboard.');
                     }, 1000);
                   }}
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}>
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}>
                   <Image
                     source={ImagePath.more_copy}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -1019,7 +1022,7 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     if (props.chatData.length > 1) {
                       let deleteMessagPayload = {
@@ -1041,7 +1044,7 @@ function InsideaMessage(props) {
                   }}>
                   <Image
                     source={ImagePath.more_unfollow}
-                    style={{height: normalise(18), width: normalise(18)}}
+                    style={{ height: normalise(18), width: normalise(18) }}
                     resizeMode="contain"
                   />
                   <Text
@@ -1056,7 +1059,7 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     if (
                       props.searchedChatData[positionInArray]
@@ -1122,7 +1125,7 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{flexDirection: 'row', marginTop: normalise(18)}}
+                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     if (props.userProfileResp.register_type === 'spotify')

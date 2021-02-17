@@ -19,6 +19,7 @@ import {
   Clipboard,
   Keyboard,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -634,7 +635,7 @@ function Player(props) {
         name={data.item.username}
         comment={data.item.text}
         time={moment(data.item.createdAt).from()}
-        marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
+        // marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             if (RbSheetRef) RbSheetRef.close();
@@ -726,6 +727,7 @@ function Player(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
 
             <TextInput
@@ -1157,8 +1159,6 @@ function Player(props) {
         <View
           style={{
             flexDirection: 'row',
-            borderColor: Colors.activityBorderColor,
-            borderBottomWidth: normalise(0.5),
             paddingBottom: normalise(10),
           }}>
           <Image
@@ -1402,6 +1402,7 @@ function Player(props) {
                 index.toString();
               }}
               showsHorizontalScrollIndicator={false}
+              // ItemSeparatorComponent={Seperator}
             />
           ) : null}
 
@@ -1416,6 +1417,7 @@ function Player(props) {
               index.toString();
             }}
             showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
           />
         </View>
       </RBSheet>

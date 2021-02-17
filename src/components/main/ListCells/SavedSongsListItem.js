@@ -130,7 +130,7 @@
 //     onPressSecondImage: null
 // }
 
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -180,8 +180,9 @@ function SavedSongListItem(props) {
       style={{
         width: '90%',
         alignSelf: 'center',
+        marginBottom: normalise(16),
         marginTop: normalise(16),
-        marginBottom: props.marginBottom,
+        // marginBottom: props.marginBottom,
       }}>
       <View
         style={{
@@ -195,7 +196,9 @@ function SavedSongListItem(props) {
           }}>
           <Image
             source={
-              props.image === '' ? ImagePath.profiletrack4 : {uri: props.image}
+              props.image === ''
+                ? ImagePath.profiletrack4
+                : { uri: props.image }
             }
             style={{
               height: normalise(40),
@@ -300,21 +303,13 @@ function SavedSongListItem(props) {
               }}>
               <Image
                 source={ImagePath.threedots}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
         )}
       </View>
-
-      <View
-        style={{
-          marginTop: normalise(16),
-          borderBottomWidth: normalise(0.5),
-          borderBottomColor: Colors.activityBorderColor,
-        }}
-      />
     </TouchableOpacity>
   );
 }

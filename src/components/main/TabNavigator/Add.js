@@ -13,6 +13,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -331,6 +332,7 @@ function AddSong(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           )}
         </SafeAreaView>

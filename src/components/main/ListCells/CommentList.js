@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -17,20 +17,20 @@ function CommentList(props) {
       style={{
         width: props.width,
         alignSelf: 'center',
-        marginTop: normalise(15),
-        marginBottom: props.marginBottom,
+        marginTop: normalise(16),
+        marginBottom: normalise(16),
       }}>
       <View
         style={{
           flexDirection: 'row',
         }}>
-        <View style={{width: '13%'}}>
+        <View style={{ width: '13%' }}>
           <TouchableOpacity
             onPress={() => {
               onPressImage();
             }}>
             <Image
-              source={props.image === '' ? ImagePath.dp1 : {uri: props.image}}
+              source={props.image === '' ? ImagePath.dp1 : { uri: props.image }}
               style={{
                 height: normalise(30),
                 width: normalise(30),
@@ -84,14 +84,6 @@ function CommentList(props) {
         }}>
         {props.comment}
       </Text>
-
-      <View
-        style={{
-          marginTop: normalise(15),
-          borderBottomWidth: normalise(0.5),
-          borderBottomColor: Colors.activityBorderColor,
-        }}
-      />
     </View>
   );
 }
