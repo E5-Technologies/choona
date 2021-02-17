@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -25,9 +25,9 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
-import {loginRequest} from '../../action/UserAction';
+import { loginRequest } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
   AppleButton,
@@ -37,7 +37,7 @@ import appleAuth, {
   AppleAuthCredentialState,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
+import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
 
 let user = null;
 let status = '';
@@ -214,7 +214,8 @@ function SignUp(props) {
   // console.log(loginType);
   //VIEW
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View
+      style={{ flex: 1, backgroundColor: Colors.black, position: 'relative' }}>
       {Platform.OS === 'android' ? (
         <MyStatusBar />
       ) : (
@@ -224,19 +225,29 @@ function SignUp(props) {
         />
       )}
 
-      <View style={{height: '50%'}}>
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          left: 0,
+          height: normalise(375),
+        }}>
         <Image
           source={ImagePath.albumsPic}
           style={{
+            height: normalise(300),
             width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
           }}
+          resizeMode="contain"
         />
 
         <Image
           source={ImagePath.applogo}
-          style={{height: normalise(40), alignSelf: 'center'}}
+          style={{
+            height: normalise(40),
+            alignSelf: 'center',
+          }}
           resizeMode="contain"
         />
       </View>
@@ -248,6 +259,10 @@ function SignUp(props) {
           alignItems: 'center',
           justifyContent: 'flex-end',
           paddingHorizontal: normalise(16),
+          position: 'absolute',
+          bottom: normalise(0),
+          left: 0,
+          right: 0,
         }}>
         <TouchableOpacity
           style={{
@@ -259,7 +274,7 @@ function SignUp(props) {
             borderWidth: normalise(1),
             borderColor: Colors.darkerblack,
             shadowColor: '#000',
-            shadowOffset: {width: 0, height: 5},
+            shadowOffset: { width: 0, height: 5 },
             shadowOpacity: 0.36,
             shadowRadius: 6.68,
             elevation: 11,
@@ -304,7 +319,7 @@ function SignUp(props) {
               backgroundColor: Colors.white,
               borderWidth: normalise(0.5),
               shadowColor: '#000',
-              shadowOffset: {width: 0, height: 5},
+              shadowOffset: { width: 0, height: 5 },
               shadowOpacity: 0.36,
               shadowRadius: 6.68,
               elevation: 11,
