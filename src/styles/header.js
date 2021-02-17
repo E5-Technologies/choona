@@ -1,4 +1,4 @@
-import {Platform, StyleSheet} from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import Colors from '../assests/Colors';
 import normalise from '../utils/helpers/Dimens';
@@ -63,6 +63,16 @@ const HeaderStyles = StyleSheet.create({
   rightItem: {
     position: 'absolute',
     right: normalise(16),
+  },
+  rightItemIcon: {},
+  rightItemNotification: {
+    backgroundColor: Colors.red,
+    height: 10,
+    width: 10,
+    borderRadius: 10,
+    position: 'absolute',
+    top: 0,
+    right: -5,
   },
 });
 

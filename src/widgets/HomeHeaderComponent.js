@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 import ImagePath from '../assests/ImagePath';
 import PropTypes from 'prop-types';
@@ -39,7 +39,9 @@ function HomeHeaderComponent(props) {
             }}>
             <Image
               source={
-                props.staticFirstImage ? props.imageone : {uri: props.imageone}
+                props.staticFirstImage
+                  ? props.imageone
+                  : { uri: props.imageone }
               }
               style={{
                 height: props.imageoneheight,
@@ -74,21 +76,14 @@ function HomeHeaderComponent(props) {
           <>
             <Image
               source={props.imagetwo}
-              style={{height: props.imagetwoheight, width: props.imagetwowidth}}
+              style={{
+                height: props.imagetwoheight,
+                width: props.imagetwowidth,
+              }}
               resizeMode="contain"
             />
             {props.notRead ? (
-              <View
-              // style={{
-              //   backgroundColor: Colors.red,
-              //   height: 10,
-              //   width: 10,
-              //   borderRadius: 10,
-              //   position: 'absolute',
-              //   top: 0,
-              //   right: -5,
-              // }}
-              />
+              <View style={HeaderStyles.rightItemNotification} />
             ) : null}
           </>
         )}
