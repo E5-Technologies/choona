@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
+import Seperator from '../ListCells/Seperator';
+
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import StatusBar from '../../../utils/MyStatusBar';
@@ -962,6 +964,7 @@ function Search(props) {
                 index.toString();
               }}
               showsHorizontalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           ) : null}
 
@@ -976,6 +979,7 @@ function Search(props) {
               index.toString();
             }}
             showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
           />
         </View>
       </RBSheet>
@@ -1336,6 +1340,7 @@ function Search(props) {
                   renderItem={renderUserData}
                   keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
+                  ItemSeparatorComponent={Seperator}
                 />
               </View>
             )

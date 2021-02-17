@@ -29,6 +29,7 @@ import {
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
+import Seperator from './ListCells/Seperator';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -167,8 +168,7 @@ function HomeItemReaction(props) {
   //   //  setModalReact(x)
   // }
 
-  function renderItem(data) {
-    // console.log(data);
+  function renderItem(data, test) {
     if (props.userProfileResp._id === data.item.user_id) {
       return (
         <ActivityListItem
@@ -176,12 +176,6 @@ function HomeItemReaction(props) {
           user={data.item.username}
           type={false}
           image2={'123'}
-          //  bottom={data.index === reaction1.length - 1 ? true : false}
-          // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
-          //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-          marginBottom={
-            data.index === reactionList.length - 1 ? normalise(40) : 0
-          }
           onPressImage={() => {
             props.navigation.navigate('Profile', { fromAct: false });
           }}
@@ -194,12 +188,6 @@ function HomeItemReaction(props) {
           image={constants.profile_picture_base_url + data.item.profile_image}
           user={data.item.username}
           follow={!data.item.isFollowing}
-          //  bottom={data.index === reaction1.length - 1 ? true : false}
-          // marginBottom={data.index === reaction1.length - 1 ? normalise(10) : normalise(0)}
-          //onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-          marginBottom={
-            data.index === reactionList.length - 1 ? normalise(40) : 0
-          }
           onPress={() => {
             props.followReq({ follower_id: data.item.user_id });
           }}
@@ -215,6 +203,7 @@ function HomeItemReaction(props) {
   }
 
   function renderItemWithHeader(data) {
+    // console.log(data);
     return (
       <View
         style={{
@@ -225,7 +214,7 @@ function HomeItemReaction(props) {
         }}>
         <View
           style={{
-            marginTop: normalise(10),
+            // marginTop: normalise(10),
             width: '100%',
             height: normalise(42),
             justifyContent: 'center',
@@ -245,6 +234,7 @@ function HomeItemReaction(props) {
 
         <FlatList
           data={data.item.data}
+          test={data}
           renderItem={renderItem}
           keyExtractor={(item, index) => {
             index.toString();
@@ -253,6 +243,7 @@ function HomeItemReaction(props) {
             item.toString();
           }}
           showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={Seperator}
         />
       </View>
     );

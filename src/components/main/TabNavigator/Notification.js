@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import Colors from '../../../assests/Colors';
@@ -326,6 +327,7 @@ function Notification(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
 
             {_.isEmpty(props.activityListPrevious) ? null : (
@@ -358,6 +360,7 @@ function Notification(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
             />
           </ScrollView>
         )}

@@ -15,6 +15,7 @@ import ImagePath from '../../../assests/ImagePath';
 import PropTypes from 'prop-types';
 
 function ActivityListItem(props) {
+  // console.log(props.user, props.bottom);
   const [follow, setFollow] = useState(props.follow);
 
   const onPress = () => {
@@ -154,15 +155,16 @@ function ActivityListItem(props) {
           </TouchableOpacity>
         )}
       </View>
-
-      {props.bottom ? null : (
+      {/* {props.bottom ? (
         <View
           style={{
             borderBottomWidth: normalise(0.5),
             borderBottomColor: Colors.activityBorderColor,
           }}
         />
-      )}
+      ) : (
+        <View />
+      )} */}
     </View>
   );
 }

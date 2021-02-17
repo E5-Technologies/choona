@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -254,6 +255,7 @@ function UsersFromContacts(props) {
                 index.toString();
               }}
               renderItem={renderUserItem}
+              ItemSeparatorComponent={Seperator}
             />
           )}
         </SafeAreaView>
