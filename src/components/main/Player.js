@@ -1355,6 +1355,8 @@ function Player(props) {
               backgroundColor: Colors.fadeblack,
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '85%',

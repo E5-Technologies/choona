@@ -558,6 +558,8 @@ function InsideaMessage(props) {
               backgroundColor: Colors.fadeblack,
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '85%',
@@ -780,6 +782,8 @@ function InsideaMessage(props) {
               alignSelf: 'center',
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '100%',

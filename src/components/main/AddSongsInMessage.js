@@ -396,6 +396,8 @@ function AddSongsInMessage(props) {
 
           <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '100%',
@@ -626,6 +628,8 @@ function AddSongsInMessage(props) {
                   backgroundColor: Colors.fadeblack,
                 }}>
                 <TextInput
+                  autoCorrect={false}
+                  keyboardAppearance={'dark'}
                   style={{
                     height: normalise(35),
                     width: '85%',

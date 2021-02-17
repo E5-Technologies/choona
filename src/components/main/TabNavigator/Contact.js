@@ -686,6 +686,8 @@ function Contact(props) {
               backgroundColor: Colors.fadeblack,
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '85%',
@@ -921,6 +923,8 @@ function Contact(props) {
                 color: Colors.white,
                 paddingLeft: normalise(30),
               }}
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               value={search}
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}

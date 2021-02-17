@@ -913,6 +913,8 @@ function Search(props) {
               backgroundColor: Colors.fadeblack,
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '85%',
@@ -1135,7 +1137,7 @@ function Search(props) {
                   alignSelf: 'center',
                   fontSize: normalise(12),
                 }}>
-                TOP 50
+                POPULAR
               </Text>
 
               {genreSearch ? (
@@ -1196,6 +1198,8 @@ function Search(props) {
                 color: Colors.white,
                 paddingLeft: normalise(30),
               }}
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               value={
                 usersSearch
                   ? usersSearchText
@@ -1207,7 +1211,7 @@ function Search(props) {
                 usersSearch
                   ? 'Search Users'
                   : genreSearch
-                  ? 'Search Top 50 Songs '
+                  ? 'Search Popular Songs'
                   : 'Search Songs'
               }
               placeholderTextColor={Colors.darkgrey}
@@ -1301,7 +1305,7 @@ function Search(props) {
                     width: '80%',
                     alignSelf: 'center',
                     borderRadius: normalise(25),
-                    backgroundColor: Colors.darkerblack,
+                    backgroundColor: Colors.white,
                     borderWidth: normalise(0.5),
                     shadowColor: '#000',
                     shadowOffset: { width: 0, height: 4 },
@@ -1319,7 +1323,7 @@ function Search(props) {
                   <Text
                     style={{
                       marginLeft: normalise(10),
-                      color: Colors.white,
+                      color: Colors.darkerblack,
                       fontSize: normalise(12),
                       fontWeight: 'bold',
                     }}>

@@ -261,6 +261,8 @@ function Following(props) {
               alignSelf: 'center',
             }}>
             <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '100%',
