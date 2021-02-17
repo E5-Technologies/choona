@@ -929,7 +929,11 @@ function InsideaMessage(props) {
                 />
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(10),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     let saveSongObject = {
                       song_uri:
@@ -973,7 +977,11 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     setModalVisible(!modalVisible), bottomSheetRef.open();
                   }}>
@@ -1004,7 +1012,12 @@ function InsideaMessage(props) {
                       toast('Success', 'Song copied to clipboard.');
                     }, 1000);
                   }}
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+
+                    alignItems: 'center',
+                  }}>
                   <Image
                     source={ImagePath.more_copy}
                     style={{ height: normalise(18), width: normalise(18) }}
@@ -1022,7 +1035,11 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     if (props.chatData.length > 1) {
                       let deleteMessagPayload = {
@@ -1059,7 +1076,11 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     if (
                       props.searchedChatData[positionInArray]
@@ -1125,7 +1146,11 @@ function InsideaMessage(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     if (props.userProfileResp.register_type === 'spotify')

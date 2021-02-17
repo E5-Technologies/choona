@@ -17,8 +17,8 @@ function CommentList(props) {
       style={{
         width: props.width,
         alignSelf: 'center',
-        marginTop: normalise(16),
-        marginBottom: normalise(16),
+        marginTop: normalise(12),
+        marginBottom: normalise(12),
       }}>
       <View
         style={{

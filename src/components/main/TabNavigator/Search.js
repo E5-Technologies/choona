@@ -470,7 +470,11 @@ function Search(props) {
             />
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(10) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(10),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 let saveSongObject = {
                   song_uri: props.searchPostData[positionInArray].song_uri,
@@ -508,7 +512,11 @@ function Search(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -531,7 +539,11 @@ function Search(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 Clipboard.setString(
                   props.searchPostData[positionInArray].song_uri,
@@ -558,7 +570,11 @@ function Search(props) {
               </Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity style={{ flexDirection: 'row', marginTop: normalise(18) }}
+            {/* <TouchableOpacity  style={{
+                flexDirection: 'row',
+                marginTop: normalise(10),
+                alignItems: 'center',
+              }}
                             onPress={() => {
                                 setModalVisible(!modalVisible)
                                 setSearchPostData([]);

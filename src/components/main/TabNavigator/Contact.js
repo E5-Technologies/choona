@@ -233,7 +233,11 @@ function Contact(props) {
             />
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(10) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(10),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 props.unsaveSongReq(props.savedSong[index]._id),
                   setModalVisible(!modalVisible);
@@ -255,7 +259,11 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -278,7 +286,11 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 Clipboard.setString(props.savedSong[index].original_song_uri);
                 setModalVisible(!modalVisible);
@@ -304,7 +316,11 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 if (
                   props.savedSong[index].original_reg_type ===
@@ -369,7 +385,11 @@ function Contact(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 if (props.userProfileResp.register_type === 'spotify')

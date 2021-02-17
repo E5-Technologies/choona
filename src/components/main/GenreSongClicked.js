@@ -322,15 +322,14 @@ function GenreSongClicked(props) {
   const MorePressed = () => {
     return (
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          //Alert.alert("Modal has been closed.");
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
         }}>
-        <ImageBackground
-          source={ImagePath.page_gradient}
-          style={styles.centeredView}>
+        <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text
               style={{
@@ -351,7 +350,11 @@ function GenreSongClicked(props) {
             />
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(10) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(10),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 let saveSongObject = {
                   song_uri: props.getPostFromTop50[positionInArray].song_uri,
@@ -391,7 +394,11 @@ function GenreSongClicked(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -414,7 +421,11 @@ function GenreSongClicked(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 Clipboard.setString(
                   props.getPostFromTop50[positionInArray].song_uri,
@@ -468,7 +479,7 @@ function GenreSongClicked(props) {
               CANCEL
             </Text>
           </TouchableOpacity>
-        </ImageBackground>
+        </View>
       </Modal>
     );
   };
@@ -868,17 +879,24 @@ function GenreSongClicked(props) {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 22,
   },
   modalView: {
-    marginBottom: normalise(10),
-    height: normalise(190),
-    width: '95%',
-    backgroundColor: Colors.darkerblack,
+    margin: 20,
+    backgroundColor: 'white',
     borderRadius: 20,
-    padding: 20,
-    paddingTop: normalise(20),
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   openButton: {
     backgroundColor: '#F194FF',

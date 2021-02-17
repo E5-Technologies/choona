@@ -883,7 +883,11 @@ function PostListForUser(props) {
                 />
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(10),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     let saveSongObject = {
                       song_uri: posts[positionInArray].song_uri,
@@ -914,7 +918,11 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     if (bottomSheetRef) {
                       setModalVisible(false), bottomSheetRef.open();
@@ -947,7 +955,11 @@ function PostListForUser(props) {
                       toast('Success', 'Song copied to clipboard.');
                     }, 1000);
                   }}
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}>
                   <Image
                     source={ImagePath.more_copy}
                     style={{ height: normalise(18), width: normalise(18) }}
@@ -965,7 +977,11 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
 
@@ -997,7 +1013,11 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     if (
                       props.postData[positionInArray].userDetails
@@ -1058,7 +1078,11 @@ function PostListForUser(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: normalise(18),
+                    alignItems: 'center',
+                  }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                     if (props.userProfileResp.register_type === 'spotify')

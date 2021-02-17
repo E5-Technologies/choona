@@ -850,7 +850,11 @@ function Player(props) {
             />
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(10) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(10),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 setModalVisible(!modalVisible);
 
@@ -902,7 +906,11 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -925,7 +933,11 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 Clipboard.setString(originalUri);
                 setModalVisible(!modalVisible);
@@ -951,7 +963,11 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 //FOR SPOTIFY USERS
@@ -1039,7 +1055,11 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{ flexDirection: 'row', marginTop: normalise(18) }}
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 if (props.userProfileResp.register_type === 'spotify')
@@ -1489,7 +1509,7 @@ function Player(props) {
                   backgroundColor: Colors.black,
                   justifyContent: 'center',
                   flexDirection: 'row',
-                  marginRight: normalise(16),
+                  marginRight: normalise(4),
                 }}>
                 <TouchableOpacity
                   style={{

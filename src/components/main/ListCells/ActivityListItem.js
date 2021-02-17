@@ -43,8 +43,8 @@ function ActivityListItem(props) {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginTop: normalise(16),
-          marginBottom: normalise(16),
+          marginTop: normalise(12),
+          marginBottom: normalise(12),
         }}>
         <TouchableOpacity
           onPress={() => {
@@ -70,7 +70,7 @@ function ActivityListItem(props) {
           <Text
             style={{
               color: Colors.white,
-              fontSize: normalise(13),
+              fontSize: normalise(11),
               width: '90%',
               marginRight: props.type ? normalise(10) : 0,
               textAlign: 'left',
@@ -95,7 +95,7 @@ function ActivityListItem(props) {
                 <Text style={{ fontFamily: 'ProximaNova-Bold' }}>
                   {props.user}{' '}
                 </Text>
-                commented "{props.comment}"" on your post
+                commented "{props.comment}" on your post
               </>
             ) : props.user ? (
               <Text style={{ fontFamily: 'ProximaNova-Bold' }}>

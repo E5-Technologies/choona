@@ -1404,6 +1404,7 @@ function Home(props) {
               animationType="fade"
               transparent={true}
               visible={modalVisible}
+              presentationStyle={'pageSheet'}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");
               }}>
@@ -1411,26 +1412,12 @@ function Home(props) {
                 source={ImagePath.page_gradient}
                 style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(12),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    MORE
-                  </Text>
-
-                  <View
-                    style={{
-                      backgroundColor: Colors.activityBorderColor,
-                      height: 0.5,
-                      marginTop: normalise(12),
-                      marginBottom: normalise(12),
-                    }}
-                  />
-
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', marginTop: normalise(10) }}
+                    style={{
+                      flexDirection: 'row',
+                      // marginTop: normalise(10),
+                      alignItems: 'center',
+                    }}
                     onPress={() => {
                       let saveSongObject = {
                         song_uri: props.postData[positionInArray].song_uri,
@@ -1461,14 +1448,18 @@ function Home(props) {
                         color: Colors.white,
                         marginLeft: normalise(15),
                         fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Semibold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}>
                       Save Song
                     </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
                     onPress={() => {
                       if (bottomSheetRef) {
                         setModalVisible(false), bottomSheetRef.open();
@@ -1484,7 +1475,7 @@ function Home(props) {
                         color: Colors.white,
                         fontSize: normalise(13),
                         marginLeft: normalise(15),
-                        fontFamily: 'ProximaNova-Semibold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}>
                       Send Song
                     </Text>
@@ -1501,7 +1492,11 @@ function Home(props) {
                         toast('Success', 'Song copied to clipboard.');
                       }, 1000);
                     }}
-                    style={{ flexDirection: 'row', marginTop: normalise(18) }}>
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}>
                     <Image
                       source={ImagePath.more_copy}
                       style={{ height: normalise(18), width: normalise(18) }}
@@ -1512,14 +1507,18 @@ function Home(props) {
                         color: Colors.white,
                         marginLeft: normalise(15),
                         fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Semibold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}>
                       Copy Link
                     </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
                     onPress={() => {
                       setModalVisible(!modalVisible);
 
@@ -1543,7 +1542,7 @@ function Home(props) {
                         color: Colors.white,
                         marginLeft: normalise(15),
                         fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Semibold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}>
                       {!_.isEmpty(props.userProfileResp)
                         ? props.userProfileResp._id ===
@@ -1558,7 +1557,11 @@ function Home(props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
                     onPress={() => {
                       if (
                         props.postData[positionInArray].userDetails
@@ -1610,7 +1613,6 @@ function Home(props) {
                       style={{
                         height: normalise(18),
                         width: normalise(18),
-                        borderRadius: normalise(9),
                       }}
                       resizeMode="contain"
                     />
@@ -1619,7 +1621,7 @@ function Home(props) {
                         color: Colors.white,
                         marginLeft: normalise(15),
                         fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Semibold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}>
                       {!_.isEmpty(props.userProfileResp)
                         ? props.userProfileResp.register_type === 'spotify'
@@ -1630,7 +1632,11 @@ function Home(props) {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', marginTop: normalise(18) }}
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
                     onPress={() => {
                       setModalVisible(!modalVisible);
                       if (props.userProfileResp.register_type === 'spotify')
@@ -1655,7 +1661,7 @@ function Home(props) {
                       style={{
                         height: normalise(18),
                         width: normalise(18),
-                        borderRadius: normalise(9),
+                        // borderRadius: normalise(9),
                       }}
                       resizeMode="contain"
                     />
@@ -1664,40 +1670,41 @@ function Home(props) {
                         color: Colors.white,
                         marginLeft: normalise(15),
                         fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Semibold',
+                        fontFamily: 'ProximaNova-Regular',
                       }}>
                       Add to Playlist
                     </Text>
                   </TouchableOpacity>
-                </View>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setPositionInArray(0);
-                  }}
-                  style={{
-                    marginStart: normalise(20),
-                    marginEnd: normalise(20),
-                    marginBottom: normalise(20),
-                    height: normalise(50),
-                    width: '95%',
-                    backgroundColor: Colors.darkerblack,
-                    opacity: 10,
-                    borderRadius: 20,
-                    // padding: 35,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      setPositionInArray(0);
+                    }}
                     style={{
-                      fontSize: normalise(12),
-                      fontFamily: 'ProximaNova-Bold',
-                      color: Colors.white,
+                      // marginStart: normalise(20),
+                      // marginEnd: normalise(20),
+                      marginTop: normalise(16),
+                      marginBottom: normalise(20),
+                      height: normalise(40),
+                      // width: '95%',
+                      backgroundColor: Colors.fadeblack,
+                      opacity: 10,
+                      borderRadius: 6,
+                      // padding: 35,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    CANCEL
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: normalise(12),
+                        fontFamily: 'ProximaNova-Bold',
+                        color: Colors.white,
+                      }}>
+                      CANCEL
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </ImageBackground>
             </Modal>
           </View>
@@ -1750,14 +1757,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    marginBottom: normalise(10),
-    height: normalise(290),
-    width: '95%',
+    // marginBottom: normalise(10),
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
     backgroundColor: Colors.darkerblack,
     borderRadius: 20,
+    // margin: 20,
     padding: 20,
-    paddingTop: normalise(20),
+    paddingTop: normalise(24),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
+  // centeredView: {
+  //   flex: 1,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   marginTop: 22
+  // },
+  // modalView: {
+  //   margin: 20,
+  //   backgroundColor: "white",
+  //   borderRadius: 20,
+  //   padding: 35,
+  //   alignItems: "center",
+  // },
   openButton: {
     backgroundColor: '#F194FF',
     borderRadius: 20,
