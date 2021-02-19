@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import propTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -50,7 +50,7 @@ export default function ButtonComponent(props) {
         style={{
           color: props.textcolor,
           textAlign: 'center',
-          fontFamily: 'ProximaNova-Extrabld',
+          fontFamily: 'ProximaNova-Bold',
           fontSize: props.fontSize,
         }}>
         {props.title}

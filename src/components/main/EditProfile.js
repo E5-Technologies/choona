@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,8 +11,8 @@ import {
   Alert,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import {tokenRequest} from '../../action/index';
-import {useDispatch, useSelector} from 'react-redux';
+import { tokenRequest } from '../../action/index';
+import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
@@ -22,7 +22,7 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   EDIT_PROFILE_REQUEST,
@@ -92,22 +92,22 @@ function EditProfile(props) {
   const showPickerOptions = () => {
     Alert.alert(
       'Choose Profile Image',
-      'Select from where you want to choose the image',
+      'Select from where you want to choose the image.',
       [
         {
-          text: 'CAMERA',
+          text: 'Camera',
           onPress: () => {
             pickImagewithCamera();
           },
         },
         {
-          text: 'GALLERY',
+          text: 'Gallery',
           onPress: () => {
             pickImagefromGallery();
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -215,7 +215,7 @@ function EditProfile(props) {
     await axios
       .post(
         constants.BASE_URL + '/user/available',
-        {username: username},
+        { username: username },
         {
           headers: {
             Accept: 'application/json',
@@ -234,13 +234,13 @@ function EditProfile(props) {
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: Colors.darkerblack}}
+      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
       behavior="height">
       <StatusBar />
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.black}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -268,7 +268,7 @@ function EditProfile(props) {
               alignItems: 'center',
             }}>
             <Image
-              source={{uri: profilePic}}
+              source={{ uri: profilePic }}
               style={{
                 height: normalise(120),
                 width: normalise(120),
@@ -279,7 +279,7 @@ function EditProfile(props) {
           </View>
 
           <TouchableOpacity
-            style={{marginTop: normalise(10)}}
+            style={{ marginTop: normalise(10) }}
             onPress={() => {
               showPickerOptions();
             }}>
@@ -331,7 +331,7 @@ function EditProfile(props) {
             />
 
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               {loading ? null : (
                 <View>
                   <Picker

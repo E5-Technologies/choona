@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   KeyboardAvoidingView,
@@ -11,8 +11,8 @@ import {
   Platform,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import {tokenRequest} from '../../action/index';
-import {useDispatch, useSelector} from 'react-redux';
+import { tokenRequest } from '../../action/index';
+import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
@@ -29,14 +29,14 @@ import {
   COUNTRY_CODE_SUCCESS,
   COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
-import {signupRequest, getCountryCodeRequest} from '../../action/UserAction';
-import {connect} from 'react-redux';
-import {register} from 'react-native-app-auth';
+import { signupRequest, getCountryCodeRequest } from '../../action/UserAction';
+import { connect } from 'react-redux';
+import { register } from 'react-native-app-auth';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import Picker from '../../utils/helpers/Picker';
-import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
+import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
 let status = '';
 
 function Login(props) {
@@ -107,7 +107,8 @@ function Login(props) {
 
   const [imageDetails, setImageDetails] = useState({});
 
-  const [location, setLocation] = useState('Canada');
+  const [location, setLocation] = useState('United Kingdom');
+  console.log(location);
 
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState('');
@@ -129,22 +130,22 @@ function Login(props) {
   const showPickerOptions = () => {
     Alert.alert(
       'Choose Profile Image',
-      'Select from where you want to choose the image',
+      'Select from where you want to choose the image.',
       [
         {
-          text: 'CAMERA',
+          text: 'Camera',
           onPress: () => {
             pickImagewithCamera();
           },
         },
         {
-          text: 'GALLERY',
+          text: 'Gallery',
           onPress: () => {
             pickImagefromGallery();
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -257,7 +258,7 @@ function Login(props) {
     await axios
       .post(
         constants.BASE_URL + '/user/available',
-        {username: username},
+        { username: username },
         {
           headers: {
             Accept: 'application/json',
@@ -276,13 +277,13 @@ function Login(props) {
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: Colors.black}}
+      style={{ flex: 1, backgroundColor: Colors.black }}
       behavior="height">
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center'}}>
+      <SafeAreaView style={{ flex: 1, width: '90%', alignSelf: 'center' }}>
         <ScrollView
-          style={{height: '90%'}}
+          style={{ height: '90%' }}
           showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -292,13 +293,13 @@ function Login(props) {
               marginTop: normalise(25),
             }}>
             <TouchableOpacity
-              style={{left: normalise(-2), position: 'absolute'}}
+              style={{ left: normalise(-2), position: 'absolute' }}
               onPress={() => {
                 props.navigation.goBack();
               }}>
               <Image
                 source={ImagePath.backicon}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -326,7 +327,7 @@ function Login(props) {
             }}>
             {picture ? (
               <Image
-                source={{uri: profilePic}}
+                source={{ uri: profilePic }}
                 style={{
                   height: normalise(120),
                   width: normalise(120),
@@ -352,7 +353,7 @@ function Login(props) {
           </View>
 
           <TouchableOpacity
-            style={{marginTop: normalise(10)}}
+            style={{ marginTop: normalise(10) }}
             onPress={() => {
               showPickerOptions();
             }}>
@@ -405,8 +406,10 @@ function Login(props) {
               setFullname(text);
             }}
           />
+          {/* {console.log(props.countryCodeRequest, props.countryObject)} */}
 
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View>
               <Picker
                 textColor={Colors.white}
@@ -418,9 +421,11 @@ function Login(props) {
                   codePick == '' ? props.countryCodeRequest[0] : codePick
                 }
                 onPickerItemSelected={(selectedvalue, index) => {
-                  //// console.log(index)
-                  setLocation(props.countryObject[index].name);
-                  // // console.log(props.countryObject[index].name)
+                  var result = props.countryObject.find(obj => {
+                    // console.log({ obj }, { selectedvalue });
+                    return obj.dial_code === selectedvalue.substring(4);
+                  });
+                  setLocation(result.name);
                   setCodePick(selectedvalue);
                 }}
                 //uniqueKey={"areaCode"}
