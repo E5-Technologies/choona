@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -36,7 +36,7 @@ import {
 } from '../../action/UserAction';
 import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import _ from 'lodash';
@@ -161,7 +161,7 @@ function OthersProfile(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <Loader visible={props.status === OTHERS_PROFILE_REQUEST} />
 
       <Loader visible={props.status === HOME_PAGE_REQUEST} />
@@ -174,7 +174,7 @@ function OthersProfile(props) {
       props.status === USER_FOLLOW_UNFOLLOW_SUCCESS ||
       props.status === HOME_PAGE_SUCCESS ||
       props.status === COUNTRY_CODE_SUCCESS ? (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
@@ -201,8 +201,8 @@ function OthersProfile(props) {
                   props.othersProfileresp.profile_image,
               }}
               style={{
-                height: normalise(80),
-                width: normalise(80),
+                height: normalise(68),
+                width: normalise(68),
                 borderRadius: normalise(40),
               }}
             />
@@ -217,17 +217,17 @@ function OthersProfile(props) {
                 style={{
                   color: Colors.white,
                   fontSize: normalise(15),
-                  fontFamily: 'ProximaNovaAW07-Medium',
+                  fontFamily: 'ProximaNova-Bold',
                 }}>
                 {props.othersProfileresp.full_name}
               </Text>
 
               <Text
                 style={{
-                  marginTop: normalise(2),
+                  // marginTop: normalise(2),
                   color: Colors.darkgrey,
                   fontSize: normalise(11),
-                  fontFamily: 'ProximaNovaAW07-Medium',
+                  fontFamily: 'ProximaNova-Regular',
                 }}>
                 {props.othersProfileresp.post !== undefined
                   ? `${props.othersProfileresp.post.length} ${
@@ -238,12 +238,13 @@ function OthersProfile(props) {
 
               <Text
                 style={{
-                  marginTop: normalise(2),
+                  marginTop: normalise(1),
                   color: Colors.darkgrey,
                   fontSize: normalise(11),
-                  fontFamily: 'ProximaNovaAW07-Medium',
+                  fontFamily: 'ProximaNova-Regular',
                 }}>
-                {props.othersProfileresp.location} {flag}
+                {props.othersProfileresp.location}
+                {/* {flag} */}
               </Text>
 
               <View
@@ -263,9 +264,13 @@ function OthersProfile(props) {
                     style={{
                       color: Colors.darkgrey,
                       fontSize: normalise(11),
-                      fontFamily: 'ProximaNova-Semibold',
+                      fontFamily: 'ProximaNova-Regular',
                     }}>
-                    <Text style={{color: Colors.white}}>
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>
                       {props.othersProfileresp.following}
                     </Text>{' '}
                     Following
@@ -284,9 +289,13 @@ function OthersProfile(props) {
                       marginLeft: normalise(10),
                       color: Colors.darkgrey,
                       fontSize: normalise(11),
-                      fontFamily: 'ProximaNova-Semibold',
+                      fontFamily: 'ProximaNova-Regular',
                     }}>
-                    <Text style={{color: Colors.white}}>
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>
                       {props.othersProfileresp.follower}
                     </Text>{' '}
                     Followers
@@ -303,12 +312,14 @@ function OthersProfile(props) {
               marginTop: normalise(20),
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-around',
+              // justifyContent: 'space-around',
             }}>
             <TouchableOpacity
               style={{
                 height: normalise(30),
-                width: '45%',
+                width: '100%',
+                marginRight: normalise(8),
+                maxWidth: normalise(120),
                 borderRadius: normalise(15),
                 backgroundColor: Colors.white,
                 alignItems: 'center',
@@ -331,7 +342,7 @@ function OthersProfile(props) {
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: normalise(11),
+                  fontSize: normalise(10),
                   color: Colors.black,
                   fontFamily: 'ProximaNova-Bold',
                 }}>
@@ -342,7 +353,9 @@ function OthersProfile(props) {
             <TouchableOpacity
               style={{
                 height: normalise(30),
-                width: '45%',
+                width: '100%',
+                maxWidth: normalise(120),
+
                 borderRadius: normalise(15),
                 backgroundColor: props.othersProfileresp.isFollowing
                   ? Colors.fadeblack
@@ -352,11 +365,11 @@ function OthersProfile(props) {
               }}
               onPress={() => {
                 setIsFollowing(!isFollowing),
-                  props.followReq({follower_id: id});
+                  props.followReq({ follower_id: id });
               }}>
               <Text
                 style={{
-                  fontSize: normalise(11),
+                  fontSize: normalise(10),
                   color: props.othersProfileresp.isFollowing
                     ? Colors.white
                     : Colors.black,
@@ -437,7 +450,7 @@ function OthersProfile(props) {
                       uri: JSON.parse(props.othersProfileresp.feature_song)[0]
                         .song_pic,
                     }}
-                    style={{height: normalise(40), width: normalise(40)}}
+                    style={{ height: normalise(40), width: normalise(40) }}
                   />
 
                   <Image
@@ -501,7 +514,11 @@ function OthersProfile(props) {
 
           {_.isEmpty(props.othersProfileresp.post) ? (
             <View
-              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -524,7 +541,7 @@ function OthersProfile(props) {
             </View>
           ) : (
             <FlatList
-              style={{paddingTop: normalise(10)}}
+              style={{ paddingTop: normalise(10) }}
               data={props.othersProfileresp.post}
               renderItem={renderProfileData}
               keyExtractor={(item, index) => {

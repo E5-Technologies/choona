@@ -323,8 +323,8 @@ function Profile(props) {
                 props.userProfileResp.profile_image,
             }}
             style={{
-              height: normalise(80),
-              width: normalise(80),
+              height: normalise(68),
+              width: normalise(68),
               borderRadius: normalise(40),
             }}
           />
@@ -346,22 +346,23 @@ function Profile(props) {
 
             <Text
               style={{
-                marginTop: normalise(2),
+                // marginTop: normalise(2),
                 color: Colors.darkgrey,
                 fontSize: normalise(11),
-                fontFamily: 'ProximaNovaAW07-Medium',
+                fontFamily: 'ProximaNova-Regular',
               }}>
               {props.userProfileResp.username}
             </Text>
 
             <Text
               style={{
-                marginTop: normalise(2),
+                marginTop: normalise(1),
                 color: Colors.darkgrey,
                 fontSize: normalise(11),
-                fontFamily: 'ProximaNovaAW07-Medium',
+                fontFamily: 'ProximaNova-Regular',
               }}>
-              {props.userProfileResp.location} {flag}
+              {props.userProfileResp.location}
+              {/* {flag} */}
             </Text>
 
             <View
@@ -378,7 +379,7 @@ function Profile(props) {
                   style={{
                     color: Colors.darkgrey,
                     fontSize: normalise(11),
-                    fontFamily: 'ProximaNova-Semibold',
+                    fontFamily: 'ProximaNova-Regular',
                   }}>
                   <Text
                     style={{
@@ -397,15 +398,15 @@ function Profile(props) {
                 }}>
                 <Text
                   style={{
-                    marginLeft: normalise(10),
+                    marginLeft: normalise(8),
                     color: Colors.darkgrey,
                     fontSize: normalise(11),
-                    fontFamily: 'ProximaNova-Semibold',
+                    fontFamily: 'ProximaNova-Regular',
                   }}>
                   <Text
                     style={{
                       color: Colors.white,
-                      fontFamily: 'ProximaNova-Semibold',
+                      fontFamily: 'ProximaNova-Regular',
                     }}>
                     {props.userProfileResp.follower}
                   </Text>{' '}
@@ -466,6 +467,7 @@ function Profile(props) {
                     color: Colors.white,
                     fontSize: normalise(9),
                     fontFamily: 'ProximaNova-Bold',
+                    opacity: 0.5,
                   }}>
                   FEATURED TRACK
                 </Text>
@@ -473,8 +475,8 @@ function Profile(props) {
                 <Text
                   style={{
                     width: '70%',
-                    marginTop: normalise(2),
-                    fontFamily: 'ProximaNova-Semibold',
+                    marginTop: normalise(1),
+                    fontFamily: 'ProximaNova-Regular',
                     color: Colors.white,
                     fontSize: normalise(10),
                   }}>
