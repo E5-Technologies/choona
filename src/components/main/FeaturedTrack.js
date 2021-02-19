@@ -192,6 +192,10 @@ function FeaturedTrack(props) {
   };
 
   function renderItem(data) {
+    if (data.item === null) {
+      return false;
+    }
+
     return (
       <SavedSongsListItem
         image={

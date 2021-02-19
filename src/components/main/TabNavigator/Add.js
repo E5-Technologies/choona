@@ -68,24 +68,28 @@ function AddSong(props) {
   }
 
   function renderItem(data) {
+    if (data.item === null) {
+      return false;
+    }
+
     return (
       <SavedSongsListItem
         image={
-          props.registerType === 'spotify'
+          props.registerType === 'spotify' && data.item
             ? data.item.album.images.length > 1
               ? data.item.album.images[0].url
               : 'qwe'
-            : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300')
+            : data.item?.attributes.artwork.url.replace('{w}x{h}', '300x300')
         }
         title={
-          props.registerType === 'spotify'
+          props.registerType === 'spotify' && data.item
             ? data.item.name
-            : data.item.attributes.name
+            : data.item?.attributes.name
         }
         singer={
-          props.registerType === 'spotify'
+          props.registerType === 'spotify' && data.item
             ? singerList(data.item.artists)
-            : data.item.attributes.artistName
+            : data.item?.attributes.artistName
         }
         marginRight={normalise(50)}
         marginBottom={
@@ -167,12 +171,11 @@ function AddSong(props) {
     );
   }
 
+  console.log(data);
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
-
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -185,7 +188,6 @@ function AddSong(props) {
             thirditemtext={true}
             texttwo={''}
           />
-
           <View
             style={{
               width: '92%',
@@ -220,7 +222,6 @@ function AddSong(props) {
                 }
               }}
             />
-
             <Image
               source={ImagePath.searchicongrey}
               style={{
@@ -231,7 +232,6 @@ function AddSong(props) {
               }}
               resizeMode="contain"
             />
-
             {search === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
@@ -259,7 +259,6 @@ function AddSong(props) {
               </TouchableOpacity>
             )}
           </View>
-
           {_.isEmpty(data) ? null : (
             <View
               style={{
@@ -286,7 +285,6 @@ function AddSong(props) {
                 }}>{` RESULTS (${props.spotifyResponse.length})`}</Text>
             </View>
           )}
-
           {_.isEmpty(data) ? (
             <View
               style={{

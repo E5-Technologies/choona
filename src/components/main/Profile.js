@@ -717,8 +717,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     // marginBottom: normalise(10),
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     bottom: 0,
     left: 0,
     right: 0,

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,7 +13,7 @@ import {
   AppState,
 } from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
@@ -22,15 +22,15 @@ import {
   createBottomTabNavigator,
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
-import {useDispatch, useSelector} from 'react-redux';
-import {getTokenRequest} from './src/action/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTokenRequest } from './src/action/index';
 import Colors from './src/assests/Colors';
 import ImagePath from './src/assests/ImagePath';
 import normalise from './src/utils/helpers/Dimens';
 
-import {getChatListRequest} from './src/action/MessageAction';
+import { getChatListRequest } from './src/action/MessageAction';
 
-import {getProfileRequest} from './src/action/UserAction';
+import { getProfileRequest } from './src/action/UserAction';
 
 import Splash from './src/components/SplashComponent/Splash';
 
@@ -63,10 +63,10 @@ import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
 import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts';
-import {generateDeviceToken} from './src/utils/helpers/FirebaseToken';
+import { generateDeviceToken } from './src/utils/helpers/FirebaseToken';
 import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
-import {editProfileRequest} from './src/action/UserAction';
+import { editProfileRequest } from './src/action/UserAction';
 import firebase from '@react-native-firebase/messaging';
 import _ from 'lodash';
 
@@ -132,7 +132,7 @@ const App = () => {
         tabBarOptions={{
           activeBackgroundColor: Colors.darkerblack,
           inactiveBackgroundColor: Colors.darkerblack,
-          safeAreaInsets: {bottom: 0},
+          safeAreaInsets: { bottom: 0 },
           style: {
             height: Platform.OS === 'android' ? normalise(45) : normalise(68),
             borderTopColor: Colors.fadeblack,
@@ -142,7 +142,7 @@ const App = () => {
           name="Home"
           component={Home}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 style={{
                   marginTop:
@@ -165,7 +165,7 @@ const App = () => {
           name="Search"
           component={Search}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 style={{
                   marginTop:
@@ -190,7 +190,7 @@ const App = () => {
           name="Add"
           component={AddSong}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 style={{
                   marginTop:
@@ -213,7 +213,7 @@ const App = () => {
           name="Notification"
           component={Notification}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <View>
                 <Image
                   style={{
@@ -260,7 +260,7 @@ const App = () => {
           name="Contact"
           component={Contact}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 style={{
                   marginTop:
@@ -292,13 +292,13 @@ const App = () => {
       <NavigationContainer>
         {TokenReducer.token === null ? (
           <Stack.Navigator
-            screenOptions={{headerShown: false}}
+            screenOptions={{ headerShown: false }}
             initialRouteName={'Login'}>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="SignUp" component={SignUp} />
           </Stack.Navigator>
         ) : (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="bottomTab" component={BottomTab} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="EditProfile" component={EditProfile} />

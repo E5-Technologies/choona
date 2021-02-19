@@ -175,6 +175,9 @@ function Contact(props) {
   }
 
   function renderItem(data) {
+    if (data.item === null) {
+      return false;
+    }
     return (
       <SavedSongsListItem
         image={data.item.song_image}
@@ -1040,8 +1043,8 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
     backgroundColor: Colors.darkerblack,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     // margin: 20,
     padding: 20,
     paddingTop: normalise(24),

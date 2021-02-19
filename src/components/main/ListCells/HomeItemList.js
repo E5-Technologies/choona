@@ -610,7 +610,7 @@ HomeItemList.propTypes = {
   image: PropTypes.string,
   title: PropTypes.string,
   onPress: PropTypes.func,
-  onPressImage: PropTypes.bool,
+  onPressImage: PropTypes.any,
   singer: PropTypes.string,
   marginBottom: PropTypes.number,
   change: PropTypes.bool,

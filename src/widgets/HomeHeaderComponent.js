@@ -38,11 +38,7 @@ function HomeHeaderComponent(props) {
               onPressFirstItem();
             }}>
             <Image
-              source={
-                props.staticFirstImage
-                  ? props.imageone
-                  : { uri: props.imageone }
-              }
+              source={{ uri: props.imageone ?? props.imageone }}
               style={{
                 height: props.imageoneheight,
                 width: props.imageonewidth,
@@ -75,7 +71,7 @@ function HomeHeaderComponent(props) {
         ) : (
           <>
             <Image
-              source={props.imagetwo}
+              source={props.imagetwo ?? props.imagetwo}
               style={{
                 height: props.imagetwoheight,
                 width: props.imagetwowidth,
@@ -98,7 +94,7 @@ HomeHeaderComponent.propTypes = {
   firstitemtext: PropTypes.bool,
   thirditemtext: PropTypes.bool,
   imageone: PropTypes.string,
-  imagetwo: PropTypes.string,
+  imagetwo: PropTypes.number,
   textone: PropTypes.string,
   texttwo: PropTypes.string,
   title: PropTypes.string,

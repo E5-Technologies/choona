@@ -173,6 +173,9 @@ function InsideaMessage(props) {
 
   function renderItem(data) {
     // console.log(JSON.stringify(data.item.userDeletedArr));
+    if (data.item === null) {
+      return false;
+    }
 
     return (
       <View>
@@ -1269,8 +1272,8 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
     backgroundColor: Colors.darkerblack,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     // margin: 20,
     padding: 20,
     paddingTop: normalise(24),
