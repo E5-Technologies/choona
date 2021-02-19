@@ -207,17 +207,18 @@ function SavedSongListItem(props) {
             }}
             resizeMode="contain"
           />
-
-          <Image
-            source={ImagePath.play}
-            style={{
-              height: normalise(23),
-              width: normalise(23),
-              position: 'absolute',
-              right: '25%',
-              top: '25%',
-            }}
-          />
+          {props.playIcon !== false && (
+            <Image
+              source={ImagePath.play}
+              style={{
+                height: normalise(23),
+                width: normalise(23),
+                position: 'absolute',
+                right: '25%',
+                top: '25%',
+              }}
+            />
+          )}
         </TouchableOpacity>
 
         <View
@@ -325,6 +326,7 @@ SavedSongListItem.propTypes = {
   marginBottom: PropTypes.number,
   change: PropTypes.bool,
   image2: PropTypes.any,
+  playIcon: PropTypes.bool,
   onPressSecondImage: PropTypes.func,
   comments: PropTypes.bool,
   marginRight: PropTypes.number,
@@ -344,4 +346,5 @@ SavedSongListItem.defaultProps = {
   comments: false,
   marginRight: normalise(30),
   onPressItem: null,
+  playIcon: true,
 };

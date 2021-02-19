@@ -36,11 +36,6 @@ import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   CHAT_LOAD_REQUEST,
-  CHAT_LOAD_SUCCESS,
-  CHAT_LOAD_FAILURE,
-  SEARCH_MESSAGE_REQUEST,
-  SEARCH_MESSAGE_SUCCESS,
-  SEARCH_MESSAGE_FAILURE,
   GET_USER_FROM_HOME_REQUEST,
   GET_USER_FROM_HOME_SUCCESS,
   GET_USER_FROM_HOME_FAILURE,
@@ -184,12 +179,14 @@ function InsideaMessage(props) {
             props.userProfileResp._id,
           ) ? null : (
             <SavedSongsListItem
+              playIcon={false}
               image={data.item.image}
               title={data.item.song_name}
               singer={data.item.artist_name}
               comments={data.item.message[data.item.message.length - 1].text}
               onPress={() => {
-                setModalVisible(true), setPositionInArray(data.index);
+                setModalVisible(true);
+                setPositionInArray(data.index);
               }}
               onPressItem={() => {
                 props.navigation.navigate('Player', {
@@ -252,6 +249,7 @@ function InsideaMessage(props) {
           )
         ) : (
           <SavedSongsListItem
+            playIcon={false}
             image={data.item.image}
             title={data.item.song_name}
             singer={data.item.artist_name}
@@ -900,7 +898,7 @@ function InsideaMessage(props) {
                 marginLeft: normalise(10),
                 color: Colors.gray,
                 fontSize: normalise(14),
-                fontFamily: 'ProximaNova-Extrabld',
+                fontFamily: 'ProximaNova-Bold',
               }}>
               ADD ANOTHER SONG
             </Text>

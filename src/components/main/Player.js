@@ -738,12 +738,13 @@ function Player(props) {
             <TextInput
               style={{
                 height: normalise(35),
-                width: '100%',
+                // width: '100%',
                 backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(17),
                 marginTop: normalise(10),
                 padding: normalise(10),
                 paddingHorizontal: normalise(16),
+                marginHorizontal: normalise(16),
                 color: Colors.white,
                 paddingRight: normalise(50),
               }}

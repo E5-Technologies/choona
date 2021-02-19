@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 
 import ImagePath from '../assests/ImagePath';
@@ -44,8 +44,10 @@ function InsideMessegeHeader(props) {
               onPressFirstItem();
             }}>
             <Image
-              source={{uri: props.imageone}}
+              source={{ uri: props.imageone }}
               style={{
+                borderWidth: normalise(1),
+                borderColor: Colors.darkerblack,
                 borderRadius: normalise(25),
                 height: normalise(25),
                 width: normalise(25),
@@ -53,9 +55,9 @@ function InsideMessegeHeader(props) {
               resizeMode="contain"
             />
             <Image
-              source={{uri: props.imagesecond}}
+              source={{ uri: props.imagesecond }}
               style={{
-                borderWidth: normalise(0.5),
+                borderWidth: normalise(1),
                 borderColor: Colors.darkerblack,
                 height: normalise(25),
                 width: normalise(25),

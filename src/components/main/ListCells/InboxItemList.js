@@ -102,16 +102,17 @@ function InboxListItem(props) {
               {props.description}
             </Text>
           </View>
-
-          <View
-            style={{
-              height: normalise(12),
-              width: normalise(12),
-              borderRadius: normalise(6),
-              alignSelf: 'center',
-              backgroundColor: props.read ? Colors.black : Colors.red,
-            }}
-          />
+          {!props.read && (
+            <View
+              style={{
+                height: normalise(12),
+                width: normalise(12),
+                borderRadius: normalise(6),
+                alignSelf: 'center',
+                backgroundColor: Colors.red,
+              }}
+            />
+          )}
         </View>
         <TouchableOpacity
           style={{
