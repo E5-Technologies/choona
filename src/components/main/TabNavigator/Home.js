@@ -1252,7 +1252,7 @@ function Home(props) {
                 width: '80%',
                 alignSelf: 'center',
                 borderRadius: normalise(25),
-                backgroundColor: Colors.darkerblack,
+                backgroundColor: Colors.white,
                 borderWidth: normalise(0.5),
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 4 },
@@ -1262,7 +1262,7 @@ function Home(props) {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderColor: Colors.darkerblack,
+                borderColor: Colors.white,
               }}
               onPress={() => {
                 setContactsLoading(true), getContacts();
@@ -1270,7 +1270,7 @@ function Home(props) {
               <Text
                 style={{
                   marginLeft: normalise(10),
-                  color: Colors.white,
+                  color: Colors.darkerblack,
                   fontSize: normalise(12),
                   fontWeight: 'bold',
                 }}>
@@ -1764,7 +1764,8 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
     backgroundColor: Colors.darkerblack,
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     // margin: 20,
     padding: 20,
     paddingTop: normalise(24),

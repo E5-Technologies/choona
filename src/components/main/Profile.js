@@ -176,7 +176,6 @@ function Profile(props) {
                   color: Colors.white,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
-                  textAlign: 'center',
                 }}>
                 Privacy Policy
               </Text>
@@ -188,7 +187,6 @@ function Profile(props) {
                   color: Colors.white,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
-                  textAlign: 'center',
                 }}>
                 Terms of Usage
               </Text>
@@ -213,7 +211,6 @@ function Profile(props) {
                   color: Colors.red,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
-                  textAlign: 'center',
                 }}>
                 Logout
               </Text>
@@ -720,6 +717,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     // marginBottom: normalise(10),
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     bottom: 0,
     left: 0,
     right: 0,

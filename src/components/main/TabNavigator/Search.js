@@ -1298,7 +1298,7 @@ function Search(props) {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderColor: Colors.darkerblack,
+                    borderColor: Colors.white,
                   }}
                   onPress={() => {
                     setContactsLoading(true), getContacts();
@@ -1490,7 +1490,8 @@ const styles = StyleSheet.create({
     right: 0,
     position: 'absolute',
     backgroundColor: Colors.darkerblack,
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     // margin: 20,
     padding: 20,
     paddingTop: normalise(24),
