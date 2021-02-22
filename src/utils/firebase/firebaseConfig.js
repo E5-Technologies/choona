@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 export default (firebaseConfig = {
   apiKey: 'AIzaSyDTjMcpsLByuiKnOcTzE22iQZzvvHYwTjc',
   authDomain: 'choona-8db54.firebaseapp.com',

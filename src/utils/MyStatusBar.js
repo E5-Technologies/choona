@@ -1,6 +1,6 @@
 //import liraries
-import React, {useEffect} from 'react';
-import {View, StatusBar, Platform} from 'react-native';
+import React from 'react';
+import { View, StatusBar, Platform } from 'react-native';
 import propTypes from 'prop-types';
 import StatusBarSizeIOS from 'react-native-status-bar-size';
 import Colors from '../assests/Colors';
@@ -20,8 +20,8 @@ const MyStatusBar = ({
             ? StatusBarSizeIOS.currentHeight
             : StatusBar.currentHeight,
       },
-      {backgroundColor},
-      {opacity},
+      { backgroundColor },
+      { opacity },
     ]}>
     <StatusBar
       translucent

@@ -7,6 +7,7 @@ class FirebaseService {
   constructor() {
     if (!instance) {
       this.app = firebase.initializeApp(firebaseConfig);
+      // eslint-disable-next-line consistent-this
       instance = this;
     }
     return instance;

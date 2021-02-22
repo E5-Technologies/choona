@@ -1,7 +1,7 @@
 import constants from './constants';
 import AsyncStorage from '@react-native-community/async-storage';
-import {authorize, refresh} from 'react-native-app-auth';
-import {getSpotifyApi} from './ApiRequest';
+import { authorize, refresh } from 'react-native-app-auth';
+import { getSpotifyApi } from './ApiRequest';
 import moment from 'moment';
 
 const config = {
@@ -62,12 +62,12 @@ export const getSpotifyToken = async () => {
     let refreshToken = JSON.parse(value).refreshToken;
     let currentTime = moment()
       .utc()
-      .format(`YYYY-MM-DDTHH:mm:ssZ`);
+      .format('YYYY-MM-DDTHH:mm:ssZ');
 
     if (accessTokenExpirationDate > currentTime) {
       return `Bearer ${accessToken}`;
     } else {
-      const result = await refresh(config, {refreshToken: refreshToken});
+      const result = await refresh(config, { refreshToken: refreshToken });
 
       await AsyncStorage.setItem(
         constants.SPOTIFY,

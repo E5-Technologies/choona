@@ -1,5 +1,4 @@
-import React from 'react';
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
 
@@ -41,8 +40,11 @@ export const getDeviceToken = () => {
               } else {
                 AsyncStorage.getItem(deviceToken)
                   .then(value => {
-                    if (value) resolve(value);
-                    else resolve(DUMMY_TOKEN);
+                    if (value) {
+                      resolve(value);
+                    } else {
+                      resolve(DUMMY_TOKEN);
+                    }
                   })
                   .catch(error => {
                     //alert(error)
@@ -53,8 +55,11 @@ export const getDeviceToken = () => {
             .catch(() => {
               AsyncStorage.getItem(deviceToken)
                 .then(value => {
-                  if (value) resolve(value);
-                  else resolve(DUMMY_TOKEN);
+                  if (value) {
+                    resolve(value);
+                  } else {
+                    resolve(DUMMY_TOKEN);
+                  }
                 })
                 .catch(error2 => {
                   //alert(error2)
@@ -63,7 +68,7 @@ export const getDeviceToken = () => {
             });
         })
         .catch(error => {
-          alert(error);
+          // alert(error);
           reject(error);
         });
     } else {
@@ -80,7 +85,9 @@ export const getDeviceToken = () => {
                 if (value) {
                   //// console.log(value)
                   resolve(value);
-                } else resolve(DUMMY_TOKEN);
+                } else {
+                  resolve(DUMMY_TOKEN);
+                }
               })
               .catch(error => {
                 //// console.log(error)
@@ -92,8 +99,11 @@ export const getDeviceToken = () => {
           //// console.log(error)
           AsyncStorage.getItem(deviceToken)
             .then(value => {
-              if (value) resolve(value);
-              else resolve(DUMMY_TOKEN);
+              if (value) {
+                resolve(value);
+              } else {
+                resolve(DUMMY_TOKEN);
+              }
             })
             .catch(error => {
               //// console.log(error)

@@ -1,7 +1,7 @@
 import constants from './constants';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
-import {getAppleDevelopersToken} from './ApiRequest';
+import { getAppleDevelopersToken } from './ApiRequest';
 
 export const getAppleDevToken = async () => {
   try {
@@ -25,7 +25,7 @@ export const getAppleDevToken = async () => {
       const tokenexp = JSON.parse(creds).token_exp;
       const currentTime = moment()
         .utc()
-        .format(`YYYY-MM-DDTHH:mm:sssZ`);
+        .format('YYYY-MM-DDTHH:mm:sssZ');
 
       if (currentTime > tokenexp) {
         // console.log('token expired');

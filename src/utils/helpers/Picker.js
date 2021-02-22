@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -17,14 +17,14 @@ function NewPicker(props) {
   const [itemIndex, setItemIndex] = useState(0);
 
   const [text, setText] = useState(
-    props.selectedValue == '' ? props.emptySelectText : getSelectedValue(),
+    props.selectedValue === '' ? props.emptySelectText : getSelectedValue(),
   );
   const [selValue, setSelValue] = useState(props.selectedValue);
 
   function getSelectedValue() {
-    for (i = 0; i < props.data.length; i++) {
-      if (props.valueParam != '') {
-        if (props.data[i][props.valueParam] == props.selectedValue) {
+    for (i === 0; i < props.data.length; i++) {
+      if (props.valueParam !== '') {
+        if (props.data[i][props.valueParam] === props.selectedValue) {
           return props.data[i][props.itemParam];
         }
       } else {
@@ -43,7 +43,7 @@ function NewPicker(props) {
   }
 
   function onSelectItem(item, itemIndex) {
-    if (props.itemParam == '') {
+    if (props.itemParam === '') {
       setText(item);
     } else {
       setText(
@@ -59,7 +59,7 @@ function NewPicker(props) {
   function onDone() {
     manageShowDropdown(false);
     if (props.data.length > 0) {
-      if (props.valueParam != '') {
+      if (props.valueParam !== '') {
         onSelectItem(props.data[itemIndex][props.valueParam], itemIndex);
       } else {
         onSelectItem(props.data[itemIndex], itemIndex);
@@ -80,7 +80,7 @@ function NewPicker(props) {
   function renderIOSPicker() {
     return (
       <Modal animationType="fade" transparent={true} visible={showDropdown}>
-        <View style={{flex: 1, backgroundColor: 'transparent'}}>
+        <View style={{ flex: 1, backgroundColor: 'transparent' }}>
           <View
             style={{
               width: '100%',
@@ -98,19 +98,19 @@ function NewPicker(props) {
               }}>
               <TouchableOpacity
                 onPress={() => manageShowDropdown(false)}
-                style={{padding: normalize(10)}}>
-                <Text style={{fontSize: normalize(12), color: Colors.blue}}>
+                style={{ padding: normalize(10) }}>
+                <Text style={{ fontSize: normalize(12), color: Colors.blue }}>
                   CANCEL
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={{padding: normalize(10)}}
+                style={{ padding: normalize(10) }}
                 onPress={() => {
                   // console.log('JJJ');
                   onDone();
                 }}>
-                <Text style={{fontSize: normalize(12), color: Colors.blue}}>
+                <Text style={{ fontSize: normalize(12), color: Colors.blue }}>
                   DONE
                 </Text>
               </TouchableOpacity>
@@ -134,9 +134,11 @@ function NewPicker(props) {
                 return (
                   <Picker.Item
                     key={itemIndex.toString()}
-                    label={props.itemParam != '' ? item[props.itemParam] : item}
+                    label={
+                      props.itemParam !== '' ? item[props.itemParam] : item
+                    }
                     value={
-                      props.valueParam != '' ? item[props.valueParam] : item
+                      props.valueParam !== '' ? item[props.valueParam] : item
                     }
                   />
                 );
@@ -156,15 +158,15 @@ function NewPicker(props) {
         height: normalize(45),
         borderRadius: normalize(5),
         padding: normalize(5),
-        marginTop: Platform.OS == 'android' ? normalize(43.5) : normalize(37),
+        marginTop: Platform.OS === 'android' ? normalize(43.5) : normalize(37),
       }}>
-      {props.placeholder != '' ? (
-        <Text style={{fontSize: normalize(12), marginBottom: normalize(5)}}>
+      {props.placeholder !== '' ? (
+        <Text style={{ fontSize: normalize(12), marginBottom: normalize(5) }}>
           {props.placeholder}
         </Text>
       ) : null}
 
-      {Platform.OS == 'ios' ? (
+      {Platform.OS === 'ios' ? (
         <TouchableOpacity
           activeOpacity={0.6}
           disabled={!props.editable}
@@ -211,8 +213,8 @@ function NewPicker(props) {
             return (
               <Picker.Item
                 key={index}
-                label={props.itemParam != '' ? item[props.itemParam] : item}
-                value={props.valueParam != '' ? item[props.valueParam] : item}
+                label={props.itemParam !== '' ? item[props.itemParam] : item}
+                value={props.valueParam !== '' ? item[props.valueParam] : item}
               />
             );
           })}
