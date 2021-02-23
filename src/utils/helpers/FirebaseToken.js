@@ -1,7 +1,5 @@
 import { Platform } from 'react-native';
-
 import messaging from '@react-native-firebase/messaging';
-
 import AsyncStorage from '@react-native-community/async-storage';
 
 const DUMMY_TOKEN = '';

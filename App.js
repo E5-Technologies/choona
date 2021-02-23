@@ -63,12 +63,14 @@ import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
 import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts';
-import { generateDeviceToken } from './src/utils/helpers/FirebaseToken';
+import { getDeviceToken } from './src/utils/helpers/FirebaseToken';
 import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
 import { editProfileRequest } from './src/action/UserAction';
 import firebase from '@react-native-firebase/messaging';
 import _ from 'lodash';
+import OneSignal from 'react-native-onesignal';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -88,33 +90,49 @@ const App = () => {
     //   dispatch(getProfileRequest());
     // });
 
+    function _handleAppStateChange() {
+      if (AppState.currentState.match(/inactive|background/)) {
+        let formdata = new FormData();
+        formdata.append('badge_count', 0);
+        isInternetConnected()
+          .then(() => {
+            dispatch(editProfileRequest(formdata));
+          })
+          .catch(err => {
+            toast('Oops', 'Please Connect To Internet');
+          });
+      } else if (AppState.currentState === 'active') {
+        getChatListRequest, dispatch(getChatListRequest());
+        dispatch(getProfileRequest());
+        console.log('zxcv', 'App is in active Mode.');
+      }
+    }
     AppState.addEventListener('change', _handleAppStateChange);
-
     return () => {
       AppState.removeEventListener('change', _handleAppStateChange);
       // unsuscribe();
     };
+  }, [dispatch]);
+
+  useEffect(() => {
+    /* O N E S I G N A L   S E T U P */
+    OneSignal.setAppId('095694b1-0a59-42ec-bd9c-d60a09bd60a9');
+    OneSignal.setLogLevel(6, 0);
+    OneSignal.setRequiresUserPrivacyConsent(false);
+    OneSignal.promptForPushNotificationsWithUserResponse(response => {
+      console.log('Prompt response:', response);
+    });
   }, []);
 
-  function _handleAppStateChange() {
-    if (AppState.currentState.match(/inactive|background/)) {
-      let formdata = new FormData();
-
-      formdata.append('badge_count', 0);
-
-      isInternetConnected()
-        .then(() => {
-          dispatch(editProfileRequest(formdata));
-        })
-        .catch(err => {
-          toast('Oops', 'Please Connect To Internet');
-        });
-    } else if (AppState.currentState === 'active') {
-      getChatListRequest, dispatch(getChatListRequest());
-      dispatch(getProfileRequest());
-      console.log('zxcv', 'App is in active Mode.');
-    }
-  }
+  useEffect(() => {
+    (async () => {
+      const { userId } = await OneSignal.getDeviceState();
+      AsyncStorage.setItem('deviceToken', userId);
+    })();
+    getDeviceToken().then(token => {
+      console.log({ token });
+    });
+  });
 
   // const TabBar = (props) => (
   //   <View>
