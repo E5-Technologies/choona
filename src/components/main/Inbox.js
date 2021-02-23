@@ -106,14 +106,10 @@ function Inbox(props) {
   }
 
   function sortArray(value) {
-    const res = value.sort((a, b) => {
-      // // console.log('yooo' + new Date(Object.values(a)[0].time))
-      return (
-        new Date(Object.values(b)[0].time) - new Date(Object.values(a)[0].time)
-      );
-    });
-    // // console.log('Sort' + JSON.stringify(res));
-    setMessageList(res);
+    const sortedMessages = []
+      .concat(value)
+      .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
+    setMessageList(sortedMessages);
   }
 
   function filterArray(keyword) {
