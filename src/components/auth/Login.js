@@ -38,14 +38,25 @@ import appleAuth, {
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
 import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
+import OneSignal from 'react-native-onesignal';
 
 let user = null;
 let status = '';
 
 function SignUp(props) {
+  const [token2, setToken] = useState(undefined);
   const [userDetails, setUserDetails] = useState({});
   const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
   const [loginType, setLoginType] = useState('');
+
+  console.log(token2);
+
+  useEffect(() => {
+    (async () => {
+      const { userId } = await OneSignal.getDeviceState();
+      setToken(userId);
+    })();
+  });
 
   useEffect(() => {
     fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
@@ -60,27 +71,30 @@ function SignUp(props) {
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
-          getDeviceToken()
-            .then(token => {
-              let payload = {
-                social_id: value.id,
-                social_type: 'spotify',
-                deviceToken: token,
-                deviceType: Platform.OS,
-              };
+          // getDeviceToken()
+          //   .then(token => {
+          //     // console.log(token);
+          let payload = {
+            social_id: value.id,
+            social_type: 'spotify',
+            deviceToken: token2,
+            deviceType: Platform.OS,
+          };
 
-              props.loginRequest(payload);
-            })
-            .catch(err => {
-              let payload = {
-                social_id: value.id,
-                social_type: 'spotify',
-                deviceToken: '',
-                deviceType: Platform.OS,
-              };
+          console.log({ payload });
 
-              props.loginRequest(payload);
-            });
+          props.loginRequest(payload);
+          // })
+          // .catch(err => {
+          //   let payload = {
+          //     social_id: value.id,
+          //     social_type: 'spotify',
+          //     deviceToken: '',
+          //     deviceType: Platform.OS,
+          //   };
+
+          //   props.loginRequest(payload);
+          // });
         }
       })
       .catch(error => {
@@ -157,6 +171,7 @@ function SignUp(props) {
   function appleLoginWithOurServer(appleData) {
     getDeviceToken()
       .then(token => {
+        console.log(token);
         signInwithApple(appleData, token);
       })
       .catch(err => {
@@ -166,6 +181,7 @@ function SignUp(props) {
 
   // API REQUEST
   function signInwithApple(appleData, token) {
+    console.log({ appleData }, { token });
     // isInternetConnected().then(() => {
 
     var appleSignUpObject = {};
@@ -173,7 +189,7 @@ function SignUp(props) {
     appleSignUpObject.social_id = 'user' in appleData ? appleData.user : '';
     appleSignUpObject.social_type = 'apple';
     appleSignUpObject.deviceType = Platform.OS;
-    appleSignUpObject.deviceToken = token;
+    appleSignUpObject.deviceToken = token2;
 
     // console.log('Apple ', appleData);
     props.loginRequest(appleSignUpObject);

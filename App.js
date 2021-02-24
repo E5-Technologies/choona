@@ -129,9 +129,6 @@ const App = () => {
       const { userId } = await OneSignal.getDeviceState();
       AsyncStorage.setItem('deviceToken', userId);
     })();
-    getDeviceToken().then(token => {
-      console.log({ token });
-    });
   });
 
   // const TabBar = (props) => (

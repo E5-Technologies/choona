@@ -77,8 +77,6 @@ target 'Choona' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'RNSound', :path => '../node_modules/react-native-sound'
-  pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
 
   target 'ChoonaTests' do
     inherit! :complete
