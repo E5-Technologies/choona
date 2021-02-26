@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
-import axios from 'axios';
 
 import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
@@ -35,6 +34,8 @@ import Loader from '../../widgets/AuthLoader';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 
+import { fetchCommentsOnPost } from '../../helpers/post';
+
 let status;
 
 function HomeItemComments(props) {
@@ -48,19 +49,11 @@ function HomeItemComments(props) {
   const [userComment] = useState(props.route.params.userComment);
 
   useEffect(() => {
-    axios
-      .get(constants.BASE_URL + `/post/comment/list/${props.route.params.id}`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'x-access-token': props.header.token,
-        },
-      })
+    fetchCommentsOnPost(props.route.params.id, props.header.token)
       .then(res => {
         setCommentsLoading(false);
-        // console.log(res);
-        if (res.data.data) {
-          setComments(res.data.data);
+        if (res) {
+          setComments(res);
         }
       })
       .catch(err => {
@@ -97,7 +90,6 @@ function HomeItemComments(props) {
       case COMMENT_ON_POST_SUCCESS:
         status = props.status;
         setCommentText('');
-        console.log(props);
         let data = {};
         data.name = props.commentResp.name;
         data.text = props.commentResp.text;
@@ -114,13 +106,12 @@ function HomeItemComments(props) {
         break;
     }
   }
-  console.log(props);
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
       <Loader visible={commentsLoading} />
       <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
-      <StatusBar backgroundColor={Colors.darkerblack} />
       <SafeAreaView style={styles.safeContainer}>
         <HeaderComponent
           firstitemtext={false}
@@ -195,7 +186,7 @@ function HomeItemComments(props) {
           />
           {commentText !== '' ? (
             <TouchableOpacity
-              style={styles.commentWarning}
+              style={styles.commentFooterPostButton}
               onPress={() => {
                 let commentObject = {
                   post_id: id,
@@ -209,7 +200,7 @@ function HomeItemComments(props) {
                     toast('Error', 'Please Connect To Internet');
                   });
               }}>
-              <Text style={styles.commentFooterPostButton}>POST</Text>
+              <Text style={styles.commentFooterPostButtonText}>POST</Text>
             </TouchableOpacity>
           ) : null}
         </View>
@@ -292,15 +283,15 @@ const styles = StyleSheet.create({
     paddingTop: normaliseNew(14),
     maxHeight: normaliseNew(100),
   },
-  commentFooterPostButton: {
+  commentFooterPostButtonText: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Bold',
     fontSize: normaliseNew(12),
     position: 'absolute',
     right: normaliseNew(16),
-    bottom: normaliseNew(14),
+    bottom: normaliseNew(16),
   },
-  commentWarning: {
+  commentFooterPostButton: {
     alignItems: 'center',
     justifyContent: 'center',
   },

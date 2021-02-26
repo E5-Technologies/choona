@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
+import normaliseNew from '../../utils/helpers/DimensNew';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import CommentList from '../main/ListCells/CommentList';
@@ -79,6 +80,8 @@ import { createChatTokenRequest } from '../../action/MessageAction';
 import { getUsersFromHome } from '../../action/UserAction';
 import MusicPlayer from '../../widgets/MusicPlayer';
 
+import { fetchCommentsOnPost, fetchReactionsOnPost } from '../../helpers/post';
+
 let RbSheetRef;
 
 let status;
@@ -111,23 +114,12 @@ function Player(props) {
   const [hasSongLoaded, setHasSongLoaded] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
 
-  const [reactions, setSReactions] = useState(
-    props.route.params.changePlayer ? [] : props.route.params.reactions,
-  );
+  const [reactions, setReactions] = useState([]);
+  const [commentData, setCommentData] = useState([]);
 
   //COMMENT ON POST
-  const [commentData, setCommentData] = useState(
-    props.route.params.changePlayer
-      ? props.route.params.comingFromMessage
-        ? getArrayLength(props.route.params.comments)
-        : []
-      : props.route.params.comments,
-  );
   const [id, setId] = useState(props.route.params.id);
   const [commentText, setCommentText] = useState('');
-  const [arrayLength, setArrayLength] = useState(
-    `${commentData.length} ${commentData.length > 1 ? 'COMMENTS' : 'COMMENT'}`,
-  );
 
   const [bool, setBool] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -164,6 +156,25 @@ function Player(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
 
   var myVar;
+
+  useEffect(() => {
+    fetchCommentsOnPost(props.route.params.id, props.header.token)
+      .then(res => {
+        if (res) {
+          setCommentData(res);
+        }
+      })
+      .catch(err => {
+        toast('Error', err);
+      });
+    fetchReactionsOnPost(props.route.params.id, props.header.token)
+      .then(res => {
+        setReactions(res);
+      })
+      .catch(err => {
+        toast('Error', err);
+      });
+  }, [props.header.token, props.route.params.id]);
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -227,16 +238,15 @@ function Player(props) {
       case COMMENT_ON_POST_SUCCESS:
         status = props.status;
         setCommentText('');
-        if (!_.isEmpty(props.commentResp.comment)) {
-          let data =
-            props.commentResp.comment[props.commentResp.comment.length - 1];
-          data.profile_image = props.userProfileResp.profile_image;
+        if (!_.isEmpty(props.commentResp.text)) {
+          let data = {};
+          data.name = props.commentResp.name;
+          data.text = props.commentResp.text;
+          data.createdAt = props.commentResp.createdAt;
+          data.user_id = props.commentResp.user_id;
+          data.post_id = props.commentResp.post_id;
+          data.profile_image = props.commentResp.profile_image;
           commentData.push(data);
-          setArrayLength(
-            `${commentData.length} ${
-              commentData.length > 1 ? 'COMMENTS' : 'COMMENT'
-            }`,
-          );
         } else {
           toast('Error', 'Oops could not find the post');
         }
@@ -702,7 +712,11 @@ function Player(props) {
                     color: Colors.white,
                     fontFamily: 'ProximaNova-Bold',
                   }}>
-                  {arrayLength}
+                  {commentData.length > 0
+                    ? commentData.length === 1
+                      ? '1 COMMENT'
+                      : `${commentData.length} COMMENTS`
+                    : 'COMMENTS'}
                 </Text>
               </TouchableOpacity>
 
@@ -732,92 +746,77 @@ function Player(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
+              // ItemSeparatorComponent={Seperator}
             />
-
-            <TextInput
+            <View
               style={{
-                height: normalise(35),
-                // width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(17),
-                marginTop: normalise(10),
-                padding: normalise(10),
-                paddingHorizontal: normalise(16),
-                marginHorizontal: normalise(16),
-                color: Colors.white,
-                paddingRight: normalise(50),
-              }}
-              placeholder={'Add a comment...'}
-              value={commentText}
-              placeholderTextColor={Colors.white}
-              onChangeText={text => {
-                setCommentText(text);
-              }}
-            />
-
-            {commentText.length > 1 ? (
-              <TouchableOpacity
+                borderColor: Colors.activityBorderColor,
+                borderTopWidth: normaliseNew(1),
+                paddingHorizontal: normaliseNew(16),
+                paddingVertical: normaliseNew(6),
+                position: 'relative',
+              }}>
+              <TextInput
                 style={{
-                  position: 'absolute',
-                  right: normalise(16),
-                  bottom: normalise(10),
+                  backgroundColor: Colors.darkerblack,
+                  borderColor: Colors.activityBorderColor,
+                  borderRadius: normaliseNew(24),
+                  borderWidth: normaliseNew(0.5),
+                  color: Colors.white,
+                  fontFamily: 'ProximaNova-Regular',
+                  fontSize: normaliseNew(14),
+                  height: normaliseNew(48),
+                  paddingBottom: normaliseNew(14),
+                  paddingEnd: normaliseNew(44),
+                  paddingStart: normaliseNew(16),
+                  paddingTop: normaliseNew(14),
+                  maxHeight: normaliseNew(100),
                 }}
-                onPress={() => {
-                  let commentObject = {
-                    post_id: id,
-                    text: commentText,
-                  };
-                  let updateMessagPayload = {};
-
-                  if (comingFromMessage) {
-                    let tempData = commentData;
-                    tempData.push({
-                      profile_image: props.userProfileResp.profile_image,
-                      text: commentText,
-                      username: props.userProfileResp.username,
-                      createdAt: moment().toString(),
-                      user_id: props.userProfileResp._id,
-                    });
-                    setArrayLength(
-                      `${tempData.length} ${
-                        tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
-                      }`,
-                    );
-                    setCommentData(tempData);
-                    setCommentText('');
-
-                    updateMessagPayload = {
-                      ChatId: key,
-                      chatToken: chatToken,
-                      message: commentData,
-                      receiverId: receiverId,
-                      senderId: senderId,
-                      songTitle: songTitle,
-                      artist: artist,
-                    };
-                  }
-                  isInternetConnected()
-                    .then(() => {
-                      comingFromMessage
-                        ? props.updateMessageCommentRequest(updateMessagPayload)
-                        : props.commentOnPost(commentObject);
-                    })
-                    .catch(() => {
-                      toast('Error', 'Please Connect To Internet');
-                    });
-                }}>
-                <Text
+                placeholder={'Add a comment...'}
+                value={commentText}
+                placeholderTextColor={Colors.white}
+                onChangeText={text => {
+                  setCommentText(text);
+                }}
+              />
+              {commentText.length > 1 ? (
+                <TouchableOpacity
                   style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                    top: normalise(-2),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onPress={() => {
+                    let commentObject = {
+                      post_id: id,
+                      text: commentText,
+                    };
+                    let updateMessagPayload = {};
+                    isInternetConnected()
+                      .then(() => {
+                        comingFromMessage
+                          ? props.updateMessageCommentRequest(
+                              updateMessagPayload,
+                            )
+                          : props.commentOnPost(commentObject);
+                      })
+                      .catch(() => {
+                        toast('Error', 'Please Connect To Internet');
+                      });
                   }}>
-                  POST
-                </Text>
-              </TouchableOpacity>
-            ) : null}
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontFamily: 'ProximaNova-Bold',
+                      fontSize: normaliseNew(12),
+                      position: 'absolute',
+                      right: normaliseNew(16),
+                      bottom: normaliseNew(16),
+                    }}>
+                    POST
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
           </View>
         </KeyboardAvoidingView>
       </RBSheet>
@@ -1858,7 +1857,11 @@ function Player(props) {
                       marginLeft: normalise(8),
                       fontFamily: 'ProximaNova-Bold',
                     }}>
-                    {arrayLength}
+                    {commentData.length > 0
+                      ? commentData.length === 1
+                        ? '1 COMMENT'
+                        : `${commentData.length} COMMENTS`
+                      : 'COMMENTS'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -1956,7 +1959,11 @@ function Player(props) {
                       marginLeft: normalise(10),
                       fontFamily: 'ProximaNova-Bold',
                     }}>
-                    {arrayLength}
+                    {commentData.length > 0
+                      ? commentData.length === 1
+                        ? '1 COMMENT'
+                        : `${commentData.length} COMMENTS`
+                      : 'COMMENTS'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -2143,6 +2150,7 @@ const mapStateToProps = state => {
     isrcResp: state.PlayerReducer.getSongFromISRC,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     messageStatus: state.MessageReducer.status,
+    header: state.TokenReducer,
   };
 };
 

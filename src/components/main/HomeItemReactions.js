@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,6 +14,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ActivityListItem from './ListCells/ActivityListItem';
@@ -30,6 +31,9 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import Seperator from './ListCells/Seperator';
+import Loader from '../../widgets/AuthLoader';
+
+import { fetchReactionsOnPost } from '../../helpers/post';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -39,16 +43,30 @@ function HomeItemReaction(props) {
   const [modalReact, setModalReact] = useState('');
   const [search, setSearch] = useState('');
   const [postId] = useState(props.route.params.post_id);
-  const [reactionList, setReactionList] = useState(
-    editArray(props.route.params.reactions),
-  );
+  const [reactionsRes, setReactionsRes] = useState([]);
+  const [reactionList, setReactionList] = useState([]);
+  const [reactionsLoading, setReactionsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchReactionsOnPost(props.route.params.post_id, props.header.token)
+      .then(res => {
+        setReactionsLoading(false);
+        if (res) {
+          setReactionList(editArray(res));
+          setReactionsRes(res);
+        }
+      })
+      .catch(err => {
+        toast('Error', err);
+      });
+  }, [props.header.token, props.route.params.post_id]);
 
   let userId = props.userProfileResp._id;
 
   function editArray(array) {
     var editedList = [];
 
-    array.map((item, index) => {
+    array.map(item => {
       let reactionObject = {};
 
       reactionObject.header = item.text;
@@ -65,15 +83,14 @@ function HomeItemReaction(props) {
   }
 
   function getFilteredData(keyword) {
-    let filterdData = _.filter(props.route.params.reactions, function(item) {
+    let filterdData = _.filter(reactionsRes, function(item) {
       return item.username.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
     });
-
     setReactionList(editArray(filterdData));
   }
 
   function addOrChangeReaction(reaction) {
-    let reactions = props.route.params.reactions;
+    let reactions = reactionsRes;
 
     // console.log('REACTIONS: ' + JSON.stringify(reactions));
 
@@ -124,16 +141,13 @@ function HomeItemReaction(props) {
   };
 
   function hitreact(x) {
-    console.log(x);
     if (!_.isEmpty(reactionList)) {
-      // console.log('here' + JSON.stringify(reactionList));
-
       const present = reactionList.some(
         obj =>
           obj.header.includes(x) &&
           obj.data.some(obj1 => obj1.user_id === userId),
       );
-
+      console.log(present);
       if (present) {
         // console.log('nooo');
         addOrChangeReaction(x);
@@ -250,242 +264,257 @@ function HomeItemReaction(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+      <Loader visible={reactionsLoading} />
+      <StatusBar />
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
             //imagesecond={ImagePath.dp}
             marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
-            title={` ${props.route.params.reactions.length} REACTIONS`}
+            title={
+              reactionList.length > 0
+                ? reactionList.length === 1
+                  ? '1 REACTION'
+                  : `${reactionList.length} REACTIONS`
+                : 'REACTIONS'
+            }
             thirditemtext={false}
             onPressFirstItem={() => {
               props.navigation.goBack();
             }}
           />
-
-          <View style={{ width: '92%', alignSelf: 'center' }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              value={search}
-              onChangeText={text => {
-                setSearch(text), getFilteredData(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), getFilteredData('');
-                }}
+          <View style={{ flex: 1, backgroundColor: Colors.black }}>
+            <View style={{ width: '92%', alignSelf: 'center' }}>
+              <TextInput
+                autoCorrect={false}
+                keyboardAppearance={'dark'}
                 style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+                  height: normalise(35),
+                  width: '100%',
+                  backgroundColor: Colors.fadeblack,
+                  borderRadius: normalise(8),
+                  marginTop: normalise(20),
+                  padding: normalise(10),
+                  color: Colors.white,
+                  paddingLeft: normalise(30),
+                }}
+                placeholder={'Search'}
+                placeholderTextColor={Colors.grey_text}
+                value={search}
+                onChangeText={text => {
+                  setSearch(text);
+                  getFilteredData(text);
+                }}
+              />
 
-          {reactionList.length > 0 ? (
-            <FlatList
-              data={reactionList}
-              renderItem={renderItemWithHeader}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View
-              style={{
-                marginTop: normalise(100),
-                marginHorizontal: normalise(50),
-                alignItems: 'center',
-              }}>
               <Image
-                source={ImagePath.blankreactionbg}
-                style={{ height: normalise(225), width: normalise(225) }}
+                source={ImagePath.searchicongrey}
+                style={{
+                  height: normalise(15),
+                  width: normalise(15),
+                  bottom: normalise(25),
+                  paddingLeft: normalise(30),
+                }}
                 resizeMode="contain"
               />
-              <Text style={{ fontSize: normalise(12), color: Colors.white }}>
-                No results found, please try again later.
-              </Text>
-              {/* <Text style={{ fontSize: normalise(12), color: Colors.white }}>another name</Text> */}
+
+              {search === '' ? null : (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearch('');
+                    getFilteredData('');
+                  }}
+                  style={{
+                    backgroundColor: Colors.black,
+                    padding: 6,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    borderRadius: 2,
+                    position: 'absolute',
+                    right: 0,
+                    bottom:
+                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                    marginRight: normalise(10),
+                  }}>
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(10),
+                      fontWeight: 'bold',
+                    }}>
+                    CLEAR
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
-          )}
 
-          <View
-            style={{
-              position: 'absolute',
-              alignSelf: 'center',
-              bottom: normalise(30),
-              height: normalise(60),
-              width: '92%',
-              justifyContent: 'space-between',
-              borderRadius: normalise(35),
-              backgroundColor: Colors.white,
-              borderWidth: normalise(0.5),
-              // shadowColor: Colors.red,
-              // shadowOffset: {width: 0, height: 5},
-              // shadowOpacity: 0.36,
-              // shadowRadius: 6.68,
-              // elevation: 11,
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderColor: Colors.white,
-              paddingHorizontal: normalise(10),
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[0]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[0]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[1]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[1]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[2]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[2]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[3]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[3]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[4]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[4]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[5]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[5]}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
-            }}>
-            <View style={styles.centeredView}>
-              <Text
+            {reactionList.length > 0 ? (
+              <FlatList
+                data={reactionList}
+                renderItem={renderItemWithHeader}
+                keyExtractor={(item, index) => {
+                  index.toString();
+                }}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : !reactionsLoading ? (
+              <View
                 style={{
-                  fontSize:
-                    Platform.OS === 'android' ? normalise(70) : normalise(100),
+                  marginTop: normalise(100),
+                  marginHorizontal: normalise(50),
+                  alignItems: 'center',
                 }}>
-                {modalReact}
-              </Text>
-            </View>
-          </Modal>
-          {modal1Visible === true ? (
+                <Image
+                  source={ImagePath.blankreactionbg}
+                  style={{ height: normalise(225), width: normalise(225) }}
+                  resizeMode="contain"
+                />
+                <Text style={{ fontSize: normalise(12), color: Colors.white }}>
+                  No results found, please try again later.
+                </Text>
+                {/* <Text style={{ fontSize: normalise(12), color: Colors.white }}>another name</Text> */}
+              </View>
+            ) : (
+              <View />
+            )}
+
             <View
               style={{
                 position: 'absolute',
-                margin: 20,
-                height: normalise(280),
-                width: '92%',
                 alignSelf: 'center',
-                marginHorizontal: normalise(15),
+                bottom: normalise(30),
+                height: normalise(60),
+                width: '92%',
+                justifyContent: 'space-between',
+                borderRadius: normalise(35),
                 backgroundColor: Colors.white,
-                borderRadius: 20,
-                padding: 35,
-                bottom: 110,
-                shadowColor: '#000',
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
+                borderWidth: normalise(0.5),
+                // shadowColor: Colors.red,
+                // shadowOffset: {width: 0, height: 5},
+                // shadowOpacity: 0.36,
+                // shadowRadius: 6.68,
+                // elevation: 11,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderColor: Colors.white,
+                paddingHorizontal: normalise(10),
               }}>
-              <EmojiSelector
-                category={Categories.history}
-                showHistory={true}
-                onEmojiSelected={emoji => {
-                  setModalVisible(true),
-                    setModalReact(emoji),
+              <TouchableOpacity
+                onPress={() => {
+                  hitreact(react[0]);
+                }}>
+                <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
+                  {react[0]}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  hitreact(react[1]);
+                }}>
+                <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
+                  {react[1]}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  hitreact(react[2]);
+                }}>
+                <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
+                  {react[2]}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  hitreact(react[3]);
+                }}>
+                <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
+                  {react[3]}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  hitreact(react[4]);
+                }}>
+                <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
+                  {react[4]}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  hitreact(react[5]);
+                }}>
+                <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
+                  {react[5]}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                //Alert.alert("Modal has been closed.");
+              }}>
+              <View style={styles.centeredView}>
+                <Text
+                  style={{
+                    fontSize:
+                      Platform.OS === 'android'
+                        ? normalise(70)
+                        : normalise(100),
+                  }}>
+                  {modalReact}
+                </Text>
+              </View>
+            </Modal>
+            {modal1Visible === true ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  margin: 20,
+                  height: normalise(280),
+                  width: '92%',
+                  alignSelf: 'center',
+                  marginHorizontal: normalise(15),
+                  backgroundColor: Colors.white,
+                  borderRadius: 20,
+                  padding: 35,
+                  bottom: 110,
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  elevation: 5,
+                }}>
+                <EmojiSelector
+                  category={Categories.history}
+                  showHistory={true}
+                  onEmojiSelected={emoji => {
+                    setModalVisible(true);
+                    setModalReact(emoji);
                     setTimeout(() => {
                       setModalVisible(false);
                     }, 2000);
-                }}
-              />
-            </View>
-          ) : null}
+                  }}
+                />
+              </View>
+            ) : null}
+          </View>
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </View>
@@ -538,6 +567,7 @@ const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
+    header: state.TokenReducer,
   };
 };
 

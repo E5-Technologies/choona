@@ -26,31 +26,6 @@ function HomeItemList(props) {
   const [numberOfLines, setNumberOfLines] = useState(3);
   const [viewMore, setViewMore] = useState(false);
 
-  let fire = [];
-  let heartEyes = [];
-  let dancingGirl = [];
-  let party = [];
-  let laughing = [];
-  let hundred = [];
-
-  // if (props.reactions.length > 0) {
-  //   props.reactions.map((item, index) => {
-  //     if (item.text === react[0]) {
-  //       fire.push(item);
-  //     } else if (item.text === react[1]) {
-  //       heartEyes.push(item);
-  //     } else if (item.text === react[2]) {
-  //       dancingGirl.push(item);
-  //     } else if (item.text === react[3]) {
-  //       party.push(item);
-  //     } else if (item.text === react[4]) {
-  //       laughing.push(item);
-  //     } else if (item.text === react[5]) {
-  //       hundred.push(item);
-  //     }
-  //   });
-  // }
-
   const onPress = () => {
     if (props.onPress) {
       props.onPress();
@@ -266,7 +241,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {fire.length}
+                {props.reactions.fire_count}
               </Text>
             </View>
           </TouchableOpacity>
@@ -292,7 +267,7 @@ function HomeItemList(props) {
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>
-                {heartEyes.length}
+                {props.reactions.fire_count}
               </Text>
             </View>
           </TouchableOpacity>
@@ -322,7 +297,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {dancingGirl.length}
+                {props.reactions.dancer_count}
               </Text>
             </View>
           </TouchableOpacity>
@@ -352,8 +327,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {' '}
-                {party.length}
+                {props.reactions.man_dancing_count}
               </Text>
             </View>
           </TouchableOpacity>
@@ -379,7 +353,7 @@ function HomeItemList(props) {
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>
-                {laughing.length}
+                {props.reactions.face_count}
               </Text>
             </View>
           </TouchableOpacity>
@@ -409,8 +383,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {' '}
-                {hundred.length}
+                {props.reactions.thumbsup_count}
               </Text>
             </View>
           </TouchableOpacity>
