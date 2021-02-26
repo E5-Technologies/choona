@@ -267,7 +267,7 @@ function HomeItemList(props) {
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>
-                {props.reactions.fire_count}
+                {props.reactions.love_count}
               </Text>
             </View>
           </TouchableOpacity>
