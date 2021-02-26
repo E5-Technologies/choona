@@ -33,23 +33,23 @@ function HomeItemList(props) {
   let laughing = [];
   let hundred = [];
 
-  if (props.reactions.length > 0) {
-    props.reactions.map((item, index) => {
-      if (item.text === react[0]) {
-        fire.push(item);
-      } else if (item.text === react[1]) {
-        heartEyes.push(item);
-      } else if (item.text === react[2]) {
-        dancingGirl.push(item);
-      } else if (item.text === react[3]) {
-        party.push(item);
-      } else if (item.text === react[4]) {
-        laughing.push(item);
-      } else if (item.text === react[5]) {
-        hundred.push(item);
-      }
-    });
-  }
+  // if (props.reactions.length > 0) {
+  //   props.reactions.map((item, index) => {
+  //     if (item.text === react[0]) {
+  //       fire.push(item);
+  //     } else if (item.text === react[1]) {
+  //       heartEyes.push(item);
+  //     } else if (item.text === react[2]) {
+  //       dancingGirl.push(item);
+  //     } else if (item.text === react[3]) {
+  //       party.push(item);
+  //     } else if (item.text === react[4]) {
+  //       laughing.push(item);
+  //     } else if (item.text === react[5]) {
+  //       hundred.push(item);
+  //     }
+  //   });
+  // }
 
   const onPress = () => {
     if (props.onPress) {
@@ -562,11 +562,11 @@ function HomeItemList(props) {
                   fontSize: normalise(9),
                   fontFamily: 'ProximaNova-Bold',
                 }}>
-                {props.comments.length > 1
-                  ? `${props.comments.length} COMMENTS`
-                  : props.comments.length === 0
-                  ? `${props.comments.length} COMMENTS`
-                  : `${props.comments.length} COMMENT`}
+                {props.comment_count > 1
+                  ? `${props.comment_count} COMMENTS`
+                  : props.comment_count === 0
+                  ? `${props.comment_count} COMMENTS`
+                  : `${props.comment_count} COMMENT`}
               </Text>
             </TouchableOpacity>
 
@@ -590,11 +590,11 @@ function HomeItemList(props) {
                   fontSize: normalise(9),
                   fontFamily: 'ProximaNova-Bold',
                 }}>
-                {props.reactions.length > 1
-                  ? `${props.reactions.length} REACTIONS`
-                  : props.reactions.length === 0
-                  ? `${props.reactions.length} REACTIONS`
-                  : `${props.reactions.length} REACTION`}
+                {props.reaction_count > 1
+                  ? `${props.reaction_count} REACTIONS`
+                  : props.reaction_count === 0
+                  ? `${props.reaction_count} REACTIONS`
+                  : `${props.reaction_count} REACTION`}
               </Text>
             </TouchableOpacity>
           </View>

@@ -306,8 +306,8 @@ function PostListForUser(props) {
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
-        comments={data.item.comment}
-        reactions={data.item.reaction}
+        comment_count={data.item.comment_count ? data.item.comment_count : 0}
+        reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}

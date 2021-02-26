@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import {
   SafeAreaView,
   View,
@@ -9,65 +10,71 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
 } from 'react-native';
-import normalise from '../../utils/helpers/Dimens';
-import Colors from '../../assests/Colors';
-import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HeaderComponent';
-import CommentList from '../main/ListCells/CommentList';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { connect } from 'react-redux';
 import moment from 'moment';
+import axios from 'axios';
+
+import Colors from '../../assests/Colors';
+import constants from '../../utils/helpers/constants';
+import ImagePath from '../../assests/ImagePath';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import normalise from '../../utils/helpers/Dimens';
+import normaliseNew from '../../utils/helpers/DimensNew';
+import toast from '../../utils/helpers/ShowErrorAlert';
+
 import {
   COMMENT_ON_POST_REQUEST,
   COMMENT_ON_POST_SUCCESS,
   COMMENT_ON_POST_FAILURE,
 } from '../../action/TypeConstants';
 import { commentOnPostReq } from '../../action/UserAction';
+
 import Loader from '../../widgets/AuthLoader';
-import constants from '../../utils/helpers/constants';
-import toast from '../../utils/helpers/ShowErrorAlert';
-import isInternetConnected from '../../utils/helpers/NetInfo';
+import HeaderComponent from '../../widgets/HeaderComponent';
+import CommentList from '../main/ListCells/CommentList';
 
 let status;
 
 function HomeItemComments(props) {
-  // const [type, setType] = useState(props.route.params.type);
-  // const [index, setIndex] = useState(props.route.params.index);
-
-  const [commentData] = useState(props.route.params.comment);
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [commentText, setCommentText] = useState('');
+  const [id] = useState(props.route.params.id);
   const [image] = useState(props.route.params.image);
+  const [time] = useState(props.route.params.time);
   const [username] = useState(props.route.params.username);
   const [userComment] = useState(props.route.params.userComment);
 
-  const [time] = useState(props.route.params.time);
-  const [id] = useState(props.route.params.id);
-
-  const [commentText, setCommentText] = useState('');
-  const [arrayLength, setArrayLength] = useState(
-    `${commentData.length} ${
-      commentData.length > 1
-        ? 'COMMENTS'
-        : commentData < 1
-        ? 'COMMENTS'
-        : 'COMMENT'
-    }`,
-  );
+  useEffect(() => {
+    axios
+      .get(constants.BASE_URL + `/post/comment/list/${props.route.params.id}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-access-token': props.header.token,
+        },
+      })
+      .then(res => {
+        setCommentsLoading(false);
+        // console.log(res);
+        if (res.data.data) {
+          setComments(res.data.data);
+        }
+      })
+      .catch(err => {
+        toast('Error', err);
+      });
+  }, [props.header.token, props.route.params.id]);
 
   function renderItem(data) {
     return (
       <CommentList
         image={constants.profile_picture_base_url + data.item.profile_image}
-        name={data.item.username}
+        name={data.item.name}
         comment={data.item.text}
         time={moment(data.item.createdAt).from()}
-        marginBottom={
-          data.index === commentData.length - 1
-            ? Platform.OS === 'android'
-              ? normalise(80)
-              : normalise(50)
-            : normalise(0)
-        }
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             props.navigation.navigate('Profile', { fromAct: false });
@@ -90,15 +97,15 @@ function HomeItemComments(props) {
       case COMMENT_ON_POST_SUCCESS:
         status = props.status;
         setCommentText('');
-        let data =
-          props.commentResp.comment[props.commentResp.comment.length - 1];
-        data.profile_image = props.userProfileResp.profile_image;
-        commentData.push(data);
-        setArrayLength(
-          `${commentData.length} ${
-            commentData.length > 1 ? 'COMMENTS' : 'COMMENT'
-          }`,
-        );
+        console.log(props);
+        let data = {};
+        data.name = props.commentResp.name;
+        data.text = props.commentResp.text;
+        data.createdAt = props.commentResp.createdAt;
+        data.user_id = props.commentResp.user_id;
+        data.post_id = props.commentResp.post_id;
+        data.profile_image = props.commentResp.profile_image;
+        comments.push(data);
         break;
 
       case COMMENT_ON_POST_FAILURE:
@@ -107,114 +114,66 @@ function HomeItemComments(props) {
         break;
     }
   }
-
+  console.log(props);
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
-      behavior="height">
+    <KeyboardAvoidingView style={styles.container} behavior="height">
+      <Loader visible={commentsLoading} />
       <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.safeContainer}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={arrayLength}
+          title={
+            comments.length > 0
+              ? comments.length === 1
+                ? '1 COMMENT'
+                : `${comments.length} COMMENTS`
+              : 'COMMENTS'
+          }
           thirditemtext={false}
           marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}
         />
-        <View
-          style={{
-            // width: '90%',
-            // alignSelf: 'center',
-            backgroundColor: Colors.darkerblack,
-            paddingLeft: normalise(16),
-            paddingRight: normalise(16),
-            paddingTop: normalise(12),
-            borderBottomWidth: normalise(0.5),
-            borderColor: Colors.fadeblack,
-            paddingBottom: normalise(12),
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.5,
-            shadowRadius: 8,
-            elevation: 11,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-            }}>
-            <TouchableOpacity style={{ justifyContent: 'center' }}>
+        <View style={styles.commentHeader}>
+          <View style={styles.commentHeaderDetails}>
+            <TouchableOpacity style={styles.commentHeaderAvatarButton}>
+              {/* <Image
+                source={ImagePath.play}
+                style={{
+                  height: normalise(20),
+                  width: normalise(20),
+                  position: 'absolute',
+                  alignSelf: 'center',
+                }}
+              /> */}
               <Image
                 source={{ uri: image }}
-                style={{ height: normalise(60), width: normalise(60) }}
+                style={styles.commentHeaderAvatar}
                 resizeMode="contain"
               />
-
-              {/* <Image source={ImagePath.play}
-                                style={{
-                                    height: normalise(20), width: normalise(20), position: 'absolute',
-                                    alignSelf: 'center'
-                                }} /> */}
             </TouchableOpacity>
+            <View style={styles.commentHeaderInfoContainer}>
+              <View style={styles.commentHeaderInfoTop}>
+                <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
 
-            <View style={{ marginLeft: normalise(10) }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  width: normalise(230),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'ProximaNova-Semibold',
-                  }}>
-                  {username}
-                </Text>
-
-                <Text
-                  style={{
-                    marginEnd: normalise(12.5),
-                    color: Colors.grey_text,
-                    fontSize: normalise(10),
-                    fontFamily: 'ProximaNovaAW07-Medium',
-                  }}>
+                <Text style={styles.commentHeaderInfoTime}>
                   {moment(time).from()}
                 </Text>
               </View>
-
               <View>
-                <Text
-                  style={{
-                    width: normalise(218),
-                    color: Colors.white,
-                    fontSize: normalise(11),
-                    marginTop: normalise(2),
-                    fontFamily: 'ProximaNovaAW07-Medium',
-                  }}>
+                <Text style={styles.commentHeaderInfoComment}>
                   {userComment}
                 </Text>
               </View>
             </View>
           </View>
-
-          {/* <View
-            style={{
-              marginTop: normalise(12),
-              // borderBottomWidth: normalise(0.5),
-              borderBottomColor: Colors.activityBorderColor,
-            }}
-          /> */}
         </View>
-
         <SwipeListView
-          data={commentData}
+          data={comments}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => {
@@ -223,34 +182,10 @@ function HomeItemComments(props) {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-
-        <View
-          style={{
-            width: '90%',
-            backgroundColor: Colors.fadeblack,
-            borderColor: Colors.activityBorderColor,
-            borderWidth: 1,
-            flexDirection: 'row',
-            padding: normalise(4),
-            borderRadius: normalise(25),
-            marginTop: normalise(20),
-            alignSelf: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            bottom: normalise(20),
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.commentFooterContainer}>
           <TextInput
             multiline
-            style={{
-              width: '80%',
-              maxHeight: normalise(100),
-              fontSize: normalise(11),
-              color: Colors.white,
-              marginTop: Platform.OS === 'android' ? 0 : normalise(6),
-              marginStart: normalise(16),
-              paddingBottom: normalise(10),
-            }}
+            style={styles.commentFooterInput}
             value={commentText}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
@@ -258,13 +193,9 @@ function HomeItemComments(props) {
               setCommentText(text);
             }}
           />
-
           {commentText !== '' ? (
             <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              style={styles.commentWarning}
               onPress={() => {
                 let commentObject = {
                   post_id: id,
@@ -278,15 +209,7 @@ function HomeItemComments(props) {
                     toast('Error', 'Please Connect To Internet');
                   });
               }}>
-              <Text
-                style={{
-                  fontSize: normalise(13),
-                  color: Colors.white,
-                  marginEnd: normalise(10),
-                  fontWeight: 'bold',
-                }}>
-                POST
-              </Text>
+              <Text style={styles.commentFooterPostButton}>POST</Text>
             </TouchableOpacity>
           ) : null}
         </View>
@@ -295,14 +218,100 @@ function HomeItemComments(props) {
   );
 }
 
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.darkerblack },
+  safeContainer: { flex: 1 },
+  commentHeader: {
+    backgroundColor: Colors.darkerblack,
+    paddingLeft: normaliseNew(16),
+    paddingRight: normaliseNew(16),
+    paddingTop: normaliseNew(12),
+    borderBottomWidth: normaliseNew(0.5),
+    borderColor: Colors.fadeblack,
+    paddingBottom: normaliseNew(12),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 11,
+  },
+  commentHeaderDetails: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  commentHeaderAvatarButton: { justifyContent: 'center' },
+  commentHeaderAvatar: {
+    borderRadius: normaliseNew(4),
+    height: normaliseNew(64),
+    width: normaliseNew(64),
+  },
+  commentHeaderInfoContainer: {
+    flex: 1,
+    marginLeft: normaliseNew(16),
+  },
+  commentHeaderInfoTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  commentHeaderInfoUsername: {
+    color: Colors.white,
+    fontSize: normaliseNew(13),
+    fontFamily: 'ProximaNova-Semibold',
+  },
+  commentHeaderInfoTime: {
+    color: Colors.grey_text,
+    fontSize: normaliseNew(12),
+    fontFamily: 'ProximaNova-Regular',
+  },
+  commentHeaderInfoComment: {
+    color: Colors.white,
+    fontSize: normaliseNew(12),
+    lineHeight: normaliseNew(15),
+    marginTop: normaliseNew(2),
+    fontFamily: 'ProximaNova-Regular',
+  },
+  commentFooterContainer: {
+    borderColor: Colors.activityBorderColor,
+    borderTopWidth: normaliseNew(1),
+    paddingHorizontal: normaliseNew(16),
+    paddingVertical: normaliseNew(6),
+    position: 'relative',
+  },
+  commentFooterInput: {
+    backgroundColor: Colors.darkerblack,
+    borderColor: Colors.activityBorderColor,
+    borderRadius: normaliseNew(24),
+    borderWidth: normaliseNew(0.5),
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normaliseNew(14),
+    height: normaliseNew(48),
+    paddingBottom: normaliseNew(14),
+    paddingEnd: normaliseNew(44),
+    paddingStart: normaliseNew(16),
+    paddingTop: normaliseNew(14),
+    maxHeight: normaliseNew(100),
+  },
+  commentFooterPostButton: {
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Bold',
+    fontSize: normaliseNew(12),
+    position: 'absolute',
+    right: normaliseNew(16),
+    bottom: normaliseNew(14),
+  },
+  commentWarning: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
-    postData: state.UserReducer.postData,
-    searchData: state.PostReducer.searchPost,
     commentResp: state.UserReducer.commentResp,
     userProfileResp: state.UserReducer.userProfileResp,
-    getPostFromTop50: state.PostReducer.getPostFromTop50,
+    header: state.TokenReducer,
   };
 };
 

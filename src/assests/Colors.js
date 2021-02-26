@@ -8,7 +8,7 @@ const Colors = {
   blue: '##449C8C',
   red: '#e24f4f',
   facebookblue: '#3e63ab',
-  grey_text: '#929294',
+  grey_text: '#979797',
   activityBorderColor: '#25262A',
   emoji_board: '#EAEAEC',
 };

@@ -569,8 +569,8 @@ function Home(props) {
         }
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
-        comments={data.item.comment}
-        reactions={data.item.reaction}
+        comment_count={data.item.comment_count ? data.item.comment_count : 0}
+        reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
@@ -600,31 +600,12 @@ function Home(props) {
         onPressMusicbox={() => {
           if (!homeReq) {
             playSong(data);
-
-            // props.navigation.navigate('Player', {
-            //   comments: data.item.comment,
-            //   song_title: data.item.song_name,
-            //   album_name: data.item.album_name,
-            //   song_pic: data.item.song_image,
-            //   username: data.item.userDetails.username,
-            //   profile_pic: data.item.userDetails.profile_image,
-            //   time: data.item.time, title: data.item.title,
-            //   uri: data.item.song_uri,
-            //   reactions: data.item.reaction,
-            //   id: data.item._id,
-            //   artist: data.item.artist_name,
-            //   changePlayer: changePlayer,
-            //   originalUri: data.item.original_song_uri !== "" ? data.item.original_song_uri : undefined,
-            //   registerType: data.item.userDetails.register_type,
-            //   isrc: data.item.isrc_code,
-            //   details: data.item
-            // });
           }
         }}
         onPressReactionbox={() => {
           if (!homeReq) {
             props.navigation.navigate('HomeItemReactions', {
-              reactions: data.item.reaction,
+              // reactions: data.item.reaction,
               post_id: data.item._id,
             });
           }

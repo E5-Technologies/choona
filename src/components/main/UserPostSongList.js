@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,14 +18,14 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
   USER_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
-import {getProfileRequest, userLogoutReq} from '../../action/UserAction';
+import { getProfileRequest, userLogoutReq } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -86,8 +86,8 @@ function UserPostSongList(props) {
         image={data.item.song_image}
         //picture={data.item.userDetails.profile_image}
         //name={data.item.userDetails.username}
-        comments={data.item.comment}
-        reactions={data.item.reaction}
+        comment_count={data.item.comment_count ? data.item.comment_count : 0}
+        reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
@@ -99,9 +99,11 @@ function UserPostSongList(props) {
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           } else {
-            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
+            props.navigation.navigate('OthersProfile', {
+              id: data.item.user_id,
+            });
           }
         }}
         onAddReaction={() => {
@@ -136,7 +138,7 @@ function UserPostSongList(props) {
           });
         }}
         onPressCommentbox={() => {
-          props.navigation.navigate('HomeItemComments', {index: data.index});
+          props.navigation.navigate('HomeItemComments', { index: data.index });
         }}
         onPressSecondImage={() => {
           setPositionInArray(data.index);
@@ -159,13 +161,13 @@ function UserPostSongList(props) {
           paddingTop: normalise(10),
         }}>
         <TouchableOpacity
-          style={{marginRight: normalise(10)}}
+          style={{ marginRight: normalise(10) }}
           onPress={() => {
             props.navigation.goBack();
           }}>
           <Image
             source={ImagePath.backicon}
-            style={{height: normalise(15), width: normalise(15)}}
+            style={{ height: normalise(15), width: normalise(15) }}
             resizeMode="contain"
           />
         </TouchableOpacity>
@@ -183,7 +185,11 @@ function UserPostSongList(props) {
       </View>
 
       <SafeAreaView
-        style={{flex: 1, alignItems: 'center', backgroundColor: Colors.black}}>
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: Colors.black,
+        }}>
         <FlatList
           data={postData}
           renderItem={renderItem}
