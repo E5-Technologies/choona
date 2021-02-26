@@ -766,7 +766,7 @@ function Player(props) {
                   fontFamily: 'ProximaNova-Regular',
                   fontSize: normaliseNew(14),
                   height: normaliseNew(48),
-                  paddingBottom: normaliseNew(14),
+                  paddingBottom: normaliseNew(12),
                   paddingEnd: normaliseNew(44),
                   paddingStart: normaliseNew(16),
                   paddingTop: normaliseNew(14),
