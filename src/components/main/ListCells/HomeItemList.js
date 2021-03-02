@@ -241,7 +241,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {props.reactions.fire_count ? props.reactions.fire_count : 0}
+                {props.reactions ? props.reactions.fire_count : 0}
               </Text>
             </View>
           </TouchableOpacity>
@@ -267,7 +267,7 @@ function HomeItemList(props) {
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>
-                {props.reactions.love_count ? props.reactions.love_count : 0}
+                {props.reactions ? props.reactions.love_count : 0}
               </Text>
             </View>
           </TouchableOpacity>
@@ -297,9 +297,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {props.reactions.dancer_count
-                  ? props.reactions.dancer_count
-                  : 0}
+                {props.reactions ? props.reactions.dancer_count : 0}
               </Text>
             </View>
           </TouchableOpacity>
@@ -329,9 +327,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {props.reactions.man_dancing_count
-                  ? props.reactions.man_dancing_count
-                  : 0}
+                {props.reactions ? props.reactions.man_dancing_count : 0}
               </Text>
             </View>
           </TouchableOpacity>
@@ -357,7 +353,7 @@ function HomeItemList(props) {
                 top: Platform.OS === 'android' ? 2 : 0,
               }}>
               <Text style={{ fontFamily: 'ProximaNova-Semibold' }}>
-                {props.reactions.face_count ? props.reactions.face_count : 0}
+                {props.reactions ? props.reactions.face_count : 0}
               </Text>
             </View>
           </TouchableOpacity>
@@ -387,9 +383,7 @@ function HomeItemList(props) {
                   fontFamily: 'ProximaNova-Bold',
                   fontSize: normalise(10),
                 }}>
-                {props.reactions.thumbsup_count
-                  ? props.reactions.thumbsup_count
-                  : 0}
+                {props.reactions ? props.reactions.thumbsup_count : 0}
               </Text>
             </View>
           </TouchableOpacity>
