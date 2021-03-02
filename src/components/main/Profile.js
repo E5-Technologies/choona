@@ -1,15 +1,13 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Image,
   ImageBackground,
-  Platform,
   Modal,
   Dimensions,
 } from 'react-native';
@@ -37,12 +35,37 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
+import useSWR from 'swr';
+import axios from 'axios';
+
 let status = '';
+
+const postsUrl = constants.BASE_URL + '/user/posts';
 
 function Profile(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [flag, setFlag] = useState('');
   const [activity, setActivity] = useState(props.route.params.fromAct);
+
+  const getPosts = async pageId => {
+    const response = await axios.get(`${postsUrl}?page=${pageId}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
+      },
+    });
+    console.log(response);
+    return await response.data;
+  };
+
+  const [pageId, setPageId] = useState(1);
+  const key = `${postsUrl}?page=${pageId}`;
+  const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
+
+  console.log(posts);
+
+  const profilePosts = posts ? posts.data : [];
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -106,13 +129,13 @@ function Profile(props) {
   }
 
   function getIndex() {
-    let index = props.userProfileResp.post.findIndex(
+    let index = profilePosts.findIndex(
       obj => obj._id === props.route.params.postId,
     );
     if (index !== -1) {
       props.navigation.replace('PostListForUser', {
         profile_name: props.userProfileResp.full_name,
-        posts: props.userProfileResp.post,
+        posts: profilePosts,
         index: index,
       });
     } else {
@@ -126,14 +149,14 @@ function Profile(props) {
         onPress={() => {
           props.navigation.navigate('PostListForUser', {
             profile_name: props.userProfileResp.full_name,
-            posts: props.userProfileResp.post,
+            posts: profilePosts,
             index: data.index,
           });
         }}
         style={{
           margin: normalise(4),
           marginBottom:
-            data.index === props.userProfileResp.post.length - 1
+            data.index === profilePosts.length - 1
               ? normalise(30)
               : normalise(5),
         }}>
@@ -150,7 +173,6 @@ function Profile(props) {
           style={{
             width: Dimensions.get('window').width / 2.1,
             height: Dimensions.get('window').height * 0.22,
-            borderRadius: normalise(10),
           }}
           resizeMode="cover"
         />
@@ -601,7 +623,7 @@ function Profile(props) {
           )}
         </ImageBackground>
 
-        {_.isEmpty(props.userProfileResp.post) ? (
+        {_.isEmpty(profilePosts) ? (
           <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <View
@@ -666,7 +688,7 @@ function Profile(props) {
         ) : (
           <FlatList
             style={{ paddingTop: normalise(10) }}
-            data={props.userProfileResp.post}
+            data={profilePosts}
             renderItem={renderProfileData}
             keyExtractor={(item, index) => {
               index.toString();
@@ -687,6 +709,7 @@ const mapStateToProps = state => {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     countryCode: state.UserReducer.countryCodeOject,
+    header: state.TokenReducer,
   };
 };
 

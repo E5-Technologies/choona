@@ -308,6 +308,14 @@ function PostListForUser(props) {
         name={data.item.userDetails.username}
         comment_count={data.item.comment_count ? data.item.comment_count : 0}
         reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
+        reactions={{
+          fire_count: data.item.fire_count,
+          love_count: data.item.love_count,
+          dancer_count: data.item.dancer_count,
+          man_dancing_count: data.item.man_dancing_count,
+          face_count: data.item.face_count,
+          thumbsup_count: data.item.thumbsup_count,
+        }}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
@@ -749,46 +757,11 @@ function PostListForUser(props) {
             }}>
             NO POSTS YET
           </Text>
-
-          {/* <TouchableOpacity style={{
-    height: normalise(50), width: '80%',
-    borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(1),
-    shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
-    shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
-    alignItems: 'center', justifyContent: 'center'
-  }} >
-    <Image source={ImagePath.facebook}
-      style={{ height: normalise(20), width: normalise(20) }}
-      resizeMode='contain' />
-
-    <Text style={{
-      marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
-      fontWeight: 'bold'
-    }}>CONNECT WITH FACEBOOK</Text>
-
-  </TouchableOpacity>
-
-
-  <TouchableOpacity style={{
-    marginBottom: normalise(30),
-    marginTop: normalise(10), height: normalise(50), width: '80%', alignSelf: 'center',
-    borderRadius: normalise(25), backgroundColor: Colors.darkerblack, borderWidth: normalise(0.5),
-    shadowColor: "#000", shadowOffset: { width: 0, height: 5, }, shadowOpacity: 0.36,
-    shadowRadius: 6.68, elevation: 11, flexDirection: 'row', alignItems: 'center',
-    justifyContent: 'center', borderColor: Colors.grey,
-  }}  >
-
-    <Text style={{
-      marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
-      fontWeight: 'bold'
-    }}>CHECK YOUR PHONEBOOK</Text>
-
-  </TouchableOpacity> */}
         </View>
       ) : (
         <View style={{ flex: 1 }}>
           <FlatList
-            style={{ marginTop: normalise(10) }}
+            // style={{ marginTop: normalise(10) }}
             data={posts}
             renderItem={renderItem}
             initialScrollIndex={props.route.params.index}
@@ -808,27 +781,6 @@ function PostListForUser(props) {
           />
 
           {renderAddToUsers()}
-
-          {/* {props.status === HOME_PAGE_SUCCESS ?
-
-                        <MusicPlayerBar onPress={() => {
-                            props.navigation.navigate("Player",
-                                {
-                                    comments: props.playingSongRef.commentData,
-                                    song_title: props.playingSongRef.song_name,
-                                    album_name: props.playingSongRef.album_name,
-                                    song_pic: props.playingSongRef.song_pic,
-                                    username: props.playingSongRef.username,
-                                    profile_pic: props.playingSongRef.profile_pic,
-                                    uri: props.playingSongRef.uri,
-                                    reactions: props.playingSongRef.reactionData,
-                                    id: props.playingSongRef.id,
-                                    artist: props.playingSongRef.artist,
-                                    changePlayer: props.playingSongRef.changePlayer,
-                                    originalUri: props.playingSongRef.originalUri
-                                })
-                        }} />
-                        : null} */}
 
           <Modal
             animationType="slide"

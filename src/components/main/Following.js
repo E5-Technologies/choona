@@ -349,12 +349,12 @@ function Following(props) {
                     width: '80%',
                     marginTop: normalise(5),
                   }}>
-                  Choona is a lonely place when you aeen't following anyone, See
+                  Choona is a lonely place when you aren't following anyone, See
                   if you already have friends by connecting below
                 </Text>
               </View>
 
-              <Text
+              {/* <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(12),
@@ -363,7 +363,7 @@ function Following(props) {
                   fontWeight: 'bold',
                 }}>
                 FOLLOW SOME OF OUR POPULAR USERS
-              </Text>
+              </Text> */}
 
               <FlatList
                 style={{ marginTop: normalise(10) }}

@@ -88,6 +88,14 @@ function UserPostSongList(props) {
         //name={data.item.userDetails.username}
         comment_count={data.item.comment_count ? data.item.comment_count : 0}
         reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
+        reactions={{
+          fire_count: data.item.fire_count,
+          love_count: data.item.love_count,
+          dancer_count: data.item.dancer_count,
+          man_dancing_count: data.item.man_dancing_count,
+          face_count: data.item.face_count,
+          thumbsup_count: data.item.thumbsup_count,
+        }}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
