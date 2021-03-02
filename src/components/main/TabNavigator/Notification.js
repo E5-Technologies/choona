@@ -1,51 +1,62 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
+  Button,
   FlatList,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import Seperator from '../ListCells/Seperator';
-import normalise from '../../../utils/helpers/Dimens';
-import HeaderComponent from '../../../widgets/HeaderComponent';
-import Colors from '../../../assests/Colors';
-import ActivityListItem from '../ListCells/ActivityListItem';
-import ImagePath from '../../../assests/ImagePath';
-import StatusBar from '../../../utils/MyStatusBar';
-import {
-  activityListReq,
-  userFollowUnfollowRequest,
-  getProfileRequest,
-} from '../../../action/UserAction';
-import {
-  ACTIVITY_LIST_REQUEST,
-  ACTIVITY_LIST_SUCCESS,
-  ACTIVITY_LIST_FAILURE,
-  USER_FOLLOW_UNFOLLOW_REQUEST,
-  USER_FOLLOW_UNFOLLOW_SUCCESS,
-  USER_FOLLOW_UNFOLLOW_FAILURE,
-  USER_PROFILE_REQUEST,
-  EDIT_PROFILE_REQUEST,
-} from '../../../action/TypeConstants';
 import { connect } from 'react-redux';
+import axios from 'axios';
+import useSWR, { useSWRInfinite } from 'swr';
+import moment from 'moment';
+import _ from 'lodash';
+
+import Colors from '../../../assests/Colors';
+import constants from '../../../utils/helpers/constants';
+import normaliseNew from '../../../utils/helpers/DimensNew';
+
+import Loader from '../../../widgets/AuthLoader';
+import StatusBar from '../../../utils/MyStatusBar';
+import ActivitySingle from '../../Activity/ActivitySingle';
+import Seperator from '../ListCells/Seperator';
+import HeaderComponent from '../../../widgets/HeaderComponent';
+import ImagePath from '../../../assests/ImagePath';
+import { getProfileRequest } from '../../../action/UserAction';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
-import Loader from '../../../widgets/AuthLoader';
-import constants from '../../../utils/helpers/constants';
-import _ from 'lodash';
-import { editProfileRequest } from '../../../action/UserAction';
+import {
+  editProfileRequest,
+  userFollowUnfollowRequest,
+} from '../../../action/UserAction';
 
-let status;
+const activityUrl = constants.BASE_URL + '/activity/list';
 
 function Notification(props) {
+  const getActivities = async pageId => {
+    const response = await axios.get(`${activityUrl}?page=${pageId}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
+      },
+    });
+    return await response.data;
+  };
+
+  const [pageId, setPageId] = useState(1);
+  const key = `${activityUrl}?page=${pageId}`;
+  const { data: activities, mutate } = useSWR(key, () => getActivities(pageId));
+
   useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
+    const unsuscribe = props.navigation.addListener('focus', () => {
       isInternetConnected()
         .then(() => {
-          updateProfile(), props.activityListReq();
+          updateProfile();
+          mutate();
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
@@ -56,23 +67,6 @@ function Notification(props) {
       unsuscribe();
     };
   });
-
-  if (status === '' || props.status !== status) {
-    switch (props.status) {
-      case ACTIVITY_LIST_REQUEST:
-        status = props.status;
-        break;
-
-      case ACTIVITY_LIST_SUCCESS:
-        status = props.status;
-        break;
-
-      case ACTIVITY_LIST_FAILURE:
-        status = props.status;
-        toast('Error', 'Something Went Wrong, Please Try Again');
-        break;
-    }
-  }
 
   const updateProfile = () => {
     let formdata = new FormData();
@@ -87,301 +81,141 @@ function Notification(props) {
           }, 1000);
       })
       .catch(err => {
+        console.log(err);
         toast('Oops', 'Please Connect To Internet');
       });
   };
 
-  function renderTodayitem(data) {
-    if (data.item.activity_type === 'following') {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`started following you`}
-          user={data.item.username}
-          follow={!data.item.isFollowing}
-          bottom={
-            data.index === props.activityListToday.length - 1 ? true : false
-          }
-          marginBottom={
-            data.index === props.activityListToday.length - 1
-              ? normalise(4)
-              : normalise(0)
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.followReq({ follower_id: data.item._id });
-          }}
-        />
-      );
-    } else if (data.item.activity_type === 'reaction') {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          reaction={data.item.text}
-          user={data.item.username}
-          type={false}
-          image2={data.item.image}
-          bottom={
-            data.index === props.activityListToday.length - 1 ? true : false
-          }
-          marginBottom={
-            data.index === props.activityListToday.length - 1
-              ? normalise(4)
-              : normalise(0)
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.navigation.navigate('Profile', {
-              postId: data.item.post_id,
-              fromAct: true,
-            });
-          }}
-        />
-      );
-    } else {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          user={data.item.username}
-          comment={data.item.text}
-          type={false}
-          image2={data.item.image}
-          bottom={
-            data.index === props.activityListToday.length - 1 ? true : false
-          }
-          marginBottom={
-            data.index === props.activityListToday.length - 1
-              ? normalise(4)
-              : normalise(0)
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.navigation.navigate('Profile', {
-              postId: data.item.post_id,
-              fromAct: true,
-            });
-          }}
-        />
-      );
-    }
-  }
+  let previous = [];
+  let today = [];
+  let time = moment().format('MM-DD-YYYY');
 
-  function renderPreviousItem(data) {
-    if (data.item.activity_type === 'following') {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          title={`started following you`}
-          user={data.item.username}
-          follow={!data.item.isFollowing}
-          bottom={
-            data.index === props.activityListPrevious.length - 1 ? true : false
-          }
-          marginBottom={
-            data.index === props.activityListPrevious.length - 1
-              ? normalise(4)
-              : normalise(0)
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.followReq({ follower_id: data.item._id });
-          }}
-        />
-      );
-    } else if (data.item.activity_type === 'reaction') {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          reaction={data.item.text}
-          user={data.item.username}
-          type={false}
-          image2={data.item.image}
-          bottom={
-            data.index === props.activityListPrevious.length - 1 ? true : false
-          }
-          marginBottom={
-            data.index === props.activityListPrevious.length - 1
-              ? normalise(4)
-              : normalise(0)
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.navigation.navigate('Profile', {
-              postId: data.item.post_id,
-              fromAct: true,
-            });
-          }}
-        />
-      );
+  const activity = activities ? activities.data : [];
+
+  activity.map(item => {
+    let postTime = moment(item.createdAt).format('MM-DD-YYYY');
+
+    if (postTime < time) {
+      previous.push(item);
     } else {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          user={data.item.username}
-          comment={data.item.text}
-          type={false}
-          image2={data.item.image}
-          bottom={
-            data.index === props.activityListPrevious.length - 1 ? true : false
-          }
-          marginBottom={
-            data.index === props.activityListPrevious.length - 1
-              ? normalise(4)
-              : normalise(0)
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.navigation.navigate('Profile', {
-              postId: data.item.post_id,
-              fromAct: true,
-            });
-          }}
-        />
-      );
+      today.push(item);
     }
-  }
+  });
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
-
-      <Loader visible={props.status === ACTIVITY_LIST_REQUEST} />
-      <Loader visible={props.status === USER_PROFILE_REQUEST} />
-      <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
-
-      <SafeAreaView style={{ flex: 1 }}>
-        <HeaderComponent
-          firstitemtext={true}
-          textone={''}
-          title={'ACTIVITY'}
-          thirditemtext={true}
-          texttwo={''}
-        />
-
-        {_.isEmpty(props.activityListToday) &&
-        _.isEmpty(props.activityListPrevious) ? (
-          <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: Colors.white, fontSize: normalise(15) }}>
-              No Activity
-            </Text>
-          </View>
-        ) : (
+    <View style={styles.container}>
+      <StatusBar />
+      <Loader visible={!activities} />
+      <SafeAreaView style={styles.activityContainer}>
+        <HeaderComponent title={'ACTIVITY'} />
+        {activity?.length > 0 ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            {_.isEmpty(props.activityListToday) ? null : (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  height: normalise(40),
-                  alignItems: 'center',
-                  backgroundColor: Colors.darkerblack,
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    marginLeft: normalise(20),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: 'bold',
-                  }}>
-                  TODAY
-                </Text>
+            {_.isEmpty(today) ? null : (
+              <View style={styles.activityHeader}>
+                <Text style={styles.activityHeaderText}>TODAY</Text>
               </View>
             )}
-
             <FlatList
-              data={props.activityListToday}
-              renderItem={renderTodayitem}
-              keyExtractor={(item, index) => {
+              data={today}
+              renderItem={({ item }) => (
+                <ActivitySingle item={item} props={props} />
+              )}
+              keyExtractor={index => {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Seperator}
             />
-
-            {_.isEmpty(props.activityListPrevious) ? null : (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  height: normalise(40),
-                  alignItems: 'center',
-                  backgroundColor: Colors.darkerblack,
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    marginLeft: normalise(20),
-                    fontFamily: 'ProximaNova-Regular',
-                    fontWeight: 'bold',
-                  }}>
-                  PREVIOUSLY
-                </Text>
+            {_.isEmpty(previous) ? null : (
+              <View style={styles.activityHeader}>
+                <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
               </View>
             )}
-
             <FlatList
-              style={{ marginBottom: normalise(5) }}
-              data={props.activityListPrevious}
-              renderItem={renderPreviousItem}
-              keyExtractor={(item, index) => {
+              data={previous}
+              renderItem={({ item }) => (
+                <ActivitySingle item={item} props={props} />
+              )}
+              keyExtractor={index => {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Seperator}
             />
+            {/* <Button
+              onPress={() => {
+                setPageId(pageId + 1);
+                // setActivity({ activity: [...activity, data.data] });
+                activity.push(activities.data);
+                console.log({ activity });
+              }}
+              title="Load more..."
+            /> */}
           </ScrollView>
+        ) : (
+          <View style={styles.emptyWrapper}>
+            <View style={styles.emptyContainer}>
+              <Image
+                source={ImagePath.emptyActivity}
+                style={styles.emptyImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.emptyContainerText}>
+                You haven’t recieved any notifications yet. Don’t worry, follow
+                more people to make Choona more fun.
+              </Text>
+            </View>
+          </View>
         )}
       </SafeAreaView>
     </View>
   );
 }
 
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.black },
+  emptyWrapper: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    maxWidth: normaliseNew(260),
+  },
+  emptyContainerText: {
+    color: Colors.white,
+    fontSize: normaliseNew(15),
+    textAlign: 'center',
+    fontFamily: 'ProximaNova-Regular',
+  },
+  emptyImage: {
+    height: normaliseNew(92),
+    marginBottom: normaliseNew(20),
+    width: normaliseNew(92),
+  },
+  activityContainer: { flex: 1 },
+  activityHeader: {
+    flexDirection: 'row',
+    width: '100%',
+    height: normaliseNew(40),
+    alignItems: 'center',
+    backgroundColor: Colors.darkerblack,
+  },
+  activityHeaderText: {
+    color: Colors.white,
+    fontSize: normaliseNew(10),
+    marginLeft: normaliseNew(16),
+    fontFamily: 'ProximaNova-Bold',
+  },
+});
+
 const mapStateToProps = state => {
   return {
-    status: state.UserReducer.status,
-    activityListPrevious: state.UserReducer.activityListPrevious,
-    activityListToday: state.UserReducer.activityListToday,
+    header: state.TokenReducer,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    activityListReq: () => {
-      dispatch(activityListReq());
-    },
     followReq: payload => {
       dispatch(userFollowUnfollowRequest(payload));
     },

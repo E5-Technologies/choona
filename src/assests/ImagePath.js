@@ -73,6 +73,7 @@ const ImagePath = {
   pause: require('./images/pause.png'),
   appIcon512: require('./images/appIcon512.png'),
   addPostIllus: require('./images/addPostIllus.png'),
+  emptyActivity: require('./images/empty-activity.png'),
 };
 
 export default ImagePath;
