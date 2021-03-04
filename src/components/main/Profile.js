@@ -55,15 +55,12 @@ function Profile(props) {
         'x-access-token': props.header.token,
       },
     });
-    console.log(response);
     return await response.data;
   };
 
   const [pageId, setPageId] = useState(1);
   const key = `${postsUrl}?page=${pageId}`;
   const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
-
-  console.log(posts);
 
   const profilePosts = posts ? posts.data : [];
 
@@ -83,8 +80,6 @@ function Profile(props) {
       unsuscribe();
     };
   });
-
-  // console.log(props.route.params.fromAct);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
