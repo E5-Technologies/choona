@@ -174,7 +174,7 @@ function MusicPlayerBar(props) {
                 width: '100%',
               }}
               numberOfLines={1}>
-              {props.playingSongRef.album_name}
+              {props.playingSongRef.artist}
             </Text>
           </View>
 
