@@ -284,10 +284,8 @@ const App = () => {
                       : Dimensions.get('window').height > 736
                       ? normalise(0)
                       : normalise(10),
-                  height: normalize(20),
-                  width: normalize(20),
-                  height: normalize(20),
-                  width: normalize(20),
+                  height: normalize(22),
+                  width: normalize(22),
                 }}
                 source={focused ? ImagePath.boxactive : ImagePath.boxinactive}
                 resizeMode="contain"
