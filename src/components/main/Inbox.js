@@ -106,10 +106,10 @@ function Inbox(props) {
   }
 
   function sortArray(value) {
-    const sortedMessages = []
-      .concat(value)
-      .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
-    setMessageList(sortedMessages);
+    // const sortedMessages = [];
+    // .concat(value)
+    // .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
+    setMessageList(value);
   }
 
   function filterArray(keyword) {
@@ -130,8 +130,6 @@ function Inbox(props) {
   }
 
   function renderInboxItem(data) {
-    // console.log('message: ' + data.item.message.length);
-
     return (
       <InboxListItem
         image={constants.profile_picture_base_url + data.item.profile_image}
@@ -220,7 +218,7 @@ function Inbox(props) {
                 width: '100%',
                 backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(8),
-                marginTop: normalise(20),
+                marginTop: normalise(16),
                 padding: normalise(10),
                 color: Colors.white,
                 paddingLeft: normalise(30),

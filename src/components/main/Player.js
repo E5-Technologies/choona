@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -38,18 +38,6 @@ import {
   SAVE_SONGS_REQUEST,
   SAVE_SONGS_SUCCESS,
   SAVE_SONGS_FAILURE,
-  GET_CURRENT_PLAYER_POSITION_REQUEST,
-  GET_CURRENT_PLAYER_POSITION_SUCCESS,
-  GET_CURRENT_PLAYER_POSITION_FAILURE,
-  RESUME_PLAYER_REQUEST,
-  RESUME_PLAYER_SUCCESS,
-  RESUME_PLAYER_FAILURE,
-  PAUSE_PLAYER_REQUEST,
-  PAUSE_PLAYER_SUCCESS,
-  PAUSE_PLAYER_FAILURE,
-  PLAYER_SEEK_TO_REQUEST,
-  PLAYER_SEEK_TO_SUCCESS,
-  PLAYER_SEEK_TO_FAILURE,
   GET_SONG_FROM_ISRC_REQUEST,
   GET_SONG_FROM_ISRC_SUCCESS,
   GET_SONG_FROM_ISRC_FAILURE,
@@ -72,8 +60,6 @@ import {
 } from '../../action/PlayerAction';
 import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
-import { call } from 'redux-saga/effects';
-import { or } from 'react-native-reanimated';
 import _ from 'lodash';
 import axios from 'axios';
 import { createChatTokenRequest } from '../../action/MessageAction';
@@ -120,7 +106,6 @@ function Player(props) {
   //COMMENT ON POST
   const [id, setId] = useState(props.route.params.id);
   const [commentText, setCommentText] = useState('');
-
   const [bool, setBool] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [changePlayer, setChangePlayer] = useState(
@@ -158,15 +143,19 @@ function Player(props) {
   var myVar;
 
   useEffect(() => {
-    fetchCommentsOnPost(props.route.params.id, props.header.token)
-      .then(res => {
-        if (res) {
-          setCommentData(res);
-        }
-      })
-      .catch(err => {
-        toast('Error', err);
-      });
+    if (comingFromMessage) {
+      setCommentData(props.route.params.comments);
+    } else {
+      fetchCommentsOnPost(props.route.params.id, props.header.token)
+        .then(res => {
+          if (res) {
+            setCommentData(res);
+          }
+        })
+        .catch(err => {
+          toast('Error', err);
+        });
+    }
     fetchReactionsOnPost(props.route.params.id, props.header.token)
       .then(res => {
         setReactions(res);
@@ -640,12 +629,11 @@ function Player(props) {
   function renderFlatlistData(data) {
     return (
       <CommentList
-        // width={'100%'}
+        width={'100%'}
         image={constants.profile_picture_base_url + data.item.profile_image}
-        name={data.item.username}
+        name={data.item.name ? data.item.name : data.item.username}
         comment={data.item.text}
         time={moment(data.item.createdAt).from()}
-        // marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             if (RbSheetRef) RbSheetRef.close();
@@ -737,7 +725,6 @@ function Player(props) {
                 />
               </TouchableOpacity>
             </View>
-
             <FlatList
               style={{ height: '60%' }}
               data={commentData}
@@ -746,7 +733,7 @@ function Player(props) {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
-              // ItemSeparatorComponent={Seperator}
+              ItemSeparatorComponent={Seperator}
             />
             <View
               style={{

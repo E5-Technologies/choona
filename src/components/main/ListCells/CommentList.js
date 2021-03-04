@@ -47,8 +47,8 @@ export default CommentList;
 
 const styles = StyleSheet.create({
   commentContainer: {
-    borderBottomWidth: normaliseNew(0.5),
-    borderColor: Colors.activityBorderColor,
+    // borderBottomWidth: normaliseNew(0.5),
+    // borderColor: Colors.activityBorderColor,
     flex: 1,
     flexDirection: 'row',
     marginHorizontal: normaliseNew(16),
