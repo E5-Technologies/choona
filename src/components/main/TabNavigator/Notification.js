@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
   FlatList,
   Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  RefreshControl,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import useSWR, { useSWRInfinite } from 'swr';
+import useSWR from 'swr';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -35,6 +35,10 @@ import {
 
 const activityUrl = constants.BASE_URL + '/activity/list';
 
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
+
 function Notification(props) {
   const getActivities = async pageId => {
     const response = await axios.get(`${activityUrl}?page=${pageId}`, {
@@ -47,16 +51,30 @@ function Notification(props) {
     return await response.data;
   };
 
+  const [notifications, setNotifications] = useState([]);
   const [pageId, setPageId] = useState(1);
+  const [refreshing, setRefreshing] = React.useState(false);
+
   const key = `${activityUrl}?page=${pageId}`;
-  const { data: activities, mutate } = useSWR(key, () => getActivities(pageId));
+  const { mutate } = useSWR(key, () => getActivities(pageId), {
+    onSuccess: data => {
+      if (pageId === 1) {
+        setNotifications(data.data);
+      } else {
+        const newArray = [...notifications, ...data.data];
+        setNotifications(newArray);
+      }
+    },
+  });
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', () => {
       isInternetConnected()
         .then(() => {
           updateProfile();
-          mutate();
+          // setNotifications([]);
+          // setPageId(1);
+          // mutate();
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
@@ -89,27 +107,63 @@ function Notification(props) {
   let previous = [];
   let today = [];
   let time = moment().format('MM-DD-YYYY');
+  // console.log({ today });
 
-  const activity = activities ? activities.data : [];
+  const activity = notifications ? notifications : [];
+
+  // console.log({ activity });
 
   activity.map(item => {
     let postTime = moment(item.createdAt).format('MM-DD-YYYY');
 
-    if (postTime < time) {
-      previous.push(item);
-    } else {
+    if (postTime === time) {
       today.push(item);
+    } else {
+      // console.log(item.id, { item });
+      previous.push(item);
     }
   });
+
+  // const isCloseToBottom = ({
+  //   layoutMeasurement,
+  //   contentOffset,
+  //   contentSize,
+  // }) => {
+  //   const paddingToBottom = 20;
+  //   return (
+  //     layoutMeasurement.height + contentOffset.y >=
+  //     contentSize.height - paddingToBottom
+  //   );
+  // };
+
+  // console.log({ pageId });
 
   return (
     <View style={styles.container}>
       <StatusBar />
-      <Loader visible={!activities} />
+      <Loader visible={!notifications.length > 0} />
       <SafeAreaView style={styles.activityContainer}>
         <HeaderComponent title={'ACTIVITY'} />
-        {activity?.length > 0 ? (
-          <ScrollView showsVerticalScrollIndicator={false}>
+        {notifications ? (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => {
+                  setRefreshing(true);
+                  mutate();
+                  wait(1000).then(() => setRefreshing(false));
+                }}
+              />
+            }
+            // onScroll={({ nativeEvent }) => {
+            //   if (isCloseToBottom(nativeEvent)) {
+            //     setPageId(pageId + 1);
+            //   }
+            // }}
+            // scrollEventThrottle={400}
+          >
             {_.isEmpty(today) ? null : (
               <View style={styles.activityHeader}>
                 <Text style={styles.activityHeaderText}>TODAY</Text>
@@ -139,20 +193,15 @@ function Notification(props) {
               keyExtractor={index => {
                 index.toString();
               }}
-              showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Seperator}
-            />
-            {/* <Button
-              onPress={() => {
+              onEndReached={() => {
                 setPageId(pageId + 1);
-                // setActivity({ activity: [...activity, data.data] });
-                activity.push(activities.data);
-                console.log({ activity });
+                console.log(pageId);
               }}
-              title="Load more..."
-            /> */}
+              onEndReachedThreshold={0.2}
+            />
           </ScrollView>
-        ) : (
+        ) : notifications.length === 0 ? (
           <View style={styles.emptyWrapper}>
             <View style={styles.emptyContainer}>
               <Image
@@ -166,6 +215,8 @@ function Notification(props) {
               </Text>
             </View>
           </View>
+        ) : (
+          <View />
         )}
       </SafeAreaView>
     </View>
