@@ -13,6 +13,7 @@ import {
   ImageBackground,
   Platform,
 } from 'react-native';
+import Loader from '../../widgets/AuthLoader';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -46,6 +47,8 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
+import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import {
   getProfileRequest,
   homePageReq,
@@ -59,6 +62,7 @@ import { createChatTokenRequest } from '../../action/MessageAction';
 import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import axios from 'axios';
 
 import constants from '../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
@@ -76,6 +80,7 @@ function PostListForUser(props) {
   const [modal1Visible, setModal1Visible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
 
+  const [bool, setBool] = useState(false);
   const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
@@ -722,10 +727,110 @@ function PostListForUser(props) {
     );
   };
 
+  // console.log(posts[positionInArray]);
+
+  const callApi = async () => {
+    if (props.registerType === 'spotify') {
+      const spotifyToken = await getSpotifyToken();
+
+      return await axios.get(
+        `https://api.spotify.com/v1/search?q=isrc:${
+          posts[positionInArray].isrc_code
+        }&type=track`,
+        {
+          headers: {
+            Authorization: spotifyToken,
+          },
+        },
+      );
+    } else {
+      const AppleToken = await getAppleDevToken();
+
+      return await axios.get(
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
+          posts[positionInArray].isrc_code
+        }`,
+        {
+          headers: {
+            Authorization: AppleToken,
+          },
+        },
+      );
+    }
+  };
+
+  const openInAppleORSpotify = async () => {
+    try {
+      const res = await callApi();
+      // console.log(res);
+
+      if (res.status === 200) {
+        if (
+          !_.isEmpty(
+            props.registerType === 'spotify'
+              ? res.data.tracks.items
+              : res.data.data,
+          )
+        ) {
+          if (props.userProfileResp.register_type === 'spotify') {
+            // console.log('success - spotify');
+            // console.log(res.data.tracks.items[0].external_urls.spotify);
+            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+              .then(supported => {
+                if (supported) {
+                  Linking.openURL(
+                    res.data.tracks.items[0].external_urls.spotify,
+                  )
+                    .then(() => {
+                      // console.log('success');
+                    })
+                    .catch(() => {
+                      // console.log('error');
+                    });
+                }
+              })
+              .catch(() => {
+                // console.log('not supported');
+              });
+            setBool(false);
+          } else {
+            // console.log('success - apple');
+            // console.log(res.data.data[0].attributes.url);
+            Linking.canOpenURL(res.data.data[0].attributes.url)
+              .then(supported => {
+                if (supported) {
+                  Linking.openURL(res.data.data[0].attributes.url)
+                    .then(() => {
+                      // console.log('success');
+                    })
+                    .catch(() => {
+                      // console.log('error');
+                    });
+                }
+              })
+              .catch(() => {
+                // console.log('not supported');
+              });
+            setBool(false);
+          }
+        } else {
+          setBool(false);
+          toast('', 'No Song Found');
+        }
+      } else {
+        setBool(false);
+        toast('Oops', 'Something Went Wrong');
+      }
+    } catch (error) {
+      setBool(false);
+      // console.log(error);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
+      <Loader visible={bool} />
       <HeaderComponent
         firstitemtext={false}
         imageone={ImagePath.backicon}
@@ -966,15 +1071,15 @@ function PostListForUser(props) {
                       setModalVisible(false);
 
                       Linking.canOpenURL(
-                        props.postData[positionInArray].original_song_uri,
+                        posts[positionInArray].original_song_uri,
                       )
                         .then(() => {
                           Linking.openURL(
-                            props.postData[positionInArray].original_song_uri,
+                            posts[positionInArray].original_song_uri,
                           )
                             .then(() => {
                               // console.log('success');
-                              setBool(false);
+                              // setBool(false);
                             })
                             .catch(() => {
                               // console.log('error');
@@ -983,12 +1088,12 @@ function PostListForUser(props) {
                         .catch(err => {
                           // console.log('unsupported');
                         });
+                    } else {
+                      // console.log('diffirent reg type');
+                      // setModalVisible(false)
+                      console.log(1);
+                      openInAppleORSpotify();
                     }
-                    // else {
-                    //     // console.log('diffirent reg type');
-                    //     setModalVisible(false)
-                    //     openInAppleORSpotify();
-                    // }
                   }}>
                   <Image
                     source={
