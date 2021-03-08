@@ -391,6 +391,7 @@ function Login(props) {
             value={username}
             userNameAvailable={userNameAvailable}
             tick_visible={username}
+            autocorrect={false}
             onChangeText={text => {
               setUsername(text), check(text);
             }}

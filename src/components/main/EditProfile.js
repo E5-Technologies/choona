@@ -303,6 +303,7 @@ function EditProfile(props) {
             }}>
             <TextInputField
               text={'CHOOSE USERNAME'}
+              autocorrect={false}
               placeholder={'Enter Username'}
               placeholderTextColor={Colors.grey}
               marginTop={normalise(30)}

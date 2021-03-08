@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Platform,
@@ -58,6 +58,7 @@ function TextInputField(props) {
         onFocus={() => {
           setFocused(true);
         }}
+        autoCorrect={props.autocorrect}
         onBlur={() => setFocused(false)}
         placeholder={props.placeholder}
         maxLength={props.maxLength}
@@ -114,6 +115,7 @@ TextInputField.defaultProps = {
   maxLength: 40,
   autoCapitalize: 'none',
   isPassword: false,
+  autocorrect: false,
   // value: "",
   placeholderTextColor: Colors.grey,
   onChangeText: null,
