@@ -21,7 +21,6 @@ import {
   USER_FOLLOW_UNFOLLOW_REQUEST,
   USER_FOLLOW_UNFOLLOW_SUCCESS,
   USER_FOLLOW_UNFOLLOW_FAILURE,
-  HOME_PAGE_REQUEST,
   HOME_PAGE_SUCCESS,
   COUNTRY_CODE_REQUEST,
   COUNTRY_CODE_SUCCESS,
@@ -119,6 +118,7 @@ function OthersProfile(props) {
       case HOME_PAGE_SUCCESS:
         status = props.status;
         props.othersProfileReq(props.othersProfileresp._id);
+        break;
 
       case COUNTRY_CODE_REQUEST:
         status = props.status;
@@ -357,10 +357,9 @@ function OthersProfile(props) {
             }}>
             <Text
               style={{
-                color: Colors.white,
                 fontSize: normalise(10),
                 color: Colors.black,
-                fontFamily: 'ProximaNova-Bold',
+                fontFamily: 'ProximaNova-SemiBold',
               }}>
               SEND A SONG
             </Text>
@@ -380,8 +379,8 @@ function OthersProfile(props) {
               justifyContent: 'center',
             }}
             onPress={() => {
-              setIsFollowing(!isFollowing),
-                props.followReq({ follower_id: id });
+              setIsFollowing(!isFollowing);
+              props.followReq({ follower_id: id });
             }}>
             <Text
               style={{

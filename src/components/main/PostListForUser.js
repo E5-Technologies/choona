@@ -1,8 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -13,7 +11,7 @@ import {
   Linking,
   Modal,
   ImageBackground,
-  Dimensions,
+  Platform,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -24,7 +22,6 @@ import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
 import HomeItemList from '../../components/main/ListCells/HomeItemList';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
-import MusicPlayerBar from '../../widgets/MusicPlayerBar';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -165,9 +162,11 @@ function PostListForUser(props) {
 
       case SAVE_SONGS_SUCCESS:
         songStatus = props.songStatus;
-        if (props.savedSongResponse.status === 200)
+        if (props.savedSongResponse.status === 200) {
           toast('Success', props.savedSongResponse.message);
-        else toast('Success', props.savedSongResponse.message);
+        } else {
+          toast('Success', props.savedSongResponse.message);
+        }
         break;
 
       case SAVE_SONGS_FAILURE:
@@ -218,7 +217,6 @@ function PostListForUser(props) {
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
-          details: posts[positionInArray],
         });
         break;
 
@@ -261,7 +259,7 @@ function PostListForUser(props) {
   }
 
   function hitreact1(modal1Visible) {
-    if (modal1Visible == true) {
+    if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
@@ -274,15 +272,15 @@ function PostListForUser(props) {
 
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -323,7 +321,8 @@ function PostListForUser(props) {
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
-          hitreact(reaction, data.index), sendReaction(data.item._id, reaction);
+          hitreact(reaction, data.index);
+          sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
@@ -393,11 +392,11 @@ function PostListForUser(props) {
     let arr = props.chatList;
 
     for (var i = 0; i < arr.length; i++) {
-      chatObject = Object.values(arr[i])[0];
+      // chatObject = Object.values(arr[i])[0];
 
-      if (props.userProfileResp._id == Object.values(arr[i])[0].receiver_id) {
+      if (props.userProfileResp._id === Object.values(arr[i])[0].receiver_id) {
         return !Object.values(arr[i])[0].read;
-        break;
+        // break;
       }
     }
 
@@ -477,7 +476,7 @@ function PostListForUser(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -549,7 +548,7 @@ function PostListForUser(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -604,7 +603,8 @@ function PostListForUser(props) {
             {usersToSEndSong.length > 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
+                  bottomSheetRef.close();
+                  sendMessagesToUsers();
                 }}>
                 <Text
                   style={{
@@ -643,7 +643,8 @@ function PostListForUser(props) {
               placeholder={'Search'}
               placeholderTextColor={Colors.grey_text}
               onChangeText={text => {
-                setUserSeach(text), searchUser(text);
+                setUserSeach(text);
+                searchUser(text);
               }}
             />
 
@@ -661,7 +662,8 @@ function PostListForUser(props) {
             {userSeach === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
+                  setUserSeach('');
+                  setUserSearchData([]);
                 }}
                 style={{
                   backgroundColor: Colors.black,
@@ -861,7 +863,8 @@ function PostListForUser(props) {
                   }}
                   onPress={() => {
                     if (bottomSheetRef) {
-                      setModalVisible(false), bottomSheetRef.open();
+                      setModalVisible(false);
+                      bottomSheetRef.open();
                     }
                   }}>
                   <Image
@@ -956,8 +959,8 @@ function PostListForUser(props) {
                   }}
                   onPress={() => {
                     if (
-                      props.postData[positionInArray].userDetails
-                        .register_type === props.registerType
+                      posts[positionInArray].userDetails.register_type ===
+                      props.registerType
                     ) {
                       // console.log('same reg type');
                       setModalVisible(false);
@@ -1021,19 +1024,20 @@ function PostListForUser(props) {
                   }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
-                    if (props.userProfileResp.register_type === 'spotify')
+                    if (props.userProfileResp.register_type === 'spotify') {
                       props.navigation.navigate('AddToPlayListScreen', {
                         originalUri: posts[positionInArray].original_song_uri,
                         registerType: posts[positionInArray].social_type,
                         isrc: posts[positionInArray].isrc_code,
                       });
-                    // setTimeout(()=>{
-                    //     toast("Oops", "Only, Spotify users can add to their playlist now.")
-                    // }, 1000)
-                    else
+                      // setTimeout(()=>{
+                      //     toast("Oops", "Only, Spotify users can add to their playlist now.")
+                      // }, 1000)
+                    } else {
                       props.navigation.navigate('AddToPlayListScreen', {
                         isrc: posts[positionInArray].isrc_code,
                       });
+                    }
                   }}>
                   <Image
                     source={ImagePath.addicon}
@@ -1089,7 +1093,7 @@ function PostListForUser(props) {
         </View>
       )}
 
-      {modal1Visible == true ? (
+      {modal1Visible === true ? (
         <View
           style={{
             position: 'absolute',
@@ -1115,11 +1119,11 @@ function PostListForUser(props) {
             category={Categories.history}
             showHistory={true}
             onEmojiSelected={emoji => {
-              setVisible(true),
-                setModalReact(emoji),
-                setTimeout(() => {
-                  setVisible(false);
-                }, 2000);
+              setVisible(true);
+              setModalReact(emoji);
+              setTimeout(() => {
+                setVisible(false);
+              }, 2000);
             }}
           />
         </View>
@@ -1184,7 +1188,6 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
-    messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
   };
 };
