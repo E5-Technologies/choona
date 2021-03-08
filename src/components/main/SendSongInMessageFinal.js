@@ -174,6 +174,7 @@ function SendSongInMessageFinal(props) {
             username: props.userProfileResp.username,
             createdAt: moment().toString(),
             user_id: props.userProfileResp._id,
+            timestamp: moment().valueOf(),
           },
         ],
         sender_id: props.userProfileResp._id,
@@ -217,6 +218,7 @@ function SendSongInMessageFinal(props) {
 
         read: false,
         time: moment().toString(),
+        order: moment().valueOf(),
       };
 
       chatBody.push(chatObject);
