@@ -448,6 +448,7 @@ export function* userLogoutAction(action) {
 
     const response = yield call(getApi, 'user/logout', Header);
     yield call(AsyncStorage.removeItem, constants.CHOONACREDS);
+    yield call(AsyncStorage.removeItem, constants.APPLE);
 
     yield put({type: USER_LOGOUT_SUCCESS, data: response.data.data});
     yield put({type: ASYNC_STORAGE_CLEAR, token: null, registerType: null});
