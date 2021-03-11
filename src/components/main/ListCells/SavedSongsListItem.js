@@ -171,7 +171,12 @@ function SavedSongListItem(props) {
     }
   };
 
+
+  console.log(props.receiver_id +","+ props.read+","+props.user_id);
+
   return (
+
+
     <TouchableOpacity
       onPress={() => {
         onPressItem();
@@ -191,9 +196,22 @@ function SavedSongListItem(props) {
           justifyContent: 'space-between',
         }}>
         <TouchableOpacity
+        style={{flexDirection:'row'}}
           onPress={() => {
             onPressImage();
           }}>
+
+
+
+        
+
+        {(props.user_id === props.receiver_id && !props.read) && 
+                <Text style={{color:'#ffffff',alignSelf:'center',fontSize:6}}>{'\u2B24'}</Text>
+
+        }
+
+
+
           <Image
             source={
               props.image === ''
@@ -327,6 +345,10 @@ SavedSongListItem.propTypes = {
   change: PropTypes.bool,
   image2: PropTypes.any,
   playIcon: PropTypes.bool,
+  receiver_id:PropTypes.any,
+  user_id:PropTypes.any,
+
+  read:PropTypes.bool,
   onPressSecondImage: PropTypes.func,
   comments: PropTypes.bool,
   marginRight: PropTypes.number,
@@ -335,6 +357,10 @@ SavedSongListItem.propTypes = {
 
 SavedSongListItem.defaultProps = {
   image: '',
+  receiver_id:"",
+  user_id:"",
+
+  read:false,
   title: '',
   onPress: null,
   onPressImage: null,

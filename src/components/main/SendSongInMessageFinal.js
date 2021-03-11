@@ -217,6 +217,7 @@ function SendSongInMessageFinal(props) {
           : props.registerType,
 
         read: false,
+        unread_count:0,
         time: moment().toString(),
         order: moment().valueOf(),
       };

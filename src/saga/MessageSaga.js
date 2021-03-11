@@ -55,6 +55,29 @@ const getMessageReducer = state => state.MessageReducer;
  * @param {Object} action  provide payload for the chat token.
  */
 
+
+
+
+ export function* updateSongRead(action,child)
+ {
+  try {
+
+    child.child('read').ref.set(true);
+
+    yield put({
+      type: SONG_MESSAGE_READ_SUCCESS,
+      data: 'Message sent successfully',
+    });
+  } catch (error) {
+    yield put({type: SONG_MESSAGE_READ_FAILURE, error: error});
+  }
+
+ }
+
+
+
+
+
 export function* getChatTokenAction(action) {
   try {
     const items = yield select(getItems);
@@ -131,6 +154,12 @@ export function* getChatListAction(action) {
  * read the chat message
  * @param {Object} action provide the chat token of a particular channel
  */
+
+
+
+
+
+
 export function* getChatMessages(action) {
   // Creates an eventChannel and starts the listener;
   const channel = eventChannel(emiter => {
@@ -145,6 +174,7 @@ export function* getChatMessages(action) {
           });
 
           if (action.payload.userId == child.val().receiver_id) {
+          
             child.child('read').ref.set(true);
           }
         });
@@ -213,6 +243,8 @@ export function* updateMessageCommentAction(action) {
   try {
     const items = yield select(getItems);
 
+
+    console.log("payload:"+JSON.stringify(action.payload));
     const Header = {
       Accept: 'application/json',
       contenttype: 'application/json',
@@ -224,7 +256,7 @@ export function* updateMessageCommentAction(action) {
         .child(action.payload.ChatId)
         .update(
           {
-            message: action.payload.message,
+            message:action.payload.message,
             read: false,
             receiver_id: action.payload.receiverId,
             sender_id: action.payload.senderId,
@@ -239,6 +271,7 @@ export function* updateMessageCommentAction(action) {
         listener.off();
       };
     });
+
 
     const {error} = yield take(channel);
 

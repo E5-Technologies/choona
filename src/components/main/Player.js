@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, Fragment, useState, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,16 +19,16 @@ import {
   Clipboard,
   Keyboard,
 } from 'react-native';
-import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
-import normaliseNew from '../../utils/helpers/DimensNew';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
+import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import moment from 'moment';
 import {
@@ -38,6 +38,18 @@ import {
   SAVE_SONGS_REQUEST,
   SAVE_SONGS_SUCCESS,
   SAVE_SONGS_FAILURE,
+  GET_CURRENT_PLAYER_POSITION_REQUEST,
+  GET_CURRENT_PLAYER_POSITION_SUCCESS,
+  GET_CURRENT_PLAYER_POSITION_FAILURE,
+  RESUME_PLAYER_REQUEST,
+  RESUME_PLAYER_SUCCESS,
+  RESUME_PLAYER_FAILURE,
+  PAUSE_PLAYER_REQUEST,
+  PAUSE_PLAYER_SUCCESS,
+  PAUSE_PLAYER_FAILURE,
+  PLAYER_SEEK_TO_REQUEST,
+  PLAYER_SEEK_TO_SUCCESS,
+  PLAYER_SEEK_TO_FAILURE,
   GET_SONG_FROM_ISRC_REQUEST,
   GET_SONG_FROM_ISRC_SUCCESS,
   GET_SONG_FROM_ISRC_FAILURE,
@@ -48,9 +60,9 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
-import { commentOnPostReq } from '../../action/UserAction';
+import {commentOnPostReq} from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
+import {saveSongRequest, saveSongRefReq} from '../../action/SongAction';
 import {
   getCurrentPlayerPostionAction,
   playerResumeRequest,
@@ -58,15 +70,14 @@ import {
   playerSeekToRequest,
   getSongFromisrc,
 } from '../../action/PlayerAction';
-import { updateMessageCommentRequest } from '../../action/MessageAction';
+import {updateMessageCommentRequest} from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
+import {call} from 'redux-saga/effects';
+import {or} from 'react-native-reanimated';
 import _ from 'lodash';
 import axios from 'axios';
-import { createChatTokenRequest } from '../../action/MessageAction';
-import { getUsersFromHome } from '../../action/UserAction';
-import MusicPlayer from '../../widgets/MusicPlayer';
-
-import { fetchCommentsOnPost, fetchReactionsOnPost } from '../../helpers/post';
+import {createChatTokenRequest} from '../../action/MessageAction';
+import {getUsersFromHome} from '../../action/UserAction';
 
 let RbSheetRef;
 
@@ -100,12 +111,24 @@ function Player(props) {
   const [hasSongLoaded, setHasSongLoaded] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
 
-  const [reactions, setReactions] = useState([]);
-  const [commentData, setCommentData] = useState([]);
+  const [reactions, setSReactions] = useState(
+    props.route.params.changePlayer ? [] : props.route.params.reactions,
+  );
 
   //COMMENT ON POST
+  const [commentData, setCommentData] = useState(
+    props.route.params.changePlayer
+      ? props.route.params.comingFromMessage
+        ? getArrayLength(props.route.params.comments)
+        : []
+      : props.route.params.comments,
+  );
   const [id, setId] = useState(props.route.params.id);
   const [commentText, setCommentText] = useState('');
+  const [arrayLength, setArrayLength] = useState(
+    `${commentData.length} ${commentData.length > 1 ? 'COMMENTS' : 'COMMENT'}`,
+  );
+
   const [bool, setBool] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [changePlayer, setChangePlayer] = useState(
@@ -128,7 +151,7 @@ function Player(props) {
   const [key, setKey] = useState(props.route.params.key);
   const [chatToken, setChatToken] = useState(props.route.params.chatToken);
 
-  // // console.log("commentData: " + JSON.stringify(commentData));
+  // console.log("commentData: " + JSON.stringify(commentData));
   let track;
   var bottomSheetRef;
   //Prithviraj's variables.
@@ -143,29 +166,6 @@ function Player(props) {
   var myVar;
 
   useEffect(() => {
-    if (comingFromMessage) {
-      setCommentData(props.route.params.comments);
-    } else {
-      fetchCommentsOnPost(props.route.params.id, props.header.token)
-        .then(res => {
-          if (res) {
-            setCommentData(res);
-          }
-        })
-        .catch(err => {
-          toast('Error', err);
-        });
-    }
-    fetchReactionsOnPost(props.route.params.id, props.header.token)
-      .then(res => {
-        setReactions(res);
-      })
-      .catch(err => {
-        toast('Error', err);
-      });
-  }, [props.header.token, props.route.params.id]);
-
-  useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
 
     //     myVar = setInterval(() => {
@@ -175,14 +175,15 @@ function Player(props) {
     // });
     isInternetConnected()
       .then(() => {
+        Sound.setCategory('Playback', false);
         props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
 
         if (changePlayer2) {
-          // console.log('getting spotify song uri');
+        //   console.log('getting spotify song uri');
           const getSpotifyApi = async () => {
             try {
               const res = await callApi();
-              // console.log(res);
+            //   console.log(res);
               if (res.data.status === 200) {
                 let suc = res.data.data.audio;
                 setUri(suc);
@@ -192,7 +193,7 @@ function Player(props) {
                 props.navigation.goBack();
               }
             } catch (error) {
-              // console.log(error);
+            //   console.log(error);
             }
           };
 
@@ -209,13 +210,6 @@ function Player(props) {
       .catch(() => {
         toast('', 'Please Connect To Internet');
       });
-
-    // return () => {
-    //     // if (isPlayingVar !== null) {
-    //     // console.log('bye');
-    //     clearInterval(myVar);
-    //     // }
-    // }
   }, []);
 
   if (status === '' || props.status !== status) {
@@ -227,15 +221,16 @@ function Player(props) {
       case COMMENT_ON_POST_SUCCESS:
         status = props.status;
         setCommentText('');
-        if (!_.isEmpty(props.commentResp.text)) {
-          let data = {};
-          data.name = props.commentResp.name;
-          data.text = props.commentResp.text;
-          data.createdAt = props.commentResp.createdAt;
-          data.user_id = props.commentResp.user_id;
-          data.post_id = props.commentResp.post_id;
-          data.profile_image = props.commentResp.profile_image;
+        if (!_.isEmpty(props.commentResp.comment)) {
+          let data =
+            props.commentResp.comment[props.commentResp.comment.length - 1];
+          data.profile_image = props.userProfileResp.profile_image;
           commentData.push(data);
+          setArrayLength(
+            `${commentData.length} ${
+              commentData.length > 1 ? 'COMMENTS' : 'COMMENT'
+            }`,
+          );
         } else {
           toast('Error', 'Oops could not find the post');
         }
@@ -358,29 +353,29 @@ function Player(props) {
   // PLAY SONG ON LOAD
   const playSongOnLoad = songuri => {
     if (props.playingSongRef === '') {
-      // console.log('first time');
+    //   console.log('first time');
       playSong(songuri);
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === uri) {
-          // console.log('Already Playing');
-          // console.log(global.playerReference);
+        //   console.log('Already Playing');
+        //   console.log(global.playerReference);
           setTimeout(() => {
             changeTime(global.playerReference);
             let time = global.playerReference.getDuration();
             setHasSongLoaded(true);
             setplayerDuration(time);
             setBool(false);
-            // global.playerReference.pause();
+            global.playerReference.pause();
             // global.playerReference.play((success) => {
             //     if (success) {
-            //         // console.log('Playback Endd')
+            //         console.log('Playback Endd')
             //         setPlayVisible(true);
             //     }
             // })
           }, 100);
         } else {
-          // console.log('reset');
+        //   console.log('reset');
           global.playerReference.release();
           global.playerReference = null;
           playSong(songuri);
@@ -412,9 +407,15 @@ function Player(props) {
         'Sorry, this track cannot be played as it does not have a proper link.',
       );
     } else {
-      MusicPlayer(changePlayer2 ? songuri : uri, false)
-        .then(track => {
-          // console.log('Loaded');
+      track = new Sound(changePlayer2 ? songuri : uri, '', err => {
+        if (err) {
+        //   console.log(err);
+          setPlayVisible(true);
+        } else {
+        //   console.log('Loaded');
+          setHasSongLoaded(true);
+          setBool(false);
+          changeTime(track);
 
           let saveSongResObj = {};
           (saveSongResObj.uri = uri),
@@ -437,16 +438,24 @@ function Player(props) {
               props.route.params.comingFromMessage);
 
           props.saveSongRefReq(saveSongResObj);
-          setHasSongLoaded(true);
-          setBool(false);
-          changeTime(track);
+          global.playerReference = track;
+
           let res = track.getDuration();
           setplayerDuration(res);
-          setTrackRef(track);
-        })
-        .catch(err => {
-          // console.log('MusicPlayer Error', err);
-        });
+
+          // track.play((success) => {
+          //     if (success) {
+          //         console.log('PlayBack End')
+          //         setPlayVisible(true);
+          //     }
+          //     else {
+          //         console.log('NOOOOOOOO')
+          //     }
+          // });
+        }
+      });
+
+      setTrackRef(track);
     }
   };
 
@@ -475,7 +484,7 @@ function Player(props) {
         setPlayVisible(true);
 
         global.playerReference.pause(() => {
-          // console.log('paused');
+          //   console.log('paused');
         });
       }
     }
@@ -524,10 +533,10 @@ function Player(props) {
             if (supported) {
               Linking.openURL(originalUri)
                 .then(() => {
-                  // console.log('success');
+                  //   console.log('success');
                 })
                 .catch(() => {
-                  // console.log('failed');
+                  //   console.log('failed');
                 });
             }
           })
@@ -566,17 +575,17 @@ function Player(props) {
                 if (supported) {
                   Linking.openURL('https://www.spotify.com/premium/')
                     .then(() => {
-                      // console.log('success');
+                      //   console.log('success');
                     })
                     .catch(() => {
-                      // console.log('failed');
+                      //   console.log('failed');
                     });
                 }
               },
             ),
         },
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
   }
 
@@ -591,10 +600,10 @@ function Player(props) {
             if (supported) {
               Linking.openURL(props.isrcResp[0].external_urls.spotify)
                 .then(() => {
-                  // console.log('success');
+                  //   console.log('success');
                 })
                 .catch(() => {
-                  // console.log('error');
+                  //   console.log('error');
                 });
             }
           })
@@ -609,10 +618,10 @@ function Player(props) {
             if (supported) {
               Linking.openURL(props.isrcResp[0].attributes.url)
                 .then(() => {
-                  // console.log('success');
+                  //   console.log('success');
                 })
                 .catch(() => {
-                  // console.log('error');
+                  //   console.log('error');
                 });
             }
           })
@@ -631,18 +640,17 @@ function Player(props) {
       <CommentList
         width={'100%'}
         image={constants.profile_picture_base_url + data.item.profile_image}
-        name={data.item.name ? data.item.name : data.item.username}
+        name={data.item.username}
         comment={data.item.text}
         time={moment(data.item.createdAt).from()}
+        marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             if (RbSheetRef) RbSheetRef.close();
-            props.navigation.navigate('Profile', { fromAct: false });
+            props.navigation.navigate('Profile', {fromAct: false});
           } else {
             if (RbSheetRef) RbSheetRef.close();
-            props.navigation.navigate('OthersProfile', {
-              id: data.item.user_id,
-            });
+            props.navigation.navigate('OthersProfile', {id: data.item.user_id});
           }
         }}
       />
@@ -666,28 +674,38 @@ function Player(props) {
         customStyles={{
           container: {
             minHeight: Dimensions.get('window').height / 2.2,
-            // borderTopEndRadius: normalise(12),
-            // borderTopStartRadius: normalise(12),
+            borderTopEndRadius: normalise(8),
+            borderTopStartRadius: normalise(8),
           },
         }}>
-        <KeyboardAvoidingView
-          style={{ flex: 1, backgroundColor: Colors.black }}>
-          <View style={{ width: '100%', alignSelf: 'center' }}>
+        <KeyboardAvoidingView style={{flex: 1, backgroundColor: Colors.black}}>
+          <View style={{width: '95%', alignSelf: 'center'}}>
             <View
               style={{
-                backgroundColor: Colors.black,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: normalise(16),
-                borderBottomWidth: normalise(0.5),
-                borderColor: Colors.activityBorderColor,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.5,
-                shadowRadius: 8,
-                elevation: 11,
+                marginTop: normalise(15),
+                borderBottomWidth: 0.5,
+                borderColor: Colors.grey,
               }}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (RbSheetRef) {
+                    RbSheetRef.close();
+                  }
+                }}>
+                <Image
+                  source={ImagePath.donw_arrow_solid}
+                  style={{
+                    height: normalise(10),
+                    width: normalise(10),
+                    marginBottom: normalise(10),
+                  }}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => {
                   if (RbSheetRef) {
@@ -699,12 +717,9 @@ function Player(props) {
                     fontSize: normalise(12),
                     color: Colors.white,
                     fontFamily: 'ProximaNova-Bold',
+                    marginBottom: normalise(10),
                   }}>
-                  {commentData.length > 0
-                    ? commentData.length === 1
-                      ? '1 COMMENT'
-                      : `${commentData.length} COMMENTS`
-                    : 'COMMENTS'}
+                  {arrayLength}
                 </Text>
               </TouchableOpacity>
 
@@ -719,91 +734,107 @@ function Player(props) {
                   style={{
                     height: normalise(10),
                     width: normalise(10),
-                    // marginBottom: normalise(10),
+                    marginBottom: normalise(10),
                   }}
                   resizeMode="contain"
                 />
               </TouchableOpacity>
             </View>
+
             <FlatList
-              style={{ height: '60%' }}
+              style={{height: '60%'}}
               data={commentData}
               renderItem={renderFlatlistData}
               keyExtractor={(item, index) => {
                 index.toString();
               }}
               showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
             />
-            <View
+
+            <TextInput
               style={{
-                borderColor: Colors.activityBorderColor,
-                borderTopWidth: normaliseNew(1),
-                paddingHorizontal: normaliseNew(16),
-                paddingVertical: normaliseNew(6),
-                position: 'relative',
-              }}>
-              <TextInput
+                height: normalise(35),
+                width: '100%',
+                backgroundColor: Colors.fadeblack,
+                borderRadius: normalise(17),
+                marginTop: normalise(10),
+                padding: normalise(10),
+                color: Colors.white,
+                paddingRight: normalise(50),
+              }}
+              placeholder={'Add a comment...'}
+              value={commentText}
+              placeholderTextColor={Colors.white}
+              onChangeText={text => {
+                setCommentText(text);
+              }}
+            />
+
+            {commentText.length > 1 ? (
+              <TouchableOpacity
                 style={{
-                  backgroundColor: Colors.darkerblack,
-                  borderColor: Colors.activityBorderColor,
-                  borderRadius: normaliseNew(24),
-                  borderWidth: normaliseNew(0.5),
-                  color: Colors.white,
-                  fontFamily: 'ProximaNova-Regular',
-                  fontSize: normaliseNew(14),
-                  height: normaliseNew(48),
-                  paddingBottom: normaliseNew(12),
-                  paddingEnd: normaliseNew(44),
-                  paddingStart: normaliseNew(16),
-                  paddingTop: normaliseNew(14),
-                  maxHeight: normaliseNew(100),
+                  position: 'absolute',
+                  right: 0,
+                  bottom: normalise(10),
+                  paddingRight: normalise(10),
                 }}
-                placeholder={'Add a comment...'}
-                value={commentText}
-                placeholderTextColor={Colors.white}
-                onChangeText={text => {
-                  setCommentText(text);
-                }}
-              />
-              {commentText.length > 1 ? (
-                <TouchableOpacity
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => {
-                    let commentObject = {
-                      post_id: id,
+                onPress={() => {
+                  let commentObject = {
+                    post_id: id,
+                    text: commentText,
+                  };
+                  let updateMessagPayload = {};
+
+                  if (comingFromMessage) {
+                    let tempData = [...commentData];
+                    tempData.push({
+                      profile_image: props.userProfileResp.profile_image,
                       text: commentText,
+                      username: props.userProfileResp.username,
+                      createdAt: moment().toString(),
+                      user_id: props.userProfileResp._id,
+                    });
+                    setArrayLength(
+                      `${tempData.length} ${
+                        tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
+                      }`,
+                    );
+                    setCommentData(tempData);
+                    setCommentText('');
+
+
+
+
+                    updateMessagPayload = {
+                      ChatId: key,
+                      chatToken: chatToken,
+                      message: tempData,
+                      receiverId: receiverId,
+                      senderId: senderId,
+                      songTitle: songTitle,
+                      artist: artist,
                     };
-                    let updateMessagPayload = {};
-                    isInternetConnected()
-                      .then(() => {
-                        comingFromMessage
-                          ? props.updateMessageCommentRequest(
-                              updateMessagPayload,
-                            )
-                          : props.commentOnPost(commentObject);
-                      })
-                      .catch(() => {
-                        toast('Error', 'Please Connect To Internet');
-                      });
+                  }
+                  isInternetConnected()
+                    .then(() => {
+                      comingFromMessage
+                        ? props.updateMessageCommentRequest(updateMessagPayload)
+                        : props.commentOnPost(commentObject);
+                    })
+                    .catch(() => {
+                      toast('Error', 'Please Connect To Internet');
+                    });
+                }}>
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(10),
+                    fontWeight: 'bold',
                   }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontFamily: 'ProximaNova-Bold',
-                      fontSize: normaliseNew(12),
-                      position: 'absolute',
-                      right: normaliseNew(16),
-                      bottom: normaliseNew(16),
-                    }}>
-                    POST
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
-            </View>
+                  POST
+                </Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         </KeyboardAvoidingView>
       </RBSheet>
@@ -816,7 +847,6 @@ function Player(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           //Alert.alert("Modal has been closed.");
         }}>
@@ -824,11 +854,26 @@ function Player(props) {
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity
+            <Text
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                color: Colors.white,
+                fontSize: normalise(12),
+                fontFamily: 'ProximaNova-Semibold',
+              }}>
+              MORE
+            </Text>
+
+            <View
+              style={{
+                backgroundColor: Colors.activityBorderColor,
+                height: 0.5,
+                marginTop: normalise(12),
+                marginBottom: normalise(12),
               }}
+            />
+
+            <TouchableOpacity
+              style={{flexDirection: 'row', marginTop: normalise(10)}}
               onPress={() => {
                 setModalVisible(!modalVisible);
 
@@ -865,7 +910,7 @@ function Player(props) {
               }}>
               <Image
                 source={ImagePath.boxicon}
-                style={{ height: normalise(18), width: normalise(18) }}
+                style={{height: normalise(18), width: normalise(18)}}
                 resizeMode="contain"
               />
               <Text
@@ -880,11 +925,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
+              style={{flexDirection: 'row', marginTop: normalise(18)}}
               onPress={() => {
                 if (bottomSheetRef) {
                   setModalVisible(false), bottomSheetRef.open();
@@ -892,7 +933,7 @@ function Player(props) {
               }}>
               <Image
                 source={ImagePath.sendicon}
-                style={{ height: normalise(18), width: normalise(18) }}
+                style={{height: normalise(18), width: normalise(18)}}
                 resizeMode="contain"
               />
               <Text
@@ -907,11 +948,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
+              style={{flexDirection: 'row', marginTop: normalise(18)}}
               onPress={() => {
                 Clipboard.setString(originalUri);
                 setModalVisible(!modalVisible);
@@ -922,7 +959,7 @@ function Player(props) {
               }}>
               <Image
                 source={ImagePath.more_copy}
-                style={{ height: normalise(18), width: normalise(18) }}
+                style={{height: normalise(18), width: normalise(18)}}
                 resizeMode="contain"
               />
               <Text
@@ -937,11 +974,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
+              style={{flexDirection: 'row', marginTop: normalise(18)}}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 //FOR SPOTIFY USERS
@@ -952,10 +985,10 @@ function Player(props) {
                         if (supported) {
                           Linking.openURL(originalUri)
                             .then(() => {
-                              // console.log('success');
+                              //   console.log('success');
                             })
                             .catch(err => {
-                              // console.log('failed');
+                              //   console.log('failed');
                             });
                         }
                       })
@@ -981,10 +1014,10 @@ function Player(props) {
                         if (supported) {
                           Linking.openURL(originalUri)
                             .then(() => {
-                              // console.log('success');
+                              //   console.log('success');
                             })
                             .catch(err => {
-                              // console.log('failed');
+                              //   console.log('failed');
                             });
                         }
                       })
@@ -1029,11 +1062,7 @@ function Player(props) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
+              style={{flexDirection: 'row', marginTop: normalise(18)}}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 if (props.userProfileResp.register_type === 'spotify')
@@ -1069,34 +1098,34 @@ function Player(props) {
                 Add to Playlist
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-              style={{
-                // marginStart: normalise(20),
-                // marginEnd: normalise(20),
-                marginTop: normalise(24),
-                marginBottom: normalise(20),
-                height: normalise(40),
-                // width: '95%',
-                backgroundColor: Colors.fadeblack,
-                opacity: 10,
-                borderRadius: 6,
-                // padding: 35,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: normalise(12),
-                  fontFamily: 'ProximaNova-Bold',
-                  color: Colors.white,
-                }}>
-                CANCEL
-              </Text>
-            </TouchableOpacity>
           </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+            style={{
+              marginStart: normalise(20),
+              marginEnd: normalise(20),
+              marginBottom: normalise(20),
+              height: normalise(50),
+              width: '95%',
+              backgroundColor: Colors.darkerblack,
+              opacity: 10,
+              borderRadius: 20,
+              // padding: 35,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: normalise(12),
+                fontFamily: 'ProximaNova-Bold',
+                color: Colors.white,
+              }}>
+              CANCEL
+            </Text>
+          </TouchableOpacity>
         </ImageBackground>
       </Modal>
     );
@@ -1104,7 +1133,7 @@ function Player(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      props.getusersFromHome({ keyword: text });
+      props.getusersFromHome({keyword: text});
     }
   };
 
@@ -1135,7 +1164,7 @@ function Player(props) {
 
             // });
             // if (idArray.includes(data.item._id)) {
-            //     // console.log('Already Exists');
+            //     console.log('Already Exists');
             // }
             // else {
             //     let array = [...usersToSEndSong]
@@ -1150,18 +1179,14 @@ function Player(props) {
             sesUsersToSEndSong(array);
           }
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingBottom: normalise(10),
-          }}>
+        <View style={{flexDirection: 'row'}}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+            style={{height: 35, width: 35, borderRadius: normalise(13.5)}}
           />
-          <View style={{ marginStart: normalise(10) }}>
+          <View style={{marginStart: normalise(10)}}>
             <Text
               style={{
                 color: Colors.white,
@@ -1181,6 +1206,13 @@ function Player(props) {
             </Text>
           </View>
         </View>
+        <View
+          style={{
+            backgroundColor: Colors.grey,
+            height: 0.5,
+            marginTop: normalise(10),
+          }}
+        />
       </TouchableOpacity>
     );
   }
@@ -1201,7 +1233,7 @@ function Player(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
+        <Text style={{color: Colors.black, fontWeight: 'bold'}}>
           {data.item.username}
         </Text>
         <TouchableOpacity
@@ -1266,9 +1298,8 @@ function Player(props) {
             height: normalise(3),
           },
         }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{flex: 1}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -1329,8 +1360,6 @@ function Player(props) {
               backgroundColor: Colors.fadeblack,
             }}>
             <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '85%',
@@ -1363,15 +1392,10 @@ function Player(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
-                  marginRight: normalise(10),
+                  top: normalise(12),
+                  paddingRight: normalise(10),
                 }}>
                 <Text
                   style={{
@@ -1398,7 +1422,6 @@ function Player(props) {
                 index.toString();
               }}
               showsHorizontalScrollIndicator={false}
-              // ItemSeparatorComponent={Seperator}
             />
           ) : null}
 
@@ -1413,7 +1436,6 @@ function Player(props) {
               index.toString();
             }}
             showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={Seperator}
           />
         </View>
       </RBSheet>
@@ -1421,16 +1443,19 @@ function Player(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <KeyboardAvoidingView style={{ flex: 1 }}>
-        <StatusBar backgroundColor={Colors.black} />
+    <View style={{flex: 1, backgroundColor: Colors.black}}>
+      <KeyboardAvoidingView style={{flex: 1}}>
+        <StatusBar />
+
         <Loader visible={bool} />
+
         <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
-        <SafeAreaView style={{ flex: 1 }}>
+
+        <SafeAreaView style={{flex: 1}}>
           <ScrollView>
             <View
               style={{
-                marginHorizontal: normalise(24),
+                marginHorizontal: normalise(15),
                 width: normalise(290),
                 marginTop: normalise(15),
                 flexDirection: 'row',
@@ -1438,7 +1463,7 @@ function Player(props) {
                 justifyContent: changePlayer ? 'flex-end' : 'space-between',
               }}>
               {changePlayer ? null : (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
                     source={{
                       uri: constants.profile_picture_base_url + profilePic,
@@ -1450,20 +1475,22 @@ function Player(props) {
                     }}
                     resizeMode="contain"
                   />
+
                   <View
                     style={{
                       flexDirection: 'column',
                       alignItems: 'flex-start',
-                      marginLeft: normalise(8),
+                      marginLeft: normalise(5),
                     }}>
                     <Text
                       style={{
-                        color: Colors.darkgrey,
+                        color: Colors.grey,
                         fontSize: normalise(8),
-                        fontFamily: 'ProximaNova-Regular',
+                        fontFamily: 'ProximaNova-Bold',
                       }}
                       numberOfLines={1}>
-                      Posted by{' '}
+                      {' '}
+                      POSTED BY{' '}
                     </Text>
 
                     <Text
@@ -1473,6 +1500,7 @@ function Player(props) {
                         fontFamily: 'ProximaNova-Semibold',
                       }}
                       numberOfLines={1}>
+                      {' '}
                       {username}{' '}
                     </Text>
                   </View>
@@ -1485,7 +1513,6 @@ function Player(props) {
                   backgroundColor: Colors.black,
                   justifyContent: 'center',
                   flexDirection: 'row',
-                  marginRight: normalise(4),
                 }}>
                 <TouchableOpacity
                   style={{
@@ -1496,7 +1523,7 @@ function Player(props) {
                     backgroundColor: Colors.black,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    // marginLeft: normalise(10),
+                    marginLeft: normalise(10),
                   }}
                   onPress={() => {
                     props.navigation.goBack();
@@ -1506,78 +1533,76 @@ function Player(props) {
                     style={{
                       height: normalise(15),
                       width: normalise(15),
-                      transform: [{ rotate: '-90deg' }],
-                      opacity: 0.5,
+                      transform: [{rotate: '-90deg'}],
                     }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={{ paddingHorizontal: normalise(16) }}>
+
+            <TouchableOpacity
+              onPress={() => {
+                if (hasSongLoaded) playing();
+              }}
+              style={{
+                marginTop: normalise(5),
+                height: normalise(265),
+                width: normalise(290),
+                alignSelf: 'center',
+                borderRadius: normalise(25),
+                backgroundColor: Colors.darkerblack,
+                borderWidth: normalise(0.5),
+                borderColor: Colors.grey,
+                shadowColor: '#000',
+                shadowOffset: {width: 0, height: 5},
+                shadowOpacity: 0.36,
+                shadowRadius: 6.68,
+                elevation: 11,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={{uri: pic.replace('100x100bb.jpg', '500x500bb.jpg')}}
+                style={{
+                  height: normalise(265),
+                  width: normalise(290),
+                  borderRadius: normalise(15),
+                }}
+                resizeMode="cover"
+              />
+
               <TouchableOpacity
                 onPress={() => {
                   if (hasSongLoaded) playing();
                 }}
                 style={{
-                  marginTop: normalise(5),
-                  // height: normalise(290),
-                  // width: normalise(290),
-                  aspectRatio: 1,
-                  width: '100%',
-                  alignSelf: 'center',
-                  // borderRadius: normalise(21),
-                  backgroundColor: Colors.darkerblack,
-                  elevation: 11,
-                  flexDirection: 'row',
+                  height: normalise(60),
+                  width: normalise(60),
                   alignItems: 'center',
                   justifyContent: 'center',
+                  backgroundColor: Colors.white,
+                  borderRadius: normalise(30),
+                  position: 'absolute',
                 }}>
                 <Image
-                  source={{
-                    uri: pic.replace('100x100bb.jpg', '500x500bb.jpg'),
-                  }}
-                  style={{
-                    // height: normalise(290),
-                    // width: normalise(290),
-                    // borderRadius: normalise(15),
-                    aspectRatio: 1,
-                    width: '100%',
-                  }}
-                  resizeMode="cover"
+                  source={
+                    playVisible ? ImagePath.playicon : ImagePath.pauseicon
+                  }
+                  style={{height: normalise(20), width: normalise(20)}}
                 />
-
-                <TouchableOpacity
-                  onPress={() => {
-                    if (hasSongLoaded) playing();
-                  }}
-                  style={{
-                    height: normalise(60),
-                    width: normalise(60),
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: Colors.white,
-                    borderRadius: normalise(30),
-                    position: 'absolute',
-                  }}>
-                  <Image
-                    source={
-                      playVisible ? ImagePath.playicon : ImagePath.pauseicon
-                    }
-                    style={{ height: normalise(20), width: normalise(20) }}
-                  />
-                </TouchableOpacity>
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
+
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                // width: '90%',
+                width: '90%',
                 alignSelf: 'center',
-                marginTop: normalise(16),
-                marginHorizontal: normalise(24),
+                marginTop: normalise(15),
               }}>
               <View
                 style={{
@@ -1598,9 +1623,9 @@ function Player(props) {
 
                 <Text
                   style={{
-                    color: Colors.darkgrey,
-                    fontSize: normalise(9),
-                    fontFamily: 'ProximaNova-Regular',
+                    color: Colors.grey_text,
+                    fontSize: normalise(10),
+                    fontFamily: 'ProximaNovaAW07-Medium',
                     width: '90%',
                   }}
                   numberOfLines={1}>
@@ -1609,7 +1634,7 @@ function Player(props) {
               </View>
               {/* {changePlayer ? null :
                                 <Image source={registerType === 'spotify' ? ImagePath.spotifyicon : ImagePath.applemusic}
-                                    style={{ height: normalise(20), width: normalise(20), borderRadius: normalise(8), }}
+                                    style={{ height: normalise(20), width: normalise(20), borderRadius: normalise(10) }}
                                     resizeMode='contain' />} */}
 
               {changePlayer ? null : (
@@ -1628,7 +1653,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.threedots}
-                    style={{ height: normalise(15), width: normalise(15) }}
+                    style={{height: normalise(15), width: normalise(15)}}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1650,7 +1675,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.threedots}
-                    style={{ height: normalise(15), width: normalise(15) }}
+                    style={{height: normalise(15), width: normalise(15)}}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1661,43 +1686,35 @@ function Player(props) {
                             flexDirection: 'row', width: '90%', alignSelf: 'center',
                             justifyContent: 'space-between', marginTop: normalise(15),
                         }}>
-
                             <Text style={{
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
                                 {playerCurrentTime}
                             </Text>
-
                             <Text style={{
                                 color: 'white',
                                 fontFamily: 'ProximaNova-Semibold'
                             }}>
                                 -{playerDuration}
                             </Text>
-
                         </View> */}
-            <View
+
+            <Slider
               style={{
-                marginHorizontal: normalise(24),
-              }}>
-              <Slider
-                style={{
-                  width: '100%',
-                  height: 40,
-                  alignSelf: 'center',
-                  marginTop: normalise(5),
-                }}
-                minimumValue={0}
-                maximumValue={30}
-                animationType={'spring'}
-                step={1}
-                thumbTintColor="#99000000"
-                value={playerCurrentTime}
-                minimumTrackTintColor="#FFFFFF"
-                maximumTrackTintColor="#000000"
-              />
-            </View>
+                width: '90%',
+                height: 40,
+                alignSelf: 'center',
+                marginTop: normalise(5),
+              }}
+              minimumValue={0}
+              maximumValue={30}
+              step={1}
+              thumbTintColor="#99000000"
+              value={playerCurrentTime}
+              minimumTrackTintColor="#FFFFFF"
+              maximumTrackTintColor="#000000"
+            />
 
             {/* <View style={{
                             flexDirection: 'row', alignSelf: 'center', width: '70%',
@@ -1708,7 +1725,6 @@ function Player(props) {
                                     style={{ height: normalise(18), width: normalise(18) }}
                                     resizeMode="contain" />
                             </TouchableOpacity>
-
                             <TouchableOpacity
                                 onPress={() => {
                                     playInSpotify()
@@ -1717,13 +1733,9 @@ function Player(props) {
                                     height: normalise(60), width: normalise(60), alignItems: 'center', justifyContent: 'center',
                                     backgroundColor: Colors.white, borderRadius: normalise(30)
                                 }}>
-
                                 <Image source={playVisible ? ImagePath.playicon : ImagePath.pauseicon}
                                     style={{ height: normalise(20), width: normalise(20) }} />
-
-
                             </TouchableOpacity>
-
                             <TouchableOpacity onPress={() => { props.playerSeekToRequest(curentTimeForSlider + 5000) }}>
                                 <Image source={ImagePath.forwardicon}
                                     style={{ height: normalise(18), width: normalise(18) }}
@@ -1735,12 +1747,11 @@ function Player(props) {
               <View
                 style={{
                   flexDirection: 'row',
-                  width: '100%',
+                  width: '90%',
                   alignSelf: 'center',
                   justifyContent: 'space-between',
                   marginTop: normalise(10),
                   alignItems: 'center',
-                  paddingHorizontal: normalise(24),
                 }}>
                 <TouchableOpacity
                   style={{
@@ -1759,7 +1770,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.reactionicon}
-                    style={{ height: normalise(20), width: normalise(20) }}
+                    style={{height: normalise(20), width: normalise(20)}}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1790,7 +1801,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.boxicon}
-                    style={{ height: normalise(20), width: normalise(20) }}
+                    style={{height: normalise(20), width: normalise(20)}}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1811,7 +1822,7 @@ function Player(props) {
                   }}>
                   <Image
                     source={ImagePath.sendicon}
-                    style={{ height: normalise(20), width: normalise(20) }}
+                    style={{height: normalise(20), width: normalise(20)}}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
@@ -1820,20 +1831,18 @@ function Player(props) {
                   style={{
                     flexDirection: 'row',
                     height: normalise(40),
-                    // width: normalise(115),
-                    paddingLeft: normalise(16),
-                    paddingRight: normalise(16),
+                    width: normalise(115),
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: Colors.fadeblack,
-                    borderRadius: normalise(8),
+                    borderRadius: normalise(10),
                   }}
                   onPress={() => {
                     if (RbSheetRef) RbSheetRef.open();
                   }}>
                   <Image
                     source={ImagePath.comment_grey}
-                    style={{ height: normalise(20), width: normalise(20) }}
+                    style={{height: normalise(16), width: normalise(16)}}
                     resizeMode="contain"
                   />
 
@@ -1841,14 +1850,10 @@ function Player(props) {
                     style={{
                       fontSize: normalise(9),
                       color: Colors.white,
-                      marginLeft: normalise(8),
+                      marginLeft: normalise(10),
                       fontFamily: 'ProximaNova-Bold',
                     }}>
-                    {commentData.length > 0
-                      ? commentData.length === 1
-                        ? '1 COMMENT'
-                        : `${commentData.length} COMMENTS`
-                      : 'COMMENTS'}
+                    {arrayLength}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -1863,7 +1868,7 @@ function Player(props) {
                   alignSelf: 'center',
                   marginTop: normalise(10),
                 }}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <TouchableOpacity
                     style={{
                       height: normalise(40),
@@ -1891,7 +1896,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.boxicon}
-                      style={{ height: normalise(20), width: normalise(20) }}
+                      style={{height: normalise(20), width: normalise(20)}}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1913,7 +1918,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.sendicon}
-                      style={{ height: normalise(20), width: normalise(20) }}
+                      style={{height: normalise(20), width: normalise(20)}}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1928,14 +1933,14 @@ function Player(props) {
                     justifyContent: 'center',
                     alignSelf: 'center',
                     backgroundColor: Colors.fadeblack,
-                    borderRadius: normalise(8),
+                    borderRadius: normalise(10),
                   }}
                   onPress={() => {
                     if (RbSheetRef) RbSheetRef.open();
                   }}>
                   <Image
                     source={ImagePath.comment_grey}
-                    style={{ height: normalise(16), width: normalise(16) }}
+                    style={{height: normalise(16), width: normalise(16)}}
                     resizeMode="contain"
                   />
 
@@ -1946,31 +1951,25 @@ function Player(props) {
                       marginLeft: normalise(10),
                       fontFamily: 'ProximaNova-Bold',
                     }}>
-                    {commentData.length > 0
-                      ? commentData.length === 1
-                        ? '1 COMMENT'
-                        : `${commentData.length} COMMENTS`
-                      : 'COMMENTS'}
+                    {arrayLength}
                   </Text>
                 </TouchableOpacity>
               </View>
             ) : null}
 
-            {/* Play Button */}
+            {/* {changePlayer ? null : */}
             <View>
               <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   height: normalise(40),
-                  minWidth: normalise(150),
-                  paddingLeft: normalise(16),
-                  paddingRight: normalise(16),
+                  width: normalise(160),
                   alignSelf: 'center',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginTop: normalise(10),
+                  marginTop: normalise(30),
                   backgroundColor: Colors.fadeblack,
-                  borderRadius: normalise(8),
+                  borderRadius: normalise(10),
                 }}
                 onPress={() => {
                   //FOR SPOTIFY USERS
@@ -1989,7 +1988,7 @@ function Player(props) {
                           }
                         })
                         .catch(err => {
-                          // console.log('not supported');
+                          //   console.log('not supported');
                         });
                     } else {
                       isInternetConnected()
@@ -2047,14 +2046,13 @@ function Player(props) {
                 <Text
                   style={{
                     color: Colors.white,
-                    marginLeft: normalise(8),
+                    marginLeft: normalise(15),
                     fontSize: normalise(13),
                     fontFamily: 'ProximaNova-Semibold',
-                    textTransform: 'uppercase',
                   }}>
                   {props.userProfileResp.register_type === 'spotify'
-                    ? 'Play on Spotify'
-                    : 'Play on Apple'}
+                    ? 'OPEN ON SPOTIFY'
+                    : 'OPEN ON APPLE'}
                 </Text>
               </TouchableOpacity>
 
@@ -2076,16 +2074,13 @@ function Player(props) {
                   style={{
                     flexDirection: 'row',
                     height: normalise(40),
-                    minWidth: normalise(150),
-                    paddingLeft: normalise(16),
-                    paddingRight: normalise(16),
+                    width: normalise(160),
                     alignSelf: 'center',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginTop: normalise(10),
                     backgroundColor: Colors.fadeblack,
-                    borderRadius: normalise(8),
-                    // marginBottom: normalise(20),
+                    borderRadius: normalise(10),
                   }}>
                   <Image
                     source={ImagePath.add_white}
@@ -2099,7 +2094,7 @@ function Player(props) {
                   <Text
                     style={{
                       color: Colors.white,
-                      marginLeft: normalise(8),
+                      marginLeft: normalise(15),
                       fontSize: normalise(13),
                       fontFamily: 'ProximaNova-Semibold',
                     }}>
@@ -2137,7 +2132,6 @@ const mapStateToProps = state => {
     isrcResp: state.PlayerReducer.getSongFromISRC,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     messageStatus: state.MessageReducer.status,
-    header: state.TokenReducer,
   };
 };
 
@@ -2201,25 +2195,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    // marginBottom: normalise(10),
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
+    marginBottom: normalise(10),
+    height: normalise(250),
+    width: '95%',
     backgroundColor: Colors.darkerblack,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    // margin: 20,
+    borderRadius: 20,
     padding: 20,
-    paddingTop: normalise(24),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    paddingTop: normalise(20),
   },
   openButton: {
     backgroundColor: '#F194FF',

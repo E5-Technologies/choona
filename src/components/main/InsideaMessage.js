@@ -29,6 +29,8 @@ import {
   searchMessageRequest,
   deleteMessageRequest,
   createChatTokenRequest,
+  songMessageReadRequest,
+
 } from '../../action/MessageAction';
 import { getUsersFromHome } from '../../action/UserAction';
 import { saveSongRequest } from '../../action/SongAction';
@@ -189,6 +191,12 @@ function InsideaMessage(props) {
                 setPositionInArray(data.index);
               }}
               onPressItem={() => {
+
+
+                
+
+                songMessageReadRequest()
+
                 props.navigation.navigate('Player', {
                   song_title: data.item.song_name,
                   album_name: data.item.album_name,
@@ -250,6 +258,9 @@ function InsideaMessage(props) {
         ) : (
           <SavedSongsListItem
             playIcon={false}
+            receiver_id = {data.item.receiver_id}
+            user_id = {props.userProfileResp._id}
+            read = {data.item.read}
             image={data.item.image}
             title={data.item.song_name}
             singer={data.item.artist_name}
@@ -258,6 +269,8 @@ function InsideaMessage(props) {
               setModalVisible(true), setPositionInArray(data.index);
             }}
             onPressItem={() => {
+
+            
               props.navigation.navigate('Player', {
                 song_title: data.item.song_name,
                 album_name: data.item.album_name,

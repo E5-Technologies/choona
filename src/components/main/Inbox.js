@@ -14,6 +14,9 @@ import {
   Alert,
   TouchableWithoutFeedback,
 } from 'react-native';
+
+
+
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -24,6 +27,9 @@ import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
 import moment from 'moment';
 import { connect } from 'react-redux';
+
+const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
+
 import {
   GET_CHAT_LIST_REQUEST,
   GET_CHAT_LIST_SUCCESS,
@@ -139,6 +145,8 @@ function Inbox(props) {
           data.item.user_id == data.item.receiver_id ? true : data.item.read
         }
         onPress={() =>
+
+
           props.navigation.navigate('InsideaMessage', { index: data.index })
         }
         marginBottom={
