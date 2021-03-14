@@ -24,6 +24,8 @@ import {
   SEARCH_MESSAGE_REQUEST,
   SEARCH_MESSAGE_SUCCESS,
   SEARCH_MESSAGE_FAILURE,
+
+  
   UPDATE_MESSEAGE_COMMENTS_REQUEST,
   UPDATE_MESSEAGE_COMMENTS_SUCCESS,
   UPDATE_MESSEAGE_COMMENTS_FAILURE,
@@ -175,14 +177,26 @@ export function* getChatMessages(action) {
 
           if (action.payload.userId == child.val().receiver_id) {
           
-            child.child('read').ref.set(true);
+         //   child.child('read').ref.set(true);
           }
         });
 
-        // console.log('CHATS', items);
 
+
+
+
+
+
+
+        items.sort(function(x, y){
+          return y.order - x.order;
+      })
+
+      console.log('CHATS', JSON.stringify(items));
+
+      
         var chatResponse = {
-          data: items.reverse(),
+          data: items,
         };
 
         emiter(chatResponse || {});
@@ -258,6 +272,7 @@ export function* updateMessageCommentAction(action) {
           {
             message:action.payload.message,
             read: false,
+            order: moment().valueOf(),
             receiver_id: action.payload.receiverId,
             sender_id: action.payload.senderId,
             time: moment().toString(),
@@ -278,16 +293,16 @@ export function* updateMessageCommentAction(action) {
     if (error) {
       yield put({type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error});
     } else {
-      let updateMessageResponse = yield call(
-        postApi,
-        'chat/sendPush',
-        {
-          receiverId: action.payload.receiverId,
-          song_name: action.payload.songTitle,
-          artist_name: action.payload.artist,
-        },
-        Header,
-      );
+      // let updateMessageResponse = yield call(
+      //   postApi,
+      //   'chat/sendPush',
+      //   {
+      //     receiverId: action.payload.receiverId,
+      //     song_name: action.payload.songTitle,
+      //     artist_name: action.payload.artist,
+      //   },
+      //   Header,
+      // );
 
       // console.log(
       //   'updateMessageResponse: ' + JSON.stringify(updateMessageResponse),

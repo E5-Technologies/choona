@@ -56,6 +56,10 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status = '';
 let userStatus = '';
+import database from '@react-native-firebase/database';
+
+const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
+
 
 function InsideaMessage(props) {
   const [index, setIndex] = useState(props.route.params.index);
@@ -193,9 +197,26 @@ function InsideaMessage(props) {
               onPressItem={() => {
 
 
-                
+                if (props.userProfileResp._id == data.item.receiver_id) {
 
-                songMessageReadRequest()
+                  
+               
+                  console.log("inside condition");
+
+                const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
+                .child(props.chatList[index].chat_token)
+                .update(
+                  {
+                    read:true,
+
+                  },
+                  error => {
+                    emiter({error: error || null});
+                  },
+                );
+
+                  }
+
 
                 props.navigation.navigate('Player', {
                   song_title: data.item.song_name,
@@ -269,6 +290,26 @@ function InsideaMessage(props) {
               setModalVisible(true), setPositionInArray(data.index);
             }}
             onPressItem={() => {
+
+
+              if (props.userProfileResp._id == data.item.receiver_id) {
+
+                  
+               
+
+              const listener = FIREBASE_REF_MESSAGES
+              .child(props.chatList[index].chat_token).child(data.item.key)
+              .update(
+                {
+                  read:true,
+
+                },
+                error => {
+                  emiter({error: error || null});
+                },
+              );
+
+                }
 
             
               props.navigation.navigate('Player', {
