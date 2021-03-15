@@ -26,6 +26,13 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import { commentOnPostReq } from '../../action/UserAction';
+
+
+import { fetchCommentsOnPost } from '../../helpers/post';
+
+
+
 import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import {connect} from 'react-redux';
@@ -60,7 +67,6 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
-import {commentOnPostReq} from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import {saveSongRequest, saveSongRefReq} from '../../action/SongAction';
 import {
@@ -126,6 +132,8 @@ function Player(props) {
   const [id, setId] = useState(props.route.params.id);
   const [commentText, setCommentText] = useState('');
   const [arrayLength, setArrayLength] = useState(
+
+
     `${commentData.length} ${commentData.length > 1 ? 'COMMENTS' : 'COMMENT'}`,
   );
 
@@ -173,10 +181,45 @@ function Player(props) {
     //     }, 2000)
 
     // });
+
+    console.log("coming:"+props.route.params.comingFromMessage);
+    
+
+    if(!props.route.params.comingFromMessage)
+    {
+
+    fetchCommentsOnPost(props.route.params.id, props.header.token)
+    .then(res => {
+
+      if (res) {
+        setCommentData(res);
+
+
+        setArrayLength(
+          `${res.length} ${
+            res.length > 1 ? 'COMMENTS' : 'COMMENT'
+          }`,
+        );
+
+        
+      }
+    })
+    .catch(err => {
+      toast('Error', err);
+    });
+
+  }
+
+
+
+
     isInternetConnected()
       .then(() => {
         Sound.setCategory('Playback', false);
         props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
+
+
+
 
         if (changePlayer2) {
         //   console.log('getting spotify song uri');
@@ -2132,11 +2175,19 @@ const mapStateToProps = state => {
     isrcResp: state.PlayerReducer.getSongFromISRC,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     messageStatus: state.MessageReducer.status,
+    header: state.TokenReducer,
+
   };
 };
 
+
+
 const mapDispatchToProps = dispatch => {
   return {
+    commentOnPost: payload => {
+      dispatch(commentOnPostReq(payload));
+    },
+
     commentOnPost: payload => {
       dispatch(commentOnPostReq(payload));
     },
@@ -2182,6 +2233,9 @@ const mapDispatchToProps = dispatch => {
     },
   };
 };
+
+
+
 
 export default connect(
   mapStateToProps,

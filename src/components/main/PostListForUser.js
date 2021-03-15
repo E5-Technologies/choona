@@ -372,6 +372,7 @@ function PostListForUser(props) {
           });
         }}
         onPressCommentbox={() => {
+        
           props.navigation.navigate('HomeItemComments', {
             index: data.index,
             comment: data.item.comment,
@@ -1294,6 +1295,8 @@ const mapStateToProps = state => {
     postStatus: state.PostReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     registerType: state.TokenReducer.registerType,
+    header: state.TokenReducer,
+
   };
 };
 

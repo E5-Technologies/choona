@@ -1336,8 +1336,10 @@ function Home(props) {
             props.status === DUMMY_ACTION_SUCCESS ? (
               <MusicPlayerBar
                 onPress={() => {
+
+
                   props.navigation.navigate('Player', {
-                    comments: props.playingSongRef.commentData,
+                    comments:[],
                     song_title: props.playingSongRef.song_name,
                     album_name: props.playingSongRef.album_name,
                     song_pic: props.playingSongRef.song_pic,
