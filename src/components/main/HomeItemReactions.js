@@ -34,6 +34,7 @@ import Seperator from './ListCells/Seperator';
 import Loader from '../../widgets/AuthLoader';
 
 import { fetchReactionsOnPost } from '../../helpers/post';
+import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -272,7 +273,7 @@ function HomeItemReaction(props) {
           Keyboard.dismiss();
         }}>
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-          <HeaderComponent
+          <HeaderComponentComments
             firstitemtext={false}
             imageone={ImagePath.backicon}
             //imagesecond={ImagePath.dp}

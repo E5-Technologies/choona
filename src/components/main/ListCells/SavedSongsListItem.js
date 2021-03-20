@@ -205,10 +205,10 @@ function SavedSongListItem(props) {
 
         
 
-        {(props.user_id === props.receiver_id && !props.read) && 
+        {/* {(props.user_id === props.receiver_id && !props.read) && 
                 <Text style={{color:'#ffffff',alignSelf:'center',fontSize:6}}>{'\u2B24'}</Text>
 
-        }
+        } */}
 
 
 

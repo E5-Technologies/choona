@@ -429,9 +429,9 @@ function HomeItemList(props) {
                   : { uri: constants.profile_picture_base_url + props.picture }
               }
               style={{
-                height: normalise(20),
+                height:normalise(20),
                 width: normalise(20),
-                borderRadius: normalise(20),
+                borderRadius: normalise(30),
               }}
               resizeMode="contain"
             />

@@ -18,6 +18,7 @@ import {
   Alert,
   Clipboard,
   Keyboard,
+  BackHandler,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -26,7 +27,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { commentOnPostReq } from '../../action/UserAction';
+import { commentOnPostReq,dummyRequest } from '../../action/UserAction';
 
 
 import { fetchCommentsOnPost } from '../../helpers/post';
@@ -94,7 +95,7 @@ let messageStatus;
 
 function Player(props) {
   // PLAYER
-  const [playVisible, setPlayVisible] = useState(true);
+  const [playVisible, setPlayVisible] = useState(false);
   const [uri, setUri] = useState(props.route.params.uri);
   const [trackRef, setTrackRef] = useState('');
   const [songTitle, setSongTitle] = useState(props.route.params.song_title);
@@ -173,6 +174,23 @@ function Player(props) {
 
   var myVar;
 
+  function handleBackButtonClick() {
+
+
+    console.log("hello");
+
+    if(global.playerReference != null)
+    {
+    if(global.playerReference.isPlaying())
+{
+    props.dummyRequest();
+}
+    }
+    props.navigation.goBack();
+    return true;
+  }
+
+
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
 
@@ -181,6 +199,10 @@ function Player(props) {
     //     }, 2000)
 
     // });
+
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+
 
     console.log("coming:"+props.route.params.comingFromMessage);
     
@@ -393,23 +415,44 @@ function Player(props) {
     );
   };
 
-  // PLAY SONG ON LOAD
   const playSongOnLoad = songuri => {
+
+
+    
     if (props.playingSongRef === '') {
-    //   console.log('first time');
+       console.log('first time');
       playSong(songuri);
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === uri) {
-        //   console.log('Already Playing');
+
+
+          
+
+
+
+          console.log('Already Playing');
         //   console.log(global.playerReference);
           setTimeout(() => {
             changeTime(global.playerReference);
             let time = global.playerReference.getDuration();
+
+            if(global.playerReference.isPlaying())
+            {
             setHasSongLoaded(true);
             setplayerDuration(time);
             setBool(false);
-            global.playerReference.pause();
+
+            }
+            else
+            {
+              setHasSongLoaded(true);
+
+              setBool(false);
+              setPlayVisible(true);
+
+            }
+            // global.playerReference.pause();
             // global.playerReference.play((success) => {
             //     if (success) {
             //         console.log('Playback Endd')
@@ -418,16 +461,25 @@ function Player(props) {
             // })
           }, 100);
         } else {
-        //   console.log('reset');
+           console.log('reset');
           global.playerReference.release();
           global.playerReference = null;
+          setPlayVisible(true);
+
           playSong(songuri);
         }
       } else {
-        // console.log('reset2');
+
+
+        console.log('reset2');
+        
         playSong(songuri);
       }
     }
+
+
+
+
   };
 
   // PLAY SONG
@@ -2227,6 +2279,12 @@ const mapDispatchToProps = dispatch => {
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
     },
+
+    dummyRequest: () => {
+      dispatch(dummyRequest());
+    },
+
+
 
     createChatTokenRequest: payload => {
       dispatch(createChatTokenRequest(payload));

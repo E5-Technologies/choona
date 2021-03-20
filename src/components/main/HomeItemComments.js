@@ -35,6 +35,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
+import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 
 let status;
 
@@ -113,7 +114,7 @@ function HomeItemComments(props) {
       <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
       <SafeAreaView style={styles.safeContainer}>
-        <HeaderComponent
+        <HeaderComponentComments
           firstitemtext={false}
           imageone={ImagePath.backicon}
           title={
@@ -173,10 +174,10 @@ function HomeItemComments(props) {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-        <View style={styles.commentFooterContainer}>
+        <View style={[styles.commentFooterContainer,{flexDirection:'row',}]}>
           <TextInput
-            multiline
-            style={styles.commentFooterInput}
+            // multiline
+            style={[styles.commentFooterInput,{flex:0.98}]}
             value={commentText}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
@@ -186,7 +187,12 @@ function HomeItemComments(props) {
           />
           {commentText !== '' ? (
             <TouchableOpacity
-              style={styles.commentFooterPostButton}
+              style={{
+               alignItems:'center',
+              justifyContent:'center',
+              paddingHorizontal:'3%'
+            
+              }}
               onPress={() => {
                 let commentObject = {
                   post_id: id,
@@ -200,7 +206,10 @@ function HomeItemComments(props) {
                     toast('Error', 'Please Connect To Internet');
                   });
               }}>
-              <Text style={styles.commentFooterPostButtonText}>POST</Text>
+              <Text style={{
+                 color: Colors.white,
+                fontFamily: 'ProximaNova-Bold',
+              }}>POST</Text>
             </TouchableOpacity>
           ) : null}
         </View>

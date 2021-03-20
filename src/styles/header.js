@@ -19,10 +19,26 @@ const HeaderStyles = StyleSheet.create({
     height: normalise(44),
     justifyContent: 'center',
     marginBottom: normalise(0),
-    marginTop: Platform.OS === 'android' ? normalise(30) : normalise(0),
+    marginTop: Platform.OS === 'android' ? normalise(0) : normalise(0),
     position: 'relative',
     width: '100%',
   },
+
+  headerContainerComments: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: Colors.darkerblack,
+    borderBottomColor: Colors.fadeblack,
+    borderBottomWidth: normalise(1),
+    flexDirection: 'row',
+    height: normalise(44),
+    justifyContent: 'center',
+    marginBottom: normalise(0),
+    marginTop: Platform.OS === 'android' ? normalise(20) : normalise(0),
+    position: 'relative',
+    width: '100%',
+  },
+
   headerIcon: {
     height: normalise(20),
     width: normalise(20),

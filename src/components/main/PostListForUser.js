@@ -20,6 +20,8 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
+import MusicPlayerBar from '../../widgets/MusicPlayerBar';
+
 import _ from 'lodash';
 import HomeItemList from '../../components/main/ListCells/HomeItemList';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
@@ -46,6 +48,9 @@ import {
   CREATE_CHAT_TOKEN_REQUEST,
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
+  DUMMY_ACTION_SUCCESS,
+  DUMMY_ACTION_REQUEST,
+
 } from '../../action/TypeConstants';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
@@ -343,7 +348,7 @@ function PostListForUser(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments: data.item.comment,
+            comments:[],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -889,6 +894,41 @@ function PostListForUser(props) {
           />
 
           {renderAddToUsers()}
+
+
+          {
+            props.status === DUMMY_ACTION_SUCCESS ? (
+              <MusicPlayerBar
+                onPress={() => {
+
+
+                  props.navigation.navigate('Player', {
+                    comments:[],
+                    song_title: props.playingSongRef.song_name,
+                    album_name: props.playingSongRef.album_name,
+                    song_pic: props.playingSongRef.song_pic,
+                    username: props.playingSongRef.username,
+                    profile_pic: props.playingSongRef.profile_pic,
+                    uri: props.playingSongRef.uri,
+                    reactions: props.playingSongRef.reactionData,
+                    id: props.playingSongRef.id,
+                    artist: props.playingSongRef.artist,
+                    changePlayer: props.playingSongRef.changePlayer,
+                    originalUri: props.playingSongRef.originalUri,
+                    isrc: props.playingSongRef.isrc,
+                    registerType: props.playingSongRef.regType,
+                    details: props.playingSongRef.details,
+                    showPlaylist: props.playingSongRef.showPlaylist,
+                    comingFromMessage: props.playingSongRef.comingFromMessage,
+                  });
+                }}
+                onPressPlayOrPause={() => {
+                  setTimeout(() => {
+                    findPlayingSong(props.postData);
+                  }, 500);
+                }}
+              />
+            ) : null}
 
           <Modal
             animationType="slide"

@@ -275,7 +275,7 @@ function GenreSongClicked(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments: data.item.comment,
+            comments:[],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,

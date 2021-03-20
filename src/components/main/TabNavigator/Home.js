@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TextInput,
+  AppState,
   ImageBackground,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -32,6 +33,7 @@ import { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -92,6 +94,8 @@ let postStatus = '';
 let messageStatus;
 
 function Home(props) {
+  const [appState, setAppState] = useState(AppState.currentState);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
@@ -115,38 +119,99 @@ function Home(props) {
   var bottomSheetRef;
   let changePlayer = false;
 
+
+
+  var handleAppStateChange = (state) => {
+    console.log("state_Change:"+state);
+
+    if(state != "active")
+    {
+
+      if (global.playerReference != null)
+      {
+      if (global.playerReference.isPlaying()) {
+        global.playerReference.pause();
+        
+        findPlayingSong(props.postData);
+
+
+    }
+  }
+  }
+
+  }
+
+
+
   useScrollToTop(ref);
 
-  useEffect(() => {
-    setHomeReq(true);
-    setOffset(1);
-    props.homePage(1);
+  // useEffect(() => {
+  //   setHomeReq(true);
+  //   setOffset(1);
+  //   props.homePage(1);
 
-    const unsuscribe = props.navigation.addListener('focus', payload => {
-      isInternetConnected()
-        .then(() => {
-          // console.log('home use Effect');
-          setOnScrolled(false);
-          props.getProfileReq(), setUserSearchData([]);
-          sesUsersToSEndSong([]);
-          setUserSeach('');
-          if (!homeReq) {
-            props.dummyRequest();
-          }
-          // if (ref.current !== null) {
-          //   ref.current.scrollToIndex({ animated: true, index: 0 })
-          // }
-        })
-        .catch(err => {
-          // console.log(err);
-          toast('Error', 'Please Connect To Internet');
-        });
-    });
+  //   const unsuscribe = props.navigation.addListener('focus', payload => {
+  //     isInternetConnected()
+  //       .then(() => {
+  //         // console.log('home use Effect');
+  //         setOnScrolled(false);
+  //         props.getProfileReq(), setUserSearchData([]);
+  //         sesUsersToSEndSong([]);
+  //         setUserSeach('');
+  //         if (!homeReq) {
+  //           props.dummyRequest();
+  //         }
+  //         // if (ref.current !== null) {
+  //         //   ref.current.scrollToIndex({ animated: true, index: 0 })
+  //         // }
+  //       })
+  //       .catch(err => {
+  //         // console.log(err);
+  //         toast('Error', 'Please Connect To Internet');
+  //       });
+  //   });
 
-    return () => {
-      unsuscribe();
-    };
-  }, []);
+  //   return () => {
+  //     unsuscribe();
+  //   };
+  // }, []);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setHomeReq(true);
+      setOffset(1);
+      props.homePage(1);
+
+
+      AppState.addEventListener('change', handleAppStateChange);
+
+  
+      const unsuscribe = props.navigation.addListener('focus', payload => {
+        isInternetConnected()
+          .then(() => {
+            // console.log('home use Effect');
+            setOnScrolled(false);
+            props.getProfileReq(), setUserSearchData([]);
+            sesUsersToSEndSong([]);
+            setUserSeach('');
+            if (!homeReq) {
+              props.dummyRequest();
+            }
+            // if (ref.current !== null) {
+            //   ref.current.scrollToIndex({ animated: true, index: 0 })
+            // }
+          })
+          .catch(err => {
+            // console.log(err);
+            toast('Error', 'Please Connect To Internet');
+          });
+      });
+
+      return () => unsuscribe();
+    }, [])
+  );
+
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -1174,9 +1239,9 @@ function Home(props) {
                 props.userProfileResp.profile_image
           }
           staticFirstImage={false}
-          imageoneheight={30}
-          imageonewidth={30}
-          borderRadius={30}
+          imageoneheight={normalise(26)}
+          imageonewidth={normalise(26)}
+          borderRadius={normalise(30)}
           title={'CHOONA'}
           thirditemtext={false}
           imagetwo={ImagePath.inbox}
