@@ -114,6 +114,7 @@ function Home(props) {
   const [onScrolled, setOnScrolled] = useState(false);
   const [offset, setOffset] = useState(1);
   const [refresing, setRefresing] = useState(false);
+  const [data,setData] = useState(props.postData)
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -145,72 +146,74 @@ function Home(props) {
 
   useScrollToTop(ref);
 
-  // useEffect(() => {
-  //   setHomeReq(true);
-  //   setOffset(1);
-  //   props.homePage(1);
-
-  //   const unsuscribe = props.navigation.addListener('focus', payload => {
-  //     isInternetConnected()
-  //       .then(() => {
-  //         // console.log('home use Effect');
-  //         setOnScrolled(false);
-  //         props.getProfileReq(), setUserSearchData([]);
-  //         sesUsersToSEndSong([]);
-  //         setUserSeach('');
-  //         if (!homeReq) {
-  //           props.dummyRequest();
-  //         }
-  //         // if (ref.current !== null) {
-  //         //   ref.current.scrollToIndex({ animated: true, index: 0 })
-  //         // }
-  //       })
-  //       .catch(err => {
-  //         // console.log(err);
-  //         toast('Error', 'Please Connect To Internet');
-  //       });
-  //   });
-
-  //   return () => {
-  //     unsuscribe();
-  //   };
-  // }, []);
+  useEffect(() => {
+    setHomeReq(true);
+    setOffset(1);
+    props.homePage(1);
 
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setHomeReq(true);
-      setOffset(1);
-      props.homePage(1);
+    
+    const unsuscribe = props.navigation.addListener('focus', payload => {
+      isInternetConnected()
+        .then(() => {
+          // console.log('home use Effect');
+          setOnScrolled(false);
+          props.getProfileReq(), setUserSearchData([]);
+          sesUsersToSEndSong([]);
+          setUserSeach('');
+          if (!homeReq) {
+            props.dummyRequest();
+          }
+          // if (ref.current !== null) {
+          //   ref.current.scrollToIndex({ animated: true, index: 0 })
+          // }
+        })
+        .catch(err => {
+          // console.log(err);
+          toast('Error', 'Please Connect To Internet');
+        });
+    });
+
+    return () => {
+      unsuscribe();
+    };
+  }, []);
 
 
-      AppState.addEventListener('change', handleAppStateChange);
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     setHomeReq(true);
+  //     setOffset(1);
+  //     props.homePage(1);
+
+
+      //  AppState.addEventListener('change', handleAppStateChange);
 
   
-      const unsuscribe = props.navigation.addListener('focus', payload => {
-        isInternetConnected()
-          .then(() => {
-            // console.log('home use Effect');
-            setOnScrolled(false);
-            props.getProfileReq(), setUserSearchData([]);
-            sesUsersToSEndSong([]);
-            setUserSeach('');
-            if (!homeReq) {
-              props.dummyRequest();
-            }
-            // if (ref.current !== null) {
-            //   ref.current.scrollToIndex({ animated: true, index: 0 })
-            // }
-          })
-          .catch(err => {
-            // console.log(err);
-            toast('Error', 'Please Connect To Internet');
-          });
-      });
+  //     const unsuscribe = props.navigation.addListener('focus', payload => {
+  //       isInternetConnected()
+  //         .then(() => {
+  //           // console.log('home use Effect');
+  //           setOnScrolled(false);
+  //           props.getProfileReq(), setUserSearchData([]);
+  //           sesUsersToSEndSong([]);
+  //           setUserSeach('');
+  //           if (!homeReq) {
+  //             props.dummyRequest();
+  //           }
+  //           // if (ref.current !== null) {
+  //           //   ref.current.scrollToIndex({ animated: true, index: 0 })
+  //           // }
+  //         })
+  //         .catch(err => {
+  //           // console.log(err);
+  //           toast('Error', 'Please Connect To Internet');
+  //         });
+  //     });
 
-      return () => unsuscribe();
-    }, [])
-  );
+  //     return () => unsuscribe();
+  //   }, [])
+  // );
 
 
   if (status === '' || props.status !== status) {
@@ -621,6 +624,18 @@ function Home(props) {
     }
   };
 
+
+function _onSelectBack(ID,comment){
+// console.log("aaa"+JSON.stringify(props.postData))
+  props.postData.map((item,index)=>{
+// console.log("items",item._id)
+if(item._id === ID){
+props.postData[index].comment_count = comment 
+
+}
+  })
+}
+
   function renderItem(data) {
     return (
       <HomeItemList
@@ -681,6 +696,7 @@ function Home(props) {
               // reactions: data.item.reaction,
               post_id: data.item._id,
             });
+           
           }
         }}
         onPressCommentbox={() => {
@@ -693,6 +709,7 @@ function Home(props) {
               userComment: data.item.post_content,
               time: data.item.createdAt,
               id: data.item._id,
+              onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
             });
           }
         }}
@@ -1334,6 +1351,7 @@ function Home(props) {
           </View>
         ) : (
           <View style={{ flex: 1 }}>
+         
             <FlatList
               // style={{marginTop: normalise(10)}}
               data={props.postData}

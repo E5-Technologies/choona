@@ -173,10 +173,12 @@ function AddSong(props) {
                 // borderRadius: normalise(8),
                 // padding: normalise(10),
                 color: Colors.white,
+
                 fontWeight: '400',
                 marginHorizontal: normalise(10),
                 marginBottom: normalise(10),
               }}
+              keyboardAppearance='dark'
               value={search}
               multiline={true}
               placeholder={'Add a caption...'}

@@ -765,7 +765,9 @@ function Player(props) {
         closeOnDragDown={false}
         closeOnPressMask={true}
         nestedScrollEnabled={true}
-        keyboardAvoidingViewEnabled={true}
+         keyboardAvoidingViewEnabled={true}
+        
+      
         customStyles={{
           container: {
             minHeight: Dimensions.get('window').height / 2.2,
@@ -773,8 +775,13 @@ function Player(props) {
             borderTopStartRadius: normalise(8),
           },
         }}>
-        <KeyboardAvoidingView style={{flex: 1, backgroundColor: Colors.black}}>
-          <View style={{width: '95%', alignSelf: 'center'}}>
+          
+          <KeyboardAvoidingView 
+          keyboardShouldPersistTaps={'handled'}
+          style={{flex: 1, backgroundColor: Colors.black}}
+         behavior="position"> 
+
+          <View style={{width: '95%', alignSelf: 'center',}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -845,14 +852,22 @@ function Player(props) {
               }}
               showsVerticalScrollIndicator={false}
             />
+        <View style={
+          {flexDirection:'row',
+          height: normalise(35),
+          marginTop:normalise(15),
+          }}>
 
             <TextInput
               style={{
-                height: normalise(35),
-                width: '100%',
+                 height: normalise(35),
+                // width: '100%',
                 backgroundColor: Colors.fadeblack,
+                flex:0.98,
+                          // keyboardAppearance='dark',
+
                 borderRadius: normalise(17),
-                marginTop: normalise(10),
+                // marginTop: normalise(10),
                 padding: normalise(10),
                 color: Colors.white,
                 paddingRight: normalise(50),
@@ -863,23 +878,35 @@ function Player(props) {
               onChangeText={text => {
                 setCommentText(text);
               }}
+              
             />
 
             {commentText.length > 1 ? (
               <TouchableOpacity
                 style={{
-                  position: 'absolute',
-                  right: 0,
-                  bottom: normalise(10),
-                  paddingRight: normalise(10),
+                  // position: 'absolute',
+                  // right: 0,
+                  // bottom: normalise(10),
+                  // paddingRight: normalise(10),
+                  // width:40,height:40,
+                  alignItems:'center',
+                  justifyContent:'center',
+                  paddingHorizontal:'3%'
+
                 }}
+               
+              
                 onPress={() => {
+
+
+
+                  setCommentText('');
                   let commentObject = {
                     post_id: id,
                     text: commentText,
                   };
                   let updateMessagPayload = {};
-
+                 
                   if (comingFromMessage) {
                     let tempData = [...commentData];
                     tempData.push({
@@ -896,9 +923,6 @@ function Player(props) {
                     );
                     setCommentData(tempData);
                     setCommentText('');
-
-
-
 
                     updateMessagPayload = {
                       ChatId: key,
@@ -921,6 +945,7 @@ function Player(props) {
                     });
                 }}>
                 <Text
+                
                   style={{
                     color: Colors.white,
                     fontSize: normalise(10),
@@ -930,7 +955,9 @@ function Player(props) {
                 </Text>
               </TouchableOpacity>
             ) : null}
+            </View>
           </View>
+         
         </KeyboardAvoidingView>
       </RBSheet>
     );

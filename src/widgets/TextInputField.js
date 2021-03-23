@@ -55,6 +55,8 @@ function TextInputField(props) {
             : Colors.fadeblack,
           color: Colors.white,
         }}
+        keyboardAppearance='dark'
+
         onFocus={() => {
           setFocused(true);
         }}

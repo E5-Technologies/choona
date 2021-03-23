@@ -401,7 +401,6 @@ function AddSongsInMessage(props) {
           <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
               autoCorrect={false}
-              keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
                 width: '100%',
@@ -413,6 +412,8 @@ function AddSongsInMessage(props) {
                 paddingLeft: normalise(30),
               }}
               value={search}
+              keyboardAppearance={'dark'}
+
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {

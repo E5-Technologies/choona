@@ -268,10 +268,10 @@ function HomeItemReaction(props) {
     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={reactionsLoading} />
       <StatusBar />
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
+        }}> */}
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
           <HeaderComponentComments
             firstitemtext={false}
@@ -517,7 +517,7 @@ function HomeItemReaction(props) {
             ) : null}
           </View>
         </SafeAreaView>
-      </TouchableWithoutFeedback>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

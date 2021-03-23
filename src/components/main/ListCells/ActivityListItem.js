@@ -36,6 +36,7 @@ function ActivityListItem(props) {
             />
           </TouchableOpacity>
           <TouchableOpacity
+          style={{flex:1}}
             disabled={props.TouchableOpacityDisabled}
             onPress={() => {
               onPressImage();

@@ -11,6 +11,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  ScrollView,
+  BackHandler
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
@@ -39,8 +41,13 @@ import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 
 let status;
 
+
+let comment_count = 0;
+
 function HomeItemComments(props) {
   const [comments, setComments] = useState([]);
+
+
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentText, setCommentText] = useState('');
   const [id] = useState(props.route.params.id);
@@ -48,18 +55,33 @@ function HomeItemComments(props) {
   const [time] = useState(props.route.params.time);
   const [username] = useState(props.route.params.username);
   const [userComment] = useState(props.route.params.userComment);
+  const [totalcount,setTotalCount]=useState(0)
 
   useEffect(() => {
     fetchCommentsOnPost(props.route.params.id, props.header.token)
       .then(res => {
+
+// console.log("res"+JSON.stringify(res.reverse()))
         setCommentsLoading(false);
         if (res) {
-          setComments(res);
+          setTotalCount(res.length)
+
+          comment_count = res.length;
+          setComments(res.reverse());
+        
         }
       })
+      
       .catch(err => {
         toast('Error', err);
       });
+     
+      BackHandler.addEventListener("hardwareBackPress", _onBackHandlerPress);
+
+      //  return () =>
+      //  BackHandler.removeEventListener("hardwareBackPress", _onBackHandlerPress);
+
+  
   }, [props.header.token, props.route.params.id]);
 
   function renderItem(data) {
@@ -98,7 +120,8 @@ function HomeItemComments(props) {
         data.user_id = props.commentResp.user_id;
         data.post_id = props.commentResp.post_id;
         data.profile_image = props.commentResp.profile_image;
-        comments.push(data);
+        comments.unshift(data);
+        comment_count = comment_count + 1;
         break;
 
       case COMMENT_ON_POST_FAILURE:
@@ -108,9 +131,34 @@ function HomeItemComments(props) {
     }
   }
 
+ const _onBackPress = () => {
+   
+     let ID = props.route.params.id
+     let Comment = comments.length
+  const { navigation, route } = props;
+   route.params.onSelect(ID,Comment);
+     navigation.goBack();
+   
+ 
+};
+
+const _onBackHandlerPress = () => {
+   
+  let ID = props.route.params.id
+  let Comment= comment_count;
+
+const { navigation, route } = props;
+console.log(ID+":"+Comment);
+route.params.onSelect(ID,Comment);
+  navigation.goBack();
+ return true
+
+};
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
       <Loader visible={commentsLoading} />
+     
       <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
       <SafeAreaView style={styles.safeContainer}>
@@ -127,9 +175,11 @@ function HomeItemComments(props) {
           thirditemtext={false}
           marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
           onPressFirstItem={() => {
-            props.navigation.goBack();
+            // props.navigation.goBack();
+            _onBackPress()
           }}
         />
+        <ScrollView>
         <View style={styles.commentHeader}>
           <View style={styles.commentHeaderDetails}>
             <TouchableOpacity style={styles.commentHeaderAvatarButton}>
@@ -164,6 +214,7 @@ function HomeItemComments(props) {
             </View>
           </View>
         </View>
+        </ScrollView>
         <SwipeListView
           data={comments}
           renderItem={renderItem}

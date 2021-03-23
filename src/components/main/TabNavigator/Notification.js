@@ -8,6 +8,7 @@ import {
   Text,
   RefreshControl,
   View,
+  AppState,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -18,7 +19,7 @@ import _ from 'lodash';
 import Colors from '../../../assests/Colors';
 import constants from '../../../utils/helpers/constants';
 import normaliseNew from '../../../utils/helpers/DimensNew';
-
+import { useFocusEffect } from '@react-navigation/native';
 import Loader from '../../../widgets/AuthLoader';
 import StatusBar from '../../../utils/MyStatusBar';
 import ActivitySingle from '../../Activity/ActivitySingle';
@@ -59,36 +60,66 @@ function Notification(props) {
   const { mutate } = useSWR(key, () => getActivities(pageId), {
     onSuccess: data => {
       if (pageId === 1) {
+      
         setNotifications(data.data);
       } else {
+       
         const newArray = [...notifications, ...data.data];
         setNotifications(newArray);
       }
     },
   });
 
-  useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', () => {
-      isInternetConnected()
-        .then(() => {
-          updateProfile();
-          // setNotifications([]);
-          // setPageId(1);
-          // mutate();
-        })
-        .catch(() => {
-          toast('Error', 'Please Connect To Internet');
-        });
-    });
+  // useEffect(() => {
+  //   const unsuscribe = props.navigation.addListener('focus', () => {
+  //     isInternetConnected()
+  //       .then(() => {
+  //         updateProfile();
+  //         // setNotifications([]);
+  //         // setPageId(1);
+  //         // mutate();
+  //       })
+  //       .catch(() => {
+  //         toast('Error', 'Please Connect To Internet');
+  //       });
+  //   });
 
-    return () => {
-      unsuscribe();
-    };
-  });
+  //   return () => {
+  //     unsuscribe();
+  //   };
+  // });
+
+ useFocusEffect(
+    React.useCallback(() => {
+      // alert("focus1111");
+      setNotifications([]);
+            setPageId(1);
+            mutate();
+
+      AppState.addEventListener('change', updateProfile());
+      const unsuscribe = props.navigation.addListener('focus', () => {
+        isInternetConnected()
+          .then(() => {
+            // alert("focus");
+            updateProfile();
+            // setNotifications([]);
+            // setPageId(1);
+            // mutate();
+          })
+          .catch(() => {
+            toast('Error', 'Please Connect To Internet');
+          });
+        
+      });
+
+      return () => unsuscribe();
+    }, [])
+  );
+
 
   const updateProfile = () => {
     let formdata = new FormData();
-
+  
     formdata.append('isActivity', false);
 
     isInternetConnected()
@@ -263,7 +294,7 @@ const mapStateToProps = state => {
   return {
     header: state.TokenReducer,
   };
-};
+}; 
 
 const mapDispatchToProps = dispatch => {
   return {

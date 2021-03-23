@@ -49,7 +49,9 @@ function OthersProfile(props) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [flag, setFlag] = useState('');
 
+
   const postsUrl = constants.BASE_URL + `/user/posts/${id}`;
+
 
   const getPosts = async pageId => {
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
@@ -68,6 +70,7 @@ function OthersProfile(props) {
 
   const profilePosts = posts ? posts.data : [];
 
+
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
@@ -79,12 +82,14 @@ function OthersProfile(props) {
         .catch(() => {
           toast('Error', 'Please Connect to Internet');
         });
+
+
     });
 
     return () => {
       unsuscribe();
     };
-  });
+  },[isFollowing]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -182,7 +187,7 @@ function OthersProfile(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <Loader visible={props.status === OTHERS_PROFILE_REQUEST} />
+      {/* <Loader visible={props.status === OTHERS_PROFILE_REQUEST} /> */}
 
       {/* <Loader visible={props.status === HOME_PAGE_REQUEST} /> */}
 
@@ -372,25 +377,27 @@ function OthersProfile(props) {
               maxWidth: normalise(120),
 
               borderRadius: normalise(15),
-              backgroundColor: props.othersProfileresp.isFollowing
+              backgroundColor:isFollowing
                 ? Colors.fadeblack
                 : Colors.white,
               alignItems: 'center',
               justifyContent: 'center',
             }}
             onPress={() => {
+
+              console.log("val:"+ isFollowing);
               setIsFollowing(!isFollowing);
               props.followReq({ follower_id: id });
             }}>
             <Text
               style={{
                 fontSize: normalise(10),
-                color: props.othersProfileresp.isFollowing
+                color:isFollowing
                   ? Colors.white
                   : Colors.black,
                 fontFamily: 'ProximaNova-Bold',
               }}>
-              {props.othersProfileresp.isFollowing ? 'FOLLOWING' : 'FOLLOW'}
+              {isFollowing ? 'FOLLOWING' : 'FOLLOW'}
             </Text>
           </TouchableOpacity>
         </View>

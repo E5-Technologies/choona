@@ -300,6 +300,7 @@ function FeaturedTrack(props) {
               keyboardAppearance={'dark'}
               style={{
                 height: normalise(35),
+
                 width: '100%',
                 backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(8),
@@ -308,6 +309,7 @@ function FeaturedTrack(props) {
                 color: Colors.white,
                 paddingLeft: normalise(30),
               }}
+              keyboardAppearance='dark'
               value={search}
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
