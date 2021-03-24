@@ -20,6 +20,8 @@ import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import StatusBar from '../../utils/MyStatusBar';
+import OneSignal from 'react-native-onesignal';
+
 import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
@@ -36,7 +38,6 @@ import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import Picker from '../../utils/helpers/Picker';
-import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
 let status = '';
 
 function Login(props) {
@@ -72,17 +73,22 @@ function Login(props) {
   }
 
   useEffect(() => {
+
+
+    (async () => {
+      const { userId } = await OneSignal.getDeviceState();
+
+      setDeviceToken(userId);
+    })();
+
+
     isInternetConnected()
       .then(() => {
         props.countrycodeRequest();
-        getDeviceToken()
-          .then(token => {
-            setDeviceToken(token);
-            // console.log(token);
-          })
-          .catch(error => {
-            // console.log(error);
-          });
+
+
+    
+
       })
       .catch(() => {
         toast('Check your Internet');

@@ -855,7 +855,7 @@ function Player(props) {
         <View style={
           {flexDirection:'row',
           height: normalise(35),
-          marginTop:normalise(15),
+          marginTop:normalise(15)
           }}>
 
             <TextInput
@@ -863,6 +863,7 @@ function Player(props) {
                  height: normalise(35),
                 // width: '100%',
                 backgroundColor: Colors.fadeblack,
+              
                 flex:0.98,
                           // keyboardAppearance='dark',
 
@@ -888,7 +889,7 @@ function Player(props) {
                   // right: 0,
                   // bottom: normalise(10),
                   // paddingRight: normalise(10),
-                  // width:40,height:40,
+                 
                   alignItems:'center',
                   justifyContent:'center',
                   paddingHorizontal:'3%'
@@ -897,6 +898,7 @@ function Player(props) {
                
               
                 onPress={() => {
+                  alert("post click")
 
 
 
@@ -907,42 +909,42 @@ function Player(props) {
                   };
                   let updateMessagPayload = {};
                  
-                  if (comingFromMessage) {
-                    let tempData = [...commentData];
-                    tempData.push({
-                      profile_image: props.userProfileResp.profile_image,
-                      text: commentText,
-                      username: props.userProfileResp.username,
-                      createdAt: moment().toString(),
-                      user_id: props.userProfileResp._id,
-                    });
-                    setArrayLength(
-                      `${tempData.length} ${
-                        tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
-                      }`,
-                    );
-                    setCommentData(tempData);
-                    setCommentText('');
+                  // if (comingFromMessage) {
+                  //   let tempData = [...commentData];
+                  //   tempData.push({
+                  //     profile_image: props.userProfileResp.profile_image,
+                  //     text: commentText,
+                  //     username: props.userProfileResp.username,
+                  //     createdAt: moment().toString(),
+                  //     user_id: props.userProfileResp._id,
+                  //   });
+                  //   setArrayLength(
+                  //     `${tempData.length} ${
+                  //       tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
+                  //     }`,
+                  //   );
+                  //   setCommentData(tempData);
+                  //   setCommentText('');
 
-                    updateMessagPayload = {
-                      ChatId: key,
-                      chatToken: chatToken,
-                      message: tempData,
-                      receiverId: receiverId,
-                      senderId: senderId,
-                      songTitle: songTitle,
-                      artist: artist,
-                    };
-                  }
-                  isInternetConnected()
-                    .then(() => {
-                      comingFromMessage
-                        ? props.updateMessageCommentRequest(updateMessagPayload)
-                        : props.commentOnPost(commentObject);
-                    })
-                    .catch(() => {
-                      toast('Error', 'Please Connect To Internet');
-                    });
+                  //   updateMessagPayload = {
+                  //     ChatId: key,
+                  //     chatToken: chatToken,
+                  //     message: tempData,
+                  //     receiverId: receiverId,
+                  //     senderId: senderId,
+                  //     songTitle: songTitle,
+                  //     artist: artist,
+                  //   };
+                  // }
+                  // isInternetConnected()
+                  //   .then(() => {
+                  //     comingFromMessage
+                  //       ? props.updateMessageCommentRequest(updateMessagPayload)
+                  //       : props.commentOnPost(commentObject);
+                  //   })
+                  //   .catch(() => {
+                  //     toast('Error', 'Please Connect To Internet');
+                  //   });
                 }}>
                 <Text
                 

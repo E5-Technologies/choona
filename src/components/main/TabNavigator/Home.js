@@ -21,6 +21,8 @@ import {
   RefreshControl,
   FlatList,
 } from 'react-native';
+import OneSignal from 'react-native-onesignal';
+
 import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -34,6 +36,10 @@ import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import { useFocusEffect } from '@react-navigation/native';
+import updateToken from '../../main/ListCells/UpdateToken'
+
+
+
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -151,6 +157,9 @@ function Home(props) {
     setOffset(1);
     props.homePage(1);
 
+    updateToken(props.SuccessToken);
+
+
 
     
     const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -160,6 +169,7 @@ function Home(props) {
           setOnScrolled(false);
           props.getProfileReq(), setUserSearchData([]);
           sesUsersToSEndSong([]);
+
           setUserSeach('');
           if (!homeReq) {
             props.dummyRequest();
@@ -1884,6 +1894,8 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
     currentPage: state.UserReducer.currentPage,
+    SuccessToken : state.TokenReducer.token,
+
   };
 };
 

@@ -179,7 +179,7 @@ route.params.onSelect(ID,Comment);
             _onBackPress()
           }}
         />
-        <ScrollView>
+        {/* <ScrollView> */}
         <View style={styles.commentHeader}>
           <View style={styles.commentHeaderDetails}>
             <TouchableOpacity style={styles.commentHeaderAvatarButton}>
@@ -214,7 +214,7 @@ route.params.onSelect(ID,Comment);
             </View>
           </View>
         </View>
-        </ScrollView>
+        {/* </ScrollView> */}
         <SwipeListView
           data={comments}
           renderItem={renderItem}
