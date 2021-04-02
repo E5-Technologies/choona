@@ -1,11 +1,20 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 
 // import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
+import Hyperlink from 'react-native-hyperlink'
+
+
+const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
 
 function CommentList(props) {
   const onPressImage = () => {
@@ -37,7 +46,14 @@ function CommentList(props) {
           </TouchableOpacity>
           <Text style={styles.commentTime}>{props.time}</Text>
         </View>
-        <Text style={styles.commentText}>{props.comment}</Text>
+        {/* {
+         pattern.test(props.comment)? <Text style={[styles.commentText,{color:'#007ACC'}]} onPress={()=>{ props.comment.substring(0,3)==='Www'||props.comment.substring(0,3)==='www'?Linking.openURL('https://'+props.comment) :Linking.openURL(props.comment)}}>{props.comment}</Text>:
+         <Text style={styles.commentText}>{props.comment}</Text>
+        } */}
+          <Hyperlink linkDefault={ true }>
+
+        <Text  style={styles.commentText}>{props.comment}</Text>
+        </Hyperlink>
       </View>
     </View>
   );

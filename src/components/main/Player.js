@@ -21,6 +21,8 @@ import {
   BackHandler,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
+import normaliseNew from '../../utils/helpers/DimensNew';
+
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -85,6 +87,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import {createChatTokenRequest} from '../../action/MessageAction';
 import {getUsersFromHome} from '../../action/UserAction';
+import { ScreenStackHeaderRightView } from 'react-native-screens';
 
 let RbSheetRef;
 
@@ -117,6 +120,7 @@ function Player(props) {
 
   const [hasSongLoaded, setHasSongLoaded] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
+  const [textinputHeight,setHeight]=useState(50)
 
   const [reactions, setSReactions] = useState(
     props.route.params.changePlayer ? [] : props.route.params.reactions,
@@ -752,6 +756,11 @@ function Player(props) {
     );
   }
 
+
+  const updateSize = (height) => {
+           setHeight(height)
+  }
+
   // BOTTOM SHEET FUNC
   const RbSheet = () => {
     return (
@@ -764,8 +773,8 @@ function Player(props) {
         animationType={'slide'}
         closeOnDragDown={false}
         closeOnPressMask={true}
-        nestedScrollEnabled={true}
-         keyboardAvoidingViewEnabled={true}
+         nestedScrollEnabled={true}
+        //  keyboardAvoidingViewEnabled={true}
         
       
         customStyles={{
@@ -776,12 +785,13 @@ function Player(props) {
           },
         }}>
           
-          <KeyboardAvoidingView 
-          keyboardShouldPersistTaps={'handled'}
+          <View 
+          // keyboardShouldPersistTaps='handled'
           style={{flex: 1, backgroundColor: Colors.black}}
-         behavior="position"> 
+        //  behavior="position"
+         > 
 
-          <View style={{width: '95%', alignSelf: 'center',}}>
+          <View style={{width: '95%',flex:1, alignSelf: 'center',}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -790,6 +800,7 @@ function Player(props) {
                 marginTop: normalise(15),
                 borderBottomWidth: 0.5,
                 borderColor: Colors.grey,
+                
               }}>
               <TouchableOpacity
                 onPress={() => {
@@ -844,35 +855,65 @@ function Player(props) {
             </View>
 
             <FlatList
-              style={{height: '60%'}}
+              style={{height:'40%'}}
               data={commentData}
               renderItem={renderFlatlistData}
               keyExtractor={(item, index) => {
                 index.toString();
               }}
+              // keyboardShouldPersistTaps='always'
               showsVerticalScrollIndicator={false}
             />
+         {/* <ScrollView style={{}} keyboardShouldPersistTaps="always"> */}
         <View style={
           {flexDirection:'row',
-          height: normalise(35),
-          marginTop:normalise(15)
+          //  flex:1,
+          //  borderWidth:1,
+        //  height:2*textinputHeight,
+          // alignItem:'center',
+          // justifyContent:'center',
+          // height: normalise(35),
+           marginTop:normalise(15),
+           
+          marginBottom:normalise(15)
           }}>
 
             <TextInput
               style={{
-                 height: normalise(35),
-                // width: '100%',
+                //  height:50,
+                 width: '100%',
                 backgroundColor: Colors.fadeblack,
-              
-                flex:0.98,
-                          // keyboardAppearance='dark',
-
-                borderRadius: normalise(17),
-                // marginTop: normalise(10),
-                padding: normalise(10),
+              //  alignItems:'stretch',
+                  flex:1,
+                  flexWrap:'wrap',       // keyboardAppearance='dark',
+                   alignItems:'center',
+                // borderRadius: normalise(17),
+                // //  marginBottom: normalise(10),
+                // paddingHorizontal: normalise(10),
+                // color: Colors.white,
+                // paddingRight: normalise(50),
+                
+                  // paddingTop:15,
+                // paddingBottom:15
+                minHeight:normaliseNew(48),
+                backgroundColor: Colors.darkerblack,
+                borderColor: Colors.activityBorderColor,
+                borderRadius: normaliseNew(24),
+                borderWidth: normaliseNew(0.5),
                 color: Colors.white,
-                paddingRight: normalise(50),
+                fontFamily: 'ProximaNova-Regular',
+                fontSize: normaliseNew(14),
+                // height: normaliseNew(48),
+                paddingTop:normaliseNew(14),
+                paddingBottom: normaliseNew(10),
+              paddingEnd: normaliseNew(14),
+                paddingStart: normaliseNew(16),
+                
               }}
+              multiline={true}
+            //  maxHeight={2*textinputHeight}
+               onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
+            
               placeholder={'Add a comment...'}
               value={commentText}
               placeholderTextColor={Colors.white}
@@ -898,53 +939,54 @@ function Player(props) {
                
               
                 onPress={() => {
-                  alert("post click")
+                  // alert("post click")
 
-
-
-                  setCommentText('');
+                  Keyboard.dismiss()
+                 setCommentText('');
                   let commentObject = {
                     post_id: id,
                     text: commentText,
                   };
                   let updateMessagPayload = {};
                  
-                  // if (comingFromMessage) {
-                  //   let tempData = [...commentData];
-                  //   tempData.push({
-                  //     profile_image: props.userProfileResp.profile_image,
-                  //     text: commentText,
-                  //     username: props.userProfileResp.username,
-                  //     createdAt: moment().toString(),
-                  //     user_id: props.userProfileResp._id,
-                  //   });
-                  //   setArrayLength(
-                  //     `${tempData.length} ${
-                  //       tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
-                  //     }`,
-                  //   );
-                  //   setCommentData(tempData);
-                  //   setCommentText('');
+                  if (comingFromMessage) {
+                    let tempData = [...commentData];
+                    tempData.push({
+                      profile_image: props.userProfileResp.profile_image,
+                      text: commentText,
+                      username: props.userProfileResp.username,
+                      createdAt: moment().toString(),
+                      user_id: props.userProfileResp._id,
+                    });
+                    setArrayLength(
+                      `${tempData.length} ${
+                        tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
+                      }`,
+                    );
+                    setCommentData(tempData);
+                    setCommentText('');
 
-                  //   updateMessagPayload = {
-                  //     ChatId: key,
-                  //     chatToken: chatToken,
-                  //     message: tempData,
-                  //     receiverId: receiverId,
-                  //     senderId: senderId,
-                  //     songTitle: songTitle,
-                  //     artist: artist,
-                  //   };
-                  // }
-                  // isInternetConnected()
-                  //   .then(() => {
-                  //     comingFromMessage
-                  //       ? props.updateMessageCommentRequest(updateMessagPayload)
-                  //       : props.commentOnPost(commentObject);
-                  //   })
-                  //   .catch(() => {
-                  //     toast('Error', 'Please Connect To Internet');
-                  //   });
+                    updateMessagPayload = {
+                      ChatId: key,
+                      chatToken: chatToken,
+                      message: tempData,
+                      receiverId: receiverId,
+                      senderId: senderId,
+                      songTitle: songTitle,
+                      artist: artist,
+                    };
+                  }
+                  isInternetConnected()
+                    .then(() => {
+                      
+                      comingFromMessage
+                        ? props.updateMessageCommentRequest(updateMessagPayload)
+                        : props.commentOnPost(commentObject);
+
+                    })
+                    .catch(() => {
+                      toast('Error', 'Please Connect To Internet');
+                    });
                 }}>
                 <Text
                 
@@ -958,9 +1000,10 @@ function Player(props) {
               </TouchableOpacity>
             ) : null}
             </View>
+            {/* </ScrollView> */}
           </View>
          
-        </KeyboardAvoidingView>
+        </View>
       </RBSheet>
     );
   };
@@ -1097,6 +1140,9 @@ function Player(props) {
               </Text>
             </TouchableOpacity>
 
+
+
+
             <TouchableOpacity
               style={{flexDirection: 'row', marginTop: normalise(18)}}
               onPress={() => {
@@ -1159,6 +1205,9 @@ function Player(props) {
                   }
                 }
               }}>
+
+
+                
               <Image
                 source={
                   props.userProfileResp.register_type === 'spotify'
@@ -1223,6 +1272,7 @@ function Player(props) {
               </Text>
             </TouchableOpacity>
           </View>
+
 
           <TouchableOpacity
             onPress={() => {
@@ -1576,7 +1626,7 @@ function Player(props) {
         <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
 
         <SafeAreaView style={{flex: 1}}>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps='always'>
             <View
               style={{
                 marginHorizontal: normalise(15),
@@ -2225,6 +2275,7 @@ function Player(props) {
                     ADD TO PLAYLIST
                   </Text>
                 </TouchableOpacity>
+                
               )}
             </View>
 

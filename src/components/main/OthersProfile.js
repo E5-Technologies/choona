@@ -40,6 +40,7 @@ import _ from 'lodash';
 
 import useSWR from 'swr';
 import axios from 'axios';
+import { set } from 'react-native-reanimated';
 
 let status;
 let changePlayer = true;
@@ -68,16 +69,41 @@ function OthersProfile(props) {
   const key = `${postsUrl}?page=${pageId}`;
   const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
 
-  const profilePosts = posts ? posts.data : [];
+  // const[profilePosts,setProfilePosts] = useState(posts ? posts.data : []);
+  const[profilePosts,setProfilePosts] = useState([]);
 
+  const onEndReached=async()=>{
+  
+   setPageId(pageId+1)
+   
+  const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'x-access-token': props.header.token,
+    },
+  });
+  // profilePosts.push(response.data.data)
+ setProfilePosts([...profilePosts,...response.data.data])
+ 
+  } 
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
-        .then(() => {
+        .then(async() => {
           props.othersProfileReq(id);
           props.getCountryCode();
           mutate();
+          const response = await axios.get(`${constants.BASE_URL + `/user/posts/${id}`}?page=${pageId}`, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'x-access-token': props.header.token,
+            },
+          });
+          // profilePosts.push(response.data.data)
+         setProfilePosts(response.data.data)
         })
         .catch(() => {
           toast('Error', 'Please Connect to Internet');
@@ -147,6 +173,9 @@ function OthersProfile(props) {
       setFlag(props.countryCode[index].flag);
     }
   }
+
+
+ 
 
   function renderProfileData(data) {
     return (
@@ -532,7 +561,9 @@ function OthersProfile(props) {
             </View>
           )}
         </ImageBackground>
-
+{
+  console.log("data"+JSON.stringify(profilePosts))
+}
         {_.isEmpty(profilePosts) ? (
           <View
             style={{
@@ -570,6 +601,11 @@ function OthersProfile(props) {
             }}
             showsVerticalScrollIndicator={false}
             numColumns={2}
+            onEndReached={()=>
+              onEndReached()
+                
+              }
+               onEndReachedThreshold={1}
           />
         )}
       </SafeAreaView>

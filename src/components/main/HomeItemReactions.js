@@ -13,6 +13,7 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
+  BackHandler
 } from 'react-native';
 
 import normalise from '../../utils/helpers/Dimens';
@@ -37,7 +38,7 @@ import { fetchReactionsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
-
+let reaction_count = 0;
 function HomeItemReaction(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modal1Visible] = useState(false);
@@ -52,14 +53,19 @@ function HomeItemReaction(props) {
     fetchReactionsOnPost(props.route.params.post_id, props.header.token)
       .then(res => {
         setReactionsLoading(false);
+        console.log("data"+ JSON.stringify(res))
         if (res) {
+          
           setReactionList(editArray(res));
+          reaction_count = res.length
           setReactionsRes(res);
         }
       })
       .catch(err => {
         toast('Error', err);
       });
+
+      BackHandler.addEventListener("hardwareBackPress", _onBackHandlerPress);
   }, [props.header.token, props.route.params.post_id]);
 
   let userId = props.userProfileResp._id;
@@ -102,6 +108,7 @@ function HomeItemReaction(props) {
     if (index !== -1) {
       reactions.splice(index, 1);
       setReactionList(editArray(reactions));
+      reaction_count=reaction_count-1
     } else {
       reactions.push({
         user_id: userId,
@@ -109,6 +116,7 @@ function HomeItemReaction(props) {
         profile_image: props.userProfileResp.profile_image,
         username: props.userProfileResp.username,
       });
+      reaction_count = reaction_count+1
       setReactionList(editArray(reactions));
     }
   }
@@ -153,6 +161,7 @@ function HomeItemReaction(props) {
         // console.log('nooo');
         addOrChangeReaction(x);
         reactionOnPost(x, postId);
+      
       } else {
         addOrChangeReaction(x);
         reactionOnPost(x, postId);
@@ -183,26 +192,56 @@ function HomeItemReaction(props) {
   //   //  setModalReact(x)
   // }
 
+
+  const _onBackPress = () => {
+   
+    let ID = props.route.params.post_id
+    let Comment = reactionList.length
+    console.log("hhh",reactionList)
+ const { navigation, route } = props;
+  route.params.onSelectReaction(ID,Comment);
+    navigation.goBack();
+  
+
+};
+
+const _onBackHandlerPress = () => {
+  
+ let ID = props.route.params.post_id
+ let Comment= reaction_count;
+
+const { navigation, route } = props;
+console.log(ID+":"+Comment);
+route.params.onSelectReaction(ID,Comment);
+ navigation.goBack();
+return true
+
+};
+
   function renderItem(data, test) {
-    if (props.userProfileResp._id === data.item.user_id) {
+    // if (props.userProfileResp._id === data.item.user_id) {
+    //   return (
+    //     <ActivityListItem
+    //       image={constants.profile_picture_base_url + data.item.profile_image}
+    //       user={data.item.username}
+         
+    //       type={false}
+    //       image2={'123'}
+    //       onPressImage={() => {
+    //         props.navigation.navigate('Profile', { fromAct: false });
+    //       }}
+    //       TouchableOpacityDisabled={false}
+    //     />
+    //   );
+    // } else {
       return (
+       
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
           user={data.item.username}
-          type={false}
-          image2={'123'}
-          onPressImage={() => {
-            props.navigation.navigate('Profile', { fromAct: false });
-          }}
-          TouchableOpacityDisabled={false}
-        />
-      );
-    } else {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          user={data.item.username}
+          userId={data.item.user_id}
           follow={!data.item.isFollowing}
+          loginUserId={props.userProfileResp._id}
           onPress={() => {
             props.followReq({ follower_id: data.item.user_id });
           }}
@@ -214,7 +253,7 @@ function HomeItemReaction(props) {
           TouchableOpacityDisabled={false}
         />
       );
-    }
+    // }
   }
 
   function renderItemWithHeader(data) {
@@ -246,7 +285,9 @@ function HomeItemReaction(props) {
             {data.item.header}
           </Text>
         </View>
-
+{
+  //  alert('login'+JSON.stringify(props.userProfileResp._id))
+}
         <FlatList
           data={data.item.data}
           test={data}
@@ -287,7 +328,8 @@ function HomeItemReaction(props) {
             }
             thirditemtext={false}
             onPressFirstItem={() => {
-              props.navigation.goBack();
+              // props.navigation.goBack();
+              _onBackPress()
             }}
           />
           <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -569,6 +611,7 @@ const mapStateToProps = state => {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     header: state.TokenReducer,
+    
   };
 };
 

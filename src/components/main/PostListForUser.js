@@ -78,6 +78,7 @@ let songStatus = '';
 let postStatus = '';
 let messageStatus;
 
+
 function PostListForUser(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -308,6 +309,45 @@ function PostListForUser(props) {
       });
   }
 
+
+  
+function _onSelectBack(ID,comment){
+   console.log("aaa"+ comment)
+   let newarray = posts
+  newarray.map((item,index)=>{
+   console.log("items"+index+JSON.stringify(item))
+  if(item._id === ID){
+    newarray[index].comment_count = comment 
+  console.log("item",item)
+  }
+
+  if(index===newarray.length-1){
+ 
+    setPosts([...newarray])
+  }
+    })
+  
+  }
+
+
+  function _onReaction(ID,reaction){
+
+  let newarray = posts
+    newarray.map((item,index)=>{
+   // alert("items"+item._id)
+   if(item._id === ID){
+     newarray[index].reaction_count = reaction
+   console.log("item",item)
+   }
+ 
+   if(index===newarray.length-1){
+ 
+    setPosts([...newarray])
+  }
+     })
+  } 
+
+
   function renderItem(data) {
     return (
       <HomeItemList
@@ -374,6 +414,7 @@ function PostListForUser(props) {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
+            onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction) ,
           });
         }}
         onPressCommentbox={() => {
@@ -386,6 +427,7 @@ function PostListForUser(props) {
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
+            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
           });
         }}
         onPressSecondImage={() => {

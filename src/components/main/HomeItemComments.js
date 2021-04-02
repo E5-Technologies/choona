@@ -12,7 +12,8 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
-  BackHandler
+  BackHandler,
+  Keyboard
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
@@ -56,7 +57,7 @@ function HomeItemComments(props) {
   const [username] = useState(props.route.params.username);
   const [userComment] = useState(props.route.params.userComment);
   const [totalcount,setTotalCount]=useState(0)
-
+  const [textinputHeight,setHeight]=useState(50)
   useEffect(() => {
     fetchCommentsOnPost(props.route.params.id, props.header.token)
       .then(res => {
@@ -67,7 +68,7 @@ function HomeItemComments(props) {
           setTotalCount(res.length)
 
           comment_count = res.length;
-          setComments(res.reverse());
+          setComments(res);
         
         }
       })
@@ -120,7 +121,7 @@ function HomeItemComments(props) {
         data.user_id = props.commentResp.user_id;
         data.post_id = props.commentResp.post_id;
         data.profile_image = props.commentResp.profile_image;
-        comments.unshift(data);
+        comments.push(data);
         comment_count = comment_count + 1;
         break;
 
@@ -154,6 +155,11 @@ route.params.onSelect(ID,Comment);
  return true
 
 };
+
+
+const updateSize = (height) => {
+  setHeight(height)
+}
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
@@ -225,11 +231,19 @@ route.params.onSelect(ID,Comment);
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-        <View style={[styles.commentFooterContainer,{flexDirection:'row',}]}>
+        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center'}]}>
           <TextInput
-            // multiline
-            style={[styles.commentFooterInput,{flex:0.98}]}
+            style={[styles.commentFooterInput,{
+             flex: 1,
+              flexWrap:'wrap',
+              //  height:2*textinputHeight,
+              // minHeight:textinputHeight,
+              // maxHeight:textinputHeight,
+            alignItems:'center' }]}
             value={commentText}
+             multiline
+            //  maxHeight={textinputHeight}
+            onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
             onChangeText={text => {
@@ -245,6 +259,7 @@ route.params.onSelect(ID,Comment);
             
               }}
               onPress={() => {
+                Keyboard.dismiss()
                 let commentObject = {
                   post_id: id,
                   text: commentText,
@@ -336,12 +351,12 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normaliseNew(14),
-    height: normaliseNew(48),
+    // height: normaliseNew(48),
     paddingBottom: normaliseNew(12),
     paddingEnd: normaliseNew(44),
     paddingStart: normaliseNew(16),
-    paddingTop: normaliseNew(14),
-    maxHeight: normaliseNew(100),
+    // paddingTop: normaliseNew(14),
+    // maxHeight: normaliseNew(100),
   },
   commentFooterPostButtonText: {
     color: Colors.white,

@@ -9,6 +9,7 @@ import {
   RefreshControl,
   View,
   AppState,
+  ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -55,7 +56,7 @@ function Notification(props) {
   const [notifications, setNotifications] = useState([]);
   const [pageId, setPageId] = useState(1);
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const [onScrolled, setOnScrolled] = useState(true);
   const key = `${activityUrl}?page=${pageId}`;
   const { mutate } = useSWR(key, () => getActivities(pageId), {
     onSuccess: data => {
@@ -69,6 +70,23 @@ function Notification(props) {
       }
     },
   });
+
+  const onReached=async()=>{
+    setPageId(pageId+1)
+    const response = await axios.get(`${activityUrl}?page=${pageId+1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
+      },
+    });
+    if(response.data.data.length==0){
+      setOnScrolled(false)
+    }
+    previous=[...previous,...response.data.data]
+    // setOnScrolled(true)
+    // alert("res"+JSON.stringify(response.data.data))
+  }
 
   // useEffect(() => {
   //   const unsuscribe = props.navigation.addListener('focus', () => {
@@ -96,7 +114,7 @@ function Notification(props) {
             setPageId(1);
             mutate();
 
-      AppState.addEventListener('change', updateProfile());
+       AppState.addEventListener('change', updateProfile());
       const unsuscribe = props.navigation.addListener('focus', () => {
         isInternetConnected()
           .then(() => {
@@ -111,8 +129,10 @@ function Notification(props) {
           });
         
       });
-
-      return () => unsuscribe();
+      AppState.removeEventListener('change', updateProfile())
+      return () =>{ unsuscribe() 
+        
+      };
     }, [])
   );
 
@@ -155,6 +175,7 @@ function Notification(props) {
     }
   });
 
+  // setOnScrolled(true)
   // const isCloseToBottom = ({
   //   layoutMeasurement,
   //   contentOffset,
@@ -210,6 +231,7 @@ function Notification(props) {
               }}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Seperator}
+              
             />
             {_.isEmpty(previous) ? null : (
               <View style={styles.activityHeader}>
@@ -226,10 +248,27 @@ function Notification(props) {
               }}
               ItemSeparatorComponent={Seperator}
               onEndReached={() => {
-                setPageId(pageId + 1);
-                console.log(pageId);
+                // setPageId(pageId + 1);
+                // alert(pageId);
+                onReached()
               }}
-              onEndReachedThreshold={0.2}
+              onEndReachedThreshold={2}
+              initialNumToRender={8}
+              // onMomentumScrollBegin={() => {
+              //   setOnScrolled(true);
+              // }}
+              ListFooterComponent={
+                onScrolled===true? (
+                  <ActivityIndicator
+                    size={'large'}
+                    style={{
+                      alignSelf: 'center',
+                      // marginBottom: normalise(50),
+                      // marginTop: normalise(-40),
+                    }}
+                  />
+                ) : null
+              }
             />
           </ScrollView>
         ) : notifications.length === 0 ? (

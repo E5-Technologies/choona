@@ -23,6 +23,7 @@ function ActivityListItem(props) {
 
   return (
     <View style={styles.container}>
+     
       <View style={styles.detailsContainer}>
         <View style={styles.detailsInfo}>
           <TouchableOpacity
@@ -64,8 +65,13 @@ function ActivityListItem(props) {
               )}
             </Text>
           </TouchableOpacity>
+     
         </View>
-        {props.type ? (
+        {
+          props.userId != props.loginUserId?
+        
+        props.type ? (
+
           <TouchableOpacity
             style={[
               styles.followButton,
@@ -76,7 +82,7 @@ function ActivityListItem(props) {
               setFollow(!follow);
             }}>
             {follow ? (
-              <Text style={styles.followButtonText}>FOLLOW</Text>
+              <Text style={[styles.followButtonText,{}]}>FOLLOW</Text>
             ) : (
               <Text style={[styles.followButtonText, { color: Colors.white }]}>
                 FOLLOWING
@@ -95,8 +101,11 @@ function ActivityListItem(props) {
               style={{ height: normaliseNew(35), width: normaliseNew(35) }}
               resizeMode="contain"
             />
+            
           </TouchableOpacity>
-        )}
+        )
+      :null
+      }
       </View>
     </View>
   );
@@ -176,4 +185,6 @@ ActivityListItem.defaultProps = {
   onPressImage: null,
   marginTop: 0,
   TouchableOpacityDisabled: true,
+  userId:'',
+  loginUserId:''
 };

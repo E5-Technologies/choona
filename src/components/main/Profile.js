@@ -62,14 +62,38 @@ function Profile(props) {
   const key = `${postsUrl}?page=${pageId}`;
   const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
 
-  const profilePosts = posts ? posts.data : [];
+  // const[profilePosts,setProfilePosts] = useState(posts ? posts.data : []);
+
+  const[profilePosts,setProfilePosts] = useState([]);
+
+  const onEndReached=async()=>{
+  
+    setPageId(pageId+1)
+   const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
+     headers: {
+       Accept: 'application/json',
+       'Content-Type': 'application/json',
+       'x-access-token': props.header.token,
+     },
+   });
+  setProfilePosts([...profilePosts,...response.data.data])
+  
+   } 
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
-        .then(() => {
+        .then(async() => {
           props.getProfileReq();
           props.getCountryCode();
+          const response = await axios.get(`${constants.BASE_URL + '/user/posts'}?page=${pageId}`, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'x-access-token': props.header.token,
+            },
+          });
+         setProfilePosts(response.data.data)
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
@@ -138,11 +162,15 @@ function Profile(props) {
     }
   }
 
+
+
+
+
   function renderProfileData(data) {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate('PostListForUser', {
+            props.navigation.navigate('PostListForUser', {
             profile_name: props.userProfileResp.full_name,
             posts: profilePosts,
             index: data.index,
@@ -208,6 +236,18 @@ function Profile(props) {
                 Terms of Usage
               </Text>
             </TouchableOpacity>
+            
+            <TouchableOpacity style={{ marginTop: normalise(18) }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                Terms & Conditions
+              </Text>
+            </TouchableOpacity>
+
 
             {/* <TouchableOpacity
                             style={{ marginTop: normalise(18) }}>
@@ -225,6 +265,7 @@ function Profile(props) {
               }}>
               <Text
                 style={{
+                
                   color: Colors.red,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
@@ -232,6 +273,16 @@ function Profile(props) {
                 Logout
               </Text>
             </TouchableOpacity>
+            <Text
+                style={{
+                  marginTop: normalise(18),
+                  color: Colors.grey,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                Version <Text style={{fontSize:normalise(12)}}> 1.0 </Text>
+              </Text>
+
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(!modalVisible);
@@ -690,6 +741,13 @@ function Profile(props) {
             }}
             showsVerticalScrollIndicator={false}
             numColumns={2}
+
+            onEndReached={()=>
+              onEndReached()
+                
+              }
+               onEndReachedThreshold={1}
+
           />
         )}
 

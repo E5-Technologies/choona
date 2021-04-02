@@ -253,6 +253,7 @@ function Followers(props) {
             )}
           </View>
 
+          <ScrollView>
           <FlatList
             data={props.followerData}
             showsVerticalScrollIndicator={false}
@@ -262,6 +263,7 @@ function Followers(props) {
             renderItem={renderFollowersItem}
             ItemSeparatorComponent={Seperator}
           />
+          </ScrollView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </View>

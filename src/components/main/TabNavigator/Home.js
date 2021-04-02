@@ -156,7 +156,7 @@ function Home(props) {
     setHomeReq(true);
     setOffset(1);
     props.homePage(1);
-
+    AppState.addEventListener('change', handleAppStateChange);
     updateToken(props.SuccessToken);
 
 
@@ -646,6 +646,18 @@ props.postData[index].comment_count = comment
   })
 }
 
+
+function _onReaction(ID,reaction){
+    props.postData.map((item,index)=>{
+ 
+   if(item._id === ID){
+    props.postData[index].reaction_count = reaction
+  
+   }
+ 
+     })
+  } 
+
   function renderItem(data) {
     return (
       <HomeItemList
@@ -705,6 +717,7 @@ props.postData[index].comment_count = comment
             props.navigation.navigate('HomeItemReactions', {
               // reactions: data.item.reaction,
               post_id: data.item._id,
+              onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction)
             });
            
           }
@@ -1378,11 +1391,11 @@ props.postData[index].comment_count = comment
                   if (offset + 1 === props.currentPage + 1) {
                     setOffset(offset + 1);
                     props.homePage(offset + 1);
-                    setOnScrolled(false);
+                      setOnScrolled(false);
                   }
                 }
               }}
-              onEndReachedThreshold={0}
+              onEndReachedThreshold={2}
               initialNumToRender={10}
               onMomentumScrollBegin={() => {
                 setOnScrolled(true);
