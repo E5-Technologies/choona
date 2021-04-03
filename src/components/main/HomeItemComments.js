@@ -58,6 +58,7 @@ function HomeItemComments(props) {
   const [userComment] = useState(props.route.params.userComment);
   const [totalcount,setTotalCount]=useState(0)
   const [textinputHeight,setHeight]=useState(50)
+  const [emoji, setEmoji] = useState(false)
   useEffect(() => {
     fetchCommentsOnPost(props.route.params.id, props.header.token)
       .then(res => {
@@ -76,14 +77,21 @@ function HomeItemComments(props) {
       .catch(err => {
         toast('Error', err);
       });
-     
+      Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+      Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
       BackHandler.addEventListener("hardwareBackPress", _onBackHandlerPress);
 
-      //  return () =>
+       return () =>{
+        Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
+        Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+      };
       //  BackHandler.removeEventListener("hardwareBackPress", _onBackHandlerPress);
 
   
   }, [props.header.token, props.route.params.id]);
+
+  const _keyboardDidShow = () => setEmoji(true);
+  const _keyboardDidHide = () => setEmoji(false);
 
   function renderItem(data) {
     return (
@@ -162,7 +170,7 @@ const updateSize = (height) => {
 }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="height">
+    <View style={styles.container}>
       <Loader visible={commentsLoading} />
      
       <StatusBar />
@@ -231,21 +239,22 @@ const updateSize = (height) => {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center'}]}>
+        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center', bottom: emoji ? 360 : 20}]}>
           <TextInput
             style={[styles.commentFooterInput,{
              flex: 1,
               flexWrap:'wrap',
-              //  height:2*textinputHeight,
+              // height:2*textinputHeight,
               // minHeight:textinputHeight,
               // maxHeight:textinputHeight,
             alignItems:'center' }]}
             value={commentText}
-             multiline
+            multiline
             //  maxHeight={textinputHeight}
             onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
+            onFocus={()=>setEmoji(true)}
             onChangeText={text => {
               setCommentText(text);
             }}
@@ -259,6 +268,7 @@ const updateSize = (height) => {
             
               }}
               onPress={() => {
+                // setEmoji(false)
                 Keyboard.dismiss()
                 let commentObject = {
                   post_id: id,
@@ -280,7 +290,7 @@ const updateSize = (height) => {
           ) : null}
         </View>
       </SafeAreaView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

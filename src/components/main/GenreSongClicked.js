@@ -77,7 +77,9 @@ function GenreSongClicked(props) {
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
-          props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag),
+
+          console.log("name:"+name);
+          props.searchPost(name, flag),
             setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
