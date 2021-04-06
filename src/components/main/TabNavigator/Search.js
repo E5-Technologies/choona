@@ -108,6 +108,7 @@ function Search(props) {
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
   useEffect(() => {
+    
     const unsuscribe = props.navigation.addListener('focus', payload => {
       setUserSearchData([]);
       sesUsersToSEndSong([]);
@@ -367,11 +368,14 @@ function Search(props) {
             data.index === top50.length - 1 ? normalise(30) : normalise(8),
           margin: normalise(6),
         }}
+        
         onPress={() => {
           props.navigation.navigate('GenreSongClicked', {
             data: data.item._id,
+            ptID:0
           });
         }}>
+        
         <Image
           source={{
             uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),

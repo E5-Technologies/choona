@@ -48,6 +48,7 @@ function UsersFromContacts(props) {
   const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
+   
     isInternetConnected()
       .then(() => {
         props.getUsersFromContacts({ phone: numberArray });
@@ -101,28 +102,31 @@ function UsersFromContacts(props) {
   }
 
   function renderUserItem(data) {
-    if (props.userProfileResp._id === data.item._id) {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          user={data.item.username}
-          type={false}
-          image2={'123'}
-          marginBottom={
-            data.index === props.usersFromContacts.length - 1
-              ? normalise(20)
-              : 0
-          }
-          // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
-        />
-      );
-    } else {
+    
+    // if (props.userProfileResp._id === data.item._id) {
+   
+    //   return (
+    //     <ActivityListItem
+    //       image={constants.profile_picture_base_url + data.item.profile_image}
+    //       user={data.item.username}
+    //       type={false}
+    //       image2={'123'}
+    //       marginBottom={
+    //         data.index === props.usersFromContacts.length - 1
+    //           ? normalise(20)
+    //           : 0
+    //       }
+    //       // onPressImage={() => { props.navigation.navigate("OthersProfile") }}
+    //     />
+    //   );
+    // } else {
       return (
         <ActivityListItem
           image={constants.profile_picture_base_url + data.item.profile_image}
           user={data.item.username}
           type={true}
           follow={!data.item.isFollowing}
+          loginUserId={props.userProfileResp._id}
           TouchableOpacityDisabled={false}
           marginBottom={
             data.index === props.usersFromContacts.length - 1
@@ -140,7 +144,7 @@ function UsersFromContacts(props) {
           }}
         />
       );
-    }
+    // }
   }
 
   return (
@@ -202,7 +206,7 @@ function UsersFromContacts(props) {
               }}
               resizeMode="contain"
             />
-
+ 
             {search === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
@@ -230,7 +234,7 @@ function UsersFromContacts(props) {
               </TouchableOpacity>
             )}
           </View>
-
+        
           {_.isEmpty(usersList) ? (
             <View
               style={{
@@ -261,6 +265,7 @@ function UsersFromContacts(props) {
             />
           )}
         </SafeAreaView>
+      
       </TouchableWithoutFeedback>
     </View>
   );

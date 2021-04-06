@@ -48,13 +48,14 @@ import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { createChatTokenRequest } from '../../action/MessageAction';
 import constants from '../../utils/helpers/constants';
-
+import axios from 'axios';
 let status;
 let userStatus;
 let messageStatus;
 
 function GenreSongClicked(props) {
   const [name, setName] = useState(props.route.params.data);
+
   const [positionInArray, setPositionInArray] = useState(0);
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -66,23 +67,54 @@ function GenreSongClicked(props) {
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
+  
 
   let flag = false;
   let changePlayer = false;
   var bottomSheetRef;
-
+  const postsUrl = constants.BASE_URL + '/post/details/:';
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
-  useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
-      isInternetConnected()
-        .then(() => {
-
-          console.log("name:"+name);
-          props.searchPost(name, flag),
+// console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
+  const getdata=async()=>{
+ let  response=  await axios.get(`https://api.choona.co/api/post/details/${name}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
+      },
+    })
+    setName(response.data.data.song_name)
+    props.searchPost(response.data.data.song_name, flag),
+       
             setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
+    console.log("response"+JSON.stringify(response))
+    
+  }
+  useEffect(() => {
+  
+   
+
+    const unsuscribe = props.navigation.addListener('focus', payload => {
+     
+      isInternetConnected()
+    
+        .then(() => {
+       
+         
+          props.searchPost(name, flag),
+       
+            setUserSearchData([]);
+          sesUsersToSEndSong([]);
+          setUserSeach('');
+          props.route.params.ptID===1?
+         getdata()
+         :
+         null
+        
+       
         })
         .catch(() => {
           toast('Opps', 'Please Connect To Internet');
@@ -90,9 +122,11 @@ function GenreSongClicked(props) {
     });
 
     return () => {
-      unsuscribe();
+       unsuscribe();
     };
-  });
+  },[]);
+
+
 
   if (userStatus === '' || props.userStatus !== userStatus) {
     switch (props.userStatus) {
@@ -102,7 +136,7 @@ function GenreSongClicked(props) {
 
       case REACTION_ON_POST_SUCCESS:
         userStatus = props.userStatus;
-        props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag);
+        props.searchPost(name, flag);
         break;
 
       case REACTION_ON_POST_FAILURE:
@@ -111,7 +145,7 @@ function GenreSongClicked(props) {
 
       case HOME_PAGE_SUCCESS:
         userStatus = props.userStatus;
-        props.searchPost(name.length > 5 ? name.substring(0, 5) : name, flag);
+        props.searchPost(name, flag);
         break;
 
       case GET_USER_FROM_HOME_REQUEST:
@@ -130,6 +164,7 @@ function GenreSongClicked(props) {
   }
 
   if (status === '' || status !== props.status) {
+    console.log("status"+props.status)
     switch (props.status) {
       case GET_POST_FROM_TOP_50_REQUEST:
         status = props.status;
@@ -199,9 +234,11 @@ function GenreSongClicked(props) {
       text: reaction,
       text_match: myReaction,
     };
+    console.log("reactionobj"+JSON.stringify(reactionObject))
     isInternetConnected()
       .then(() => {
         props.reactionOnPostRequest(reactionObject);
+
       })
       .catch(() => {
         toast('Error', 'Please Connect To Internet');
@@ -210,31 +247,59 @@ function GenreSongClicked(props) {
 
   // HIT REACT
   function hitreact(x, rindex) {
-    if (!_.isEmpty(props.getPostFromTop50[rindex].reaction)) {
+    // alert("res"+ x + rindex +"sdd" +JSON.stringify(props.getPostFromTop50))
+
+    // console.log("rs"+JSON.stringify(props.getPostFromTop50[rindex].reaction))
+    
+    // if (!_.isEmpty(props.getPostFromTop50[rindex].reaction)) {
       // console.log('here');
 
-      const present = props.getPostFromTop50[rindex].reaction.some(
-        obj =>
-          obj.user_id.includes(props.userProfileResp._id) &&
-          obj.text.includes(x),
-      );
+      // const present = props.getPostFromTop50[rindex].reaction.some(
+      //   obj =>
+      //     obj.user_id.includes(props.userProfileResp._id) &&
+      //     obj.text.includes(x),
+        
+      // );
+      //  alert('nooo'+present)
 
-      if (present) {
-        // console.log('nooo');
-      } else {
+      // if (present) {
+      // } else {
         setVisible(true);
         setModalReact(x);
         setTimeout(() => {
           setVisible(false);
         }, 2000);
-      }
-    } else {
-      setVisible(true);
-      setModalReact(x);
-      setTimeout(() => {
-        setVisible(false);
-      }, 2000);
+            
+      // }
+    // } else {
+    //   setVisible(true);
+    //   setModalReact(x);
+    //   setTimeout(() => {
+    //     setVisible(false);
+    //   }, 2000);
+    //  }
+  }
+
+  function _onSelectBack(ID,comment){
+    // console.log("aaa"+JSON.stringify(props.postData))
+    props.getPostFromTop50.map((item,index)=>{
+    // console.log("items",item._id)
+    if(item._id === ID){
+      props.getPostFromTop50[index].comment_count = comment 
+    
     }
+      })
+    }
+
+  function _onReaction(ID,reaction){
+    props.getPostFromTop50.map((item,index)=>{
+ 
+   if(item._id === ID){
+    props.getPostFromTop50[index].reaction_count = reaction
+  
+   }
+ 
+     })
   }
 
   // FLATLIST RENDER FUNCTION
@@ -303,6 +368,8 @@ function GenreSongClicked(props) {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
+            onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction)
+
           });
         }}
         onPressCommentbox={() => {
@@ -315,6 +382,8 @@ function GenreSongClicked(props) {
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
+            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
+
           });
         }}
         onPressSecondImage={() => {
@@ -827,7 +896,9 @@ function GenreSongClicked(props) {
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
-            props.navigation.goBack();
+             props.navigation.goBack();
+// alert("hello")
+           
           }}
         />
 
@@ -842,6 +913,7 @@ function GenreSongClicked(props) {
               <Text style={{ fontSize: normalise(12), color: Colors.white }}>
                 NO POSTS
               </Text>
+             
             </View>
           ) : (
             <FlatList
@@ -928,6 +1000,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+  console.log("statetoprops",JSON.stringify(state.PostReducer.getPostFromTop50.length))
   return {
     status: state.PostReducer.status,
     getPostFromTop50: state.PostReducer.getPostFromTop50,
@@ -935,10 +1008,12 @@ const mapStateToProps = state => {
     userProfileResp: state.UserReducer.userProfileResp,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     messageStatus: state.MessageReducer.status,
+    header: state.TokenReducer,
   };
 };
 
 const mapDispatchToProps = dispatch => {
+  console.log("mapdispath")
   return {
     searchPost: (text, flag) => {
       dispatch(searchPostReq(text, flag));
@@ -962,7 +1037,13 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+// export default GenreSongClicked
+
+GenreSongClicked.defaultProps= {
+ptID:0,
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(GenreSongClicked);
+

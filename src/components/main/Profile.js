@@ -46,7 +46,7 @@ function Profile(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [flag, setFlag] = useState('');
   const [activity, setActivity] = useState(props.route.params.fromAct);
-
+ 
   const getPosts = async pageId => {
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
       headers: {
@@ -55,7 +55,9 @@ function Profile(props) {
         'x-access-token': props.header.token,
       },
     });
-    return await response.data;
+  
+    console.log("rs" + JSON.stringify(response.data))
+    return await response.data.data;
   };
 
   const [pageId, setPageId] = useState(1);
@@ -63,8 +65,8 @@ function Profile(props) {
   const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
 
   // const[profilePosts,setProfilePosts] = useState(posts ? posts.data : []);
-
   const[profilePosts,setProfilePosts] = useState([]);
+
 
   const onEndReached=async()=>{
   
@@ -86,14 +88,16 @@ function Profile(props) {
         .then(async() => {
           props.getProfileReq();
           props.getCountryCode();
-          const response = await axios.get(`${constants.BASE_URL + '/user/posts'}?page=${pageId}`, {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'x-access-token': props.header.token,
-            },
-          });
-         setProfilePosts(response.data.data)
+            
+   const response = await axios.get(`${postsUrl}?page=${1}`, {
+     headers: {
+       Accept: 'application/json',
+       'Content-Type': 'application/json',
+       'x-access-token': props.header.token,
+     },
+   });
+
+  setProfilePosts(response.data.data)
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
@@ -322,7 +326,7 @@ function Profile(props) {
 
       <Loader visible={props.status === USER_PROFILE_REQUEST} />
       <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
-
+    
       <SafeAreaView style={{ flex: 1 }}>
         <View
           style={{

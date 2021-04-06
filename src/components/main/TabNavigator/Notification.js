@@ -10,6 +10,7 @@ import {
   View,
   AppState,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -35,6 +36,8 @@ import {
   userFollowUnfollowRequest,
 } from '../../../action/UserAction';
 
+
+var isLoading = true;
 const activityUrl = constants.BASE_URL + '/activity/list';
 
 const wait = timeout => {
@@ -42,7 +45,11 @@ const wait = timeout => {
 };
 
 function Notification(props) {
+  const [isloadings,setIsLoading] = useState(true)
+  const [notifications, setNotifications] = useState([]);
   const getActivities = async pageId => {
+
+    notifications.length==0?setIsLoading(true):setIsLoading(false)
     const response = await axios.get(`${activityUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -50,23 +57,31 @@ function Notification(props) {
         'x-access-token': props.header.token,
       },
     });
+    
+    isLoading=false
+   setIsLoading(false)
+ 
     return await response.data;
+    
   };
 
-  const [notifications, setNotifications] = useState([]);
+ 
   const [pageId, setPageId] = useState(1);
   const [refreshing, setRefreshing] = React.useState(false);
   const [onScrolled, setOnScrolled] = useState(true);
+  
   const key = `${activityUrl}?page=${pageId}`;
   const { mutate } = useSWR(key, () => getActivities(pageId), {
     onSuccess: data => {
       if (pageId === 1) {
       
         setNotifications(data.data);
+       
       } else {
        
         const newArray = [...notifications, ...data.data];
         setNotifications(newArray);
+        
       }
     },
   });
@@ -114,7 +129,7 @@ function Notification(props) {
             setPageId(1);
             mutate();
 
-       AppState.addEventListener('change', updateProfile());
+        AppState.addEventListener('change', updateProfile());
       const unsuscribe = props.navigation.addListener('focus', () => {
         isInternetConnected()
           .then(() => {
@@ -164,7 +179,7 @@ function Notification(props) {
 
   // console.log({ activity });
 
-  activity.map(item => {
+  activity.map((item,index) => {
     let postTime = moment(item.createdAt).format('MM-DD-YYYY');
 
     if (postTime === time) {
@@ -173,8 +188,9 @@ function Notification(props) {
       // console.log(item.id, { item });
       previous.push(item);
     }
-  });
 
+  });
+ 
   // setOnScrolled(true)
   // const isCloseToBottom = ({
   //   layoutMeasurement,
@@ -193,7 +209,7 @@ function Notification(props) {
   return (
     <View style={styles.container}>
       <StatusBar />
-      <Loader visible={!notifications.length > 0} />
+      <Loader visible={isloadings } />
       <SafeAreaView style={styles.activityContainer}>
         <HeaderComponent title={'ACTIVITY'} />
         {notifications ? (
@@ -216,19 +232,38 @@ function Notification(props) {
             // }}
             // scrollEventThrottle={400}
           >
+           
+        
             {_.isEmpty(today) ? null : (
               <View style={styles.activityHeader}>
                 <Text style={styles.activityHeaderText}>TODAY</Text>
               </View>
             )}
+             {
+              console.log("aa",JSON.stringify(previous))
+            }
             <FlatList
               data={today}
               renderItem={({ item }) => (
+                item.post_id !=null?
+                <TouchableOpacity 
+                onPress={() => {
+                  props.navigation.navigate('GenreSongClicked', {
+                    data: item.post_id,
+                    ptID:1,
+                  });
+                }}
+                >
                 <ActivitySingle item={item} props={props} />
+                 </TouchableOpacity>
+                 :
+                 <ActivitySingle item={item} props={props} />
+
               )}
               keyExtractor={index => {
                 index.toString();
               }}
+              
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Seperator}
               
@@ -241,7 +276,20 @@ function Notification(props) {
             <FlatList
               data={previous}
               renderItem={({ item }) => (
+                item.post_id!=null?
+               <TouchableOpacity 
+                onPress={() => {
+                  props.navigation.navigate('GenreSongClicked', {
+                    data: item.post_id,
+                    ptID:1,
+                  });
+                }}
+                >
                 <ActivitySingle item={item} props={props} />
+                </TouchableOpacity>
+                :
+                <ActivitySingle item={item} props={props} />
+
               )}
               keyExtractor={index => {
                 index.toString();
@@ -257,8 +305,15 @@ function Notification(props) {
               // onMomentumScrollBegin={() => {
               //   setOnScrolled(true);
               // }}
+              // ListEmptyComponent={()=>{
+              //   return(
+              //   <View style={{flex:1,alignItems:'center',justifyContent:'center',marginTop:'80%'}}>
+              //     <Text style={{color:'white',fontSize:20}}>No Activity</Text>
+              //   </View>
+              //   )
+              // }}
               ListFooterComponent={
-                onScrolled===true? (
+                onScrolled===true && notifications.length>0 ? (
                   <ActivityIndicator
                     size={'large'}
                     style={{

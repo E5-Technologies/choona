@@ -9,13 +9,6 @@ import normaliseNew from '../../../utils/helpers/DimensNew';
 import Hyperlink from 'react-native-hyperlink'
 
 
-const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-
 function CommentList(props) {
   const onPressImage = () => {
     if (props.onPressImage) {
@@ -46,11 +39,9 @@ function CommentList(props) {
           </TouchableOpacity>
           <Text style={styles.commentTime}>{props.time}</Text>
         </View>
-        {/* {
-         pattern.test(props.comment)? <Text style={[styles.commentText,{color:'#007ACC'}]} onPress={()=>{ props.comment.substring(0,3)==='Www'||props.comment.substring(0,3)==='www'?Linking.openURL('https://'+props.comment) :Linking.openURL(props.comment)}}>{props.comment}</Text>:
-         <Text style={styles.commentText}>{props.comment}</Text>
-        } */}
-          <Hyperlink linkDefault={ true }>
+       
+          <Hyperlink linkDefault={ true } linkStyle={{ color:'#ffffff',textDecorationLine:'underline',textDecorationStyle:'double',textDecorationColor:'white',fontFamily: 'ProximaNova-Regular',
+    fontSize: normaliseNew(12)}}>
 
         <Text  style={styles.commentText}>{props.comment}</Text>
         </Hyperlink>
@@ -101,7 +92,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normaliseNew(12),
-    lineHeight: normaliseNew(15),
     textAlign: 'left',
   },
 });

@@ -205,7 +205,7 @@ const updateSize = (height) => {
                   position: 'absolute',
                   alignSelf: 'center',
                 }}
-              /> */}
+              /> */} 
               <Image
                 source={{ uri: image }}
                 style={styles.commentHeaderAvatar}
@@ -239,7 +239,7 @@ const updateSize = (height) => {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center', bottom: emoji ? 360 : 20}]}>
+        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center',backgroundColor:'#000000' ,bottom: emoji ? Platform.OS==='ios'?299:10 : 20}]}>
           <TextInput
             style={[styles.commentFooterInput,{
              flex: 1,
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     fontSize: normaliseNew(14),
     // height: normaliseNew(48),
     paddingBottom: normaliseNew(12),
-    paddingEnd: normaliseNew(44),
+    paddingEnd: normaliseNew(14),
     paddingStart: normaliseNew(16),
     // paddingTop: normaliseNew(14),
     // maxHeight: normaliseNew(100),

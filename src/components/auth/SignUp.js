@@ -104,9 +104,7 @@ function Login(props) {
   const [fullname, setFullname] = useState(
     props.route.params.loginType === 'Spotify'
       ? ''
-      : `${props.route.params.userDetails.fullName.givenName} ${
-          props.route.params.userDetails.fullName.familyName
-        }`,
+      : '',
   );
 
   const [phoneNumber, setPhoneNumber] = useState('');
