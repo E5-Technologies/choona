@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
 import {
   SafeAreaView,
   View,
@@ -169,10 +171,140 @@ const updateSize = (height) => {
   setHeight(height)
 }
 
+
+
+
+  return (
+    <View style={styles.container}>
+       <StatusBar />
+       <ScrollView>
+       <SafeAreaView>
+      <Loader visible={commentsLoading} />
+      <HeaderComponentComments
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={
+            comments.length > 0
+              ? comments.length === 1
+                ? '1 COMMENT'
+                : `${comments.length} COMMENTS`
+              : 'COMMENTS'
+          }
+          thirditemtext={false}
+          marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
+          onPressFirstItem={() => {
+            // props.navigation.goBack();
+            _onBackPress()
+          }}
+        />
+        <View style={styles.commentHeader}>
+          <View style={styles.commentHeaderDetails}>
+            <TouchableOpacity style={styles.commentHeaderAvatarButton}>
+              {/* <Image
+                source={ImagePath.play}
+                style={{
+                  height: normalise(20),
+                  width: normalise(20),
+                  position: 'absolute',
+                  alignSelf: 'center',
+                }}
+              /> */} 
+              <Image
+                source={{ uri: image }}
+                style={styles.commentHeaderAvatar}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <View style={styles.commentHeaderInfoContainer}>
+              <View style={styles.commentHeaderInfoTop}>
+                <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
+
+                <Text style={styles.commentHeaderInfoTime}>
+                  {moment(time).from()}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.commentHeaderInfoComment}>
+                  {userComment}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <SwipeListView
+          data={comments}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => {
+            index.toString();
+          }}
+          disableRightSwipe={true}
+          rightOpenValue={-75}
+        />
+
+       
+      
+      </SafeAreaView>
+      </ScrollView>
+      <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center',backgroundColor:'#000000' ,///bottom: emoji ? Platform.OS==='ios'?299:10 : 20
+        }]}
+        >
+          <TextInput
+            style={[styles.commentFooterInput,
+            {
+            flex: 1,
+            //flexWrap:'wrap',
+            //alignItems:'center' 
+            }]}
+            value={commentText}
+            multiline
+            maxHeight={100}
+            onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
+            placeholder={'Add a comment...'}
+            placeholderTextColor={Colors.white}
+            onFocus={()=>setEmoji(true)}
+            onChangeText={text => {
+              setCommentText(text);
+            }}
+          />
+          {commentText !== '' ? (
+            <TouchableOpacity
+              style={{
+               alignItems:'center',
+              justifyContent:'center',
+              paddingHorizontal:'3%'
+            
+              }}
+              onPress={() => {
+                // setEmoji(false)
+                Keyboard.dismiss()
+                let commentObject = {
+                  post_id: id,
+                  text: commentText,
+                };
+                isInternetConnected()
+                  .then(() => {
+                    props.commentOnPost(commentObject);
+                  })
+                  .catch(() => {
+                    toast('Error', 'Please Connect To Internet');
+                  });
+              }}>
+              <Text style={{
+                 color: Colors.white,
+                fontFamily: 'ProximaNova-Bold',
+              }}>POST</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      <KeyboardSpacer/>
+    </View>
+
+  )
+
   return (
     <View style={styles.container}>
       <Loader visible={commentsLoading} />
-     
       <StatusBar />
       <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
       <SafeAreaView style={styles.safeContainer}>
@@ -239,18 +371,17 @@ const updateSize = (height) => {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center',backgroundColor:'#000000' ,bottom: emoji ? Platform.OS==='ios'?299:10 : 20}]}>
+        <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center',backgroundColor:'#000000' ,///bottom: emoji ? Platform.OS==='ios'?299:10 : 20
+        }]}
+        >
           <TextInput
             style={[styles.commentFooterInput,{
-             flex: 1,
-              flexWrap:'wrap',
-              // height:2*textinputHeight,
-              // minHeight:textinputHeight,
-              // maxHeight:textinputHeight,
+            flex: 1,
+            flexWrap:'wrap',
             alignItems:'center' }]}
             value={commentText}
             multiline
-            //  maxHeight={textinputHeight}
+            maxHeight={100}
             onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
@@ -353,7 +484,8 @@ const styles = StyleSheet.create({
     paddingVertical: normaliseNew(6),
     position: 'relative',
   },
-  commentFooterInput: {
+  commentFooterInput: 
+  {
     backgroundColor: Colors.darkerblack,
     borderColor: Colors.activityBorderColor,
     borderRadius: normaliseNew(24),
@@ -361,11 +493,10 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normaliseNew(14),
-    // height: normaliseNew(48),
     paddingBottom: normaliseNew(12),
     paddingEnd: normaliseNew(14),
     paddingStart: normaliseNew(16),
-    // paddingTop: normaliseNew(14),
+    paddingTop: normaliseNew(13),
     // maxHeight: normaliseNew(100),
   },
   commentFooterPostButtonText: {
