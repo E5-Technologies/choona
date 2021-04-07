@@ -425,6 +425,8 @@ function Player(props) {
     
     if (props.playingSongRef === '') {
        console.log('first time');
+       setPlayVisible(true);
+
       playSong(songuri);
     } else {
       if (global.playerReference !== null) {
