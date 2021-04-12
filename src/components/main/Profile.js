@@ -18,6 +18,7 @@ import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
+import { WebView } from 'react-native-webview';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -44,6 +45,8 @@ const postsUrl = constants.BASE_URL + '/user/posts';
 
 function Profile(props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalPrivacy, setModalPrivacy] = useState(false);
+  const [modaltandcs, setModaltandcs] = useState(false);
   const [flag, setFlag] = useState('');
   const [activity, setActivity] = useState(props.route.params.fromAct);
  
@@ -219,7 +222,9 @@ function Profile(props) {
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity>
+            <TouchableOpacity 
+            onPress={()=>{setModalPrivacy(true)}}
+            >
               <Text
                 style={{
                   color: Colors.white,
@@ -241,7 +246,9 @@ function Profile(props) {
               </Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={{ marginTop: normalise(18) }}>
+            <TouchableOpacity style={{ marginTop: normalise(18) }}
+            onPress={()=>{setModaltandcs(true)}}
+            >
               <Text
                 style={{
                   color: Colors.white,
@@ -320,6 +327,71 @@ function Profile(props) {
     );
   };
 
+  const policyModel = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={modalPrivacy}
+        presentationStyle={'pageSheet'}
+        onRequestClose={() => {setModalPrivacy(false)}}>
+       
+<View style={{flex:1,backgroundColor:'#0D1E25'}}>
+<View style={{marginTop:'5%' }}>
+            <TouchableOpacity
+              style={{ marginLeft: normalise(10) }}
+              onPress={() => {
+               setModalPrivacy(false)
+              }}>
+              <Image
+                source={ImagePath.backicon}
+                style={{ height: normalise(15), width: normalise(15) }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+<WebView
+        source={{ uri: 'https://www.choona.co/privacy' }}
+        // style={{ marginTop: 20 }}
+      />
+</View>
+
+      </Modal>
+    );
+  };
+
+  const tandcsModel = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={modaltandcs}
+        presentationStyle={'pageSheet'}
+        onRequestClose={() => {setModaltandcs(false)}}>
+       
+<View style={{flex:1,backgroundColor:'#0D1E25'}}>
+<View style={{marginTop:'5%' }}>
+            <TouchableOpacity
+              style={{ marginLeft: normalise(10) }}
+              onPress={() => {
+               setModaltandcs(false)
+              }}>
+              <Image
+                source={ImagePath.backicon}
+                style={{ height: normalise(15), width: normalise(15) }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+<WebView
+        source={{ uri: 'https://www.choona.co/tandcs' }}
+        // style={{ marginTop: 20 }}
+      />
+</View>
+
+      </Modal>
+    );
+  };
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.black} />
@@ -756,6 +828,8 @@ function Profile(props) {
         )}
 
         {renderModal()}
+        {policyModel()}
+        {tandcsModel()}
       </SafeAreaView>
     </View>
   );

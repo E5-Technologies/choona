@@ -12,6 +12,7 @@ import {
   Modal,
   TextInput,
   Clipboard,
+  Linking
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -20,11 +21,17 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import HomeItemList from './ListCells/HomeItemList';
 import { connect } from 'react-redux';
-import { searchPostReq } from '../../action/PostAction';
+import { searchPostReq ,deletePostReq } from '../../action/PostAction';
 import { saveSongRequest } from '../../action/SongAction';
+import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import {
   reactionOnPostRequest,
   getUsersFromHome,
+  userFollowUnfollowRequest,
+  getProfileRequest,
+  homePageReq,
+  dummyRequest,
 } from '../../action/UserAction';
 import {
   GET_POST_FROM_TOP_50_REQUEST,
@@ -48,6 +55,8 @@ import _ from 'lodash';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { createChatTokenRequest } from '../../action/MessageAction';
 import constants from '../../utils/helpers/constants';
+
+
 import axios from 'axios';
 let status;
 let userStatus;
@@ -61,6 +70,7 @@ function GenreSongClicked(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
+  const [bool, setBool] = useState(false);
 
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
@@ -95,8 +105,6 @@ function GenreSongClicked(props) {
   }
   useEffect(() => {
   
-   
-
     const unsuscribe = props.navigation.addListener('focus', payload => {
      
       isInternetConnected()
@@ -302,6 +310,108 @@ function GenreSongClicked(props) {
      })
   }
 
+// GET ISRC CODE
+const callApi = async () => {
+  if (props.registerType === 'spotify') {
+    const spotifyToken = await getSpotifyToken();
+
+    return await axios.get(
+      `https://api.spotify.com/v1/search?q=isrc:${
+        props.postData[positionInArray].isrc_code
+      }&type=track`,
+      {
+        headers: {
+          Authorization: spotifyToken,
+        },
+      },
+    );
+  } else {
+    const AppleToken = await getAppleDevToken();
+
+    return await axios.get(
+      `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
+        props.postData[positionInArray].isrc_code
+      }`,
+      {
+        headers: {
+          Authorization: AppleToken,
+        },
+      },
+    );
+  }
+};
+
+ //OPEN IN APPLE / SPOTIFY
+ const openInAppleORSpotify = async () => {
+   console.log("props.registr"+props.registerType)
+  try {
+    const res = await callApi();
+    // console.log(res);
+
+    if (res.status === 200) {
+      if (
+        !_.isEmpty(
+          props.registerType === 'spotify'
+            ? res.data.tracks.items
+            : res.data.data,
+        )
+      ) {
+        if (props.userProfileResp.register_type === 'spotify') {
+          // console.log('success - spotify');
+          // console.log(res.data.tracks.items[0].external_urls.spotify);
+          Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+            .then(supported => {
+              if (supported) {
+                Linking.openURL(
+                  res.data.tracks.items[0].external_urls.spotify,
+                )
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
+              }
+            })
+            .catch(() => {
+              // console.log('not supported');
+            });
+          setBool(false);
+        } else {
+          // console.log('success - apple');
+          // console.log(res.data.data[0].attributes.url);
+          Linking.canOpenURL(res.data.data[0].attributes.url)
+            .then(supported => {
+              if (supported) {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
+              }
+            })
+            .catch(() => {
+              // console.log('not supported');
+            });
+          setBool(false);
+        }
+      } else {
+        setBool(false);
+        toast('', 'No Song Found');
+      }
+    } else {
+      setBool(false);
+      toast('Oops', 'Something Went Wrong');
+    }
+  } catch (error) {
+    setBool(false);
+    // console.log(error);
+  }
+};
+
+
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
     return (
@@ -400,15 +510,21 @@ function GenreSongClicked(props) {
   //MODAL MORE PRESSED
   const MorePressed = () => {
     return (
+
+
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      presentationStyle={'pageSheet'}
+      onRequestClose={() => {
+        //Alert.alert("Modal has been closed.");
+      }}>
+      <ImageBackground
+        source={ImagePath.page_gradient}
+        style={styles.centeredView}>
+     
+     {/* <View style={[styles.centeredView,{}]}> */}
           <View style={styles.modalView}>
             <Text
               style={{
@@ -427,7 +543,9 @@ function GenreSongClicked(props) {
                 marginBottom: normalise(12),
               }}
             />
-
+{
+  // console.log("props.getpost"+JSON.stringify( props.getPostFromTop50[positionInArray].original_song_uri))
+}
             <TouchableOpacity
               style={{
                 flexDirection: 'row',
@@ -530,24 +648,192 @@ function GenreSongClicked(props) {
                 Copy Link
               </Text>
             </TouchableOpacity>
-          </View>
+            
+            <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+
+                      props.userProfileResp._id !==
+                      props.getPostFromTop50[positionInArray].user_id // USER - FOLLOW/UNFOLLOW
+                        ? props.followUnfollowReq({
+                            follower_id:
+                            props.getPostFromTop50[positionInArray].userDetails._id,
+                          }) // USER - FOLLOW/UNFOLLOW
+                        : props.deletePostReq(
+                          props.getPostFromTop50[positionInArray]._id,
+                          ); //  DELETE POST
+                    }}>
+                    <Image
+                      source={ImagePath.more_unfollow}
+                      style={{ height: normalise(18), width: normalise(18) }}
+                      resizeMode="contain"
+                    />
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Regular',
+                      }}>
+                      {/* {!_.isEmpty(props.userProfileResp)
+                        ? props.userProfileResp._id ===
+                        props.getPostFromTop50[positionInArray].user_id
+                          ? 'Delete Post'
+                          : `Unfollow ${
+                            props.getPostFromTop50[positionInArray].userDetails
+                                .username
+                            }`
+                        : ''} */}
+                        Delete Post
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                    
+                      if (
+                        props.getPostFromTop50[positionInArray].userDetails
+                          .register_type === props.registerType
+                      ) {
+                        // console.log('same reg type');
+                        setModalVisible(false);
+                         setBool(true),
+                          Linking.canOpenURL(
+                            props.getPostFromTop50[positionInArray].original_song_uri,
+                          )
+                            .then(() => {
+                              Linking.openURL(
+                                props.getPostFromTop50[positionInArray]
+                                  .original_song_uri,
+                              )
+                                .then(() => {
+                                  // console.log('success');
+                                  setBool(false);
+                                })
+                                .catch(() => {
+                                  // console.log('error');
+                                });
+                            })
+                            .catch(err => {
+                              // console.log('unsupported');
+                            });
+                      } else {
+                         console.log('diffirent reg type');
+                        setModalVisible(false);
+                        setBool(true),
+                          isInternetConnected()
+                            .then(() => {
+                              openInAppleORSpotify();
+                            })
+                            .catch(() => {
+                              toast('', 'Please Connect To Internet');
+                            });
+                      }
+                    }}>
+                    <Image
+                      source={
+                        !_.isEmpty(props.userProfileResp)
+                          ? props.userProfileResp.register_type === 'spotify'
+                            ? ImagePath.spotifyicon
+                            : ImagePath.applemusic
+                          : ''
+                      }
+                      style={{
+                        height: normalise(18),
+                        width: normalise(18),
+                      }}
+                      resizeMode="contain"
+                    />
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Regular',
+                      }}>
+                      {!_.isEmpty(props.userProfileResp)
+                        ? props.userProfileResp.register_type === 'spotify'
+                          ? 'Open on Spotify'
+                          : 'Open on Apple'
+                        : ''}
+                    </Text>
+                  </TouchableOpacity>
+
+
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: normalise(18),
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      if (props.userProfileResp.register_type === 'spotify')
+                        props.navigation.navigate('AddToPlayListScreen', {
+                          originalUri:
+                          props.getPostFromTop50[positionInArray].original_song_uri,
+                          registerType:
+                          props.getPostFromTop50[positionInArray].social_type,
+                          isrc: props.getPostFromTop50[positionInArray].isrc_code,
+                        });
+                      else {
+                        // setTimeout(() => {
+                        //   toast("Oops", "Only, Spotify users can add to their playlist now.")
+                        // }, 1000)
+                        props.navigation.navigate('AddToPlayListScreen', {
+                          isrc: props.getPostFromTop50[positionInArray].isrc_code,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={ImagePath.addicon}
+                      style={{
+                        height: normalise(18),
+                        width: normalise(18),
+                        // borderRadius: normalise(9),
+                      }}
+                      resizeMode="contain"
+                    />
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        marginLeft: normalise(15),
+                        fontSize: normalise(13),
+                        fontFamily: 'ProximaNova-Regular',
+                      }}>
+                      Add to Playlist
+                    </Text>
+                  </TouchableOpacity>
+
 
           <TouchableOpacity
             onPress={() => {
               setModalVisible(!modalVisible);
             }}
             style={{
-              marginStart: normalise(20),
-              marginEnd: normalise(20),
-              marginBottom: normalise(20),
-              height: normalise(50),
-              width: '95%',
+              // marginStart: normalise(20),
+              // marginEnd: normalise(20),
+              // marginBottom: normalise(20),
+              marginTop:normalise(30),
+              height: normalise(40),
+              // width: '95%',
               backgroundColor: Colors.darkerblack,
               opacity: 10,
-              borderRadius: 20,
+              borderRadius: 6,
               // padding: 35,
               alignItems: 'center',
               justifyContent: 'center',
+              
             }}>
             <Text
               style={{
@@ -558,9 +844,17 @@ function GenreSongClicked(props) {
               CANCEL
             </Text>
           </TouchableOpacity>
-        </View>
-      </Modal>
-    );
+     
+          </View>
+
+        {/* </View> */}
+     
+      </ImageBackground>
+    </Modal>
+
+
+
+   );
   };
   //END OF MODAL MORE PRESSED
 
@@ -785,22 +1079,46 @@ function GenreSongClicked(props) {
 
           <View
             style={{
-              width: '90%',
-              alignSelf: 'center',
-              height: normalise(35),
+              //  width: '90%',
+              // flex:0.8,
+              // alignSelf: 'center',
+               height: normalise(35),
               marginTop: normalise(20),
               borderRadius: normalise(8),
               backgroundColor: Colors.fadeblack,
+              flexDirection:'row',
+              borderWidth:1,
+            alignItems:'center',
+            marginHorizontal:'5%'
             }}>
+              <View style={{
+                flex:1,
+                // backgroundColor:"red",
+                height:normalise(35),
+                flexDirection:'row',
+                alignItems:'center',
+                paddingLeft:"2%"
+
+              }}>
+                 <Image
+              source={ImagePath.searchicongrey}
+              style={{
+                height: normalise(15),
+                width: normalise(15),
+                // bottom: normalise(25),
+                // paddingLeft: normalise(30),
+              }}
+              resizeMode="contain"
+            />
             <TextInput
               autoCorrect={false}
               keyboardAppearance={'dark'}
               style={{
-                height: normalise(35),
-                width: '85%',
+                // height: normalise(35),
+                 width: '90%',
                 padding: normalise(10),
                 color: Colors.white,
-                paddingLeft: normalise(30),
+                // paddingLeft: normalise(30),
               }}
               value={userSeach}
               placeholder={'Search'}
@@ -809,17 +1127,8 @@ function GenreSongClicked(props) {
                 setUserSeach(text), searchUser(text);
               }}
             />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
+</View>
+         
 
             {userSeach === '' ? null : (
               <TouchableOpacity
@@ -827,14 +1136,15 @@ function GenreSongClicked(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
+                  // backgroundColor: Colors.black,
+                  // padding: 6,
+                  // paddingTop: 4,
+                  // paddingBottom: 4,
                   borderRadius: 2,
-                  position: 'absolute',
+                  // position: 'absolute',
+                  // borderWidth:1,
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  // bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
                   marginRight: normalise(10),
                 }}>
                 <Text
@@ -887,7 +1197,7 @@ function GenreSongClicked(props) {
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
-
+<Loader visible={bool} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -963,25 +1273,38 @@ function GenreSongClicked(props) {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
+      justifyContent: 'flex-end',
+    //  alignItems: 'center',
+    // marginTop: normalise(40),
+  
+ 
+   
+
   },
   modalView: {
-    margin: 20,
-    backgroundColor: 'white',
+    //  margin: 20,
+    
+
+    backgroundColor: '#000000',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+     paddingVertical: 35,
+     paddingHorizontal:30
+    // alignItems: 'center',
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 4,
+    // elevation: 5,
+    // borderWidth:1,
+    // borderColor:'white',
+  //  position:'absolute',
+  //  bottom:0
+
+ 
   },
   openButton: {
     backgroundColor: '#F194FF',
@@ -1009,6 +1332,7 @@ const mapStateToProps = state => {
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     messageStatus: state.MessageReducer.status,
     header: state.TokenReducer,
+    registerType: state.TokenReducer.registerType,
   };
 };
 
@@ -1022,13 +1346,18 @@ const mapDispatchToProps = dispatch => {
     reactionOnPostRequest: payload => {
       dispatch(reactionOnPostRequest(payload));
     },
-
+    followUnfollowReq: payload => {
+      dispatch(userFollowUnfollowRequest(payload));
+    },
     saveSongReq: payload => {
       dispatch(saveSongRequest(payload));
     },
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
+    },
+    deletePostReq: payload => {
+      dispatch(deletePostReq(payload));
     },
 
     createChatTokenRequest: payload => {

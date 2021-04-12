@@ -55,6 +55,8 @@ function OthersProfile(props) {
 
 
   const getPosts = async pageId => {
+
+    console.log("logcat:"+`${postsUrl}?page=${pageId}`);
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -62,6 +64,11 @@ function OthersProfile(props) {
         'x-access-token': props.header.token,
       },
     });
+
+
+    setProfilePosts([...profilePosts,...response.data.data])
+
+    console.log("logcat response:"+JSON.stringify(response.datas));
     return await response.data;
   };
 
@@ -69,7 +76,6 @@ function OthersProfile(props) {
   const key = `${postsUrl}?page=${pageId}`;
   const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
 
-  // const[profilePosts,setProfilePosts] = useState(posts ? posts.data : []);
   const[profilePosts,setProfilePosts] = useState([]);
 
   const onEndReached=async()=>{
@@ -91,26 +97,22 @@ function OthersProfile(props) {
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
-        .then(async() => {
+        .then(() => {
           props.othersProfileReq(id);
           props.getCountryCode();
-          mutate();
-          const response = await axios.get(`${constants.BASE_URL + `/user/posts/${id}`}?page=${pageId}`, {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'x-access-token': props.header.token,
-            },
-          });
-          // profilePosts.push(response.data.data)
-         setProfilePosts(response.data.data)
+         // mutate();
+
+       getPosts(pageId)
+      
+
+
         })
         .catch(() => {
           toast('Error', 'Please Connect to Internet');
         });
 
 
-    });
+    },[]);
 
     return () => {
       unsuscribe();

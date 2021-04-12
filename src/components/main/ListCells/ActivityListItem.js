@@ -40,7 +40,7 @@ function ActivityListItem(props) {
           style={{flex:1}}
             disabled={props.TouchableOpacityDisabled}
             onPress={() => {
-              onPressImage();
+               onPress();
             }}>
             <Text style={styles.detailsText} numberOfLines={2}>
               {props.title ? (
@@ -66,15 +66,13 @@ function ActivityListItem(props) {
             </Text>
           </TouchableOpacity>
      
-     {
-       console.log("props"+ JSON.stringify(props))
-     }
+   
         </View>
         {
           // props.userId != props.loginUserId?
         
         props.type ? (
-           
+          props.userId != props.loginUserId?
           <TouchableOpacity
             style={[
               styles.followButton,
@@ -91,7 +89,8 @@ function ActivityListItem(props) {
                 FOLLOWING
               </Text>
             )}
-          </TouchableOpacity>
+          </TouchableOpacity>:
+          null
         ) : (
           <TouchableOpacity
             onPress={() => {

@@ -80,6 +80,8 @@ target 'Choona' do
 
   pod 'react-native-version-info', :path => '../node_modules/react-native-version-info'
 
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
   target 'ChoonaTests' do
     inherit! :complete
     # Pods for testing

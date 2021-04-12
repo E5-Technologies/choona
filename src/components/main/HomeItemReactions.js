@@ -39,6 +39,7 @@ import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 let reaction_count = 0;
+let recList = []
 function HomeItemReaction(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modal1Visible] = useState(false);
@@ -58,7 +59,9 @@ function HomeItemReaction(props) {
           
           setReactionList(editArray(res));
           reaction_count = res.length
+          recList= editArray(res)
           setReactionsRes(res);
+          // alert(JSON.stringify(res))
         }
       })
       .catch(err => {
@@ -108,6 +111,7 @@ function HomeItemReaction(props) {
     if (index !== -1) {
       reactions.splice(index, 1);
       setReactionList(editArray(reactions));
+      recList = editArray(reactions)
       reaction_count=reaction_count-1
     } else {
       reactions.push({
@@ -118,6 +122,9 @@ function HomeItemReaction(props) {
       });
       reaction_count = reaction_count+1
       setReactionList(editArray(reactions));
+      recList = editArray(reactions)
+
+      // console.log("editarr"+ JSON.stringify(editArray(reactions)))
     }
   }
 
@@ -196,10 +203,11 @@ function HomeItemReaction(props) {
   const _onBackPress = () => {
    
     let ID = props.route.params.post_id
-    let Comment = reactionList.length
-    console.log("hhh",reactionList)
+    let Comment = reaction_count
+    let ReactionList = ReactionList
+    console.log("hhh",JSON.stringify(ReactionList))
  const { navigation, route } = props;
-  route.params.onSelectReaction(ID,Comment);
+  route.params.onSelectReaction(ID,Comment,ReactionList);
     navigation.goBack();
   
 
@@ -209,10 +217,10 @@ const _onBackHandlerPress = () => {
   
  let ID = props.route.params.post_id
  let Comment= reaction_count;
-
+  let ReactionList = recList
 const { navigation, route } = props;
 console.log(ID+":"+Comment);
-route.params.onSelectReaction(ID,Comment);
+route.params.onSelectReaction(ID,Comment,ReactionList);
  navigation.goBack();
 return true
 

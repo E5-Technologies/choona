@@ -20,6 +20,7 @@ import {
   Keyboard,
   BackHandler,
 } from 'react-native';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import normalise from '../../utils/helpers/Dimens';
 import normaliseNew from '../../utils/helpers/DimensNew';
 
@@ -764,7 +765,8 @@ function Player(props) {
   }
 
   // BOTTOM SHEET FUNC
-  const RbSheet = () => {
+  const RbSheet = () => 
+  {
     return (
       <RBSheet
         ref={ref => {
@@ -776,7 +778,6 @@ function Player(props) {
         closeOnDragDown={false}
         closeOnPressMask={true}
          nestedScrollEnabled={true}
-        //  keyboardAvoidingViewEnabled={true}
         
       
         customStyles={{
@@ -866,64 +867,36 @@ function Player(props) {
               // keyboardShouldPersistTaps='always'
               showsVerticalScrollIndicator={false}
             />
-         {/* <ScrollView style={{}} keyboardShouldPersistTaps="always"> */}
-        <View style={
-          {flexDirection:'row',
-          //  flex:1,
-          //  borderWidth:1,
-        //  height:2*textinputHeight,
-          // alignItem:'center',
-          // justifyContent:'center',
-          // height: normalise(35),
-           marginTop:normalise(15),
-           
-          marginBottom:normalise(15)
-          }}>
-
-            <TextInput
-              style={{
-                //  height:50,
-                 width: '100%',
-                backgroundColor: Colors.fadeblack,
-              //  alignItems:'stretch',
-                  flex:1,
-                  flexWrap:'wrap',       // keyboardAppearance='dark',
-                   alignItems:'center',
-                // borderRadius: normalise(17),
-                // //  marginBottom: normalise(10),
-                // paddingHorizontal: normalise(10),
-                // color: Colors.white,
-                // paddingRight: normalise(50),
-                
-                  // paddingTop:15,
-                // paddingBottom:15
-                minHeight:normaliseNew(48),
-                backgroundColor: Colors.darkerblack,
-                borderColor: Colors.activityBorderColor,
-                borderRadius: normaliseNew(24),
-                borderWidth: normaliseNew(0.5),
-                color: Colors.white,
-                fontFamily: 'ProximaNova-Regular',
-                fontSize: normaliseNew(14),
-                // height: normaliseNew(48),
-                paddingTop:normaliseNew(14),
-                paddingBottom: normaliseNew(10),
-              paddingEnd: normaliseNew(14),
-                paddingStart: normaliseNew(16),
-                
-              }}
-              multiline={true}
-            //  maxHeight={2*textinputHeight}
-               onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
-            
-              placeholder={'Add a comment...'}
-              value={commentText}
-              placeholderTextColor={Colors.white}
-              onChangeText={text => {
-                setCommentText(text);
-              }}
-              
-            />
+             <View style={{flexDirection:'row',marginTop:normalise(15),marginBottom:normalise(5)}}>
+              <TextInput
+                style={{
+                  width: '100%',
+                  backgroundColor: Colors.fadeblack,
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  maxHeight:100,
+                  backgroundColor: Colors.darkerblack,
+                  borderColor: Colors.activityBorderColor,
+                  borderRadius: normaliseNew(24),
+                  borderWidth: normaliseNew(0.5),
+                  color: Colors.white,
+                  fontFamily: 'ProximaNova-Regular',
+                  fontSize: normaliseNew(14),
+                  paddingTop: normaliseNew(12),
+                  paddingBottom: normaliseNew(13),
+                  paddingEnd: normaliseNew(14),
+                  paddingStart: normaliseNew(16),
+                }}
+                multiline={true}
+                onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
+                placeholder={'Add a comment...'}
+                value={commentText}
+                placeholderTextColor={Colors.white}
+                onChangeText={text => {
+                  setCommentText(text);
+                }}
+              />
 
             {commentText.length > 1 ? (
               <TouchableOpacity
@@ -1002,10 +975,10 @@ function Player(props) {
               </TouchableOpacity>
             ) : null}
             </View>
-            {/* </ScrollView> */}
           </View>
-         
+       
         </View>
+       
       </RBSheet>
     );
   };
@@ -2287,6 +2260,8 @@ function Player(props) {
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>
+      {/* <KeyboardSpacer/> */}
+
     </View>
   );
 }

@@ -87,6 +87,7 @@ function Notification(props) {
   });
 
   const onReached=async()=>{
+  
     setPageId(pageId+1)
     const response = await axios.get(`${activityUrl}?page=${pageId+1}`, {
       headers: {
@@ -98,6 +99,7 @@ function Notification(props) {
     if(response.data.data.length==0){
       setOnScrolled(false)
     }
+    
     previous=[...previous,...response.data.data]
     // setOnScrolled(true)
     // alert("res"+JSON.stringify(response.data.data))
@@ -124,6 +126,7 @@ function Notification(props) {
 
  useFocusEffect(
     React.useCallback(() => {
+      
       // alert("focus1111");
       setNotifications([]);
             setPageId(1);
@@ -215,6 +218,7 @@ function Notification(props) {
         {notifications ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
+            style={{flex:1}}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -239,11 +243,10 @@ function Notification(props) {
                 <Text style={styles.activityHeaderText}>TODAY</Text>
               </View>
             )}
-             {
-              console.log("aa",JSON.stringify(previous))
-            }
+             
             <FlatList
               data={today}
+              scrollEnabled
               renderItem={({ item }) => (
                 item.post_id !=null?
                 <TouchableOpacity 
@@ -295,13 +298,13 @@ function Notification(props) {
                 index.toString();
               }}
               ItemSeparatorComponent={Seperator}
-              onEndReached={() => {
+              onEndReached={()=>
                 // setPageId(pageId + 1);
-                // alert(pageId);
-                onReached()
-              }}
+                //  alert('pageId')
+                 onReached()
+              }
               onEndReachedThreshold={2}
-              initialNumToRender={8}
+               initialNumToRender={7}
               // onMomentumScrollBegin={() => {
               //   setOnScrolled(true);
               // }}

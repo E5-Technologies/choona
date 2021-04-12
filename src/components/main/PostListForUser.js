@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -72,6 +72,8 @@ import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import { useDebugValue } from 'react';
+import { element } from 'prop-types';
 
 let status = '';
 let songStatus = '';
@@ -79,6 +81,7 @@ let postStatus = '';
 let messageStatus;
 
 
+ 
 function PostListForUser(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -91,16 +94,32 @@ function PostListForUser(props) {
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-
+  
+const [totalReact,setTotalReact] = useState([])
   const [posts, setPosts] = useState(props.route.params.posts);
 
-  // console.log(props.route.params.index);
+    // console.log("prosts"+JSON.stringify(props.route.params.posts));
 
   const ref = React.useRef(null);
   var bottomSheetRef;
   let changePlayer = false;
 
   useScrollToTop(ref);
+
+useEffect(()=>{
+let newarray = []
+posts.map((item,index)=>{
+  let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
+ 
+  newarray.push(newObject)
+  if(index===posts.length-1){
+    setTotalReact(newarray)
+    // console.log("newarrr"+ JSON.stringify(newarray))
+  }
+
+})
+},[])
+
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -241,7 +260,12 @@ function PostListForUser(props) {
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
   let val = 0;
 
+
+
+
   function hitreact(x, rindex) {
+
+    // alert("reaction"+(JSON.stringify(posts[rindex])))
     if (!_.isEmpty(posts[rindex].reaction)) {
       // console.log('here');
 
@@ -271,8 +295,11 @@ function PostListForUser(props) {
 
   function hitreact1(modal1Visible) {
     if (modal1Visible === true) {
+        
       setModal1Visible(false);
+      
     } else {
+     
       setModal1Visible(true);
     }
   }
@@ -282,6 +309,8 @@ function PostListForUser(props) {
   }
 
   function sendReaction(id, reaction) {
+   
+    //  alert("resat"+reaction)
     const myReaction =
       reaction === react[0]
         ? 'A'
@@ -300,6 +329,93 @@ function PostListForUser(props) {
       text: reaction,
       text_match: myReaction,
     };
+   
+    
+    posts.map((item,index)=>{
+    
+      if(id===item._id)
+    
+    if(myReaction==='A'){
+      if(posts[index].fire_count===totalReact[index].react[0]){
+        posts[index].fire_count=posts[index].fire_count+1
+         posts[index].reaction_count=posts[index].reaction_count+1
+        
+      }
+      else{
+        if(posts[index].fire_count!=0){
+        posts[index].fire_count=posts[index].fire_count-1
+        posts[index].reaction_count=posts[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='B'){
+      if(posts[index].love_count===totalReact[index].react[1]){
+        posts[index].love_count=posts[index].love_count+1
+         posts[index].reaction_count=posts[index].reaction_count+1
+        
+      }
+      else{
+        if(posts[index].love_count!=0){
+        posts[index].love_count=posts[index].love_count-1
+        posts[index].reaction_count=posts[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='C'){
+      if(posts[index].dancer_count===totalReact[index].react[2]){
+        posts[index].dancer_count=posts[index].dancer_count+1
+         posts[index].reaction_count=posts[index].reaction_count+1
+      }
+      else{
+        if(posts[index].dancer_count!=0){
+        posts[index].dancer_count=posts[index].dancer_count-1
+         posts[index].reaction_count=posts[index].reaction_count-1
+        }
+
+      }
+    }
+    else if(myReaction==='D'){
+      if(posts[index].man_dancing_count===totalReact[index].react[3]){
+        posts[index].man_dancing_count=posts[index].man_dancing_count+1
+         posts[index].reaction_count=posts[index].reaction_count+1
+        
+      }
+      else{
+        if(posts[index].man_dancing_count!=0){
+        posts[index].love_count=posts[index].man_dancing_count-1
+         posts[index].reaction_count=posts[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='E'){
+      if(posts[index].face_count===totalReact[index].react[4]){
+        posts[index].face_count=posts[index].face_count+1
+         posts[index].reaction_count=posts[index].reaction_count+1
+        
+      }
+      else{
+        if(posts[index].face_count!=0){
+        posts[index].face_count=posts[index].face_count-1
+         posts[index].reaction_count=posts[index].reaction_count-1  
+      }
+
+      }
+    }
+    else{
+      if(posts[index].thumbsup_count===totalReact[index].react[5]){
+        posts[index].thumbsup_count=posts[index].thumbsup_count+1
+         posts[index].reaction_count=posts[index].reaction_count+1
+        
+      }
+      else{
+        if(posts[index].thumbsup_count!=0){
+        posts[index].thumbsup_count=posts[index].thumbsup_count-1
+         posts[index].reaction_count=posts[index].reaction_count-1  
+      }
+      }
+    }
+    }
+  )
     isInternetConnected()
       .then(() => {
         props.reactionOnPostRequest(reactionObject);
@@ -312,13 +428,13 @@ function PostListForUser(props) {
 
   
 function _onSelectBack(ID,comment){
-   console.log("aaa"+ comment)
+  //  console.log("aaa"+ posts)
    let newarray = posts
   newarray.map((item,index)=>{
-   console.log("items"+index+JSON.stringify(item))
+  //  console.log("items"+index+JSON.stringify(item))
   if(item._id === ID){
     newarray[index].comment_count = comment 
-  console.log("item",item)
+  // console.log("item",item)
   }
 
   if(index===newarray.length-1){
@@ -330,19 +446,77 @@ function _onSelectBack(ID,comment){
   }
 
 
-  function _onReaction(ID,reaction){
+  function _onReaction(ID,reaction,reactionList){
 
   let newarray = posts
+  //  alert("items"+JSON.stringify(reactionList))
     newarray.map((item,index)=>{
-   // alert("items"+item._id)
+   
    if(item._id === ID){
-     newarray[index].reaction_count = reaction
-   console.log("item",item)
-   }
- 
+
+if(reactionList.length>0){
+var found = reactionList.findIndex((element,index)=> element.data[0].text_match==='A');
+var found_love = reactionList.findIndex((element,index)=> element.data[0].text_match==='B');
+var found_dance = reactionList.findIndex((element,index)=> element.data[0].text_match==='C');
+var found_ManDance = reactionList.findIndex((element,index)=> element.data[0].text_match==='D');
+var found_face = reactionList.findIndex((element,index)=> element.data[0].text_match==='E');
+var found_thumb = reactionList.findIndex((element,index)=> element.data[0].text_match==='F');
+
+// alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+if(found!=-1){
+  newarray[index].fire_count=reactionList[found].data.length
+     }else{
+       newarray[index].fire_count=0
+     }
+     if(found_love!=-1){
+  newarray[index].love_count=reactionList[found_love].data.length
+     }
+     else{
+       newarray[index].love_count=0
+     }
+     if(found_dance !=-1){
+  newarray[index].dancer_count=reactionList[found_dance].data.length
+     }
+     else{
+       newarray[index].dancer_count=0
+     }
+     if(found_ManDance !=-1){
+  newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
+     }
+     else{
+       newarray[index].man_dancing_count=0
+     }
+     if(found_face != -1){
+  newarray[index].face_count=reactionList[found_face].data.length
+     }
+     else{
+       newarray[index].face_count=0
+     }
+     if(found_thumb != -1){
+  newarray[index].thumbsup_count=reactionList[found_thumb].data.length
+     }
+     else{
+       newarray[index].thumbsup_count=0
+     }
+
+     newarray[index].reaction_count= reaction
+    }
+        }
+      
    if(index===newarray.length-1){
  
     setPosts([...newarray])
+    let array = []
+// newarray.map((item,index)=>{
+//   let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
+ 
+//   array.push(newObject)
+//   if(index===posts.length-1){
+//     setTotalReact(array)
+//     // console.log("newarrr"+ JSON.stringify(newarray))
+//   }
+
+// })
   }
      })
   } 
@@ -414,7 +588,7 @@ function _onSelectBack(ID,comment){
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction) ,
+            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
           });
         }}
         onPressCommentbox={() => {

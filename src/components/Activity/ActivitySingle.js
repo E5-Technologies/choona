@@ -6,6 +6,7 @@ import constants from '../../utils/helpers/constants';
 import ActivityListItem from '../main/ListCells/ActivityListItem';
 
 function ActivitySingle({ item, props }) {
+ 
   if (item.activity_type === 'following') {
     return (
       <ActivityListItem
@@ -13,6 +14,7 @@ function ActivitySingle({ item, props }) {
         title={'started following you'}
         user={item.username}
         follow={!item.isFollowing}
+        userId={item.user_id}
         onPressImage={() => {
           props.navigation.navigate('OthersProfile', {
             id: item.user_id,
@@ -30,6 +32,7 @@ function ActivitySingle({ item, props }) {
         image={constants.profile_picture_base_url + item.profile_image}
         reaction={item.text}
         user={item.username}
+        userId={item.user_id}
         type={false}
         image2={item.image}
         onPressImage={() => {
@@ -39,10 +42,14 @@ function ActivitySingle({ item, props }) {
           });
         }}
         onPress={() => {
-          props.navigation.navigate('Profile', {
-            postId: item.post_id,
-            fromAct: true,
+          // props.navigation.navigate('Profile', {
+          //   postId: item.post_id,
+          //   fromAct: true,
+          props.navigation.navigate('GenreSongClicked', {
+            data: item.post_id,
+            ptID:1,
           });
+          // });
         }}
       />
     );
@@ -52,6 +59,7 @@ function ActivitySingle({ item, props }) {
         image={constants.profile_picture_base_url + item.profile_image}
         user={item.username}
         comment={item.text}
+        userId={item.user_id}
         type={false}
         image2={item.image}
         onPressImage={() => {
@@ -61,9 +69,13 @@ function ActivitySingle({ item, props }) {
           });
         }}
         onPress={() => {
-          props.navigation.navigate('Profile', {
-            postId: item.post_id,
-            fromAct: true,
+          // props.navigation.navigate('Profile', {
+          //   postId: item.post_id,
+          //   fromAct: true,
+          // });
+          props.navigation.navigate('GenreSongClicked', {
+            data: item.post_id,
+            ptID:1,
           });
         }}
       />
