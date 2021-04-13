@@ -59,7 +59,7 @@ function HomeItemReaction(props) {
           
           setReactionList(editArray(res));
           reaction_count = res.length
-          recList= editArray(res)
+          recList=editArray(res)
           setReactionsRes(res);
           // alert(JSON.stringify(res))
         }
@@ -102,7 +102,7 @@ function HomeItemReaction(props) {
   function addOrChangeReaction(reaction) {
     let reactions = reactionsRes;
 
-    // console.log('REACTIONS: ' + JSON.stringify(reactions));
+     console.log('REACTIONS: ' + reaction);
 
     let index = _.findIndex(reactions, function(item) {
       return item.user_id === userId && item.text === reaction;
@@ -120,10 +120,9 @@ function HomeItemReaction(props) {
         profile_image: props.userProfileResp.profile_image,
         username: props.userProfileResp.username,
       });
+      recList = editArray(reactions)
       reaction_count = reaction_count+1
       setReactionList(editArray(reactions));
-      recList = editArray(reactions)
-
       // console.log("editarr"+ JSON.stringify(editArray(reactions)))
     }
   }
@@ -204,7 +203,7 @@ function HomeItemReaction(props) {
    
     let ID = props.route.params.post_id
     let Comment = reaction_count
-    let ReactionList = ReactionList
+    let ReactionList = reactionList
     console.log("hhh",JSON.stringify(ReactionList))
  const { navigation, route } = props;
   route.params.onSelectReaction(ID,Comment,ReactionList);

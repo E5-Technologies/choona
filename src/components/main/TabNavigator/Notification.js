@@ -210,9 +210,17 @@ function Notification(props) {
   // console.log({ pageId });
 
   return (
+
+    isloadings ?
+    (<View style={{flex:1,backgroundColor:'#000000'}}>
+
+      <ActivityIndicator color='#ffffff' size='large' style={{marginTop:4*normaliseNew(90)}}></ActivityIndicator>
+    </View>)
+    :
     <View style={styles.container}>
+     
       <StatusBar />
-      <Loader visible={isloadings } />
+      
       <SafeAreaView style={styles.activityContainer}>
         <HeaderComponent title={'ACTIVITY'} />
         {notifications ? (
@@ -276,6 +284,7 @@ function Notification(props) {
                 <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
               </View>
             )}
+        
             <FlatList
               data={previous}
               renderItem={({ item }) => (

@@ -8,6 +8,8 @@ import {
   Image,
   ImageBackground,
   Dimensions,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -48,6 +50,7 @@ let changePlayer = true;
 function OthersProfile(props) {
   const [id, setId] = useState(props.route.params.id);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [postCount,setPostCount] = useState('')
   const [flag, setFlag] = useState('');
 
 
@@ -65,24 +68,24 @@ function OthersProfile(props) {
       },
     });
 
-
+setIsLoading(false)
+setPostCount(response.data.postCount)
     setProfilePosts([...profilePosts,...response.data.data])
 
-    console.log("logcat response:"+JSON.stringify(response.datas));
+    console.log("logcat response:"+JSON.stringify(response.data.postCount));
     return await response.data;
   };
 
   const [pageId, setPageId] = useState(1);
   const key = `${postsUrl}?page=${pageId}`;
-  const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
+  // const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
+  const [isLoading,setIsLoading] = useState(true)
 
   const[profilePosts,setProfilePosts] = useState([]);
 
   const onEndReached=async()=>{
-  
-   setPageId(pageId+1)
-   
-  const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
+    setPageId(pageId+1)
+    const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -90,6 +93,7 @@ function OthersProfile(props) {
     },
   });
   // profilePosts.push(response.data.data)
+  setIsLoading(false)
  setProfilePosts([...profilePosts,...response.data.data])
  
   } 
@@ -217,12 +221,30 @@ function OthersProfile(props) {
   }
 
   return (
+    
+      isLoading? ( <View style={{flex:1,backgroundColor:Colors.black,paddingTop:'6%'}}>
+           <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title=''
+          thirditemtext={true}
+          texttwo={''}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
+<ActivityIndicator size='large' color='#ffffff' style={{alignSelf:'center',marginTop:5*normalise(60)}}>
+
+</ActivityIndicator>
+      </View>):
+    
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       {/* <Loader visible={props.status === OTHERS_PROFILE_REQUEST} /> */}
 
       {/* <Loader visible={props.status === HOME_PAGE_REQUEST} /> */}
 
       {/* <Loader visible={props.status === COUNTRY_CODE_REQUEST} /> */}
+      
 
       <StatusBar backgroundColor={Colors.darkerblack} />
 
@@ -273,7 +295,9 @@ function OthersProfile(props) {
               }}>
               {props.othersProfileresp.full_name}
             </Text>
-
+{
+  console.log("post"+postCount)
+}
             <Text
               style={{
                 // marginTop: normalise(2),
@@ -282,8 +306,8 @@ function OthersProfile(props) {
                 fontFamily: 'ProximaNova-Regular',
               }}>
               {profilePosts !== undefined
-                ? `${profilePosts.length} ${
-                    profilePosts.length > 1 ? 'Posts' : 'Post'
+                ? `${postCount} ${
+                   postCount>1? 'Posts' : 'Post'
                   }`
                 : null}
             </Text>
@@ -563,9 +587,7 @@ function OthersProfile(props) {
             </View>
           )}
         </ImageBackground>
-{
-  console.log("data"+JSON.stringify(profilePosts))
-}
+
         {_.isEmpty(profilePosts) ? (
           <View
             style={{
@@ -610,6 +632,7 @@ function OthersProfile(props) {
                onEndReachedThreshold={1}
           />
         )}
+
       </SafeAreaView>
     </View>
   );

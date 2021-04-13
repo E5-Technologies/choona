@@ -12,7 +12,8 @@ import {
   Modal,
   TextInput,
   Clipboard,
-  Linking
+  Linking,
+  ActivityIndicator
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -63,6 +64,10 @@ let userStatus;
 let messageStatus;
 
 function GenreSongClicked(props) {
+
+  let commentList = []
+  commentList=props.getPostFromTop50
+
   const [name, setName] = useState(props.route.params.data);
 
   const [positionInArray, setPositionInArray] = useState(0);
@@ -71,6 +76,11 @@ function GenreSongClicked(props) {
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
   const [bool, setBool] = useState(false);
+  const [isLoading,setIsLoading]=useState(true)
+  const [updateList,setUpdateList]=useState([])
+  const [totalReact,setTotalReact] = useState([])
+
+ 
 
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
@@ -95,46 +105,65 @@ function GenreSongClicked(props) {
       },
     })
     setName(response.data.data.song_name)
+    setIsLoading(false)
     props.searchPost(response.data.data.song_name, flag),
        
             setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
-    console.log("response"+JSON.stringify(response))
+      
+          
+    console.log("response"+JSON.stringify(response.data.data))
+    
     
   }
   useEffect(() => {
   
-    const unsuscribe = props.navigation.addListener('focus', payload => {
-     
-      isInternetConnected()
+    // const unsuscribe = props.navigation.addListener('focus', payload => {
+    //   isInternetConnected()
+   //     .then(() => {
     
-        .then(() => {
-       
-         
           props.searchPost(name, flag),
-       
-            setUserSearchData([]);
+          setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
-          props.route.params.ptID===1?
-         getdata()
-         :
-         null
-        
-       
-        })
-        .catch(() => {
-          toast('Opps', 'Please Connect To Internet');
-        });
-    });
-
-    return () => {
-       unsuscribe();
-    };
+          props.route.params.ptID===1?(
+          getdata()
+          
+          )
+          :
+          null
+          props.route.params.ptID===1?(
+           onTotal()
+            
+            )
+            :
+            null   
+              
+    //     })
+    //     .catch(() => {
+    //       toast('Opps', 'Please Connect To Internet');
+    //     });
+    // });
+    // return () => {
+    //    unsuscribe();
+    // };
   },[]);
 
 
+  const onTotal=()=>{
+    let newarray = []
+commentList.map((item,index)=>{
+  let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
+ 
+  newarray.push(newObject)
+  if(index===commentList.length-1){
+    setTotalReact(newarray)
+     console.log("newarrr"+ JSON.stringify(newarray))
+  }
+
+})
+  }
 
   if (userStatus === '' || props.userStatus !== userStatus) {
     switch (props.userStatus) {
@@ -242,7 +271,93 @@ function GenreSongClicked(props) {
       text: reaction,
       text_match: myReaction,
     };
-    console.log("reactionobj"+JSON.stringify(reactionObject))
+   
+    commentList.map((item,index)=>{
+    
+      if(id===item._id)
+    
+    if(myReaction==='A'){
+      if(commentList[index].fire_count===totalReact[index].react[0]){
+        commentList[index].fire_count=commentList[index].fire_count+1
+        commentList[index].reaction_count=commentList[index].reaction_count+1
+        
+      }
+      else{
+        if(commentList[index].fire_count!=0){
+          commentList[index].fire_count=commentList[index].fire_count-1
+          commentList[index].reaction_count=commentList[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='B'){
+      if(commentList[index].love_count===totalReact[index].react[1]){
+        commentList[index].love_count=commentList[index].love_count+1
+        commentList[index].reaction_count=commentList[index].reaction_count+1
+        
+      }
+      else{
+        if(commentList[index].love_count!=0){
+          commentList[index].love_count=commentList[index].love_count-1
+          commentList[index].reaction_count=commentList[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='C'){
+      if(commentList[index].dancer_count===totalReact[index].react[2]){
+        commentList[index].dancer_count=commentList[index].dancer_count+1
+        commentList[index].reaction_count=commentList[index].reaction_count+1
+      }
+      else{
+        if(commentList[index].dancer_count!=0){
+          commentList[index].dancer_count=commentList[index].dancer_count-1
+          commentList[index].reaction_count=commentList[index].reaction_count-1
+        }
+
+      }
+    }
+    else if(myReaction==='D'){
+      if(commentList[index].man_dancing_count===totalReact[index].react[3]){
+        commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
+        commentList[index].reaction_count=commentList[index].reaction_count+1
+        
+      }
+      else{
+        if(commentList[index].man_dancing_count!=0){
+          commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
+          commentList[index].reaction_count=commentList[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='E'){
+      if(commentList[index].face_count===totalReact[index].react[4]){
+        commentList[index].face_count=commentList[index].face_count+1
+        commentList[index].reaction_count=commentList[index].reaction_count+1
+        
+      }
+      else{
+        if(commentList[index].face_count!=0){
+          commentList[index].face_count=commentList[index].face_count-1
+          commentList[index].reaction_count=commentList[index].reaction_count-1  
+      }
+
+      }
+    }
+    else{
+      if(commentList[index].thumbsup_count===totalReact[index].react[5]){
+        commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
+        commentList[index].reaction_count=commentList[index].reaction_count+1
+        
+      }
+      else{
+        if(commentList[index].thumbsup_count!=0){
+          commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
+          commentList[index].reaction_count=commentList[index].reaction_count-1  
+      }
+      }
+    }
+    }
+  )
+
     isInternetConnected()
       .then(() => {
         props.reactionOnPostRequest(reactionObject);
@@ -289,26 +404,107 @@ function GenreSongClicked(props) {
   }
 
   function _onSelectBack(ID,comment){
-    // console.log("aaa"+JSON.stringify(props.postData))
-    props.getPostFromTop50.map((item,index)=>{
-    // console.log("items",item._id)
-    if(item._id === ID){
-      props.getPostFromTop50[index].comment_count = comment 
+  
+    let newarray = commentList
+    newarray.map((item,index)=>{
     
+     if(item._id === ID){
+  
+      newarray[index].comment_count = comment
+
+     }
+    if(index=== newarray.length-1){
+       setUpdateList([...newarray])
+      // commentList = ([...newarray])
+
     }
       })
+      
     }
 
-  function _onReaction(ID,reaction){
-    props.getPostFromTop50.map((item,index)=>{
- 
-   if(item._id === ID){
-    props.getPostFromTop50[index].reaction_count = reaction
+
+
+    function _onReaction(ID,reaction,reactionList){
+
+      let newarray = commentList
+      // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
+        newarray.map((item,index)=>{
+       
+       if(item._id === ID){
+    
+    if(reactionList.length>0){
+    var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
+    var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
+    var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
+    var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
+    var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
+    var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
+    
+    //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+    if(found!=-1){
+      newarray[index].fire_count=reactionList[found].data.length
+         }else{
+           newarray[index].fire_count=0
+         }
+         if(found_love!=-1){
+      newarray[index].love_count=reactionList[found_love].data.length
+         }
+         else{
+           newarray[index].love_count=0
+         }
+         if(found_dance !=-1){
+      newarray[index].dancer_count=reactionList[found_dance].data.length
+         }
+         else{
+           newarray[index].dancer_count=0
+         }
+         if(found_ManDance !=-1){
+      newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
+         }
+         else{
+           newarray[index].man_dancing_count=0
+         }
+         if(found_face != -1){
+      newarray[index].face_count=reactionList[found_face].data.length
+         }
+         else{
+           newarray[index].face_count=0
+         }
+         if(found_thumb != -1){
+      newarray[index].thumbsup_count=reactionList[found_thumb].data.length
+         }
+         else{
+           newarray[index].thumbsup_count=0
+         }
+    
+         newarray[index].reaction_count= reaction
+        }
+            }
+          
+       if(index===newarray.length-1){
+     
+         setUpdateList([...newarray])
+        commentList = ([...newarray])
+
+      }
+         })
+      } 
+
+  // function _onReaction(ID,reaction){
+  //   let newarray = commentList
+  //   newarray.map((item,index)=>{
+    
+  //    if(item._id === ID){
   
-   }
- 
-     })
-  }
+  //     newarray[index].reaction_count = reaction
+
+  //    }
+  //   if(index=== newarray.length-1){
+  //     setCommentList([...newarray])
+
+  //   }
+  //     })
+  // }
 
 // GET ISRC CODE
 const callApi = async () => {
@@ -478,7 +674,8 @@ const callApi = async () => {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction)
+            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
+
 
           });
         }}
@@ -1193,11 +1390,34 @@ const callApi = async () => {
   };
 
   return (
+
+    isLoading?(
+      <View style={{ flex: 1, backgroundColor: Colors.black,paddingTop:'6.7%' }}>
+        <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={'POSTS'}
+          thirditemtext={true}
+          texttwo={''}
+          onPressFirstItem={() => {
+             props.navigation.goBack();
+// alert("hello")
+           
+          }}
+        />
+        
+   <Loader visible={isLoading}></Loader>
+   </SafeAreaView>
+   </View>
+      )
+    :
+
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
-<Loader visible={bool} />
+       <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
+<Loader visible={bool} /> 
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -1228,7 +1448,7 @@ const callApi = async () => {
           ) : (
             <FlatList
               style={{ marginTop: normalise(10) }}
-              data={props.getPostFromTop50}
+              data={commentList}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => {
                 index.toString();
@@ -1323,7 +1543,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  console.log("statetoprops",JSON.stringify(state.PostReducer.getPostFromTop50.length))
+  console.log("statetoprops",JSON.stringify(state.PostReducer))
   return {
     status: state.PostReducer.status,
     getPostFromTop50: state.PostReducer.getPostFromTop50,

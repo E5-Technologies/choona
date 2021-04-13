@@ -338,13 +338,13 @@ posts.map((item,index)=>{
     if(myReaction==='A'){
       if(posts[index].fire_count===totalReact[index].react[0]){
         posts[index].fire_count=posts[index].fire_count+1
-         posts[index].reaction_count=posts[index].reaction_count+1
+        posts[index].reaction_count=posts[index].reaction_count+1
         
       }
       else{
         if(posts[index].fire_count!=0){
         posts[index].fire_count=posts[index].fire_count-1
-        posts[index].reaction_count=posts[index].reaction_count-1
+         posts[index].reaction_count=posts[index].reaction_count-1
         }
       }
     }
@@ -357,7 +357,7 @@ posts.map((item,index)=>{
       else{
         if(posts[index].love_count!=0){
         posts[index].love_count=posts[index].love_count-1
-        posts[index].reaction_count=posts[index].reaction_count-1
+         posts[index].reaction_count=posts[index].reaction_count-1
         }
       }
     }
@@ -382,7 +382,7 @@ posts.map((item,index)=>{
       }
       else{
         if(posts[index].man_dancing_count!=0){
-        posts[index].love_count=posts[index].man_dancing_count-1
+        posts[index].man_dancing_count=posts[index].man_dancing_count-1
          posts[index].reaction_count=posts[index].reaction_count-1
         }
       }
@@ -449,20 +449,20 @@ function _onSelectBack(ID,comment){
   function _onReaction(ID,reaction,reactionList){
 
   let newarray = posts
-  //  alert("items"+JSON.stringify(reactionList))
+  // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
     newarray.map((item,index)=>{
    
    if(item._id === ID){
 
 if(reactionList.length>0){
-var found = reactionList.findIndex((element,index)=> element.data[0].text_match==='A');
-var found_love = reactionList.findIndex((element,index)=> element.data[0].text_match==='B');
-var found_dance = reactionList.findIndex((element,index)=> element.data[0].text_match==='C');
-var found_ManDance = reactionList.findIndex((element,index)=> element.data[0].text_match==='D');
-var found_face = reactionList.findIndex((element,index)=> element.data[0].text_match==='E');
-var found_thumb = reactionList.findIndex((element,index)=> element.data[0].text_match==='F');
+var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
+var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
+var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
+var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
+var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
+var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
 
-// alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+//  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
 if(found!=-1){
   newarray[index].fire_count=reactionList[found].data.length
      }else{
