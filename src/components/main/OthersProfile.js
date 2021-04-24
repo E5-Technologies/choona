@@ -99,7 +99,7 @@ setPostCount(response.data.postCount)
   } 
 
   useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
+    // const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
           props.othersProfileReq(id);
@@ -116,10 +116,10 @@ setPostCount(response.data.postCount)
         });
 
 
-    },[]);
+    // },[]);
 
     return () => {
-      unsuscribe();
+      // unsuscribe();
     };
   },[isFollowing]);
 
@@ -180,17 +180,18 @@ setPostCount(response.data.postCount)
     }
   }
 
-
- 
-
   function renderProfileData(data) {
+  
+    let array=[]
+    array.push(data.item)
+    console.log("array"+JSON.stringify(array))
     return (
       <TouchableOpacity
         onPress={() => {
           props.navigation.navigate('PostListForUser', {
             profile_name: props.othersProfileresp.full_name,
-            posts: profilePosts,
-            index: data.index,
+            posts: array,
+            index: '0',
           });
         }}
         style={{

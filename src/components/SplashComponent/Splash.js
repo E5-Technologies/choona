@@ -114,7 +114,7 @@ export default function Splash(props) {
         source={ImagePath.appIcon512}
         style={{height: normalise(130), width: '60%'}}
         resizeMode="contain"
-      />
+      />    
       <Text
         style={{
           color: Colors.white,

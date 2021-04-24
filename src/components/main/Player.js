@@ -764,6 +764,59 @@ function Player(props) {
            setHeight(height)
   }
 
+
+  function _onPressSheet()
+  {
+    // alert("post click")
+
+    Keyboard.dismiss()
+   setCommentText('');
+    let commentObject = {
+      post_id: id,
+      text: commentText,
+    };
+    let updateMessagPayload = {};
+   
+    if (comingFromMessage) {
+      let tempData = [...commentData];
+      tempData.push({
+        profile_image: props.userProfileResp.profile_image,
+        text: commentText,
+        username: props.userProfileResp.username,
+        createdAt: moment().toString(),
+        user_id: props.userProfileResp._id,
+      });
+      setArrayLength(
+        `${tempData.length} ${
+          tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
+        }`,
+      );
+      setCommentData(tempData);
+      setCommentText('');
+
+      updateMessagPayload = {
+        ChatId: key,
+        chatToken: chatToken,
+        message: tempData,
+        receiverId: receiverId,
+        senderId: senderId,
+        songTitle: songTitle,
+        artist: artist,
+      };
+    }
+    isInternetConnected()
+      .then(() => {
+        
+        comingFromMessage
+          ? props.updateMessageCommentRequest(updateMessagPayload)
+          : props.commentOnPost(commentObject);
+
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
+  }
+
   // BOTTOM SHEET FUNC
   const RbSheet = () => 
   {
@@ -778,23 +831,31 @@ function Player(props) {
         closeOnDragDown={false}
         closeOnPressMask={true}
          nestedScrollEnabled={true}
-        
-      
         customStyles={{
           container: {
-            minHeight: Dimensions.get('window').height / 2.2,
+            minHeight: Dimensions.get('window').height ,
             borderTopEndRadius: normalise(8),
             borderTopStartRadius: normalise(8),
+            backgroundColor: 'transparent'
           },
-        }}>
-          
-          <View 
-          // keyboardShouldPersistTaps='handled'
-          style={{flex: 1, backgroundColor: Colors.black}}
-        //  behavior="position"
-         > 
-
-          <View style={{width: '95%',flex:1, alignSelf: 'center',}}>
+        }}
+        
+        >
+          <ImageBackground 
+            source={ImagePath.page_gradient}
+            style={{
+            flex: 1,
+            justifyContent:'flex-end',    
+            }}>
+              <TouchableOpacity  onPress={() => {
+                  if (RbSheetRef) {
+                    RbSheetRef.close();
+                  }
+                }} 
+               style={{flex:1,backgroundColor:"transparent"}}></TouchableOpacity>
+              <View style={{height:Dimensions.get('window').height / 2.2,backgroundColor:"black",borderTopEndRadius: normalise(8),
+               borderTopStartRadius: normalise(8)}}>
+              <View style={{width: '95%',flex:1, alignSelf: 'center',}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -838,7 +899,6 @@ function Player(props) {
                   {arrayLength}
                 </Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={() => {
                   if (RbSheetRef) {
@@ -856,7 +916,6 @@ function Player(props) {
                 />
               </TouchableOpacity>
             </View>
-
             <FlatList
               style={{height:'40%'}}
               data={commentData}
@@ -864,31 +923,20 @@ function Player(props) {
               keyExtractor={(item, index) => {
                 index.toString();
               }}
-              // keyboardShouldPersistTaps='always'
+              keyboardShouldPersistTaps='always'
               showsVerticalScrollIndicator={false}
             />
-             <View style={{flexDirection:'row',marginTop:normalise(15),marginBottom:normalise(5)}}>
+              </View>
+              
+              <View style={{flexDirection:'row',marginTop:normalise(15),
+              marginBottom:normalise(5),position:"absolute",bottom:0}}>
               <TextInput
-                style={{
-                  width: '100%',
-                  backgroundColor: Colors.fadeblack,
-                  flex: 1,
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  maxHeight:100,
-                  backgroundColor: Colors.darkerblack,
-                  borderColor: Colors.activityBorderColor,
-                  borderRadius: normaliseNew(24),
-                  borderWidth: normaliseNew(0.5),
-                  color: Colors.white,
-                  fontFamily: 'ProximaNova-Regular',
-                  fontSize: normaliseNew(14),
-                  paddingTop: normaliseNew(12),
-                  paddingBottom: normaliseNew(13),
-                  paddingEnd: normaliseNew(14),
-                  paddingStart: normaliseNew(16),
-                }}
+                style={styles.rbsheetInput}
                 multiline={true}
+                blurOnSubmit={true}
+                onSubmitEditing={()=>{Keyboard.dismiss()}}
+                keyboardAppearance="dark"
+                autofocus = {true}
                 onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
                 placeholder={'Add a comment...'}
                 value={commentText}
@@ -897,88 +945,21 @@ function Player(props) {
                   setCommentText(text);
                 }}
               />
-
             {commentText.length > 1 ? (
               <TouchableOpacity
-                style={{
-                  // position: 'absolute',
-                  // right: 0,
-                  // bottom: normalise(10),
-                  // paddingRight: normalise(10),
-                 
-                  alignItems:'center',
+                style={{alignItems:'center',
                   justifyContent:'center',
-                  paddingHorizontal:'3%'
-
-                }}
-               
-              
-                onPress={() => {
-                  // alert("post click")
-
-                  Keyboard.dismiss()
-                 setCommentText('');
-                  let commentObject = {
-                    post_id: id,
-                    text: commentText,
-                  };
-                  let updateMessagPayload = {};
-                 
-                  if (comingFromMessage) {
-                    let tempData = [...commentData];
-                    tempData.push({
-                      profile_image: props.userProfileResp.profile_image,
-                      text: commentText,
-                      username: props.userProfileResp.username,
-                      createdAt: moment().toString(),
-                      user_id: props.userProfileResp._id,
-                    });
-                    setArrayLength(
-                      `${tempData.length} ${
-                        tempData.length > 1 ? 'COMMENTS' : 'COMMENT'
-                      }`,
-                    );
-                    setCommentData(tempData);
-                    setCommentText('');
-
-                    updateMessagPayload = {
-                      ChatId: key,
-                      chatToken: chatToken,
-                      message: tempData,
-                      receiverId: receiverId,
-                      senderId: senderId,
-                      songTitle: songTitle,
-                      artist: artist,
-                    };
-                  }
-                  isInternetConnected()
-                    .then(() => {
-                      
-                      comingFromMessage
-                        ? props.updateMessageCommentRequest(updateMessagPayload)
-                        : props.commentOnPost(commentObject);
-
-                    })
-                    .catch(() => {
-                      toast('Error', 'Please Connect To Internet');
-                    });
-                }}>
-                <Text
-                
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
+                  paddingHorizontal:'3%'}}
+                onPress={() => _onPressSheet()}>
+                <Text style={{color: Colors.white,fontSize: normalise(10),fontWeight: 'bold',}}>
                   POST
                 </Text>
               </TouchableOpacity>
             ) : null}
             </View>
-          </View>
-       
-        </View>
-       
+              </View>
+              <KeyboardSpacer/>
+            </ImageBackground>
       </RBSheet>
     );
   };
@@ -2386,4 +2367,26 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
   },
+
+  rbsheetInput:{
+    width: '100%',
+    backgroundColor: Colors.fadeblack,
+    flex: 1,
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    maxHeight:100,
+    backgroundColor: Colors.darkerblack,
+    borderColor: Colors.activityBorderColor,
+    borderRadius: normaliseNew(24),
+    borderWidth: normaliseNew(0.5),
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normaliseNew(14),
+    paddingTop: normaliseNew(12),
+    paddingBottom: normaliseNew(13),
+    paddingEnd: normaliseNew(14),
+    paddingStart: normaliseNew(16),
+    marginHorizontal:5,
+    ///backgroundColor:"red"
+  }
 });

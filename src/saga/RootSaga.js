@@ -23,6 +23,7 @@ import {
   watchDummyAction,
   watchFollowerSearch,
   watchFollowingSearch,
+  watchLoadMoreAction
 } from './UserSaga';
 
 import {
@@ -117,6 +118,7 @@ function* RootSaga() {
     watchFollowerSearch(),
     watchFollowingSearch(),
     watchDeleteConversationAction(),
+    watchLoadMoreAction()
   ]);
 }
 

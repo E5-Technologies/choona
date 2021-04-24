@@ -68,6 +68,8 @@ import {
   FOLLOWING_SEARCH_SUCCESS,
   FOLLOWER_SEARCH_REQUEST,
   FOLLOWER_SEARCH_SUCCESS,
+  LOAD_MORE_REQUEST,
+  LOAD_MORE_SUCCESS,
 } from '../action/TypeConstants';
 import {
   postApi,
@@ -246,10 +248,42 @@ export function* othersProfileAction(action) {
     };
 
     const response = yield call(getApi, `user/profile/${action.id}`, Header);
+    // alert("response"+JSON.stringify(response))
     yield put({type: OTHERS_PROFILE_SUCCESS, data: response.data.data});
   } catch (error) {
     yield put({type: OTHERS_PROFILE_FAILURE, error: error});
   }
+}
+
+export function* loadMoreAction(action) {
+
+  // alert("actiontype"+JSON.stringify(action))
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      getApi,
+      `post/list?page=${action.data.offset}&date=${action.data.create}`,
+      Header,
+    );
+    console.log("resposnsesaga"+JSON.stringify(response))
+    yield put({
+      type: LOAD_MORE_SUCCESS,
+      data: response.data.data,
+     
+     
+    });
+    //yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
+  } catch (error) {
+    yield put({type: HOME_PAGE_FAILURE, error: error});
+  }
+    
 }
 
 export function* homePageAction(action) {
@@ -373,7 +407,8 @@ export function* reactionOnPostAction(action) {
       action.payload,
       Header,
     );
-    yield put({type: REACTION_ON_POST_SUCCESS, data: response.data.data});
+    yield put({type: REACTION_ON_POST_SUCCESS,data: response.data.data});
+   
   } catch (error) {
     yield put({type: REACTION_ON_POST_FAILURE, error: error});
   }
@@ -609,6 +644,9 @@ export function* watchhomePageAction() {
   yield takeLatest(HOME_PAGE_REQUEST, homePageAction);
 }
 
+export function* watchLoadMoreAction() {
+  yield takeLatest(LOAD_MORE_REQUEST, loadMoreAction);
+}
 export function* watchcommentOnPostAction() {
   yield takeLatest(COMMENT_ON_POST_REQUEST, commentOnPostAction);
 }

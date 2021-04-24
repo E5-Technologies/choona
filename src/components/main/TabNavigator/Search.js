@@ -65,6 +65,7 @@ import { getUsersFromHome } from '../../../action/UserAction';
 import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
+import { func } from 'prop-types';
 
 let status;
 let postStatus;
@@ -96,6 +97,7 @@ function Search(props) {
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
+  const [totalReact,setTotalReact] = useState([])
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
@@ -132,6 +134,7 @@ function Search(props) {
         setSongData([]);
         setTimeout(() => {
           setSongData(props.userSearch);
+          
           setBool(false);
         }, 1000);
         break;
@@ -166,6 +169,19 @@ function Search(props) {
       case SEARCH_POST_SUCCESS:
         postStatus = props.postStatus;
         setSearchPostData(props.searchPostData);
+        // console.log("userpost"+props.userSearchFromHome)
+        let newarray = []
+        props.searchPostData.map((item,index)=>{
+          let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
+         
+          newarray.push(newObject)
+          if(index===props.searchPostData.length-1){
+            setTotalReact(newarray)
+            //  console.log("newarrr"+ JSON.stringify(newarray))
+          }
+        
+        })
+       
         break;
 
       case SEARCH_POST_FAILURE:
@@ -184,6 +200,8 @@ function Search(props) {
       case TOP_50_SONGS_SUCCESS:
         top50Status = props.top50SongsStatus;
         setTop50(props.top50SongsResponse);
+      
+       
         break;
 
       case TOP_50_SONGS_FAILURE:
@@ -194,6 +212,7 @@ function Search(props) {
   }
 
   if (userstatus === '' || props.userstatus !== userstatus) {
+    console.log("status"+props.userstatus)
     switch (props.userstatus) {
       case GET_USER_FROM_HOME_REQUEST:
         userstatus = props.userstatus;
@@ -202,6 +221,9 @@ function Search(props) {
       case GET_USER_FROM_HOME_SUCCESS:
         userstatus = props.userstatus;
         setUserSearchData(props.userSearchFromHome);
+   
+    
+       
         break;
 
       case GET_USER_FROM_HOME_FAILURE:
@@ -243,6 +265,8 @@ function Search(props) {
     }
   }
 
+ 
+  
   // RENDER FUNCTION FLATLIST
   function renderUserData(data) {
     return (
@@ -269,6 +293,92 @@ function Search(props) {
       />
     );
   }
+
+
+  function _onReaction(ID,reaction,reactionList){
+
+    let newarray = searchPostData
+    // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
+      newarray.map((item,index)=>{
+     
+     if(item._id === ID){
+  
+  if(reactionList.length>0){
+  var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
+  var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
+  var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
+  var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
+  var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
+  var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
+  
+  //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+  if(found!=-1){
+    newarray[index].fire_count=reactionList[found].data.length
+       }else{
+         newarray[index].fire_count=0
+       }
+       if(found_love!=-1){
+    newarray[index].love_count=reactionList[found_love].data.length
+       }
+       else{
+         newarray[index].love_count=0
+       }
+       if(found_dance !=-1){
+    newarray[index].dancer_count=reactionList[found_dance].data.length
+       }
+       else{
+         newarray[index].dancer_count=0
+       }
+       if(found_ManDance !=-1){
+    newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
+       }
+       else{
+         newarray[index].man_dancing_count=0
+       }
+       if(found_face != -1){
+    newarray[index].face_count=reactionList[found_face].data.length
+       }
+       else{
+         newarray[index].face_count=0
+       }
+       if(found_thumb != -1){
+    newarray[index].thumbsup_count=reactionList[found_thumb].data.length
+       }
+       else{
+         newarray[index].thumbsup_count=0
+       }
+  
+       newarray[index].reaction_count= reaction
+      }
+          }
+        
+     if(index===newarray.length-1){
+   
+       setSearchPostData([...newarray])
+     
+
+    }
+       })
+    } 
+
+    function _onSelectBack(ID,comment){
+  
+      let newarray = searchPostData
+      newarray.map((item,index)=>{
+      
+       if(item._id === ID){
+    
+        newarray[index].comment_count = comment
+  
+       }
+      if(index=== newarray.length-1){
+         setSearchPostData([...newarray])
+      
+  
+      }
+        })
+        
+      }
 
   function renderSongData(data) {
     return (
@@ -335,6 +445,8 @@ function Search(props) {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
+            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
+
           });
         }}
         onPressCommentbox={() => {
@@ -347,6 +459,7 @@ function Search(props) {
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
+            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
           });
         }}
         onPressSecondImage={() => {
@@ -411,6 +524,95 @@ function Search(props) {
       text: reaction,
       text_match: myReaction,
     };
+
+    console.log("totalReact"+totalReact) 
+
+    searchPostData.map((item,index)=>{
+    
+      if(id===item._id)
+    
+    if(myReaction==='A'){
+      if(searchPostData[index].fire_count===totalReact[index].react[0]){
+        searchPostData[index].fire_count=searchPostData[index].fire_count+1
+        searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
+        
+      }
+      else{
+        if(searchPostData[index].fire_count!=0){
+        searchPostData[index].fire_count=searchPostData[index].fire_count-1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='B'){
+      if(searchPostData[index].love_count===totalReact[index].react[1]){
+        searchPostData[index].love_count=searchPostData[index].love_count+1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
+        
+      }
+      else{
+        if(searchPostData[index].love_count!=0){
+        searchPostData[index].love_count=searchPostData[index].love_count-1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='C'){
+      if(searchPostData[index].dancer_count===totalReact[index].react[2]){
+        searchPostData[index].dancer_count=searchPostData[index].dancer_count+1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
+      }
+      else{
+        if(searchPostData[index].dancer_count!=0){
+        searchPostData[index].dancer_count=searchPostData[index].dancer_count-1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
+        }
+
+      }
+    }
+    else if(myReaction==='D'){
+      if(searchPostData[index].man_dancing_count===totalReact[index].react[3]){
+        searchPostData[index].man_dancing_count=searchPostData[index].man_dancing_count+1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
+        
+      }
+      else{
+        if(searchPostData[index].man_dancing_count!=0){
+        searchPostData[index].man_dancing_count=searchPostData[index].man_dancing_count-1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
+        }
+      }
+    }
+    else if(myReaction==='E'){
+      if(searchPostData[index].face_count===totalReact[index].react[4]){
+        searchPostData[index].face_count=searchPostData[index].face_count+1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
+        
+      }
+      else{
+        if(searchPostData[index].face_count!=0){
+        searchPostData[index].face_count=searchPostData[index].face_count-1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1  
+      }
+
+      }
+    }
+    else{
+      if(searchPostData[index].thumbsup_count===totalReact[index].react[5]){
+        searchPostData[index].thumbsup_count=searchPostData[index].thumbsup_count+1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
+        
+      }
+      else{
+        if(searchPostData[index].thumbsup_count!=0){
+        searchPostData[index].thumbsup_count=searchPostData[index].thumbsup_count-1
+         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1  
+      }
+      }
+    }
+    }
+  )
+
     isInternetConnected()
       .then(() => {
         props.reactionOnPostRequest(reactionObject);
@@ -452,6 +654,7 @@ function Search(props) {
   //MODAL MORE PRESSED
   const MorePressed = () => {
     return (
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -462,7 +665,9 @@ function Search(props) {
         }}>
         <ImageBackground
           source={ImagePath.page_gradient}
-          style={styles.centeredView}>
+          style={{ flex: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'center',}}>
           <View style={styles.modalView}>
             <TouchableOpacity
               style={{
@@ -620,10 +825,13 @@ function Search(props) {
                 CANCEL
               </Text>
             </TouchableOpacity>
+          
           </View>
         </ImageBackground>
+      
       </Modal>
-    );
+   
+   );
   };
   //END OF MODAL MORE PRESSED
 
@@ -653,6 +861,7 @@ function Search(props) {
       let search = _.filter(props.top50SongsResponse, item => {
         return item._id.toLowerCase().indexOf(text.toLowerCase()) !== -1;
       });
+      // alert("search"+JSON.stringify(search))
       setTop50(search);
     }
   };
@@ -1555,6 +1764,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     userSearchReq: (payload, sendSong) => {
+    
       dispatch(userSearchRequest(payload, sendSong));
     },
 
@@ -1563,7 +1773,9 @@ const mapDispatchToProps = dispatch => {
     },
 
     searchPost: (text, flag) => {
+
       dispatch(searchPostReq(text, flag));
+
     },
 
     reactionOnPostRequest: payload => {
@@ -1579,6 +1791,7 @@ const mapDispatchToProps = dispatch => {
     },
 
     getTop50SongReq: () => {
+  
       dispatch(getTop50SongsRequest());
     },
 

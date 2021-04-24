@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment, } from 'react';
+import {put, call, fork, takeLatest, all, select} from 'redux-saga/effects';
 import {
   SafeAreaView,
   StyleSheet,
@@ -31,13 +32,13 @@ import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { normalizeUnits } from 'moment';
+import moment, { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import { useFocusEffect } from '@react-navigation/native';
 import updateToken from '../../main/ListCells/UpdateToken'
-
+import LinearGradient from 'react-native-linear-gradient';
 
 
 import {
@@ -68,6 +69,8 @@ import {
   EDIT_PROFILE_SUCCESS,
   DUMMY_ACTION_SUCCESS,
   DUMMY_ACTION_REQUEST,
+  LOAD_MORE_SUCCESS,
+  LOAD_MORE_REQUEST,
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest,
@@ -76,6 +79,8 @@ import {
   userFollowUnfollowRequest,
   getUsersFromHome,
   dummyRequest,
+  loadMoreRequest,
+  loadMoreData,
 } from '../../../action/UserAction';
 import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
 import { deletePostReq } from '../../../action/PostAction';
@@ -93,13 +98,19 @@ import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import MusicPlayer from '../../../widgets/MusicPlayer';
+import Timer from '../Timer';
 
 let status = '';
 let songStatus = '';
 let postStatus = '';
 let messageStatus;
 
+
 function Home(props) {
+
+  let timerValue = 30
+   let newpost = []
+   newpost=props.postData
   const [appState, setAppState] = useState(AppState.currentState);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -121,12 +132,14 @@ function Home(props) {
   const [offset, setOffset] = useState(1);
   const [refresing, setRefresing] = useState(false);
   const [data,setData] = useState(props.postData)
+  const [loadMoreVisible,setLoadMoreVisible] = useState(false)
 
+  const flatlistRef = React.useRef(null);
   const ref = React.useRef(null);
+
   var bottomSheetRef;
   let changePlayer = false;
-
-
+  
 
   var handleAppStateChange = (state) => {
     console.log("state_Change:"+state);
@@ -150,18 +163,20 @@ function Home(props) {
 
 
 
-  useScrollToTop(ref);
+// loadMore()
+  
+
+useScrollToTop(flatlistRef);
+
 
   useEffect(() => {
+  
     setHomeReq(true);
     setOffset(1);
     props.homePage(1);
+// console.log("useeffectprops"+props.postData)
     AppState.addEventListener('change', handleAppStateChange);
     updateToken(props.SuccessToken);
-
-
-
-    
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
@@ -169,7 +184,6 @@ function Home(props) {
           setOnScrolled(false);
           props.getProfileReq(), setUserSearchData([]);
           sesUsersToSEndSong([]);
-
           setUserSeach('');
           if (!homeReq) {
             props.dummyRequest();
@@ -183,47 +197,21 @@ function Home(props) {
           toast('Error', 'Please Connect To Internet');
         });
     });
-
+  
     return () => {
       unsuscribe();
     };
   }, []);
 
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     setHomeReq(true);
-  //     setOffset(1);
-  //     props.homePage(1);
-
-
-      //  AppState.addEventListener('change', handleAppStateChange);
-
+  const loadMore =async()=>{
+    setLoadMoreVisible(false)
+    // setHomeReq(true);
+    props.loadMoreData();
+    flatlistRef.current.scrollToIndex({animated:true,index:0,viewPosition:0});
   
-  //     const unsuscribe = props.navigation.addListener('focus', payload => {
-  //       isInternetConnected()
-  //         .then(() => {
-  //           // console.log('home use Effect');
-  //           setOnScrolled(false);
-  //           props.getProfileReq(), setUserSearchData([]);
-  //           sesUsersToSEndSong([]);
-  //           setUserSeach('');
-  //           if (!homeReq) {
-  //             props.dummyRequest();
-  //           }
-  //           // if (ref.current !== null) {
-  //           //   ref.current.scrollToIndex({ animated: true, index: 0 })
-  //           // }
-  //         })
-  //         .catch(err => {
-  //           // console.log(err);
-  //           toast('Error', 'Please Connect To Internet');
-  //         });
-  //     });
+  }
 
-  //     return () => unsuscribe();
-  //   }, [])
-  // );
 
 
   if (status === '' || props.status !== status) {
@@ -231,6 +219,10 @@ function Home(props) {
       case USER_PROFILE_REQUEST:
         status = props.status;
         break;
+
+        case LOAD_MORE_REQUEST:
+        status = props.status;
+        break;s
 
       case USER_PROFILE_SUCCESS:
         status = props.status;
@@ -241,15 +233,29 @@ function Home(props) {
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
 
+      case LOAD_MORE_SUCCESS:
+      status=props.status;
+       if(props.loadData.length!=0){
+        const intersection = props.postData.filter(item1 => props.loadData.some(item2 => item1._id === item2._id))
+  if(intersection.length<=0)
+               {
+                setLoadMoreVisible(true)
+               }    
+               
+        // props.loadMoreData()
+      }
+  
+      break;
+
       case HOME_PAGE_REQUEST:
         status = props.status;
         break;
 
       case HOME_PAGE_SUCCESS:
+
         status = props.status;
         setPostArray(props.postData);
         findPlayingSong(props.postData);
-        // console.log('calling success');
         setHomeReq(false);
         setRefresing(false);
         break;
@@ -659,6 +665,7 @@ function _onReaction(ID,reaction){
   } 
 
   function renderItem(data) {
+
     return (
       <HomeItemList
         image={data.item.song_image}
@@ -1078,6 +1085,7 @@ function _onReaction(ID,reaction){
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={Seperator}
           />
+
         </View>
       </RBSheet>
     );
@@ -1254,6 +1262,21 @@ function _onReaction(ID,reaction){
     props.homePage(1);
   };
 
+function onfinish(){
+  //  alert("onfinish")
+  console.log("lod"+JSON.stringify(props.postData))
+
+  if(props.postData.length !=0)  {
+    console.log("timestamtp"+props.postData[0].createdAt)
+  let loadData ={"offset":1,"create":props.postData[0].createdAt}
+ props.loadMorePost(loadData)
+  }
+  else{
+    console.log("empty")
+  }
+
+}
+
   // VIEW
   return (
     <View
@@ -1266,6 +1289,8 @@ function _onReaction(ID,reaction){
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
+       <Timer value={timerValue} onFinish={()=>onfinish()} />
+
         <Loader visible={homeReq} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
@@ -1296,6 +1321,7 @@ function _onReaction(ID,reaction){
             props.navigation.navigate('Inbox');
           }}
         />
+  
 
         {_.isEmpty(props.postData) ? (
           <View
@@ -1374,26 +1400,31 @@ function _onReaction(ID,reaction){
           </View>
         ) : (
           <View style={{ flex: 1 }}>
-         
+{/* {
+  console.log("postData"+ JSON.stringify(props.postData))
+} */}
             <FlatList
               // style={{marginTop: normalise(10)}}
               data={props.postData}
               renderItem={renderItem}
               windowSize={150}
               showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              ref={ref}
+              keyExtractor={(item) => item._id}
+
+
+              ref={flatlistRef}
+              initialScrollIndex={0}
               extraData={postArray}
               onEndReached={() => {
-                if (onScrolled) {
-                  if (offset + 1 === props.currentPage + 1) {
+
+                console.log("onend reached"+onScrolled);
+                
+                if(onScrolled){
                     setOffset(offset + 1);
                     props.homePage(offset + 1);
                       setOnScrolled(false);
-                  }
-                }
+                } 
+                
               }}
               onEndReachedThreshold={2}
               initialNumToRender={10}
@@ -1431,7 +1462,41 @@ function _onReaction(ID,reaction){
                 />
               }
             />
+{
+  loadMoreVisible?
+  <TouchableOpacity 
+  style={{ 
+    borderRadius: 5,
+    
+    borderRadius:20,
+    alignSelf:'center',
+    position:'absolute',
+    top:20,
+  
+}}
+onPress={()=>loadMore()}
+  >
+   <LinearGradient colors={['#008373', '#4950AC','#7A1FD4']} 
+   start={{x: 1.0, y: 5.1}} end={{x: 2.0, y: 2.5}}
+  style={{flex:1,
+    borderRadius:20,
+    alignItems:'center',
+    justifyContent:'center',
+    paddingVertical:'2.7%',
+    paddingHorizontal:'4.3%'
+  }}
 
+   >
+  
+
+          <Text style={{color:'white',fontSize:normalise(10)}}>Load Newer Posts</Text>
+       
+        </LinearGradient>
+        </TouchableOpacity>
+        :
+        null
+ 
+}   
             {renderAddToUsers()}
 
             {props.status === HOME_PAGE_SUCCESS ||
@@ -1805,6 +1870,8 @@ function _onReaction(ID,reaction){
                 </View>
               </ImageBackground>
             </Modal>
+
+            
           </View>
         )}
 
@@ -1892,6 +1959,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+  //  console.log("psotdata"+ JSON.stringify(state.UserReducer))
   return {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
@@ -1908,6 +1976,7 @@ const mapStateToProps = state => {
     registerType: state.TokenReducer.registerType,
     currentPage: state.UserReducer.currentPage,
     SuccessToken : state.TokenReducer.token,
+    loadData:state.UserReducer.loadData,
 
   };
 };
@@ -1920,6 +1989,14 @@ const mapDispatchToProps = dispatch => {
 
     homePage: offset => {
       dispatch(homePageReq(offset));
+    },
+
+     loadMorePost: data => {
+      dispatch(loadMoreRequest(data));
+    },
+
+    loadMoreData: () => {
+      dispatch(loadMoreData());
     },
 
     saveSongReq: payload => {

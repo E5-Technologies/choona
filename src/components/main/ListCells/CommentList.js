@@ -9,6 +9,7 @@ import normaliseNew from '../../../utils/helpers/DimensNew';
 import Hyperlink from 'react-native-hyperlink'
 
 
+
 function CommentList(props) {
   const onPressImage = () => {
     if (props.onPressImage) {
@@ -40,9 +41,8 @@ function CommentList(props) {
           <Text style={styles.commentTime}>{props.time}</Text>
         </View>
        
-          <Hyperlink linkDefault={ true } linkStyle={{ color:'#ffffff',textDecorationLine:'underline',textDecorationStyle:'double',textDecorationColor:'white',fontFamily: 'ProximaNova-Regular',
-    fontSize: normaliseNew(12)}}>
-
+         <Hyperlink linkDefault={true}
+          linkStyle={ { color: '#ffffff',textDecorationLine:'underline',textDecorationStyle:'dotted',fontWeight:'bold' } }>
         <Text  style={styles.commentText}>{props.comment}</Text>
         </Hyperlink>
       </View>
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normaliseNew(12),
+    lineHeight: normaliseNew(15),
     textAlign: 'left',
   },
 });

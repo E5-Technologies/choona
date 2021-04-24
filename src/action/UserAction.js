@@ -7,6 +7,7 @@ import {
   USER_FOLLOW_UNFOLLOW_REQUEST,
   OTHERS_PROFILE_REQUEST,
   HOME_PAGE_REQUEST,
+  LOAD_MORE_REQUEST,
   COMMENT_ON_POST_REQUEST,
   FOLLOWER_LIST_REQUEST,
   FOLLOWING_LIST_REQUEST,
@@ -21,6 +22,7 @@ import {
   DUMMY_ACTION_REQUEST,
   FOLLOWER_SEARCH_REQUEST,
   FOLLOWING_SEARCH_REQUEST,
+  LOAD_MORE_DATA,
 } from './TypeConstants';
 
 export const loginRequest = payload => ({
@@ -62,6 +64,17 @@ export const homePageReq = offset => ({
   type: HOME_PAGE_REQUEST,
   offset,
 });
+
+export const loadMoreRequest = data => ({
+  type: LOAD_MORE_REQUEST,
+  data,
+});
+
+export const loadMoreData = () => ({
+  type: LOAD_MORE_DATA,
+  
+});
+
 
 export const commentOnPostReq = payload => ({
   type: COMMENT_ON_POST_REQUEST,

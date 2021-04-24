@@ -71,6 +71,8 @@ import firebase from '@react-native-firebase/messaging';
 import _ from 'lodash';
 import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
+import BlankScreen from './src/components/main/newBlankScreen';
+import SingleSongClick from './src/components/main/SingleSongClick';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -320,6 +322,7 @@ const App = () => {
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
             <Stack.Screen name="Inbox" component={Inbox} />
+            <Stack.Screen name="BlankScreen" component={BlankScreen} />
             <Stack.Screen
               name="Player"
               component={Player}
@@ -360,6 +363,10 @@ const App = () => {
             <Stack.Screen
               name="AddToPlayListScreen"
               component={AddToPlayListScreen}
+            />
+             <Stack.Screen
+              name="SingleSongClick"
+              component={SingleSongClick}
             />
           </Stack.Navigator>
         )}

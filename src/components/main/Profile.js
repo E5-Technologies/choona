@@ -49,7 +49,7 @@ function Profile(props) {
   const [modaltandcs, setModaltandcs] = useState(false);
   const [flag, setFlag] = useState('');
   const [activity, setActivity] = useState(props.route.params.fromAct);
- 
+
   const getPosts = async pageId => {
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
       headers: {
@@ -59,7 +59,7 @@ function Profile(props) {
       },
     });
   
-    console.log("rs" + JSON.stringify(response.data))
+    // console.log("rs" + JSON.stringify(response.data))
     return await response.data.data;
   };
 
@@ -174,13 +174,15 @@ function Profile(props) {
 
 
   function renderProfileData(data) {
+    let array=[]
+    array.push(data.item)
     return (
       <TouchableOpacity
         onPress={() => {
             props.navigation.navigate('PostListForUser', {
             profile_name: props.userProfileResp.full_name,
-            posts: profilePosts,
-            index: data.index,
+            posts: array,
+            index: '0',
           });
         }}
         style={{

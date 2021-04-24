@@ -177,10 +177,7 @@ const updateSize = (height) => {
   return (
     <View style={styles.container}>
        <StatusBar />
-       <ScrollView>
-       <SafeAreaView>
-      <Loader visible={commentsLoading} />
-      <HeaderComponentComments
+       <HeaderComponentComments
           firstitemtext={false}
           imageone={ImagePath.backicon}
           title={
@@ -197,6 +194,10 @@ const updateSize = (height) => {
             _onBackPress()
           }}
         />
+       <ScrollView>
+       <SafeAreaView>
+      <Loader visible={commentsLoading} />
+     
         <View style={styles.commentHeader}>
           <View style={styles.commentHeaderDetails}>
             <TouchableOpacity style={styles.commentHeaderAvatarButton}>
@@ -259,6 +260,10 @@ const updateSize = (height) => {
             value={commentText}
             multiline
             maxHeight={100}
+            autoFocus={true}
+            keyboardAppearance='dark'
+
+
             onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
@@ -297,7 +302,7 @@ const updateSize = (height) => {
             </TouchableOpacity>
           ) : null}
         </View>
-      <KeyboardSpacer/>
+      {Platform.OS==="ios" && <KeyboardSpacer/>}
     </View>
 
   )

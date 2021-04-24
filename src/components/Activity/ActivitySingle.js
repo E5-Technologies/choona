@@ -45,7 +45,7 @@ function ActivitySingle({ item, props }) {
           // props.navigation.navigate('Profile', {
           //   postId: item.post_id,
           //   fromAct: true,
-          props.navigation.navigate('GenreSongClicked', {
+          props.navigation.navigate('SingleSongClick', {
             data: item.post_id,
             ptID:1,
           });
@@ -73,7 +73,7 @@ function ActivitySingle({ item, props }) {
           //   postId: item.post_id,
           //   fromAct: true,
           // });
-          props.navigation.navigate('GenreSongClicked', {
+          props.navigation.navigate('SingleSongClick', {
             data: item.post_id,
             ptID:1,
           });

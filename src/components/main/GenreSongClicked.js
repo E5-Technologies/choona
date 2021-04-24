@@ -68,6 +68,26 @@ function GenreSongClicked(props) {
   let commentList = []
   commentList=props.getPostFromTop50
 
+  const onTotal=()=>{
+    let newarray = []
+commentList.map((item,index)=>{
+  let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
+ 
+  newarray.push(newObject)
+  if(index===commentList.length-1){
+   
+     console.log("newarrr"+ JSON.stringify(newarray))
+  }})
+return newarray
+  }
+
+  let totalReact=[]
+ totalReact= props.route.params.ptID===1?(
+       totalReact.length===0?
+        onTotal():null
+      )
+     :
+     null 
   const [name, setName] = useState(props.route.params.data);
 
   const [positionInArray, setPositionInArray] = useState(0);
@@ -78,7 +98,7 @@ function GenreSongClicked(props) {
   const [bool, setBool] = useState(false);
   const [isLoading,setIsLoading]=useState(true)
   const [updateList,setUpdateList]=useState([])
-  const [totalReact,setTotalReact] = useState([])
+  // const [totalReact,setTotalReact] = useState([])
 
  
 
@@ -132,13 +152,8 @@ function GenreSongClicked(props) {
           
           )
           :
-          null
-          props.route.params.ptID===1?(
-           onTotal()
-            
-            )
-            :
-            null   
+         setIsLoading(false)
+           
               
     //     })
     //     .catch(() => {
@@ -151,19 +166,7 @@ function GenreSongClicked(props) {
   },[]);
 
 
-  const onTotal=()=>{
-    let newarray = []
-commentList.map((item,index)=>{
-  let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
- 
-  newarray.push(newObject)
-  if(index===commentList.length-1){
-    setTotalReact(newarray)
-     console.log("newarrr"+ JSON.stringify(newarray))
-  }
-
-})
-  }
+  
 
   if (userStatus === '' || props.userStatus !== userStatus) {
     switch (props.userStatus) {
@@ -272,91 +275,91 @@ commentList.map((item,index)=>{
       text_match: myReaction,
     };
    
-    commentList.map((item,index)=>{
+  //   commentList.map((item,index)=>{
     
-      if(id===item._id)
+  //     if(id===item._id)
     
-    if(myReaction==='A'){
-      if(commentList[index].fire_count===totalReact[index].react[0]){
-        commentList[index].fire_count=commentList[index].fire_count+1
-        commentList[index].reaction_count=commentList[index].reaction_count+1
+  //   if(myReaction==='A'){
+  //     if(commentList[index].fire_count===totalReact[index].react[0]){
+  //       commentList[index].fire_count=commentList[index].fire_count+1
+  //       commentList[index].reaction_count=commentList[index].reaction_count+1
         
-      }
-      else{
-        if(commentList[index].fire_count!=0){
-          commentList[index].fire_count=commentList[index].fire_count-1
-          commentList[index].reaction_count=commentList[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='B'){
-      if(commentList[index].love_count===totalReact[index].react[1]){
-        commentList[index].love_count=commentList[index].love_count+1
-        commentList[index].reaction_count=commentList[index].reaction_count+1
+  //     }
+  //     else{
+  //       if(commentList[index].fire_count!=0){
+  //         commentList[index].fire_count=commentList[index].fire_count-1
+  //         commentList[index].reaction_count=commentList[index].reaction_count-1
+  //       }
+  //     }
+  //   }
+  //   else if(myReaction==='B'){
+  //     if(commentList[index].love_count===totalReact[index].react[1]){
+  //       commentList[index].love_count=commentList[index].love_count+1
+  //       commentList[index].reaction_count=commentList[index].reaction_count+1
         
-      }
-      else{
-        if(commentList[index].love_count!=0){
-          commentList[index].love_count=commentList[index].love_count-1
-          commentList[index].reaction_count=commentList[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='C'){
-      if(commentList[index].dancer_count===totalReact[index].react[2]){
-        commentList[index].dancer_count=commentList[index].dancer_count+1
-        commentList[index].reaction_count=commentList[index].reaction_count+1
-      }
-      else{
-        if(commentList[index].dancer_count!=0){
-          commentList[index].dancer_count=commentList[index].dancer_count-1
-          commentList[index].reaction_count=commentList[index].reaction_count-1
-        }
+  //     }
+  //     else{
+  //       if(commentList[index].love_count!=0){
+  //         commentList[index].love_count=commentList[index].love_count-1
+  //         commentList[index].reaction_count=commentList[index].reaction_count-1
+  //       }
+  //     }
+  //   }
+  //   else if(myReaction==='C'){
+  //     if(commentList[index].dancer_count===totalReact[index].react[2]){
+  //       commentList[index].dancer_count=commentList[index].dancer_count+1
+  //       commentList[index].reaction_count=commentList[index].reaction_count+1
+  //     }
+  //     else{
+  //       if(commentList[index].dancer_count!=0){
+  //         commentList[index].dancer_count=commentList[index].dancer_count-1
+  //         commentList[index].reaction_count=commentList[index].reaction_count-1
+  //       }
 
-      }
-    }
-    else if(myReaction==='D'){
-      if(commentList[index].man_dancing_count===totalReact[index].react[3]){
-        commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
-        commentList[index].reaction_count=commentList[index].reaction_count+1
+  //     }
+  //   }
+  //   else if(myReaction==='D'){
+  //     if(commentList[index].man_dancing_count===totalReact[index].react[3]){
+  //       commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
+  //       commentList[index].reaction_count=commentList[index].reaction_count+1
         
-      }
-      else{
-        if(commentList[index].man_dancing_count!=0){
-          commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
-          commentList[index].reaction_count=commentList[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='E'){
-      if(commentList[index].face_count===totalReact[index].react[4]){
-        commentList[index].face_count=commentList[index].face_count+1
-        commentList[index].reaction_count=commentList[index].reaction_count+1
+  //     }
+  //     else{
+  //       if(commentList[index].man_dancing_count!=0){
+  //         commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
+  //         commentList[index].reaction_count=commentList[index].reaction_count-1
+  //       }
+  //     }
+  //   }
+  //   else if(myReaction==='E'){
+  //     if(commentList[index].face_count===totalReact[index].react[4]){
+  //       commentList[index].face_count=commentList[index].face_count+1
+  //       commentList[index].reaction_count=commentList[index].reaction_count+1
         
-      }
-      else{
-        if(commentList[index].face_count!=0){
-          commentList[index].face_count=commentList[index].face_count-1
-          commentList[index].reaction_count=commentList[index].reaction_count-1  
-      }
+  //     }
+  //     else{
+  //       if(commentList[index].face_count!=0){
+  //         commentList[index].face_count=commentList[index].face_count-1
+  //         commentList[index].reaction_count=commentList[index].reaction_count-1  
+  //     }
 
-      }
-    }
-    else{
-      if(commentList[index].thumbsup_count===totalReact[index].react[5]){
-        commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
-        commentList[index].reaction_count=commentList[index].reaction_count+1
+  //     }
+  //   }
+  //   else{
+  //     if(commentList[index].thumbsup_count===totalReact[index].react[5]){
+  //       commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
+  //       commentList[index].reaction_count=commentList[index].reaction_count+1
         
-      }
-      else{
-        if(commentList[index].thumbsup_count!=0){
-          commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
-          commentList[index].reaction_count=commentList[index].reaction_count-1  
-      }
-      }
-    }
-    }
-  )
+  //     }
+  //     else{
+  //       if(commentList[index].thumbsup_count!=0){
+  //         commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
+  //         commentList[index].reaction_count=commentList[index].reaction_count-1  
+  //     }
+  //     }
+  //   }
+  //   }
+  // )
 
     isInternetConnected()
       .then(() => {
@@ -1560,6 +1563,7 @@ const mapDispatchToProps = dispatch => {
   console.log("mapdispath")
   return {
     searchPost: (text, flag) => {
+  
       dispatch(searchPostReq(text, flag));
     },
 
@@ -1595,4 +1599,5 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(GenreSongClicked);
+
 

@@ -2,7 +2,8 @@ import axios from 'axios';
 import constants from './constants';
 
 export async function getApi(url, header) {
-  // console.log('URL: ', `${constants.BASE_URL}/${url}`);
+    // console.log('URLaa: ', `${constants.BASE_URL}/${url}`);
+    // console.log("header"+header.accesstoken)
 
   return await axios.get(`${constants.BASE_URL}/${url}`, {
     headers: {
@@ -14,7 +15,8 @@ export async function getApi(url, header) {
 }
 
 export async function getSpotifyApi(url, header) {
-  // console.log('URL: ', `${url}`);
+  //  console.log('URL: ', `${url}`);
+  //  console.log("header",header)
 
   return await axios.get(`${url}`, {
     headers: header,

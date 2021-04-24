@@ -6,10 +6,11 @@ import {
   GET_POST_FROM_TOP_50_REQUEST,
 } from './TypeConstants';
 
-export const seachSongsForPostRequest = (text, post) => ({
+export const seachSongsForPostRequest = (text,post,listName) => ({
   type: SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   text,
   post,
+  listName
 });
 
 export const createPostRequest = payload => ({
@@ -23,6 +24,7 @@ export const deletePostReq = payload => ({
 });
 
 export const searchPostReq = (text, flag) => ({
+  
   type: flag ? SEARCH_POST_REQUEST : GET_POST_FROM_TOP_50_REQUEST,
   flag,
   text,

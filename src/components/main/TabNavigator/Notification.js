@@ -45,11 +45,11 @@ const wait = timeout => {
 };
 
 function Notification(props) {
-  const [isloadings,setIsLoading] = useState(true)
+  const [isloadings, setIsLoading] = useState(true)
   const [notifications, setNotifications] = useState([]);
   const getActivities = async pageId => {
 
-    notifications.length==0?setIsLoading(true):setIsLoading(false)
+    notifications.length == 0 ? setIsLoading(true) : setIsLoading(false)
     const response = await axios.get(`${activityUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -57,82 +57,74 @@ function Notification(props) {
         'x-access-token': props.header.token,
       },
     });
-    
-    isLoading=false
-   setIsLoading(false)
- 
+
+    isLoading = false
+    setIsLoading(false)
+
     return await response.data;
-    
+
   };
 
- 
+
   const [pageId, setPageId] = useState(1);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [onScrolled, setOnScrolled] = useState(true);
-  
+  const [onScrolled, setOnScrolled] = useState(false);
+
   const key = `${activityUrl}?page=${pageId}`;
   const { mutate } = useSWR(key, () => getActivities(pageId), {
     onSuccess: data => {
       if (pageId === 1) {
-      
+
         setNotifications(data.data);
-       
+
       } else {
-       
+
         const newArray = [...notifications, ...data.data];
         setNotifications(newArray);
-        
+
       }
     },
   });
 
-  const onReached=async()=>{
-  
-    setPageId(pageId+1)
-    const response = await axios.get(`${activityUrl}?page=${pageId+1}`, {
+  const onReached = async () => {
+    console.log("start")
+    setOnScrolled(true)
+    const response = await axios.get(`${activityUrl}?page=${pageId + 1}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'x-access-token': props.header.token,
       },
     });
-    if(response.data.data.length==0){
+    console.log("pageId"+pageId)
+    console.log("response" + response.data.data.length)
+    if (response.data.data.length == 0) {
       setOnScrolled(false)
+    }else{
+      setPageId(pageId + 1)
+
     }
-    
-    previous=[...previous,...response.data.data]
+
+    previous = [...previous, ...response.data.data]
     // setOnScrolled(true)
     // alert("res"+JSON.stringify(response.data.data))
   }
 
-  // useEffect(() => {
-  //   const unsuscribe = props.navigation.addListener('focus', () => {
-  //     isInternetConnected()
-  //       .then(() => {
-  //         updateProfile();
-  //         // setNotifications([]);
-  //         // setPageId(1);
-  //         // mutate();
-  //       })
-  //       .catch(() => {
-  //         toast('Error', 'Please Connect To Internet');
-  //       });
-  //   });
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 50;
 
-  //   return () => {
-  //     unsuscribe();
-  //   };
-  // });
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
 
- useFocusEffect(
+  useFocusEffect(
     React.useCallback(() => {
-      
-      // alert("focus1111");
-      setNotifications([]);
-            setPageId(1);
-            mutate();
 
-        AppState.addEventListener('change', updateProfile());
+      setNotifications([]);
+      setPageId(1);
+      mutate();
+ 
+      AppState.addEventListener('change', updateProfile());
       const unsuscribe = props.navigation.addListener('focus', () => {
         isInternetConnected()
           .then(() => {
@@ -145,11 +137,12 @@ function Notification(props) {
           .catch(() => {
             toast('Error', 'Please Connect To Internet');
           });
-        
+
       });
       AppState.removeEventListener('change', updateProfile())
-      return () =>{ unsuscribe() 
-        
+      return () => {
+        unsuscribe()
+
       };
     }, [])
   );
@@ -157,7 +150,7 @@ function Notification(props) {
 
   const updateProfile = () => {
     let formdata = new FormData();
-  
+
     formdata.append('isActivity', false);
 
     isInternetConnected()
@@ -182,7 +175,7 @@ function Notification(props) {
 
   // console.log({ activity });
 
-  activity.map((item,index) => {
+  activity.map((item, index) => {
     let postTime = moment(item.createdAt).format('MM-DD-YYYY');
 
     if (postTime === time) {
@@ -193,170 +186,161 @@ function Notification(props) {
     }
 
   });
- 
-  // setOnScrolled(true)
-  // const isCloseToBottom = ({
-  //   layoutMeasurement,
-  //   contentOffset,
-  //   contentSize,
-  // }) => {
-  //   const paddingToBottom = 20;
-  //   return (
-  //     layoutMeasurement.height + contentOffset.y >=
-  //     contentSize.height - paddingToBottom
-  //   );
-  // };
 
-  // console.log({ pageId });
 
   return (
 
     isloadings ?
-    (<View style={{flex:1,backgroundColor:'#000000'}}>
+      (<View style={{ flex: 1, backgroundColor: '#000000' }}>
 
-      <ActivityIndicator color='#ffffff' size='large' style={{marginTop:4*normaliseNew(90)}}></ActivityIndicator>
-    </View>)
-    :
-    <View style={styles.container}>
-     
-      <StatusBar />
-      
-      <SafeAreaView style={styles.activityContainer}>
-        <HeaderComponent title={'ACTIVITY'} />
-        {notifications ? (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{flex:1}}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => {
-                  setRefreshing(true);
-                  mutate();
-                  wait(1000).then(() => setRefreshing(false));
-                }}
-              />
-            }
-            // onScroll={({ nativeEvent }) => {
-            //   if (isCloseToBottom(nativeEvent)) {
-            //     setPageId(pageId + 1);
-            //   }
-            // }}
-            // scrollEventThrottle={400}
-          >
-           
-        
-            {_.isEmpty(today) ? null : (
-              <View style={styles.activityHeader}>
-                <Text style={styles.activityHeaderText}>TODAY</Text>
-              </View>
-            )}
-             
-            <FlatList
-              data={today}
-              scrollEnabled
-              renderItem={({ item }) => (
-                item.post_id !=null?
-                <TouchableOpacity 
-                onPress={() => {
-                  props.navigation.navigate('GenreSongClicked', {
-                    data: item.post_id,
-                    ptID:1,
-                  });
-                }}
-                >
-                <ActivitySingle item={item} props={props} />
-                 </TouchableOpacity>
-                 :
-                 <ActivitySingle item={item} props={props} />
+        <ActivityIndicator color='#ffffff' size='large' style={{ marginTop: 4 * normaliseNew(90) }}></ActivityIndicator>
+      </View>)
+      :
+      <View style={styles.container}>
 
-              )}
-              keyExtractor={index => {
-                index.toString();
+        <StatusBar />
+
+        <SafeAreaView style={styles.activityContainer}>
+          <HeaderComponent title={'ACTIVITY'} />
+          {notifications ? (
+            <ScrollView
+              onScroll={({ nativeEvent }) => {
+         
+                if (isCloseToBottom(nativeEvent)) {
+
+                  onReached()
+                }
+
               }}
-              
+              scrollEventThrottle={400}
               showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-              
-            />
-            {_.isEmpty(previous) ? null : (
-              <View style={styles.activityHeader}>
-                <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
-              </View>
-            )}
-        
-            <FlatList
-              data={previous}
-              renderItem={({ item }) => (
-                item.post_id!=null?
-               <TouchableOpacity 
-                onPress={() => {
-                  props.navigation.navigate('GenreSongClicked', {
-                    data: item.post_id,
-                    ptID:1,
-                  });
-                }}
-                >
-                <ActivitySingle item={item} props={props} />
-                </TouchableOpacity>
-                :
-                <ActivitySingle item={item} props={props} />
+              style={{ flex: 1, }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => {
+                    setRefreshing(true);
+                    mutate();
+                    wait(1000).then(() => setRefreshing(false));
+                  }}
+                />
+              }
+          
+            >
 
+
+              {_.isEmpty(today) ? null : (
+                <View style={styles.activityHeader}>
+                  <Text style={styles.activityHeaderText}>TODAY</Text>
+                </View>
               )}
-              keyExtractor={index => {
-                index.toString();
-              }}
-              ItemSeparatorComponent={Seperator}
-              onEndReached={()=>
-                // setPageId(pageId + 1);
-                //  alert('pageId')
-                 onReached()
-              }
-              onEndReachedThreshold={2}
-               initialNumToRender={7}
-              // onMomentumScrollBegin={() => {
-              //   setOnScrolled(true);
-              // }}
-              // ListEmptyComponent={()=>{
-              //   return(
-              //   <View style={{flex:1,alignItems:'center',justifyContent:'center',marginTop:'80%'}}>
-              //     <Text style={{color:'white',fontSize:20}}>No Activity</Text>
-              //   </View>
-              //   )
-              // }}
-              ListFooterComponent={
-                onScrolled===true && notifications.length>0 ? (
-                  <ActivityIndicator
-                    size={'large'}
-                    style={{
-                      alignSelf: 'center',
-                      // marginBottom: normalise(50),
-                      // marginTop: normalise(-40),
-                    }}
-                  />
-                ) : null
-              }
-            />
-          </ScrollView>
-        ) : notifications.length === 0 ? (
-          <View style={styles.emptyWrapper}>
-            <View style={styles.emptyContainer}>
-              <Image
-                source={ImagePath.emptyActivity}
-                style={styles.emptyImage}
-                resizeMode="contain"
+
+              <FlatList
+                data={today}
+                scrollEnabled
+                renderItem={({ item }) => (
+                  item.post_id != null ?
+                    <TouchableOpacity
+                      onPress={() => {
+                        props.navigation.navigate('SingleSongClick', {
+                          data: item.post_id,
+                         
+                        });
+                      }}
+                    >
+                      <ActivitySingle item={item} props={props} />
+                    </TouchableOpacity>
+                    :
+                    <ActivitySingle item={item} props={props} />
+
+                )}
+                keyExtractor={index => {
+                  index.toString();
+                }}
+
+                showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={Seperator}
+
               />
-              <Text style={styles.emptyContainerText}>
-                You haven’t recieved any notifications yet. Don’t worry, follow
-                more people to make Choona more fun.
+              {_.isEmpty(previous) ? null : (
+                <View style={styles.activityHeader}>
+                  <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
+                </View>
+              )}
+
+              <FlatList
+                data={previous}
+                renderItem={({ item }) => (
+                  item.post_id != null ?
+                    <TouchableOpacity
+                      onPress={() => {
+                        props.navigation.navigate('SingleSongClick', {
+                          data: item.post_id,
+                        
+                        });
+                      }}
+                    >
+                      <ActivitySingle item={item} props={props} />
+                    </TouchableOpacity>
+                    :
+                    <ActivitySingle item={item} props={props} />
+
+                )}
+                keyExtractor={index => {
+                  index.toString();
+                }}
+                ItemSeparatorComponent={Seperator}
+                // onEndReached={()=>
+                //   // setPageId(pageId + 1);
+                //   //  alert('pageId')
+                //    onReached()
+                // }
+                // onEndReachedThreshold={2}
+                //  initialNumToRender={7}
+                // onMomentumScrollBegin={() => {
+                //   setOnScrolled(true);
+                // }}
+                // ListEmptyComponent={()=>{
+                //   return(
+                //   <View style={{flex:1,alignItems:'center',justifyContent:'center',marginTop:'80%'}}>
+                //     <Text style={{color:'white',fontSize:20}}>No Activity</Text>
+                //   </View>
+                //   )
+                // }}
+                ListFooterComponent={
+                  onScrolled === true && notifications.length > 0 ? (
+                    <ActivityIndicator
+                      size={'small'}
+                      color='white'
+                      style={{
+                        alignSelf: 'center',
+                        // marginBottom: normalise(50),
+                        // marginTop: normalise(-40),
+                      }}
+                    />
+                  ) : null
+                }
+              />
+            </ScrollView>
+          ) : notifications.length === 0 ? (
+            <View style={styles.emptyWrapper}>
+              <View style={styles.emptyContainer}>
+                <Image
+                  source={ImagePath.emptyActivity}
+                  style={styles.emptyImage}
+                  resizeMode="contain"
+                />
+                <Text style={styles.emptyContainerText}>
+                  You haven’t recieved any notifications yet. Don’t worry, follow
+                  more people to make Choona more fun.
               </Text>
+              </View>
             </View>
-          </View>
-        ) : (
-          <View />
-        )}
-      </SafeAreaView>
-    </View>
+          ) : (
+            <View />
+          )}
+        </SafeAreaView>
+      </View>
   );
 }
 
@@ -400,7 +384,7 @@ const mapStateToProps = state => {
   return {
     header: state.TokenReducer,
   };
-}; 
+};
 
 const mapDispatchToProps = dispatch => {
   return {

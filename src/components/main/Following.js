@@ -365,7 +365,6 @@ function Following(props) {
                 FOLLOW SOME OF OUR POPULAR USERS
               </Text> */}
 
-              <ScrollView>
               <FlatList
                 style={{ marginTop: normalise(10) }}
                 data={top5followingList}
@@ -376,7 +375,6 @@ function Following(props) {
                 renderItem={rendertop5FollowersItem}
                 ItemSeparatorComponent={Seperator}
               />
-              </ScrollView>
             </View>
           ) : (
             <FlatList
