@@ -19,7 +19,8 @@ function HeaderComponentComments(props) {
   }
 
   return (
-    <View style={HeaderStyles.headerContainerComments}>
+    <View style={[HeaderStyles.headerContainerComments,{ marginTop: Platform.OS === 'android' ? normalise(20) : props.headerTop? null:normalise(30),
+  }]}>
       {/* Left */}
       {props.firstitemtext ? (
         <TouchableOpacity
@@ -88,6 +89,8 @@ HeaderComponentComments.propTypes = {
   imageonewidth: PropTypes.number,
   imagetwoheight: PropTypes.number,
   imagetwowidth: PropTypes.number,
+  headerTop:PropTypes.bool,
+
 };
 
 HeaderComponentComments.defaultProps = {
@@ -106,4 +109,6 @@ HeaderComponentComments.defaultProps = {
   imagesecondwidth: normalise(30),
   imagetwoheight: normalise(15),
   imagetwowidth: normalise(15),
+  headerTop:false,
+  
 };

@@ -34,7 +34,7 @@ const HeaderStyles = StyleSheet.create({
     height: normalise(44),
     justifyContent: 'center',
     marginBottom: normalise(0),
-    marginTop: Platform.OS === 'android' ? normalise(20) : normalise(20),
+    // marginTop: Platform.OS === 'android' ? normalise(20) : normalise(20),
     position: 'relative',
     width: '100%',
   },

@@ -73,6 +73,7 @@ import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
 import BlankScreen from './src/components/main/newBlankScreen';
 import SingleSongClick from './src/components/main/SingleSongClick';
+import PlayerComment from './src/components/main/PlayerComment'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -368,6 +369,7 @@ const App = () => {
               name="SingleSongClick"
               component={SingleSongClick}
             />
+             <Stack.Screen name="PlayerComment" component={PlayerComment} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

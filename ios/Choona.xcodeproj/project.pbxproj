@@ -14,6 +14,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1875149C2637BC5A0063B993 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		192E78D02511126700E9B916 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CE2511126600E9B916 /* AppleMusicManager.swift */; };
 		192E78D12511126700E9B916 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CF2511126700E9B916 /* AuthorizationManager.swift */; };
 		192E78D3251112E300E9B916 /* SharedClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78D2251112E300E9B916 /* SharedClass.swift */; };
@@ -433,6 +434,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1875149C2637BC5A0063B993 /* main.jsbundle in Resources */,
 				0B128C742486631C007D7886 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
@@ -842,7 +844,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 39;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -879,7 +881,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 39;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				INFOPLIST_FILE = Choona/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;

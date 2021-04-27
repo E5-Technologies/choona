@@ -134,8 +134,6 @@ function Home(props) {
   const [data,setData] = useState(props.postData)
   const [loadMoreVisible,setLoadMoreVisible] = useState(false)
 
-  const flatlistRef = React.useRef(null);
-  const ref = React.useRef(null);
 
   var bottomSheetRef;
   let changePlayer = false;
@@ -165,11 +163,16 @@ function Home(props) {
 
 // loadMore()
   
+const flatlistRef = React.useRef(null);
+
 
 useScrollToTop(flatlistRef);
 
 
+
   useEffect(() => {
+
+
   
     setHomeReq(true);
     setOffset(1);
@@ -1296,6 +1299,7 @@ function onfinish(){
         <Loader visible={bool} />
         <HomeHeaderComponent
           firstitemtext={false}
+
           marginTop={0}
           imageone={
             _.isEmpty(props.userProfileResp)
@@ -1314,6 +1318,11 @@ function onfinish(){
           imagetwowidth={25}
           middleImageReq={true}
           notRead={findIsNotRead()}
+          onIconPress = {true}
+          pressLogo={()=>{
+          
+            flatlistRef.current.scrollToIndex({animated:true,index:0,viewPosition:0});
+          }}
           onPressFirstItem={() => {
             props.navigation.navigate('Profile', { fromAct: false });
           }}

@@ -18,7 +18,7 @@ function CommentList(props) {
   };
 
   return (
-    <View style={styles.commentContainer}>
+    <View style={[styles.commentContainer,{borderBottomWidth:props.showLine ? 1 :null,borderBottomColor:props.showLine ? '#25262A':null,}]}>
       <TouchableOpacity
         style={styles.commentAvatarButton}
         onPress={() => {
@@ -31,7 +31,7 @@ function CommentList(props) {
         />
       </TouchableOpacity>
       <View style={styles.commentInfoContainer}>
-        <View style={styles.commentInfo}>
+        <View style={[styles.commentInfo,{marginBottom:'1%'}]}>
           <TouchableOpacity
             onPress={() => {
               onPressImage();
@@ -43,7 +43,7 @@ function CommentList(props) {
        
          <Hyperlink linkDefault={true}
           linkStyle={ { color: '#ffffff',textDecorationLine:'underline',textDecorationStyle:'dotted',fontWeight:'bold' } }>
-        <Text  style={styles.commentText}>{props.comment}</Text>
+        <Text  style={[styles.commentText,{paddingRight:'8%'}]}>{props.comment}</Text>
         </Hyperlink>
       </View>
     </View>
@@ -59,8 +59,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginHorizontal: normaliseNew(16),
-    paddingVertical: normaliseNew(16),
-  },
+    paddingTop: normaliseNew(16),
+    paddingBottom:normaliseNew(18),
+   
+
+    },
   commentInfoContainer: {
     flex: 1,
   },
@@ -106,6 +109,7 @@ CommentList.propTypes = {
   image2: PropTypes.string,
   onPressSecondImage: PropTypes.func,
   comments: PropTypes.bool,
+  showLine:PropTypes.bool
 };
 CommentList.defaultProps = {
   image: '',
@@ -116,4 +120,5 @@ CommentList.defaultProps = {
   image2: '',
   onPressSecondImage: null,
   comments: false,
+  showLine:false,
 };

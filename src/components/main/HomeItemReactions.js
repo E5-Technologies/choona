@@ -324,8 +324,9 @@ return true
           <HeaderComponentComments
             firstitemtext={false}
             imageone={ImagePath.backicon}
+            headerTop={true}
             //imagesecond={ImagePath.dp}
-            marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
+            // marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
             title={
               reactionList.length > 0
                 ? reactionList.length === 1

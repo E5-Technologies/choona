@@ -14,11 +14,18 @@ function HomeHeaderComponent(props) {
   }
 
   function onPressThirdItem() {
+  
     if (props.onPressThirdItem) {
       props.onPressThirdItem();
     }
   }
 
+  function onPressLogo() {
+
+   if(props.pressLogo){
+      props.pressLogo();
+   }
+  }
   return (
     <View style={HeaderStyles.headerContainer}>
       {/* Left */}
@@ -54,11 +61,20 @@ function HomeHeaderComponent(props) {
       {!props.middleImageReq ? (
         <Text style={HeaderStyles.headerText}>{props.title}</Text>
       ) : (
+        props.onIconPress?
+        <TouchableOpacity onPress={()=>{onPressLogo();}} >
         <Image
           style={HeaderStyles.logo}
           source={ImagePath.home_icon_choona}
           resizeMode={'contain'}
         />
+        </TouchableOpacity>
+        :
+        <Image
+        style={HeaderStyles.logo}
+        source={ImagePath.home_icon_choona}
+        resizeMode={'contain'}
+      />
       )}
       {/* Right */}
       <TouchableOpacity
@@ -110,6 +126,8 @@ HomeHeaderComponent.propTypes = {
   borderRadius: PropTypes.number,
   staticFirstImage: PropTypes.bool,
   read: PropTypes.bool,
+  onIconPress:PropTypes.bool,
+  pressLogo:PropTypes.func
 };
 HomeHeaderComponent.defaultProps = {
   firstitemtext: true,
@@ -133,4 +151,6 @@ HomeHeaderComponent.defaultProps = {
   height: normalise(35),
   staticFirstImage: true,
   notRead: false,
+  onIconPress:false,
+  pressLogo:null,
 };
