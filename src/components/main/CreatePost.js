@@ -11,6 +11,8 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
+  Dimensions,
+
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -24,8 +26,13 @@ import {
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
   CREATE_POST_FAILURE,
+  FOLLOWER_LIST_FAILURE,
+  FOLLOWER_LIST_SUCCESS,
+  FOLLOWER_LIST_REQUEST
 } from '../../action/TypeConstants';
 import { createPostRequest } from '../../action/PostAction';
+import { followingListReq } from '../../action/UserAction';
+
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
@@ -41,12 +48,19 @@ function AddSong(props) {
   const [title2, setTitle2] = useState(props.route.params.title2);
   const [spotifyUrl, setSpotifyUrl] = useState('');
   const [bool, setBool] = useState(false);
+  const [followingList,setFollowingList] = useState(props.followingData)
+  const[tagFriend,setTagFriend] = useState([])
+  const [showmention,setShowMention] =useState(false)
+  const [Selection,setSelection] =useState({start:0,end:0})
 
   useEffect(() => {
+    
+
     if (props.route.params.registerType === 'spotify') {
       setBool(true);
       const getSpotifyApi = async () => {
         try {
+
           const res = await callApi();
           if (res.data.status === 200) {
             let suc = res.data.data.audio;
@@ -65,6 +79,8 @@ function AddSong(props) {
       isInternetConnected()
         .then(() => {
           getSpotifyApi();
+          props.followingListReq('user','');
+
         })
         .catch(() => {
           toast('', 'Please Connect To Internet');
@@ -87,8 +103,25 @@ function AddSong(props) {
     );
   };
 
-  function createPost() {
+  const createPost= async()=> {
+
+    let tapUser = []
+    await props.followingData.map((item,index)=>{
+      if(search.search(item.username)!= -1){
+            tagFriend.map((items)=>{
+              if(items===item.username){
+                tapUser.push(item.username)
+              }
+            })
+            }
+      if(index===props.followingData.length-1){
+            setTagFriend([])
+          }
+        })
+
+
     var payload = {
+      tag:tapUser,
       post_content: search,
       social_type:
         props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
@@ -132,8 +165,57 @@ function AddSong(props) {
         toast('Error', 'Something Went Wong, Please Try Again');
         status = props.status;
         break;
-    }
+        case FOLLOWER_LIST_REQUEST:
+        
+          status = props.status;
+          alert("status"+props.status)
+          break;
+  
+        case FOLLOWER_LIST_SUCCESS:
+          status = props.status;
+        setFollowingList(props.followingData)
+          break;
+  
+        case FOLLOWER_LIST_FAILURE:
+          status = props.status;
+          toast('Oops', 'Something Went Wrong, Please Try Again');
+          break;
+      }
+    
   }
+
+  let delimiter = /\s+/;
+
+  //split string
+  let _text = search;
+  let token, index, parts = [];
+  while (_text) {
+    delimiter.lastIndex = 0;
+    token = delimiter.exec(_text);
+    if (token === null) {
+      break;
+    }
+    index = token.index;
+    if (token[0].length === 0) {
+      index = 1;
+    }
+    parts.push(_text.substr(0, index));
+    parts.push(token[0]);
+    index = index + token[0].length;
+    _text = _text.slice(index);
+  }
+  parts.push(_text);
+  
+  //highlight hashtags
+  parts = parts.map((text) => {
+    if (/^@/.test(text)) {
+      return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
+    } else {
+      return text;
+    }
+  });
+  
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -179,32 +261,78 @@ function AddSong(props) {
                 marginBottom: normalise(10),
               }}
               keyboardAppearance='dark'
-              value={search}
+              // value={search}
               multiline={true}
               placeholder={'Add a caption...'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
+               
+                let indexvalue = text.lastIndexOf("@")
+                let newString = text.substr(text.lastIndexOf("@"))
+                
+                if(indexvalue!= -1){
+                
+               
+                 if(newString.length===1 ){
+                  if(search.substr(indexvalue-1)===' '||search.substr(indexvalue-1)==='')
+                  {
+                   
+                    setFollowingList([...props.followingData])
+                    props.followingData.length===0 ? setShowMention(false) : setShowMention(true)
+                  }
+                  else{
+                    setShowMention(false)  
+                  }
+                  }else{
+           let newSubString = newString.substr(1,newString.length-1)
+           let newArray = []
+            props.followingData.map((item,index)=>{
+            //  console.log("mapItem"+item.full_na)
+             if(item.username.includes(newSubString)){
+                   newArray.push(item)
+               }
+               if(index===props.followingData.length-1){
+                 newArray.length===0?setShowMention(false):
+               ( 
+                 
+               setFollowingList(newArray),
+               setShowMention(true)
+               
+               )
+               }
+         })
+                 }
+                   } else{
+                  setShowMention(false)
+                }
+                
                 setSearch(text);
               }}
-            />
+            >
+              <Text>{parts}</Text>
+              </TextInput>
 
+
+<View style={{height:300,marginTop:-10}}>
             <View
               style={{
-                marginTop: normalise(10),
+                
+                flexDirection:"row",
+                 marginTop: normalise(5),
                 backgroundColor: Colors.darkerblack,
                 height: normalise(65),
                 width: '100%',
                 borderRadius: normalise(6),
-                justifyContent: 'center',
-                alignItems: 'center',
+                 justifyContent: 'center',
+                 alignItems: 'center',
               }}>
               <View
                 style={{
                   width: '90%',
                   flexDirection: 'row',
-                  alignSelf: 'center',
+                   alignSelf: 'center',
                   justifyContent: 'flex-start',
-                  alignItems: 'center',
+                   alignItems: 'center',
                 }}>
                 <TouchableOpacity>
                   <Image
@@ -246,12 +374,76 @@ function AddSong(props) {
                     numberOfLines={1}>
                     {title2}
                   </Text>
-                </View>
+               </View>
+ 
               </View>
+
+            </View>
+            {
+showmention?     
+ <View style={{
+ backgroundColor:'#000000',
+ borderTopRightRadius:10,
+ borderTopLeftRadius:10,
+ marginRight:'20%',
+//  minHeight:Dimensions.get('window').height/7,
+//  maxHeight:Dimensions.get("window").height/4.2,
+  height: followingList.length===2?Dimensions.get('window').height/6: followingList.length===3?Dimensions.get('window').height/4.5: Dimensions.get('window').height/3,
+  position:'absolute',
+ top:followingList.length===2 ? 0 : 0,
+ width:Dimensions.get('window').width/1.25
+ }}
+ 
+ >
+   <FlatList
+   data={followingList}
+   keyboardShouldPersistTaps='always'
+
+   renderItem={({item,index})=>{
+     return(
+      <TouchableOpacity style={{flexDirection:'row',paddingTop:'3%'}}
+      onPress={()=>{ 
+        // setSelection({start:commentText.lastIndexOf("@"),end:Selection.end})
+        let newString = search.substr(0,search.lastIndexOf("@")+1)
+        setSearch(newString+item.username+' ')
+        setShowMention(false)
+        tagFriend.push(item.username)
+      }}
+      >
+      <Image source={{uri:constants.profile_picture_base_url + item.profile_image}} 
+     resizeMode='contain'
+     style={{
+        height:Dimensions.get('window').width/12,
+        width:Dimensions.get('window').width/12,
+        borderRadius:Dimensions.get('window').width,
+        marginLeft:'5%',
+        marginRight:'4%',
+        marginBottom:'3%'
+      }}
+      />
+      <View style={{flex:1,borderBottomWidth: index=== followingList.length-1? 0 : 0.5,borderBottomColor:'#25262A',justifyContent:'center',
+     
+    }}>
+      <Text style={{fontSize:14,color:'white'}}>{item.full_name}</Text>
+      <Text style={{fontSize:11,color:'grey',marginBottom:'5%'}}>@{item.username}</Text>
+      </View>
+     </TouchableOpacity>
+     )
+   }}
+   >
+
+   </FlatList>
+
+  
+   
+ </View>
+ : null
+}
             </View>
           </View>
         </SafeAreaView>
       </TouchableWithoutFeedback>
+      
     </View>
   );
 }
@@ -260,6 +452,8 @@ const mapStateToProps = state => {
   return {
     status: state.PostReducer.status,
     createPostResponse: state.PostReducer.createPostResponse,
+    followingData: state.UserReducer.followingData,
+
   };
 };
 
@@ -267,6 +461,9 @@ const mapDispatchToProps = dispatch => {
   return {
     createPostRequest: payload => {
       dispatch(createPostRequest(payload));
+    },
+    followingListReq: (usertype, id) => {
+      dispatch(followingListReq(usertype, id));
     },
   };
 };

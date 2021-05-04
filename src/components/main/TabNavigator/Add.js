@@ -161,6 +161,7 @@ function AddSong(props) {
                             color: Colors.white, paddingLeft: normalise(30),
                         }} value={search}
                             placeholder={"Search"}
+                            keyboardAppearance= {"dark"}
                             placeholderTextColor={Colors.darkgrey}
                             onChangeText={(text) => {
                                 setSearch(text)

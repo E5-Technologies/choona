@@ -668,7 +668,38 @@ function _onReaction(ID,reaction){
   } 
 
   function renderItem(data) {
+    let delimiter = /\s+/;
 
+    //split string
+    let _text = data.item.post_content;
+    let token, index, parts = [];
+    while (_text) {
+      delimiter.lastIndex = 0;
+      token = delimiter.exec(_text);
+      if (token === null) {
+        break;
+      }
+      index = token.index;
+      if (token[0].length === 0) {
+        index = 1;
+      }
+      parts.push(_text.substr(0, index));
+      parts.push(token[0]);
+      index = index + token[0].length;
+      _text = _text.slice(index);
+    }
+    parts.push(_text);
+    
+    //highlight hashtags
+    parts = parts.map((text) => {
+      if (/^@/.test(text)) {
+        return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
+      } else {
+        return text;
+      }
+    });
+    
+    
     return (
       <HomeItemList
         image={data.item.song_image}
@@ -691,7 +722,7 @@ function _onReaction(ID,reaction){
           face_count: data.item.face_count,
           thumbsup_count: data.item.thumbsup_count,
         }}
-        content={data.item.post_content}
+        content={parts}
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
@@ -1267,10 +1298,10 @@ function _onReaction(ID,reaction){
 
 function onfinish(){
   //  alert("onfinish")
-  console.log("lod"+JSON.stringify(props.postData))
+  // console.log("lod"+JSON.stringify(props.postData))
 
   if(props.postData.length !=0)  {
-    console.log("timestamtp"+props.postData[0].createdAt)
+    // console.log("timestamtp"+props.postData[0].createdAt)
   let loadData ={"offset":1,"create":props.postData[0].createdAt}
  props.loadMorePost(loadData)
   }
@@ -1299,7 +1330,6 @@ function onfinish(){
         <Loader visible={bool} />
         <HomeHeaderComponent
           firstitemtext={false}
-
           marginTop={0}
           imageone={
             _.isEmpty(props.userProfileResp)
@@ -1320,14 +1350,16 @@ function onfinish(){
           notRead={findIsNotRead()}
           onIconPress = {true}
           pressLogo={()=>{
-          
-            flatlistRef.current.scrollToIndex({animated:true,index:0,viewPosition:0});
+        
+             flatlistRef.current.scrollToIndex({animated:true,index:0,viewPosition:0});
           }}
           onPressFirstItem={() => {
             props.navigation.navigate('Profile', { fromAct: false });
           }}
           onPressThirdItem={() => {
-            props.navigation.navigate('Inbox');
+               props.navigation.navigate('Inbox');
+            //  props.navigation.navigate('BlankScreen');
+
           }}
         />
   
@@ -1545,6 +1577,7 @@ onPress={()=>loadMore()}
                 }}
               />
             ) : null}
+
 
             <Modal
               animationType="fade"

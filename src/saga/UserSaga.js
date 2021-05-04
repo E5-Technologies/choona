@@ -333,8 +333,17 @@ export function* commentOnPostAction(action) {
       action.payload,
       Header,
     );
+
+
+    console.log(JSON.stringify(action.payload));
+
+
+    console.log(JSON.stringify(response));
+
     yield put({type: COMMENT_ON_POST_SUCCESS, data: response.data.data});
   } catch (error) {
+    console.log(JSON.stringify(error));
+
     yield put({type: COMMENT_ON_POST_FAILURE, error: error});
   }
 }

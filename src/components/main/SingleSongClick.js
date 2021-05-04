@@ -609,7 +609,38 @@ const callApi = async () => {
 
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
-    console.log("data"+JSON.stringify(props.userProfileRes))
+    let delimiter = /\s+/;
+
+    //split string
+    let _text = data.item.post_content;
+    let token, index, parts = [];
+    while (_text) {
+      delimiter.lastIndex = 0;
+      token = delimiter.exec(_text);
+      if (token === null) {
+        break;
+      }
+      index = token.index;
+      if (token[0].length === 0) {
+        index = 1;
+      }
+      parts.push(_text.substr(0, index));
+      parts.push(token[0]);
+      index = index + token[0].length;
+      _text = _text.slice(index);
+    }
+    parts.push(_text);
+    
+    //highlight hashtags
+    parts = parts.map((text) => {
+      if (/^@/.test(text)) {
+        return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
+      } else {
+        return text;
+      }
+    });
+    
+    
     return (
       <HomeItemList
         image={data.item.song_image}
@@ -625,7 +656,7 @@ const callApi = async () => {
           face_count: data.item.face_count,
           thumbsup_count: data.item.thumbsup_count,
         }}
-        content={data.item.post_content}
+        content={parts}
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
@@ -1597,5 +1628,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(SingleSongClick);
-
 

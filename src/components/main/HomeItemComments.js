@@ -15,11 +15,13 @@ import {
   StyleSheet,
   ScrollView,
   BackHandler,
-  Keyboard
+  Keyboard,
+  Dimensions,
+  FlatList,
+  TextPropTypes
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
-
 import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
 import ImagePath from '../../assests/ImagePath';
@@ -32,8 +34,11 @@ import {
   COMMENT_ON_POST_REQUEST,
   COMMENT_ON_POST_SUCCESS,
   COMMENT_ON_POST_FAILURE,
+  FOLLOWER_LIST_FAILURE,
+  FOLLOWER_LIST_SUCCESS,
+  FOLLOWER_LIST_REQUEST
 } from '../../action/TypeConstants';
-import { commentOnPostReq } from '../../action/UserAction';
+import { commentOnPostReq,followingListReq } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -41,6 +46,7 @@ import CommentList from '../main/ListCells/CommentList';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
+import { color } from 'react-native-reanimated';
 
 let status;
 
@@ -61,7 +67,13 @@ function HomeItemComments(props) {
   const [totalcount,setTotalCount]=useState(0)
   const [textinputHeight,setHeight]=useState(50)
   const [emoji, setEmoji] = useState(false)
+  const [followingList,setFollowingList] = useState(props.followingData)
+  const[tagFriend,setTagFriend] = useState([])
+
+  const [showmention,setShowMention] =useState(false)
+  const [Selection,setSelection] =useState({start:0,end:0})
   useEffect(() => {
+    props.followingListReq('user','');
     fetchCommentsOnPost(props.route.params.id, props.header.token)
       .then(res => {
 
@@ -96,11 +108,41 @@ function HomeItemComments(props) {
   const _keyboardDidHide = () => setEmoji(false);
 
   function renderItem(data) {
+    let delimiter = /\s+/;
+
+//split string
+let _text = data.item.text;
+let token, index, parts = [];
+while (_text) {
+  delimiter.lastIndex = 0;
+  token = delimiter.exec(_text);
+  if (token === null) {
+    break;
+  }
+  index = token.index;
+  if (token[0].length === 0) {
+    index = 1;
+  }
+  parts.push(_text.substr(0, index));
+  parts.push(token[0]);
+  index = index + token[0].length;
+  _text = _text.slice(index);
+}
+parts.push(_text);
+
+//highlight hashtags
+parts = parts.map((text) => {
+  if (/^@/.test(text)) {
+    return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
+  } else {
+    return text;
+  }
+});
     return (
       <CommentList
         image={constants.profile_picture_base_url + data.item.profile_image}
         name={data.item.name}
-        comment={data.item.text}
+        comment={parts}
         showLine={ comments.length-1===data.index ? false : true}
         time={moment(data.item.createdAt).from()}
         onPressImage={() => {
@@ -140,6 +182,22 @@ function HomeItemComments(props) {
         status = props.status;
         toast('Oops', 'Something Went Wrong');
         break;
+
+        case FOLLOWER_LIST_REQUEST:
+        
+          status = props.status;
+          alert("status"+props.status)
+          break;
+  
+        case FOLLOWER_LIST_SUCCESS:
+          status = props.status;
+        setFollowingList(props.followingData)
+          break;
+  
+        case FOLLOWER_LIST_FAILURE:
+          status = props.status;
+          toast('Oops', 'Something Went Wrong, Please Try Again');
+          break;
     }
   }
 
@@ -171,6 +229,37 @@ route.params.onSelect(ID,Comment);
 const updateSize = (height) => {
   setHeight(height)
 }
+
+let delimiter = /\s+/;
+
+//split string
+let _text = commentText;
+let token, index, parts = [];
+while (_text) {
+  delimiter.lastIndex = 0;
+  token = delimiter.exec(_text);
+  if (token === null) {
+    break;
+  }
+  index = token.index;
+  if (token[0].length === 0) {
+    index = 1;
+  }
+  parts.push(_text.substr(0, index));
+  parts.push(token[0]);
+  index = index + token[0].length;
+  _text = _text.slice(index);
+}
+parts.push(_text);
+
+//highlight hashtags
+parts = parts.map((text) => {
+  if (/^@/.test(text)) {
+    return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
+  } else {
+    return text;
+  }
+});
 
 
 
@@ -248,9 +337,70 @@ const updateSize = (height) => {
       
       </SafeAreaView>
       </ScrollView>
+      {
+showmention?     
+ <View style={{backgroundColor:'black',
+ 
+ borderTopRightRadius:10,
+ borderTopLeftRadius:10,
+ marginRight:'20%',
+//  minHeight:Dimensions.get('window').height/7,
+//  maxHeight:Dimensions.get("window").height/4.2,
+ height: followingList.length===2?Dimensions.get('window').height/5: followingList.length===3?Dimensions.get('window').height/3.5: Dimensions.get('window').height/3,
+ bottom:followingList.length===2 ? 35 : 17,
+ width:Dimensions.get('window').width/1.25
+ }}
+ 
+ >
+   <FlatList
+   data={followingList}
+   keyboardShouldPersistTaps='always'
+   renderItem={({item,index})=>{
+     return(
+      <TouchableOpacity style={{flexDirection:'row',paddingTop:'3%'}}
+      onPress={()=>{ 
+        setSelection({start:commentText.lastIndexOf("@"),end:Selection.end})
+        let newString = commentText.substr(0,commentText.lastIndexOf("@")+1)
+        setCommentText(newString+item.username+' ')
+        setShowMention(false)
+        tagFriend.push(item.username)
+      }}
+      >
+      <Image source={{uri:constants.profile_picture_base_url + item.profile_image}} 
+     resizeMode='contain'
+     style={{
+        height:Dimensions.get('window').width/12,
+        width:Dimensions.get('window').width/12,
+        borderRadius:Dimensions.get('window').width,
+        marginLeft:'5%',
+        marginRight:'4%',
+        // marginBottom:'3%'
+      }}
+      />
+      <View style={{flex:1,borderBottomWidth: index=== followingList.length-1? 0 : 0.5,borderBottomColor:'#25262A',justifyContent:'center',
+     
+    }}>
+        <Text style={{fontSize:14,color:'white'}}>{item.full_name}</Text>
+
+        <Text style={{fontSize:11,color:'grey',marginBottom:'5%'}}>@{item.username}</Text>
+      </View>
+     </TouchableOpacity>
+     )
+   }}
+   >
+
+   </FlatList>
+
+  
+   
+ </View>
+ : null
+}
       <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center',backgroundColor:'#000000' ,///bottom: emoji ? Platform.OS==='ios'?299:10 : 20
         }]}
         >
+
+
           <TextInput
             style={[styles.commentFooterInput,
             {
@@ -258,7 +408,7 @@ const updateSize = (height) => {
             //flexWrap:'wrap',
             //alignItems:'center' 
             }]}
-            value={commentText}
+           
             multiline
             maxHeight={100}
             autoFocus={true}
@@ -270,9 +420,48 @@ const updateSize = (height) => {
             placeholderTextColor={Colors.white}
             onFocus={()=>setEmoji(true)}
             onChangeText={text => {
-              setCommentText(text);
+              let indexvalue = text.lastIndexOf("@")
+              let newString = text.substr(text.lastIndexOf("@"))
+              
+              if(indexvalue!= -1){
+               
+               if(newString.length===1){
+                if(commentText.substr(indexvalue-1)===' '||commentText.substr(indexvalue-1)==='')
+                {
+                     setFollowingList([...props.followingData])
+                  props.followingData.length===0 ? setShowMention(false) : setShowMention(true)
+               }
+               else{
+                setShowMention(false) 
+               }
+              }
+               else{
+                
+let newSubString = newString.substr(1,newString.length-1)
+     let newArray = []
+      props.followingData.map((item,index)=>{
+      //  console.log("mapItem"+item.full_name)
+             if(item.username.includes(newSubString)){
+               newArray.push(item)
+             }
+             if(index===props.followingData.length-1){
+               newArray.length===0?setShowMention(false):
+             (  setFollowingList(newArray),
+               setShowMention(true)
+             )
+             }
+       })
+               }
+             
+                }
+                else{
+                  setShowMention(false)
+                }
+             setCommentText(text);
             }}
-          />
+          >
+            {parts}
+             </TextInput>
           {commentText !== '' ? (
             <TouchableOpacity
               style={{
@@ -281,16 +470,34 @@ const updateSize = (height) => {
               paddingHorizontal:'3%'
             
               }}
-              onPress={() => {
-                // setEmoji(false)
-                Keyboard.dismiss()
-                let commentObject = {
+              onPress={async() => {
+   
+               let tapUser = []
+            await props.followingData.map((item,index)=>{
+              if(commentText.search(item.username)!= -1){
+                    tagFriend.map((items)=>{
+                      if(items===item.username){
+                        tapUser.push(item.username)
+                      }
+                    })
+                    }
+              if(index===props.followingData.length-1){
+                    setTagFriend([])
+                  }
+                })
+           
+              Keyboard.dismiss()
+              let commentObject = {
                   post_id: id,
                   text: commentText,
+                  tag:tapUser
                 };
+
+                console.log(JSON.stringify(commentObject));
                 isInternetConnected()
                   .then(() => {
-                    props.commentOnPost(commentObject);
+                 
+                     props.commentOnPost(commentObject);
                   })
                   .catch(() => {
                     toast('Error', 'Please Connect To Internet');
@@ -525,6 +732,7 @@ const mapStateToProps = state => {
     commentResp: state.UserReducer.commentResp,
     userProfileResp: state.UserReducer.userProfileResp,
     header: state.TokenReducer,
+    followingData: state.UserReducer.followingData,
   };
 };
 
@@ -532,6 +740,9 @@ const mapDispatchToProps = dispatch => {
   return {
     commentOnPost: payload => {
       dispatch(commentOnPostReq(payload));
+    },
+    followingListReq: (usertype, id) => {
+      dispatch(followingListReq(usertype, id));
     },
   };
 };
