@@ -46,9 +46,9 @@ function InsideMessegeHeader(props) {
             <Image
               source={{ uri: props.imageone }}
               style={{
-                borderWidth: normalise(1),
+                // borderWidth: normalise(1),
                 borderColor: Colors.darkerblack,
-                borderRadius: normalise(25),
+                borderRadius: normalise(70),
                 height: normalise(25),
                 width: normalise(25),
               }}
@@ -57,12 +57,12 @@ function InsideMessegeHeader(props) {
             <Image
               source={{ uri: props.imagesecond }}
               style={{
-                borderWidth: normalise(1),
+                // borderWidth: normalise(1),
                 borderColor: Colors.darkerblack,
                 height: normalise(25),
                 width: normalise(25),
                 marginLeft: normalise(-5),
-                borderRadius: normalise(25),
+                borderRadius: normalise(70),
               }}
               resizeMode="contain"
             />

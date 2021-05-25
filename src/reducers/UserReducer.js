@@ -261,20 +261,17 @@ const UserReducer = (state = initialState, action) => {
       };
 
       case LOAD_MORE_REQUEST:
-        console.log("reduscerload"+JSON.stringify(action))
       return {
         ...state,
         status: action.type,
       };
 
       case LOAD_MORE_DATA:
-        console.log("reducerpostdata"+JSON.stringify(state.postData))
         // let array = state.postData];
         
         var ids = new Set(state.loadData.map(d => d._id));
 var merged = [...state.loadData ,...state.postData.filter(d => !ids.has(d._id))];
 
-console.log(merged);
 
         
         

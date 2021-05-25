@@ -133,7 +133,7 @@ function Home(props) {
   const [refresing, setRefresing] = useState(false);
   const [data,setData] = useState(props.postData)
   const [loadMoreVisible,setLoadMoreVisible] = useState(false)
-
+  const[visibleminiPlayer,setVisibleMiniPlayer] = useState(true)
 
   var bottomSheetRef;
   let changePlayer = false;
@@ -668,38 +668,7 @@ function _onReaction(ID,reaction){
   } 
 
   function renderItem(data) {
-    let delimiter = /\s+/;
-
-    //split string
-    let _text = data.item.post_content;
-    let token, index, parts = [];
-    while (_text) {
-      delimiter.lastIndex = 0;
-      token = delimiter.exec(_text);
-      if (token === null) {
-        break;
-      }
-      index = token.index;
-      if (token[0].length === 0) {
-        index = 1;
-      }
-      parts.push(_text.substr(0, index));
-      parts.push(token[0]);
-      index = index + token[0].length;
-      _text = _text.slice(index);
-    }
-    parts.push(_text);
-    
-    //highlight hashtags
-    parts = parts.map((text) => {
-      if (/^@/.test(text)) {
-        return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
-      } else {
-        return text;
-      }
-    });
-    
-    
+   
     return (
       <HomeItemList
         image={data.item.song_image}
@@ -722,7 +691,8 @@ function _onReaction(ID,reaction){
           face_count: data.item.face_count,
           thumbsup_count: data.item.thumbsup_count,
         }}
-        content={parts}
+        navi={props}
+        content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
@@ -751,6 +721,7 @@ function _onReaction(ID,reaction){
         onPressMusicbox={() => {
           if (!homeReq) {
             playSong(data);
+            setVisibleMiniPlayer(true)
           }
         }}
         onPressReactionbox={() => {
@@ -1274,6 +1245,7 @@ function _onReaction(ID,reaction){
       for (i = 0; i < array.length; i++) {
         array[i].playing = false;
       }
+      setVisibleMiniPlayer(false)
       setPostArray(array);
       // console.log(array);
     }
@@ -1540,12 +1512,18 @@ onPress={()=>loadMore()}
 }   
             {renderAddToUsers()}
 
-            {props.status === HOME_PAGE_SUCCESS ||
+{
+  console.log("props.statj"+props.status)
+}
+            {(props.status === HOME_PAGE_SUCCESS ||
             props.status === USER_PROFILE_SUCCESS ||
             props.status === COUNTRY_CODE_SUCCESS ||
             props.status === OTHERS_PROFILE_SUCCESS ||
             props.status === EDIT_PROFILE_SUCCESS ||
-            props.status === DUMMY_ACTION_SUCCESS ? (
+            props.status === DUMMY_ACTION_SUCCESS||
+            props.status===LOAD_MORE_SUCCESS ||
+            props.status===LOAD_MORE_REQUEST)&&
+            visibleminiPlayer===true? (
               <MusicPlayerBar
                 onPress={() => {
 

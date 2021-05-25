@@ -104,10 +104,10 @@ function SingleSongClick(props) {
         'x-access-token': props.header.token,
       },
     })
-    console.log("response"+JSON.stringify(response))
+    console.log("response_post"+JSON.stringify(response))
     if(response.data.data.length!=0){
     let newarray = []
-    newarray.push(response.data.data)
+    newarray.push(response.data.data[0])
     setUpdateData(newarray)
   
   let reactArray=[]
@@ -133,11 +133,12 @@ function SingleSongClick(props) {
           // setUserSeach('');
       
           
-    console.log("responseaaa"+JSON.stringify(response))
+    // console.log("responseaaa"+JSON.stringify(response))
   }else  setIsLoading(false)
     
   }
   useEffect(() => {
+
   
     // const unsuscribe = props.navigation.addListener('focus', payload => {
     //   isInternetConnected()
@@ -609,43 +610,14 @@ const callApi = async () => {
 
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
-    let delimiter = /\s+/;
 
-    //split string
-    let _text = data.item.post_content;
-    let token, index, parts = [];
-    while (_text) {
-      delimiter.lastIndex = 0;
-      token = delimiter.exec(_text);
-      if (token === null) {
-        break;
-      }
-      index = token.index;
-      if (token[0].length === 0) {
-        index = 1;
-      }
-      parts.push(_text.substr(0, index));
-      parts.push(token[0]);
-      index = index + token[0].length;
-      _text = _text.slice(index);
-    }
-    parts.push(_text);
-    
-    //highlight hashtags
-    parts = parts.map((text) => {
-      if (/^@/.test(text)) {
-        return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
-      } else {
-        return text;
-      }
-    });
-    
-    
+console.log(JSON.stringify(data));
+
     return (
       <HomeItemList
         image={data.item.song_image}
-          picture={props.userProfileResp.profile_image}
-          name={props.userProfileResp.username}
+          picture={data.item.userDetails.profile_image}
+          name={data.item.userDetails.username}
         comment_count={data.item.comment_count ? data.item.comment_count : 0}
         reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
         reactions={{
@@ -656,7 +628,8 @@ const callApi = async () => {
           face_count: data.item.face_count,
           thumbsup_count: data.item.thumbsup_count,
         }}
-        content={parts}
+        navi={props}
+        content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
@@ -1461,7 +1434,9 @@ const callApi = async () => {
           }}
         />
         {
-          console.log('asss'+JSON.stringify(updateData.length))
+
+
+          console.log('asss'+JSON.stringify(updateData))
         }
    
    {

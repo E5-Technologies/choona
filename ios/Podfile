@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 def add_flipper_pods!(versions = {})
@@ -82,6 +82,17 @@ target 'Choona' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary"
+
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"
+
+  
+  
   target 'ChoonaTests' do
     inherit! :complete
     # Pods for testing

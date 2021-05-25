@@ -396,13 +396,17 @@ function Player(props) {
     }
   }
 
+  function _onReaction(ID,reaction){
+   
+  } 
+
 
   function _onSelectBack(data,comment){
-    console.log("aaa"+JSON.stringify(data))
+     console.log("aaa"+JSON.stringify(comment))
     setCommentData(data)
     setArrayLength(
-     `${data.length} ${
-       data.length > 1 ? 'COMMENTS' : 'COMMENT'
+     `${comment} ${
+       comment > 1 ? 'COMMENTS' : 'COMMENT'
      }`,
    );
   
@@ -454,7 +458,6 @@ function Player(props) {
           setTimeout(() => {
             changeTime(global.playerReference);
             let time = global.playerReference.getDuration();
-
             if(global.playerReference.isPlaying())
             {
             setHasSongLoaded(true);
@@ -1907,6 +1910,7 @@ function Player(props) {
                     props.navigation.navigate('HomeItemReactions', {
                       reactions: reactions,
                       post_id: id,
+                      onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction)
                     });
                   }}>
                   <Image
@@ -1979,8 +1983,41 @@ function Player(props) {
                     borderRadius: normalise(10),
                   }}
                   onPress={() => {
-                    if (RbSheetRef) RbSheetRef.open();
-                  }}>
+                  //   console.log("userename"+username)
+                  //   props.navigation.navigate('PlayerComment', {
+                  //      index: 1,
+                  //     // comment: data.item.comment,
+                  //     // image: data.item.song_image,
+                  //     // username: data.item.userDetails.username,
+                  //     // userComment: data.item.post_content,
+                  //     // time: data.item.createdAt,
+                  //     id: id,
+                  //     commentData:commentData,
+                  //     songTitle:songTitle,
+                  //     artist:artist,
+                  //     username:username,
+                  //     receiverId:receiverId,
+                  //     senderId:senderId,
+                  //     pic:pic,
+                  //     key:key,
+                  //     chatToken:chatToken,
+                  //     comingFromMessage:comingFromMessage,
+                  //     time:props.route.params.time,
+                  //     onSelect: (data,comment)=>_onSelectBack(data,comment) ,
+                  // })}
+
+                  props.navigation.navigate('HomeItemComments', {
+                    index: 1,
+                    comment:commentData,
+                    image: pic,
+                    username: username,
+                    // userComment: data.item.post_content,
+                    // time: data.item.createdAt,
+                    id: id,
+                    onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
+                  });
+                } }
+                  >
                   <Image
                     source={ImagePath.comment_grey}
                     style={{height: normalise(16), width: normalise(16)}}
@@ -2080,7 +2117,7 @@ function Player(props) {
                     onPress={() => {
                       // if (RbSheetRef) RbSheetRef.open();
                       props.navigation.navigate('PlayerComment', {
-                        // index: data.index,
+                         index: 0,
                         // comment: data.item.comment,
                         // image: data.item.song_image,
                         // username: data.item.userDetails.username,

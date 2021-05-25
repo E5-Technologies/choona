@@ -67,6 +67,44 @@ function HomeItemList(props) {
     }
   };
 
+
+  let delimiter = /\s+/;
+
+  //split string
+  let _text = props.content;
+  let token, index, parts = [];
+  while (_text) {
+    delimiter.lastIndex = 0;
+    token = delimiter.exec(_text);
+    if (token === null) {
+      break;
+    }
+    index = token.index;
+    if (token[0].length === 0) {
+      index = 1;
+    }
+    parts.push(_text.substr(0, index));
+    parts.push(token[0]);
+    index = index + token[0].length;
+    _text = _text.slice(index);
+  }
+  parts.push(_text);
+  
+  //highlight hashtags
+  parts = parts.map((text) => {
+    if (/^@/.test(text)) {
+      return <Text key={text} style={{color:'#3DB2EB'}} 
+      onPress={()=>{ 
+      
+         props.navi.navigation.navigate('OthersProfile', {
+        id: text.substr(1,text.length-1),
+      })
+    }}>{text}</Text>;
+    } else {
+      return text;
+    }
+  });
+
   return (
     <View
       style={{
@@ -478,7 +516,7 @@ function HomeItemList(props) {
                 alignSelf: 'flex-start',
                 textAlign: 'left',
               }}>
-              {props.content}
+              {parts}
             </Text>
           ) : (
             <View />

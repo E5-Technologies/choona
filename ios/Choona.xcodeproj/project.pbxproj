@@ -84,6 +84,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Choona/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Choona/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Choona/main.m; sourceTree = "<group>"; };
+		1880F307265678CD00B66F62 /* libPermission-MediaLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-MediaLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1880F309265678DC00B66F62 /* libPermission-Camera.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-Camera.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		192E78CE2511126600E9B916 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleMusicManager.swift; sourceTree = "<group>"; };
 		192E78CF2511126700E9B916 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManager.swift; sourceTree = "<group>"; };
 		192E78D2251112E300E9B916 /* SharedClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedClass.swift; sourceTree = "<group>"; };
@@ -206,6 +208,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1880F309265678DC00B66F62 /* libPermission-Camera.a */,
+				1880F307265678CD00B66F62 /* libPermission-MediaLibrary.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				7454185DA8D6720E0B230066 /* libPods-Choona.a */,
@@ -844,7 +848,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -852,7 +856,7 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = Choona/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
@@ -881,10 +885,10 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				INFOPLIST_FILE = Choona/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				ONLY_ACTIVE_ARCH = YES;

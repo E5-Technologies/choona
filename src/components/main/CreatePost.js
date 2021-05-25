@@ -28,10 +28,13 @@ import {
   CREATE_POST_FAILURE,
   FOLLOWER_LIST_FAILURE,
   FOLLOWER_LIST_SUCCESS,
-  FOLLOWER_LIST_REQUEST
+  FOLLOWER_LIST_REQUEST,
+  FOLLOWING_LIST_REQUEST,
+  FOLLOWING_LIST_SUCCESS,
+  FOLLOWING_LIST_FAILURE,
 } from '../../action/TypeConstants';
 import { createPostRequest } from '../../action/PostAction';
-import { followingListReq } from '../../action/UserAction';
+import { followingListReq,followerListReq } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -49,6 +52,8 @@ function AddSong(props) {
   const [spotifyUrl, setSpotifyUrl] = useState('');
   const [bool, setBool] = useState(false);
   const [followingList,setFollowingList] = useState(props.followingData)
+  const [followerList,setFollower] = useState(props.followerData)
+
   const[tagFriend,setTagFriend] = useState([])
   const [showmention,setShowMention] =useState(false)
   const [Selection,setSelection] =useState({start:0,end:0})
@@ -80,6 +85,7 @@ function AddSong(props) {
         .then(() => {
           getSpotifyApi();
           props.followingListReq('user','');
+          props.followListReq('user','');
 
         })
         .catch(() => {
@@ -180,6 +186,20 @@ function AddSong(props) {
           status = props.status;
           toast('Oops', 'Something Went Wrong, Please Try Again');
           break;
+
+          case FOLLOWING_LIST_REQUEST:
+            status = props.status;
+            break;
+    
+          case FOLLOWING_LIST_SUCCESS:
+            status = props.status;
+            setFollower(props.followerData)
+            break;
+    
+          case FOLLOWING_LIST_FAILURE:
+            status = props.status;
+            toast('Oops', 'Something Went Wrong, Please Try Again');
+            break;
       }
     
   }
@@ -266,47 +286,83 @@ function AddSong(props) {
               placeholder={'Add a caption...'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
-               
                 let indexvalue = text.lastIndexOf("@")
                 let newString = text.substr(text.lastIndexOf("@"))
                 
                 if(indexvalue!= -1){
-                
-               
-                 if(newString.length===1 ){
+                 
+                 if(newString.length===1){
                   if(search.substr(indexvalue-1)===' '||search.substr(indexvalue-1)==='')
                   {
-                   
-                    setFollowingList([...props.followingData])
+                       setFollowingList([...props.followingData])
+                       setFollower([...props.followerData])
                     props.followingData.length===0 ? setShowMention(false) : setShowMention(true)
-                  }
-                  else{
-                    setShowMention(false)  
-                  }
-                  }else{
-           let newSubString = newString.substr(1,newString.length-1)
-           let newArray = []
-            props.followingData.map((item,index)=>{
-            //  console.log("mapItem"+item.full_na)
-             if(item.username.includes(newSubString)){
-                   newArray.push(item)
+                 }
+                 else{
+                  setShowMention(false) 
+                 }
+                }
+                 else{
+                  
+  let newSubString = newString.substr(1,newString.length-1)
+       let newArray = []
+       let newFollowArray=[]
+       if(props.followingData.length!=0){
+        props.followingData.map((item,index)=>{
+        //  console.log("mapItem"+item.full_name)
+               if(item.username.includes(newSubString)){
+                 newArray.push(item)
                }
                if(index===props.followingData.length-1){
-                 newArray.length===0?setShowMention(false):
-               ( 
-                 
-               setFollowingList(newArray),
-               setShowMention(true)
+  
+   if(props.followerData.length!=0){
+                props.followerData.map((items,indexs)=>{
+  
+                  if(items.username.includes(newSubString)){
+                    newFollowArray.push(items)
+                  }
+                  if(indexs===props.followerData.length-1){
+                  newFollowArray.length===0?setShowMention(false):
+                  (  setFollowingList(newArray),
+                  setFollower(newFollowArray),
+                    setShowMention(true)
+                  
+                  )
+                  }
+                 })
+                }
+                else{
+                  setFollowingList(newArray),
+                    setShowMention(true)
+                }
                
-               )
                }
          })
+        }else{
+          props.followerData.map((items,indexs)=>{
+  
+            if(items.username.includes(newSubString)){
+              newFollowArray.push(item)
+            }
+            if(indexs===props.followerData.length-1){
+              newArray.length===0?setShowMention(false):
+            (  
+              
+            setFollower(newFollowArray),
+              setShowMention(true)
+            )
+            }
+           })
+        }
+  
+     
                  }
-                   } else{
-                  setShowMention(false)
-                }
-                
-                setSearch(text);
+               
+                  }
+                  else{
+                    setShowMention(false)
+                  }
+               setSearch(text);
               }}
             >
               <Text>{parts}</Text>
@@ -383,20 +439,22 @@ function AddSong(props) {
 showmention?     
  <View style={{
  backgroundColor:'#000000',
- borderTopRightRadius:10,
- borderTopLeftRadius:10,
+borderRadius:10,
  marginRight:'20%',
 //  minHeight:Dimensions.get('window').height/7,
 //  maxHeight:Dimensions.get("window").height/4.2,
-  height: followingList.length===2?Dimensions.get('window').height/6: followingList.length===3?Dimensions.get('window').height/4.5: Dimensions.get('window').height/3,
-  position:'absolute',
- top:followingList.length===2 ? 0 : 0,
+height: (followingList.length +followerList.length)===2 || (followingList.length +followerList.length)===1?Dimensions.get('window').height/8: (followingList.length+followerList.length)===3?Dimensions.get('window').height/3: Dimensions.get('window').height/3.5,
+
+position:'absolute',
+ top: 0,
  width:Dimensions.get('window').width/1.25
  }}
  
  >
    <FlatList
-   data={followingList}
+     data={followerList.concat(followingList).filter(function(o) {  
+      return this[o.username] ? false : this[o.username] = true;
+    }, {})}
    keyboardShouldPersistTaps='always'
 
    renderItem={({item,index})=>{
@@ -421,7 +479,7 @@ showmention?
         marginBottom:'3%'
       }}
       />
-      <View style={{flex:1,borderBottomWidth: index=== followingList.length-1? 0 : 0.5,borderBottomColor:'#25262A',justifyContent:'center',
+      <View style={{flex:1,borderBottomWidth: 0.5,borderBottomColor:'#25262A',justifyContent:'center',
      
     }}>
       <Text style={{fontSize:14,color:'white'}}>{item.full_name}</Text>
@@ -453,6 +511,7 @@ const mapStateToProps = state => {
     status: state.PostReducer.status,
     createPostResponse: state.PostReducer.createPostResponse,
     followingData: state.UserReducer.followingData,
+    followerData: state.UserReducer.followerData,
 
   };
 };
@@ -464,6 +523,9 @@ const mapDispatchToProps = dispatch => {
     },
     followingListReq: (usertype, id) => {
       dispatch(followingListReq(usertype, id));
+    },
+    followListReq: (usertype, id) => {
+      dispatch(followerListReq(usertype, id));
     },
   };
 };

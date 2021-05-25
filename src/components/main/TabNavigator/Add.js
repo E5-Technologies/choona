@@ -36,7 +36,12 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 let status;
 
+
+
 function AddSong(props) {
+
+    const inputRef = React.useRef(null);
+
 
     const [search, setSearch] = useState("");
     const [data, setData] = useState([]);
@@ -161,8 +166,23 @@ function AddSong(props) {
                             color: Colors.white, paddingLeft: normalise(30),
                         }} value={search}
                             placeholder={"Search"}
+                            ref={inputRef}
+                            returnKeyType = {"done"}
+
                             keyboardAppearance= {"dark"}
                             placeholderTextColor={Colors.darkgrey}
+                            onSubmitEditing={()=>{
+                                inputRef.current.blur();
+                                Keyboard.dismiss()
+
+                            }}                        
+                
+
+
+                
+
+
+
                             onChangeText={(text) => {
                                 setSearch(text)
                                 if (text.length >= 1) {

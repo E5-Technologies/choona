@@ -46,8 +46,10 @@ import { set } from 'react-native-reanimated';
 
 let status;
 let changePlayer = true;
+let TotalCount= '0'
 
 function OthersProfile(props) {
+ 
   const [id, setId] = useState(props.route.params.id);
   const [isFollowing, setIsFollowing] = useState(false);
   const [postCount,setPostCount] = useState('')
@@ -67,9 +69,11 @@ function OthersProfile(props) {
         'x-access-token': props.header.token,
       },
     });
-
+console.log("resposse"+JSON.stringify(response))
 setIsLoading(false)
-setPostCount(response.data.postCount)
+
+response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data.postCount
+
     setProfilePosts([...profilePosts,...response.data.data])
 
     console.log("logcat response:"+JSON.stringify(response.data.postCount));
@@ -101,13 +105,25 @@ setPostCount(response.data.postCount)
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
-        .then(() => {
+        .then(async() => {
           props.othersProfileReq(id);
           props.getCountryCode();
          // mutate();
 
-       getPosts(pageId)
-      
+         const response = await axios.get(`${postsUrl}?page=${1}`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': props.header.token,
+          },
+        });
+    console.log("resposse"+JSON.stringify(response))
+    setIsLoading(false)
+    
+    response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data.postCount
+    if(profilePosts.length===0){
+        setProfilePosts([...profilePosts,...response.data.data])
+    }
 
 
         })
@@ -130,6 +146,10 @@ setPostCount(response.data.postCount)
         break;
 
       case OTHERS_PROFILE_SUCCESS:
+
+      
+
+
         setIsFollowing(props.othersProfileresp.isFollowing);
         status = props.status;
         break;
@@ -184,7 +204,6 @@ setPostCount(response.data.postCount)
   
     let array=[]
     array.push(data.item)
-    console.log("array"+JSON.stringify(array))
     return (
       <TouchableOpacity
         onPress={() => {
@@ -296,9 +315,7 @@ setPostCount(response.data.postCount)
               }}>
               {props.othersProfileresp.full_name}
             </Text>
-{
-  console.log("post"+postCount)
-}
+
             <Text
               style={{
                 // marginTop: normalise(2),
@@ -307,8 +324,8 @@ setPostCount(response.data.postCount)
                 fontFamily: 'ProximaNova-Regular',
               }}>
               {profilePosts !== undefined
-                ? `${postCount} ${
-                   postCount>1? 'Posts' : 'Post'
+                ? `${TotalCount} ${
+                   TotalCount>1? 'Posts' : 'Post'
                   }`
                 : null}
             </Text>
@@ -621,16 +638,13 @@ setPostCount(response.data.postCount)
             style={{ paddingTop: normalise(10) }}
             data={profilePosts}
             renderItem={renderProfileData}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
             showsVerticalScrollIndicator={false}
             numColumns={2}
             onEndReached={()=>
               onEndReached()
                 
               }
-               onEndReachedThreshold={1}
+               onEndReachedThreshold={0.5}
           />
         )}
 

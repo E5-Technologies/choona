@@ -144,10 +144,20 @@ const App = () => {
   const BottomTab = () => {
     const UserReducer = useSelector(state => state.UserReducer);
 
+    const styles = StyleSheet.create({
+      appStyle: { flex: 1, backgroundColor: "#000000" }
+    });
+    
+
     return (
+      <View style={styles.appStyle}>
+
       <Tab.Navigator
+      sceneAnimationEnabled={false}
         initialRouteName={'Home'}
         tabBarOptions={{
+          cardStyle: { backgroundColor: 'transparent' },
+
           activeBackgroundColor: Colors.darkerblack,
           inactiveBackgroundColor: Colors.darkerblack,
           safeAreaInsets: { bottom: 0 },
@@ -298,6 +308,8 @@ const App = () => {
           }}
         />
       </Tab.Navigator>
+      </View>
+
     );
   };
 

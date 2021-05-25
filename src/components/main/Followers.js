@@ -172,10 +172,10 @@ function Followers(props) {
 
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
+        }}> */}
         <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
@@ -263,7 +263,7 @@ function Followers(props) {
             ItemSeparatorComponent={Seperator}
           />
         </SafeAreaView>
-      </TouchableWithoutFeedback>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

@@ -83,6 +83,7 @@ const getMessageReducer = state => state.MessageReducer;
 export function* getChatTokenAction(action) {
   try {
     const items = yield select(getItems);
+    
 
     const Header = {
       Accept: 'application/json',
@@ -116,7 +117,21 @@ export function* getChatTokenAction(action) {
  * @param {Object} action  provide payload for chat
  */
 export function* sendChatMessageAction(action) {
-  // console.log('SEND_CHAT_REQ', action.payload);
+
+    // console.log('SEND_CHAT_REQ', action.payload); 
+ 
+   const items = yield select(getItems);
+
+  //  console.log("items.token"+items.token)
+
+
+  
+
+  const Header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items.token,
+  };
 
   try {
     action.payload.chatTokens.map((chatToken, index) => {
@@ -125,6 +140,7 @@ export function* sendChatMessageAction(action) {
       );
     });
 
+   
     yield put({
       type: SEND_CHAT_MESSAGE_SUCCESS,
       data: 'Message sent successfully',
@@ -132,6 +148,33 @@ export function* sendChatMessageAction(action) {
   } catch (error) {
     yield put({type: SEND_CHAT_MESSAGE_FAILURE, error: error});
   }
+
+  try{
+
+
+    let updateMessageResponse = yield call(
+      postApi,
+      'chat/sendPush',
+      {
+        receiverId: action.payload.chatBody[0].receiver_id,
+        song_name: action.payload.chatBody[0].song_name,
+        artist_name: action.payload.chatBody[0].artist_name,
+      },
+      {
+        
+          Accept: 'application/json',
+          contenttype: 'application/json',
+          accesstoken: items.token,
+        
+      },
+    );
+
+    console.log( 'updateMessageResponse: ' + JSON.stringify(updateMessageResponse));
+
+  }catch(error){
+    console.log("error123"+error)
+  }
+
 }
 
 export function* getChatListAction(action) {

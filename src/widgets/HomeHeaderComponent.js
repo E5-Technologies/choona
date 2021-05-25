@@ -47,9 +47,12 @@ function HomeHeaderComponent(props) {
             <Image
               source={{ uri: props.imageone ?? props.imageone }}
               style={{
-                height: props.imageoneheight,
-                width: props.imageonewidth,
-                borderRadius: props.borderRadius,
+                // height: props.imageoneheight,
+                // width: props.imageonewidth,
+                height:normalise(26),
+                width:normalise(26),
+                // borderRadius: props.borderRadius,
+                borderRadius:normalise(60),
                 marginTop: normalise(-11),
               }}
               resizeMode="contain"

@@ -17,6 +17,42 @@ function CommentList(props) {
     }
   };
 
+  
+  let delimiter = /\s+/;
+
+  //split string
+  let _text = props.comment;
+  let token, index, parts = [];
+  while (_text) {
+    delimiter.lastIndex = 0;
+    token = delimiter.exec(_text);
+    if (token === null) {
+      break;
+    }
+    index = token.index;
+    if (token[0].length === 0) {
+      index = 1;
+    }
+    parts.push(_text.substr(0, index));
+    parts.push(token[0]);
+    index = index + token[0].length;
+    _text = _text.slice(index);
+  }
+  parts.push(_text);
+  
+  //highlight hashtags
+  parts = parts.map((text) => {
+    if (/^@/.test(text)) {
+      return <Text key={text} style={{color:'#3DB2EB'}} 
+      onPress={()=>{ 
+         props.navi.navigation.navigate('OthersProfile', {
+        id: text.substr(1,text.length-1),
+      })
+    }}>{text}</Text>;
+    } else {
+      return text;
+    }
+  });
   return (
     <View style={[styles.commentContainer,{borderBottomWidth:props.showLine ? 1 :null,borderBottomColor:props.showLine ? '#25262A':null,}]}>
       <TouchableOpacity
@@ -43,7 +79,7 @@ function CommentList(props) {
        
          <Hyperlink linkDefault={true}
           linkStyle={ { color: '#ffffff',textDecorationLine:'underline',textDecorationStyle:'dotted',fontWeight:'bold' } }>
-        <Text  style={[styles.commentText,{paddingRight:'8%'}]}>{props.comment}</Text>
+        <Text  style={[styles.commentText,{paddingRight:'8%'}]}>{parts}</Text>
         </Hyperlink>
       </View>
     </View>

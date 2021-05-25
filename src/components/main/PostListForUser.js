@@ -539,6 +539,7 @@ if(found!=-1){
           thumbsup_count: data.item.thumbsup_count,
         }}
         content={data.item.post_content}
+        navi={props}
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}

@@ -13,12 +13,14 @@ import {
   StyleSheet,
   ScrollView,
   BackHandler,
-  Keyboard
+  Keyboard,
+  Dimensions,
+  FlatList
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 
 import Colors from '../../assests/Colors';
@@ -33,8 +35,11 @@ import {
   COMMENT_ON_POST_REQUEST,
   COMMENT_ON_POST_SUCCESS,
   COMMENT_ON_POST_FAILURE,
+  FOLLOWER_LIST_FAILURE,
+  FOLLOWER_LIST_SUCCESS,
+  FOLLOWER_LIST_REQUEST
 } from '../../action/TypeConstants';
-import { commentOnPostReq } from '../../action/UserAction';
+import { commentOnPostReq,followingListReq } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -42,20 +47,24 @@ import CommentList from '../main/ListCells/CommentList';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
+import react from 'react';
 
 let status;
-
+let RbSheetRef;
 
 let comment_count = 0;
 let DataBack=[]
 
 function HomeItemComments(props) {
+  const refs = React.useRef()
   const [comments, setComments] = useState(props.route.params.commentData);
+  const [followingList,setFollowingList] = useState(props.followingData)
 
- 
-  const [commentsLoading, setCommentsLoading] = useState(true);
+ const [showmention,setShowMention] =useState(false)
+   const [commentsLoading,setCommentsLoading] = useState(true);
   const [commentText, setCommentText] = useState('');
    const [id] = useState(props.route.params.id);
+   const [Selection,setSelection] =useState({start:-1,end:-1})
 //   const [image] = useState(props.route.params.image);
 //   const [time] = useState(props.route.params.time);
 //   const [username] = useState(props.route.params.username);
@@ -81,7 +90,7 @@ function HomeItemComments(props) {
 //       .catch(err => {
 //         toast('Error', err);
 //       });
-     
+ props.followingListReq('user','');
 DataBack= comments
       BackHandler.addEventListener("hardwareBackPress", _onBackHandlerPress);
 
@@ -94,7 +103,7 @@ DataBack= comments
 
 
   function renderItem(data) {
-    console.log("commentItem"+JSON.stringify(data))
+     console.log("commentItem"+JSON.stringify(data))
     return (
       <CommentList
         image={constants.profile_picture_base_url + data.item.profile_image}
@@ -115,6 +124,7 @@ DataBack= comments
     );
   }
 
+  
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case COMMENT_ON_POST_REQUEST:
@@ -139,6 +149,24 @@ DataBack= comments
         status = props.status;
         toast('Oops', 'Something Went Wrong');
         break;
+
+        case FOLLOWER_LIST_REQUEST:
+        
+          status = props.status;
+          alert("status"+props.status)
+          break;
+  
+        case FOLLOWER_LIST_SUCCESS:
+          status = props.status;
+          alert("alert")
+        setFollowingList(props.followingData)
+          break;
+  
+        case FOLLOWER_LIST_FAILURE:
+          status = props.status;
+          toast('Oops', 'Something Went Wrong, Please Try Again');
+          break;
+  
     }
   }
 
@@ -154,21 +182,117 @@ DataBack= comments
  
 };
 
+
+
+
 const _onBackHandlerPress = () => {
-   
+   console.log("count"+JSON.stringify(DataBack).length)
     let data = DataBack
   let Comment= comment_count;
 const { navigation, route } = props;
-route.params.onSelect(data,Comment);
+route.params.onSelect(data,data.length);
   navigation.goBack();
  return true
 
 };
 
 
+const RbSheet = () => 
+{
+  return (
+    <RBSheet
+      ref={ref => {
+        if (ref) {
+          RbSheetRef = ref;
+        }
+      }}
+      animationType={'slide'}
+      closeOnDragDown={false}
+      closeOnPressMask={true}
+       nestedScrollEnabled={true}
+      customStyles={{
+        container: {
+          minHeight: Dimensions.get('window').height/2.2 ,
+          borderTopEndRadius: normalise(8),
+          borderTopStartRadius: normalise(8),
+          backgroundColor: 'transparent'
+        },
+      }}
+      
+      >
+      
+      
+            <View style={{height:Dimensions.get('window').height / 2.2,backgroundColor:"black",borderTopEndRadius: normalise(8),
+             borderTopStartRadius: normalise(8)}}>
+            <View style={{width: '95%',flex:1, alignSelf: 'center',}}>
+        
+          {/* <FlatList
+            style={{height:'40%'}}
+            data={commentData}
+            renderItem={renderFlatlistData}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            keyboardShouldPersistTaps='always'
+            showsVerticalScrollIndicator={false}
+          /> */}
+            </View>
+            
+          </View>
+           
+         
+    </RBSheet>
+  );
+};
+
+
 const updateSize = (height) => {
   setHeight(height)
 }
+
+const  onSelectionChange = ({ nativeEvent: { selection, text } }) => {
+  console.log(
+    "change selection to",
+    selection,
+    "for value",
+   
+  );
+  // console.log("selectestext"+text);
+  // this.setState({ selection });
+};
+
+
+let delimiter = /\s+/;
+
+//split string
+let _text = commentText;
+let token, index, parts = [];
+while (_text) {
+  delimiter.lastIndex = 0;
+  token = delimiter.exec(_text);
+  if (token === null) {
+    break;
+  }
+  index = token.index;
+  if (token[0].length === 0) {
+    index = 1;
+  }
+  parts.push(_text.substr(0, index));
+  parts.push(token[0]);
+  index = index + token[0].length;
+  _text = _text.slice(index);
+}
+parts.push(_text);
+
+//highlight hashtags
+parts = parts.map((text) => {
+  if (/^@/.test(text)) {
+    return <Text key={text} style={{color:'red'}}>{text}</Text>;
+  } else {
+    return text;
+  }
+});
+
 
   return (
  
@@ -241,27 +365,123 @@ const updateSize = (height) => {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-
+    
 </SafeAreaView>
       </ScrollView>
+      {
+showmention?     
+ <View style={{backgroundColor:'black',
+ borderTopRightRadius:10,
+ borderTopLeftRadius:10,
+ marginRight:'20%',
+ minHeight:Dimensions.get('window').height/7,
+ maxHeight:Dimensions.get("window").height/4.2
+ }}>
+   <FlatList
+   data={followingList}
+   keyboardShouldPersistTaps='always'
+   renderItem={({item,index})=>{
+     return(
+      <TouchableOpacity style={{flexDirection:'row',paddingTop:'3%'}}
+      onPress={()=>{ 
+        alert(JSON.stringify(Selection))
+        let lastIndex=commentText.lastIndexOf("@")
+        // setSelection({start:lastIndex,end:lastIndex+item.full_name.length})
+        let newString = commentText.substr(0,commentText.lastIndexOf("@")+1)
+        setCommentText(newString+item.full_name)
+        setShowMention(false)
+      }}
+      >
+      <Image source={{uri:constants.profile_picture_base_url + item.profile_image}} 
+     resizeMode='contain'
+     style={{
+        height:Dimensions.get('window').width/12,
+        width:Dimensions.get('window').width/12,
+        borderRadius:Dimensions.get('window').width,
+        marginLeft:'5%',
+        marginRight:'4%',
+        marginBottom:'3%'
+      }}
+      />
+      <View style={{flex:1,borderBottomWidth:0.5,borderBottomColor:'#25262A',justifyContent:'center',
+     
+    }}>
+        <Text style={{fontSize:16,color:'white',marginBottom:'5%'}}>{item.full_name}</Text>
+      </View>
+     </TouchableOpacity>
+     )
+   }}
+   >
+
+   </FlatList>
+
+  
+   
+ </View>
+ : null
+}
         <View style={[styles.commentFooterContainer,{flexDirection:'row',alignItems:'center',backgroundColor:'#000000'}]}>
           <TextInput
             style={[styles.commentFooterInput,{flex:1,
             //   flexWrap:'wrap',
-            //   height: textinputHeight, 
+               height: textinputHeight, 
             }]}
-            value={commentText}
+            // value={commentText}
              multiline
              autoFocus={true}
+        
             maxHeight={100}
             keyboardAppearance='dark'
+            // onSelectionChange={ event => {
+            //   const selections = event.nativeEvent.selection;
+            //   setSelection({start:selections.start,end:selections.end})
+              
+            // } }
+        
+            // selection={Selection}
+            selectionColor='blue'
             onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
             onChangeText={text => {
+              
+               let indexvalue = text.lastIndexOf("@")
+               let newString = text.substr(text.lastIndexOf("@"))
+             if(indexvalue!= -1){
+               
+                if(newString.length===1){
+               
+                      setFollowingList([...props.followingData])
+                   props.followingData.length===0 ? setShowMention(false) : setShowMention(true)
+                }else{
+                 
+ let newSubString = newString.substr(1,newString.length-1)
+      let newArray = []
+       props.followingData.map((item,index)=>{
+        console.log("mapItem"+item.full_name)
+              if(item.full_name.includes(newSubString)){
+                newArray.push(item)
+              }
+              if(index===props.followingData.length-1){
+                newArray.length===0?setShowMention(false):
+              (  setFollowingList(newArray),
+                setShowMention(true)
+              )
+              }
+        })
+                }
+              
+               
+               } else{
+                 setShowMention(false)
+               }
+              
+
               setCommentText(text);
             }}
-          />
+          >
+            <Text>{parts}</Text>
+          </TextInput>
           {commentText !== '' ? (
             <TouchableOpacity
               style={{
@@ -332,6 +552,7 @@ const updateSize = (height) => {
             </TouchableOpacity>
           ) : null}
         </View>
+       
         {Platform.OS==="ios" && <KeyboardSpacer/>}
         </View>
 
@@ -428,11 +649,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+ console.log("followingdata"+JSON.stringify(state.UserReducer.followingData))
   return {
     status: state.UserReducer.status,
     commentResp: state.UserReducer.commentResp,
     userProfileResp: state.UserReducer.userProfileResp,
     header: state.TokenReducer,
+    followingData: state.UserReducer.followingData,
+   
   };
 };
 
@@ -443,6 +667,9 @@ const mapDispatchToProps = dispatch => {
     },
     updateMessageCommentRequest: payload => {
         dispatch(updateMessageCommentRequest(payload));
+      },
+      followingListReq: (usertype, id) => {
+        dispatch(followingListReq(usertype, id));
       },
   };
 };

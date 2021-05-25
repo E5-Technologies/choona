@@ -239,10 +239,10 @@ function Following(props) {
       <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
       <Loader visible={bool} />
 
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
+        }}> */}
         <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
@@ -388,7 +388,7 @@ function Following(props) {
             />
           )}
         </SafeAreaView>
-      </TouchableWithoutFeedback>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

@@ -36,9 +36,12 @@ import {
   COMMENT_ON_POST_FAILURE,
   FOLLOWER_LIST_FAILURE,
   FOLLOWER_LIST_SUCCESS,
-  FOLLOWER_LIST_REQUEST
+  FOLLOWER_LIST_REQUEST,
+  FOLLOWING_LIST_REQUEST,
+  FOLLOWING_LIST_SUCCESS,
+  FOLLOWING_LIST_FAILURE,
 } from '../../action/TypeConstants';
-import { commentOnPostReq,followingListReq } from '../../action/UserAction';
+import { commentOnPostReq,followingListReq,followerListReq } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -68,12 +71,14 @@ function HomeItemComments(props) {
   const [textinputHeight,setHeight]=useState(50)
   const [emoji, setEmoji] = useState(false)
   const [followingList,setFollowingList] = useState(props.followingData)
+  const [followerList,setFollower] = useState(props.followerData)
   const[tagFriend,setTagFriend] = useState([])
 
   const [showmention,setShowMention] =useState(false)
   const [Selection,setSelection] =useState({start:0,end:0})
   useEffect(() => {
     props.followingListReq('user','');
+    props.followListReq('user','');
     fetchCommentsOnPost(props.route.params.id, props.header.token)
       .then(res => {
 
@@ -108,41 +113,13 @@ function HomeItemComments(props) {
   const _keyboardDidHide = () => setEmoji(false);
 
   function renderItem(data) {
-    let delimiter = /\s+/;
-
-//split string
-let _text = data.item.text;
-let token, index, parts = [];
-while (_text) {
-  delimiter.lastIndex = 0;
-  token = delimiter.exec(_text);
-  if (token === null) {
-    break;
-  }
-  index = token.index;
-  if (token[0].length === 0) {
-    index = 1;
-  }
-  parts.push(_text.substr(0, index));
-  parts.push(token[0]);
-  index = index + token[0].length;
-  _text = _text.slice(index);
-}
-parts.push(_text);
-
-//highlight hashtags
-parts = parts.map((text) => {
-  if (/^@/.test(text)) {
-    return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
-  } else {
-    return text;
-  }
-});
+ 
     return (
       <CommentList
         image={constants.profile_picture_base_url + data.item.profile_image}
         name={data.item.name}
-        comment={parts}
+        comment={data.item.text}
+        navi={props}
         showLine={ comments.length-1===data.index ? false : true}
         time={moment(data.item.createdAt).from()}
         onPressImage={() => {
@@ -186,7 +163,6 @@ parts = parts.map((text) => {
         case FOLLOWER_LIST_REQUEST:
         
           status = props.status;
-          alert("status"+props.status)
           break;
   
         case FOLLOWER_LIST_SUCCESS:
@@ -198,6 +174,21 @@ parts = parts.map((text) => {
           status = props.status;
           toast('Oops', 'Something Went Wrong, Please Try Again');
           break;
+
+          case FOLLOWING_LIST_REQUEST:
+            status = props.status;
+            break;
+    
+          case FOLLOWING_LIST_SUCCESS:
+            status = props.status;
+            setFollower(props.followerData)
+            break;
+    
+          case FOLLOWING_LIST_FAILURE:
+            status = props.status;
+            toast('Oops', 'Something Went Wrong, Please Try Again');
+            break;
+          
     }
   }
 
@@ -251,7 +242,7 @@ while (_text) {
   _text = _text.slice(index);
 }
 parts.push(_text);
-
+console.log("parts"+parts)
 //highlight hashtags
 parts = parts.map((text) => {
   if (/^@/.test(text)) {
@@ -262,10 +253,8 @@ parts = parts.map((text) => {
 });
 
 
-
-
   return (
-    <View style={styles.container}>
+    <View style={styles.container}  keyboardShouldPersistTaps='always'>
        <StatusBar />
        <HeaderComponentComments
           firstitemtext={false}
@@ -284,8 +273,8 @@ parts = parts.map((text) => {
             _onBackPress()
           }}
         />
-       <ScrollView>
-       <SafeAreaView>
+       <ScrollView  keyboardShouldPersistTaps='always' >
+       <SafeAreaView >
       <Loader visible={commentsLoading} />
      
         <View style={styles.commentHeader}>
@@ -324,6 +313,7 @@ parts = parts.map((text) => {
         </View>
         <SwipeListView
           data={comments}
+          keyboardShouldPersistTaps='always'
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => {
@@ -332,9 +322,6 @@ parts = parts.map((text) => {
           disableRightSwipe={true}
           rightOpenValue={-75}
         />
-
-       
-      
       </SafeAreaView>
       </ScrollView>
       {
@@ -346,14 +333,18 @@ showmention?
  marginRight:'20%',
 //  minHeight:Dimensions.get('window').height/7,
 //  maxHeight:Dimensions.get("window").height/4.2,
- height: followingList.length===2?Dimensions.get('window').height/5: followingList.length===3?Dimensions.get('window').height/3.5: Dimensions.get('window').height/3,
- bottom:followingList.length===2 ? 35 : 17,
- width:Dimensions.get('window').width/1.25
+ height: (followingList.length +followerList.length)===2 || (followingList.length +followerList.length)===1?Dimensions.get('window').height/5: followingList.length+followerList.length===3?Dimensions.get('window').height/3.5: Dimensions.get('window').height/3,
+ bottom: Dimensions.get("window").width/7,
+ width:Dimensions.get('window').width/1.25,
+ 
  }}
  
  >
    <FlatList
-   data={followingList}
+   data={followerList.concat(followingList).filter(function(o) {  
+    return this[o.username] ? false : this[o.username] = true;
+  }, {})}
+  style={{marginBottom:'10%'}}
    keyboardShouldPersistTaps='always'
    renderItem={({item,index})=>{
      return(
@@ -377,7 +368,7 @@ showmention?
         // marginBottom:'3%'
       }}
       />
-      <View style={{flex:1,borderBottomWidth: index=== followingList.length-1? 0 : 0.5,borderBottomColor:'#25262A',justifyContent:'center',
+      <View style={{flex:1,borderBottomWidth: 0.5,borderBottomColor:'#25262A',justifyContent:'center',
      
     }}>
         <Text style={{fontSize:14,color:'white'}}>{item.full_name}</Text>
@@ -413,8 +404,6 @@ showmention?
             maxHeight={100}
             autoFocus={true}
             keyboardAppearance='dark'
-
-
             onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
             placeholder={'Add a comment...'}
             placeholderTextColor={Colors.white}
@@ -429,6 +418,7 @@ showmention?
                 if(commentText.substr(indexvalue-1)===' '||commentText.substr(indexvalue-1)==='')
                 {
                      setFollowingList([...props.followingData])
+                     setFollower([...props.followerData])
                   props.followingData.length===0 ? setShowMention(false) : setShowMention(true)
                }
                else{
@@ -439,18 +429,56 @@ showmention?
                 
 let newSubString = newString.substr(1,newString.length-1)
      let newArray = []
+     let newFollowArray=[]
+     if(props.followingData.length!=0){
       props.followingData.map((item,index)=>{
       //  console.log("mapItem"+item.full_name)
              if(item.username.includes(newSubString)){
                newArray.push(item)
              }
              if(index===props.followingData.length-1){
-               newArray.length===0?setShowMention(false):
-             (  setFollowingList(newArray),
-               setShowMention(true)
-             )
+
+ if(props.followerData.length!=0){
+              props.followerData.map((items,indexs)=>{
+
+                if(items.username.includes(newSubString)){
+                  newFollowArray.push(items)
+                }
+                if(indexs===props.followerData.length-1){
+                newFollowArray.length===0?setShowMention(false):
+                (  setFollowingList(newArray),
+                setFollower(newFollowArray),
+                  setShowMention(true)
+                
+                )
+                }
+               })
+              }
+              else{
+                setFollowingList(newArray),
+                  setShowMention(true)
+              }
+             
              }
        })
+      }else{
+        props.followerData.map((items,indexs)=>{
+
+          if(items.username.includes(newSubString)){
+            newFollowArray.push(item)
+          }
+          if(indexs===props.followerData.length-1){
+            newArray.length===0?setShowMention(false):
+          (  
+            
+          setFollower(newFollowArray),
+            setShowMention(true)
+          )
+          }
+         })
+      }
+
+   
                }
              
                 }
@@ -492,8 +520,7 @@ let newSubString = newString.substr(1,newString.length-1)
                   text: commentText,
                   tag:tapUser
                 };
-
-                console.log(JSON.stringify(commentObject));
+                // console.log("ffff"+ JSON.stringify(commentObject))
                 isInternetConnected()
                   .then(() => {
                  
@@ -515,7 +542,7 @@ let newSubString = newString.substr(1,newString.length-1)
 
   )
 
-  return (
+  return (    
     <View style={styles.container}>
       <Loader visible={commentsLoading} />
       <StatusBar />
@@ -733,6 +760,7 @@ const mapStateToProps = state => {
     userProfileResp: state.UserReducer.userProfileResp,
     header: state.TokenReducer,
     followingData: state.UserReducer.followingData,
+    followerData: state.UserReducer.followerData,
   };
 };
 
@@ -743,6 +771,9 @@ const mapDispatchToProps = dispatch => {
     },
     followingListReq: (usertype, id) => {
       dispatch(followingListReq(usertype, id));
+    },
+    followListReq: (usertype, id) => {
+      dispatch(followerListReq(usertype, id));
     },
   };
 };

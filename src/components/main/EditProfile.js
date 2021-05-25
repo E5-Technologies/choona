@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
+  Platform
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import { tokenRequest } from '../../action/index';
@@ -22,6 +23,7 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
+import Permissions,{requestMultiple,request,check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
@@ -69,6 +71,9 @@ function EditProfile(props) {
     });
   };
 
+
+  
+
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case EDIT_PROFILE_REQUEST:
@@ -90,6 +95,16 @@ function EditProfile(props) {
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
+   
+    accessPremission()
+
+
+  };
+
+
+  const accessPremission=()=>{
+
+
     Alert.alert(
       'Choose Profile Image',
       'Select from where you want to choose the image.',
@@ -97,19 +112,40 @@ function EditProfile(props) {
         {
           text: 'Camera',
           onPress: () => {
+
             pickImagewithCamera();
+
+
+
+
+
+
+            
+            
+
+
           },
         },
         {
           text: 'Gallery',
           onPress: () => {
+
+
+
+
+
             pickImagefromGallery();
+
+
+
+
+
           },
         },
       ],
       { cancelable: true },
     );
-  };
+  }
 
   // IMAGE PICKER FROM GALLERY
   const pickImagefromGallery = () => {
@@ -124,12 +160,14 @@ function EditProfile(props) {
       includeExif: true,
     })
       .then(image => {
-        // console.log(`IMAGE: ${JSON.stringify(image)}`);
+         console.log(`IMAGE: ${JSON.stringify(image)}`);
         setPicture(true);
         setImageDetails(image);
         setProfilePic(image.path);
       })
       .catch(err => {
+
+        alert(err);
         // console.log(err);
       });
   };
@@ -149,11 +187,14 @@ function EditProfile(props) {
         setProfilePic(image.path);
       })
       .catch(err => {
+
+        alert(err);
         // console.log(err);
       });
   };
 
   const updateProfile = () => {
+
     if (username === '') {
       alert('Please enter your username');
     }
