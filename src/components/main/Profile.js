@@ -86,7 +86,7 @@ function Profile(props) {
    } 
 
   useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
+    // const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(async() => {
           props.getProfileReq();
@@ -99,18 +99,18 @@ function Profile(props) {
        'x-access-token': props.header.token,
      },
    });
-
-  setProfilePosts(response.data.data)
+ profilePosts.length===0 ?
+  setProfilePosts(response.data.data):null
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
         });
-    });
+    // });
 
-    return () => {
-      unsuscribe();
-    };
-  });
+    // return () => {
+    //   unsuscribe();
+    // };
+  },[]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {

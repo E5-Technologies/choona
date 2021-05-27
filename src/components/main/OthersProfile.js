@@ -117,13 +117,13 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
             'x-access-token': props.header.token,
           },
         });
-    console.log("resposse"+JSON.stringify(response))
+    console.log("resposse"+JSON.stringify(response)) 
     setIsLoading(false)
     
     response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data.postCount
-    if(profilePosts.length===0){
+    profilePosts.length===0 ?
         setProfilePosts([...profilePosts,...response.data.data])
-    }
+    : null
 
 
         })

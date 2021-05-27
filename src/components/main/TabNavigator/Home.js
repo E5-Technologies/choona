@@ -1245,7 +1245,7 @@ function _onReaction(ID,reaction){
       for (i = 0; i < array.length; i++) {
         array[i].playing = false;
       }
-      setVisibleMiniPlayer(false)
+    //  setVisibleMiniPlayer(false)
       setPostArray(array);
       // console.log(array);
     }
@@ -1522,12 +1522,13 @@ onPress={()=>loadMore()}
             props.status === EDIT_PROFILE_SUCCESS ||
             props.status === DUMMY_ACTION_SUCCESS||
             props.status===LOAD_MORE_SUCCESS ||
-            props.status===LOAD_MORE_REQUEST)&&
+            props.status===LOAD_MORE_REQUEST||
+            props.status===HOME_PAGE_REQUEST||
+            props.status===DUMMY_ACTION_REQUEST
+            )&&
             visibleminiPlayer===true? (
               <MusicPlayerBar
                 onPress={() => {
-
-
                   props.navigation.navigate('Player', {
                     comments:[],
                     song_title: props.playingSongRef.song_name,

@@ -28,6 +28,9 @@ import { connect } from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
+
+
+  
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
@@ -38,30 +41,50 @@ function MusicPlayerBar(props) {
       : null;
 
   useEffect(() => {
+
+
+
     getPlatingState();
     getPlayingPosition();
     setTimeout(() => {
       setBool(false);
     }, 1000);
-  }, []);
+  }, [play]);
 
   function getPlatingState() {
-    if (ref !== null) {
+
       setInterval(() => {
+
+        const ref =
+        global.playerReference !== null && global.playerReference !== undefined
+          ? global.playerReference
+          : null;
+        if (ref !== null && ref !== undefined) {
+
         const isPlaying = ref.isPlaying();
+
         setPlay(isPlaying);
+        }
       }, 1000);
-    }
+    
   }
 
   function getPlayingPosition() {
-    if (ref !== null) {
       setInterval(() => {
+
+        const ref =
+        global.playerReference !== null && global.playerReference !== undefined
+          ? global.playerReference
+          : null;
+        if (ref !== null && ref !== undefined) {
+
+
         ref.getCurrentTime(seconds => {
           setTime(seconds);
         });
+      }
       }, 1000);
-    }
+    
   }
 
   const playOrPause = () => {
