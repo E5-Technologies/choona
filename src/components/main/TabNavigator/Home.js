@@ -1001,7 +1001,7 @@ function _onReaction(ID,reaction){
               height: normalise(35),
               marginTop: normalise(20),
               borderRadius: normalise(8),
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.white,
             }}>
             <TextInput
               autoCorrect={false}
@@ -1010,7 +1010,7 @@ function _onReaction(ID,reaction){
                 height: normalise(35),
                 width: '85%',
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
                 paddingLeft: normalise(30),
               }}
               value={userSeach}
@@ -1038,7 +1038,7 @@ function _onReaction(ID,reaction){
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.fordGray,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
@@ -1337,81 +1337,101 @@ function onfinish(){
   
 
         {_.isEmpty(props.postData) ? (
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Image
-              source={ImagePath.noposts}
+        <View
+        style={{ flex: 1, alignItems: 'center',marginTop:'4%' }}>
+        <Image
+          source={ImagePath.emptyPost}
+          style={{
+            height: 2*normalise(90),
+            width: 2*normalise(90),
+            marginTop: '8%',
+          }}
+          resizeMode="contain"
+        />
+        <Text
+          style={{
+            // marginBottom: '20%',
+          
+            marginTop: normalise(30),
+            color: Colors.white,
+            fontSize: normalise(15),
+            // fontWeight: 'bold',
+            fontFamily: 'ProximaNova-Bold',
+          }}>
+            Your Feed is empty
+        </Text>
+
+        <Text
               style={{
-                height: normalise(150),
-                width: normalise(150),
-                marginTop: '28%',
-              }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                marginBottom: '20%',
-                marginTop: normalise(10),
-                color: Colors.white,
-                fontSize: normalise(14),
-                fontWeight: 'bold',
+                color: Colors.fordGray,
+                fontSize: normalise(12),
+                fontWeight: '100',
+                marginTop: normalise(7),
+                width: '68%',
+                textAlign: 'center',
+                alignSelf:'center',
+                fontFamily: 'ProximaNova-Regular',
+              
               }}>
-              NO POSTS YET
+        You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.
             </Text>
+        {/* <TouchableOpacity style={{
+          height: normalise(50), width: '80%',
+          borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
+          shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
+          shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
+          alignItems: 'center', justifyContent: 'center'
+        }} >
+          <Image source={ImagePath.facebook}
+            style={{ height: normalise(20), width: normalise(20) }}
+            resizeMode='contain' />
 
-            {/* <TouchableOpacity style={{
-              height: normalise(50), width: '80%',
-              borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
-              shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
-              shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
-              alignItems: 'center', justifyContent: 'center'
-            }} >
-              <Image source={ImagePath.facebook}
-                style={{ height: normalise(20), width: normalise(20) }}
-                resizeMode='contain' />
+          <Text style={{
+            marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
+            fontWeight: 'bold'
+          }}>CONNECT WITH FACEBOOK</Text>
 
-              <Text style={{
-                marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
-                fontWeight: 'bold'
-              }}>CONNECT WITH FACEBOOK</Text>
+        </TouchableOpacity> */}
 
-            </TouchableOpacity> */}
-
-            <TouchableOpacity
-              style={{
-                marginBottom: normalise(30),
-                marginTop: normalise(40),
-                height: normalise(50),
-                width: '80%',
-                alignSelf: 'center',
-                borderRadius: normalise(25),
-                backgroundColor: Colors.white,
-                borderWidth: normalise(0.5),
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.5,
-                shadowRadius: 9,
-                elevation: 11,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderColor: Colors.white,
-              }}
-              onPress={() => {
-                setContactsLoading(true), getContacts();
-              }}>
-              <Text
-                style={{
-                  marginLeft: normalise(10),
-                  color: Colors.darkerblack,
-                  fontSize: normalise(12),
-                  fontWeight: 'bold',
-                }}>
-                CHECK YOUR PHONEBOOK
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
+        <TouchableOpacity
+          style={{
+            marginBottom: normalise(30),
+            marginTop: normalise(40),
+            height: normalise(50),
+            width: '80%',
+            alignSelf: 'center',
+            borderRadius: normalise(25),
+            backgroundColor: Colors.white,
+            borderWidth: normalise(0.5),
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.5,
+            shadowRadius: 9,
+            elevation: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderColor: Colors.white,
+            position:'absolute',
+            bottom:0
+          }}
+          onPress={() => {
+            setContactsLoading(true), getContacts();
+          }}>
+          <Text
+            style={{
+              marginLeft: normalise(10),
+              color: Colors.darkerblack,
+              fontSize: normalise(12),
+              fontWeight: 'bold',
+            }}>
+            {/* CHECK YOUR PHONEBOOK */}
+            CHECK FOR FRIENDS
+          </Text>
+        </TouchableOpacity>
+      </View>
+   
+       ) : (
           <View style={{ flex: 1 }}>
 {/* {
   console.log("postData"+ JSON.stringify(props.postData))

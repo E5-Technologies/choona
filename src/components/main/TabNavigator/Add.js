@@ -161,9 +161,15 @@ function AddSong(props) {
                     }}>
 
                         <TextInput style={{
-                            height: normalise(35), width: '100%', backgroundColor: Colors.fadeblack,
-                            borderRadius: normalise(8), marginTop: normalise(20), padding: normalise(10),
-                            color: Colors.white, paddingLeft: normalise(30),
+                            height: normalise(35),
+                            width: '100%',
+                            // backgroundColor: Colors.fadeblack,
+                            backgroundColor:Colors.white,
+                            borderRadius: normalise(8),
+                            marginTop: normalise(16),
+                            padding: normalise(10),
+                            // fontSize:normalise(15),
+                            paddingLeft: normalise(30),
                         }} value={search}
                             placeholder={"Search"}
                             ref={inputRef}
@@ -177,12 +183,6 @@ function AddSong(props) {
 
                             }}                        
                 
-
-
-                
-
-
-
                             onChangeText={(text) => {
                                 setSearch(text)
                                 if (text.length >= 1) {
@@ -203,9 +203,16 @@ function AddSong(props) {
                         {search === "" ? null :
                             <TouchableOpacity onPress={() => { setSearch(""), setData([]) }}
                                 style={{
-                                    position: 'absolute', right: 0,
-                                    bottom: Platform.OS === 'ios' ? normalise(26) : normalise(25),
-                                    paddingRight: normalise(10)
+                                    backgroundColor: Colors.fordGray,
+                  padding: 8,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 2,
+                  position: 'absolute',
+                  right: 0,
+                borderRadius:5,
+                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  marginRight: normalise(10),
                                 }}>
                                 <Text style={{
                                     color: Colors.white, fontSize: normalise(10), fontWeight: 'bold',

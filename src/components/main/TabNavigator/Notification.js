@@ -21,6 +21,8 @@ import _ from 'lodash';
 import Colors from '../../../assests/Colors';
 import constants from '../../../utils/helpers/constants';
 import normaliseNew from '../../../utils/helpers/DimensNew';
+import normalise from '../../../utils/helpers/Dimens';
+
 import { useFocusEffect } from '@react-navigation/native';
 import Loader from '../../../widgets/AuthLoader';
 import StatusBar from '../../../utils/MyStatusBar';
@@ -35,6 +37,7 @@ import {
   editProfileRequest,
   userFollowUnfollowRequest,
 } from '../../../action/UserAction';
+import Contacts from 'react-native-contacts';
 
 
 var isLoading = true;
@@ -47,6 +50,7 @@ const wait = timeout => {
 function Notification(props) {
   const [isloadings, setIsLoading] = useState(true)
   const [notifications, setNotifications] = useState([]);
+  const[empityVisible,setEmptyVisible]=useState([])
   const getActivities = async pageId => {
 
     notifications.length == 0 ? setIsLoading(true) : setIsLoading(false)
@@ -76,11 +80,13 @@ function Notification(props) {
       if (pageId === 1) {
 
         setNotifications(data.data);
+        setEmptyVisible(data.data)
 
       } else {
 
         const newArray = [...notifications, ...data.data];
         setNotifications(newArray);
+        setEmptyVisible(newArray)
 
       }
     },
@@ -188,6 +194,49 @@ function Notification(props) {
   });
 
 
+  const getContacts = () => {
+    Contacts.getAll((err, contacts) => {
+      if (err) {
+        //  console.log(err);
+      } else {
+        let contactsArray = contacts;
+        let finalArray = [];
+         setIsLoading(false);
+        //// console.log(JSON.stringify(contacts));
+        contactsArray.map((item, index) => {
+          item.phoneNumbers.map((item, index) => {
+            let number = item.number.replace(/[- )(]/g, '');
+            let check = number.charAt(0);
+            let number1 = parseInt(number);
+            if (check === 0) {
+              finalArray.push(number1);
+            } else {
+              const converToString = number1.toString();
+              const myVar = number1.toString().substring(0, 2);
+              const threeDigitVar = number1.toString().substring(0, 3);
+
+              if (threeDigitVar === '440') {
+                let backToInt = converToString.replace(threeDigitVar, '0');
+                finalArray.push(backToInt);
+              } else {
+                if (myVar === '44' || myVar === '91') {
+                  let backToInt = converToString.replace(myVar, '0');
+                  finalArray.push(backToInt);
+                } else {
+                  let updatednumber = `0${number1}`;
+                  finalArray.push(updatednumber);
+                }
+              }
+            }
+          });
+        });
+
+        // console.log(finalArray);
+        props.navigation.navigate('UsersFromContacts', { data: finalArray });
+      }
+    });
+  };
+
   return (
 
     isloadings ?
@@ -201,8 +250,9 @@ function Notification(props) {
         <StatusBar />
 
         <SafeAreaView style={styles.activityContainer}>
+    
           <HeaderComponent title={'ACTIVITY'} />
-          {notifications ? (
+          {notifications.length!=0 ? (
             <ScrollView
               onScroll={({ nativeEvent }) => {
          
@@ -322,22 +372,70 @@ function Notification(props) {
                 }
               />
             </ScrollView>
-          ) : notifications.length === 0 ? (
+          ) : empityVisible.length === 0 ? (
             <View style={styles.emptyWrapper}>
-              <View style={styles.emptyContainer}>
-                <Image
-                  source={ImagePath.emptyActivity}
-                  style={styles.emptyImage}
-                  resizeMode="contain"
-                />
-                <Text style={styles.emptyContainerText}>
-                  You haven’t recieved any notifications yet. Don’t worry, follow
-                  more people to make Choona more fun.
+
+            {/* <View style={styles.emptyContainer}> */}
+              <Image
+                source={ImagePath.emptyNotify}
+                style={styles.emptyImage}
+                resizeMode="contain"
+              />
+               <Text style={styles.emptyContainerText2}>
+                No Notifications Yet...
+               </Text>
+              <Text style={styles.emptyContainerText}>
+               You haven't recieved any notifications yet.
               </Text>
-              </View>
-            </View>
+              <Text style={styles.emptyContainerText}>
+               Choona is more fun with more people,
+              </Text>
+              <Text style={styles.emptyContainerText}>
+                search your phonebook below.
+              </Text>
+              <TouchableOpacity
+                  style={{
+                    marginBottom: normalise(30),
+                    marginTop: normalise(30),
+                    height: normalise(48),
+                    width: '80%',
+                    alignSelf: 'center',
+                    borderRadius: normalise(25),
+                    backgroundColor: Colors.white,
+                    borderWidth: normalise(0.5),
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 9,
+                    elevation: 11,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: Colors.white,
+                    position:'absolute',
+                    bottom:0
+                  }}
+                  onPress={() => {
+                 setIsLoading(true),   getContacts();
+                  }}>
+                  <Text
+                    style={{
+                      marginLeft: normalise(10),
+                      color: Colors.darkerblack,
+                      fontSize: normalise(12),
+                      fontWeight: 'bold',
+                    }}>
+                    SEARCH PHONEBOOK
+                  </Text>
+                </TouchableOpacity>
+            {/* </View> */}
+          </View>
+      
           ) : (
-            <View />
+            <View>  
+                  <ActivityIndicator color='#ffffff' size='large' style={{marginTop:4*normaliseNew(90)}}></ActivityIndicator>
+
+            </View> 
           )}
         </SafeAreaView>
       </View>
@@ -346,12 +444,12 @@ function Notification(props) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.black },
-  emptyWrapper: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  emptyWrapper: { flex: 1, alignItems: 'center' },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
-    maxWidth: normaliseNew(260),
+    // maxWidth: normaliseNew(260),
   },
   emptyContainerText: {
     color: Colors.white,
@@ -359,10 +457,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'ProximaNova-Regular',
   },
+  emptyContainerText2: {
+    color: Colors.white,
+    fontWeight:'bold',
+    fontSize: normaliseNew(17),
+    textAlign: 'center',
+    fontFamily: 'ProximaNova-Bold',
+    marginBottom:'4%'
+  },
   emptyImage: {
-    height: normaliseNew(92),
-    marginBottom: normaliseNew(20),
-    width: normaliseNew(92),
+    height: 2*normaliseNew(110),
+     marginBottom: normaliseNew(30),
+     marginTop:normaliseNew(30),
+    width: 2*normaliseNew(110),
   },
   activityContainer: { flex: 1 },
   activityHeader: {

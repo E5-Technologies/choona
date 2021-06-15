@@ -61,7 +61,7 @@ function InboxListItem(props) {
             style={{
               height: normalise(30),
               width: normalise(30),
-              borderRadius: normalise(60),
+              borderRadius: 2*normalise(60),
             }}
             resizeMode="contain"
           />

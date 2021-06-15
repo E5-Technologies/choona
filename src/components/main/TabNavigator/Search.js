@@ -1274,7 +1274,7 @@ function Search(props) {
           <HeaderComponent
             firstitemtext={true}
             textone={''}
-            title={'SEARCH'}
+            title={'EXPLORE'}
             thirditemtext={true}
             texttwo={''}
           />
@@ -1341,7 +1341,7 @@ function Search(props) {
                   alignSelf: 'center',
                   fontSize: normalise(12),
                 }}>
-                POPULAR
+                TOP SONGS
               </Text>
 
               {genreSearch ? (
@@ -1395,12 +1395,13 @@ function Search(props) {
               style={{
                 height: normalise(35),
                 width: '100%',
-                backgroundColor: Colors.fadeblack,
-
+                // backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(8),
                 marginTop: normalise(20),
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
+                
+                backgroundColor:Colors.white,
                 paddingLeft: normalise(30),
               }}
               keyboardAppearance='dark'
@@ -1456,11 +1457,12 @@ function Search(props) {
                     : setSongSearchText('');
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  // backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
+                  borderRadius: 5,
+                  backgroundColor:Colors.fordGray,
                   position: 'absolute',
                   right: 0,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
@@ -1481,64 +1483,81 @@ function Search(props) {
           {usersSearch ? ( //USERS VIEW
             _.isEmpty(songData) ? (
               <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={ImagePath.user}
-                  style={{ height: normalise(40), width: normalise(40) }}
-                  resizeMode="contain"
-                />
+              style={{
+                flex: 1,
+                // justifyContent: 'center',
+                // alignItems: 'center',
+              }} >
+              <Image
+                source={ImagePath.emptyUser}
+                style={{ height: 2*normalise(95), width: 2*normalise(95),marginTop:'2%',alignSelf:'center' }}
+                resizeMode="contain"
+                
+              />
 
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(14),
+                 
+                  marginTop: normalise(10),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf:'center',
+                  fontFamily: 'ProximaNova-Bold',
+                }}>
+                Search Users to Follow
+              </Text>
+              <Text
+                style={{
+                  color: Colors.fordGray,
+                  fontSize: normalise(12),
+                  fontWeight: '100',
+                  marginTop: normalise(5),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf:'center',
+                  fontFamily: 'ProximaNova-Regular',
+                
+                }}>
+                Search above to find users you want to follow by either their username or just typing their name.
+              </Text>
+              <TouchableOpacity
+                style={{
+                  marginBottom: normalise(30),
+                  marginTop: normalise(30),
+                  height: normalise(50),
+                  width: '80%',
+                  alignSelf: 'center',
+                  borderRadius: normalise(25),
+                  backgroundColor: Colors.white,
+                  borderWidth: normalise(0.5),
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.5,
+                  shadowRadius: 9,
+                  elevation: 11,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderColor: Colors.white,
+                }}
+                onPress={() => {
+                  setContactsLoading(true), getContacts();
+                }}>
                 <Text
                   style={{
-                    color: Colors.white,
-                    fontSize: normalise(15),
-                    fontWeight: '500',
-                    marginTop: normalise(20),
-                    width: '68%',
-                    textAlign: 'center',
+                    marginLeft: normalise(10),
+                    color: Colors.darkerblack,
+                    fontSize: normalise(12),
+                    fontWeight: 'bold',
                   }}>
-                  Search for users via username or their full name
+                  SEARCH PHONEBOOK
                 </Text>
-
-                <TouchableOpacity
-                  style={{
-                    marginBottom: normalise(30),
-                    marginTop: normalise(40),
-                    height: normalise(50),
-                    width: '80%',
-                    alignSelf: 'center',
-                    borderRadius: normalise(25),
-                    backgroundColor: Colors.white,
-                    borderWidth: normalise(0.5),
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 9,
-                    elevation: 11,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderColor: Colors.white,
-                  }}
-                  onPress={() => {
-                    setContactsLoading(true), getContacts();
-                  }}>
-                  <Text
-                    style={{
-                      marginLeft: normalise(10),
-                      color: Colors.darkerblack,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                    }}>
-                    CHECK YOUR PHONEBOOK
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
+              </TouchableOpacity>
+            </View>
+         
+         ) : (
               <View>
                 <View
                   style={{
@@ -1576,30 +1595,47 @@ function Search(props) {
           {songSearch ? ( //SONG VIEW
             _.isEmpty(searchPostData) ? (
               <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={ImagePath.music_icon}
-                  style={{ height: normalise(40), width: normalise(40) }}
-                  resizeMode="contain"
-                />
+              style={{
+                flex: 1,
+                // justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Image
+                source={ImagePath.emptySong}
+                style={{ height: 2*normalise(95), width: 2*normalise(95) ,marginTop:'2%' }}
+                resizeMode="contain"
+              />
 
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(15),
-                    fontWeight: '500',
-                    marginTop: normalise(20),
-                    width: '68%',
-                    textAlign: 'center',
-                  }}>
-                  Search for posts which contain a particular song
-                </Text>
-              </View>
-            ) : (
+<Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(14),
+                 
+                  marginTop: normalise(13),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf:'center',
+                  fontFamily: 'ProximaNova-Bold',
+                }}>
+                Explore posts containing a song
+              </Text>
+              <Text
+                style={{
+                  color: Colors.fordGray,
+                  fontSize: normalise(12),
+                  fontWeight: '100',
+                  marginTop: normalise(5),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf:'center',
+                  fontFamily: 'ProximaNova-Regular',
+                
+                }}>
+                Search for a song or artist you love to find which other Choona users are posting then as well.
+              </Text>
+            </View>
+        
+              ) : (
               <View>
                 <View
                   style={{

@@ -637,7 +637,7 @@ if(found!=-1){
       <TouchableOpacity
         style={{
           marginTop: normalise(10),
-          width: '100%',
+          width: '89%',
           alignSelf: 'center',
         }}
         onPress={() => {
@@ -670,12 +670,14 @@ if(found!=-1){
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+            style={{ height: 35, width: 35, borderRadius: 2*normalise(13.5) }}
           />
           <View
             style={{
-              flexDirection: 'row',
-              paddingBottom: normalise(10),
+              // flexDirection: 'row',
+              marginLeft:'5%',
+              paddingBottom:'5%'
+             
             }}>
             <Text
               style={{
@@ -855,7 +857,7 @@ if(found!=-1){
               height: normalise(35),
               marginTop: normalise(20),
               borderRadius: normalise(8),
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.white,
             }}>
             <TextInput
               autoCorrect={false}
@@ -864,7 +866,7 @@ if(found!=-1){
                 height: normalise(35),
                 width: '85%',
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
                 paddingLeft: normalise(30),
               }}
               value={userSeach}
@@ -894,14 +896,15 @@ if(found!=-1){
                   setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
+                  backgroundColor: Colors.fordGray,
+                  padding: 8,
                   paddingTop: 4,
                   paddingBottom: 4,
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
+                borderRadius:5,
+                  bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
                   marginRight: normalise(10),
                 }}>
                 <Text

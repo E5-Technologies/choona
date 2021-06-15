@@ -152,11 +152,12 @@ function MusicPlayerBar(props) {
         }}>
         <View
           style={{
-            width: '90%',
-            alignSelf: 'center',
+            width: '100%',
+            // alignSelf: 'center',
+            paddingRight:normalize(13),
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8),
+            // marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8),
             flexDirection: 'row',
           }}>
           <TouchableOpacity
@@ -165,7 +166,7 @@ function MusicPlayerBar(props) {
             }}>
             <Image
               source={{ uri: props.playingSongRef.song_pic }}
-              style={{ height: normalize(25), width: normalize(25) }}
+              style={{ height: normalize(45), width: normalize(50) }}
             />
           </TouchableOpacity>
 
@@ -175,7 +176,7 @@ function MusicPlayerBar(props) {
               justifyContent: 'flex-start',
               alignItems: 'center',
               position: 'absolute',
-              left: 50,
+              left: 60,
               width: '70%',
             }}>
             <Text

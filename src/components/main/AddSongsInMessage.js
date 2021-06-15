@@ -404,11 +404,11 @@ function AddSongsInMessage(props) {
               style={{
                 height: normalise(35),
                 width: '100%',
-                backgroundColor: Colors.fadeblack,
+                backgroundColor: Colors.white,
                 borderRadius: normalise(8),
                 marginTop: normalise(20),
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
                 paddingLeft: normalise(30),
               }}
               value={search}
@@ -447,11 +447,11 @@ function AddSongsInMessage(props) {
                   setSearch(''), setResult([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.fordGray,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
+                  borderRadius: 5,
                   position: 'absolute',
                   right: 0,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
@@ -630,7 +630,7 @@ function AddSongsInMessage(props) {
                   height: normalise(35),
                   marginTop: normalise(20),
                   borderRadius: normalise(8),
-                  backgroundColor: Colors.fadeblack,
+                  backgroundColor: Colors.white,
                 }}>
                 <TextInput
                   autoCorrect={false}
@@ -639,7 +639,7 @@ function AddSongsInMessage(props) {
                     height: normalise(35),
                     width: '85%',
                     padding: normalise(10),
-                    color: Colors.white,
+                    // color: Colors.white,
                     paddingLeft: normalise(30),
                   }}
                   value={userSeach}
@@ -668,9 +668,14 @@ function AddSongsInMessage(props) {
                     }}
                     style={{
                       position: 'absolute',
-                      right: 0,
-                      top: normalise(9.5),
-                      paddingRight: normalise(10),
+                      right: 10,
+                       top: normalise(6),
+                      backgroundColor:Colors.fordGray,
+                      // paddingRight: normalise(10),
+                      borderRadius:5,
+                      padding:normalise(4),
+                      paddingHorizontal:normalise(7),
+                      alignSelf:'center'
                     }}>
                     <Text
                       style={{

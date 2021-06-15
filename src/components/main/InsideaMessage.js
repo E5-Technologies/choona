@@ -617,7 +617,7 @@ function InsideaMessage(props) {
               height: normalise(35),
               marginTop: normalise(20),
               borderRadius: normalise(8),
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.white,
             }}>
             <TextInput
               autoCorrect={false}
@@ -626,7 +626,8 @@ function InsideaMessage(props) {
                 height: normalise(35),
                 width: '85%',
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
+                // backgroundColor:Colors.white,
                 paddingLeft: normalise(30),
               }}
               value={userSeach}
@@ -654,14 +655,16 @@ function InsideaMessage(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  //  backgroundColor: Colors.black,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
+                  borderRadius: 5,
+                  alignSelf:'center',
+                  backgroundColor:Colors.fordGray,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                   bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
                   marginRight: normalise(10),
                 }}>
                 <Text
@@ -849,11 +852,11 @@ function InsideaMessage(props) {
               style={{
                 height: normalise(35),
                 width: '100%',
-                backgroundColor: Colors.fadeblack,
+                backgroundColor: Colors.white,
                 borderRadius: normalise(8),
                 marginTop: normalise(20),
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
                 paddingLeft: normalise(30),
                 paddingRight: normalise(50),
               }}
@@ -882,11 +885,12 @@ function InsideaMessage(props) {
                   setSearch(''), props.searchMessageRequest('');
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.fordGray,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
+                  borderRadius: 5,
+                
                   position: 'absolute',
                   right: 0,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),

@@ -74,6 +74,16 @@ const ImagePath = {
   appIcon512: require('./images/appIcon512.png'),
   addPostIllus: require('./images/addPostIllus.png'),
   emptyActivity: require('./images/empty-activity.png'),
+  addButton:require('./images/addButton.png'),
+  playApple:require('./images/playApple.png'),
+  playSpotify:require('./images/playSpotify.png'),
+  reactionShow:require('./images/reactShow.png'),
+  emptyNotify:require('./images/emptyNotify.png'),
+  emptyUser:require('./images/emptyUser.png'),
+  emptySong:require('./images/emptySong.png'),
+  emptyInbox:require('./images/emptyIndex.png'),
+  emptySaveSong:require('./images/emptySaveSong.png'),
+  emptyPost:require('./images/emptyPost.png')
 };
 
 export default ImagePath;

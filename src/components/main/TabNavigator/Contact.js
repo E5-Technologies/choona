@@ -70,6 +70,9 @@ function Contact(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [bool, setBool] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
+  const[noEmpty,setNoEmpty]=useState(false)
+  const[allSaveSong,setAllSaveSong]=useState([])
+
 
   var bottomSheetRef;
 
@@ -81,6 +84,7 @@ function Contact(props) {
           setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
+          setSearch('')
         })
         .catch(() => {
           toast('Oops', 'Please Connect To Internet');
@@ -99,6 +103,8 @@ function Contact(props) {
         break;
 
       case SAVED_SONGS_LIST_SUCCESS:
+        setAllSaveSong(props.savedSong)
+        setNoEmpty(true)
         status = props.status;
         break;
 
@@ -460,12 +466,14 @@ function Contact(props) {
 
   // RENDER USER SEARCH FLATLIST DATA
   function renderAddUsersToMessageItem(data) {
+ 
     return (
       <TouchableOpacity
         style={{
           marginTop: normalise(10),
           width: '87%',
           alignSelf: 'center',
+          // backgroundColor:'red'
         }}
         onPress={() => {
           if (usersToSEndSong.length > 0) {
@@ -492,19 +500,19 @@ function Contact(props) {
             sesUsersToSEndSong(array);
           }
         }}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row',alignItems:'center' }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+            style={{ height: 35, width: 35, borderRadius:2* normalise(13.5),marginRight:'5%' }}
           />
           <View
-            style={{
-              flexDirection: 'row',
+            style={{flex:1,
+            
               borderColor: Colors.activityBorderColor,
               borderBottomWidth: normalise(0.5),
-              paddingBottom: normalise(10),
+               paddingBottom: normalise(10),
             }}>
             <Text
               style={{
@@ -514,6 +522,7 @@ function Contact(props) {
               }}>
               {data.item.full_name}
             </Text>
+          
             <Text
               style={{
                 color: Colors.white,
@@ -669,7 +678,7 @@ function Contact(props) {
               height: normalise(35),
               marginTop: normalise(20),
               borderRadius: normalise(8),
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.white,
             }}>
             <TextInput
               autoCorrect={false}
@@ -678,7 +687,7 @@ function Contact(props) {
                 height: normalise(35),
                 width: '85%',
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
                 paddingLeft: normalise(30),
               }}
               value={userSeach}
@@ -706,14 +715,15 @@ function Contact(props) {
                   setUserSeach(''), setUserSearchData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
+                  backgroundColor: Colors.fordGray,
+                  padding: 8,
                   paddingTop: 4,
                   paddingBottom: 4,
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                borderRadius:5,
+                  bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
                   marginRight: normalise(10),
                 }}>
                 <Text
@@ -872,6 +882,31 @@ function Contact(props) {
     );
   }
 
+
+  function filterArray(keyword) {
+
+    let data = _.filter(props.savedSong, item => {
+      return (
+        item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 
+        // ||
+        // item.artist_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
+      );
+    });
+
+      // alert("data"+data.length);
+     setAllSaveSong([]);
+     setNoEmpty(false)
+    setBool(true);
+    setTimeout(() => {
+      //  alert(data.length)
+      if(data.length===0) setNoEmpty(true)
+      setAllSaveSong(data);
+      setBool(false);
+    }, 800);
+  }
+
+
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -892,93 +927,139 @@ function Contact(props) {
             thirditemtext={true}
             texttwo={''}
           />
+     
 
-          <View
-            style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text), props.getSavedSongs(text);
-              }}
-            />
+{_.isEmpty(props.savedSong)&&noEmpty ? null :
 
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
+<View
+  style={{
+    width: '92%',
+    alignSelf: 'center',
+  }}>
+  <TextInput
+    style={{
+      height: normalise(35),
+      width: '100%',
+      // backgroundColor: Colors.fadeblack,
+      borderRadius: normalise(8),
+      marginTop: normalise(20),
+      padding: normalise(10),
+      // color: Colors.white,
+      
+      backgroundColor:Colors.white,
+      paddingLeft: normalise(30),
+    }}
+    autoCorrect={false}
+    keyboardAppearance={'dark'}
+    value={search}
+    placeholder={'Search'}
+    placeholderTextColor={Colors.darkgrey}
+    onChangeText={text => {
+      setSearch(text),  filterArray(text);
+      //  props.getSavedSongs(text);
+    }}
+  />
 
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), props.getSavedSongs('');
-                }}
-                style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+  <Image
+    source={ImagePath.searchicongrey}
+    style={{
+      height: normalise(15),
+      width: normalise(15),
+      bottom: normalise(25),
+      paddingLeft: normalise(30),
+    }}
+    resizeMode="contain"
+  />
 
-          {_.isEmpty(props.savedSong) ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  marginBottom: '20%',
-                  marginTop: normalise(10),
-                  color: Colors.white,
-                  fontSize: normalise(12),
-                  fontWeight: 'bold',
-                }}>
-                NO SAVED SONGS
-              </Text>
-            </View>
+  {search === '' ? null : (
+    <TouchableOpacity
+      onPress={() => {
+        setSearch(''),
+        setAllSaveSong(props.savedSong)
+        // props.getSavedSongs('');
+      }}
+      style={{
+        backgroundColor: Colors.black,
+        padding: 6,
+        paddingTop: 4,
+        paddingBottom: 4,
+        borderRadius: 5,
+        backgroundColor:Colors.fordGray,
+        position: 'absolute',
+        right: 0,
+        bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+        marginRight: normalise(10),
+      }}>
+      <Text
+        style={{
+          color: Colors.white,
+          fontSize: normalise(10),
+          fontWeight: 'bold',
+        }}>
+        CLEAR
+      </Text>
+    </TouchableOpacity>
+  )}
+</View>
+}
+        
+
+          {_.isEmpty(allSaveSong)&& noEmpty ? (
+               <View
+               style={{
+                 flex: 1,
+                 // justifyContent: 'center',
+                 alignItems: 'center',
+               }}>
+               {/* <Text
+                 style={{
+                   marginBottom: '20%',
+                   marginTop: normalise(10),
+                   color: Colors.white,
+                   fontSize: normalise(12),
+                   fontWeight: 'bold',
+                 }}>
+                 NO SAVED SONGS
+               </Text> */}
+                 <Image
+                   source={ImagePath.emptySaveSong}
+                   style={{ height: 3*normalise(85), width: 2.6*normalise(85),marginTop:'5%',alignSelf:'center' }}
+                   resizeMode="contain"
+                   
+                 />
+ 
+                 <Text
+                   style={{
+                     color: Colors.white,
+                     fontSize: normalise(15),
+                     fontWeight: '500',
+                     // marginTop: normalise(3),
+                     width: '68%',
+                     textAlign: 'center',
+                     alignSelf:'center',
+                     fontFamily: 'ProximaNova-Bold',
+                   }}>
+                No Saved Songs
+                 </Text>
+                 <Text
+                   style={{
+                     color: Colors.fordGray,
+                     fontSize: normalise(12),
+                     fontWeight: '100',
+                     marginTop: normalise(8),
+                     width: '68%',
+                     textAlign: 'center',
+                     alignSelf:'center',
+                     fontFamily: 'ProximaNova-Regular',
+                   
+                   }}>
+                     When you see a song you love, just click the more menu and save that song. Then you can access it forever from here.
+                 </Text>
+             </View>
+          
           ) : (
             <SwipeListView
-              data={props.savedSong}
+              data={allSaveSong}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={Seperator}

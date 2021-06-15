@@ -55,6 +55,8 @@ function Inbox(props) {
   const [mesageList, setMessageList] = useState('');
   const [bool, setBool] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
+  const[newarr,setnewarr]=([])
+  const[nonEmpty,setNonEmpty]=useState(false)
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -80,6 +82,7 @@ function Inbox(props) {
 
       case GET_CHAT_LIST_SUCCESS:
         status = props.status;
+        setNonEmpty(true)
         sortArray(props.chatList);
         break;
 
@@ -115,7 +118,9 @@ function Inbox(props) {
     // const sortedMessages = [];
     // .concat(value)
     // .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
+    
     setMessageList(value);
+    setNonEmpty(true)
   }
 
   function filterArray(keyword) {
@@ -128,8 +133,10 @@ function Inbox(props) {
 
     // console.log(data);
     setMessageList([]);
+    setNonEmpty(false)
     setBool(true);
     setTimeout(() => {
+      if(data.length===0) setNonEmpty(true)
       setMessageList(data);
       setBool(false);
     }, 800);
@@ -213,6 +220,8 @@ function Inbox(props) {
             }}
           />
 
+{_.isEmpty(props.chatList) ? null :(
+
           <View
             style={{
               width: '92%',
@@ -224,11 +233,11 @@ function Inbox(props) {
               style={{
                 height: normalise(35),
                 width: '100%',
-                backgroundColor: Colors.fadeblack,
+                backgroundColor: Colors.white,
                 borderRadius: normalise(8),
                 marginTop: normalise(16),
                 padding: normalise(10),
-                color: Colors.white,
+                // color: Colors.white,
                 paddingLeft: normalise(30),
                 paddingRight: normalise(50),
               }}
@@ -257,11 +266,11 @@ function Inbox(props) {
                   setSearch(''), filterArray('');
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.fordGray,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
+                  borderRadius: 5,
                   position: 'absolute',
                   right: 0,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
@@ -279,17 +288,89 @@ function Inbox(props) {
             )}
           </View>
 
-          {_.isEmpty(props.chatList) ? (
-            <View
+)}
+
+          {_.isEmpty(props.chatList)&& nonEmpty? (
+              <View
               style={{
                 flex: 1,
-                justifyContent: 'center',
+                // justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text style={{ color: Colors.white, fontSize: normalise(15) }}>
+              {/* <Text style={{ color: Colors.white, fontSize: normalise(15) }}>
                 No Messages
-              </Text>
+              </Text> */}
+
+              <Image
+                  source={ImagePath.emptyInbox}
+                  style={{ height: 3*normalise(85), width: 3*normalise(85),marginTop:'6%',alignSelf:'center' }}
+                  resizeMode="cover"
+                  
+                />
+
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(15),
+                    fontWeight: '500',
+                    marginTop: normalise(3),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf:'center',
+                    fontFamily: 'ProximaNova-Bold',
+                  }}>
+                 Your Inbox is Empty
+                </Text>
+                <Text
+                  style={{
+                    color: Colors.fordGray,
+                    fontSize: normalise(12),
+                    fontWeight: '100',
+                    marginTop: normalise(10),
+                    width: '65%',
+                    textAlign: 'center',
+                    alignSelf:'center',
+                    fontFamily: 'ProximaNova-Regular',
+                  
+                  }}>
+                    You haven’t started sending music to people, click the button below to send your first song.
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    marginBottom: normalise(30),
+                    marginTop: normalise(50),
+                    height: normalise(48),
+                    width: '80%',
+                    alignSelf: 'center',
+                    borderRadius: normalise(25),
+                    backgroundColor: Colors.white,
+                    borderWidth: normalise(0.5),
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 9,
+                    elevation: 11,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: Colors.white,
+                  
+                  }}
+                  onPress={() => {
+                    props.navigation.navigate('AddSongsInMessage');
+                  }}>
+                  <Text
+                    style={{
+                      marginLeft: normalise(10),
+                      color: Colors.darkerblack,
+                      fontSize: normalise(12),
+                      fontWeight: 'bold',
+                    }}>
+                   SEND A SONG TO SOMEONE
+                  </Text>
+                </TouchableOpacity>
             </View>
+        
           ) : (
             <FlatList
               data={mesageList}

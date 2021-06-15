@@ -71,9 +71,8 @@ import firebase from '@react-native-firebase/messaging';
 import _ from 'lodash';
 import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
-import BlankScreen from './src/components/main/newBlankScreen';
-import SingleSongClick from './src/components/main/SingleSongClick';
 import PlayerComment from './src/components/main/PlayerComment'
+import SingleSongClick from './src/components/main/SingleSongClick';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -144,20 +143,10 @@ const App = () => {
   const BottomTab = () => {
     const UserReducer = useSelector(state => state.UserReducer);
 
-    const styles = StyleSheet.create({
-      appStyle: { flex: 1, backgroundColor: "#000000" }
-    });
-    
-
     return (
-      <View style={styles.appStyle}>
-
       <Tab.Navigator
-      sceneAnimationEnabled={false}
         initialRouteName={'Home'}
         tabBarOptions={{
-          cardStyle: { backgroundColor: 'transparent' },
-
           activeBackgroundColor: Colors.darkerblack,
           inactiveBackgroundColor: Colors.darkerblack,
           safeAreaInsets: { bottom: 0 },
@@ -227,10 +216,10 @@ const App = () => {
                       : Dimensions.get('window').height > 736
                       ? normalise(0)
                       : normalise(10),
-                  height: normalise(60),
-                  width: normalise(60),
+                  height: normalise(40),
+                  width: normalise(40),
                 }}
-                source={focused ? ImagePath.addbtn : ImagePath.addbtn}
+                source={focused ? ImagePath.addButton : ImagePath.addButton}
                 resizeMode="contain"
               />
             ),
@@ -308,8 +297,6 @@ const App = () => {
           }}
         />
       </Tab.Navigator>
-      </View>
-
     );
   };
 
@@ -335,7 +322,6 @@ const App = () => {
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
             <Stack.Screen name="Inbox" component={Inbox} />
-            <Stack.Screen name="BlankScreen" component={BlankScreen} />
             <Stack.Screen
               name="Player"
               component={Player}
@@ -377,12 +363,14 @@ const App = () => {
               name="AddToPlayListScreen"
               component={AddToPlayListScreen}
             />
-             <Stack.Screen
+              <Stack.Screen
               name="SingleSongClick"
               component={SingleSongClick}
             />
-             <Stack.Screen name="PlayerComment" component={PlayerComment} />
+            <Stack.Screen name="PlayerComment" component={PlayerComment} />
+
           </Stack.Navigator>
+          
         )}
       </NavigationContainer>
     );

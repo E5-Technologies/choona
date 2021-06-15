@@ -115,7 +115,21 @@ export default function Splash(props) {
         style={{height: normalise(130), width: '60%'}}
         resizeMode="contain"
       />    
-      <Text
+
+<View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: normalise(-50),
+                }}>
+                <Image
+                  source={ImagePath.addPostIllus}
+                  style={{ height: normalise(170), width: '100%' }}
+                  resizeMode="cover"
+                />
+              </View>
+      {/* <Text
         style={{
           color: Colors.white,
           fontSize: normalise(10),
@@ -124,7 +138,7 @@ export default function Splash(props) {
           bottom: 20,
         }}>
         Copyright ©{new Date().getFullYear()} CHOONA
-      </Text>
+      </Text> */}
     </View>
   );
 }

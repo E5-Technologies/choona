@@ -49,6 +49,7 @@ function Profile(props) {
   const [modaltandcs, setModaltandcs] = useState(false);
   const [flag, setFlag] = useState('');
   const [activity, setActivity] = useState(props.route.params.fromAct);
+  const [nonempty,setNonEmpty]= useState(false)
 
   const getPosts = async pageId => {
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
@@ -82,6 +83,7 @@ function Profile(props) {
      },
    });
   setProfilePosts([...profilePosts,...response.data.data])
+  setNonEmpty(true)
   
    } 
 
@@ -100,7 +102,7 @@ function Profile(props) {
      },
    });
  profilePosts.length===0 ?
-  setProfilePosts(response.data.data):null
+ ( setProfilePosts(response.data.data),setNonEmpty(true)):null
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
@@ -747,69 +749,88 @@ function Profile(props) {
           )}
         </ImageBackground>
 
-        {_.isEmpty(profilePosts) ? (
+        {_.isEmpty(profilePosts)&&nonempty ? (
           <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <View
+          style={{ flex: 1, alignItems: 'center' }}>
+          {/* <View
+            style={{
+              height: '50%',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              width: '60%',
+            }}> */}
+
+<Image
+            source={ImagePath.emptyPost}
+            style={{
+              height: 2*normalise(90),
+              width: 2*normalise(90),
+               marginTop: '8%',
+            }}
+            resizeMode="contain"
+          />
+            <Text
               style={{
-                height: '50%',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                width: '60%',
+                color: Colors.white,
+                fontSize: normalise(15),
+                // fontWeight: 'bold',
+                textAlign: 'center',
+                marginTop:'5%',
+                fontFamily: 'ProximaNova-Bold',
               }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(15),
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                Your Profile is Empty
-              </Text>
+              Your Profile is Empty
+            </Text>
 
-              <Text
-                style={{
-                  marginTop: normalise(10),
-                  color: Colors.grey,
-                  fontSize: normalise(15),
-                  textAlign: 'center',
-                }}>
-                You haven't posted any songs yet, let's post one{' '}
-              </Text>
-            </View>
-
-            <View
+            <Text
               style={{
-                height: '50%',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
+                color: Colors.fordGray,
+                fontSize: normalise(12),
+                fontWeight: '100',
+                marginTop: normalise(7),
+                width: '65%',
+                textAlign: 'center',
+                alignSelf:'center',
+                fontFamily: 'ProximaNova-Regular',
+              }}>
+              You haven’t uploaded any songs to Choona yet, click the button below to add your first song.
+            </Text>
+          {/* </View> */}
+
+          {/* <View
+            style={{
+              height: '50%',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              width: '80%',
+            }}> */}
+            <TouchableOpacity
+              style={{
+                marginBottom: normalise(10),
+                height: normalise(48),
                 width: '80%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: normalise(20),
+                backgroundColor: Colors.white,
+                position:'absolute',
+                bottom:8
+              }}
+              onPress={() => {
+                props.navigation.replace('bottomTab', { screen: 'Add' });
               }}>
-              <TouchableOpacity
+              <Text
                 style={{
-                  marginBottom: normalise(10),
-                  height: normalise(40),
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: normalise(20),
-                  backgroundColor: Colors.white,
-                }}
-                onPress={() => {
-                  props.navigation.replace('bottomTab', { screen: 'Add' });
+                  color: Colors.black,
+                  fontSize: normalise(12),
+                  fontWeight: 'bold',
                 }}>
-                <Text
-                  style={{
-                    color: Colors.black,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                  }}>
-                  POST YOUR FIRST SONG
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
+               ADD YOUR FIRST POST
+              </Text>
+            </TouchableOpacity>
+          {/* </View> */}
+        </View>
+     
+       ) : (
           <FlatList
             style={{ paddingTop: normalise(10) }}
             data={profilePosts}

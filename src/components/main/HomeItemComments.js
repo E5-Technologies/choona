@@ -334,7 +334,7 @@ showmention?
 //  minHeight:Dimensions.get('window').height/7,
 //  maxHeight:Dimensions.get("window").height/4.2,
  height: (followingList.length +followerList.length)===2 || (followingList.length +followerList.length)===1?Dimensions.get('window').height/5: followingList.length+followerList.length===3?Dimensions.get('window').height/3.5: Dimensions.get('window').height/3,
- bottom: Dimensions.get("window").width/7,
+//  bottom: Dimensions.get("window").width/7,
  width:Dimensions.get('window').width/1.25,
  
  }}
@@ -344,7 +344,7 @@ showmention?
    data={followerList.concat(followingList).filter(function(o) {  
     return this[o.username] ? false : this[o.username] = true;
   }, {})}
-  style={{marginBottom:'10%'}}
+  style={{marginBottom:'0%'}}
    keyboardShouldPersistTaps='always'
    renderItem={({item,index})=>{
      return(
