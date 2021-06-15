@@ -221,7 +221,6 @@ function SavedSongListItem(props) {
             style={{
               height: normalise(40),
               width: normalise(40),
-              borderRadius: normalise(30),
             }}
             resizeMode="contain"
           />

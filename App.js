@@ -7,6 +7,7 @@ import {
   View,
   Text,
   StatusBar,
+  
   Image,
   Platform,
   Dimensions,
@@ -144,6 +145,9 @@ const App = () => {
     const UserReducer = useSelector(state => state.UserReducer);
 
     return (
+
+      <View style={styles.appStyle}>
+
       <Tab.Navigator
         initialRouteName={'Home'}
         tabBarOptions={{
@@ -297,6 +301,7 @@ const App = () => {
           }}
         />
       </Tab.Navigator>
+   </View>
     );
   };
 
@@ -376,5 +381,11 @@ const App = () => {
     );
   }
 };
+
+const styles = StyleSheet.create({
+  appStyle: { flex: 1, backgroundColor: "#000000" }
+});
+
+
 
 export default App;
