@@ -62,19 +62,23 @@ class Print: UIViewController {
             print(capabilities)
         }
         
+      if #available(iOS 11.0, *) {
         cloudServiceController.requestUserToken(forDeveloperToken: developerToken!, completionHandler: { token, error in
-            
-            guard let token = token else {
-                print(error?.localizedDescription)
-                reject("E_COUNT", "User Token blank", error)
-                return }
-            UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
-            UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
-            self.appleMusicUserToken = token
-            print("Music User Token:", token)
-            resolve(token)
-           
+          
+          guard let token = token else {
+            print(error?.localizedDescription)
+            reject("E_COUNT", "User Token blank", error)
+            return }
+          UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
+          UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
+          self.appleMusicUserToken = token
+          print("Music User Token:", token)
+          resolve(token)
+          
         })
+      } else {
+        // Fallback on earlier versions
+      }
     }
   
       
@@ -108,12 +112,16 @@ class Print: UIViewController {
               // self.navigationItem.rightBarButtonItem?.isEnabled = false
               print("determined")
               
+            if #available(iOS 10.1, *) {
               if self.authorizationManager!.cloudServiceCapabilities.contains(.musicCatalogSubscriptionEligible) &&
                   !self.authorizationManager!.cloudServiceCapabilities.contains(.musicCatalogPlayback)
               {
-                  print("xxxxx")
-                  self.presentCloudServiceSetup()
+                print("xxxxx")
+                self.presentCloudServiceSetup()
               }
+            } else {
+              // Fallback on earlier versions
+            }
             /*  if !self.authorizationManager!.cloudServiceCapabilities.contains(.musicCatalogSubscriptionEligible)
               {
                   print("xxxxx")
@@ -142,19 +150,23 @@ class Print: UIViewController {
        can present the `SKCloudServiceSetupViewController` as demonstrated below.
        */
       
+    if #available(iOS 10.1, *) {
       let cloudServiceSetupViewController = SKCloudServiceSetupViewController()
-      cloudServiceSetupViewController.delegate = self
-      
-      cloudServiceSetupViewController.load(options: [.action: SKCloudServiceSetupAction.subscribe]) { [weak self] (result, error) in
-          guard error == nil else {
-              fatalError("An Error occurred: \(error!.localizedDescription)")
-          }
-          
-          if result {
-              self?.present(cloudServiceSetupViewController, animated: true, completion: nil)
-              self?.didPresentCloudServiceSetup = true
-          }
-      }
+    } else {
+      // Fallback on earlier versions
+    }
+//      cloudServiceSetupViewController.delegate = self
+//      
+//      cloudServiceSetupViewController.load(options: [.action: SKCloudServiceSetupAction.subscribe]) { [weak self] (result, error) in
+//          guard error == nil else {
+//              fatalError("An Error occurred: \(error!.localizedDescription)")
+//          }
+//          
+//          if result {
+//              self?.present(cloudServiceSetupViewController, animated: true, completion: nil)
+//              self?.didPresentCloudServiceSetup = true
+//          }
+//      }
   }
   
   func musicToken() -> String
@@ -183,18 +195,22 @@ class Print: UIViewController {
               print(capabilities)
           }
           
+        if #available(iOS 11.0, *) {
           cloudServiceController.requestUserToken(forDeveloperToken: developerToken!, completionHandler: { token, error in
-              
-              guard let token = token else {
-                  print(error?.localizedDescription)
-                  return }
-              UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
-              UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
-              self.appleMusicUserToken = token
-              print("Music User Token:", token)
-              
-             
+            
+            guard let token = token else {
+              print(error?.localizedDescription)
+              return }
+            UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
+            UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
+            self.appleMusicUserToken = token
+            print("Music User Token:", token)
+            
+            
           })
+        } else {
+          // Fallback on earlier versions
+        }
       }
     return self.appleMusicUserToken
   }
@@ -202,7 +218,8 @@ class Print: UIViewController {
 }
 
 extension Print: SKCloudServiceSetupViewControllerDelegate {
-    func cloudServiceSetupViewControllerDidDismiss(_ cloudServiceSetupViewController: SKCloudServiceSetupViewController) {
+  @available(iOS 10.1, *)
+  func cloudServiceSetupViewControllerDidDismiss(_ cloudServiceSetupViewController: SKCloudServiceSetupViewController) {
         //        DispatchQueue.main.async {
         //            self.tableView.reloadData()
         //        }
