@@ -11,17 +11,18 @@
 		0B128C742486631C007D7886 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0B128C732486631C007D7886 /* GoogleService-Info.plist */; };
 		0FC1110311B440AB87A2B550 /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1875149C2637BC5A0063B993 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		192E78D02511126700E9B916 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CE2511126600E9B916 /* AppleMusicManager.swift */; };
 		192E78D12511126700E9B916 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CF2511126700E9B916 /* AuthorizationManager.swift */; };
 		192E78D3251112E300E9B916 /* SharedClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78D2251112E300E9B916 /* SharedClass.swift */; };
-		194E6736DFD04AA0D56629E8 /* libPods-Choona.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7454185DA8D6720E0B230066 /* libPods-Choona.a */; };
+		4FD4A3D6B47F2092911B157B /* libPods-Choona-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E088A29603A6C433A61AD5 /* libPods-Choona-tvOSTests.a */; };
+		7E636278D5F4E31DA27B2FD4 /* libPods-Choona-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D53B593C50A3B2B55D9B7BA /* libPods-Choona-tvOS.a */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		FFF5508D1A092395C7C46CFA /* libPods-Choona-ChoonaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41A4AD70B8437CA36086273B /* libPods-Choona-ChoonaTests.a */; };
 		19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */; };
 		19E8385624FF9ED1009D7A39 /* AppleUserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385524FF9ED1009D7A39 /* AppleUserToken.m */; };
-		1A2E18357D6D758D6D827073 /* libPods-Choona-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 785067749B632811726B9E7F /* libPods-Choona-tvOSTests.a */; };
 		265AC87D4B064B55AE11B766 /* ProximaNovaAW07-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -30,12 +31,10 @@
 		328F818FF77F4813887EC302 /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */; };
 		3F3FBEB07A244ECB99712498 /* ProximaNova-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */; };
 		61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */; };
-		6F57B09187C069737E244288 /* libPods-Choona-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCB8C13D9FA5318ADC9237D1 /* libPods-Choona-tvOS.a */; };
 		8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
 		8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */; };
 		C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */; };
 		C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */; };
-		CD761EDCF2B2DDE7EB8477B0 /* libPods-Choona-ChoonaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6BE01F47B7588F5004F2D9F /* libPods-Choona-ChoonaTests.a */; };
 		F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */; };
 /* End PBXBuildFile section */
 
@@ -80,7 +79,6 @@
 		13B07F961A680F5B00A75B9A /* Choona.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Choona.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Choona/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Choona/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Choona/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Choona/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Choona/main.m; sourceTree = "<group>"; };
@@ -94,31 +92,31 @@
 		19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleUserToken.swift; sourceTree = "<group>"; };
 		19E8385524FF9ED1009D7A39 /* AppleUserToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppleUserToken.m; sourceTree = "<group>"; };
 		1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Light.otf"; path = "../assets/fonts/ProximaNovaA-Light.otf"; sourceTree = "<group>"; };
-		24F9CF820654EE3919DE075E /* Pods-Choona-ChoonaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.debug.xcconfig"; sourceTree = "<group>"; };
-		259D47194D3A585ED3EA6146 /* Pods-Choona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.debug.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Choona-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Choona-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Choona-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Choona-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Semibold.ttf"; path = "../assets/fonts/ProximaNova-Semibold.ttf"; sourceTree = "<group>"; };
-		5505DA8F6A617D6D6EC1DB09 /* Pods-Choona-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Choona-tvOS/Pods-Choona-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Bold.otf"; path = "../assets/fonts/ProximaNovaA-Bold.otf"; sourceTree = "<group>"; };
 		64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Bold.otf"; path = "../assets/fonts/ProximaNova-Bold.otf"; sourceTree = "<group>"; };
-		7454185DA8D6720E0B230066 /* libPods-Choona.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		785067749B632811726B9E7F /* libPods-Choona-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		96AB5522CDD045CFD8C171AD /* Pods-Choona-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Choona-tvOS/Pods-Choona-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaAW07-Medium.ttf"; path = "../assets/fonts/ProximaNovaAW07-Medium.ttf"; sourceTree = "<group>"; };
-		A870E4390F3473A9D4979645 /* Pods-Choona.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.release.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.release.xcconfig"; sourceTree = "<group>"; };
-		AB6EEC0CC520EB6DC2BCCB47 /* Pods-Choona-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-tvOSTests/Pods-Choona-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		AE764F6DC7B347027A542609 /* Pods-Choona-ChoonaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.release.xcconfig"; sourceTree = "<group>"; };
 		BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Thin.otf"; path = "../assets/fonts/ProximaNovaA-Thin.otf"; sourceTree = "<group>"; };
-		D6BE01F47B7588F5004F2D9F /* libPods-Choona-ChoonaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-ChoonaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DCB8C13D9FA5318ADC9237D1 /* libPods-Choona-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C133D7A18628B8F2DEE4167 /* Pods-Choona-ChoonaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Regular.otf"; path = "../assets/fonts/ProximaNova-Regular.otf"; sourceTree = "<group>"; };
 		EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaT-Thin.otf"; path = "../assets/fonts/ProximaNovaT-Thin.otf"; sourceTree = "<group>"; };
 		ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Black.otf"; path = "../assets/fonts/ProximaNova-Black.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		FAB19EAB9ECC253B46DA1AEE /* Pods-Choona-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-tvOSTests/Pods-Choona-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Extrabld.otf"; path = "../assets/fonts/ProximaNova-Extrabld.otf"; sourceTree = "<group>"; };
+		2F252DDD675D9BB2DBAEAF48 /* Pods-Choona-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Choona-tvOS/Pods-Choona-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		34D7AF02ABF9FCC58C012D7B /* Pods-Choona.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.release.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.release.xcconfig"; sourceTree = "<group>"; };
+		41A4AD70B8437CA36086273B /* libPods-Choona-ChoonaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-ChoonaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D53B593C50A3B2B55D9B7BA /* libPods-Choona-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67C3D9C8BA617370024A5334 /* Pods-Choona-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Choona-tvOS/Pods-Choona-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		7BEEABF30005927E51926C63 /* Pods-Choona-ChoonaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.release.xcconfig"; sourceTree = "<group>"; };
+		8091554AB35F326205861B10 /* Pods-Choona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.debug.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.debug.xcconfig"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Choona/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B0E088A29603A6C433A61AD5 /* libPods-Choona-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEFEF3100B0E3D99F4C5E0DD /* Pods-Choona-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-tvOSTests/Pods-Choona-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F494D1E1AB8F6D5A6AC1BDD6 /* Pods-Choona-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-tvOSTests/Pods-Choona-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +124,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD761EDCF2B2DDE7EB8477B0 /* libPods-Choona-ChoonaTests.a in Frameworks */,
+				FFF5508D1A092395C7C46CFA /* libPods-Choona-ChoonaTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,7 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				194E6736DFD04AA0D56629E8 /* libPods-Choona.a in Frameworks */,
+				00B99033AE9EB850F1C1961E /* libPods-Choona.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,7 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F57B09187C069737E244288 /* libPods-Choona-tvOS.a in Frameworks */,
+				7E636278D5F4E31DA27B2FD4 /* libPods-Choona-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,7 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A2E18357D6D758D6D827073 /* libPods-Choona-tvOSTests.a in Frameworks */,
+				4FD4A3D6B47F2092911B157B /* libPods-Choona-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,7 +194,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard
 				13B07FB71A68108700A75B9A /* main.m */,
 				19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */,
 				19E8385224FF9E6E009D7A39 /* Choona-Bridging-Header.h */,
@@ -212,10 +210,10 @@
 				1880F307265678CD00B66F62 /* libPermission-MediaLibrary.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				7454185DA8D6720E0B230066 /* libPods-Choona.a */,
-				D6BE01F47B7588F5004F2D9F /* libPods-Choona-ChoonaTests.a */,
-				DCB8C13D9FA5318ADC9237D1 /* libPods-Choona-tvOS.a */,
-				785067749B632811726B9E7F /* libPods-Choona-tvOSTests.a */,
+				022CF4CA4BF62AC6B2B2CCB0 /* libPods-Choona.a */,
+				41A4AD70B8437CA36086273B /* libPods-Choona-ChoonaTests.a */,
+				4D53B593C50A3B2B55D9B7BA /* libPods-Choona-tvOS.a */,
+				B0E088A29603A6C433A61AD5 /* libPods-Choona-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -253,7 +251,7 @@
 				0E1134D725E57D8500548A1A /* OneSignalNotificationServiceExtension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				8C5D407D7342997D2EA7F320 /* Pods */,
+				EDBD22F69413BCED3716DC91 /* Pods */,
 				7FAA34B6666743988984D1E1 /* Resources */,
 			);
 			indentWidth = 2;
@@ -272,18 +270,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8C5D407D7342997D2EA7F320 /* Pods */ = {
+		EDBD22F69413BCED3716DC91 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				259D47194D3A585ED3EA6146 /* Pods-Choona.debug.xcconfig */,
-				A870E4390F3473A9D4979645 /* Pods-Choona.release.xcconfig */,
-				24F9CF820654EE3919DE075E /* Pods-Choona-ChoonaTests.debug.xcconfig */,
-				AE764F6DC7B347027A542609 /* Pods-Choona-ChoonaTests.release.xcconfig */,
-				5505DA8F6A617D6D6EC1DB09 /* Pods-Choona-tvOS.debug.xcconfig */,
-				96AB5522CDD045CFD8C171AD /* Pods-Choona-tvOS.release.xcconfig */,
-				AB6EEC0CC520EB6DC2BCCB47 /* Pods-Choona-tvOSTests.debug.xcconfig */,
-				FAB19EAB9ECC253B46DA1AEE /* Pods-Choona-tvOSTests.release.xcconfig */,
+				8091554AB35F326205861B10 /* Pods-Choona.debug.xcconfig */,
+				34D7AF02ABF9FCC58C012D7B /* Pods-Choona.release.xcconfig */,
+				1C133D7A18628B8F2DEE4167 /* Pods-Choona-ChoonaTests.debug.xcconfig */,
+				7BEEABF30005927E51926C63 /* Pods-Choona-ChoonaTests.release.xcconfig */,
+				67C3D9C8BA617370024A5334 /* Pods-Choona-tvOS.debug.xcconfig */,
+				2F252DDD675D9BB2DBAEAF48 /* Pods-Choona-tvOS.release.xcconfig */,
+				DEFEF3100B0E3D99F4C5E0DD /* Pods-Choona-tvOSTests.debug.xcconfig */,
+				F494D1E1AB8F6D5A6AC1BDD6 /* Pods-Choona-tvOSTests.release.xcconfig */,
 			);
+			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -294,12 +293,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ChoonaTests" */;
 			buildPhases = (
-				657DE541DD7C339B40863666 /* [CP] Check Pods Manifest.lock */,
+				AB5616C25B640C28F69AC716 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				F9F52C9C2F45EB9FD3DA7E98 /* [CP] Copy Pods Resources */,
-				42D539A5C30682838855E3C5 /* [CP] Embed Pods Frameworks */,
+				AC7FEE84DB8527AAF452D8F9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -315,15 +313,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Choona" */;
 			buildPhases = (
-				4A13C4C7BDF0F31594786881 /* [CP] Check Pods Manifest.lock */,
+				A70CC3C8976835C5312571B4 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				9F90CE790446B386FEE05202 /* [CP] Copy Pods Resources */,
+				F82CBD55A81EA0CBCBEC3E07 /* [CP] Copy Pods Resources */,
 				88E5FA4FC70B031FEDF3DD64 /* [CP-User] [RNFB] Core Configuration */,
-				E0A248ABD2C5F071A7F94E2A /* [CP] Embed Pods Frameworks */,
 				0E1134DE25E57D8500548A1A /* Embed App Extensions */,
 			);
 			buildRules = (
@@ -339,7 +336,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Choona-tvOS" */;
 			buildPhases = (
-				658B2234C5533790BBC781E3 /* [CP] Check Pods Manifest.lock */,
+				13DA31A06B3A5AB23EC16F02 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -359,7 +356,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Choona-tvOSTests" */;
 			buildPhases = (
-				05012F50957C9201BF99A712 /* [CP] Check Pods Manifest.lock */,
+				39DDEE3BD773A11E9DD2AB5F /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -441,7 +438,7 @@
 				1875149C2637BC5A0063B993 /* main.jsbundle in Resources */,
 				0B128C742486631C007D7886 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */,
 				0FC1110311B440AB87A2B550 /* ProximaNova-Extrabld.otf in Resources */,
 				C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */,
@@ -523,6 +520,25 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		FD10A7F122414F3F0027D42C /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		42D539A5C30682838855E3C5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -541,7 +557,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4A13C4C7BDF0F31594786881 /* [CP] Check Pods Manifest.lock */ = {
+		A70CC3C8976835C5312571B4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -563,7 +579,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		657DE541DD7C339B40863666 /* [CP] Check Pods Manifest.lock */ = {
+		AB5616C25B640C28F69AC716 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -675,7 +691,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FD10A7F022414F080027D42C /* Start Packager */ = {
+		AC7FEE84DB8527AAF452D8F9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -683,18 +699,37 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
-			name = "Start Packager";
-			outputFileListPaths = (
-			);
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FD10A7F122414F3F0027D42C /* Start Packager */ = {
+		F82CBD55A81EA0CBCBEC3E07 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Choona/Pods-Choona-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Choona/Pods-Choona-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -770,22 +805,10 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				13B07FB21A68108700A75B9A /* Base */,
-			);
-			name = LaunchScreen.xib;
-			path = Choona;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 24F9CF820654EE3919DE075E /* Pods-Choona-ChoonaTests.debug.xcconfig */;
+			baseConfigurationReference = 1C133D7A18628B8F2DEE4167 /* Pods-Choona-ChoonaTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -797,7 +820,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ChoonaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -814,7 +837,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE764F6DC7B347027A542609 /* Pods-Choona-ChoonaTests.release.xcconfig */;
+			baseConfigurationReference = 7BEEABF30005927E51926C63 /* Pods-Choona-ChoonaTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -823,7 +846,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				INFOPLIST_FILE = ChoonaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -840,7 +863,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 259D47194D3A585ED3EA6146 /* Pods-Choona.debug.xcconfig */;
+			baseConfigurationReference = 8091554AB35F326205861B10 /* Pods-Choona.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -877,7 +900,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A870E4390F3473A9D4979645 /* Pods-Choona.release.xcconfig */;
+			baseConfigurationReference = 34D7AF02ABF9FCC58C012D7B /* Pods-Choona.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -888,7 +911,7 @@
 				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				INFOPLIST_FILE = Choona/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				ONLY_ACTIVE_ARCH = YES;
@@ -909,7 +932,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5505DA8F6A617D6D6EC1DB09 /* Pods-Choona-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 67C3D9C8BA617370024A5334 /* Pods-Choona-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -931,13 +954,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96AB5522CDD045CFD8C171AD /* Pods-Choona-tvOS.release.xcconfig */;
+			baseConfigurationReference = 2F252DDD675D9BB2DBAEAF48 /* Pods-Choona-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -959,13 +982,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AB6EEC0CC520EB6DC2BCCB47 /* Pods-Choona-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = DEFEF3100B0E3D99F4C5E0DD /* Pods-Choona-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -992,7 +1015,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FAB19EAB9ECC253B46DA1AEE /* Pods-Choona-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = F494D1E1AB8F6D5A6AC1BDD6 /* Pods-Choona-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1064,7 +1087,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
@@ -1117,7 +1140,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
