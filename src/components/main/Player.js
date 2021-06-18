@@ -2210,7 +2210,7 @@ function Player(props) {
                   alignSelf: 'center',
                   // alignItems: 'center',
                   justifyContent: 'center',
-                  marginTop: normalise(40),
+                  marginTop: normalise(20),
                   // backgroundColor: Colors.fadeblack,
                   // borderRadius: normalise(10),
                 }}
