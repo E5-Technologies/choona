@@ -11,6 +11,7 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -49,7 +50,7 @@ function Profile(props) {
   const [modaltandcs, setModaltandcs] = useState(false);
   const [flag, setFlag] = useState('');
   const [activity, setActivity] = useState(props.route.params.fromAct);
-  const [nonempty,setNonEmpty]= useState(false)
+  const [nonempty, setNonEmpty] = useState(false);
 
   const getPosts = async pageId => {
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
@@ -59,7 +60,7 @@ function Profile(props) {
         'x-access-token': props.header.token,
       },
     });
-  
+
     // console.log("rs" + JSON.stringify(response.data))
     return await response.data.data;
   };
@@ -69,50 +70,48 @@ function Profile(props) {
   const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
 
   // const[profilePosts,setProfilePosts] = useState(posts ? posts.data : []);
-  const[profilePosts,setProfilePosts] = useState([]);
+  const [profilePosts, setProfilePosts] = useState([]);
 
-
-  const onEndReached=async()=>{
-  
-    setPageId(pageId+1)
-   const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
-     headers: {
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-       'x-access-token': props.header.token,
-     },
-   });
-  setProfilePosts([...profilePosts,...response.data.data])
-  setNonEmpty(true)
-  
-   } 
+  const onEndReached = async () => {
+    setPageId(pageId + 1);
+    const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
+      },
+    });
+    setProfilePosts([...profilePosts, ...response.data.data]);
+    setNonEmpty(true);
+  };
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', payload => {
-      isInternetConnected()
-        .then(async() => {
-          props.getProfileReq();
-          props.getCountryCode();
-            
-   const response = await axios.get(`${postsUrl}?page=${1}`, {
-     headers: {
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-       'x-access-token': props.header.token,
-     },
-   });
- profilePosts.length===0 ?
- ( setProfilePosts(response.data.data),setNonEmpty(true)):null
-        })
-        .catch(() => {
-          toast('Error', 'Please Connect To Internet');
+    isInternetConnected()
+      .then(async () => {
+        props.getProfileReq();
+        props.getCountryCode();
+
+        const response = await axios.get(`${postsUrl}?page=${1}`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': props.header.token,
+          },
         });
+        profilePosts.length === 0
+          ? (setProfilePosts(response.data.data), setNonEmpty(true))
+          : null;
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
     // });
 
     // return () => {
     //   unsuscribe();
     // };
-  },[]);
+  }, []);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -171,17 +170,13 @@ function Profile(props) {
     }
   }
 
-
-
-
-
   function renderProfileData(data) {
-    let array=[]
-    array.push(data.item)
+    let array = [];
+    array.push(data.item);
     return (
       <TouchableOpacity
         onPress={() => {
-            props.navigation.navigate('PostListForUser', {
+          props.navigation.navigate('PostListForUser', {
             profile_name: props.userProfileResp.full_name,
             posts: array,
             index: '0',
@@ -226,9 +221,10 @@ function Profile(props) {
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity 
-            onPress={()=>{setModalPrivacy(true)}}
-            >
+            <TouchableOpacity
+              onPress={() => {
+                setModalPrivacy(true);
+              }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -249,10 +245,12 @@ function Profile(props) {
                 Terms of Usage
               </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={{ marginTop: normalise(18) }}
-            onPress={()=>{setModaltandcs(true)}}
-            >
+
+            <TouchableOpacity
+              style={{ marginTop: normalise(18) }}
+              onPress={() => {
+                setModaltandcs(true);
+              }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -262,7 +260,6 @@ function Profile(props) {
                 Terms & Conditions
               </Text>
             </TouchableOpacity>
-
 
             {/* <TouchableOpacity
                             style={{ marginTop: normalise(18) }}>
@@ -280,7 +277,6 @@ function Profile(props) {
               }}>
               <Text
                 style={{
-                
                   color: Colors.red,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
@@ -289,14 +285,17 @@ function Profile(props) {
               </Text>
             </TouchableOpacity>
             <Text
-                style={{
-                  marginTop: normalise(18),
-                  color: Colors.grey,
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Version <Text style={{fontSize:normalise(12)}}> 1.0 </Text>
+              style={{
+                marginTop: normalise(18),
+                color: Colors.grey,
+                fontSize: normalise(13),
+                fontFamily: 'ProximaNova-Semibold',
+              }}>
+              Version{' '}
+              <Text style={{ fontSize: normalise(12) }}>
+                {DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})
               </Text>
+            </Text>
 
             <TouchableOpacity
               onPress={() => {
@@ -338,14 +337,15 @@ function Profile(props) {
         transparent={false}
         visible={modalPrivacy}
         presentationStyle={'pageSheet'}
-        onRequestClose={() => {setModalPrivacy(false)}}>
-       
-<View style={{flex:1,backgroundColor:'#0D1E25'}}>
-<View style={{marginTop:'5%' }}>
+        onRequestClose={() => {
+          setModalPrivacy(false);
+        }}>
+        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
+          <View style={{ marginTop: '5%' }}>
             <TouchableOpacity
               style={{ marginLeft: normalise(10) }}
               onPress={() => {
-               setModalPrivacy(false)
+                setModalPrivacy(false);
               }}>
               <Image
                 source={ImagePath.backicon}
@@ -354,12 +354,11 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-<WebView
-        source={{ uri: 'https://www.choona.co/privacy' }}
-        // style={{ marginTop: 20 }}
-      />
-</View>
-
+          <WebView
+            source={{ uri: 'https://www.choona.co/privacy' }}
+            // style={{ marginTop: 20 }}
+          />
+        </View>
       </Modal>
     );
   };
@@ -371,14 +370,15 @@ function Profile(props) {
         transparent={false}
         visible={modaltandcs}
         presentationStyle={'pageSheet'}
-        onRequestClose={() => {setModaltandcs(false)}}>
-       
-<View style={{flex:1,backgroundColor:'#0D1E25'}}>
-<View style={{marginTop:'5%' }}>
+        onRequestClose={() => {
+          setModaltandcs(false);
+        }}>
+        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
+          <View style={{ marginTop: '5%' }}>
             <TouchableOpacity
               style={{ marginLeft: normalise(10) }}
               onPress={() => {
-               setModaltandcs(false)
+                setModaltandcs(false);
               }}>
               <Image
                 source={ImagePath.backicon}
@@ -387,12 +387,11 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-<WebView
-        source={{ uri: 'https://www.choona.co/tandcs' }}
-        // style={{ marginTop: 20 }}
-      />
-</View>
-
+          <WebView
+            source={{ uri: 'https://www.choona.co/tandcs' }}
+            // style={{ marginTop: 20 }}
+          />
+        </View>
       </Modal>
     );
   };
@@ -402,7 +401,7 @@ function Profile(props) {
 
       <Loader visible={props.status === USER_PROFILE_REQUEST} />
       <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
-    
+
       <SafeAreaView style={{ flex: 1 }}>
         <View
           style={{
@@ -749,10 +748,9 @@ function Profile(props) {
           )}
         </ImageBackground>
 
-        {_.isEmpty(profilePosts)&&nonempty ? (
-          <View
-          style={{ flex: 1, alignItems: 'center' }}>
-          {/* <View
+        {_.isEmpty(profilePosts) && nonempty ? (
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            {/* <View
             style={{
               height: '50%',
               justifyContent: 'flex-end',
@@ -760,22 +758,22 @@ function Profile(props) {
               width: '60%',
             }}> */}
 
-<Image
-            source={ImagePath.emptyPost}
-            style={{
-              height: 2*normalise(90),
-              width: 2*normalise(90),
-               marginTop: '8%',
-            }}
-            resizeMode="contain"
-          />
+            <Image
+              source={ImagePath.emptyPost}
+              style={{
+                height: 2 * normalise(90),
+                width: 2 * normalise(90),
+                marginTop: '8%',
+              }}
+              resizeMode="contain"
+            />
             <Text
               style={{
                 color: Colors.white,
                 fontSize: normalise(15),
                 // fontWeight: 'bold',
                 textAlign: 'center',
-                marginTop:'5%',
+                marginTop: '5%',
                 fontFamily: 'ProximaNova-Bold',
               }}>
               Your Profile is Empty
@@ -789,14 +787,15 @@ function Profile(props) {
                 marginTop: normalise(7),
                 width: '65%',
                 textAlign: 'center',
-                alignSelf:'center',
+                alignSelf: 'center',
                 fontFamily: 'ProximaNova-Regular',
               }}>
-              You haven’t uploaded any songs to Choona yet, click the button below to add your first song.
+              You haven’t uploaded any songs to Choona yet, click the button
+              below to add your first song.
             </Text>
-          {/* </View> */}
+            {/* </View> */}
 
-          {/* <View
+            {/* <View
             style={{
               height: '50%',
               justifyContent: 'flex-end',
@@ -812,8 +811,8 @@ function Profile(props) {
                 justifyContent: 'center',
                 borderRadius: normalise(20),
                 backgroundColor: Colors.white,
-                position:'absolute',
-                bottom:8
+                position: 'absolute',
+                bottom: 8,
               }}
               onPress={() => {
                 props.navigation.replace('bottomTab', { screen: 'Add' });
@@ -824,13 +823,12 @@ function Profile(props) {
                   fontSize: normalise(12),
                   fontWeight: 'bold',
                 }}>
-               ADD YOUR FIRST POST
+                ADD YOUR FIRST POST
               </Text>
             </TouchableOpacity>
-          {/* </View> */}
-        </View>
-     
-       ) : (
+            {/* </View> */}
+          </View>
+        ) : (
           <FlatList
             style={{ paddingTop: normalise(10) }}
             data={profilePosts}
@@ -840,13 +838,8 @@ function Profile(props) {
             }}
             showsVerticalScrollIndicator={false}
             numColumns={2}
-
-            onEndReached={()=>
-              onEndReached()
-                
-              }
-               onEndReachedThreshold={1}
-
+            onEndReached={() => onEndReached()}
+            onEndReachedThreshold={1}
           />
         )}
 
@@ -883,10 +876,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styles = StyleSheet.create({
   centeredView: {
