@@ -28,9 +28,6 @@ import { connect } from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
-
-
-  
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
@@ -41,9 +38,6 @@ function MusicPlayerBar(props) {
       : null;
 
   useEffect(() => {
-
-
-
     getPlatingState();
     getPlayingPosition();
     setTimeout(() => {
@@ -52,39 +46,31 @@ function MusicPlayerBar(props) {
   }, [play]);
 
   function getPlatingState() {
-
-      setInterval(() => {
-
-        const ref =
+    setInterval(() => {
+      const ref =
         global.playerReference !== null && global.playerReference !== undefined
           ? global.playerReference
           : null;
-        if (ref !== null && ref !== undefined) {
-
+      if (ref !== null && ref !== undefined) {
         const isPlaying = ref.isPlaying();
 
         setPlay(isPlaying);
-        }
-      }, 1000);
-    
+      }
+    }, 1000);
   }
 
   function getPlayingPosition() {
-      setInterval(() => {
-
-        const ref =
+    setInterval(() => {
+      const ref =
         global.playerReference !== null && global.playerReference !== undefined
           ? global.playerReference
           : null;
-        if (ref !== null && ref !== undefined) {
-
-
+      if (ref !== null && ref !== undefined) {
         ref.getCurrentTime(seconds => {
           setTime(seconds);
         });
       }
-      }, 1000);
-    
+    }, 1000);
   }
 
   const playOrPause = () => {
@@ -154,7 +140,7 @@ function MusicPlayerBar(props) {
           style={{
             width: '100%',
             // alignSelf: 'center',
-            paddingRight:normalize(13),
+            paddingRight: normalize(13),
             alignItems: 'center',
             justifyContent: 'space-between',
             // marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8),
@@ -166,7 +152,8 @@ function MusicPlayerBar(props) {
             }}>
             <Image
               source={{ uri: props.playingSongRef.song_pic }}
-              style={{ height: normalize(45), width: normalize(50) }}
+              style={{ height: normalize(45), width: normalize(45) }}
+              resizeMode="contain"
             />
           </TouchableOpacity>
 
@@ -238,7 +225,4 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MusicPlayerBar);
+export default connect(mapStateToProps, mapDispatchToProps)(MusicPlayerBar);
