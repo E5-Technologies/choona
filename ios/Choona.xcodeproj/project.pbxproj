@@ -790,7 +790,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 52;
+				CURRENT_PROJECT_VERSION = 55;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -827,7 +827,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 52;
+				CURRENT_PROJECT_VERSION = 55;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Choona/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
