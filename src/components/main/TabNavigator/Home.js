@@ -672,6 +672,7 @@ function Home(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        song_uri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -734,6 +735,7 @@ function Home(props) {
         marginBottom={
           data.index === props.postData.length - 1 ? normalise(60) : 0
         }
+        playingSongRef={props.playingSongRef}
       />
       // </TouchableOpacity>
     );

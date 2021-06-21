@@ -10,6 +10,7 @@ const HomeListItemHeader = ({
   play,
   postType,
   singer,
+  songUri,
   title,
 }) => {
   return (
@@ -29,13 +30,15 @@ const HomeListItemHeader = ({
           </Text>
         </View>
       </View>
-      <TouchableOpacity onPress={() => onPressMusicbox()}>
-        <Image
-          source={play ? ImagePath.pause : ImagePath.play}
-          style={styles.listItemHeaderPlayButton}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
+      {songUri && (
+        <TouchableOpacity onPress={() => onPressMusicbox()}>
+          <Image
+            source={play ? ImagePath.pause : ImagePath.play}
+            style={styles.listItemHeaderPlayButton}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

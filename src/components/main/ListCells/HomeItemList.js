@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -104,18 +104,42 @@ function HomeItemList(props) {
         play={props.play}
         postType={props.postType}
         singer={props.singer}
+        songUri={props.song_uri}
         title={props.title}
       />
-      <Image
-        source={
-          props.image === '' ? ImagePath.profiletrack1 : { uri: props.image }
-        }
-        style={{
-          aspectRatio: 1,
-          width: '100%',
-        }}
-        resizeMode="cover"
-      />
+      <TouchableOpacity
+        onPress={() => {
+          props.navi.navigation.navigate('Player', {
+            comments: [],
+            song_title: props.playingSongRef.song_name,
+            album_name: props.playingSongRef.album_name,
+            song_pic: props.playingSongRef.song_pic,
+            username: props.playingSongRef.username,
+            profile_pic: props.playingSongRef.profile_pic,
+            uri: props.playingSongRef.uri,
+            reactions: props.playingSongRef.reactionData,
+            id: props.playingSongRef.id,
+            artist: props.playingSongRef.artist,
+            changePlayer: props.playingSongRef.changePlayer,
+            originalUri: props.playingSongRef.originalUri,
+            isrc: props.playingSongRef.isrc,
+            registerType: props.playingSongRef.regType,
+            details: props.playingSongRef.details,
+            showPlaylist: props.playingSongRef.showPlaylist,
+            comingFromMessage: props.playingSongRef.comingFromMessage,
+          });
+        }}>
+        <Image
+          source={
+            props.image === '' ? ImagePath.profiletrack1 : { uri: props.image }
+          }
+          style={{
+            aspectRatio: 1,
+            width: '100%',
+          }}
+          resizeMode="cover"
+        />
+      </TouchableOpacity>
       <HomeListItemFooter
         commentCount={props.comment_count}
         numberOfLines={numberOfLines}
