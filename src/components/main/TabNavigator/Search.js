@@ -97,7 +97,7 @@ function Search(props) {
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
-  const [totalReact,setTotalReact] = useState([])
+  const [totalReact, setTotalReact] = useState([]);
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
@@ -110,7 +110,6 @@ function Search(props) {
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
   useEffect(() => {
-    
     const unsuscribe = props.navigation.addListener('focus', payload => {
       setUserSearchData([]);
       sesUsersToSEndSong([]);
@@ -134,7 +133,7 @@ function Search(props) {
         setSongData([]);
         setTimeout(() => {
           setSongData(props.userSearch);
-          
+
           setBool(false);
         }, 1000);
         break;
@@ -170,18 +169,27 @@ function Search(props) {
         postStatus = props.postStatus;
         setSearchPostData(props.searchPostData);
         // console.log("userpost"+props.userSearchFromHome)
-        let newarray = []
-        props.searchPostData.map((item,index)=>{
-          let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
-         
-          newarray.push(newObject)
-          if(index===props.searchPostData.length-1){
-            setTotalReact(newarray)
+        let newarray = [];
+        props.searchPostData.map((item, index) => {
+          let newObject = {
+            id: item._id,
+            react: [
+              item.fire_count,
+              item.love_count,
+              item.dancer_count,
+              item.man_dancing_count,
+              item.face_count,
+              item.thumbsup_count,
+            ],
+          };
+
+          newarray.push(newObject);
+          if (index === props.searchPostData.length - 1) {
+            setTotalReact(newarray);
             //  console.log("newarrr"+ JSON.stringify(newarray))
           }
-        
-        })
-       
+        });
+
         break;
 
       case SEARCH_POST_FAILURE:
@@ -200,8 +208,7 @@ function Search(props) {
       case TOP_50_SONGS_SUCCESS:
         top50Status = props.top50SongsStatus;
         setTop50(props.top50SongsResponse);
-      
-       
+
         break;
 
       case TOP_50_SONGS_FAILURE:
@@ -212,7 +219,7 @@ function Search(props) {
   }
 
   if (userstatus === '' || props.userstatus !== userstatus) {
-    console.log("status"+props.userstatus)
+    console.log('status' + props.userstatus);
     switch (props.userstatus) {
       case GET_USER_FROM_HOME_REQUEST:
         userstatus = props.userstatus;
@@ -221,9 +228,7 @@ function Search(props) {
       case GET_USER_FROM_HOME_SUCCESS:
         userstatus = props.userstatus;
         setUserSearchData(props.userSearchFromHome);
-   
-    
-       
+
         break;
 
       case GET_USER_FROM_HOME_FAILURE:
@@ -265,8 +270,6 @@ function Search(props) {
     }
   }
 
- 
-  
   // RENDER FUNCTION FLATLIST
   function renderUserData(data) {
     return (
@@ -294,91 +297,87 @@ function Search(props) {
     );
   }
 
-
-  function _onReaction(ID,reaction,reactionList){
-
-    let newarray = searchPostData
+  function _onReaction(ID, reaction, reactionList) {
+    let newarray = searchPostData;
     // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
-      newarray.map((item,index)=>{
-     
-     if(item._id === ID){
-  
-  if(reactionList.length>0){
-  var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
-  var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
-  var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
-  var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
-  var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
-  var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
-  
-  //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-  if(found!=-1){
-    newarray[index].fire_count=reactionList[found].data.length
-       }else{
-         newarray[index].fire_count=0
-       }
-       if(found_love!=-1){
-    newarray[index].love_count=reactionList[found_love].data.length
-       }
-       else{
-         newarray[index].love_count=0
-       }
-       if(found_dance !=-1){
-    newarray[index].dancer_count=reactionList[found_dance].data.length
-       }
-       else{
-         newarray[index].dancer_count=0
-       }
-       if(found_ManDance !=-1){
-    newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
-       }
-       else{
-         newarray[index].man_dancing_count=0
-       }
-       if(found_face != -1){
-    newarray[index].face_count=reactionList[found_face].data.length
-       }
-       else{
-         newarray[index].face_count=0
-       }
-       if(found_thumb != -1){
-    newarray[index].thumbsup_count=reactionList[found_thumb].data.length
-       }
-       else{
-         newarray[index].thumbsup_count=0
-       }
-  
-       newarray[index].reaction_count= reaction
-      }
+    newarray.map((item, index) => {
+      if (item._id === ID) {
+        if (reactionList.length > 0) {
+          var found = reactionList.findIndex(element => {
+            return element.header === react[0];
+          });
+          var found_love = reactionList.findIndex(element => {
+            return element.header === react[1];
+          });
+          var found_dance = reactionList.findIndex(element => {
+            return element.header === react[2];
+          });
+          var found_ManDance = reactionList.findIndex(element => {
+            return element.header === react[3];
+          });
+          var found_face = reactionList.findIndex(element => {
+            return element.header === react[4];
+          });
+          var found_thumb = reactionList.findIndex(element => {
+            return element.header === react[5];
+          });
+
+          //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+          if (found != -1) {
+            newarray[index].fire_count = reactionList[found].data.length;
+          } else {
+            newarray[index].fire_count = 0;
           }
-        
-     if(index===newarray.length-1){
-   
-       setSearchPostData([...newarray])
-     
+          if (found_love != -1) {
+            newarray[index].love_count = reactionList[found_love].data.length;
+          } else {
+            newarray[index].love_count = 0;
+          }
+          if (found_dance != -1) {
+            newarray[index].dancer_count =
+              reactionList[found_dance].data.length;
+          } else {
+            newarray[index].dancer_count = 0;
+          }
+          if (found_ManDance != -1) {
+            newarray[index].man_dancing_count =
+              reactionList[found_ManDance].data.length;
+          } else {
+            newarray[index].man_dancing_count = 0;
+          }
+          if (found_face != -1) {
+            newarray[index].face_count = reactionList[found_face].data.length;
+          } else {
+            newarray[index].face_count = 0;
+          }
+          if (found_thumb != -1) {
+            newarray[index].thumbsup_count =
+              reactionList[found_thumb].data.length;
+          } else {
+            newarray[index].thumbsup_count = 0;
+          }
 
-    }
-       })
-    } 
+          newarray[index].reaction_count = reaction;
+        }
+      }
 
-    function _onSelectBack(ID,comment){
-  
-      let newarray = searchPostData
-      newarray.map((item,index)=>{
-      
-       if(item._id === ID){
-    
-        newarray[index].comment_count = comment
-  
-       }
-      if(index=== newarray.length-1){
-         setSearchPostData([...newarray])
-      
-  
+      if (index === newarray.length - 1) {
+        setSearchPostData([...newarray]);
       }
-        })
-        
+    });
+  }
+
+  function _onSelectBack(ID, comment) {
+    let newarray = searchPostData;
+    newarray.map((item, index) => {
+      if (item._id === ID) {
+        newarray[index].comment_count = comment;
       }
+      if (index === newarray.length - 1) {
+        setSearchPostData([...newarray]);
+      }
+    });
+  }
 
   function renderSongData(data) {
     return (
@@ -419,7 +418,7 @@ function Search(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments:[],
+            comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -445,8 +444,8 @@ function Search(props) {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
-
+            onSelectReaction: (ID, reaction, reactionList) =>
+              _onReaction(ID, reaction, reactionList),
           });
         }}
         onPressCommentbox={() => {
@@ -459,7 +458,7 @@ function Search(props) {
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
-            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
+            onSelect: (ID, comment) => _onSelectBack(ID, comment),
           });
         }}
         onPressSecondImage={() => {
@@ -481,14 +480,12 @@ function Search(props) {
             data.index === top50.length - 1 ? normalise(30) : normalise(8),
           margin: normalise(6),
         }}
-        
         onPress={() => {
           props.navigation.navigate('GenreSongClicked', {
             data: data.item._id,
-            ptID:0
+            ptID: 0,
           });
         }}>
-        
         <Image
           source={{
             uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
@@ -525,93 +522,103 @@ function Search(props) {
       text_match: myReaction,
     };
 
-    console.log("totalReact"+totalReact) 
+    console.log('totalReact' + totalReact);
 
-    searchPostData.map((item,index)=>{
-    
-      if(id===item._id)
-    
-    if(myReaction==='A'){
-      if(searchPostData[index].fire_count===totalReact[index].react[0]){
-        searchPostData[index].fire_count=searchPostData[index].fire_count+1
-        searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].fire_count!=0){
-        searchPostData[index].fire_count=searchPostData[index].fire_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
+    searchPostData.map((item, index) => {
+      if (id === item._id)
+        if (myReaction === 'A') {
+          if (searchPostData[index].fire_count === totalReact[index].react[0]) {
+            searchPostData[index].fire_count =
+              searchPostData[index].fire_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].fire_count != 0) {
+              searchPostData[index].fire_count =
+                searchPostData[index].fire_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'B') {
+          if (searchPostData[index].love_count === totalReact[index].react[1]) {
+            searchPostData[index].love_count =
+              searchPostData[index].love_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].love_count != 0) {
+              searchPostData[index].love_count =
+                searchPostData[index].love_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'C') {
+          if (
+            searchPostData[index].dancer_count === totalReact[index].react[2]
+          ) {
+            searchPostData[index].dancer_count =
+              searchPostData[index].dancer_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].dancer_count != 0) {
+              searchPostData[index].dancer_count =
+                searchPostData[index].dancer_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'D') {
+          if (
+            searchPostData[index].man_dancing_count ===
+            totalReact[index].react[3]
+          ) {
+            searchPostData[index].man_dancing_count =
+              searchPostData[index].man_dancing_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].man_dancing_count != 0) {
+              searchPostData[index].man_dancing_count =
+                searchPostData[index].man_dancing_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'E') {
+          if (searchPostData[index].face_count === totalReact[index].react[4]) {
+            searchPostData[index].face_count =
+              searchPostData[index].face_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].face_count != 0) {
+              searchPostData[index].face_count =
+                searchPostData[index].face_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else {
+          if (
+            searchPostData[index].thumbsup_count === totalReact[index].react[5]
+          ) {
+            searchPostData[index].thumbsup_count =
+              searchPostData[index].thumbsup_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].thumbsup_count != 0) {
+              searchPostData[index].thumbsup_count =
+                searchPostData[index].thumbsup_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
         }
-      }
-    }
-    else if(myReaction==='B'){
-      if(searchPostData[index].love_count===totalReact[index].react[1]){
-        searchPostData[index].love_count=searchPostData[index].love_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].love_count!=0){
-        searchPostData[index].love_count=searchPostData[index].love_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='C'){
-      if(searchPostData[index].dancer_count===totalReact[index].react[2]){
-        searchPostData[index].dancer_count=searchPostData[index].dancer_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-      }
-      else{
-        if(searchPostData[index].dancer_count!=0){
-        searchPostData[index].dancer_count=searchPostData[index].dancer_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
-        }
-
-      }
-    }
-    else if(myReaction==='D'){
-      if(searchPostData[index].man_dancing_count===totalReact[index].react[3]){
-        searchPostData[index].man_dancing_count=searchPostData[index].man_dancing_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].man_dancing_count!=0){
-        searchPostData[index].man_dancing_count=searchPostData[index].man_dancing_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='E'){
-      if(searchPostData[index].face_count===totalReact[index].react[4]){
-        searchPostData[index].face_count=searchPostData[index].face_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].face_count!=0){
-        searchPostData[index].face_count=searchPostData[index].face_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1  
-      }
-
-      }
-    }
-    else{
-      if(searchPostData[index].thumbsup_count===totalReact[index].react[5]){
-        searchPostData[index].thumbsup_count=searchPostData[index].thumbsup_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].thumbsup_count!=0){
-        searchPostData[index].thumbsup_count=searchPostData[index].thumbsup_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1  
-      }
-      }
-    }
-    }
-  )
+    });
 
     isInternetConnected()
       .then(() => {
@@ -654,7 +661,6 @@ function Search(props) {
   //MODAL MORE PRESSED
   const MorePressed = () => {
     return (
-
       <Modal
         animationType="fade"
         transparent={true}
@@ -665,9 +671,7 @@ function Search(props) {
         }}>
         <ImageBackground
           source={ImagePath.page_gradient}
-          style={{ flex: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'center',}}>
+          style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
           <View style={styles.modalView}>
             <TouchableOpacity
               style={{
@@ -825,13 +829,10 @@ function Search(props) {
                 CANCEL
               </Text>
             </TouchableOpacity>
-          
           </View>
         </ImageBackground>
-      
       </Modal>
-   
-   );
+    );
   };
   //END OF MODAL MORE PRESSED
 
@@ -1400,12 +1401,11 @@ function Search(props) {
                 marginTop: normalise(20),
                 padding: normalise(10),
                 // color: Colors.white,
-                
-                backgroundColor:Colors.white,
+
+                backgroundColor: Colors.white,
                 paddingLeft: normalise(30),
               }}
-              keyboardAppearance='dark'
-
+              keyboardAppearance="dark"
               autoCorrect={false}
               keyboardAppearance={'dark'}
               value={
@@ -1462,7 +1462,7 @@ function Search(props) {
                   paddingTop: 4,
                   paddingBottom: 4,
                   borderRadius: 5,
-                  backgroundColor:Colors.fordGray,
+                  backgroundColor: Colors.fordGray,
                   position: 'absolute',
                   right: 0,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
@@ -1483,81 +1483,84 @@ function Search(props) {
           {usersSearch ? ( //USERS VIEW
             _.isEmpty(songData) ? (
               <View
-              style={{
-                flex: 1,
-                // justifyContent: 'center',
-                // alignItems: 'center',
-              }} >
-              <Image
-                source={ImagePath.emptyUser}
-                style={{ height: 2*normalise(95), width: 2*normalise(95),marginTop:'2%',alignSelf:'center' }}
-                resizeMode="contain"
-                
-              />
+                style={{
+                  flex: 1,
+                  // justifyContent: 'center',
+                  // alignItems: 'center',
+                }}>
+                <Image
+                  source={ImagePath.emptyUser}
+                  style={{
+                    height: 2 * normalise(95),
+                    width: 2 * normalise(95),
+                    marginTop: '2%',
+                    alignSelf: 'center',
+                  }}
+                  resizeMode="contain"
+                />
 
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                 
-                  marginTop: normalise(10),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                Search Users to Follow
-              </Text>
-              <Text
-                style={{
-                  color: Colors.fordGray,
-                  fontSize: normalise(12),
-                  fontWeight: '100',
-                  marginTop: normalise(5),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Regular',
-                
-                }}>
-                Search above to find users you want to follow by either their username or just typing their name.
-              </Text>
-              <TouchableOpacity
-                style={{
-                  marginBottom: normalise(30),
-                  marginTop: normalise(30),
-                  height: normalise(50),
-                  width: '80%',
-                  alignSelf: 'center',
-                  borderRadius: normalise(25),
-                  backgroundColor: Colors.white,
-                  borderWidth: normalise(0.5),
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 9,
-                  elevation: 11,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderColor: Colors.white,
-                }}
-                onPress={() => {
-                  setContactsLoading(true), getContacts();
-                }}>
                 <Text
                   style={{
-                    marginLeft: normalise(10),
-                    color: Colors.darkerblack,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
+                    color: Colors.white,
+                    fontSize: normalise(14),
+
+                    marginTop: normalise(10),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontFamily: 'ProximaNova-Bold',
                   }}>
-                  SEARCH PHONEBOOK
+                  Search Users to Follow
                 </Text>
-              </TouchableOpacity>
-            </View>
-         
-         ) : (
+                <Text
+                  style={{
+                    color: Colors.fordGray,
+                    fontSize: normalise(12),
+                    fontWeight: '100',
+                    marginTop: normalise(5),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontFamily: 'ProximaNova-Regular',
+                  }}>
+                  Search above to find users you want to follow by either their
+                  username or just typing their name.
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    marginBottom: normalise(30),
+                    marginTop: normalise(30),
+                    height: normalise(50),
+                    width: '80%',
+                    alignSelf: 'center',
+                    borderRadius: normalise(25),
+                    backgroundColor: Colors.white,
+                    borderWidth: normalise(0.5),
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 9,
+                    elevation: 11,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: Colors.white,
+                  }}
+                  onPress={() => {
+                    setContactsLoading(true), getContacts();
+                  }}>
+                  <Text
+                    style={{
+                      marginLeft: normalise(10),
+                      color: Colors.darkerblack,
+                      fontSize: normalise(12),
+                      fontWeight: 'bold',
+                    }}>
+                    SEARCH PHONEBOOK
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
               <View>
                 <View
                   style={{
@@ -1595,47 +1598,50 @@ function Search(props) {
           {songSearch ? ( //SONG VIEW
             _.isEmpty(searchPostData) ? (
               <View
-              style={{
-                flex: 1,
-                // justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={ImagePath.emptySong}
-                style={{ height: 2*normalise(95), width: 2*normalise(95) ,marginTop:'2%' }}
-                resizeMode="contain"
-              />
+                style={{
+                  flex: 1,
+                  // justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={ImagePath.emptySong}
+                  style={{
+                    height: 2 * normalise(95),
+                    width: 2 * normalise(95),
+                    marginTop: '2%',
+                  }}
+                  resizeMode="contain"
+                />
 
-<Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                 
-                  marginTop: normalise(13),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                Explore posts containing a song
-              </Text>
-              <Text
-                style={{
-                  color: Colors.fordGray,
-                  fontSize: normalise(12),
-                  fontWeight: '100',
-                  marginTop: normalise(5),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Regular',
-                
-                }}>
-                Search for a song or artist you love to find which other Choona users are posting then as well.
-              </Text>
-            </View>
-        
-              ) : (
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(14),
+
+                    marginTop: normalise(13),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontFamily: 'ProximaNova-Bold',
+                  }}>
+                  Explore posts containing a song
+                </Text>
+                <Text
+                  style={{
+                    color: Colors.fordGray,
+                    fontSize: normalise(12),
+                    fontWeight: '100',
+                    marginTop: normalise(5),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontFamily: 'ProximaNova-Regular',
+                  }}>
+                  Search for a song or artist you love to find which other
+                  Choona users are posting then as well.
+                </Text>
+              </View>
+            ) : (
               <View>
                 <View
                   style={{
@@ -1800,7 +1806,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     userSearchReq: (payload, sendSong) => {
-    
       dispatch(userSearchRequest(payload, sendSong));
     },
 
@@ -1809,9 +1814,7 @@ const mapDispatchToProps = dispatch => {
     },
 
     searchPost: (text, flag) => {
-
       dispatch(searchPostReq(text, flag));
-
     },
 
     reactionOnPostRequest: payload => {
@@ -1827,7 +1830,6 @@ const mapDispatchToProps = dispatch => {
     },
 
     getTop50SongReq: () => {
-  
       dispatch(getTop50SongsRequest());
     },
 
@@ -1841,7 +1843,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
