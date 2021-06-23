@@ -1,4 +1,4 @@
-import { put, call, fork, takeLatest, all, select } from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -44,9 +44,7 @@ import {
   FEATURED_SONG_SEARCH_REQUEST,
   FEATURED_SONG_SEARCH_SUCCESS,
   FEATURED_SONG_SEARCH_FAILURE,
-  GET_CHAT_LIST_REQUEST,
   GET_CHAT_LIST_SUCCESS,
-  GET_CHAT_LIST_FAILURE,
   USER_LOGOUT_REQUEST,
   USER_LOGOUT_SUCCESS,
   USER_LOGOUT_FAILURE,

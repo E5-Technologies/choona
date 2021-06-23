@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Modal,
-  ActivityIndicator,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
+import { ActivityIndicator, SafeAreaView, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import Colors from '../assests/Colors';
 

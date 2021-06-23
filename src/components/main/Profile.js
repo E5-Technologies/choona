@@ -273,7 +273,8 @@ function Profile(props) {
             <TouchableOpacity
               style={{ marginTop: normalise(18) }}
               onPress={() => {
-                setModalVisible(!modalVisible), props.logoutReq();
+                setModalVisible(!modalVisible);
+                props.logoutReq();
               }}>
               <Text
                 style={{

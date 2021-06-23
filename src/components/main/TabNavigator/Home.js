@@ -1,28 +1,22 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { put, call, fork, takeLatest, all, select } from 'redux-saga/effects';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TextInput,
   AppState,
   ImageBackground,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Image,
-  TouchableWithoutFeedback,
   Modal,
   Platform,
   Clipboard,
   Linking,
-  Keyboard,
   ActivityIndicator,
   RefreshControl,
   FlatList,
 } from 'react-native';
-import OneSignal from 'react-native-onesignal';
 
 import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
@@ -31,12 +25,9 @@ import ImagePath from '../../../assests/ImagePath';
 import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import moment, { normaliseUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
-import { useFocusEffect } from '@react-navigation/native';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -138,8 +129,8 @@ function Home(props) {
   var handleAppStateChange = state => {
     console.log('state_Change:' + state);
 
-    if (state != 'active') {
-      if (global.playerReference != null) {
+    if (state !== 'active') {
+      if (global.playerReference !== null) {
         if (global.playerReference.isPlaying()) {
           global.playerReference.pause();
 
@@ -220,7 +211,7 @@ function Home(props) {
 
       case LOAD_MORE_SUCCESS:
         status = props.status;
-        if (props.loadData.length != 0) {
+        if (props.loadData.length !== 0) {
           const intersection = props.postData.filter(item1 =>
             props.loadData.some(item2 => item1._id === item2._id),
           );
@@ -407,7 +398,7 @@ function Home(props) {
   }
 
   function hitreact1(modal1Visible) {
-    if (modal1Visible == true) {
+    if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
@@ -420,15 +411,15 @@ function Home(props) {
 
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -747,7 +738,7 @@ function Home(props) {
 
     if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
       for (var i = 0; i < arr.length; i++) {
-        if (props.userProfileResp._id == arr[i].receiver_id) {
+        if (props.userProfileResp._id === arr[i].receiver_id) {
           hasUnseenMessage = !arr[i].read;
           if (hasUnseenMessage) {
             break;
@@ -1248,7 +1239,7 @@ function Home(props) {
     //  alert("onfinish")
     // console.log("lod"+JSON.stringify(props.postData))
 
-    if (props.postData.length != 0) {
+    if (props.postData.length !== 0) {
       // console.log("timestamtp"+props.postData[0].createdAt)
       let loadData = { offset: 1, create: props.postData[0].createdAt };
       props.loadMorePost(loadData);
@@ -1868,7 +1859,7 @@ function Home(props) {
           </View>
         )}
 
-        {modal1Visible == true ? (
+        {modal1Visible === true ? (
           <View
             style={{
               position: 'absolute',

@@ -1,25 +1,17 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Image,
-  ImageBackground,
-  Platform,
-  Modal,
-  Dimensions,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import { connect } from 'react-redux';
-import constants from '../../utils/helpers/constants';
 import {
   getProfileRequest,
   homePageReq,
@@ -31,18 +23,9 @@ import { deletePostReq } from '../../action/PostAction';
 import { saveSongRequest } from '../../action/SongAction';
 import { createChatTokenRequest } from '../../action/MessageAction';
 
-import {
-  USER_PROFILE_REQUEST,
-  USER_PROFILE_SUCCESS,
-  USER_PROFILE_FAILURE,
-} from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
 import HomeItemList from './ListCells/HomeItemList';
-
-let status = '';
 
 function UserPostSongList(props) {
   const [postData, setPostData] = useState(props.route.params.postList);
@@ -53,15 +36,10 @@ function UserPostSongList(props) {
   const [modal1Visible, setModal1Visible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
 
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-
   // console.log(postData);
 
   function hitreact1(modal1Visible) {
-    if (modal1Visible == true) {
+    if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
@@ -114,7 +92,8 @@ function UserPostSongList(props) {
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
-          hitreact(reaction), sendReaction(data.item._id, reaction);
+          hitreact(reaction);
+          sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {

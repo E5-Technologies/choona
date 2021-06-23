@@ -1,7 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
   ScrollView,
   View,
   Text,
@@ -9,36 +8,23 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
-  Platform,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import { tokenRequest } from '../../action/index';
-import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
-import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import Permissions, {
-  requestMultiple,
-  request,
-  check,
-  PERMISSIONS,
-  RESULTS,
-} from 'react-native-permissions';
+
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   EDIT_PROFILE_REQUEST,
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
-  COUNTRY_CODE_REQUEST,
-  COUNTRY_CODE_SUCCESS,
-  COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
 import {
   editProfileRequest,
@@ -356,7 +342,7 @@ function EditProfile(props) {
                     editable={true}
                     data={props.countryCodeRequest}
                     selectedValue={
-                      codePick == '' ? props.countryCodeRequest[0] : codePick
+                      codePick === '' ? props.countryCodeRequest[0] : codePick
                     }
                     onPickerItemSelected={(selectedvalue, index) => {
                       //// console.log(index)

@@ -1,15 +1,12 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Keyboard,
   Image,
-  ImageBackground,
   Platform,
   TextInput,
   Alert,
@@ -24,7 +21,6 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
-import moment from 'moment';
 import { connect } from 'react-redux';
 
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
@@ -150,7 +146,7 @@ function Inbox(props) {
         title={data.item.username}
         description={data.item.message[data.item.message.length - 1].text}
         read={
-          data.item.user_id == data.item.receiver_id ? true : data.item.read
+          data.item.user_id === data.item.receiver_id ? true : data.item.read
         }
         onPress={() =>
           props.navigation.navigate('InsideaMessage', { index: data.index })

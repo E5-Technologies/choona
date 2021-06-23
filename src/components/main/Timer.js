@@ -1,6 +1,4 @@
 import React from 'react';
-import { StyleSheet, View, Text, AppState } from 'react-native';
-import _ from 'lodash';
 
 class Timer extends React.Component {
   constructor(props) {
@@ -22,14 +20,5 @@ Timer.defaultProps = {
   running: true,
   onFinish: () => {},
 };
-
-const styles = StyleSheet.create({
-  timerContainer: {
-    flexDirection: 'row',
-    ///backgroundColor:"red",
-    paddingHorizontal: 5,
-    marginTop: 1,
-  },
-});
 
 export default Timer;

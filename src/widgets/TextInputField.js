@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { View, Text, TextInput, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import normalize from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';

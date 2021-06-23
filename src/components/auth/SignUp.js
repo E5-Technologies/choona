@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   KeyboardAvoidingView,
@@ -11,8 +11,6 @@ import {
   Platform,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import { tokenRequest } from '../../action/index';
-import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
@@ -26,14 +24,12 @@ import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAILURE,
-  USER_LOGIN_FAILURE,
   COUNTRY_CODE_REQUEST,
   COUNTRY_CODE_SUCCESS,
   COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
 import { signupRequest, getCountryCodeRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
-import { register } from 'react-native-app-auth';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -416,7 +412,7 @@ function Login(props) {
                 editable={true}
                 data={props.countryCodeRequest}
                 selectedValue={
-                  codePick == '' ? props.countryCodeRequest[0] : codePick
+                  codePick === '' ? props.countryCodeRequest[0] : codePick
                 }
                 onPickerItemSelected={(selectedvalue, index) => {
                   var result = props.countryObject.find(obj => {

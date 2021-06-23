@@ -1,8 +1,7 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -14,7 +13,6 @@ import {
   TextInput,
   Clipboard,
   Linking,
-  ActivityIndicator,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -31,9 +29,6 @@ import {
   reactionOnPostRequest,
   getUsersFromHome,
   userFollowUnfollowRequest,
-  getProfileRequest,
-  homePageReq,
-  dummyRequest,
 } from '../../action/UserAction';
 import {
   GET_POST_FROM_TOP_50_REQUEST,
@@ -250,15 +245,15 @@ function GenreSongClicked(props) {
   // SEND REACTION
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -437,34 +432,34 @@ function GenreSongClicked(props) {
           });
 
           //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-          if (found != -1) {
+          if (found !== -1) {
             newarray[index].fire_count = reactionList[found].data.length;
           } else {
             newarray[index].fire_count = 0;
           }
-          if (found_love != -1) {
+          if (found_love !== -1) {
             newarray[index].love_count = reactionList[found_love].data.length;
           } else {
             newarray[index].love_count = 0;
           }
-          if (found_dance != -1) {
+          if (found_dance !== -1) {
             newarray[index].dancer_count =
               reactionList[found_dance].data.length;
           } else {
             newarray[index].dancer_count = 0;
           }
-          if (found_ManDance != -1) {
+          if (found_ManDance !== -1) {
             newarray[index].man_dancing_count =
               reactionList[found_ManDance].data.length;
           } else {
             newarray[index].man_dancing_count = 0;
           }
-          if (found_face != -1) {
+          if (found_face !== -1) {
             newarray[index].face_count = reactionList[found_face].data.length;
           } else {
             newarray[index].face_count = 0;
           }
-          if (found_thumb != -1) {
+          if (found_thumb !== -1) {
             newarray[index].thumbsup_count =
               reactionList[found_thumb].data.length;
           } else {

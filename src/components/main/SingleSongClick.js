@@ -1,8 +1,7 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -14,7 +13,6 @@ import {
   TextInput,
   Clipboard,
   Linking,
-  ActivityIndicator,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -22,7 +20,7 @@ import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import HomeItemList from './ListCells/HomeItemList';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { searchPostReq, deletePostReq } from '../../action/PostAction';
 import { saveSongRequest } from '../../action/SongAction';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
@@ -31,9 +29,6 @@ import {
   reactionOnPostRequest,
   getUsersFromHome,
   userFollowUnfollowRequest,
-  getProfileRequest,
-  homePageReq,
-  dummyRequest,
 } from '../../action/UserAction';
 import {
   GET_POST_FROM_TOP_50_REQUEST,
@@ -104,7 +99,7 @@ function SingleSongClick(props) {
       },
     );
     console.log('response_post' + JSON.stringify(response));
-    if (response.data.data.length != 0) {
+    if (response.data.data.length !== 0) {
       let newarray = [];
       newarray.push(response.data.data[0]);
       setUpdateData(newarray);
@@ -252,15 +247,15 @@ function SingleSongClick(props) {
   // SEND REACTION
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -278,7 +273,7 @@ function SingleSongClick(props) {
             updateData[index].reaction_count =
               updateData[index].reaction_count + 1;
           } else {
-            if (updateData[index].fire_count != 0) {
+            if (updateData[index].fire_count !== 0) {
               updateData[index].fire_count = updateData[index].fire_count - 1;
               updateData[index].reaction_count =
                 updateData[index].reaction_count - 1;
@@ -290,7 +285,7 @@ function SingleSongClick(props) {
             updateData[index].reaction_count =
               updateData[index].reaction_count + 1;
           } else {
-            if (updateData[index].love_count != 0) {
+            if (updateData[index].love_count !== 0) {
               updateData[index].love_count = updateData[index].love_count - 1;
               updateData[index].reaction_count =
                 updateData[index].reaction_count - 1;
@@ -302,7 +297,7 @@ function SingleSongClick(props) {
             updateData[index].reaction_count =
               updateData[index].reaction_count + 1;
           } else {
-            if (updateData[index].dancer_count != 0) {
+            if (updateData[index].dancer_count !== 0) {
               updateData[index].dancer_count =
                 updateData[index].dancer_count - 1;
               updateData[index].reaction_count =
@@ -318,7 +313,7 @@ function SingleSongClick(props) {
             updateData[index].reaction_count =
               updateData[index].reaction_count + 1;
           } else {
-            if (updateData[index].man_dancing_count != 0) {
+            if (updateData[index].man_dancing_count !== 0) {
               updateData[index].man_dancing_count =
                 updateData[index].man_dancing_count - 1;
               updateData[index].reaction_count =
@@ -331,7 +326,7 @@ function SingleSongClick(props) {
             updateData[index].reaction_count =
               updateData[index].reaction_count + 1;
           } else {
-            if (updateData[index].face_count != 0) {
+            if (updateData[index].face_count !== 0) {
               updateData[index].face_count = updateData[index].face_count - 1;
               updateData[index].reaction_count =
                 updateData[index].reaction_count - 1;
@@ -344,7 +339,7 @@ function SingleSongClick(props) {
             updateData[index].reaction_count =
               updateData[index].reaction_count + 1;
           } else {
-            if (updateData[index].thumbsup_count != 0) {
+            if (updateData[index].thumbsup_count !== 0) {
               updateData[index].thumbsup_count =
                 updateData[index].thumbsup_count - 1;
               updateData[index].reaction_count =
@@ -438,34 +433,34 @@ function SingleSongClick(props) {
           });
 
           //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-          if (found != -1) {
+          if (found !== -1) {
             newarray[index].fire_count = reactionList[found].data.length;
           } else {
             newarray[index].fire_count = 0;
           }
-          if (found_love != -1) {
+          if (found_love !== -1) {
             newarray[index].love_count = reactionList[found_love].data.length;
           } else {
             newarray[index].love_count = 0;
           }
-          if (found_dance != -1) {
+          if (found_dance !== -1) {
             newarray[index].dancer_count =
               reactionList[found_dance].data.length;
           } else {
             newarray[index].dancer_count = 0;
           }
-          if (found_ManDance != -1) {
+          if (found_ManDance !== -1) {
             newarray[index].man_dancing_count =
               reactionList[found_ManDance].data.length;
           } else {
             newarray[index].man_dancing_count = 0;
           }
-          if (found_face != -1) {
+          if (found_face !== -1) {
             newarray[index].face_count = reactionList[found_face].data.length;
           } else {
             newarray[index].face_count = 0;
           }
-          if (found_thumb != -1) {
+          if (found_thumb !== -1) {
             newarray[index].thumbsup_count =
               reactionList[found_thumb].data.length;
           } else {
@@ -624,7 +619,8 @@ function SingleSongClick(props) {
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
-          hitreact(reaction, data.index), sendReaction(data.item._id, reaction);
+          hitreact(reaction, data.index);
+          sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
@@ -775,7 +771,8 @@ function SingleSongClick(props) {
               }}
               onPress={() => {
                 if (bottomSheetRef) {
-                  setModalVisible(false), bottomSheetRef.open();
+                  setModalVisible(false);
+                  bottomSheetRef.open();
                 }
               }}>
               <Image
@@ -877,36 +874,36 @@ function SingleSongClick(props) {
                 ) {
                   // console.log('same reg type');
                   setModalVisible(false);
-                  setBool(true),
-                    Linking.canOpenURL(
-                      updateData[positionInArray].original_song_uri,
-                    )
-                      .then(() => {
-                        Linking.openURL(
-                          updateData[positionInArray].original_song_uri,
-                        )
-                          .then(() => {
-                            // console.log('success');
-                            setBool(false);
-                          })
-                          .catch(() => {
-                            // console.log('error');
-                          });
-                      })
-                      .catch(err => {
-                        // console.log('unsupported');
-                      });
+                  setBool(true);
+                  Linking.canOpenURL(
+                    updateData[positionInArray].original_song_uri,
+                  )
+                    .then(() => {
+                      Linking.openURL(
+                        updateData[positionInArray].original_song_uri,
+                      )
+                        .then(() => {
+                          // console.log('success');
+                          setBool(false);
+                        })
+                        .catch(() => {
+                          // console.log('error');
+                        });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
                 } else {
                   console.log('diffirent reg type');
                   setModalVisible(false);
-                  setBool(true),
-                    isInternetConnected()
-                      .then(() => {
-                        openInAppleORSpotify();
-                      })
-                      .catch(() => {
-                        toast('', 'Please Connect To Internet');
-                      });
+                  setBool(true);
+                  isInternetConnected()
+                    .then(() => {
+                      openInAppleORSpotify();
+                    })
+                    .catch(() => {
+                      toast('', 'Please Connect To Internet');
+                    });
                 }
               }}>
               <Image
@@ -1220,7 +1217,8 @@ function SingleSongClick(props) {
             {usersToSEndSong.length > 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
+                  bottomSheetRef.close();
+                  sendMessagesToUsers();
                 }}>
                 <Text
                   style={{
@@ -1283,7 +1281,8 @@ function SingleSongClick(props) {
                 placeholder={'Search'}
                 placeholderTextColor={Colors.grey_text}
                 onChangeText={text => {
-                  setUserSeach(text), searchUser(text);
+                  setUserSeach(text);
+                  searchUser(text);
                 }}
               />
             </View>
@@ -1291,7 +1290,8 @@ function SingleSongClick(props) {
             {userSeach === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
+                  setUserSeach('');
+                  setUserSearchData([]);
                 }}
                 style={{
                   // backgroundColor: Colors.black,

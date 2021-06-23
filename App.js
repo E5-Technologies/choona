@@ -1,12 +1,8 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  StatusBar,
   Image,
   Platform,
   Dimensions,
@@ -18,10 +14,7 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import {
-  createBottomTabNavigator,
-  BottomTabBar,
-} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTokenRequest } from './src/action/index';
 import Colors from './src/assests/Colors';
@@ -58,16 +51,13 @@ import AddSongsInMessage from './src/components/main/AddSongsInMessage';
 import SendSongInMessageFinal from './src/components/main/SendSongInMessageFinal';
 import GenreClicked from './src/components/main/GenreClicked';
 import GenreSongClicked from './src/components/main/GenreSongClicked';
-import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
 import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts';
-import { getDeviceToken } from './src/utils/helpers/FirebaseToken';
 import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
 import { editProfileRequest } from './src/action/UserAction';
-import firebase from '@react-native-firebase/messaging';
 import _ from 'lodash';
 import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';

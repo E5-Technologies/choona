@@ -1,4 +1,4 @@
-import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
 import { watchtokenAction, watchgetTokenAction } from './TokenSaga';
 import {
   watchLoginRequest,

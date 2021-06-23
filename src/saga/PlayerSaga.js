@@ -1,4 +1,4 @@
-import { put, call, fork, takeLatest, all, select } from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   GET_CURRENT_PLAYER_POSITION_REQUEST,
   GET_CURRENT_PLAYER_POSITION_SUCCESS,
@@ -21,6 +21,7 @@ import {
   ADD_SONG_TO_PLAYLIST_REQUEST,
   ADD_SONG_TO_PLAYLIST_SUCCESS,
   ADD_SONG_TO_PLAYLIST_FAILURE,
+  SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
 } from '../action/TypeConstants';
 import {
   getSpotifyApi,
@@ -31,7 +32,6 @@ import {
 import constants from '../utils/helpers/constants';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
-import { getSongFromisrc } from '../action/PlayerAction';
 
 const getItems = state => state.TokenReducer;
 

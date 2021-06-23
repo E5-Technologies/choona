@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   Image,
@@ -24,7 +24,6 @@ import normaliseNew from '../../../utils/helpers/DimensNew';
 import normalise from '../../../utils/helpers/Dimens';
 
 import { useFocusEffect } from '@react-navigation/native';
-import Loader from '../../../widgets/AuthLoader';
 import StatusBar from '../../../utils/MyStatusBar';
 import ActivitySingle from '../../Activity/ActivitySingle';
 import Seperator from '../ListCells/Seperator';
@@ -51,7 +50,7 @@ function Notification(props) {
   const [notifications, setNotifications] = useState([]);
   const [empityVisible, setEmptyVisible] = useState([]);
   const getActivities = async pageId => {
-    notifications.length == 0 ? setIsLoading(true) : setIsLoading(false);
+    notifications.length === 0 ? setIsLoading(true) : setIsLoading(false);
     const response = await axios.get(`${activityUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -96,7 +95,7 @@ function Notification(props) {
     });
     console.log('pageId' + pageId);
     console.log('response' + response.data.data.length);
-    if (response.data.data.length == 0) {
+    if (response.data.data.length === 0) {
       setOnScrolled(false);
     } else {
       setPageId(pageId + 1);
@@ -154,10 +153,10 @@ function Notification(props) {
 
     isInternetConnected()
       .then(() => {
-        props.editProfileReq(formdata),
-          setTimeout(() => {
-            props.getProfileReq();
-          }, 1000);
+        props.editProfileReq(formdata);
+        setTimeout(() => {
+          props.getProfileReq();
+        }, 1000);
       })
       .catch(err => {
         console.log(err);
@@ -174,7 +173,7 @@ function Notification(props) {
 
   // console.log({ activity });
 
-  activity.map((item, index) => {
+  activity.map(item => {
     let postTime = moment(item.createdAt).format('MM-DD-YYYY');
 
     if (postTime === time) {
@@ -194,8 +193,8 @@ function Notification(props) {
         let finalArray = [];
         setIsLoading(false);
         //// console.log(JSON.stringify(contacts));
-        contactsArray.map((item, index) => {
-          item.phoneNumbers.map((item, index) => {
+        contactsArray.map(item => {
+          item.phoneNumbers.map(item => {
             let number = item.number.replace(/[- )(]/g, '');
             let check = number.charAt(0);
             let number1 = parseInt(number);
@@ -242,7 +241,7 @@ function Notification(props) {
 
       <SafeAreaView style={styles.activityContainer}>
         <HeaderComponent title={'ACTIVITY'} />
-        {notifications.length != 0 ? (
+        {notifications.length !== 0 ? (
           <ScrollView
             onScroll={({ nativeEvent }) => {
               if (isCloseToBottom(nativeEvent)) {
@@ -272,7 +271,7 @@ function Notification(props) {
               data={today}
               scrollEnabled
               renderItem={({ item }) =>
-                item.post_id != null ? (
+                item.post_id !== null ? (
                   <TouchableOpacity
                     onPress={() => {
                       props.navigation.navigate('SingleSongClick', {
@@ -300,7 +299,7 @@ function Notification(props) {
             <FlatList
               data={previous}
               renderItem={({ item }) =>
-                item.post_id != null ? (
+                item.post_id !== null ? (
                   <TouchableOpacity
                     onPress={() => {
                       props.navigation.navigate('SingleSongClick', {
@@ -392,7 +391,8 @@ function Notification(props) {
                 bottom: 0,
               }}
               onPress={() => {
-                setIsLoading(true), getContacts();
+                setIsLoading(true);
+                getContacts();
               }}>
               <Text
                 style={{

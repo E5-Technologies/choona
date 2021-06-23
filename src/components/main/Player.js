@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -27,7 +27,6 @@ import normaliseNew from '../../utils/helpers/DimensNew';
 
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 import StatusBar from '../../utils/MyStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -47,18 +46,6 @@ import {
   SAVE_SONGS_REQUEST,
   SAVE_SONGS_SUCCESS,
   SAVE_SONGS_FAILURE,
-  GET_CURRENT_PLAYER_POSITION_REQUEST,
-  GET_CURRENT_PLAYER_POSITION_SUCCESS,
-  GET_CURRENT_PLAYER_POSITION_FAILURE,
-  RESUME_PLAYER_REQUEST,
-  RESUME_PLAYER_SUCCESS,
-  RESUME_PLAYER_FAILURE,
-  PAUSE_PLAYER_REQUEST,
-  PAUSE_PLAYER_SUCCESS,
-  PAUSE_PLAYER_FAILURE,
-  PLAYER_SEEK_TO_REQUEST,
-  PLAYER_SEEK_TO_SUCCESS,
-  PLAYER_SEEK_TO_FAILURE,
   GET_SONG_FROM_ISRC_REQUEST,
   GET_SONG_FROM_ISRC_SUCCESS,
   GET_SONG_FROM_ISRC_FAILURE,
@@ -80,13 +67,10 @@ import {
 } from '../../action/PlayerAction';
 import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
-import { call } from 'redux-saga/effects';
-import { or } from 'react-native-reanimated';
 import _ from 'lodash';
 import axios from 'axios';
 import { createChatTokenRequest } from '../../action/MessageAction';
 import { getUsersFromHome } from '../../action/UserAction';
-import { ScreenStackHeaderRightView } from 'react-native-screens';
 
 let RbSheetRef;
 
@@ -179,7 +163,7 @@ function Player(props) {
   function handleBackButtonClick() {
     console.log('hello');
 
-    if (global.playerReference != null) {
+    if (global.playerReference !== null) {
       if (global.playerReference.isPlaying()) {
         props.dummyRequest();
       }
@@ -529,7 +513,7 @@ function Player(props) {
         'Sorry, this track cannot be played as it does not have a proper link.',
       );
     } else {
-      if (playVisible == true) {
+      if (playVisible === true) {
         setPlayVisible(false);
 
         global.playerReference.play(success => {
@@ -1438,7 +1422,8 @@ function Player(props) {
             {usersToSEndSong.length > 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
+                  bottomSheetRef.close();
+                  sendMessagesToUsers();
                 }}>
                 <Text
                   style={{

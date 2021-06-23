@@ -1,21 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TextInput,
-  TouchableOpacity,
-  TouchableHighlight,
-  Button,
-  Image,
-  FlatList,
-  Alert,
-  CheckBox,
-} from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 import normalize from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
@@ -78,7 +63,6 @@ ButtonComponent.propTypes = {
 ButtonComponent.defaultProps = {
   textcolor: Colors.black,
   marginTop: normalize(20),
-  marginBottom: null,
   title: '',
   onPress: null,
   activeOpacity: null,

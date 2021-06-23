@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
-  KeyboardAvoidingView,
   Platform,
   StyleSheet,
   ScrollView,
@@ -40,13 +39,9 @@ import {
 } from '../../action/TypeConstants';
 import { commentOnPostReq, followingListReq } from '../../action/UserAction';
 
-import Loader from '../../widgets/AuthLoader';
-import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 
-import { fetchCommentsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
-import react from 'react';
 
 let status;
 let RbSheetRef;
@@ -452,7 +447,7 @@ function HomeItemComments(props) {
           onChangeText={text => {
             let indexvalue = text.lastIndexOf('@');
             let newString = text.substr(text.lastIndexOf('@'));
-            if (indexvalue != -1) {
+            if (indexvalue !== -1) {
               if (newString.length === 1) {
                 setFollowingList([...props.followingData]);
                 props.followingData.length === 0

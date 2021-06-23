@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import Sound from 'react-native-sound';
 
 export default function MusicPlayer(trackUri, autoplay) {

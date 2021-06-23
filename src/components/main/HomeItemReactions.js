@@ -11,8 +11,6 @@ import {
   Platform,
   TouchableOpacity,
   FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
   BackHandler,
 } from 'react-native';
 
@@ -30,7 +28,6 @@ import {
 } from '../../action/UserAction';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import HeaderComponent from '../../widgets/HeaderComponent';
 import Seperator from './ListCells/Seperator';
 import Loader from '../../widgets/AuthLoader';
 

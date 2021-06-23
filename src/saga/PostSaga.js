@@ -1,4 +1,4 @@
-import { put, call, fork, takeLatest, all, select } from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -22,11 +22,8 @@ import {
   getSpotifyApi,
   getAppleDevelopersToken,
 } from '../utils/helpers/ApiRequest';
-import AsyncStorage from '@react-native-community/async-storage';
-import constants from '../utils/helpers/constants';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
-import { Header } from 'react-native/Libraries/NewAppScreen';
 
 const getItems = state => state.TokenReducer;
 
@@ -44,7 +41,7 @@ export function* searchSongsForPostAction(action) {
 
   try {
     if (items.registerType === 'spotify') {
-      if (action.listName != 'Recently') {
+      if (action.listName !== 'Recently') {
         const response = yield call(
           getSpotifyApi,
           `https://api.spotify.com/v1/search?q=${encodeURI(

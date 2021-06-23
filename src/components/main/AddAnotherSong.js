@@ -1,14 +1,11 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Image,
-  ImageBackground,
   TextInput,
   Keyboard,
   Platform,
@@ -22,9 +19,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import { seachSongsForPostRequest } from '../../action/PostAction';
-import { userSearchRequest } from '../../action/UserAction';
 import { createChatTokenRequest } from '../../action/MessageAction';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
@@ -37,7 +32,6 @@ import {
 import { connect } from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import constants from '../../utils/helpers/constants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status;

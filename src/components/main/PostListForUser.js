@@ -49,7 +49,6 @@ import {
   CREATE_CHAT_TOKEN_SUCCESS,
   CREATE_CHAT_TOKEN_FAILURE,
   DUMMY_ACTION_SUCCESS,
-  DUMMY_ACTION_REQUEST,
 } from '../../action/TypeConstants';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
@@ -71,8 +70,6 @@ import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { useDebugValue } from 'react';
-import { element } from 'prop-types';
 
 let status = '';
 let songStatus = '';
@@ -334,7 +331,7 @@ function PostListForUser(props) {
             posts[index].fire_count = posts[index].fire_count + 1;
             posts[index].reaction_count = posts[index].reaction_count + 1;
           } else {
-            if (posts[index].fire_count != 0) {
+            if (posts[index].fire_count !== 0) {
               posts[index].fire_count = posts[index].fire_count - 1;
               posts[index].reaction_count = posts[index].reaction_count - 1;
             }
@@ -344,7 +341,7 @@ function PostListForUser(props) {
             posts[index].love_count = posts[index].love_count + 1;
             posts[index].reaction_count = posts[index].reaction_count + 1;
           } else {
-            if (posts[index].love_count != 0) {
+            if (posts[index].love_count !== 0) {
               posts[index].love_count = posts[index].love_count - 1;
               posts[index].reaction_count = posts[index].reaction_count - 1;
             }
@@ -354,7 +351,7 @@ function PostListForUser(props) {
             posts[index].dancer_count = posts[index].dancer_count + 1;
             posts[index].reaction_count = posts[index].reaction_count + 1;
           } else {
-            if (posts[index].dancer_count != 0) {
+            if (posts[index].dancer_count !== 0) {
               posts[index].dancer_count = posts[index].dancer_count - 1;
               posts[index].reaction_count = posts[index].reaction_count - 1;
             }
@@ -364,7 +361,7 @@ function PostListForUser(props) {
             posts[index].man_dancing_count = posts[index].man_dancing_count + 1;
             posts[index].reaction_count = posts[index].reaction_count + 1;
           } else {
-            if (posts[index].man_dancing_count != 0) {
+            if (posts[index].man_dancing_count !== 0) {
               posts[index].man_dancing_count =
                 posts[index].man_dancing_count - 1;
               posts[index].reaction_count = posts[index].reaction_count - 1;
@@ -375,7 +372,7 @@ function PostListForUser(props) {
             posts[index].face_count = posts[index].face_count + 1;
             posts[index].reaction_count = posts[index].reaction_count + 1;
           } else {
-            if (posts[index].face_count != 0) {
+            if (posts[index].face_count !== 0) {
               posts[index].face_count = posts[index].face_count - 1;
               posts[index].reaction_count = posts[index].reaction_count - 1;
             }
@@ -385,7 +382,7 @@ function PostListForUser(props) {
             posts[index].thumbsup_count = posts[index].thumbsup_count + 1;
             posts[index].reaction_count = posts[index].reaction_count + 1;
           } else {
-            if (posts[index].thumbsup_count != 0) {
+            if (posts[index].thumbsup_count !== 0) {
               posts[index].thumbsup_count = posts[index].thumbsup_count - 1;
               posts[index].reaction_count = posts[index].reaction_count - 1;
             }
@@ -444,34 +441,34 @@ function PostListForUser(props) {
           });
 
           //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-          if (found != -1) {
+          if (found !== -1) {
             newarray[index].fire_count = reactionList[found].data.length;
           } else {
             newarray[index].fire_count = 0;
           }
-          if (found_love != -1) {
+          if (found_love !== -1) {
             newarray[index].love_count = reactionList[found_love].data.length;
           } else {
             newarray[index].love_count = 0;
           }
-          if (found_dance != -1) {
+          if (found_dance !== -1) {
             newarray[index].dancer_count =
               reactionList[found_dance].data.length;
           } else {
             newarray[index].dancer_count = 0;
           }
-          if (found_ManDance != -1) {
+          if (found_ManDance !== -1) {
             newarray[index].man_dancing_count =
               reactionList[found_ManDance].data.length;
           } else {
             newarray[index].man_dancing_count = 0;
           }
-          if (found_face != -1) {
+          if (found_face !== -1) {
             newarray[index].face_count = reactionList[found_face].data.length;
           } else {
             newarray[index].face_count = 0;
           }
-          if (found_thumb != -1) {
+          if (found_thumb !== -1) {
             newarray[index].thumbsup_count =
               reactionList[found_thumb].data.length;
           } else {
@@ -590,22 +587,6 @@ function PostListForUser(props) {
       />
       // </TouchableOpacity>
     );
-  }
-
-  function findIsNotRead() {
-    let hasUnseenMessage = false;
-    let arr = props.chatList;
-
-    for (var i = 0; i < arr.length; i++) {
-      // chatObject = Object.values(arr[i])[0];
-
-      if (props.userProfileResp._id === Object.values(arr[i])[0].receiver_id) {
-        return !Object.values(arr[i])[0].read;
-        // break;
-      }
-    }
-
-    return hasUnseenMessage;
   }
 
   // RENDER USER SEARCH FLATLIST DATA
@@ -1316,7 +1297,7 @@ function PostListForUser(props) {
                             });
                         })
                         .catch(err => {
-                          // console.log('unsupported');
+                          console.log(err);
                         });
                     } else {
                       // console.log('diffirent reg type');

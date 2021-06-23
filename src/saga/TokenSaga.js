@@ -1,8 +1,7 @@
-import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
+import { put, call, takeLatest } from 'redux-saga/effects';
 import {
   ASYNC_STORAGE_REQUEST,
   ASYNC_STORAGE_SUCCESS,
-  ASYNC_STORAGE_FAILURE,
   GET_TOKEN_REQUEST,
   GET_TOKEN_SUCCESS,
   GET_TOKEN_FAILURE,

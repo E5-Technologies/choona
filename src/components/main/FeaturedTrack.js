@@ -1,8 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,

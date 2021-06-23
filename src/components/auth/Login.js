@@ -1,36 +1,26 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   StatusBar,
-  ImageBackground,
   Image,
   Platform,
-  Alert,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {
-  loginWithSpotify,
-  getSpotifyToken,
-} from '../../utils/helpers/SpotifyLogin';
+import { loginWithSpotify } from '../../utils/helpers/SpotifyLogin';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
 import { loginRequest } from '../../action/UserAction';
-import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
-  AppleButton,
   AppleAuthError,
   AppleAuthRequestScope,
   AppleAuthRealUserStatus,

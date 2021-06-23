@@ -1,12 +1,4 @@
-import {
-  put,
-  call,
-  take,
-  fork,
-  takeLatest,
-  select,
-  all,
-} from 'redux-saga/effects';
+import { put, call, take, takeLatest, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import {
   CREATE_CHAT_TOKEN_REQUEST,
@@ -20,7 +12,8 @@ import {
   GET_CHAT_LIST_FAILURE,
   CHAT_LOAD_REQUEST,
   CHAT_LOAD_SUCCESS,
-  CHAT_LOAD_FAILURE,
+  SONG_MESSAGE_READ_SUCCESS,
+  SONG_MESSAGE_READ_FAILURE,
   SEARCH_MESSAGE_REQUEST,
   SEARCH_MESSAGE_SUCCESS,
   SEARCH_MESSAGE_FAILURE,
@@ -192,7 +185,7 @@ export function* getChatMessages(action) {
             key: child.key,
           });
 
-          if (action.payload.userId == child.val().receiver_id) {
+          if (action.payload.userId === child.val().receiver_id) {
             //   child.child('read').ref.set(true);
           }
         });
@@ -253,9 +246,9 @@ export function* searchMessageAction(action) {
 function filterfunction(data, keyword) {
   return new Promise(function (resolve, reject) {
     let filterdData = _.filter(data, item => {
-      return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
+      return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
     });
-    if (data != null) {
+    if (data !== null) {
       resolve(filterdData);
     } else {
       reject([]);

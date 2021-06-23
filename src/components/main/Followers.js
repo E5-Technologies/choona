@@ -1,18 +1,14 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Keyboard,
   Image,
-  ImageBackground,
   TextInput,
   Platform,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -39,7 +35,6 @@ import constants from '../../utils/helpers/constants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 let status;
 

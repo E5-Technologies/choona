@@ -1,16 +1,5 @@
-import React, { useEffect, Fragment } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Platform,
-  PermissionsAndroid,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Image, PermissionsAndroid } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';

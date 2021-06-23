@@ -8,7 +8,6 @@ import {
   Image,
   ImageBackground,
   Dimensions,
-  Modal,
   ActivityIndicator,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
@@ -34,15 +33,12 @@ import {
   getCountryCodeRequest,
 } from '../../action/UserAction';
 import constants from '../../utils/helpers/constants';
-import Loader from '../../widgets/AuthLoader';
 import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import _ from 'lodash';
 
-import useSWR from 'swr';
 import axios from 'axios';
-import { set } from 'react-native-reanimated';
 
 let status;
 let changePlayer = true;

@@ -1,8 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -15,10 +13,7 @@ import {
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
-import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
-import SavedSongsListItem from './ListCells/SavedSongsListItem';
-import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import { connect } from 'react-redux';
 import {
@@ -107,7 +102,7 @@ function AddSong(props) {
   const createPost = async () => {
     let tapUser = [];
     await props.followingData.map((item, index) => {
-      if (search.search(item.username) != -1) {
+      if (search.search(item.username) !== -1) {
         tagFriend.map(items => {
           if (items === item.username) {
             tapUser.push(item.username);
@@ -284,7 +279,7 @@ function AddSong(props) {
                 let indexvalue = text.lastIndexOf('@');
                 let newString = text.substr(text.lastIndexOf('@'));
 
-                if (indexvalue != -1) {
+                if (indexvalue !== -1) {
                   if (newString.length === 1) {
                     if (
                       search.substr(indexvalue - 1) === ' ' ||
@@ -305,14 +300,14 @@ function AddSong(props) {
                     );
                     let newArray = [];
                     let newFollowArray = [];
-                    if (props.followingData.length != 0) {
+                    if (props.followingData.length !== 0) {
                       props.followingData.map((item, index) => {
                         //  console.log("mapItem"+item.full_name)
                         if (item.username.includes(newSubString)) {
                           newArray.push(item);
                         }
                         if (index === props.followingData.length - 1) {
-                          if (props.followerData.length != 0) {
+                          if (props.followerData.length !== 0) {
                             props.followerData.map((items, indexs) => {
                               if (items.username.includes(newSubString)) {
                                 newFollowArray.push(items);

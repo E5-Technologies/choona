@@ -1,21 +1,15 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
-  Text,
   TouchableOpacity,
   FlatList,
   Image,
-  ImageBackground,
-  TextInput,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
-import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
 
 const genreData = [

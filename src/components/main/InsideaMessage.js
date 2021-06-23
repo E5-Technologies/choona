@@ -1,8 +1,7 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   Platform,
   View,
   Text,
@@ -30,7 +29,6 @@ import {
   searchMessageRequest,
   deleteMessageRequest,
   createChatTokenRequest,
-  songMessageReadRequest,
 } from '../../action/MessageAction';
 import { getUsersFromHome } from '../../action/UserAction';
 import { saveSongRequest } from '../../action/SongAction';
@@ -193,7 +191,7 @@ function InsideaMessage(props) {
                 setPositionInArray(data.index);
               }}
               onPressItem={() => {
-                if (props.userProfileResp._id == data.item.receiver_id) {
+                if (props.userProfileResp._id === data.item.receiver_id) {
                   console.log('inside condition');
 
                   const listener = FIREBASE_REF_MESSAGES.child(
@@ -286,7 +284,7 @@ function InsideaMessage(props) {
               setModalVisible(true), setPositionInArray(data.index);
             }}
             onPressItem={() => {
-              if (props.userProfileResp._id == data.item.receiver_id) {
+              if (props.userProfileResp._id === data.item.receiver_id) {
                 const listener = FIREBASE_REF_MESSAGES.child(
                   props.chatList[index].chat_token,
                 )

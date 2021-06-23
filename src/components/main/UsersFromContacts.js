@@ -1,15 +1,12 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Platform,
   Image,
-  ImageBackground,
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
@@ -45,7 +42,7 @@ let status;
 function UsersFromContacts(props) {
   const [search, setSearch] = useState('');
   const [bool, setBool] = useState(false);
-  const [numberArray, setNumberArray] = useState(props.route.params.data);
+  const [numberArray] = useState(props.route.params.data);
   const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
@@ -189,7 +186,8 @@ function UsersFromContacts(props) {
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
-                setSearch(text), filterArray(text);
+                setSearch(text);
+                filterArray(text);
               }}
             />
 
@@ -207,7 +205,8 @@ function UsersFromContacts(props) {
             {search === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setSearch(''), filterArray('');
+                  setSearch('');
+                  filterArray('');
                 }}
                 style={{
                   backgroundColor: Colors.black,

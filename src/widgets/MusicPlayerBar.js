@@ -1,25 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TextInput,
-  TouchableOpacity,
-  TouchableHighlight,
-  Button,
-  Image,
-  FlatList,
-  Alert,
-  CheckBox,
-  Slider,
-  Platform,
-  ImageBackground,
-  Dimensions,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
@@ -114,7 +95,7 @@ function MusicPlayerBar(props) {
 
       {/* <Slider
                     style={{
-                        width: Platform.OS == 'ios' ? '100%' : normalise(335),
+                        width: Platform.OS === 'ios' ? '100%' : normalise(335),
                         height: Platform.OS === 'android' ? 5 : 0, alignSelf: 'center'
                     }}
                     minimumValue={0}

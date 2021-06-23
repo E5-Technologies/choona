@@ -1,8 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -12,7 +10,6 @@ import {
   FlatList,
   Platform,
   TouchableWithoutFeedback,
-  Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';

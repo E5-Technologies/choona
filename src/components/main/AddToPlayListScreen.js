@@ -1,15 +1,11 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Image,
-  ImageBackground,
-  TextInput,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';

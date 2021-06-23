@@ -1,8 +1,7 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   Image,
@@ -66,7 +65,6 @@ import { getUsersFromHome } from '../../../action/UserAction';
 import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
-import { func } from 'prop-types';
 
 let status;
 let postStatus;
@@ -323,34 +321,34 @@ function Search(props) {
           });
 
           //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-          if (found != -1) {
+          if (found !== -1) {
             newarray[index].fire_count = reactionList[found].data.length;
           } else {
             newarray[index].fire_count = 0;
           }
-          if (found_love != -1) {
+          if (found_love !== -1) {
             newarray[index].love_count = reactionList[found_love].data.length;
           } else {
             newarray[index].love_count = 0;
           }
-          if (found_dance != -1) {
+          if (found_dance !== -1) {
             newarray[index].dancer_count =
               reactionList[found_dance].data.length;
           } else {
             newarray[index].dancer_count = 0;
           }
-          if (found_ManDance != -1) {
+          if (found_ManDance !== -1) {
             newarray[index].man_dancing_count =
               reactionList[found_ManDance].data.length;
           } else {
             newarray[index].man_dancing_count = 0;
           }
-          if (found_face != -1) {
+          if (found_face !== -1) {
             newarray[index].face_count = reactionList[found_face].data.length;
           } else {
             newarray[index].face_count = 0;
           }
-          if (found_thumb != -1) {
+          if (found_thumb !== -1) {
             newarray[index].thumbsup_count =
               reactionList[found_thumb].data.length;
           } else {
@@ -403,7 +401,8 @@ function Search(props) {
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
-          hitreact(reaction, data.index), sendReaction(data.item._id, reaction);
+          hitreact(reaction, data.index);
+          sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
@@ -505,15 +504,15 @@ function Search(props) {
   // SEND REACTION
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -534,7 +533,7 @@ function Search(props) {
             searchPostData[index].reaction_count =
               searchPostData[index].reaction_count + 1;
           } else {
-            if (searchPostData[index].fire_count != 0) {
+            if (searchPostData[index].fire_count !== 0) {
               searchPostData[index].fire_count =
                 searchPostData[index].fire_count - 1;
               searchPostData[index].reaction_count =
@@ -548,7 +547,7 @@ function Search(props) {
             searchPostData[index].reaction_count =
               searchPostData[index].reaction_count + 1;
           } else {
-            if (searchPostData[index].love_count != 0) {
+            if (searchPostData[index].love_count !== 0) {
               searchPostData[index].love_count =
                 searchPostData[index].love_count - 1;
               searchPostData[index].reaction_count =
@@ -564,7 +563,7 @@ function Search(props) {
             searchPostData[index].reaction_count =
               searchPostData[index].reaction_count + 1;
           } else {
-            if (searchPostData[index].dancer_count != 0) {
+            if (searchPostData[index].dancer_count !== 0) {
               searchPostData[index].dancer_count =
                 searchPostData[index].dancer_count - 1;
               searchPostData[index].reaction_count =
@@ -581,7 +580,7 @@ function Search(props) {
             searchPostData[index].reaction_count =
               searchPostData[index].reaction_count + 1;
           } else {
-            if (searchPostData[index].man_dancing_count != 0) {
+            if (searchPostData[index].man_dancing_count !== 0) {
               searchPostData[index].man_dancing_count =
                 searchPostData[index].man_dancing_count - 1;
               searchPostData[index].reaction_count =
@@ -595,7 +594,7 @@ function Search(props) {
             searchPostData[index].reaction_count =
               searchPostData[index].reaction_count + 1;
           } else {
-            if (searchPostData[index].face_count != 0) {
+            if (searchPostData[index].face_count !== 0) {
               searchPostData[index].face_count =
                 searchPostData[index].face_count - 1;
               searchPostData[index].reaction_count =
@@ -611,7 +610,7 @@ function Search(props) {
             searchPostData[index].reaction_count =
               searchPostData[index].reaction_count + 1;
           } else {
-            if (searchPostData[index].thumbsup_count != 0) {
+            if (searchPostData[index].thumbsup_count !== 0) {
               searchPostData[index].thumbsup_count =
                 searchPostData[index].thumbsup_count - 1;
               searchPostData[index].reaction_count =
@@ -724,7 +723,8 @@ function Search(props) {
               }}
               onPress={() => {
                 if (bottomSheetRef) {
-                  setModalVisible(false), bottomSheetRef.open();
+                  setModalVisible(false);
+                  bottomSheetRef.open();
                 }
               }}>
               <Image
@@ -879,17 +879,6 @@ function Search(props) {
       setTop50(props.top50SongsResponse);
     }
   };
-
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
 
   const searchUser = text => {
     if (text.length >= 1) {
@@ -1094,7 +1083,8 @@ function Search(props) {
             {usersToSEndSong.length > 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
+                  bottomSheetRef.close();
+                  sendMessagesToUsers();
                 }}>
                 <Text
                   style={{
@@ -1133,7 +1123,8 @@ function Search(props) {
               placeholder={'Search'}
               placeholderTextColor={Colors.grey_text}
               onChangeText={text => {
-                setUserSeach(text), searchUser(text);
+                setUserSeach(text);
+                searchUser(text);
               }}
             />
 
@@ -1151,7 +1142,8 @@ function Search(props) {
             {userSeach === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
+                  setUserSeach('');
+                  setUserSearchData([]);
                 }}
                 style={{
                   backgroundColor: Colors.black,
@@ -1220,8 +1212,8 @@ function Search(props) {
         let finalArray = [];
         setContactsLoading(false);
         //// console.log(JSON.stringify(contacts));
-        contactsArray.map((item, index) => {
-          item.phoneNumbers.map((item, index) => {
+        contactsArray.map(item => {
+          item.phoneNumbers.map(item => {
             let number = item.number.replace(/[- )(]/g, '');
             let check = number.charAt(0);
             let number1 = parseInt(number);
@@ -1296,9 +1288,9 @@ function Search(props) {
                 justifyContent: 'flex-end',
               }}
               onPress={() => {
-                setUsersSearch(true),
-                  setGenreSearch(false),
-                  setSongSearch(false);
+                setUsersSearch(true);
+                setGenreSearch(false);
+                setSongSearch(false);
               }}>
               <Text
                 style={{
@@ -1330,9 +1322,9 @@ function Search(props) {
               }}
               onPress={() => {
                 props.getTop50SongReq();
-                setUsersSearch(false),
-                  setGenreSearch(true),
-                  setSongSearch(false);
+                setUsersSearch(false);
+                setGenreSearch(true);
+                setSongSearch(false);
               }}>
               <Text
                 style={{
@@ -1363,9 +1355,9 @@ function Search(props) {
                 justifyContent: 'flex-end',
               }}
               onPress={() => {
-                setUsersSearch(false),
-                  setGenreSearch(false),
-                  setSongSearch(true);
+                setUsersSearch(false);
+                setGenreSearch(false);
+                setSongSearch(true);
               }}>
               <Text
                 style={{
@@ -1425,12 +1417,12 @@ function Search(props) {
               }
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
-                search(text),
-                  usersSearch
-                    ? setUsersSearchText(text)
-                    : genreSearch
-                    ? setGenreSearchText(text)
-                    : setSongSearchText(text);
+                search(text);
+                usersSearch
+                  ? setUsersSearchText(text)
+                  : genreSearch
+                  ? setGenreSearchText(text)
+                  : setSongSearchText(text);
               }}
             />
 
@@ -1548,7 +1540,8 @@ function Search(props) {
                     borderColor: Colors.white,
                   }}
                   onPress={() => {
-                    setContactsLoading(true), getContacts();
+                    setContactsLoading(true);
+                    getContacts();
                   }}>
                   <Text
                     style={{

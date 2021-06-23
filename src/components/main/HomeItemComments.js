@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
-  KeyboardAvoidingView,
   Platform,
   StyleSheet,
   ScrollView,
@@ -18,7 +17,6 @@ import {
   Keyboard,
   Dimensions,
   FlatList,
-  TextPropTypes,
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
@@ -48,12 +46,10 @@ import {
 } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
-import HeaderComponent from '../../widgets/HeaderComponent';
 import CommentList from '../main/ListCells/CommentList';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
-import { color } from 'react-native-reanimated';
 
 let status;
 
@@ -436,7 +432,7 @@ function HomeItemComments(props) {
             let indexvalue = text.lastIndexOf('@');
             let newString = text.substr(text.lastIndexOf('@'));
 
-            if (indexvalue != -1) {
+            if (indexvalue !== -1) {
               if (newString.length === 1) {
                 if (
                   commentText.substr(indexvalue - 1) === ' ' ||
@@ -454,14 +450,14 @@ function HomeItemComments(props) {
                 let newSubString = newString.substr(1, newString.length - 1);
                 let newArray = [];
                 let newFollowArray = [];
-                if (props.followingData.length != 0) {
+                if (props.followingData.length !== 0) {
                   props.followingData.map((item, index) => {
                     //  console.log("mapItem"+item.full_name)
                     if (item.username.includes(newSubString)) {
                       newArray.push(item);
                     }
                     if (index === props.followingData.length - 1) {
-                      if (props.followerData.length != 0) {
+                      if (props.followerData.length !== 0) {
                         props.followerData.map((items, indexs) => {
                           if (items.username.includes(newSubString)) {
                             newFollowArray.push(items);
@@ -509,7 +505,7 @@ function HomeItemComments(props) {
             onPress={async () => {
               let tapUser = [];
               await props.followingData.map((item, index) => {
-                if (commentText.search(item.username) != -1) {
+                if (commentText.search(item.username) !== -1) {
                   tagFriend.map(items => {
                     if (items === item.username) {
                       tapUser.push(item.username);

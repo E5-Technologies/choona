@@ -66,10 +66,10 @@ function ActivityListItem(props) {
           </TouchableOpacity>
         </View>
         {
-          // props.userId != props.loginUserId?
+          // props.userId !== props.loginUserId?
 
           props.type ? (
-            props.userId != props.loginUserId ? (
+            props.userId !== props.loginUserId ? (
               <TouchableOpacity
                 style={[
                   styles.followButton,
