@@ -1612,7 +1612,6 @@ function Search(props) {
                   }}
                   resizeMode="contain"
                 />
-
                 <Text
                   style={{
                     color: Colors.white,
