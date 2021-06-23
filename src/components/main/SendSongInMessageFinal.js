@@ -75,9 +75,9 @@ function SendSongInMessageFinal(props) {
   // GET SPOTIFY SONG URL
   const callApi = async () => {
     return await axios.get(
-      `${constants.BASE_URL}/${`song/spotify/${
-        props.route.params.details.id
-      }`}`,
+      `${
+        constants.BASE_URL
+      }/${`song/spotify/${props.route.params.details.id}`}`,
       {
         headers: {
           Accept: 'application/json',
@@ -217,7 +217,7 @@ function SendSongInMessageFinal(props) {
           : props.registerType,
 
         read: false,
-        unread_count:0,
+        unread_count: 0,
         time: moment().toString(),
         order: moment().valueOf(),
       };

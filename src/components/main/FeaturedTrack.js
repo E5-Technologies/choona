@@ -309,7 +309,7 @@ function FeaturedTrack(props) {
                 color: Colors.white,
                 paddingLeft: normalise(30),
               }}
-              keyboardAppearance='dark'
+              keyboardAppearance="dark"
               value={search}
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
@@ -449,7 +449,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FeaturedTrack);
+export default connect(mapStateToProps, mapDispatchToProps)(FeaturedTrack);

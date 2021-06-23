@@ -73,22 +73,15 @@ function Login(props) {
   }
 
   useEffect(() => {
-
-
     (async () => {
       const { userId } = await OneSignal.getDeviceState();
 
       setDeviceToken(userId);
     })();
 
-
     isInternetConnected()
       .then(() => {
         props.countrycodeRequest();
-
-
-    
-
       })
       .catch(() => {
         toast('Check your Internet');
@@ -104,9 +97,7 @@ function Login(props) {
   const [fullname, setFullname] = useState(
     props.route.params.loginType === 'Spotify'
       ? ''
-      : `${props.route.params.userDetails.fullName.givenName} ${
-          props.route.params.userDetails.fullName.familyName
-        }`,
+      : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`,
   );
 
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -540,7 +531,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

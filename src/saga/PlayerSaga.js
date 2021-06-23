@@ -1,4 +1,4 @@
-import {put, call, fork, takeLatest, all, select} from 'redux-saga/effects';
+import { put, call, fork, takeLatest, all, select } from 'redux-saga/effects';
 import {
   GET_CURRENT_PLAYER_POSITION_REQUEST,
   GET_CURRENT_PLAYER_POSITION_SUCCESS,
@@ -29,9 +29,9 @@ import {
   postSpotifyApi,
 } from '../utils/helpers/ApiRequest';
 import constants from '../utils/helpers/constants';
-import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
-import {getSongFromisrc} from '../action/PlayerAction';
+import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import { getSongFromisrc } from '../action/PlayerAction';
 
 const getItems = state => state.TokenReducer;
 
@@ -60,9 +60,7 @@ export function* getCurrentPlayerPostion(action) {
     } else {
       const response = yield call(
         getAppleDevelopersToken,
-        `https://itunes.apple.com/search?term=${
-          action.text
-        }&entity=song&limit=20`,
+        `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`,
         spotifyHeader,
       );
       yield put({
@@ -72,7 +70,7 @@ export function* getCurrentPlayerPostion(action) {
       });
     }
   } catch (error) {
-    yield put({type: GET_CURRENT_PLAYER_POSITION_FAILURE, error: error});
+    yield put({ type: GET_CURRENT_PLAYER_POSITION_FAILURE, error: error });
   }
 }
 
@@ -102,12 +100,10 @@ export function* resumePlayerAction(action) {
     } else {
       const response = yield call(
         getAppleDevelopersToken,
-        `https://itunes.apple.com/search?term=${
-          action.text
-        }&entity=song&limit=20`,
+        `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`,
         spotifyHeader,
       );
-      yield put({type: RESUME_PLAYER_SUCCESS, data: response.data});
+      yield put({ type: RESUME_PLAYER_SUCCESS, data: response.data });
     }
   } catch (error) {
     yield put({
@@ -136,16 +132,14 @@ export function* pausePlayerAction(action) {
         spotifyHeader,
       );
 
-      yield put({type: PAUSE_PLAYER_SUCCESS, data: response.data});
+      yield put({ type: PAUSE_PLAYER_SUCCESS, data: response.data });
     } else {
       const response = yield call(
         getAppleDevelopersToken,
-        `https://itunes.apple.com/search?term=${
-          action.text
-        }&entity=song&limit=20`,
+        `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`,
         spotifyHeader,
       );
-      yield put({type: PAUSE_PLAYER_SUCCESS, data: response.data});
+      yield put({ type: PAUSE_PLAYER_SUCCESS, data: response.data });
     }
   } catch (error) {
     yield put({
@@ -170,20 +164,18 @@ export function* seekToPlayerAction(action) {
       const response = yield call(
         putSpotifyApi,
         `${constants.spotifyPlayerBaseUrl}seek`,
-        {position_ms: action.seekTo},
+        { position_ms: action.seekTo },
         spotifyHeader,
       );
 
-      yield put({type: PLAYER_SEEK_TO_SUCCESS, data: response.data});
+      yield put({ type: PLAYER_SEEK_TO_SUCCESS, data: response.data });
     } else {
       const response = yield call(
         getAppleDevelopersToken,
-        `https://itunes.apple.com/search?term=${
-          action.text
-        }&entity=song&limit=20`,
+        `https://itunes.apple.com/search?term=${action.text}&entity=song&limit=20`,
         spotifyHeader,
       );
-      yield put({type: PLAYER_SEEK_TO_SUCCESS, data: response.data});
+      yield put({ type: PLAYER_SEEK_TO_SUCCESS, data: response.data });
     }
   } catch (error) {
     yield put({
@@ -216,15 +208,13 @@ export function* getSongFromIsrcAction(action) {
     } else {
       const response = yield call(
         getAppleDevelopersToken,
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
-          action.isrc
-        }`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${action.isrc}`,
         spotifyHeader,
       );
-      yield put({type: GET_SONG_FROM_ISRC_SUCCESS, data: response.data.data});
+      yield put({ type: GET_SONG_FROM_ISRC_SUCCESS, data: response.data.data });
     }
   } catch (error) {
-    yield put({type: GET_SONG_FROM_ISRC_FAILURE, error: error});
+    yield put({ type: GET_SONG_FROM_ISRC_FAILURE, error: error });
   }
 }
 
@@ -246,20 +236,20 @@ export function* playListOfUserAction(action) {
     if (action.regType === 'spotify') {
       const response = yield call(
         getSpotifyApi,
-        `https://api.spotify.com/v1/me/playlists?limit=50&offset=0`,
+        'https://api.spotify.com/v1/me/playlists?limit=50&offset=0',
         spotifyHeader,
       );
-      yield put({type: GET_USER_PLAYLIST_SUCCESS, data: response.data.items});
+      yield put({ type: GET_USER_PLAYLIST_SUCCESS, data: response.data.items });
     } else {
       const response = yield call(
         getAppleDevelopersToken,
-        `https://api.music.apple.com/v1/me/library/playlists`,
+        'https://api.music.apple.com/v1/me/library/playlists',
         AppleHeader,
       );
-      yield put({type: GET_USER_PLAYLIST_SUCCESS, data: response.data.data});
+      yield put({ type: GET_USER_PLAYLIST_SUCCESS, data: response.data.data });
     }
   } catch (error) {
-    yield put({type: GET_USER_PLAYLIST_FAILURE, error: error});
+    yield put({ type: GET_USER_PLAYLIST_FAILURE, error: error });
   }
 }
 
@@ -281,27 +271,25 @@ export function* addSongsToPlaylistAction(action) {
     if (action.regType === 'spotify') {
       const response = yield call(
         postSpotifyApi,
-        `https://api.spotify.com/v1/playlists/` +
+        'https://api.spotify.com/v1/playlists/' +
           action.payload.playListId +
-          `/tracks`,
-        {uris: action.payload.songUri},
+          '/tracks',
+        { uris: action.payload.songUri },
         spotifyHeader,
       );
-      yield put({type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data});
+      yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
     } else {
       const response = yield call(
         postSpotifyApi,
-        `https://api.music.apple.com/v1/me/library/playlists/${
-          action.payload.playListId
-        }/tracks`,
-        {data: action.payload.obj},
+        `https://api.music.apple.com/v1/me/library/playlists/${action.payload.playListId}/tracks`,
+        { data: action.payload.obj },
         AppleHeader,
       );
       // console.log(response);
-      yield put({type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data});
+      yield put({ type: ADD_SONG_TO_PLAYLIST_SUCCESS, data: response.data });
     }
   } catch (error) {
-    yield put({type: ADD_SONG_TO_PLAYLIST_FAILURE, error: error});
+    yield put({ type: ADD_SONG_TO_PLAYLIST_FAILURE, error: error });
   }
 }
 

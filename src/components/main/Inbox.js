@@ -15,8 +15,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-
-
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -55,8 +53,8 @@ function Inbox(props) {
   const [mesageList, setMessageList] = useState('');
   const [bool, setBool] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
-  const[newarr,setnewarr]=([])
-  const[nonEmpty,setNonEmpty]=useState(false)
+  const [newarr, setnewarr] = [];
+  const [nonEmpty, setNonEmpty] = useState(false);
 
   useEffect(() => {
     const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -82,7 +80,7 @@ function Inbox(props) {
 
       case GET_CHAT_LIST_SUCCESS:
         status = props.status;
-        setNonEmpty(true)
+        setNonEmpty(true);
         sortArray(props.chatList);
         break;
 
@@ -118,9 +116,9 @@ function Inbox(props) {
     // const sortedMessages = [];
     // .concat(value)
     // .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
-    
+
     setMessageList(value);
-    setNonEmpty(true)
+    setNonEmpty(true);
   }
 
   function filterArray(keyword) {
@@ -133,10 +131,12 @@ function Inbox(props) {
 
     // console.log(data);
     setMessageList([]);
-    setNonEmpty(false)
+    setNonEmpty(false);
     setBool(true);
     setTimeout(() => {
-      if(data.length===0) setNonEmpty(true)
+      if (data.length === 0) {
+        setNonEmpty(true);
+      }
       setMessageList(data);
       setBool(false);
     }, 800);
@@ -152,8 +152,6 @@ function Inbox(props) {
           data.item.user_id == data.item.receiver_id ? true : data.item.read
         }
         onPress={() =>
-
-
           props.navigation.navigate('InsideaMessage', { index: data.index })
         }
         marginBottom={
@@ -207,7 +205,7 @@ function Inbox(props) {
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
-            title={`INBOX`}
+            title={'INBOX'}
             thirditemtext={false}
             imagetwo={ImagePath.newmessage}
             imagetwoheight={25}
@@ -220,78 +218,77 @@ function Inbox(props) {
             }}
           />
 
-{_.isEmpty(props.chatList) ? null :(
-
-          <View
-            style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
+          {_.isEmpty(props.chatList) ? null : (
+            <View
               style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.white,
-                borderRadius: normalise(8),
-                marginTop: normalise(16),
-                padding: normalise(10),
-                // color: Colors.white,
-                paddingLeft: normalise(30),
-                paddingRight: normalise(50),
-              }}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text), filterArray(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), filterArray('');
-                }}
+                width: '92%',
+                alignSelf: 'center',
+              }}>
+              <TextInput
+                autoCorrect={false}
+                keyboardAppearance={'dark'}
                 style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 5,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
+                  height: normalise(35),
+                  width: '100%',
+                  backgroundColor: Colors.white,
+                  borderRadius: normalise(8),
+                  marginTop: normalise(16),
+                  padding: normalise(10),
+                  // color: Colors.white,
+                  paddingLeft: normalise(30),
+                  paddingRight: normalise(50),
+                }}
+                value={search}
+                placeholder={'Search'}
+                placeholderTextColor={Colors.darkgrey}
+                onChangeText={text => {
+                  setSearch(text), filterArray(text);
+                }}
+              />
+
+              <Image
+                source={ImagePath.searchicongrey}
+                style={{
+                  height: normalise(15),
+                  width: normalise(15),
+                  bottom: normalise(25),
+                  paddingLeft: normalise(30),
+                }}
+                resizeMode="contain"
+              />
+
+              {search === '' ? null : (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearch(''), filterArray('');
+                  }}
                   style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
+                    backgroundColor: Colors.fordGray,
+                    padding: 6,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    borderRadius: 5,
+                    position: 'absolute',
+                    right: 0,
+                    bottom:
+                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                    marginRight: normalise(10),
                   }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(10),
+                      fontWeight: 'bold',
+                    }}>
+                    CLEAR
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
 
-)}
-
-          {_.isEmpty(props.chatList)&& nonEmpty? (
-              <View
+          {_.isEmpty(props.chatList) && nonEmpty ? (
+            <View
               style={{
                 flex: 1,
                 // justifyContent: 'center',
@@ -302,75 +299,77 @@ function Inbox(props) {
               </Text> */}
 
               <Image
-                  source={ImagePath.emptyInbox}
-                  style={{ height: 3*normalise(85), width: 3*normalise(85),marginTop:'6%',alignSelf:'center' }}
-                  resizeMode="cover"
-                  
-                />
+                source={ImagePath.emptyInbox}
+                style={{
+                  height: 3 * normalise(85),
+                  width: 3 * normalise(85),
+                  marginTop: '6%',
+                  alignSelf: 'center',
+                }}
+                resizeMode="cover"
+              />
 
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(15),
+                  fontWeight: '500',
+                  marginTop: normalise(3),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf: 'center',
+                  fontFamily: 'ProximaNova-Bold',
+                }}>
+                Your Inbox is Empty
+              </Text>
+              <Text
+                style={{
+                  color: Colors.fordGray,
+                  fontSize: normalise(12),
+                  fontWeight: '100',
+                  marginTop: normalise(10),
+                  width: '65%',
+                  textAlign: 'center',
+                  alignSelf: 'center',
+                  fontFamily: 'ProximaNova-Regular',
+                }}>
+                You haven’t started sending music to people, click the button
+                below to send your first song.
+              </Text>
+              <TouchableOpacity
+                style={{
+                  marginBottom: normalise(30),
+                  marginTop: normalise(50),
+                  height: normalise(48),
+                  width: '80%',
+                  alignSelf: 'center',
+                  borderRadius: normalise(25),
+                  backgroundColor: Colors.white,
+                  borderWidth: normalise(0.5),
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.5,
+                  shadowRadius: 9,
+                  elevation: 11,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderColor: Colors.white,
+                }}
+                onPress={() => {
+                  props.navigation.navigate('AddSongsInMessage');
+                }}>
                 <Text
                   style={{
-                    color: Colors.white,
-                    fontSize: normalise(15),
-                    fontWeight: '500',
-                    marginTop: normalise(3),
-                    width: '68%',
-                    textAlign: 'center',
-                    alignSelf:'center',
-                    fontFamily: 'ProximaNova-Bold',
-                  }}>
-                 Your Inbox is Empty
-                </Text>
-                <Text
-                  style={{
-                    color: Colors.fordGray,
+                    marginLeft: normalise(10),
+                    color: Colors.darkerblack,
                     fontSize: normalise(12),
-                    fontWeight: '100',
-                    marginTop: normalise(10),
-                    width: '65%',
-                    textAlign: 'center',
-                    alignSelf:'center',
-                    fontFamily: 'ProximaNova-Regular',
-                  
+                    fontWeight: 'bold',
                   }}>
-                    You haven’t started sending music to people, click the button below to send your first song.
+                  SEND A SONG TO SOMEONE
                 </Text>
-                <TouchableOpacity
-                  style={{
-                    marginBottom: normalise(30),
-                    marginTop: normalise(50),
-                    height: normalise(48),
-                    width: '80%',
-                    alignSelf: 'center',
-                    borderRadius: normalise(25),
-                    backgroundColor: Colors.white,
-                    borderWidth: normalise(0.5),
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 9,
-                    elevation: 11,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderColor: Colors.white,
-                  
-                  }}
-                  onPress={() => {
-                    props.navigation.navigate('AddSongsInMessage');
-                  }}>
-                  <Text
-                    style={{
-                      marginLeft: normalise(10),
-                      color: Colors.darkerblack,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                    }}>
-                   SEND A SONG TO SOMEONE
-                  </Text>
-                </TouchableOpacity>
+              </TouchableOpacity>
             </View>
-        
           ) : (
             <FlatList
               data={mesageList}
@@ -407,7 +406,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Inbox);
+export default connect(mapStateToProps, mapDispatchToProps)(Inbox);

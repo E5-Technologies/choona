@@ -50,7 +50,6 @@ import {
   CREATE_CHAT_TOKEN_FAILURE,
   DUMMY_ACTION_SUCCESS,
   DUMMY_ACTION_REQUEST,
-
 } from '../../action/TypeConstants';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
@@ -80,8 +79,6 @@ let songStatus = '';
 let postStatus = '';
 let messageStatus;
 
-
- 
 function PostListForUser(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -94,11 +91,11 @@ function PostListForUser(props) {
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-  
-const [totalReact,setTotalReact] = useState([])
+
+const [totalReact,setTotalReact] = useState([]);
   const [posts, setPosts] = useState(props.route.params.posts);
 
-    // console.log("prosts"+JSON.stringify(props.route.params.posts));
+  // console.log("prosts"+JSON.stringify(props.route.params.posts));
 
   const ref = React.useRef(null);
   var bottomSheetRef;
@@ -106,20 +103,28 @@ const [totalReact,setTotalReact] = useState([])
 
   useScrollToTop(ref);
 
-useEffect(()=>{
-let newarray = []
-posts.map((item,index)=>{
-  let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
- 
-  newarray.push(newObject)
-  if(index===posts.length-1){
-    setTotalReact(newarray)
-    // console.log("newarrr"+ JSON.stringify(newarray))
-  }
+  useEffect(() => {
+    let newarray = [];
+    posts.map((item, index) => {
+      let newObject = {
+        id: item._id,
+        react: [
+          item.fire_count,
+          item.love_count,
+          item.dancer_count,
+          item.man_dancing_count,
+          item.face_count,
+          item.thumbsup_count,
+        ],
 
-})
-},[])
 
+      newarray.push(newObject);
+      if (index === posts.length - 1) {
+        setTotalReact(newarray);
+        // console.log("newarrr"+ JSON.stringify(newarray))
+      }
+    });
+  }, []);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -260,11 +265,7 @@ posts.map((item,index)=>{
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
   let val = 0;
 
-
-
-
   function hitreact(x, rindex) {
-
     // alert("reaction"+(JSON.stringify(posts[rindex])))
     if (!_.isEmpty(posts[rindex].reaction)) {
       // console.log('here');
@@ -295,11 +296,11 @@ posts.map((item,index)=>{
 
   function hitreact1(modal1Visible) {
     if (modal1Visible === true) {
-        
+
       setModal1Visible(false);
-      
+
     } else {
-     
+
       setModal1Visible(true);
     }
   }
@@ -309,7 +310,6 @@ posts.map((item,index)=>{
   }
 
   function sendReaction(id, reaction) {
-   
     //  alert("resat"+reaction)
     const myReaction =
       reaction === react[0]
@@ -329,13 +329,13 @@ posts.map((item,index)=>{
       text: reaction,
       text_match: myReaction,
     };
-   
-    
-    posts.map((item,index)=>{
-    
-      if(id===item._id)
-    
-    if(myReaction==='A'){
+
+
+    posts.map((item, index) => {
+
+      if (id === item._id)
+
+    {if(myReaction==='A'){
       if(posts[index].fire_count===totalReact[index].react[0]){
         posts[index].fire_count=posts[index].fire_count+1
         posts[index].reaction_count=posts[index].reaction_count+1
@@ -413,9 +413,9 @@ posts.map((item,index)=>{
          posts[index].reaction_count=posts[index].reaction_count-1  
       }
       }
-    }
-    }
-  )
+    }}
+        }
+    });
     isInternetConnected()
       .then(() => {
         props.reactionOnPostRequest(reactionObject);
@@ -425,101 +425,106 @@ posts.map((item,index)=>{
       });
   }
 
+  function _onSelectBack(ID, comment) {
+    //  console.log("aaa"+ posts)
+    let newarray = posts;
+    newarray.map((item, index) => {
+      //  console.log("items"+index+JSON.stringify(item))
+      if (item._id === ID) {
+        newarray[index].comment_count = comment;
+        // console.log("item",item)
+      }
 
-  
-function _onSelectBack(ID,comment){
-  //  console.log("aaa"+ posts)
-   let newarray = posts
-  newarray.map((item,index)=>{
-  //  console.log("items"+index+JSON.stringify(item))
-  if(item._id === ID){
-    newarray[index].comment_count = comment 
-  // console.log("item",item)
+      if (index === newarray.length - 1) {
+
+    setPosts([...newarray]);
+      }
+
+  }
   }
 
-  if(index===newarray.length-1){
- 
-    setPosts([...newarray])
-  }
-    })
-  
-  }
+  function _onReaction(ID, reaction, reactionList) {
+    let newarray = posts;
+    // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
+    newarray.map((item, index) => {
 
+   if (item._id === ID){
+        if (reactionList.length > 0) {
+          var found = reactionList.findIndex(element => {
+            return element.header === react[0];
+          });
+          var found_love = reactionList.findIndex(element => {
+            return element.header === react[1];
+          });
+          var found_dance = reactionList.findIndex(element => {
+            return element.header === react[2];
+          });
+          var found_ManDance = reactionList.findIndex(element => {
+            return element.header === react[3];
+          });
+          var found_face = reactionList.findIndex(element => {
+            return element.header === react[4];
+          });
+          var found_thumb = reactionList.findIndex(element => {
+            return element.header === react[5];
+          });
 
-  function _onReaction(ID,reaction,reactionList){
+          //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+          if (found != -1) {
+            newarray[index].fire_count = reactionList[found].data.length;
+          } else {
+            newarray[index].fire_count = 0;
+          }
+          if (found_love != -1) {
+            newarray[index].love_count = reactionList[found_love].data.length;
+          } else {
+            newarray[index].love_count = 0;
+          }
+          if (found_dance != -1) {
+            newarray[index].dancer_count =
+              reactionList[found_dance].data.length;
+          } else {
+            newarray[index].dancer_count = 0;
+          }
+          if (found_ManDance != -1) {
+            newarray[index].man_dancing_count =
+              reactionList[found_ManDance].data.length;
+          } else {
+            newarray[index].man_dancing_count = 0;
+          }
+          if (found_face != -1) {
+            newarray[index].face_count = reactionList[found_face].data.length;
+          } else {
+            newarray[index].face_count = 0;
+          }
+          if (found_thumb != -1) {
+            newarray[index].thumbsup_count =
+              reactionList[found_thumb].data.length;
+          } else {
+            newarray[index].thumbsup_count = 0;
+          }
 
-  let newarray = posts
-  // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
-    newarray.map((item,index)=>{
-   
-   if(item._id === ID){
-
-if(reactionList.length>0){
-var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
-var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
-var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
-var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
-var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
-var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
-
-//  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-if(found!=-1){
-  newarray[index].fire_count=reactionList[found].data.length
-     }else{
-       newarray[index].fire_count=0
-     }
-     if(found_love!=-1){
-  newarray[index].love_count=reactionList[found_love].data.length
-     }
-     else{
-       newarray[index].love_count=0
-     }
-     if(found_dance !=-1){
-  newarray[index].dancer_count=reactionList[found_dance].data.length
-     }
-     else{
-       newarray[index].dancer_count=0
-     }
-     if(found_ManDance !=-1){
-  newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
-     }
-     else{
-       newarray[index].man_dancing_count=0
-     }
-     if(found_face != -1){
-  newarray[index].face_count=reactionList[found_face].data.length
-     }
-     else{
-       newarray[index].face_count=0
-     }
-     if(found_thumb != -1){
-  newarray[index].thumbsup_count=reactionList[found_thumb].data.length
-     }
-     else{
-       newarray[index].thumbsup_count=0
-     }
-
-     newarray[index].reaction_count= reaction
-    }
+          newarray[index].reaction_count = reaction;
         }
-      
-   if(index===newarray.length-1){
- 
-    setPosts([...newarray])
-    let array = []
-// newarray.map((item,index)=>{
-//   let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
- 
-//   array.push(newObject)
-//   if(index===posts.length-1){
-//     setTotalReact(array)
-//     // console.log("newarrr"+ JSON.stringify(newarray))
-//   }
 
-// })
+
+      if (index === newarray.length - 1) {
+
+    setPosts([...newarray]);
+        let array = [];
+        // newarray.map((item,index)=>{
+        //   let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
+
+        //   array.push(newObject)
+        //   if(index===posts.length-1){
+        //     setTotalReact(array)
+        //     // console.log("newarrr"+ JSON.stringify(newarray))
+        //   }
+
+        // })
+      }
+    });
   }
-     })
-  } 
 
 
   function renderItem(data) {
@@ -543,6 +548,7 @@ if(found!=-1){
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        // songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -563,7 +569,7 @@ if(found!=-1){
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments:[],
+            comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -589,11 +595,12 @@ if(found!=-1){
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
+            onSelectReaction: (ID, reaction, reactionList) =>
+              _onReaction(ID, reaction, reactionList),
           });
         }}
         onPressCommentbox={() => {
-        
+
           props.navigation.navigate('HomeItemComments', {
             index: data.index,
             comment: data.item.comment,
@@ -602,7 +609,7 @@ if(found!=-1){
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
-            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
+            onSelect: (ID, comment) => _onSelectBack(ID, comment),
           });
         }}
         onPressSecondImage={() => {
@@ -670,14 +677,13 @@ if(found!=-1){
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{ height: 35, width: 35, borderRadius: 2*normalise(13.5) }}
+            style={{ height: 35, width: 35, borderRadius: 2 * normalise(13.5) }}
           />
           <View
             style={{
               // flexDirection: 'row',
-              marginLeft:'5%',
-              paddingBottom:'5%'
-             
+              marginLeft: '5%',
+              paddingBottom: '5%',
             }}>
             <Text
               style={{
@@ -844,7 +850,7 @@ if(found!=-1){
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -903,7 +909,7 @@ if(found!=-1){
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                borderRadius:5,
+                  borderRadius: 5,
                   bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
                   marginRight: normalise(10),
                 }}>
@@ -960,9 +966,7 @@ if(found!=-1){
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${
-          posts[positionInArray].isrc_code
-        }&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${posts[positionInArray].isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -973,9 +977,7 @@ if(found!=-1){
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
-          posts[positionInArray].isrc_code
-        }`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${posts[positionInArray].isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,
@@ -1115,40 +1117,36 @@ if(found!=-1){
 
           {renderAddToUsers()}
 
-
-          {
-            props.status === DUMMY_ACTION_SUCCESS ? (
-              <MusicPlayerBar
-                onPress={() => {
-
-
-                  props.navigation.navigate('Player', {
-                    comments:[],
-                    song_title: props.playingSongRef.song_name,
-                    album_name: props.playingSongRef.album_name,
-                    song_pic: props.playingSongRef.song_pic,
-                    username: props.playingSongRef.username,
-                    profile_pic: props.playingSongRef.profile_pic,
-                    uri: props.playingSongRef.uri,
-                    reactions: props.playingSongRef.reactionData,
-                    id: props.playingSongRef.id,
-                    artist: props.playingSongRef.artist,
-                    changePlayer: props.playingSongRef.changePlayer,
-                    originalUri: props.playingSongRef.originalUri,
-                    isrc: props.playingSongRef.isrc,
-                    registerType: props.playingSongRef.regType,
-                    details: props.playingSongRef.details,
-                    showPlaylist: props.playingSongRef.showPlaylist,
-                    comingFromMessage: props.playingSongRef.comingFromMessage,
-                  });
-                }}
-                onPressPlayOrPause={() => {
-                  setTimeout(() => {
-                    findPlayingSong(props.postData);
-                  }, 500);
-                }}
-              />
-            ) : null}
+          {props.status === DUMMY_ACTION_SUCCESS ? (
+            <MusicPlayerBar
+              onPress={() => {
+                props.navigation.navigate('Player', {
+                  comments: [],
+                  song_title: props.playingSongRef.song_name,
+                  album_name: props.playingSongRef.album_name,
+                  song_pic: props.playingSongRef.song_pic,
+                  username: props.playingSongRef.username,
+                  profile_pic: props.playingSongRef.profile_pic,
+                  uri: props.playingSongRef.uri,
+                  reactions: props.playingSongRef.reactionData,
+                  id: props.playingSongRef.id,
+                  artist: props.playingSongRef.artist,
+                  changePlayer: props.playingSongRef.changePlayer,
+                  originalUri: props.playingSongRef.originalUri,
+                  isrc: props.playingSongRef.isrc,
+                  registerType: props.playingSongRef.regType,
+                  details: props.playingSongRef.details,
+                  showPlaylist: props.playingSongRef.showPlaylist,
+                  comingFromMessage: props.playingSongRef.comingFromMessage,
+                });
+              }}
+              onPressPlayOrPause={() => {
+                setTimeout(() => {
+                  findPlayingSong(props.postData);
+                }, 500);
+              }}
+            />
+          ) : null}
 
           <Modal
             animationType="slide"
@@ -1311,9 +1309,7 @@ if(found!=-1){
                     {props.userProfileResp._id ===
                     posts[positionInArray].user_id
                       ? 'Delete Post'
-                      : `Unfollow ${
-                          posts[positionInArray].userDetails.username
-                        }`}
+                      : `Unfollow ${posts[positionInArray].userDetails.username}`}
                   </Text>
                 </TouchableOpacity>
 
@@ -1556,7 +1552,6 @@ const mapStateToProps = state => {
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     registerType: state.TokenReducer.registerType,
     header: state.TokenReducer,
-
   };
 };
 
@@ -1596,7 +1591,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PostListForUser);
+export default connect(mapStateToProps, mapDispatchToProps)(PostListForUser);

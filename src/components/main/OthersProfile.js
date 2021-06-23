@@ -9,7 +9,7 @@ import {
   ImageBackground,
   Dimensions,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -46,22 +46,18 @@ import { set } from 'react-native-reanimated';
 
 let status;
 let changePlayer = true;
-let TotalCount= '0'
+let TotalCount = '0';
 
 function OthersProfile(props) {
- 
   const [id, setId] = useState(props.route.params.id);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [postCount,setPostCount] = useState('')
+  const [postCount, setPostCount] = useState('');
   const [flag, setFlag] = useState('');
-
 
   const postsUrl = constants.BASE_URL + `/user/posts/${id}`;
 
-
   const getPosts = async pageId => {
-
-    console.log("logcat:"+`${postsUrl}?page=${pageId}`);
+    console.log('logcat:' + `${postsUrl}?page=${pageId}`);
     const response = await axios.get(`${postsUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -69,75 +65,74 @@ function OthersProfile(props) {
         'x-access-token': props.header.token,
       },
     });
-console.log("resposse"+JSON.stringify(response))
-setIsLoading(false)
+    console.log('resposse' + JSON.stringify(response));
+    setIsLoading(false);
 
-response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data.postCount
+    response.data.data.length === 0
+      ? (TotalCount = TotalCount)
+      : (TotalCount = response.data.postCount);
 
-    setProfilePosts([...profilePosts,...response.data.data])
+    setProfilePosts([...profilePosts, ...response.data.data]);
 
-    console.log("logcat response:"+JSON.stringify(response.data.postCount));
+    console.log('logcat response:'+JSON.stringify(response.data.postCount));
     return await response.data;
   };
 
   const [pageId, setPageId] = useState(1);
   const key = `${postsUrl}?page=${pageId}`;
   // const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
-  const [isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
-  const[profilePosts,setProfilePosts] = useState([]);
+  const [profilePosts,setProfilePosts] = useState([]);
 
-  const onEndReached=async()=>{
-    setPageId(pageId+1)
-    const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'x-access-token': props.header.token,
-    },
-  });
-  // profilePosts.push(response.data.data)
-  setIsLoading(false)
- setProfilePosts([...profilePosts,...response.data.data])
- 
-  } 
+  const onEndReached = async()=>{
+    setPageId(pageId + 1);
+    const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
+      },
+    });
+    // profilePosts.push(response.data.data)
+    setIsLoading(false);
+    setProfilePosts([...profilePosts, ...response.data.data]);
+  }; 
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', payload => {
-      isInternetConnected()
-        .then(async() => {
-          props.othersProfileReq(id);
-          props.getCountryCode();
-         // mutate();
+    isInternetConnected()
+      .then(async () => {
+        props.othersProfileReq(id);
+        props.getCountryCode();
+        // mutate();
 
-         const response = await axios.get(`${postsUrl}?page=${1}`, {
+        const response = await axios.get(`${postsUrl}?page=${1}`, {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             'x-access-token': props.header.token,
           },
         });
-    console.log("resposse"+JSON.stringify(response)) 
-    setIsLoading(false)
-    
-    response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data.postCount
-    profilePosts.length===0 ?
-        setProfilePosts([...profilePosts,...response.data.data])
-    : null
+        console.log('resposse' + JSON.stringify(response));
+        setIsLoading(false);
 
 
-        })
-        .catch(() => {
-          toast('Error', 'Please Connect to Internet');
-        });
-
+    response.data.data.length === 0 ? TotalCount = TotalCount : TotalCount = response.data.postCount;
+        profilePosts.length === 0
+          ? setProfilePosts([...profilePosts, ...response.data.data])
+          : null;
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect to Internet');
+      });
 
     // },[]);
 
     return () => {
       // unsuscribe();
     };
-  },[isFollowing]);
+  }, [isFollowing]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -146,10 +141,6 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
         break;
 
       case OTHERS_PROFILE_SUCCESS:
-
-      
-
-
         setIsFollowing(props.othersProfileresp.isFollowing);
         status = props.status;
         break;
@@ -201,9 +192,9 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
   }
 
   function renderProfileData(data) {
-  
-    let array=[]
-    array.push(data.item)
+
+    let array = [];
+    array.push(data.item);
     return (
       <TouchableOpacity
         onPress={() => {
@@ -240,31 +231,33 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
     );
   }
 
-  return (
-    
-      isLoading? ( <View style={{flex:1,backgroundColor:Colors.black,paddingTop:'6%'}}>
-           <HeaderComponent
-          firstitemtext={false}
-          imageone={ImagePath.backicon}
-          title=''
-          thirditemtext={true}
-          texttwo={''}
-          onPressFirstItem={() => {
-            props.navigation.goBack();
-          }}
-        />
-<ActivityIndicator size='large' color='#ffffff' style={{alignSelf:'center',marginTop:5*normalise(60)}}>
+  return isLoading ? (
+    <View style={{ flex: 1, backgroundColor: Colors.black, paddingTop: '6%' }}>
+      <HeaderComponent
+        firstitemtext={false}
+        imageone={ImagePath.backicon}
+        title=""
+        thirditemtext={true}
+        texttwo={''}
+        onPressFirstItem={() => {
+          props.navigation.goBack();
+        }}
+      />
+      <ActivityIndicator
+        size="large"
+        color="#ffffff"
+        style={{
+          alignSelf: 'center',
+          marginTop: 5 * normalise(60),
+        }}></ActivityIndicator>
+    </View>
 
-</ActivityIndicator>
-      </View>):
-    
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       {/* <Loader visible={props.status === OTHERS_PROFILE_REQUEST} /> */}
 
       {/* <Loader visible={props.status === HOME_PAGE_REQUEST} /> */}
 
       {/* <Loader visible={props.status === COUNTRY_CODE_REQUEST} /> */}
-      
 
       <StatusBar backgroundColor={Colors.darkerblack} />
 
@@ -324,9 +317,7 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
                 fontFamily: 'ProximaNova-Regular',
               }}>
               {profilePosts !== undefined
-                ? `${TotalCount} ${
-                   TotalCount>1? 'Posts' : 'Post'
-                  }`
+                ? `${TotalCount} ${TotalCount > 1 ? 'Posts' : 'Post'}`
                 : null}
             </Text>
 
@@ -450,24 +441,19 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
               maxWidth: normalise(120),
 
               borderRadius: normalise(15),
-              backgroundColor:isFollowing
-                ? Colors.fadeblack
-                : Colors.white,
+              backgroundColor: isFollowing ? Colors.fadeblack : Colors.white,
               alignItems: 'center',
               justifyContent: 'center',
             }}
             onPress={() => {
-
-              console.log("val:"+ isFollowing);
+              console.log('val:' + isFollowing);
               setIsFollowing(!isFollowing);
               props.followReq({ follower_id: id });
             }}>
             <Text
               style={{
                 fontSize: normalise(10),
-                color:isFollowing
-                  ? Colors.white
-                  : Colors.black,
+                color: isFollowing ? Colors.white : Colors.black,
                 fontFamily: 'ProximaNova-Bold',
               }}>
               {isFollowing ? 'FOLLOWING' : 'FOLLOW'}
@@ -640,14 +626,10 @@ response.data.data.length===0 ? TotalCount=TotalCount: TotalCount= response.data
             renderItem={renderProfileData}
             showsVerticalScrollIndicator={false}
             numColumns={2}
-            onEndReached={()=>
-              onEndReached()
-                
-              }
-               onEndReachedThreshold={0.5}
+            onEndReached={() => onEndReached()}
+            onEndReachedThreshold={0.5}
           />
         )}
-
       </SafeAreaView>
     </View>
   );
@@ -676,7 +658,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(OthersProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(OthersProfile);

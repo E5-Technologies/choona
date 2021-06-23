@@ -303,9 +303,11 @@ function Player(props) {
 
       case SAVE_SONGS_SUCCESS:
         songStatus = props.songStatus;
-        if (props.savedSongResponse.status === 200)
+        if (props.savedSongResponse.status === 200) {
           toast('Success', props.savedSongResponse.message);
-        else toast('Error', props.savedSongResponse.message);
+        } else {
+          toast('Error', props.savedSongResponse.message);
+        }
         break;
 
       case SAVE_SONGS_FAILURE:
@@ -703,10 +705,14 @@ function Player(props) {
         marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            if (RbSheetRef) RbSheetRef.close();
+            if (RbSheetRef) {
+              RbSheetRef.close();
+            }
             props.navigation.navigate('Profile', { fromAct: false });
           } else {
-            if (RbSheetRef) RbSheetRef.close();
+            if (RbSheetRef) {
+              RbSheetRef.close();
+            }
             props.navigation.navigate('OthersProfile', {
               id: data.item.user_id,
             });
@@ -801,7 +807,8 @@ function Player(props) {
             style={{
               flex: 1,
               backgroundColor: 'transparent',
-            }}></TouchableOpacity>
+            }}
+          />
           <View
             style={{
               height: Dimensions.get('window').height / 2.2,
@@ -1158,19 +1165,21 @@ function Player(props) {
               style={{ flexDirection: 'row', marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
-                if (props.userProfileResp.register_type === 'spotify')
+                if (props.userProfileResp.register_type === 'spotify') {
                   props.navigation.navigate('AddToPlayListScreen', {
                     originalUri: originalUri,
                     registerType: registerType,
                     isrc: isrc,
                   });
+                }
                 // setTimeout(() => {
                 //     toast("Oops", "Only, Spotify users can add to their playlist now.")
                 // }, 1000)
-                else
+                else {
                   props.navigation.navigate('AddToPlayListScreen', {
                     isrc: isrc,
                   });
+                }
               }}>
               <Image
                 source={ImagePath.addicon}
@@ -1438,7 +1447,7 @@ function Player(props) {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -1648,7 +1657,9 @@ function Player(props) {
 
             <TouchableOpacity
               onPress={() => {
-                if (hasSongLoaded) playing();
+                if (hasSongLoaded) {
+                  playing();
+                }
               }}
               style={{
                 marginTop: normalise(5),
@@ -1674,7 +1685,9 @@ function Player(props) {
 
               <TouchableOpacity
                 onPress={() => {
-                  if (hasSongLoaded) playing();
+                  if (hasSongLoaded) {
+                    playing();
+                  }
                 }}
                 style={{
                   height: normalise(60),
@@ -1937,17 +1950,19 @@ function Player(props) {
                   {props.route.params.showPlaylist === false ? null : (
                     <TouchableOpacity
                       onPress={() => {
-                        if (props.userProfileResp.register_type === 'spotify')
+                        if (props.userProfileResp.register_type === 'spotify') {
                           props.navigation.navigate('AddToPlayListScreen', {
                             originalUri: originalUri,
                             registerType: registerType,
                             isrc: isrc,
                           });
+                        }
                         // toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        else
+                        else {
                           props.navigation.navigate('AddToPlayListScreen', {
                             isrc: isrc,
                           });
+                        }
                       }}
                       style={{
                         flexDirection: 'row',
@@ -2110,17 +2125,19 @@ function Player(props) {
                   {props.route.params.showPlaylist === false ? null : (
                     <TouchableOpacity
                       onPress={() => {
-                        if (props.userProfileResp.register_type === 'spotify')
+                        if (props.userProfileResp.register_type === 'spotify') {
                           props.navigation.navigate('AddToPlayListScreen', {
                             originalUri: originalUri,
                             registerType: registerType,
                             isrc: isrc,
                           });
+                        }
                         // toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        else
+                        else {
                           props.navigation.navigate('AddToPlayListScreen', {
                             isrc: isrc,
                           });
+                        }
                       }}
                       style={{
                         flexDirection: 'row',
@@ -2333,7 +2350,7 @@ function Player(props) {
                     ADD TO PLAYLIST
                   </Text>
                 </TouchableOpacity>
-                
+
               )} */}
             </View>
 

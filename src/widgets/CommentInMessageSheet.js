@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState, useRef} from 'react';
+import React, { useEffect, Fragment, useState, useRef } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -25,7 +25,7 @@ import CommentList from '../components/main/ListCells/CommentList';
 import StatusBar from '../utils/MyStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import toast from '../utils/helpers/ShowErrorAlert';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../utils/helpers/constants';
 import moment from 'moment';
 import isInternetConnected from '../utils/helpers/NetInfo';

@@ -110,7 +110,7 @@ const HomeListItemFooter = ({
                 setViewMore(!viewMore);
             }}>
             <Text style={styles.listItemFooterMoreButton}>
-              {!viewMore ? `View More` : `View Less`}
+              {!viewMore ? 'View More' : 'View Less'}
             </Text>
           </TouchableOpacity>
         ) : null}

@@ -72,9 +72,7 @@ export const loadMoreRequest = data => ({
 
 export const loadMoreData = () => ({
   type: LOAD_MORE_DATA,
-  
 });
-
 
 export const commentOnPostReq = payload => ({
   type: COMMENT_ON_POST_REQUEST,

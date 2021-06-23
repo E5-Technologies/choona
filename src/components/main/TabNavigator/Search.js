@@ -399,6 +399,7 @@ function Search(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        // songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -525,7 +526,7 @@ function Search(props) {
     console.log('totalReact' + totalReact);
 
     searchPostData.map((item, index) => {
-      if (id === item._id)
+      if (id === item._id) {
         if (myReaction === 'A') {
           if (searchPostData[index].fire_count === totalReact[index].react[0]) {
             searchPostData[index].fire_count =
@@ -618,6 +619,7 @@ function Search(props) {
             }
           }
         }
+      }
     });
 
     isInternetConnected()
@@ -1102,7 +1104,7 @@ function Search(props) {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}

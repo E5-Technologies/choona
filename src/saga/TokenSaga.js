@@ -1,4 +1,4 @@
-import {put, call, fork, takeLatest, all} from 'redux-saga/effects';
+import { put, call, fork, takeLatest, all } from 'redux-saga/effects';
 import {
   ASYNC_STORAGE_REQUEST,
   ASYNC_STORAGE_SUCCESS,
@@ -14,16 +14,16 @@ export function* tokenAction(action) {
   yield call(
     AsyncStorage.setItem,
     constants.CHOONACREDS,
-    JSON.stringify({token: action.token}),
+    JSON.stringify({ token: action.token }),
   );
-  yield put({type: ASYNC_STORAGE_SUCCESS, token: action.token});
+  yield put({ type: ASYNC_STORAGE_SUCCESS, token: action.token });
 }
 
 export function* getTokenAction(action) {
   try {
     const creds = yield call(AsyncStorage.getItem, constants.CHOONACREDS);
     if (creds === null) {
-      yield put({type: GET_TOKEN_SUCCESS, token: null, registerType: null});
+      yield put({ type: GET_TOKEN_SUCCESS, token: null, registerType: null });
     }
     yield put({
       type: GET_TOKEN_SUCCESS,
@@ -31,7 +31,7 @@ export function* getTokenAction(action) {
       registerType: JSON.parse(creds).registerType,
     });
   } catch (error) {
-    yield put({type: GET_TOKEN_FAILURE, error: error});
+    yield put({ type: GET_TOKEN_FAILURE, error: error });
   }
 }
 

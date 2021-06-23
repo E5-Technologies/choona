@@ -388,7 +388,7 @@ function AddSongsInMessage(props) {
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
-            title={`CHOOSE SONG TO SEND`}
+            title={'CHOOSE SONG TO SEND'}
             thirditemtext={true}
             imagetwo={ImagePath.newmessage}
             imagetwoheight={25}
@@ -413,7 +413,6 @@ function AddSongsInMessage(props) {
               }}
               value={search}
               keyboardAppearance={'dark'}
-
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
@@ -617,7 +616,7 @@ function AddSongsInMessage(props) {
                         marginTop: normalise(10),
                         marginEnd: normalise(15),
                       }}>
-                      {`NEXT`}
+                      {'NEXT'}
                     </Text>
                   </TouchableOpacity>
                 ) : null}
@@ -669,13 +668,13 @@ function AddSongsInMessage(props) {
                     style={{
                       position: 'absolute',
                       right: 10,
-                       top: normalise(6),
-                      backgroundColor:Colors.fordGray,
+                      top: normalise(6),
+                      backgroundColor: Colors.fordGray,
                       // paddingRight: normalise(10),
-                      borderRadius:5,
-                      padding:normalise(4),
-                      paddingHorizontal:normalise(7),
-                      alignSelf:'center'
+                      borderRadius: 5,
+                      padding: normalise(4),
+                      paddingHorizontal: normalise(7),
+                      alignSelf: 'center',
                     }}>
                     <Text
                       style={{
@@ -754,7 +753,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddSongsInMessage);
+export default connect(mapStateToProps, mapDispatchToProps)(AddSongsInMessage);

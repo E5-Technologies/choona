@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -71,10 +71,10 @@ export default function GenreClicked(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -87,7 +87,11 @@ export default function GenreClicked(props) {
         />
 
         <FlatList
-          style={{paddingTop: normalise(20), alignSelf: 'center', width: '95%'}}
+          style={{
+            paddingTop: normalise(20),
+            alignSelf: 'center',
+            width: '95%',
+          }}
           data={genreData}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => {

@@ -29,7 +29,6 @@ const initialState = {
 };
 
 const PostReducer = (state = initialState, action) => {
- 
   switch (action.type) {
     case SEARCH_SONG_REQUEST_FOR_POST_REQUEST:
       //  alert(JSON.stringify(action))
@@ -40,7 +39,7 @@ const PostReducer = (state = initialState, action) => {
 
     case SEARCH_SONG_REQUEST_FOR_POST_SUCCESS:
       if (action.post) {
-      console.log("actiondata"+ JSON.stringify(action))
+        console.log('actiondata' + JSON.stringify(action));
         return {
           ...state,
           status: action.type,

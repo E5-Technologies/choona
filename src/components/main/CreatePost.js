@@ -12,7 +12,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Dimensions,
-
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -34,7 +33,7 @@ import {
   FOLLOWING_LIST_FAILURE,
 } from '../../action/TypeConstants';
 import { createPostRequest } from '../../action/PostAction';
-import { followingListReq,followerListReq } from '../../action/UserAction';
+import { followingListReq, followerListReq } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -51,21 +50,20 @@ function AddSong(props) {
   const [title2, setTitle2] = useState(props.route.params.title2);
   const [spotifyUrl, setSpotifyUrl] = useState('');
   const [bool, setBool] = useState(false);
-  const [followingList,setFollowingList] = useState(props.followingData)
-  const [followerList,setFollower] = useState(props.followerData)
+  const [followingList, setFollowingList] = useState(props.followingData);
+  const [followerList, setFollower] = useState(props.followerData);
 
-  const[tagFriend,setTagFriend] = useState([])
-  const [showmention,setShowMention] =useState(false)
-  const [Selection,setSelection] =useState({start:0,end:0})
+  const [tagFriend,setTagFriend] = useState([]);
+  const [showmention, setShowMention] = useState(false);
+  const [Selection, setSelection] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
-    
+
 
     if (props.route.params.registerType === 'spotify') {
       setBool(true);
       const getSpotifyApi = async () => {
         try {
-
           const res = await callApi();
           if (res.data.status === 200) {
             let suc = res.data.data.audio;
@@ -84,9 +82,8 @@ function AddSong(props) {
       isInternetConnected()
         .then(() => {
           getSpotifyApi();
-          props.followingListReq('user','');
-          props.followListReq('user','');
-
+          props.followingListReq('user', '');
+          props.followListReq('user', '');
         })
         .catch(() => {
           toast('', 'Please Connect To Internet');
@@ -97,9 +94,9 @@ function AddSong(props) {
   // GET SPOTIFY SONG URL
   const callApi = async () => {
     return await axios.get(
-      `${constants.BASE_URL}/${`song/spotify/${
-        props.route.params.details.id
-      }`}`,
+      `${
+        constants.BASE_URL
+      }/${`song/spotify/${props.route.params.details.id}`}`,
       {
         headers: {
           Accept: 'application/json',
@@ -109,25 +106,24 @@ function AddSong(props) {
     );
   };
 
-  const createPost= async()=> {
+  const createPost = async()=> {
 
-    let tapUser = []
-    await props.followingData.map((item,index)=>{
-      if(search.search(item.username)!= -1){
-            tagFriend.map((items)=>{
-              if(items===item.username){
-                tapUser.push(item.username)
-              }
-            })
-            }
-      if(index===props.followingData.length-1){
-            setTagFriend([])
+    let tapUser = [];
+    await props.followingData.map((item, index) => {
+      if (search.search(item.username) != -1){
+        tagFriend.map(items => {
+          if (items === item.username) {
+            tapUser.push(item.username);
           }
-        })
-
+        });
+      }
+      if (index === props.followingData.length - 1){
+        setTagFriend([]);
+      }
+    });
 
     var payload = {
-      tag:tapUser,
+      tag: tapUser,
       post_content: search,
       social_type:
         props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
@@ -153,7 +149,7 @@ function AddSong(props) {
     };
 
     props.createPostRequest(payload);
-  }
+  };
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
@@ -171,44 +167,45 @@ function AddSong(props) {
         toast('Error', 'Something Went Wong, Please Try Again');
         status = props.status;
         break;
-        case FOLLOWER_LIST_REQUEST:
-        
-          status = props.status;
-          alert("status"+props.status)
-          break;
-  
-        case FOLLOWER_LIST_SUCCESS:
-          status = props.status;
-        setFollowingList(props.followingData)
-          break;
-  
-        case FOLLOWER_LIST_FAILURE:
-          status = props.status;
-          toast('Oops', 'Something Went Wrong, Please Try Again');
-          break;
+      case FOLLOWER_LIST_REQUEST:
 
-          case FOLLOWING_LIST_REQUEST:
-            status = props.status;
-            break;
-    
-          case FOLLOWING_LIST_SUCCESS:
-            status = props.status;
-            setFollower(props.followerData)
-            break;
-    
-          case FOLLOWING_LIST_FAILURE:
-            status = props.status;
-            toast('Oops', 'Something Went Wrong, Please Try Again');
-            break;
-      }
-    
+          status = props.status;
+        alert('status' + props.status);
+        break;
+
+      case FOLLOWER_LIST_SUCCESS:
+        status = props.status;
+        setFollowingList(props.followingData);
+        break;
+
+      case FOLLOWER_LIST_FAILURE:
+        status = props.status;
+        toast('Oops', 'Something Went Wrong, Please Try Again');
+        break;
+
+      case FOLLOWING_LIST_REQUEST:
+        status = props.status;
+        break;
+
+      case FOLLOWING_LIST_SUCCESS:
+        status = props.status;
+        setFollower(props.followerData);
+        break;
+
+      case FOLLOWING_LIST_FAILURE:
+        status = props.status;
+        toast('Oops', 'Something Went Wrong, Please Try Again');
+        break;
+    }
   }
 
   let delimiter = /\s+/;
 
   //split string
   let _text = search;
-  let token, index, parts = [];
+  let token,
+    index,
+    parts = [];
   while (_text) {
     delimiter.lastIndex = 0;
     token = delimiter.exec(_text);
@@ -225,17 +222,19 @@ function AddSong(props) {
     _text = _text.slice(index);
   }
   parts.push(_text);
-  
+
   //highlight hashtags
-  parts = parts.map((text) => {
+  parts = parts.map(text => {
     if (/^@/.test(text)) {
-      return <Text key={text} style={{color:'#3DB2EB'}}>{text}</Text>;
+      return (
+        <Text key={text} style={{ color: '#3DB2EB' }}>
+          {text}
+        </Text>
+      );
     } else {
       return text;
     }
   });
-  
-  
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -280,228 +279,242 @@ function AddSong(props) {
                 marginHorizontal: normalise(10),
                 marginBottom: normalise(10),
               }}
-              keyboardAppearance='dark'
+              keyboardAppearance="dark"
               // value={search}
               multiline={true}
               placeholder={'Add a caption...'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
-                let indexvalue = text.lastIndexOf("@")
-                let newString = text.substr(text.lastIndexOf("@"))
-                
-                if(indexvalue!= -1){
-                 
-                 if(newString.length===1){
-                  if(search.substr(indexvalue-1)===' '||search.substr(indexvalue-1)==='')
-                  {
-                       setFollowingList([...props.followingData])
-                       setFollower([...props.followerData])
-                    props.followingData.length===0 ? setShowMention(false) : setShowMention(true)
-                 }
-                 else{
-                  setShowMention(false) 
-                 }
-                }
-                 else{
-                  
-  let newSubString = newString.substr(1,newString.length-1)
-       let newArray = []
-       let newFollowArray=[]
-       if(props.followingData.length!=0){
-        props.followingData.map((item,index)=>{
-        //  console.log("mapItem"+item.full_name)
-               if(item.username.includes(newSubString)){
-                 newArray.push(item)
-               }
-               if(index===props.followingData.length-1){
-  
-   if(props.followerData.length!=0){
-                props.followerData.map((items,indexs)=>{
-  
-                  if(items.username.includes(newSubString)){
-                    newFollowArray.push(items)
-                  }
-                  if(indexs===props.followerData.length-1){
-                  newFollowArray.length===0?setShowMention(false):
-                  (  setFollowingList(newArray),
-                  setFollower(newFollowArray),
-                    setShowMention(true)
-                  
-                  )
-                  }
-                 })
-                }
-                else{
-                  setFollowingList(newArray),
-                    setShowMention(true)
-                }
-               
-               }
-         })
-        }else{
-          props.followerData.map((items,indexs)=>{
-  
-            if(items.username.includes(newSubString)){
-              newFollowArray.push(item)
-            }
-            if(indexs===props.followerData.length-1){
-              newArray.length===0?setShowMention(false):
-            (  
-              
-            setFollower(newFollowArray),
-              setShowMention(true)
-            )
-            }
-           })
-        }
-  
-     
-                 }
-               
-                  }
-                  else{
-                    setShowMention(false)
-                  }
-               setSearch(text);
-              }}
-            >
-              <Text>{parts}</Text>
-              </TextInput>
+                let indexvalue = text.lastIndexOf('@');
+                let newString = text.substr(text.lastIndexOf('@'));
 
+                if (indexvalue != -1){
 
-<View style={{height:300,marginTop:-10}}>
-            <View
-              style={{
-                
-                flexDirection:"row",
-                 marginTop: normalise(5),
-                backgroundColor: Colors.darkerblack,
-                height: normalise(65),
-                width: '100%',
-                borderRadius: normalise(6),
-                 justifyContent: 'center',
-                 alignItems: 'center',
+                 if (newString.length === 1){
+                    if (
+                      search.substr(indexvalue - 1) === ' ' ||
+                      search.substr(indexvalue - 1) === ''
+                    ) {
+                      setFollowingList([...props.followingData]);
+                      setFollower([...props.followerData]);
+                      props.followingData.length === 0
+                        ? setShowMention(false)
+                        : setShowMention(true);
+                    } else {
+                      setShowMention(false);
+                    }
+                  } else {
+
+  let newSubString = newString.substr(1,newString.length - 1);
+                    let newArray = [];
+                    let newFollowArray = [];
+                    if (props.followingData.length != 0) {
+                      props.followingData.map((item, index) => {
+                        //  console.log("mapItem"+item.full_name)
+                        if (item.username.includes(newSubString)) {
+                          newArray.push(item);
+                        }
+                        if (index === props.followingData.length - 1) {
+
+   if (props.followerData.length != 0){
+                            props.followerData.map((items, indexs) => {
+
+                  if (items.username.includes(newSubString)){
+                                newFollowArray.push(items);
+                              }
+                              if (indexs === props.followerData.length - 1) {
+                                newFollowArray.length === 0
+                                  ? setShowMention(false)
+                                  : (setFollowingList(newArray),
+                                    setFollower(newFollowArray),
+                                    setShowMention(true));
+
+                  );
+                            });
+                          } else {
+                            setFollowingList(newArray), setShowMention(true);
+                          }
+
+                      });
+                    } else {
+                      props.followerData.map((items, indexs) => {
+
+            if (items.username.includes(newSubString)){
+                          newFollowArray.push(item);
+                        }
+                        if (indexs === props.followerData.length - 1) {
+                          newArray.length === 0
+                            ? setShowMention(false)
+                            : (setFollower(newFollowArray),
+                              setShowMention(true));
+                        }
+                      });
+                    }
+                  }
+                } else {
+                  setShowMention(false);
+                }
+                setSearch(text);
               }}>
+              <Text>{parts}</Text>
+            </TextInput>
+
+            <View style={{ height: 300, marginTop: -10 }}>
               <View
                 style={{
-                  width: '90%',
-                  flexDirection: 'row',
-                   alignSelf: 'center',
-                  justifyContent: 'flex-start',
-                   alignItems: 'center',
-                }}>
-                <TouchableOpacity>
-                  <Image
-                    source={{ uri: imgsource }}
-                    style={{
-                      height: normalise(40),
-                      width: normalise(40),
-                      borderRadius: normalise(6),
-                    }}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
 
+                flexDirection:'row',
+                  marginTop: normalise(5),
+                  backgroundColor: Colors.darkerblack,
+                  height: normalise(65),
+                  width: '100%',
+                  borderRadius: normalise(6),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
                 <View
                   style={{
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                    width: '85%',
+                    width: '90%',
+                    flexDirection: 'row',
+                    alignSelf: 'center',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
                   }}>
-                  <Text
-                    style={{
-                      marginLeft: normalise(10),
-                      fontWeight: '600',
-                      color: Colors.white,
-                      fontSize: normalise(11),
-                      marginBottom: normalise(2),
-                    }}
-                    numberOfLines={1}>
-                    {title1}
-                  </Text>
+                  <TouchableOpacity>
+                    <Image
+                      source={{ uri: imgsource }}
+                      style={{
+                        height: normalise(40),
+                        width: normalise(40),
+                        borderRadius: normalise(6),
+                      }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
 
-                  <Text
+                  <View
                     style={{
-                      marginLeft: normalise(10),
-                      color: Colors.grey,
-                      fontSize: normalise(10),
-                      width: '80%',
-                    }}
-                    numberOfLines={1}>
-                    {title2}
-                  </Text>
-               </View>
- 
+                      alignItems: 'flex-start',
+                      justifyContent: 'center',
+                      width: '85%',
+                    }}>
+                    <Text
+                      style={{
+                        marginLeft: normalise(10),
+                        fontWeight: '600',
+                        color: Colors.white,
+                        fontSize: normalise(11),
+                        marginBottom: normalise(2),
+                      }}
+                      numberOfLines={1}>
+                      {title1}
+                    </Text>
+
+                    <Text
+                      style={{
+                        marginLeft: normalise(10),
+                        color: Colors.grey,
+                        fontSize: normalise(10),
+                        width: '80%',
+                      }}
+                      numberOfLines={1}>
+                      {title2}
+                    </Text>
+                  </View>
+
               </View>
 
-            </View>
-            {
-showmention?     
- <View style={{
- backgroundColor:'#000000',
-borderRadius:10,
- marginRight:'20%',
-//  minHeight:Dimensions.get('window').height/7,
-//  maxHeight:Dimensions.get("window").height/4.2,
-height: (followingList.length +followerList.length)===2 || (followingList.length +followerList.length)===1?Dimensions.get('window').height/8: (followingList.length+followerList.length)===3?Dimensions.get('window').height/3: Dimensions.get('window').height/3.5,
+              </View>
+              {showmention ? (
+                <View
+                  style={{
+                    backgroundColor: '#000000',
+                    borderRadius: 10,
+                    marginRight: '20%',
+                    //  minHeight:Dimensions.get('window').height/7,
+                    //  maxHeight:Dimensions.get("window").height/4.2,
+                    height:
+                      followingList.length + followerList.length === 2 ||
+                      followingList.length + followerList.length === 1
+                        ? Dimensions.get('window').height / 8
+                        : followingList.length + followerList.length === 3
+                        ? Dimensions.get('window').height / 3
+                        : Dimensions.get('window').height / 3.5,
 
-position:'absolute',
- top: 0,
- width:Dimensions.get('window').width/1.25
- }}
- 
+                    position: 'absolute',
+                    top: 0,
+                    width: Dimensions.get('window').width / 1.25,
+                  }}>
+
  >
    <FlatList
-     data={followerList.concat(followingList).filter(function(o) {  
-      return this[o.username] ? false : this[o.username] = true;
-    }, {})}
-   keyboardShouldPersistTaps='always'
+                    data={followerList
+                      .concat(followingList)
+                      .filter(function (o) {
+                        return this[o.username]
+                          ? false
+                          : (this[o.username] = true);
+                      }, {})}
+                    keyboardShouldPersistTaps="always"
+                    renderItem={({ item, index }) => {
+                      return (
+                        <TouchableOpacity
+                          style={{ flexDirection: 'row', paddingTop: '3%' }}
+                          onPress={() => {
+                            // setSelection({start:commentText.lastIndexOf("@"),end:Selection.end})
+                            let newString = search.substr(
+                              0,
+                              search.lastIndexOf('@') + 1,
+                            );
+                            setSearch(newString + item.username + ' ');
+                            setShowMention(false);
+                            tagFriend.push(item.username);
+                          }}>
+                          <Image
+                            source={{
+                              uri:
+                                constants.profile_picture_base_url +
+                                item.profile_image,
+                            }}
+                            resizeMode="contain"
+                            style={{
+                              height: Dimensions.get('window').width / 12,
+                              width: Dimensions.get('window').width / 12,
+                              borderRadius: Dimensions.get('window').width,
+                              marginLeft: '5%',
+                              marginRight: '4%',
+                              marginBottom: '3%',
+                            }}
+                          />
+                          <View
+                            style={{
+                              flex: 1,
+                              borderBottomWidth: 0.5,
+                              borderBottomColor: '#25262A',
+                              justifyContent: 'center',
 
-   renderItem={({item,index})=>{
-     return(
-      <TouchableOpacity style={{flexDirection:'row',paddingTop:'3%'}}
-      onPress={()=>{ 
-        // setSelection({start:commentText.lastIndexOf("@"),end:Selection.end})
-        let newString = search.substr(0,search.lastIndexOf("@")+1)
-        setSearch(newString+item.username+' ')
-        setShowMention(false)
-        tagFriend.push(item.username)
-      }}
-      >
-      <Image source={{uri:constants.profile_picture_base_url + item.profile_image}} 
-     resizeMode='contain'
-     style={{
-        height:Dimensions.get('window').width/12,
-        width:Dimensions.get('window').width/12,
-        borderRadius:Dimensions.get('window').width,
-        marginLeft:'5%',
-        marginRight:'4%',
-        marginBottom:'3%'
-      }}
-      />
-      <View style={{flex:1,borderBottomWidth: 0.5,borderBottomColor:'#25262A',justifyContent:'center',
-     
     }}>
-      <Text style={{fontSize:14,color:'white'}}>{item.full_name}</Text>
-      <Text style={{fontSize:11,color:'grey',marginBottom:'5%'}}>@{item.username}</Text>
-      </View>
-     </TouchableOpacity>
-     )
-   }}
-   >
-
-   </FlatList>
-
-  
-   
- </View>
- : null
-}
+                            <Text style={{ fontSize: 14, color: 'white' }}>
+                              {item.full_name}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 11,
+                                color: 'grey',
+                                marginBottom: '5%',
+                              }}>
+                              @{item.username}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }}></FlatList>
+                </View>
+              ) : null}
             </View>
           </View>
         </SafeAreaView>
       </TouchableWithoutFeedback>
-      
     </View>
   );
 }
@@ -512,7 +525,6 @@ const mapStateToProps = state => {
     createPostResponse: state.PostReducer.createPostResponse,
     followingData: state.UserReducer.followingData,
     followerData: state.UserReducer.followerData,
-
   };
 };
 
@@ -530,7 +542,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddSong);
+export default connect(mapStateToProps, mapDispatchToProps)(AddSong);

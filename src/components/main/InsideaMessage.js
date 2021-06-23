@@ -30,7 +30,6 @@ import {
   deleteMessageRequest,
   createChatTokenRequest,
   songMessageReadRequest,
-
 } from '../../action/MessageAction';
 import { getUsersFromHome } from '../../action/UserAction';
 import { saveSongRequest } from '../../action/SongAction';
@@ -60,7 +59,6 @@ import database from '@react-native-firebase/database';
 
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
 
-
 function InsideaMessage(props) {
   const [index, setIndex] = useState(props.route.params.index);
   const [chatData, setChatData] = useState([]);
@@ -78,7 +76,7 @@ function InsideaMessage(props) {
 
   var bottomSheetRef;
 
-  useEffect(function() {
+  useEffect(function () {
     props.loadChatMessageRequest({
       chatToken: props.chatList[index].chat_token,
       isMount: true,
@@ -195,32 +193,26 @@ function InsideaMessage(props) {
                 setPositionInArray(data.index);
               }}
               onPressItem={() => {
-
-
                 if (props.userProfileResp._id == data.item.receiver_id) {
+                  console.log('inside condition');
 
-                  
-               
-                  console.log("inside condition");
-
-                const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
-                .child(props.chatList[index].chat_token)
-                .update(
-                  {
-                    read:true,
-
-                  },
-                  error => {
-                    emiter({error: error || null});
-                  },
-                );
-
-                  }
-
+                  const listener = FIREBASE_REF_MESSAGES.child(
+                    action.payload.chatToken,
+                  )
+                    .child(props.chatList[index].chat_token)
+                    .update(
+                      {
+                        read: true,
+                      },
+                      error => {
+                        emiter({ error: error || null });
+                      },
+                    );
+                }
 
                 props.navigation.navigate('Player', {
-                  username:props.chatList[index].username,
-                time:props.chatList[index].time,
+                  username: props.chatList[index].username,
+                  time: props.chatList[index].time,
                   song_title: data.item.song_name,
                   album_name: data.item.album_name,
                   song_pic: data.item.image,
@@ -248,9 +240,8 @@ function InsideaMessage(props) {
               }}
               onPressImage={() => {
                 props.navigation.navigate('Player', {
-
-                  username:props.chatList[index].username,
-                time:props.chatList[index].time,
+                  username: props.chatList[index].username,
+                  time: props.chatList[index].time,
                   song_title: data.item.song_name,
                   album_name: data.item.album_name,
                   song_pic: data.item.image,
@@ -284,9 +275,9 @@ function InsideaMessage(props) {
         ) : (
           <SavedSongsListItem
             playIcon={false}
-            receiver_id = {data.item.receiver_id}
-            user_id = {props.userProfileResp._id}
-            read = {data.item.read}
+            receiver_id={data.item.receiver_id}
+            user_id={props.userProfileResp._id}
+            read={data.item.read}
             image={data.item.image}
             title={data.item.song_name}
             singer={data.item.artist_name}
@@ -295,31 +286,24 @@ function InsideaMessage(props) {
               setModalVisible(true), setPositionInArray(data.index);
             }}
             onPressItem={() => {
-
-
               if (props.userProfileResp._id == data.item.receiver_id) {
+                const listener = FIREBASE_REF_MESSAGES.child(
+                  props.chatList[index].chat_token,
+                )
+                  .child(data.item.key)
+                  .update(
+                    {
+                      read: true,
+                    },
+                    error => {
+                      emiter({ error: error || null });
+                    },
+                  );
+              }
 
-                  
-               
-
-              const listener = FIREBASE_REF_MESSAGES
-              .child(props.chatList[index].chat_token).child(data.item.key)
-              .update(
-                {
-                  read:true,
-
-                },
-                error => {
-                  emiter({error: error || null});
-                },
-              );
-
-                }
-
-            
               props.navigation.navigate('Player', {
-                username:props.chatList[index].username,
-                time:props.chatList[index].time,
+                username: props.chatList[index].username,
+                time: props.chatList[index].time,
                 song_title: data.item.song_name,
                 album_name: data.item.album_name,
                 song_pic: data.item.image,
@@ -604,7 +588,7 @@ function InsideaMessage(props) {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -660,11 +644,11 @@ function InsideaMessage(props) {
                   paddingTop: 4,
                   paddingBottom: 4,
                   borderRadius: 5,
-                  alignSelf:'center',
-                  backgroundColor:Colors.fordGray,
+                  alignSelf: 'center',
+                  backgroundColor: Colors.fordGray,
                   position: 'absolute',
                   right: 0,
-                   bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
+                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
                   marginRight: normalise(10),
                 }}>
                 <Text
@@ -718,9 +702,7 @@ function InsideaMessage(props) {
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${
-          props.searchedChatData[positionInArray].isrc_code
-        }&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${props.searchedChatData[positionInArray].isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -731,9 +713,7 @@ function InsideaMessage(props) {
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
-          props.searchedChatData[positionInArray].isrc_code
-        }`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.searchedChatData[positionInArray].isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,
@@ -890,7 +870,7 @@ function InsideaMessage(props) {
                   paddingTop: 4,
                   paddingBottom: 4,
                   borderRadius: 5,
-                
+
                   position: 'absolute',
                   right: 0,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
@@ -1205,7 +1185,7 @@ function InsideaMessage(props) {
                   }}
                   onPress={() => {
                     setModalVisible(!modalVisible);
-                    if (props.userProfileResp.register_type === 'spotify')
+                    if (props.userProfileResp.register_type === 'spotify') {
                       props.navigation.navigate('AddToPlayListScreen', {
                         originalUri:
                           props.searchedChatData[positionInArray]
@@ -1215,13 +1195,15 @@ function InsideaMessage(props) {
                             .original_reg_type,
                         isrc: props.searchedChatData[positionInArray].isrc_code,
                       });
+                    }
                     // setTimeout(() => {
                     //     toast("Oops", "Only, Spotify users can add to their playlist now.")
                     // }, 1000)
-                    else
+                    else {
                       props.navigation.navigate('AddToPlayListScreen', {
                         isrc: props.searchedChatData[positionInArray].isrc_code,
                       });
+                    }
                   }}>
                   <Image
                     source={ImagePath.addicon}
@@ -1317,10 +1299,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(InsideaMessage);
+export default connect(mapStateToProps, mapDispatchToProps)(InsideaMessage);
 
 const styles = StyleSheet.create({
   centeredView: {

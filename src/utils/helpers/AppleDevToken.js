@@ -23,9 +23,7 @@ export const getAppleDevToken = async () => {
       // console.log('Dev Token' + creds);
       const devToken = JSON.parse(creds).token;
       const tokenexp = JSON.parse(creds).token_exp;
-      const currentTime = moment()
-        .utc()
-        .format('YYYY-MM-DDTHH:mm:sssZ');
+      const currentTime = moment().utc().format('YYYY-MM-DDTHH:mm:sssZ');
 
       if (currentTime > tokenexp) {
         // console.log('token expired');

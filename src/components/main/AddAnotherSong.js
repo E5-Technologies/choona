@@ -230,7 +230,7 @@ function AddAnotherSong(props) {
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
-            title={`CHOOSE SONG TO SEND`}
+            title={'CHOOSE SONG TO SEND'}
             thirditemtext={true}
             imagetwo={ImagePath.newmessage}
             imagetwoheight={25}
@@ -256,7 +256,6 @@ function AddAnotherSong(props) {
               }}
               value={search}
               keyboardAppearance={'dark'}
-
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
@@ -408,7 +407,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddAnotherSong);
+export default connect(mapStateToProps, mapDispatchToProps)(AddAnotherSong);

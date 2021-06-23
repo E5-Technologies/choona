@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -59,8 +59,8 @@ function ReactionList(props) {
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <View style={{marginLeft: normalise(10)}}>
-          <View style={{flexDirection: 'row'}}>
+        <View style={{ marginLeft: normalise(10) }}>
+          <View style={{ flexDirection: 'row' }}>
             <Text
               style={{
                 width: normalise(180),
@@ -70,7 +70,11 @@ function ReactionList(props) {
               {props.name}
             </Text>
             <Text
-              style={{width: normalise(70), color: Colors.white, fontSize: 12}}>
+              style={{
+                width: normalise(70),
+                color: Colors.white,
+                fontSize: 12,
+              }}>
               {props.time} minutes ago
             </Text>
           </View>

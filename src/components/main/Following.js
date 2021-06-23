@@ -243,118 +243,118 @@ function Following(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}> */}
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath.backicon}
-            title={`FOLLOWING (${props.followingData.length})`}
-            thirditemtext={true}
-            texttwo={''}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={`FOLLOWING (${props.followingData.length})`}
+          thirditemtext={true}
+          texttwo={''}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
+
+        <View
+          style={{
+            width: '92%',
+            alignSelf: 'center',
+          }}>
+          <TextInput
+            autoCorrect={false}
+            keyboardAppearance={'dark'}
+            style={{
+              height: normalise(35),
+              width: '100%',
+              backgroundColor: Colors.fadeblack,
+              borderRadius: normalise(8),
+              marginTop: normalise(20),
+              padding: normalise(10),
+              color: Colors.white,
+              paddingLeft: normalise(35),
+            }}
+            value={search}
+            placeholder={'Search'}
+            placeholderTextColor={Colors.darkgrey}
+            onChangeText={text => {
+              setSearch(text), props.followingSearch(text);
             }}
           />
 
-          <View
+          <Image
+            source={ImagePath.searchicongrey}
             style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
+              height: normalise(16),
+              width: normalise(16),
+              bottom: normalise(25),
+              paddingLeft: normalise(40),
+            }}
+            resizeMode="contain"
+          />
+
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch(''), props.followingSearch('');
+              }}
               style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(35),
-              }}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text), props.followingSearch(text);
-              }}
-            />
+                backgroundColor: Colors.black,
+                padding: 6,
+                paddingTop: 4,
+                paddingBottom: 4,
+                borderRadius: 2,
+                position: 'absolute',
+                right: 0,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
+              }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(10),
+                  fontWeight: 'bold',
+                }}>
+                CLEAR
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-            <Image
-              source={ImagePath.searchicongrey}
+        {_.isEmpty(props.followingData) ? (
+          <View style={{ flex: 1 }}>
+            <View
               style={{
-                height: normalise(16),
-                width: normalise(16),
-                bottom: normalise(25),
-                paddingLeft: normalise(40),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), props.followingSearch('');
-                }}
+                height: '45%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
                 style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
+                  color: Colors.white,
+                  fontSize: normalise(15),
+                  textAlign: 'center',
+                  fontFamily: 'ProximaNova-Bold',
+                  fontWeight: 'bold',
                 }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+                YOU DON'T FOLLOW ANYONE
+              </Text>
 
-          {_.isEmpty(props.followingData) ? (
-            <View style={{ flex: 1 }}>
-              <View
+              <Text
                 style={{
-                  height: '45%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  color: Colors.grey_text,
+                  fontSize: normalise(12),
+                  textAlign: 'center',
+                  fontFamily: 'ProximaNova-Semibold',
+                  fontWeight: 'bold',
+                  width: '80%',
+                  marginTop: normalise(5),
                 }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(15),
-                    textAlign: 'center',
-                    fontFamily: 'ProximaNova-Bold',
-                    fontWeight: 'bold',
-                  }}>
-                  YOU DON'T FOLLOW ANYONE
-                </Text>
+                Choona is a lonely place when you aren't following anyone, See
+                if you already have friends by connecting below
+              </Text>
+            </View>
 
-                <Text
-                  style={{
-                    color: Colors.grey_text,
-                    fontSize: normalise(12),
-                    textAlign: 'center',
-                    fontFamily: 'ProximaNova-Semibold',
-                    fontWeight: 'bold',
-                    width: '80%',
-                    marginTop: normalise(5),
-                  }}>
-                  Choona is a lonely place when you aren't following anyone, See
-                  if you already have friends by connecting below
-                </Text>
-              </View>
-
-              {/* <Text
+            {/* <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(12),
@@ -365,29 +365,29 @@ function Following(props) {
                 FOLLOW SOME OF OUR POPULAR USERS
               </Text> */}
 
-              <FlatList
-                style={{ marginTop: normalise(10) }}
-                data={top5followingList}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => {
-                  index.toString();
-                }}
-                renderItem={rendertop5FollowersItem}
-                ItemSeparatorComponent={Seperator}
-              />
-            </View>
-          ) : (
             <FlatList
-              data={props.followingData}
+              style={{ marginTop: normalise(10) }}
+              data={top5followingList}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => {
                 index.toString();
               }}
-              renderItem={renderFollowersItem}
+              renderItem={rendertop5FollowersItem}
               ItemSeparatorComponent={Seperator}
             />
-          )}
-        </SafeAreaView>
+          </View>
+        ) : (
+          <FlatList
+            data={props.followingData}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            renderItem={renderFollowersItem}
+            ItemSeparatorComponent={Seperator}
+          />
+        )}
+      </SafeAreaView>
       {/* </TouchableWithoutFeedback> */}
     </View>
   );
@@ -422,7 +422,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Following);
+export default connect(mapStateToProps, mapDispatchToProps)(Following);

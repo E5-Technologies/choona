@@ -7,7 +7,7 @@ import {
   select,
   all,
 } from 'redux-saga/effects';
-import {eventChannel} from 'redux-saga';
+import { eventChannel } from 'redux-saga';
 import {
   CREATE_CHAT_TOKEN_REQUEST,
   CREATE_CHAT_TOKEN_SUCCESS,
@@ -24,8 +24,6 @@ import {
   SEARCH_MESSAGE_REQUEST,
   SEARCH_MESSAGE_SUCCESS,
   SEARCH_MESSAGE_FAILURE,
-
-  
   UPDATE_MESSEAGE_COMMENTS_REQUEST,
   UPDATE_MESSEAGE_COMMENTS_SUCCESS,
   UPDATE_MESSEAGE_COMMENTS_FAILURE,
@@ -42,7 +40,7 @@ import {
   DELETE_CONVERSATION_SUCCESS,
   DELETE_CONVERSATION_FAILURE,
 } from '../action/TypeConstants';
-import {postApi, getApi} from '../utils/helpers/ApiRequest';
+import { postApi, getApi } from '../utils/helpers/ApiRequest';
 import _ from 'lodash';
 import database from '@react-native-firebase/database';
 import moment from 'moment';
@@ -57,13 +55,8 @@ const getMessageReducer = state => state.MessageReducer;
  * @param {Object} action  provide payload for the chat token.
  */
 
-
-
-
- export function* updateSongRead(action,child)
- {
+export function* updateSongRead(action, child) {
   try {
-
     child.child('read').ref.set(true);
 
     yield put({
@@ -71,19 +64,13 @@ const getMessageReducer = state => state.MessageReducer;
       data: 'Message sent successfully',
     });
   } catch (error) {
-    yield put({type: SONG_MESSAGE_READ_FAILURE, error: error});
+    yield put({ type: SONG_MESSAGE_READ_FAILURE, error: error });
   }
-
- }
-
-
-
-
+}
 
 export function* getChatTokenAction(action) {
   try {
     const items = yield select(getItems);
-    
 
     const Header = {
       Accept: 'application/json',
@@ -93,22 +80,23 @@ export function* getChatTokenAction(action) {
     let chatTokenResponse = yield call(
       postApi,
       'chat/create',
-      {receiver_id: action.payload},
+      { receiver_id: action.payload },
       Header,
     );
 
-    if (chatTokenResponse.data.status === 200)
+    if (chatTokenResponse.data.status === 200) {
       yield put({
         type: CREATE_CHAT_TOKEN_SUCCESS,
         data: chatTokenResponse.data.data,
       });
-    else
+    } else {
       yield put({
         type: CREATE_CHAT_TOKEN_FAILURE,
         error: chatTokenResponse.data,
       });
+    }
   } catch (error) {
-    yield put({type: CREATE_CHAT_TOKEN_FAILURE, error: error});
+    yield put({ type: CREATE_CHAT_TOKEN_FAILURE, error: error });
   }
 }
 
@@ -117,15 +105,11 @@ export function* getChatTokenAction(action) {
  * @param {Object} action  provide payload for chat
  */
 export function* sendChatMessageAction(action) {
+  // console.log('SEND_CHAT_REQ', action.payload);
 
-    // console.log('SEND_CHAT_REQ', action.payload); 
- 
-   const items = yield select(getItems);
+  const items = yield select(getItems);
 
   //  console.log("items.token"+items.token)
-
-
-  
 
   const Header = {
     Accept: 'application/json',
@@ -140,18 +124,15 @@ export function* sendChatMessageAction(action) {
       );
     });
 
-   
     yield put({
       type: SEND_CHAT_MESSAGE_SUCCESS,
       data: 'Message sent successfully',
     });
   } catch (error) {
-    yield put({type: SEND_CHAT_MESSAGE_FAILURE, error: error});
+    yield put({ type: SEND_CHAT_MESSAGE_FAILURE, error: error });
   }
 
-  try{
-
-
+  try {
     let updateMessageResponse = yield call(
       postApi,
       'chat/sendPush',
@@ -161,20 +142,18 @@ export function* sendChatMessageAction(action) {
         artist_name: action.payload.chatBody[0].artist_name,
       },
       {
-        
-          Accept: 'application/json',
-          contenttype: 'application/json',
-          accesstoken: items.token,
-        
+        Accept: 'application/json',
+        contenttype: 'application/json',
+        accesstoken: items.token,
       },
     );
 
-    console.log( 'updateMessageResponse: ' + JSON.stringify(updateMessageResponse));
-
-  }catch(error){
-    console.log("error123"+error)
+    console.log(
+      'updateMessageResponse: ' + JSON.stringify(updateMessageResponse),
+    );
+  } catch (error) {
+    console.log('error123' + error);
   }
-
 }
 
 export function* getChatListAction(action) {
@@ -188,9 +167,9 @@ export function* getChatListAction(action) {
     };
 
     const response = yield call(getApi, 'chat/list', Header);
-    yield put({type: GET_CHAT_LIST_SUCCESS, data: response.data.data});
+    yield put({ type: GET_CHAT_LIST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: GET_CHAT_LIST_FAILURE, error: error});
+    yield put({ type: GET_CHAT_LIST_FAILURE, error: error });
   }
 }
 
@@ -199,11 +178,6 @@ export function* getChatListAction(action) {
  * read the chat message
  * @param {Object} action provide the chat token of a particular channel
  */
-
-
-
-
-
 
 export function* getChatMessages(action) {
   // Creates an eventChannel and starts the listener;
@@ -219,25 +193,16 @@ export function* getChatMessages(action) {
           });
 
           if (action.payload.userId == child.val().receiver_id) {
-          
-         //   child.child('read').ref.set(true);
+            //   child.child('read').ref.set(true);
           }
         });
 
-
-
-
-
-
-
-
-        items.sort(function(x, y){
+        items.sort(function (x, y) {
           return y.order - x.order;
-      })
+        });
 
-      console.log('CHATS', JSON.stringify(items));
+        console.log('CHATS', JSON.stringify(items));
 
-      
         var chatResponse = {
           data: items,
         };
@@ -258,13 +223,13 @@ export function* getChatMessages(action) {
     while (true) {
       const chatResponse = yield take(channel);
       // Pause the task until the channel emits a signal and dispatch an action in the store;
-      yield put({type: CHAT_LOAD_SUCCESS, chatResponse});
+      yield put({ type: CHAT_LOAD_SUCCESS, chatResponse });
     }
   } else {
     var chatResponse = {
       data: [],
     };
-    yield put({type: CHAT_LOAD_SUCCESS, chatResponse});
+    yield put({ type: CHAT_LOAD_SUCCESS, chatResponse });
     channel.close();
   }
 }
@@ -281,18 +246,20 @@ export function* searchMessageAction(action) {
       data: seachData,
     });
   } catch (error) {
-    yield put({type: SEARCH_MESSAGE_FAILURE, error: error});
+    yield put({ type: SEARCH_MESSAGE_FAILURE, error: error });
   }
 }
 
 function filterfunction(data, keyword) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     let filterdData = _.filter(data, item => {
       return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) != -1;
     });
     if (data != null) {
       resolve(filterdData);
-    } else reject([]);
+    } else {
+      reject([]);
+    }
   });
 }
 
@@ -300,8 +267,7 @@ export function* updateMessageCommentAction(action) {
   try {
     const items = yield select(getItems);
 
-
-    console.log("payload:"+JSON.stringify(action.payload));
+    console.log('payload:' + JSON.stringify(action.payload));
     const Header = {
       Accept: 'application/json',
       contenttype: 'application/json',
@@ -313,7 +279,7 @@ export function* updateMessageCommentAction(action) {
         .child(action.payload.ChatId)
         .update(
           {
-            message:action.payload.message,
+            message: action.payload.message,
             read: false,
             order: moment().valueOf(),
             receiver_id: action.payload.receiverId,
@@ -321,7 +287,7 @@ export function* updateMessageCommentAction(action) {
             time: moment().toString(),
           },
           error => {
-            emiter({error: error || null});
+            emiter({ error: error || null });
           },
         );
       // Return the shutdown method;
@@ -330,11 +296,10 @@ export function* updateMessageCommentAction(action) {
       };
     });
 
-
-    const {error} = yield take(channel);
+    const { error } = yield take(channel);
 
     if (error) {
-      yield put({type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error});
+      yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error });
     } else {
       // let updateMessageResponse = yield call(
       //   postApi,
@@ -357,7 +322,7 @@ export function* updateMessageCommentAction(action) {
       });
     }
   } catch (error) {
-    yield put({type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error});
+    yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error });
   }
 }
 
@@ -367,7 +332,7 @@ export function* deleteMessageAction(action) {
       const listener = FIREBASE_REF_MESSAGES.child(action.payload.chatToken)
         .child(action.payload.ChatId)
         .remove(error => {
-          emiter({error: error || null});
+          emiter({ error: error || null });
         });
       // Return the shutdown method;
       return () => {
@@ -375,9 +340,9 @@ export function* deleteMessageAction(action) {
       };
     });
 
-    const {error} = yield take(channel);
+    const { error } = yield take(channel);
     if (error) {
-      yield put({type: DELETE_MESSAGE_FAILURE, error: error});
+      yield put({ type: DELETE_MESSAGE_FAILURE, error: error });
     } else {
       yield put({
         type: DELETE_MESSAGE_SUCCESS,
@@ -385,7 +350,7 @@ export function* deleteMessageAction(action) {
       });
     }
   } catch (error) {
-    yield put({type: DELETE_MESSAGE_FAILURE, error: error});
+    yield put({ type: DELETE_MESSAGE_FAILURE, error: error });
   }
 }
 
@@ -401,22 +366,23 @@ export function* getChatTokenFromSearchAction(action) {
     let chatTokenResponse = yield call(
       postApi,
       'chat/create',
-      {receiver_id: action.payload},
+      { receiver_id: action.payload },
       Header,
     );
 
-    if (chatTokenResponse.data.status === 200)
+    if (chatTokenResponse.data.status === 200) {
       yield put({
         type: CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS,
         data: chatTokenResponse.data.data,
       });
-    else
+    } else {
       yield put({
         type: CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE,
         error: chatTokenResponse.data,
       });
+    }
   } catch (error) {
-    yield put({type: CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE, error: error});
+    yield put({ type: CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE, error: error });
   }
 }
 
@@ -432,22 +398,23 @@ export function* getChatTokenFromSavedSongAction(action) {
     let chatTokenResponse = yield call(
       postApi,
       'chat/create',
-      {receiver_id: action.payload},
+      { receiver_id: action.payload },
       Header,
     );
 
-    if (chatTokenResponse.data.status === 200)
+    if (chatTokenResponse.data.status === 200) {
       yield put({
         type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_SUCCESS,
         data: chatTokenResponse.data.data,
       });
-    else
+    } else {
       yield put({
         type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE,
         error: chatTokenResponse.data,
       });
+    }
   } catch (error) {
-    yield put({type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE, error: error});
+    yield put({ type: CREATE_CHAT_TOKEN_FROM_SAVEDSONG_FAILURE, error: error });
   }
 }
 
@@ -467,18 +434,19 @@ export function* deleteConversationAction(action) {
       Header,
     );
 
-    if (chatTokenResponse.data.status === 200)
+    if (chatTokenResponse.data.status === 200) {
       yield put({
         type: DELETE_CONVERSATION_SUCCESS,
         data: chatTokenResponse.data.data,
       });
-    else
+    } else {
       yield put({
         type: DELETE_CONVERSATION_FAILURE,
         error: chatTokenResponse.data,
       });
+    }
   } catch (error) {
-    yield put({type: DELETE_CONVERSATION_FAILURE, error: error});
+    yield put({ type: DELETE_CONVERSATION_FAILURE, error: error });
   }
 }
 

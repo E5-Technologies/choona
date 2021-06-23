@@ -305,9 +305,11 @@ function Home(props) {
 
       case SAVE_SONGS_SUCCESS:
         songStatus = props.songStatus;
-        if (props.savedSongResponse.status === 200)
+        if (props.savedSongResponse.status === 200) {
           toast('Success', props.savedSongResponse.message);
-        else toast('Success', props.savedSongResponse.message);
+        } else {
+          toast('Success', props.savedSongResponse.message);
+        }
         break;
 
       case SAVE_SONGS_FAILURE:
@@ -672,7 +674,7 @@ function Home(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
-        song_uri={data.item.song_uri}
+        songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -749,7 +751,9 @@ function Home(props) {
       for (var i = 0; i < arr.length; i++) {
         if (props.userProfileResp._id == arr[i].receiver_id) {
           hasUnseenMessage = !arr[i].read;
-          if (hasUnseenMessage) break;
+          if (hasUnseenMessage) {
+            break;
+          }
         }
       }
 
@@ -967,7 +971,7 @@ function Home(props) {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -1797,7 +1801,7 @@ function Home(props) {
                     }}
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      if (props.userProfileResp.register_type === 'spotify')
+                      if (props.userProfileResp.register_type === 'spotify') {
                         props.navigation.navigate('AddToPlayListScreen', {
                           originalUri:
                             props.postData[positionInArray].original_song_uri,
@@ -1805,7 +1809,7 @@ function Home(props) {
                             props.postData[positionInArray].social_type,
                           isrc: props.postData[positionInArray].isrc_code,
                         });
-                      else {
+                      } else {
                         // setTimeout(() => {
                         //   toast("Oops", "Only, Spotify users can add to their playlist now.")
                         // }, 1000)

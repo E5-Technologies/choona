@@ -10,7 +10,6 @@ import {
   CREATE_CHAT_TOKEN_FROM_SAVEDSONG_REQUEST,
   DELETE_CONVERSATION_REQUEST,
   SONG_MESSAGE_READ_REQUEST,
-  
 } from '../action/TypeConstants';
 
 export const createChatTokenRequest = payload => ({
@@ -23,13 +22,10 @@ export const sendChatMessageRequest = payload => ({
   payload,
 });
 
-
 export const songMessageReadRequest = payload => ({
   type: SONG_MESSAGE_READ_REQUEST,
   payload,
 });
-
-
 
 export const getChatListRequest = () => ({
   type: GET_CHAT_LIST_REQUEST,

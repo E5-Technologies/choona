@@ -104,7 +104,7 @@ function HomeItemList(props) {
         play={props.play}
         postType={props.postType}
         singer={props.singer}
-        songUri={props.song_uri}
+        songUri={props.songUri}
         title={props.title}
       />
       <TouchableOpacity

@@ -100,6 +100,7 @@ function UserPostSongList(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        // songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -119,7 +120,7 @@ function UserPostSongList(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments:[],
+            comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -265,7 +266,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UserPostSongList);
+export default connect(mapStateToProps, mapDispatchToProps)(UserPostSongList);

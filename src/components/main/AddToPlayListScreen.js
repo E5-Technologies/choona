@@ -335,7 +335,7 @@ function AddToPlayListScreen(props) {
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={`ADD TO PLAYLIST`}
+          title={'ADD TO PLAYLIST'}
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
