@@ -11,6 +11,7 @@ import {
   Image,
   ImageBackground,
   TextInput,
+  Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
@@ -242,7 +243,6 @@ function AddSongsInMessage(props) {
               props.registerType === 'spotify'
                 ? data.item.preview_url
                 : data.item.attributes.previews[0].url,
-            id: '',
             artist:
               props.registerType === 'spotify'
                 ? singerList(data.item.artists)
@@ -332,7 +332,7 @@ function AddSongsInMessage(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -548,7 +548,7 @@ function AddSongsInMessage(props) {
             }}
             nestedScrollEnabled={true}
             keyboardAvoidingViewEnabled={true}
-            height={normalize(500)}
+            height={normalise(500)}
             duration={250}
             customStyles={{
               container: {

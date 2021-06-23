@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  Platform,
   Image,
   ImageBackground,
   TextInput,

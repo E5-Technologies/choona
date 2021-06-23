@@ -92,7 +92,7 @@ function PostListForUser(props) {
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
 
-const [totalReact,setTotalReact] = useState([]);
+  const [totalReact, setTotalReact] = useState([]);
   const [posts, setPosts] = useState(props.route.params.posts);
 
   // console.log("prosts"+JSON.stringify(props.route.params.posts));
@@ -116,7 +116,7 @@ const [totalReact,setTotalReact] = useState([]);
           item.face_count,
           item.thumbsup_count,
         ],
-
+      };
 
       newarray.push(newObject);
       if (index === posts.length - 1) {
@@ -296,11 +296,8 @@ const [totalReact,setTotalReact] = useState([]);
 
   function hitreact1(modal1Visible) {
     if (modal1Visible === true) {
-
       setModal1Visible(false);
-
     } else {
-
       setModal1Visible(true);
     }
   }
@@ -330,99 +327,79 @@ const [totalReact,setTotalReact] = useState([]);
       text_match: myReaction,
     };
 
-
     posts.map((item, index) => {
-
-      if (id === item._id)
-
-    {if(myReaction==='A'){
-      if(posts[index].fire_count===totalReact[index].react[0]){
-        posts[index].fire_count=posts[index].fire_count+1
-        posts[index].reaction_count=posts[index].reaction_count+1
-        
-      }
-      else{
-        if(posts[index].fire_count!=0){
-        posts[index].fire_count=posts[index].fire_count-1
-         posts[index].reaction_count=posts[index].reaction_count-1
+      if (id === item._id) {
+        if (myReaction === 'A') {
+          if (posts[index].fire_count === totalReact[index].react[0]) {
+            posts[index].fire_count = posts[index].fire_count + 1;
+            posts[index].reaction_count = posts[index].reaction_count + 1;
+          } else {
+            if (posts[index].fire_count != 0) {
+              posts[index].fire_count = posts[index].fire_count - 1;
+              posts[index].reaction_count = posts[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'B') {
+          if (posts[index].love_count === totalReact[index].react[1]) {
+            posts[index].love_count = posts[index].love_count + 1;
+            posts[index].reaction_count = posts[index].reaction_count + 1;
+          } else {
+            if (posts[index].love_count != 0) {
+              posts[index].love_count = posts[index].love_count - 1;
+              posts[index].reaction_count = posts[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'C') {
+          if (posts[index].dancer_count === totalReact[index].react[2]) {
+            posts[index].dancer_count = posts[index].dancer_count + 1;
+            posts[index].reaction_count = posts[index].reaction_count + 1;
+          } else {
+            if (posts[index].dancer_count != 0) {
+              posts[index].dancer_count = posts[index].dancer_count - 1;
+              posts[index].reaction_count = posts[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'D') {
+          if (posts[index].man_dancing_count === totalReact[index].react[3]) {
+            posts[index].man_dancing_count = posts[index].man_dancing_count + 1;
+            posts[index].reaction_count = posts[index].reaction_count + 1;
+          } else {
+            if (posts[index].man_dancing_count != 0) {
+              posts[index].man_dancing_count =
+                posts[index].man_dancing_count - 1;
+              posts[index].reaction_count = posts[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'E') {
+          if (posts[index].face_count === totalReact[index].react[4]) {
+            posts[index].face_count = posts[index].face_count + 1;
+            posts[index].reaction_count = posts[index].reaction_count + 1;
+          } else {
+            if (posts[index].face_count != 0) {
+              posts[index].face_count = posts[index].face_count - 1;
+              posts[index].reaction_count = posts[index].reaction_count - 1;
+            }
+          }
+        } else {
+          if (posts[index].thumbsup_count === totalReact[index].react[5]) {
+            posts[index].thumbsup_count = posts[index].thumbsup_count + 1;
+            posts[index].reaction_count = posts[index].reaction_count + 1;
+          } else {
+            if (posts[index].thumbsup_count != 0) {
+              posts[index].thumbsup_count = posts[index].thumbsup_count - 1;
+              posts[index].reaction_count = posts[index].reaction_count - 1;
+            }
+          }
         }
       }
-    }
-    else if(myReaction==='B'){
-      if(posts[index].love_count===totalReact[index].react[1]){
-        posts[index].love_count=posts[index].love_count+1
-         posts[index].reaction_count=posts[index].reaction_count+1
-        
-      }
-      else{
-        if(posts[index].love_count!=0){
-        posts[index].love_count=posts[index].love_count-1
-         posts[index].reaction_count=posts[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='C'){
-      if(posts[index].dancer_count===totalReact[index].react[2]){
-        posts[index].dancer_count=posts[index].dancer_count+1
-         posts[index].reaction_count=posts[index].reaction_count+1
-      }
-      else{
-        if(posts[index].dancer_count!=0){
-        posts[index].dancer_count=posts[index].dancer_count-1
-         posts[index].reaction_count=posts[index].reaction_count-1
-        }
-
-      }
-    }
-    else if(myReaction==='D'){
-      if(posts[index].man_dancing_count===totalReact[index].react[3]){
-        posts[index].man_dancing_count=posts[index].man_dancing_count+1
-         posts[index].reaction_count=posts[index].reaction_count+1
-        
-      }
-      else{
-        if(posts[index].man_dancing_count!=0){
-        posts[index].man_dancing_count=posts[index].man_dancing_count-1
-         posts[index].reaction_count=posts[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='E'){
-      if(posts[index].face_count===totalReact[index].react[4]){
-        posts[index].face_count=posts[index].face_count+1
-         posts[index].reaction_count=posts[index].reaction_count+1
-        
-      }
-      else{
-        if(posts[index].face_count!=0){
-        posts[index].face_count=posts[index].face_count-1
-         posts[index].reaction_count=posts[index].reaction_count-1  
-      }
-
-      }
-    }
-    else{
-      if(posts[index].thumbsup_count===totalReact[index].react[5]){
-        posts[index].thumbsup_count=posts[index].thumbsup_count+1
-         posts[index].reaction_count=posts[index].reaction_count+1
-        
-      }
-      else{
-        if(posts[index].thumbsup_count!=0){
-        posts[index].thumbsup_count=posts[index].thumbsup_count-1
-         posts[index].reaction_count=posts[index].reaction_count-1  
-      }
-      }
-    }}
-        }
+      isInternetConnected()
+        .then(() => {
+          props.reactionOnPostRequest(reactionObject);
+        })
+        .catch(() => {
+          toast('Error', 'Please Connect To Internet');
+        });
     });
-    isInternetConnected()
-      .then(() => {
-        props.reactionOnPostRequest(reactionObject);
-      })
-      .catch(() => {
-        toast('Error', 'Please Connect To Internet');
-      });
   }
 
   function _onSelectBack(ID, comment) {
@@ -436,19 +413,16 @@ const [totalReact,setTotalReact] = useState([]);
       }
 
       if (index === newarray.length - 1) {
-
-    setPosts([...newarray]);
+        setPosts([...newarray]);
       }
-
-  }
+    });
   }
 
   function _onReaction(ID, reaction, reactionList) {
     let newarray = posts;
     // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
     newarray.map((item, index) => {
-
-   if (item._id === ID){
+      if (item._id === ID) {
         if (reactionList.length > 0) {
           var found = reactionList.findIndex(element => {
             return element.header === react[0];
@@ -503,14 +477,12 @@ const [totalReact,setTotalReact] = useState([]);
           } else {
             newarray[index].thumbsup_count = 0;
           }
-
           newarray[index].reaction_count = reaction;
         }
-
+      }
 
       if (index === newarray.length - 1) {
-
-    setPosts([...newarray]);
+        setPosts([...newarray]);
         let array = [];
         // newarray.map((item,index)=>{
         //   let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
@@ -525,7 +497,6 @@ const [totalReact,setTotalReact] = useState([]);
       }
     });
   }
-
 
   function renderItem(data) {
     return (
@@ -600,7 +571,6 @@ const [totalReact,setTotalReact] = useState([]);
           });
         }}
         onPressCommentbox={() => {
-
           props.navigation.navigate('HomeItemComments', {
             index: data.index,
             comment: data.item.comment,
@@ -677,7 +647,11 @@ const [totalReact,setTotalReact] = useState([]);
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{ height: 35, width: 35, borderRadius: 2 * normalise(13.5) }}
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 2 * normalise(13.5),
+            }}
           />
           <View
             style={{
@@ -906,7 +880,6 @@ const [totalReact,setTotalReact] = useState([]);
                   padding: 8,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
                   position: 'absolute',
                   right: 0,
                   borderRadius: 5,

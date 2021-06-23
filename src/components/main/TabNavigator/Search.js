@@ -6,6 +6,7 @@ import {
   View,
   Text,
   Image,
+  Platform,
   Clipboard,
   Keyboard,
   TouchableWithoutFeedback,
@@ -259,7 +260,6 @@ function Search(props) {
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
-          details: props.searchPostData[positionInArray],
         });
         break;
 
@@ -981,7 +981,7 @@ function Search(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -1039,7 +1039,7 @@ function Search(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -1409,7 +1409,6 @@ function Search(props) {
               }}
               keyboardAppearance="dark"
               autoCorrect={false}
-              keyboardAppearance={'dark'}
               value={
                 usersSearch
                   ? usersSearchText
@@ -1706,7 +1705,6 @@ function Search(props) {
               <FlatList
                 style={{
                   alignSelf: 'center',
-                  paddingLeft: normalise(8),
                   paddingLeft: normalise(8),
                   width: '100%',
                 }}

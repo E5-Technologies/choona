@@ -67,7 +67,7 @@ function BlankScreen(props) {
           onPressFirstItem={() => {
             props.navigation.goBack();
             // alert("hello")
-
+          }}
         />
         <Text style={{ color: 'white' }}> Blank screen</Text>
       </SafeAreaView>
@@ -152,11 +152,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-
-
-    export default connect(
-      mapStateToProps,
-      mapDispatchToProps,
-    )(BlankScreen);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(BlankScreen);

@@ -104,7 +104,7 @@ function MusicPlayerBar(props) {
       // source={ImagePath.gradientbar}
       style={{
         width: '100%',
-        height: normalize(45),
+        height: normalise(45),
         backgroundColor: Colors.fadeblack,
         opacity: 0.9,
         position: 'absolute',
@@ -140,10 +140,10 @@ function MusicPlayerBar(props) {
           style={{
             width: '100%',
             // alignSelf: 'center',
-            paddingRight: normalize(13),
+            paddingRight: normalise(13),
             alignItems: 'center',
             justifyContent: 'space-between',
-            // marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8),
+            // marginTop: Platform.OS === 'ios' ? normalise(10) : normalise(8),
             flexDirection: 'row',
           }}>
           <TouchableOpacity
@@ -152,7 +152,7 @@ function MusicPlayerBar(props) {
             }}>
             <Image
               source={{ uri: props.playingSongRef.song_pic }}
-              style={{ height: normalize(45), width: normalize(45) }}
+              style={{ height: normalise(45), width: normalise(45) }}
               resizeMode="contain"
             />
           </TouchableOpacity>
@@ -195,7 +195,7 @@ function MusicPlayerBar(props) {
             }}>
             <Image
               source={play ? ImagePath.pause : ImagePath.play}
-              style={{ height: normalize(25), width: normalize(25) }}
+              style={{ height: normalise(25), width: normalise(25) }}
               resizeMode={'contain'}
             />
           </TouchableOpacity>

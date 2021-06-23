@@ -11,6 +11,7 @@ import {
   ImageBackground,
   TextInput,
   Keyboard,
+  Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
@@ -200,7 +201,6 @@ function AddAnotherSong(props) {
               props.registerType === 'spotify'
                 ? data.item.preview_url
                 : data.item.attributes.previews[0].url,
-            id: '',
             artist:
               props.registerType === 'spotify'
                 ? singerList(data.item.artists)

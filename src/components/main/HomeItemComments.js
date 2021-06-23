@@ -74,7 +74,7 @@ function HomeItemComments(props) {
   const [emoji, setEmoji] = useState(false);
   const [followingList, setFollowingList] = useState(props.followingData);
   const [followerList, setFollower] = useState(props.followerData);
-  const [tagFriend,setTagFriend] = useState([]);
+  const [tagFriend, setTagFriend] = useState([]);
 
   const [showmention, setShowMention] = useState(false);
   const [Selection, setSelection] = useState({ start: 0, end: 0 });
@@ -90,7 +90,6 @@ function HomeItemComments(props) {
 
           comment_count = res.length;
           setComments(res);
-
         }
       })
 
@@ -159,8 +158,7 @@ function HomeItemComments(props) {
         break;
 
       case FOLLOWER_LIST_REQUEST:
-
-          status = props.status;
+        status = props.status;
         break;
 
       case FOLLOWER_LIST_SUCCESS:
@@ -186,24 +184,19 @@ function HomeItemComments(props) {
         status = props.status;
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
-
     }
   }
 
   const _onBackPress = () => {
-
-     let ID = props.route.params.id;
+    let ID = props.route.params.id;
     let Comment = comments.length;
     const { navigation, route } = props;
     route.params.onSelect(ID, Comment);
     navigation.goBack();
-
-
-};
+  };
 
   const _onBackHandlerPress = () => {
-
-  let ID = props.route.params.id;
+    let ID = props.route.params.id;
     let Comment = comment_count;
 
     const { navigation, route } = props;
@@ -278,7 +271,7 @@ function HomeItemComments(props) {
         <SafeAreaView>
           <Loader visible={commentsLoading} />
 
-        <View style={styles.commentHeader}>
+          <View style={styles.commentHeader}>
             <View style={styles.commentHeaderDetails}>
               <TouchableOpacity style={styles.commentHeaderAvatarButton}>
                 {/* <Image
@@ -346,11 +339,8 @@ function HomeItemComments(props) {
                 : Dimensions.get('window').height / 3,
             //  bottom: Dimensions.get("window").width/7,
             width: Dimensions.get('window').width / 1.25,
-
- }}
-
- >
-   <FlatList
+          }}>
+          <FlatList
             data={followerList.concat(followingList).filter(function (o) {
               return this[o.username] ? false : (this[o.username] = true);
             }, {})}
@@ -394,8 +384,7 @@ function HomeItemComments(props) {
                       borderBottomWidth: 0.5,
                       borderBottomColor: '#25262A',
                       justifyContent: 'center',
-
-    }}>
+                    }}>
                     <Text style={{ fontSize: 14, color: 'white' }}>
                       {item.full_name}
                     </Text>
@@ -411,7 +400,8 @@ function HomeItemComments(props) {
                   </View>
                 </TouchableOpacity>
               );
-            }}></FlatList>
+            }}
+          />
         </View>
       ) : null}
       <View
@@ -431,7 +421,7 @@ function HomeItemComments(props) {
               //flexWrap:'wrap',
               //alignItems:'center'
             },
-
+          ]}
           multiline
           maxHeight={100}
           autoFocus={true}
@@ -448,17 +438,20 @@ function HomeItemComments(props) {
 
             if (indexvalue != -1) {
               if (newString.length === 1) {
-                if (commentText.substr(indexvalue - 1) === ' ' || commentText.substr(indexvalue - 1) === '')
+                if (
+                  commentText.substr(indexvalue - 1) === ' ' ||
+                  commentText.substr(indexvalue - 1) === ''
                 ) {
                   setFollowingList([...props.followingData]);
                   setFollower([...props.followerData]);
-                  props.followingData.length === 0 ? setShowMention(false) : setShowMention(true);
+                  props.followingData.length === 0
+                    ? setShowMention(false)
+                    : setShowMention(true);
                 } else {
                   setShowMention(false);
                 }
               } else {
-
-let newSubString = newString.substr(1,newString.length - 1);
+                let newSubString = newString.substr(1, newString.length - 1);
                 let newArray = [];
                 let newFollowArray = [];
                 if (props.followingData.length != 0) {
@@ -479,18 +472,17 @@ let newSubString = newString.substr(1,newString.length - 1);
                               : (setFollowingList(newArray),
                                 setFollower(newFollowArray),
                                 setShowMention(true));
-
-                );
+                          }
                         });
                       } else {
                         setFollowingList(newArray), setShowMention(true);
                       }
-
+                    }
                   });
                 } else {
                   props.followerData.map((items, indexs) => {
                     if (items.username.includes(newSubString)) {
-                      newFollowArray.push(item);
+                      newFollowArray.push(items);
                     }
                     if (indexs === props.followerData.length - 1) {
                       newArray.length === 0
@@ -515,8 +507,7 @@ let newSubString = newString.substr(1,newString.length - 1);
               paddingHorizontal: '3%',
             }}
             onPress={async () => {
-
-               let tapUser = [];
+              let tapUser = [];
               await props.followingData.map((item, index) => {
                 if (commentText.search(item.username) != -1) {
                   tagFriend.map(items => {
@@ -539,8 +530,7 @@ let newSubString = newString.substr(1,newString.length - 1);
               // console.log("ffff"+ JSON.stringify(commentObject))
               isInternetConnected()
                 .then(() => {
-
-                     props.commentOnPost(commentObject);
+                  props.commentOnPost(commentObject);
                 })
                 .catch(() => {
                   toast('Error', 'Please Connect To Internet');
@@ -556,145 +546,145 @@ let newSubString = newString.substr(1,newString.length - 1);
           </TouchableOpacity>
         ) : null}
       </View>
-      {Platform.OS === "ios" && <KeyboardSpacer/>}
+      {Platform.OS === 'ios' && <KeyboardSpacer />}
     </View>
   );
 
-  return (
-    <View style={styles.container}>
-      <Loader visible={commentsLoading} />
-      <StatusBar />
-      <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
-      <SafeAreaView style={styles.safeContainer}>
-        <HeaderComponentComments
-          firstitemtext={false}
-          imageone={ImagePath.backicon}
-          title={
-            comments.length > 0
-              ? comments.length === 1
-                ? '1 COMMENT'
-                : `${comments.length} COMMENTS`
-              : 'COMMENTS'
-          }
-          thirditemtext={false}
-          marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
-          onPressFirstItem={() => {
-            // props.navigation.goBack();
-            _onBackPress();
-          }}
-        />
-        {/* <ScrollView> */}
-        <View style={styles.commentHeader}>
-          <View style={styles.commentHeaderDetails}>
-            <TouchableOpacity style={styles.commentHeaderAvatarButton}>
-              {/* <Image
-                source={ImagePath.play}
-                style={{
-                  height: normalise(20),
-                  width: normalise(20),
-                  position: 'absolute',
-                  alignSelf: 'center',
-                }}
-              /> */}
-              <Image
-                source={{ uri: image }}
-                style={styles.commentHeaderAvatar}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            <View style={styles.commentHeaderInfoContainer}>
-              <View style={styles.commentHeaderInfoTop}>
-                <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
+  // return (
+  //   <View style={styles.container}>
+  //     <Loader visible={commentsLoading} />
+  //     <StatusBar />
+  //     <Loader visible={props.status === COMMENT_ON_POST_REQUEST} />
+  //     <SafeAreaView style={styles.safeContainer}>
+  //       <HeaderComponentComments
+  //         firstitemtext={false}
+  //         imageone={ImagePath.backicon}
+  //         title={
+  //           comments.length > 0
+  //             ? comments.length === 1
+  //               ? '1 COMMENT'
+  //               : `${comments.length} COMMENTS`
+  //             : 'COMMENTS'
+  //         }
+  //         thirditemtext={false}
+  //         marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
+  //         onPressFirstItem={() => {
+  //           // props.navigation.goBack();
+  //           _onBackPress();
+  //         }}
+  //       />
+  //       {/* <ScrollView> */}
+  //       <View style={styles.commentHeader}>
+  //         <View style={styles.commentHeaderDetails}>
+  //           <TouchableOpacity style={styles.commentHeaderAvatarButton}>
+  //             {/* <Image
+  //               source={ImagePath.play}
+  //               style={{
+  //                 height: normalise(20),
+  //                 width: normalise(20),
+  //                 position: 'absolute',
+  //                 alignSelf: 'center',
+  //               }}
+  //             /> */}
+  //             <Image
+  //               source={{ uri: image }}
+  //               style={styles.commentHeaderAvatar}
+  //               resizeMode="contain"
+  //             />
+  //           </TouchableOpacity>
+  //           <View style={styles.commentHeaderInfoContainer}>
+  //             <View style={styles.commentHeaderInfoTop}>
+  //               <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
 
-                <Text style={styles.commentHeaderInfoTime}>
-                  {moment(time).from()}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.commentHeaderInfoComment}>
-                  {userComment}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        {/* </ScrollView> */}
-        <SwipeListView
-          data={comments}
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => {
-            index.toString();
-          }}
-          disableRightSwipe={true}
-          rightOpenValue={-75}
-        />
-        <View
-          style={[
-            styles.commentFooterContainer,
-            {
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: '#000000', ///bottom: emoji ? Platform.OS==='ios'?299:10 : 20
-            },
-          ]}>
-          <TextInput
-            style={[
-              styles.commentFooterInput,
-              {
-                flex: 1,
-                flexWrap: 'wrap',
-                alignItems: 'center',
-              },
-            ]}
-            value={commentText}
-            multiline
-            maxHeight={100}
-            onContentSizeChange={e =>
-              updateSize(e.nativeEvent.contentSize.height)
-            }
-            placeholder={'Add a comment...'}
-            placeholderTextColor={Colors.white}
-            onFocus={() => setEmoji(true)}
-            onChangeText={text => {
-              setCommentText(text);
-            }}
-          />
-          {commentText !== '' ? (
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: '3%',
-              }}
-              onPress={() => {
-                // setEmoji(false)
-                Keyboard.dismiss();
-                let commentObject = {
-                  post_id: id,
-                  text: commentText,
-                };
-                isInternetConnected()
-                  .then(() => {
-                    props.commentOnPost(commentObject);
-                  })
-                  .catch(() => {
-                    toast('Error', 'Please Connect To Internet');
-                  });
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                POST
-              </Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-      </SafeAreaView>
-    </View>
-  );
+  //               <Text style={styles.commentHeaderInfoTime}>
+  //                 {moment(time).from()}
+  //               </Text>
+  //             </View>
+  //             <View>
+  //               <Text style={styles.commentHeaderInfoComment}>
+  //                 {userComment}
+  //               </Text>
+  //             </View>
+  //           </View>
+  //         </View>
+  //       </View>
+  //       {/* </ScrollView> */}
+  //       <SwipeListView
+  //         data={comments}
+  //         renderItem={renderItem}
+  //         showsVerticalScrollIndicator={false}
+  //         keyExtractor={(item, index) => {
+  //           index.toString();
+  //         }}
+  //         disableRightSwipe={true}
+  //         rightOpenValue={-75}
+  //       />
+  //       <View
+  //         style={[
+  //           styles.commentFooterContainer,
+  //           {
+  //             flexDirection: 'row',
+  //             alignItems: 'center',
+  //             backgroundColor: '#000000', ///bottom: emoji ? Platform.OS==='ios'?299:10 : 20
+  //           },
+  //         ]}>
+  //         <TextInput
+  //           style={[
+  //             styles.commentFooterInput,
+  //             {
+  //               flex: 1,
+  //               flexWrap: 'wrap',
+  //               alignItems: 'center',
+  //             },
+  //           ]}
+  //           value={commentText}
+  //           multiline
+  //           maxHeight={100}
+  //           onContentSizeChange={e =>
+  //             updateSize(e.nativeEvent.contentSize.height)
+  //           }
+  //           placeholder={'Add a comment...'}
+  //           placeholderTextColor={Colors.white}
+  //           onFocus={() => setEmoji(true)}
+  //           onChangeText={text => {
+  //             setCommentText(text);
+  //           }}
+  //         />
+  //         {commentText !== '' ? (
+  //           <TouchableOpacity
+  //             style={{
+  //               alignItems: 'center',
+  //               justifyContent: 'center',
+  //               paddingHorizontal: '3%',
+  //             }}
+  //             onPress={() => {
+  //               // setEmoji(false)
+  //               Keyboard.dismiss();
+  //               let commentObject = {
+  //                 post_id: id,
+  //                 text: commentText,
+  //               };
+  //               isInternetConnected()
+  //                 .then(() => {
+  //                   props.commentOnPost(commentObject);
+  //                 })
+  //                 .catch(() => {
+  //                   toast('Error', 'Please Connect To Internet');
+  //                 });
+  //             }}>
+  //             <Text
+  //               style={{
+  //                 color: Colors.white,
+  //                 fontFamily: 'ProximaNova-Bold',
+  //               }}>
+  //               POST
+  //             </Text>
+  //           </TouchableOpacity>
+  //         ) : null}
+  //       </View>
+  //     </SafeAreaView>
+  //   </View>
+  // );
 }
 
 const styles = StyleSheet.create({
@@ -756,8 +746,7 @@ const styles = StyleSheet.create({
     paddingVertical: normaliseNew(6),
     position: 'relative',
   },
-  commentFooterInput:
-  {
+  commentFooterInput: {
     backgroundColor: Colors.darkerblack,
     borderColor: Colors.activityBorderColor,
     borderRadius: normaliseNew(24),

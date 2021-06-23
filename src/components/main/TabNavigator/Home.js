@@ -32,7 +32,7 @@ import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import moment, { normalizeUnits } from 'moment';
+import moment, { normaliseUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
@@ -208,7 +208,6 @@ function Home(props) {
       case LOAD_MORE_REQUEST:
         status = props.status;
         break;
-        s;
 
       case USER_PROFILE_SUCCESS:
         status = props.status;
@@ -362,7 +361,6 @@ function Home(props) {
             fromAddAnotherSong: false,
             index: 0,
             fromHome: true,
-            details: props.postData[positionInArray],
           });
         }
         break;
@@ -835,7 +833,7 @@ function Home(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -907,7 +905,7 @@ function Home(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -1469,8 +1467,6 @@ function Home(props) {
             {loadMoreVisible ? (
               <TouchableOpacity
                 style={{
-                  borderRadius: 5,
-
                   borderRadius: 20,
                   alignSelf: 'center',
                   position: 'absolute',
@@ -1969,7 +1965,6 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
-    messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
     currentPage: state.UserReducer.currentPage,
     SuccessToken: state.TokenReducer.token,

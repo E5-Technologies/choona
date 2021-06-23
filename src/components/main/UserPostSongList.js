@@ -21,11 +21,21 @@ import StatusBar from '../../utils/MyStatusBar';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
+  getProfileRequest,
+  homePageReq,
+  reactionOnPostRequest,
+  userFollowUnfollowRequest,
+  getUsersFromHome,
+} from '../../action/UserAction';
+import { deletePostReq } from '../../action/PostAction';
+import { saveSongRequest } from '../../action/SongAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
+
+import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
   USER_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
-import { getProfileRequest, userLogoutReq } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -225,7 +235,6 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
-    messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
   };
 };

@@ -273,12 +273,8 @@ const UserReducer = (state = initialState, action) => {
       var merged = [
         ...state.loadData,
         ...state.postData.filter(d => !ids.has(d._id)),
-
-
+      ];
       //  let array = [...state.loadData, ...state.postData];
-
-
-
 
       return {
         ...state,
@@ -311,8 +307,7 @@ const UserReducer = (state = initialState, action) => {
       console.log('loadmoresuccess' + JSON.stringify(action));
       //  alert("newarra"+array)
 
-
-     return {
+      return {
         ...state,
         status: action.type,
         loadData: action.data,

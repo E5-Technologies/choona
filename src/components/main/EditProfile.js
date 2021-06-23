@@ -351,7 +351,7 @@ function EditProfile(props) {
                 <View>
                   <Picker
                     textColor={Colors.white}
-                    textSize={normalize(9)}
+                    textSize={normalise(9)}
                     emptySelectText="Select"
                     editable={true}
                     data={props.countryCodeRequest}
@@ -372,7 +372,7 @@ function EditProfile(props) {
                 placeholder={'Enter Phone number'}
                 placeholderTextColor={Colors.grey}
                 maxLength={15}
-                width={normalize(200)}
+                width={normalise(200)}
                 isNumber={true}
                 value={phoneNumber}
                 onChangeText={text => {
@@ -383,7 +383,7 @@ function EditProfile(props) {
               <Text
                 style={{
                   position: 'absolute',
-                  fontSize: normalize(12),
+                  fontSize: normalise(12),
                   top: 20,
                   color: Colors.white,
                   fontFamily: 'ProximaNova-Bold',

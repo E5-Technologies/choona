@@ -10,6 +10,7 @@ import {
   Keyboard,
   Image,
   ImageBackground,
+  Platform,
   TextInput,
   Alert,
   TouchableWithoutFeedback,

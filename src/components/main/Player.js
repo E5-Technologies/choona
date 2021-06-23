@@ -16,6 +16,7 @@ import {
   Modal,
   Linking,
   Alert,
+  Platform,
   Clipboard,
   Keyboard,
   BackHandler,
@@ -1324,7 +1325,7 @@ function Player(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -1382,7 +1383,7 @@ function Player(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -1504,7 +1505,6 @@ function Player(props) {
                   padding: 8,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
                   position: 'absolute',
                   right: 0,
                   borderRadius: 5,
@@ -2393,10 +2393,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(commentOnPostReq(payload));
     },
 
-    commentOnPost: payload => {
-      dispatch(commentOnPostReq(payload));
-    },
-
     saveSongReq: payload => {
       dispatch(saveSongRequest(payload));
     },
@@ -2477,7 +2473,6 @@ const styles = StyleSheet.create({
 
   rbsheetInput: {
     width: '100%',
-    backgroundColor: Colors.fadeblack,
     flex: 1,
     flexWrap: 'wrap',
     alignItems: 'center',

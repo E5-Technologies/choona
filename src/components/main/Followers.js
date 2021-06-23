@@ -11,6 +11,7 @@ import {
   Image,
   ImageBackground,
   TextInput,
+  Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';

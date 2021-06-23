@@ -411,7 +411,7 @@ function Login(props) {
             <View>
               <Picker
                 textColor={Colors.white}
-                textSize={normalize(9)}
+                textSize={normalise(9)}
                 emptySelectText="Select"
                 editable={true}
                 data={props.countryCodeRequest}
@@ -433,7 +433,7 @@ function Login(props) {
             <TextInputField
               placeholder={'Enter Phone number'}
               placeholderTextColor={Colors.grey}
-              width={normalize(200)}
+              width={normalise(200)}
               maxLength={15}
               isNumber={true}
               value={phoneNumber}
@@ -445,7 +445,7 @@ function Login(props) {
             <Text
               style={{
                 position: 'absolute',
-                fontSize: normalize(12),
+                fontSize: normalise(12),
                 top: 20,
                 color: Colors.white,
                 fontFamily: 'ProximaNova-Bold',
@@ -463,15 +463,15 @@ function Login(props) {
           {props.route.params.loginType === 'Spotify' ? (
             <View
               style={{
-                marginTop: normalize(30),
-                height: normalize(45),
-                borderRadius: normalize(10),
+                marginTop: normalise(30),
+                height: normalise(45),
+                borderRadius: normalise(10),
                 borderWidth: normalise(1),
                 borderColor: Colors.activityBorderColor,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: normalize(5),
+                padding: normalise(5),
               }}>
               <Image
                 source={ImagePath.spotifyicon}

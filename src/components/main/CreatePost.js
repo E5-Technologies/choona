@@ -53,13 +53,11 @@ function AddSong(props) {
   const [followingList, setFollowingList] = useState(props.followingData);
   const [followerList, setFollower] = useState(props.followerData);
 
-  const [tagFriend,setTagFriend] = useState([]);
+  const [tagFriend, setTagFriend] = useState([]);
   const [showmention, setShowMention] = useState(false);
   const [Selection, setSelection] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
-
-
     if (props.route.params.registerType === 'spotify') {
       setBool(true);
       const getSpotifyApi = async () => {
@@ -106,18 +104,17 @@ function AddSong(props) {
     );
   };
 
-  const createPost = async()=> {
-
+  const createPost = async () => {
     let tapUser = [];
     await props.followingData.map((item, index) => {
-      if (search.search(item.username) != -1){
+      if (search.search(item.username) != -1) {
         tagFriend.map(items => {
           if (items === item.username) {
             tapUser.push(item.username);
           }
         });
       }
-      if (index === props.followingData.length - 1){
+      if (index === props.followingData.length - 1) {
         setTagFriend([]);
       }
     });
@@ -168,8 +165,7 @@ function AddSong(props) {
         status = props.status;
         break;
       case FOLLOWER_LIST_REQUEST:
-
-          status = props.status;
+        status = props.status;
         alert('status' + props.status);
         break;
 
@@ -288,9 +284,8 @@ function AddSong(props) {
                 let indexvalue = text.lastIndexOf('@');
                 let newString = text.substr(text.lastIndexOf('@'));
 
-                if (indexvalue != -1){
-
-                 if (newString.length === 1){
+                if (indexvalue != -1) {
+                  if (newString.length === 1) {
                     if (
                       search.substr(indexvalue - 1) === ' ' ||
                       search.substr(indexvalue - 1) === ''
@@ -304,8 +299,10 @@ function AddSong(props) {
                       setShowMention(false);
                     }
                   } else {
-
-  let newSubString = newString.substr(1,newString.length - 1);
+                    let newSubString = newString.substr(
+                      1,
+                      newString.length - 1,
+                    );
                     let newArray = [];
                     let newFollowArray = [];
                     if (props.followingData.length != 0) {
@@ -315,11 +312,9 @@ function AddSong(props) {
                           newArray.push(item);
                         }
                         if (index === props.followingData.length - 1) {
-
-   if (props.followerData.length != 0){
+                          if (props.followerData.length != 0) {
                             props.followerData.map((items, indexs) => {
-
-                  if (items.username.includes(newSubString)){
+                              if (items.username.includes(newSubString)) {
                                 newFollowArray.push(items);
                               }
                               if (indexs === props.followerData.length - 1) {
@@ -328,19 +323,17 @@ function AddSong(props) {
                                   : (setFollowingList(newArray),
                                     setFollower(newFollowArray),
                                     setShowMention(true));
-
-                  );
+                              }
                             });
                           } else {
                             setFollowingList(newArray), setShowMention(true);
                           }
-
+                        }
                       });
                     } else {
                       props.followerData.map((items, indexs) => {
-
-            if (items.username.includes(newSubString)){
-                          newFollowArray.push(item);
+                        if (items.username.includes(newSubString)) {
+                          newFollowArray.push(items);
                         }
                         if (indexs === props.followerData.length - 1) {
                           newArray.length === 0
@@ -362,8 +355,7 @@ function AddSong(props) {
             <View style={{ height: 300, marginTop: -10 }}>
               <View
                 style={{
-
-                flexDirection:'row',
+                  flexDirection: 'row',
                   marginTop: normalise(5),
                   backgroundColor: Colors.darkerblack,
                   height: normalise(65),
@@ -421,9 +413,7 @@ function AddSong(props) {
                       {title2}
                     </Text>
                   </View>
-
-              </View>
-
+                </View>
               </View>
               {showmention ? (
                 <View
@@ -431,8 +421,6 @@ function AddSong(props) {
                     backgroundColor: '#000000',
                     borderRadius: 10,
                     marginRight: '20%',
-                    //  minHeight:Dimensions.get('window').height/7,
-                    //  maxHeight:Dimensions.get("window").height/4.2,
                     height:
                       followingList.length + followerList.length === 2 ||
                       followingList.length + followerList.length === 1
@@ -445,9 +433,7 @@ function AddSong(props) {
                     top: 0,
                     width: Dimensions.get('window').width / 1.25,
                   }}>
-
- >
-   <FlatList
+                  <FlatList
                     data={followerList
                       .concat(followingList)
                       .filter(function (o) {
@@ -492,8 +478,7 @@ function AddSong(props) {
                               borderBottomWidth: 0.5,
                               borderBottomColor: '#25262A',
                               justifyContent: 'center',
-
-    }}>
+                            }}>
                             <Text style={{ fontSize: 14, color: 'white' }}>
                               {item.full_name}
                             </Text>
@@ -508,7 +493,8 @@ function AddSong(props) {
                           </View>
                         </TouchableOpacity>
                       );
-                    }}></FlatList>
+                    }}
+                  />
                 </View>
               ) : null}
             </View>

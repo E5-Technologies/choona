@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Platform,
   ImageBackground,
   Modal,
   TextInput,
@@ -238,7 +239,6 @@ function SingleSongClick(props) {
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
-          details: updateData[positionInArray],
         });
         break;
 
@@ -1107,7 +1107,7 @@ function SingleSongClick(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -1165,7 +1165,7 @@ function SingleSongClick(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {

@@ -70,9 +70,8 @@ function Contact(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [bool, setBool] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
-  const [noEmpty,setNoEmpty] = useState(false);
-  const [allSaveSong,setAllSaveSong] = useState([]);
-
+  const [noEmpty, setNoEmpty] = useState(false);
+  const [allSaveSong, setAllSaveSong] = useState([]);
 
   var bottomSheetRef;
 
@@ -383,19 +382,21 @@ function Contact(props) {
               }}
               onPress={() => {
                 setModalVisible(!modalVisible);
-                if (props.userProfileResp.register_type === 'spotify')
-                  {props.navigation.navigate('AddToPlayListScreen', {
+                if (props.userProfileResp.register_type === 'spotify') {
+                  props.navigation.navigate('AddToPlayListScreen', {
                     originalUri: props.savedSong[index].original_song_uri,
                     registerType: props.savedSong[index].original_reg_type,
                     isrc: props.savedSong[index].isrc_code,
-                  });}
+                  });
+                }
                 // setTimeout(() => {
                 //     toast("Oops", "Only, Spotify users can add to their playlist now.")
                 // }, 1000)
-                else
-                  {props.navigation.navigate('AddToPlayListScreen', {
+                else {
+                  props.navigation.navigate('AddToPlayListScreen', {
                     isrc: props.savedSong[index].isrc_code,
-                  });}
+                  });
+                }
               }}>
               <Image
                 source={ImagePath.addicon}
@@ -466,7 +467,6 @@ function Contact(props) {
 
   // RENDER USER SEARCH FLATLIST DATA
   function renderAddUsersToMessageItem(data) {
-
     return (
       <TouchableOpacity
         style={{
@@ -514,7 +514,6 @@ function Contact(props) {
           />
           <View
             style={{
-
               borderColor: Colors.activityBorderColor,
               borderBottomWidth: normalise(0.5),
               paddingBottom: normalise(10),
@@ -898,7 +897,9 @@ function Contact(props) {
     setBool(true);
     setTimeout(() => {
       //  alert(data.length)
-      if (data.length === 0) {setNoEmpty(true)}
+      if (data.length === 0) {
+        setNoEmpty(true);
+      }
       setAllSaveSong(data);
       setBool(false);
     }, 800);
@@ -925,9 +926,7 @@ function Contact(props) {
             texttwo={''}
           />
 
-
-
-{_.isEmpty(props.savedSong) && noEmpty ? null :
+          {_.isEmpty(props.savedSong) && noEmpty ? null : (
             <View
               style={{
                 width: '92%',
@@ -943,7 +942,7 @@ function Contact(props) {
                   padding: normalise(10),
                   // color: Colors.white,
 
-      backgroundColor:Colors.white,
+                  backgroundColor: Colors.white,
                   paddingLeft: normalise(30),
                 }}
                 autoCorrect={false}
@@ -998,7 +997,7 @@ function Contact(props) {
                 </TouchableOpacity>
               )}
             </View>
-
+          )}
 
           {_.isEmpty(allSaveSong) && noEmpty ? (
             <View
@@ -1026,8 +1025,7 @@ function Contact(props) {
                   alignSelf: 'center',
                 }}
                 resizeMode="contain"
-
-                 />
+              />
 
               <Text
                 style={{
@@ -1052,8 +1050,7 @@ function Contact(props) {
                   textAlign: 'center',
                   alignSelf: 'center',
                   fontFamily: 'ProximaNova-Regular',
-
-                   }}>
+                }}>
                 When you see a song you love, just click the more menu and save
                 that song. Then you can access it forever from here.
               </Text>

@@ -9,6 +9,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Platform,
   Modal,
   TextInput,
   Clipboard,
@@ -66,7 +67,7 @@ function GenreSongClicked(props) {
   let commentList = [];
   commentList = props.getPostFromTop50;
 
-  const onTotal = ()=>{
+  const onTotal = () => {
     let newarray = [];
     commentList.map((item, index) => {
       let newObject = {
@@ -79,12 +80,12 @@ function GenreSongClicked(props) {
           item.face_count,
           item.thumbsup_count,
         ],
-
+      };
 
       newarray.push(newObject);
-      if (index === commentList.length - 1) {
 
-     console.log('newarrr'+ JSON.stringify(newarray));
+      if (index === commentList.length - 1) {
+        console.log('newarrr' + JSON.stringify(newarray));
       }
     });
     return newarray;
@@ -109,8 +110,6 @@ function GenreSongClicked(props) {
   const [updateList, setUpdateList] = useState([]);
   // const [totalReact,setTotalReact] = useState([])
 
-
-
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
@@ -124,7 +123,7 @@ function GenreSongClicked(props) {
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
   // console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
-  const getdata = async()=>{
+  const getdata = async () => {
     let response = await axios.get(
       `https://api.choona.co/api/post/details/${name}`,
       {
@@ -141,10 +140,7 @@ function GenreSongClicked(props) {
     sesUsersToSEndSong([]);
     setUserSeach('');
 
-
-    console.log('response'+JSON.stringify(response.data.data));
-
-
+    console.log('response' + JSON.stringify(response.data.data));
   };
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -155,7 +151,6 @@ function GenreSongClicked(props) {
     sesUsersToSEndSong([]);
     setUserSeach('');
     props.route.params.ptID === 1 ? getdata() : setIsLoading(false);
-
 
     //     })
     //     .catch(() => {
@@ -203,7 +198,7 @@ function GenreSongClicked(props) {
   }
 
   if (status === '' || status !== props.status) {
-    console.log('status'+props.status);
+    console.log('status' + props.status);
     switch (props.status) {
       case GET_POST_FROM_TOP_50_REQUEST:
         status = props.status;
@@ -242,7 +237,6 @@ function GenreSongClicked(props) {
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
-          details: props.getPostFromTop50[positionInArray],
         });
         break;
 
@@ -274,16 +268,16 @@ function GenreSongClicked(props) {
       text_match: myReaction,
     };
 
-  //   commentList.map((item,index)=>{
+    //   commentList.map((item,index)=>{
 
-  //     if(id===item._id)
+    //     if(id===item._id)
 
     //   if(myReaction==='A'){
     //     if(commentList[index].fire_count===totalReact[index].react[0]){
     //       commentList[index].fire_count=commentList[index].fire_count+1
     //       commentList[index].reaction_count=commentList[index].reaction_count+1
 
-  //     }
+    //     }
     //     else{
     //       if(commentList[index].fire_count!=0){
     //         commentList[index].fire_count=commentList[index].fire_count-1
@@ -322,7 +316,7 @@ function GenreSongClicked(props) {
     //       commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
     //       commentList[index].reaction_count=commentList[index].reaction_count+1
 
-  //     }
+    //     }
     //     else{
     //       if(commentList[index].man_dancing_count!=0){
     //         commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
@@ -335,7 +329,7 @@ function GenreSongClicked(props) {
     //       commentList[index].face_count=commentList[index].face_count+1
     //       commentList[index].reaction_count=commentList[index].reaction_count+1
 
-  //     }
+    //     }
     //     else{
     //       if(commentList[index].face_count!=0){
     //         commentList[index].face_count=commentList[index].face_count-1
@@ -349,7 +343,7 @@ function GenreSongClicked(props) {
     //       commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
     //       commentList[index].reaction_count=commentList[index].reaction_count+1
 
-  //     }
+    //     }
     //     else{
     //       if(commentList[index].thumbsup_count!=0){
     //         commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
@@ -407,16 +401,14 @@ function GenreSongClicked(props) {
   function _onSelectBack(ID, comment) {
     let newarray = commentList;
     newarray.map((item, index) => {
-
-     if (item._id === ID){
-
-      newarray[index].comment_count = comment;
+      if (item._id === ID) {
+        newarray[index].comment_count = comment;
       }
       if (index === newarray.length - 1) {
         setUpdateList([...newarray]);
         // commentList = ([...newarray])
       }
-
+    });
   }
 
   function _onReaction(ID, reaction, reactionList) {
@@ -424,8 +416,7 @@ function GenreSongClicked(props) {
     // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
     newarray.map((item, index) => {
       if (item._id === ID) {
-
-    if (reactionList.length > 0){
+        if (reactionList.length > 0) {
           var found = reactionList.findIndex(element => {
             return element.header === react[0];
           });
@@ -445,8 +436,7 @@ function GenreSongClicked(props) {
             return element.header === react[5];
           });
 
-
-    //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+          //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
           if (found != -1) {
             newarray[index].fire_count = reactionList[found].data.length;
           } else {
@@ -715,8 +705,7 @@ function GenreSongClicked(props) {
         <ImageBackground
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
-
-     {/* <View style={[styles.centeredView,{}]}> */}
+          {/* <View style={[styles.centeredView,{}]}> */}
           <View style={styles.modalView}>
             <Text
               style={{
@@ -892,8 +881,7 @@ function GenreSongClicked(props) {
                 alignItems: 'center',
               }}
               onPress={() => {
-
-                      if (
+                if (
                   props.getPostFromTop50[positionInArray].userDetails
                     .register_type === props.registerType
                 ) {
@@ -969,7 +957,7 @@ function GenreSongClicked(props) {
               }}
               onPress={() => {
                 setModalVisible(!modalVisible);
-                if (props.userProfileResp.register_type === 'spotify')
+                if (props.userProfileResp.register_type === 'spotify') {
                   props.navigation.navigate('AddToPlayListScreen', {
                     originalUri:
                       props.getPostFromTop50[positionInArray].original_song_uri,
@@ -977,7 +965,7 @@ function GenreSongClicked(props) {
                       props.getPostFromTop50[positionInArray].social_type,
                     isrc: props.getPostFromTop50[positionInArray].isrc_code,
                   });
-                else {
+                } else {
                   // setTimeout(() => {
                   //   toast("Oops", "Only, Spotify users can add to their playlist now.")
                   // }, 1000)
@@ -1023,8 +1011,7 @@ function GenreSongClicked(props) {
                 // padding: 35,
                 alignItems: 'center',
                 justifyContent: 'center',
-
-            }}>
+              }}>
               <Text
                 style={{
                   fontSize: normalise(12),
@@ -1034,12 +1021,10 @@ function GenreSongClicked(props) {
                 CANCEL
               </Text>
             </TouchableOpacity>
-
           </View>
 
           {/* </View> */}
-
-      </ImageBackground>
+        </ImageBackground>
       </Modal>
     );
   };
@@ -1135,7 +1120,7 @@ function GenreSongClicked(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -1193,7 +1178,7 @@ function GenreSongClicked(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -1285,8 +1270,7 @@ function GenreSongClicked(props) {
                 height: normalise(35),
                 flexDirection: 'row',
                 alignItems: 'center',
-                paddingLeft:'2%'
-
+                paddingLeft: '2%',
               }}>
               <Image
                 source={ImagePath.searchicongrey}
@@ -1392,11 +1376,10 @@ function GenreSongClicked(props) {
           onPressFirstItem={() => {
             props.navigation.goBack();
             // alert("hello")
-
           }}
         />
 
-   <Loader visible={isLoading} />
+        <Loader visible={isLoading} />
       </SafeAreaView>
     </View>
   ) : (
@@ -1415,7 +1398,6 @@ function GenreSongClicked(props) {
           onPressFirstItem={() => {
             props.navigation.goBack();
             // alert("hello")
-
           }}
         />
 
@@ -1482,14 +1464,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     //  alignItems: 'center',
     // marginTop: normalise(40),
-
-
-
-
   },
   modalView: {
     //  margin: 20,
-
 
     backgroundColor: '#000000',
     borderTopLeftRadius: 24,
@@ -1527,7 +1504,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  console.log('statetoprops',JSON.stringify(state.PostReducer));
+  console.log('statetoprops', JSON.stringify(state.PostReducer));
   return {
     status: state.PostReducer.status,
     getPostFromTop50: state.PostReducer.getPostFromTop50,

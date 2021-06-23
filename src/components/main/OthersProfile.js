@@ -74,7 +74,7 @@ function OthersProfile(props) {
 
     setProfilePosts([...profilePosts, ...response.data.data]);
 
-    console.log('logcat response:'+JSON.stringify(response.data.postCount));
+    console.log('logcat response:' + JSON.stringify(response.data.postCount));
     return await response.data;
   };
 
@@ -83,9 +83,9 @@ function OthersProfile(props) {
   // const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
   const [isLoading, setIsLoading] = useState(true);
 
-  const [profilePosts,setProfilePosts] = useState([]);
+  const [profilePosts, setProfilePosts] = useState([]);
 
-  const onEndReached = async()=>{
+  const onEndReached = async () => {
     setPageId(pageId + 1);
     const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
       headers: {
@@ -97,7 +97,7 @@ function OthersProfile(props) {
     // profilePosts.push(response.data.data)
     setIsLoading(false);
     setProfilePosts([...profilePosts, ...response.data.data]);
-  }; 
+  };
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -117,8 +117,9 @@ function OthersProfile(props) {
         console.log('resposse' + JSON.stringify(response));
         setIsLoading(false);
 
-
-    response.data.data.length === 0 ? TotalCount = TotalCount : TotalCount = response.data.postCount;
+        response.data.data.length === 0
+          ? (TotalCount = TotalCount)
+          : (TotalCount = response.data.postCount);
         profilePosts.length === 0
           ? setProfilePosts([...profilePosts, ...response.data.data])
           : null;
@@ -192,7 +193,6 @@ function OthersProfile(props) {
   }
 
   function renderProfileData(data) {
-
     let array = [];
     array.push(data.item);
     return (
@@ -249,9 +249,10 @@ function OthersProfile(props) {
         style={{
           alignSelf: 'center',
           marginTop: 5 * normalise(60),
-        }}></ActivityIndicator>
+        }}
+      />
     </View>
-
+  ) : (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       {/* <Loader visible={props.status === OTHERS_PROFILE_REQUEST} /> */}
 

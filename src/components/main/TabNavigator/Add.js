@@ -146,7 +146,6 @@ function AddSong(props) {
               props.registerType === 'spotify'
                 ? data.item.preview_url
                 : data.item.attributes.previews[0].url,
-            id: '',
             artist:
               props.registerType === 'spotify'
                 ? singerList(data.item.artists)
@@ -219,8 +218,7 @@ function AddSong(props) {
                 inputRef.current.blur();
                 Keyboard.dismiss();
               }}
-
-                            onChangeText={(text) => {
+              onChangeText={text => {
                 setSearch(text);
                 if (text.length >= 1) {
                   isInternetConnected()
@@ -255,7 +253,6 @@ function AddSong(props) {
                   padding: 8,
                   paddingTop: 4,
                   paddingBottom: 4,
-                  borderRadius: 2,
                   position: 'absolute',
                   right: 0,
                   borderRadius: 5,
@@ -315,12 +312,11 @@ function AddSong(props) {
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
-
+                }}>
                 <Image
                   source={ImagePath.searchicongrey}
                   style={{ height: normalise(35), width: normalise(35) }}
                 />
-
                 <Text
                   style={{
                     color: Colors.white,

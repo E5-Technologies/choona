@@ -9,6 +9,7 @@ import {
   FlatList,
   Keyboard,
   Image,
+  Platform,
   ImageBackground,
   TextInput,
   TouchableWithoutFeedback,

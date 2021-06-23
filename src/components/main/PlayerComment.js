@@ -83,10 +83,10 @@ function HomeItemComments(props) {
     //           comment_count = res.length;
     //           setComments(res);
 
-//         }
+    //         }
     //       })
 
-//       .catch(err => {
+    //       .catch(err => {
     //         toast('Error', err);
     //       });
     props.followingListReq('user', '');
@@ -145,8 +145,7 @@ function HomeItemComments(props) {
         break;
 
       case FOLLOWER_LIST_REQUEST:
-
-          status = props.status;
+        status = props.status;
         alert('status' + props.status);
         break;
 
@@ -164,17 +163,13 @@ function HomeItemComments(props) {
   }
 
   const _onBackPress = () => {
-
     let data = comments;
     let Comment = comments.length;
 
-
-  const { navigation, route } = props;
+    const { navigation, route } = props;
     route.params.onSelect(data, Comment);
     navigation.goBack();
-
-
-};
+  };
 
   const _onBackHandlerPress = () => {
     console.log('count' + JSON.stringify(DataBack).length);
@@ -206,17 +201,10 @@ function HomeItemComments(props) {
             backgroundColor: 'transparent',
           },
         }}>
-
-      >
-
-
-            height: Dimensions.get('window').height / 2.2,
-            backgroundColor: 'black',
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-          }}>
-          <View style={{ width: '95%', flex: 1, alignSelf: 'center' }}>
-
+        {/* > height: Dimensions.get('window').height / 2.2, backgroundColor:
+        'black', borderTopEndRadius: normalise(8), borderTopStartRadius:
+        normalise(8), }}> */}
+        <View style={{ width: '95%', flex: 1, alignSelf: 'center' }}>
           {/* <FlatList
             style={{height:'40%'}}
             data={commentData}
@@ -227,12 +215,8 @@ function HomeItemComments(props) {
             keyboardShouldPersistTaps='always'
             showsVerticalScrollIndicator={false}
           /> */}
-          </View>
-
-          </View>
-
-
-    </RBSheet>
+        </View>
+      </RBSheet>
     );
   };
 
@@ -243,8 +227,8 @@ function HomeItemComments(props) {
   const onSelectionChange = ({ nativeEvent: { selection, text } }) => {
     console.log('change selection to', selection, 'for value');
 
-  );
-  // console.log("selectestext"+text);
+    // );
+    // console.log("selectestext"+text);
     // this.setState({ selection });
   };
 
@@ -286,8 +270,7 @@ function HomeItemComments(props) {
   });
 
   return (
-
-      <View style={styles.container}>
+    <View style={styles.container}>
       <StatusBar />
 
       <HeaderComponentComments
@@ -334,7 +317,7 @@ function HomeItemComments(props) {
                 />
               </TouchableOpacity>
 
-            <View style={styles.commentHeaderInfoContainer}>
+              <View style={styles.commentHeaderInfoContainer}>
                 <View style={styles.commentHeaderInfoTop}>
                   <Text style={styles.commentHeaderInfoUsername}>
                     {props.route.params.username}
@@ -363,8 +346,7 @@ function HomeItemComments(props) {
             disableRightSwipe={true}
             rightOpenValue={-75}
           />
-
-</SafeAreaView>
+        </SafeAreaView>
       </ScrollView>
       {showmention ? (
         <View
@@ -415,8 +397,7 @@ function HomeItemComments(props) {
                       borderBottomWidth: 0.5,
                       borderBottomColor: '#25262A',
                       justifyContent: 'center',
-
-    }}>
+                    }}>
                     <Text
                       style={{
                         fontSize: 16,
@@ -428,7 +409,8 @@ function HomeItemComments(props) {
                   </View>
                 </TouchableOpacity>
               );
-            }}></FlatList>
+            }}
+          />
         </View>
       ) : null}
       <View
@@ -452,8 +434,7 @@ function HomeItemComments(props) {
           // value={commentText}
           multiline
           autoFocus={true}
-
-            maxHeight={100}
+          maxHeight={100}
           keyboardAppearance="dark"
           // onSelectionChange={ event => {
           //   const selections = event.nativeEvent.selection;
@@ -469,19 +450,16 @@ function HomeItemComments(props) {
           placeholder={'Add a comment...'}
           placeholderTextColor={Colors.white}
           onChangeText={text => {
-
-               let indexvalue = text.lastIndexOf('@');
+            let indexvalue = text.lastIndexOf('@');
             let newString = text.substr(text.lastIndexOf('@'));
             if (indexvalue != -1) {
               if (newString.length === 1) {
-
-                      setFollowingList([...props.followingData]);
+                setFollowingList([...props.followingData]);
                 props.followingData.length === 0
                   ? setShowMention(false)
                   : setShowMention(true);
               } else {
-
- let newSubString = newString.substr(1,newString.length - 1);
+                let newSubString = newString.substr(1, newString.length - 1);
                 let newArray = [];
                 props.followingData.map((item, index) => {
                   console.log('mapItem' + item.full_name);
@@ -494,10 +472,7 @@ function HomeItemComments(props) {
                       : (setFollowingList(newArray), setShowMention(true));
                   }
                 });
-
-
-               } else {
-              setShowMention(false);
+              }
             }
 
             setCommentText(text);
@@ -511,8 +486,7 @@ function HomeItemComments(props) {
               justifyContent: 'center',
               paddingHorizontal: '3%',
             }}
-
-              onPress={() => {
+            onPress={() => {
               // alert("post click")
 
               Keyboard.dismiss();
@@ -553,14 +527,12 @@ function HomeItemComments(props) {
               }
               isInternetConnected()
                 .then(() => {
-
-                    props.route.params.comingFromMessage
+                  props.route.params.comingFromMessage
                     ? props.updateMessageCommentRequest(updateMessagPayload)
                     : props.commentOnPost(commentObject);
                 })
                 .catch(error => {
-
-                    toast('Error', 'Please Connect To Internet' + error);
+                  toast('Error', 'Please Connect To Internet' + error);
                 });
             }}>
             <Text
@@ -677,7 +649,6 @@ const mapStateToProps = state => {
     userProfileResp: state.UserReducer.userProfileResp,
     header: state.TokenReducer,
     followingData: state.UserReducer.followingData,
-
   };
 };
 

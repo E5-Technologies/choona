@@ -5596,7 +5596,7 @@ react-native-onesignal@^4.0.4:
   dependencies:
     invariant "^2.2.2"
 
-react-native-permissions@^3.0.3:
+react-native-permissions@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.0.4.tgz#7771d28899d7d2b75fd2a70cd3f86d44c90397ec"
   integrity sha512-GMd0l0TA/qupidGFfKAVNaboewQkJSW+l3ndwv1cu+tBGI+TRfJdMjg8Q714wn9roZlXsZ3z407qT2xPdQmGdg==
