@@ -153,6 +153,8 @@ function Following(props) {
           image={constants.profile_picture_base_url + data.item.profile_image}
           user={data.item.username}
           type={true}
+          userId={data.item.user_id}
+          loginUserId={props.userProfileResp._id}
           follow={data.item.isFollowing ? false : true}
           marginBottom={
             data.index === props.followingData.length - 1 ? normalise(20) : 0

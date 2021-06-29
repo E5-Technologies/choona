@@ -65,45 +65,41 @@ function ActivityListItem(props) {
             </Text>
           </TouchableOpacity>
         </View>
-        {
-          // props.userId !== props.loginUserId?
-
-          props.type ? (
-            props.userId !== props.loginUserId ? (
-              <TouchableOpacity
-                style={[
-                  styles.followButton,
-                  { backgroundColor: follow ? Colors.white : Colors.fadeblack },
-                ]}
-                onPress={() => {
-                  onPress();
-                  setFollow(!follow);
-                }}>
-                {follow ? (
-                  <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
-                ) : (
-                  <Text
-                    style={[styles.followButtonText, { color: Colors.white }]}>
-                    FOLLOWING
-                  </Text>
-                )}
-              </TouchableOpacity>
-            ) : null
-          ) : (
+        {props.type ? (
+          props.userId !== props.loginUserId ? (
             <TouchableOpacity
+              style={[
+                styles.followButton,
+                { backgroundColor: follow ? Colors.white : Colors.fadeblack },
+              ]}
               onPress={() => {
                 onPress();
+                setFollow(!follow);
               }}>
-              <Image
-                source={
-                  props.image2 === '' ? ImagePath.dp2 : { uri: props.image2 }
-                }
-                style={{ height: normaliseNew(35), width: normaliseNew(35) }}
-                resizeMode="contain"
-              />
+              {follow ? (
+                <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
+              ) : (
+                <Text
+                  style={[styles.followButtonText, { color: Colors.white }]}>
+                  FOLLOWING
+                </Text>
+              )}
             </TouchableOpacity>
-          )
-        }
+          ) : null
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              onPress();
+            }}>
+            <Image
+              source={
+                props.image2 === '' ? ImagePath.dp2 : { uri: props.image2 }
+              }
+              style={{ height: normaliseNew(35), width: normaliseNew(35) }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

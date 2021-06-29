@@ -1616,7 +1616,7 @@ function Player(props) {
                 <TouchableOpacity
                   style={{
                     height: normalise(25),
-                    width: normalise(45),
+                    width: normalise(25),
                     borderRadius: normalise(5),
                     alignSelf: 'center',
                     backgroundColor: Colors.black,
