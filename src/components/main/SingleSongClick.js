@@ -614,7 +614,7 @@ function SingleSongClick(props) {
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
-        // songUri={data.item.song_uri}
+        songUri={data.item.song_uri}
         singer={data.item.artist_name}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}

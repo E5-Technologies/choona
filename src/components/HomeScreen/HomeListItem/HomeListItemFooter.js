@@ -88,7 +88,7 @@ const HomeListItemFooter = ({
             style={styles.listItemFooterButton}
             onPress={() => onPressMenu()}>
             <Image
-              style={styles.listItemFooterMoreButton}
+              style={styles.listItemFooterActionsButton}
               source={ImagePath.threedots}
               resizeMode="contain"
             />
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: normalise(9),
     marginLeft: normalise(6),
   },
-  listItemFooterMoreButton: {
+  listItemFooterActionsButton: {
     transform: [{ rotate: '90deg' }],
     width: normalise(14),
   },

@@ -109,25 +109,7 @@ function HomeItemList(props) {
       />
       <TouchableOpacity
         onPress={() => {
-          props.navi.navigation.navigate('Player', {
-            comments: [],
-            song_title: props.playingSongRef.song_name,
-            album_name: props.playingSongRef.album_name,
-            song_pic: props.playingSongRef.song_pic,
-            username: props.playingSongRef.username,
-            profile_pic: props.playingSongRef.profile_pic,
-            uri: props.playingSongRef.uri,
-            reactions: props.playingSongRef.reactionData,
-            id: props.playingSongRef.id,
-            artist: props.playingSongRef.artist,
-            changePlayer: props.playingSongRef.changePlayer,
-            originalUri: props.playingSongRef.originalUri,
-            isrc: props.playingSongRef.isrc,
-            registerType: props.playingSongRef.regType,
-            details: props.playingSongRef.details,
-            showPlaylist: props.playingSongRef.showPlaylist,
-            comingFromMessage: props.playingSongRef.comingFromMessage,
-          });
+          onPressMusicbox();
         }}>
         <Image
           source={

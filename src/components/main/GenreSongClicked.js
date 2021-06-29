@@ -612,7 +612,7 @@ function GenreSongClicked(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
-        // songUri={data.item.song_uri}
+        songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {

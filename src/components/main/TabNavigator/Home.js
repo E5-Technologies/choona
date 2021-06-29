@@ -726,7 +726,7 @@ function Home(props) {
         marginBottom={
           data.index === props.postData.length - 1 ? normalise(60) : 0
         }
-        playingSongRef={props.playingSongRef}
+        // playingSongRef={props.playingSongRef}
       />
       // </TouchableOpacity>
     );
