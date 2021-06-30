@@ -17,6 +17,7 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from './../ListCells/SavedSongsListItem';
+import Seperator from '../ListCells/Seperator';
 import _ from 'lodash';
 import StatusBar from '../../../utils/MyStatusBar';
 import { connect } from 'react-redux';
@@ -93,8 +94,8 @@ function AddSong(props) {
         marginBottom={
           data.index === props.spotifyResponse.length - 1 ? normalise(20) : 0
         }
-        change={true}
-        image2={ImagePath.addicon}
+        change2={true}
+        image2={ImagePath.addButton}
         onPressSecondImage={() => {
           props.navigation.navigate('CreatePost', {
             image:
@@ -355,6 +356,7 @@ function AddSong(props) {
               keyExtractor={(item, index) => {
                 index.toString();
               }}
+              ItemSeparatorComponent={Seperator}
               showsVerticalScrollIndicator={false}
             />
           )}
