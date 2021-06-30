@@ -43,6 +43,7 @@ const ImagePath = {
   gradientbar: require('./images/rectanglegradien.png'),
   change: require('./images/change.png'),
   play: require('./images/play.png'),
+  playOutline: require('./images/play-outline.png'),
   iconadd: require('./images/iconadd.png'),
   searchicon: require('./images/icons-search-black.png'),
   threedots: require('./images/moredots.png'),

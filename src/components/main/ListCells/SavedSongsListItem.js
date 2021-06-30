@@ -188,11 +188,6 @@ function SavedSongListItem(props) {
           onPress={() => {
             onPressImage();
           }}>
-          {/* {(props.user_id === props.receiver_id && !props.read) &&
-                <Text style={{color:'#ffffff',alignSelf:'center',fontSize:6}}>{'\u2B24'}</Text>
-
-        } */}
-
           <Image
             source={
               props.image === ''
@@ -205,18 +200,6 @@ function SavedSongListItem(props) {
             }}
             resizeMode="contain"
           />
-          {props.playIcon !== false && (
-            <Image
-              source={ImagePath.play}
-              style={{
-                height: normalise(23),
-                width: normalise(23),
-                position: 'absolute',
-                right: '25%',
-                top: '25%',
-              }}
-            />
-          )}
         </TouchableOpacity>
 
         <View
@@ -282,12 +265,39 @@ function SavedSongListItem(props) {
         ) : (
           <View
             style={{
-              height: normalise(40),
-              width: normalise(45),
-              backgroundColor: Colors.black,
-              justifyContent: 'center',
+              flexDirection: 'row',
             }}>
+            {props.playIcon !== false && (
+              <TouchableOpacity
+                onPress={() => {
+                  onPressImage();
+                }}>
+                <Image
+                  source={ImagePath.playOutline}
+                  style={{
+                    height: normalise(23),
+                    width: normalise(23),
+                  }}
+                />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                marginLeft: normalise(16),
+              }}
+              onPress={() => onPress()}>
+              <Image
+                style={{
+                  transform: [{ rotate: '90deg' }],
+                  width: normalise(14),
+                }}
+                source={ImagePath.threedots}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            {/* <TouchableOpacity
               style={{
                 height: normalise(25),
                 width: normalise(45),
@@ -305,7 +315,7 @@ function SavedSongListItem(props) {
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         )}
       </View>
