@@ -76,6 +76,7 @@ const ImagePath = {
   addPostIllus: require('./images/addPostIllus.png'),
   emptyActivity: require('./images/empty-activity.png'),
   addButton: require('./images/addButton.png'),
+  addButtonSmall: require('./images/addbutton-small.png'),
   playApple: require('./images/playApple.png'),
   playSpotify: require('./images/playSpotify.png'),
   reactionShow: require('./images/reactShow.png'),

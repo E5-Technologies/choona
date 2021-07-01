@@ -95,7 +95,7 @@ function AddSong(props) {
           data.index === props.spotifyResponse.length - 1 ? normalise(20) : 0
         }
         change2={true}
-        image2={ImagePath.addButton}
+        image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => {
           props.navigation.navigate('CreatePost', {
             image:
