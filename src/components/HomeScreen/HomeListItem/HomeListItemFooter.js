@@ -103,7 +103,7 @@ const HomeListItemFooter = ({
         ) : (
           <View />
         )}
-        {postText.length > 150 ? (
+        {postText.length > 180 ? (
           <TouchableOpacity
             onPress={() => {
               !viewMore ? setNumberOfLines(10) : setNumberOfLines(3),

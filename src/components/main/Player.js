@@ -1703,7 +1703,7 @@ function Player(props) {
                     width: '90%',
                   }}
                   numberOfLines={1}>
-                  {albumTitle}
+                  {artist}
                 </Text>
               </View>
               <TouchableOpacity

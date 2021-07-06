@@ -131,7 +131,7 @@ function Home(props) {
 
     if (state !== 'active') {
       if (global.playerReference !== null) {
-        if (global.playerReference.isPlaying()) {
+        if (global.playerReference?.isPlaying()) {
           global.playerReference.pause();
 
           findPlayingSong(props.postData);
