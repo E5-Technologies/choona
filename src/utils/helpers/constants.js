@@ -1,3 +1,5 @@
+import { API_HOST } from '../../config';
+
 export default {
   CHOONACREDS: 'CHOONACREDS',
   SPOTIFY: 'SPOTIFY',
@@ -8,11 +10,11 @@ export default {
   spotify_token_uri: 'https://accounts.spotify.com/api/token',
   spotify_profile_uri: 'https://api.spotify.com/v1/me',
   // profile_picture_base_url: 'http://localhost:1431/uploads/user/thumb/',
-  profile_picture_base_url: 'https://api.choona.co/uploads/user/thumb/',
+  profile_picture_base_url: API_HOST + '/uploads/user/thumb/',
   // BASE_URL: 'http://localhost:1431/api',
-  BASE_URL: 'https://api.choona.co/api',
+  BASE_URL: API_HOST + '/api',
   APPLE: 'APPLETOKEN',
   // appleGetTokenApi: 'http://localhost:1431/api/applemusic/token',
-  appleGetTokenApi: 'https://api.choona.co/api/applemusic/token',
+  appleGetTokenApi: API_HOST + '/api/applemusic/token',
   spotifyPlayerBaseUrl: 'https://api.spotify.com/v1/me/player/',
 };

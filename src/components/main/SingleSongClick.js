@@ -53,6 +53,8 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { createChatTokenRequest } from '../../action/MessageAction';
 import constants from '../../utils/helpers/constants';
 
+import { API_HOST } from '../../config';
+
 import axios from 'axios';
 let status;
 let userStatus;
@@ -88,16 +90,13 @@ function SingleSongClick(props) {
 
   // console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
   const getdata = async () => {
-    let response = await axios.get(
-      `https://api.choona.co/api/post/details/${name}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'x-access-token': props.header.token,
-        },
+    let response = await axios.get(API_HOST + `/api/post/details/${name}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': props.header.token,
       },
-    );
+    });
     console.log('response_post' + JSON.stringify(response));
     if (response.data.data.length !== 0) {
       let newarray = [];
