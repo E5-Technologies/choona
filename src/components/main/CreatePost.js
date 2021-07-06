@@ -347,7 +347,7 @@ function AddSong(props) {
               <Text>{parts}</Text>
             </TextInput>
 
-            <View style={{ height: 300, marginTop: -10 }}>
+            <View style={{ height: 300 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -373,7 +373,6 @@ function AddSong(props) {
                       style={{
                         height: normalise(40),
                         width: normalise(40),
-                        borderRadius: normalise(6),
                       }}
                       resizeMode="contain"
                     />
