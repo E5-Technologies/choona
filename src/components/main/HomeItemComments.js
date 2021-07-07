@@ -320,7 +320,6 @@ function HomeItemComments(props) {
         <View
           style={{
             backgroundColor: 'black',
-
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
             marginRight: '20%',
@@ -406,7 +405,7 @@ function HomeItemComments(props) {
           {
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: '#000000', ///bottom: emoji ? Platform.OS==='ios'?299:10 : 20
+            backgroundColor: '#000000',
           },
         ]}>
         <TextInput
@@ -503,6 +502,7 @@ function HomeItemComments(props) {
               paddingHorizontal: '3%',
             }}
             onPress={async () => {
+              setCommentsLoading(true);
               let tapUser = [];
               await props.followingData.map((item, index) => {
                 if (commentText.search(item.username) !== -1) {
@@ -517,7 +517,7 @@ function HomeItemComments(props) {
                 }
               });
 
-              Keyboard.dismiss();
+              // Keyboard.dismiss();
               let commentObject = {
                 post_id: id,
                 text: commentText,
@@ -527,8 +527,12 @@ function HomeItemComments(props) {
               isInternetConnected()
                 .then(() => {
                   props.commentOnPost(commentObject);
+                  setCommentText('');
+                  setCommentsLoading(false);
+                  Keyboard.dismiss();
                 })
                 .catch(() => {
+                  setCommentsLoading(false);
                   toast('Error', 'Please Connect To Internet');
                 });
             }}>

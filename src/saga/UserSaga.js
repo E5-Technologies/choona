@@ -271,7 +271,7 @@ export function* loadMoreAction(action) {
       `post/list?page=${action.data.offset}&date=${action.data.create}`,
       Header,
     );
-    console.log('resposnsesaga' + JSON.stringify(response));
+    // console.log('resposnsesaga' + JSON.stringify(response));
     yield put({
       type: LOAD_MORE_SUCCESS,
       data: response.data.data,
@@ -330,13 +330,13 @@ export function* commentOnPostAction(action) {
       Header,
     );
 
-    console.log(JSON.stringify(action.payload));
+    // console.log(JSON.stringify(action.payload));
 
-    console.log(JSON.stringify(response));
+    // console.log(JSON.stringify(response));
 
     yield put({ type: COMMENT_ON_POST_SUCCESS, data: response.data.data });
   } catch (error) {
-    console.log(JSON.stringify(error));
+    // console.log(JSON.stringify(error));
 
     yield put({ type: COMMENT_ON_POST_FAILURE, error: error });
   }
