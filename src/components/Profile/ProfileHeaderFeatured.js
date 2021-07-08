@@ -21,69 +21,32 @@ const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
       resizeMode="cover">
       {_.isEmpty(profile.feature_song) ? (
         user ? (
+          <View style={styles.profileHeaderFeaturedContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('FeaturedTrack');
+              }}
+              style={styles.profileHeaderFeaturedSong}>
+              <Image
+                source={ImagePath.add_white}
+                style={styles.profileHeaderFeaturedSongButton}
+              />
+            </TouchableOpacity>
+            <View
+              style={[styles.profileHeaderFeaturedDetails, { width: '50%' }]}>
+              <Text style={styles.profileHeaderFeaturedDetailsTitle}>
+                Featured Track
+              </Text>
+              <Text style={styles.profileHeaderFeaturedDetailsSong}>
+                You don't currently have a featured track, let's add one.
+              </Text>
+            </View>
+          </View>
+        ) : (
           <View style={styles.profileHeaderFeaturedEmpty}>
             <Text style={styles.profileHeaderFeaturedDetailsTitle}>
               No Featured Track
             </Text>
-          </View>
-        ) : (
-          <View
-            style={{
-              width: '90%',
-              alignSelf: 'center',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              height: normalise(50),
-            }}>
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                backgroundColor: Colors.fadeblack,
-                height: normalise(40),
-                justifyContent: 'center',
-                width: normalise(40),
-              }}
-              onPress={() => {
-                navigation.navigate('FeaturedTrack');
-              }}>
-              <Image
-                source={ImagePath.addicon}
-                style={{
-                  height: normalise(20),
-                  width: normalise(20),
-                  borderRadius: normalise(10),
-                }}
-              />
-            </TouchableOpacity>
-
-            <View
-              style={{
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                marginLeft: normalise(10),
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(9),
-                  fontFamily: 'ProximaNova-Bold',
-                  opacity: 0.5,
-                }}>
-                FEATURED TRACK
-              </Text>
-
-              <Text
-                style={{
-                  width: '70%',
-                  marginTop: normalise(1),
-                  fontFamily: 'ProximaNova-Regular',
-                  color: Colors.white,
-                  fontSize: normalise(10),
-                }}>
-                You don't currently have a featured track. Let's add one
-              </Text>
-            </View>
           </View>
         )
       ) : (
@@ -180,6 +143,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   profileHeaderFeaturedSong: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
     height: normalise(48),
     width: normalise(48),
   },
