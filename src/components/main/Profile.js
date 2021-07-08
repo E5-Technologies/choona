@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   SafeAreaView,
   StyleSheet,
   View,
@@ -51,6 +52,7 @@ function Profile(props) {
   const getProfileReq = props.getProfileReq;
   const token = props.header.token;
 
+  const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalPrivacy, setModalPrivacy] = useState(false);
   const [modaltandcs, setModaltandcs] = useState(false);
@@ -70,6 +72,7 @@ function Profile(props) {
         'x-access-token': props.header.token,
       },
     });
+    setIsLoading(false);
     setProfilePosts([...profilePosts, ...response.data.data]);
     setNonEmpty(true);
   };
@@ -86,6 +89,8 @@ function Profile(props) {
             'x-access-token': token,
           },
         });
+        setIsLoading(false);
+
         response.data.data.length === 0
           ? (totalCount = totalCount)
           : (totalCount = response.data.data.length);
@@ -364,7 +369,7 @@ function Profile(props) {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <Loader visible={props.status === USER_PROFILE_REQUEST} />
+      {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
       <SafeAreaView style={{ flex: 1 }}>
         <View style={HeaderStyles.headerContainer}>
           <View style={HeaderStyles.leftItem}>
@@ -425,19 +430,15 @@ function Profile(props) {
           profile={props.userProfileResp}
           user={true}
         />
-        {_.isEmpty(profilePosts) && nonempty ? (
-          <FlatList
-            data={profilePosts}
-            renderItem={renderProfileData}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-            numColumns={2}
-            onEndReached={() => onEndReached()}
-            onEndReachedThreshold={1}
-          />
-        ) : (
+        {isLoading ? (
+          <View>
+            <ActivityIndicator
+              color="#ffffff"
+              size="large"
+              style={{ marginTop: normalise(25) }}
+            />
+          </View>
+        ) : _.isEmpty(profilePosts) && nonempty ? (
           <EmptyComponent
             buttonPress={() =>
               props.navigation.replace('bottomTab', { screen: 'Add' })
@@ -449,8 +450,19 @@ function Profile(props) {
             }
             title={'Your Profile is Empty'}
           />
+        ) : (
+          <FlatList
+            data={profilePosts}
+            renderItem={renderProfileData}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            onEndReached={() => onEndReached()}
+            onEndReachedThreshold={1}
+          />
         )}
-
         {renderModal()}
         {policyModel()}
         {tandcsModel()}
