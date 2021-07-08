@@ -78,7 +78,7 @@ const initialState = {
   editProfileResp: {},
   userSearch: [],
   followUnfollowResp: {},
-  othersProfileresp: {},
+  othersProfileresp: [],
   postData: [],
   currentPage: '',
   commentResp: {},

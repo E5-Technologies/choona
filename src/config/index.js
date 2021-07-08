@@ -9,8 +9,6 @@ const config = {
 
 const API_HOST = config.api.host;
 
-// const API_HOST = 'http://staging-api.choona.co';
-
 export { API_HOST };
 
 export default config;

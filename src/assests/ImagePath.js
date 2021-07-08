@@ -86,6 +86,7 @@ const ImagePath = {
   emptyInbox: require('./images/emptyIndex.png'),
   emptySaveSong: require('./images/emptySaveSong.png'),
   emptyPost: require('./images/emptyPost.png'),
+  userPlaceholder: require('./images/userPlaceholder.png'),
 };
 
 export default ImagePath;

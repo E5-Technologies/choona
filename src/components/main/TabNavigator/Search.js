@@ -65,6 +65,7 @@ import { getUsersFromHome } from '../../../action/UserAction';
 import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
+import EmptyComponent from '../../Empty/EmptyComponent';
 
 let status;
 let postStatus;
@@ -1467,85 +1468,18 @@ function Search(props) {
           )}
           {usersSearch ? ( //USERS VIEW
             _.isEmpty(songData) ? (
-              <View
-                style={{
-                  flex: 1,
-                  // justifyContent: 'center',
-                  // alignItems: 'center',
-                }}>
-                <Image
-                  source={ImagePath.emptyUser}
-                  style={{
-                    height: 2 * normalise(95),
-                    width: 2 * normalise(95),
-                    marginTop: '2%',
-                    alignSelf: 'center',
-                  }}
-                  resizeMode="contain"
-                />
-
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(14),
-
-                    marginTop: normalise(10),
-                    width: '68%',
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    fontFamily: 'ProximaNova-Bold',
-                  }}>
-                  Search Users to Follow
-                </Text>
-                <Text
-                  style={{
-                    color: Colors.fordGray,
-                    fontSize: normalise(12),
-                    fontWeight: '100',
-                    marginTop: normalise(5),
-                    width: '68%',
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    fontFamily: 'ProximaNova-Regular',
-                  }}>
-                  Search above to find users you want to follow by either their
-                  username or just typing their name.
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    marginBottom: normalise(30),
-                    marginTop: normalise(30),
-                    height: normalise(50),
-                    width: '80%',
-                    alignSelf: 'center',
-                    borderRadius: normalise(25),
-                    backgroundColor: Colors.white,
-                    borderWidth: normalise(0.5),
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 9,
-                    elevation: 11,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderColor: Colors.white,
-                  }}
-                  onPress={() => {
-                    setContactsLoading(true);
-                    getContacts();
-                  }}>
-                  <Text
-                    style={{
-                      marginLeft: normalise(10),
-                      color: Colors.darkerblack,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                    }}>
-                    SEARCH PHONEBOOK
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <EmptyComponent
+                buttonPress={() => {
+                  setContactsLoading(true);
+                  getContacts();
+                }}
+                buttonText={'Search Phonebook'}
+                image={ImagePath.emptyUser}
+                text={
+                  'Search above to find users you want to follow by either their username or just typing their name.'
+                }
+                title={'Search Users to Follow'}
+              />
             ) : (
               <View>
                 <View
