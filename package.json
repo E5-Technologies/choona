@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "ENVFILE=.env.staging react-native run-ios",
-    "ios:prod": "ENVFILE=.env.production react-native run-ios",
+    "ios": "react-native run-ios --scheme \"ChoonaDev\" --configuration Debug",
+    "ios:prod": "react-native run-ios --scheme \"Choona\" --configuration Debug",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
