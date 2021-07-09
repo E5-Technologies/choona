@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import env from 'react-native-config';
 import {
   View,
   Text,
@@ -39,8 +40,6 @@ function SignUp(props) {
   const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
   const [loginType, setLoginType] = useState('');
 
-  console.log(token2);
-
   useEffect(() => {
     (async () => {
       const { userId } = await OneSignal.getDeviceState();
@@ -61,9 +60,6 @@ function SignUp(props) {
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
-          // getDeviceToken()
-          //   .then(token => {
-          //     // console.log(token);
           let payload = {
             social_id: value.id,
             social_type: 'spotify',
@@ -71,25 +67,10 @@ function SignUp(props) {
             deviceType: Platform.OS,
           };
 
-          console.log({ payload });
-
           props.loginRequest(payload);
-          // })
-          // .catch(err => {
-          //   let payload = {
-          //     social_id: value.id,
-          //     social_type: 'spotify',
-          //     deviceToken: '',
-          //     deviceType: Platform.OS,
-          //   };
-
-          //   props.loginRequest(payload);
-          // });
         }
       })
-      .catch(error => {
-        // console.log(error);
-      });
+      .catch(error => {});
   }
 
   //ON APLLE BUTTON PRESS
@@ -111,7 +92,6 @@ function SignUp(props) {
       const {
         user: newUser,
         email,
-        nonce,
         identityToken,
         realUserStatus /* etc */,
       } = appleAuthRequestResponse;
@@ -247,7 +227,6 @@ function SignUp(props) {
           }}
           resizeMode="contain"
         />
-
         <Image
           source={ImagePath.applogo}
           style={{
@@ -256,8 +235,19 @@ function SignUp(props) {
           }}
           resizeMode="contain"
         />
+        {env.IS_PRODUCTION === 'false' && (
+          <Text
+            style={{
+              color: '#fff',
+              fontFamily: 'ProximaNova-Bold',
+              fontSize: 20,
+              marginTop: 10,
+              textAlign: 'center',
+            }}>
+            Staging
+          </Text>
+        )}
       </View>
-
       <View
         style={{
           height: Platform.OS === 'android' ? '45%' : '50%',
@@ -289,7 +279,8 @@ function SignUp(props) {
             justifyContent: 'center',
           }}
           onPress={() => {
-            spotifyLogin(), setLoginType('Spotify');
+            spotifyLogin();
+            setLoginType('Spotify');
           }}>
           <Image
             source={ImagePath.spotifyicon}
