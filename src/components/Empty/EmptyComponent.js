@@ -8,7 +8,11 @@ const EmptyComponent = ({ buttonPress, buttonText, image, text, title }) => {
   return (
     <View style={styles.emptyContainer}>
       {image && (
-        <Image source={image} style={styles.emptyImage} resizeMode="contain" />
+        <Image
+          source={image ? image : null}
+          style={styles.emptyImage}
+          resizeMode="contain"
+        />
       )}
       <Text style={styles.emptyTitle}>{title}</Text>
       <Text style={styles.emptyText}>{text}</Text>

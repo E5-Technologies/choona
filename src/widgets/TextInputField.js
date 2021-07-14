@@ -68,7 +68,11 @@ function TextInputField(props) {
       {props.tick_req && props.tick_visible ? (
         <Image
           source={
-            props.userNameAvailable ? ImagePath.green_tick : ImagePath.crossIcon
+            ImagePath
+              ? props.userNameAvailable
+                ? ImagePath.green_tick
+                : ImagePath.crossIcon
+              : null
           }
           style={{
             position: 'absolute',

@@ -38,9 +38,11 @@ const HomeListItemFooter = ({
             }}>
             <Image
               source={
-                userAvatar === ''
-                  ? ImagePath.dp1
-                  : { uri: constants.profile_picture_base_url + userAvatar }
+                ImagePath
+                  ? userAvatar === ''
+                    ? ImagePath.dp1
+                    : { uri: constants.profile_picture_base_url + userAvatar }
+                  : null
               }
               style={styles.listItemFooterAvatar}
               resizeMode="contain"
@@ -69,7 +71,7 @@ const HomeListItemFooter = ({
                   width: normalise(18),
                 })
               }
-              source={ImagePath.reactionShow}
+              source={ImagePath ? ImagePath.reactionShow : null}
               resizeMode="contain"
             />
             <Text style={styles.listItemFooterButtonText}>{reactionCount}</Text>
@@ -79,7 +81,7 @@ const HomeListItemFooter = ({
             onPress={() => onPressCommentbox()}>
             <Image
               style={styles.listItemFooterButtonIcon}
-              source={ImagePath.comment_grey}
+              source={ImagePath ? ImagePath.comment_grey : null}
               resizeMode="contain"
             />
             <Text style={styles.listItemFooterButtonText}>{commentCount}</Text>
@@ -89,7 +91,7 @@ const HomeListItemFooter = ({
             onPress={() => onPressMenu()}>
             <Image
               style={styles.listItemFooterActionsButton}
-              source={ImagePath.threedots}
+              source={ImagePath ? ImagePath.threedots : null}
               resizeMode="contain"
             />
           </TouchableOpacity>

@@ -17,7 +17,13 @@ const HomeListItemHeader = ({
     <View style={styles.listItemHeaderContainer}>
       <View style={styles.listItemHeaderSongDetails}>
         <Image
-          source={postType ? ImagePath.spotifyicon : ImagePath.apple_icon_round}
+          source={
+            ImagePath
+              ? postType
+                ? ImagePath.spotifyicon
+                : ImagePath.apple_icon_round
+              : null
+          }
           style={styles.listItemHeaderSongTypeIcon}
           resizeMode="contain"
         />
@@ -33,7 +39,9 @@ const HomeListItemHeader = ({
       {songUri && (
         <TouchableOpacity onPress={() => onPressMusicbox()}>
           <Image
-            source={play ? ImagePath.pause : ImagePath.play}
+            source={
+              ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+            }
             style={styles.listItemHeaderPlayButton}
             resizeMode="contain"
           />

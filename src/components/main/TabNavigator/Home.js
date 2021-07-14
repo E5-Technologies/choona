@@ -127,7 +127,7 @@ function Home(props) {
   let changePlayer = false;
 
   var handleAppStateChange = state => {
-    console.log('state_Change:' + state);
+    // console.log('state_Change:' + state);
 
     if (state !== 'active') {
       if (global.playerReference !== null) {
@@ -789,12 +789,12 @@ function Home(props) {
             flexDirection: 'row',
             paddingBottom: normalise(10),
           }}>
-          <Image
+          {/* <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-          />
+          /> */}
           <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
@@ -853,7 +853,7 @@ function Home(props) {
             sesUsersToSEndSong(popArray);
           }}>
           <Image
-            source={ImagePath.crossIcon}
+            source={ImagePath ? ImagePath.crossIcon : null}
             style={{
               marginTop: normalise(-1.5),
               marginStart: normalise(8.5),
@@ -994,7 +994,7 @@ function Home(props) {
             />
 
             <Image
-              source={ImagePath.searchicongrey}
+              source={ImagePath ? ImagePath.searchicongrey : null}
               style={{
                 height: normalise(15),
                 width: normalise(15),
@@ -1305,7 +1305,7 @@ function Home(props) {
         {_.isEmpty(props.postData) ? (
           <View style={{ flex: 1, alignItems: 'center', marginTop: '4%' }}>
             <Image
-              source={ImagePath.emptyPost}
+              source={ImagePath ? ImagePath.emptyPost : null}
               style={{
                 height: 2 * normalise(90),
                 width: 2 * normalise(90),
@@ -1484,7 +1484,7 @@ function Home(props) {
             ) : null}
             {renderAddToUsers()}
 
-            {console.log('props.statj' + props.status)}
+            {/* {console.log('props.statj' + props.status)} */}
             {(props.status === HOME_PAGE_SUCCESS ||
               props.status === USER_PROFILE_SUCCESS ||
               props.status === COUNTRY_CODE_SUCCESS ||
@@ -1562,7 +1562,7 @@ function Home(props) {
                 //Alert.alert("Modal has been closed.");
               }}>
               <ImageBackground
-                source={ImagePath.page_gradient}
+                source={ImagePath ? ImagePath.page_gradient : null}
                 style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <TouchableOpacity
@@ -1591,7 +1591,7 @@ function Home(props) {
                       setModalVisible(!modalVisible);
                     }}>
                     <Image
-                      source={ImagePath.boxicon}
+                      source={ImagePath ? ImagePath.boxicon : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1618,7 +1618,7 @@ function Home(props) {
                       }
                     }}>
                     <Image
-                      source={ImagePath.sendicon}
+                      source={ImagePath ? ImagePath.sendicon : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1650,7 +1650,7 @@ function Home(props) {
                       alignItems: 'center',
                     }}>
                     <Image
-                      source={ImagePath.more_copy}
+                      source={ImagePath ? ImagePath.more_copy : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1685,7 +1685,7 @@ function Home(props) {
                           ); //  DELETE POST
                     }}>
                     <Image
-                      source={ImagePath.more_unfollow}
+                      source={ImagePath ? ImagePath.more_unfollow : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1751,7 +1751,7 @@ function Home(props) {
                             });
                       }
                     }}>
-                    <Image
+                    {/* <Image
                       source={
                         !_.isEmpty(props.userProfileResp)
                           ? props.userProfileResp.register_type === 'spotify'
@@ -1764,7 +1764,7 @@ function Home(props) {
                         width: normalise(18),
                       }}
                       resizeMode="contain"
-                    />
+                    /> */}
                     <Text
                       style={{
                         color: Colors.white,
@@ -1806,7 +1806,7 @@ function Home(props) {
                       }
                     }}>
                     <Image
-                      source={ImagePath.addicon}
+                      source={ImagePath ? ImagePath.addicon : null}
                       style={{
                         height: normalise(18),
                         width: normalise(18),

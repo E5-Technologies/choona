@@ -100,7 +100,7 @@ export default function Splash(props) {
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Image
-        source={ImagePath.appIcon512}
+        source={ImagePath ? ImagePath.appIcon512 : null}
         style={{ height: normalise(130), width: '60%' }}
         resizeMode="contain"
       />
@@ -113,7 +113,7 @@ export default function Splash(props) {
           bottom: normalise(-50),
         }}>
         <Image
-          source={ImagePath.addPostIllus}
+          source={ImagePath ? ImagePath.addPostIllus : null}
           style={{ height: normalise(170), width: '100%' }}
           resizeMode="cover"
         />

@@ -355,7 +355,7 @@ function HomeItemReaction(props) {
             />
 
             <Image
-              source={ImagePath.searchicongrey}
+              source={ImagePath ? ImagePath.searchicongrey : null}
               style={{
                 height: normalise(15),
                 width: normalise(15),
@@ -411,7 +411,7 @@ function HomeItemReaction(props) {
                 alignItems: 'center',
               }}>
               <Image
-                source={ImagePath.blankreactionbg}
+                source={ImagePath ? ImagePath.blankreactionbg : null}
                 style={{ height: normalise(225), width: normalise(225) }}
                 resizeMode="contain"
               />

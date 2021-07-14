@@ -7,7 +7,6 @@ import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 
 const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
-  console.log(profile);
   return (
     <View style={styles.profileHeaderContainer}>
       <View style={styles.avatarBackground}>

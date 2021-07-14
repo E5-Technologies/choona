@@ -92,7 +92,6 @@ export function* loginAction(action) {
 
   try {
     const response = yield call(postApi, 'user/signin', action.payload, header);
-
     if (response.data.status === 200) {
       yield call(
         AsyncStorage.setItem,

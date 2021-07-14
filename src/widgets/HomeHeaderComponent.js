@@ -43,7 +43,7 @@ function HomeHeaderComponent(props) {
               onPressFirstItem();
             }}>
             <Image
-              source={{ uri: props.imageone ?? props.imageone }}
+              source={props && props.imageone ? { uri: props.imageone } : null}
               style={{
                 // height: props.imageoneheight,
                 // width: props.imageonewidth,
@@ -68,14 +68,14 @@ function HomeHeaderComponent(props) {
           }}>
           <Image
             style={HeaderStyles.logo}
-            source={ImagePath.home_icon_choona}
+            source={ImagePath ? ImagePath.home_icon_choona : null}
             resizeMode={'contain'}
           />
         </TouchableOpacity>
       ) : (
         <Image
           style={HeaderStyles.logo}
-          source={ImagePath.home_icon_choona}
+          source={ImagePath ? ImagePath.home_icon_choona : null}
           resizeMode={'contain'}
         />
       )}
@@ -90,7 +90,7 @@ function HomeHeaderComponent(props) {
         ) : (
           <>
             <Image
-              source={props.imagetwo ?? props.imagetwo}
+              source={props && props.imagetwo ? props.imagetwo : null}
               style={{
                 height: props.imagetwoheight,
                 width: props.imagetwowidth,

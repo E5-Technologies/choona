@@ -280,7 +280,7 @@ function HomeItemComments(props) {
                 }}
               /> */}
                 <Image
-                  source={{ uri: image }}
+                  source={image ? { uri: image } : null}
                   style={styles.commentHeaderAvatar}
                   resizeMode="contain"
                 />
@@ -359,10 +359,15 @@ function HomeItemComments(props) {
                     tagFriend.push(item.username);
                   }}>
                   <Image
-                    source={{
-                      uri:
-                        constants.profile_picture_base_url + item.profile_image,
-                    }}
+                    source={
+                      item
+                        ? {
+                            uri:
+                              constants.profile_picture_base_url +
+                              item.profile_image,
+                          }
+                        : null
+                    }
                     resizeMode="contain"
                     style={{
                       height: Dimensions.get('window').width / 12,

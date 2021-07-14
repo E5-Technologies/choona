@@ -112,7 +112,7 @@ const App = () => {
     OneSignal.setLogLevel(6, 0);
     OneSignal.setRequiresUserPrivacyConsent(false);
     OneSignal.promptForPushNotificationsWithUserResponse(response => {
-      console.log('Prompt response:', response);
+      // console.log('Prompt response:', response);
     });
   }, []);
 
@@ -163,7 +163,11 @@ const App = () => {
                     width: normalise(20),
                   }}
                   source={
-                    focused ? ImagePath.homeactive : ImagePath.homeinactive
+                    ImagePath
+                      ? focused
+                        ? ImagePath.homeactive
+                        : ImagePath.homeinactive
+                      : null
                   }
                   resizeMode="contain"
                 />
@@ -188,7 +192,11 @@ const App = () => {
                     width: normalise(20),
                   }}
                   source={
-                    focused ? ImagePath.searchactive : ImagePath.searchinactive
+                    ImagePath
+                      ? focused
+                        ? ImagePath.searchactive
+                        : ImagePath.searchinactive
+                      : null
                   }
                   resizeMode="contain"
                 />
@@ -212,7 +220,13 @@ const App = () => {
                     height: normalise(40),
                     width: normalise(40),
                   }}
-                  source={focused ? ImagePath.addButton : ImagePath.addButton}
+                  source={
+                    ImagePath
+                      ? focused
+                        ? ImagePath.addButton
+                        : ImagePath.addButton
+                      : null
+                  }
                   resizeMode="contain"
                 />
               ),
@@ -237,9 +251,11 @@ const App = () => {
                       width: normalise(20),
                     }}
                     source={
-                      focused
-                        ? ImagePath.notificationactive
-                        : ImagePath.notificationinactive
+                      ImagePath
+                        ? focused
+                          ? ImagePath.notificationactive
+                          : ImagePath.notificationinactive
+                        : null
                     }
                     resizeMode="contain"
                   />
@@ -279,10 +295,16 @@ const App = () => {
                         : Dimensions.get('window').height > 736
                         ? normalise(0)
                         : normalise(10),
-                    height: normalize(22),
-                    width: normalize(22),
+                    height: normalise(22),
+                    width: normalise(22),
                   }}
-                  source={focused ? ImagePath.boxactive : ImagePath.boxinactive}
+                  source={
+                    ImagePath
+                      ? focused
+                        ? ImagePath.boxactive
+                        : ImagePath.boxinactive
+                      : null
+                  }
                   resizeMode="contain"
                 />
               ),

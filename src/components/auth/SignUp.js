@@ -291,7 +291,7 @@ function Login(props) {
                 props.navigation.goBack();
               }}>
               <Image
-                source={ImagePath.backicon}
+                source={ImagePath ? ImagePath.backicon : null}
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
@@ -320,7 +320,7 @@ function Login(props) {
             }}>
             {picture ? (
               <Image
-                source={{ uri: profilePic }}
+                source={profilePic ? { uri: profilePic } : null}
                 style={{
                   height: normalise(120),
                   width: normalise(120),
@@ -334,7 +334,7 @@ function Login(props) {
                   showPickerOptions();
                 }}>
                 <Image
-                  source={ImagePath.add_white}
+                  source={ImagePath ? ImagePath.add_white : null}
                   style={{
                     height: normalise(40),
                     width: normalise(40),
@@ -470,7 +470,7 @@ function Login(props) {
                 padding: normalise(5),
               }}>
               <Image
-                source={ImagePath.spotifyicon}
+                source={ImagePath ? ImagePath.spotifyicon : null}
                 style={{
                   height: normalise(22),
                   width: normalise(22),

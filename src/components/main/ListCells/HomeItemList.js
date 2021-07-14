@@ -113,7 +113,11 @@ function HomeItemList(props) {
         }}>
         <Image
           source={
-            props.image === '' ? ImagePath.profiletrack1 : { uri: props.image }
+            ImagePath
+              ? props.image === ''
+                ? ImagePath.profiletrack1
+                : { uri: props.image }
+              : null
           }
           style={{
             aspectRatio: 1,

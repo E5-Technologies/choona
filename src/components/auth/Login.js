@@ -220,7 +220,7 @@ function SignUp(props) {
           height: normalise(375),
         }}>
         <Image
-          source={ImagePath.albumsPic}
+          source={ImagePath ? ImagePath.albumsPic : null}
           style={{
             height: normalise(300),
             width: '100%',
@@ -228,7 +228,7 @@ function SignUp(props) {
           resizeMode="contain"
         />
         <Image
-          source={ImagePath.applogo}
+          source={ImagePath ? ImagePath.applogo : null}
           style={{
             height: normalise(40),
             alignSelf: 'center',
@@ -283,7 +283,7 @@ function SignUp(props) {
             setLoginType('Spotify');
           }}>
           <Image
-            source={ImagePath.spotifyicon}
+            source={ImagePath ? ImagePath.spotifyicon : null}
             style={{
               height: normalise(32),
               width: normalise(32),
@@ -326,7 +326,7 @@ function SignUp(props) {
             }}
             onPress={() => onAppleButtonPress(updateCredentialStateForUser)}>
             <Image
-              source={ImagePath.applemusic}
+              source={ImagePath ? ImagePath.applemusic : null}
               style={{
                 height: normalise(32),
                 width: normalise(32),

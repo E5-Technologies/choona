@@ -132,7 +132,11 @@ function MusicPlayerBar(props) {
               onPress();
             }}>
             <Image
-              source={{ uri: props.playingSongRef.song_pic }}
+              source={
+                props?.playingSongRef?.song_pic
+                  ? { uri: props.playingSongRef.song_pic }
+                  : null
+              }
               style={{ height: normalise(45), width: normalise(45) }}
               resizeMode="contain"
             />
@@ -175,7 +179,9 @@ function MusicPlayerBar(props) {
               playOrPause(), onPressPlayOrPause();
             }}>
             <Image
-              source={play ? ImagePath.pause : ImagePath.play}
+              source={
+                ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+              }
               style={{ height: normalise(25), width: normalise(25) }}
               resizeMode={'contain'}
             />
