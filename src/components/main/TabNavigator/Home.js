@@ -1528,7 +1528,7 @@ function Home(props) {
 
             <Modal
               animationType="fade"
-              transparent={true}
+              transparent={false}
               visible={visible}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");
@@ -1555,9 +1555,9 @@ function Home(props) {
 
             <Modal
               animationType="fade"
-              // transparent={true}
+              transparent={true}
               visible={modalVisible}
-              presentationStyle={'pageSheet'}
+              presentationStyle={'overFullScreen'}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");
               }}>
@@ -1751,20 +1751,22 @@ function Home(props) {
                             });
                       }
                     }}>
-                    {/* <Image
+                    <Image
                       source={
-                        !_.isEmpty(props.userProfileResp)
-                          ? props.userProfileResp.register_type === 'spotify'
-                            ? ImagePath.spotifyicon
-                            : ImagePath.applemusic
-                          : ''
+                        ImagePath
+                          ? !_.isEmpty(props.userProfileResp)
+                            ? props.userProfileResp.register_type === 'spotify'
+                              ? ImagePath.spotifyicon
+                              : ImagePath.applemusic
+                            : null
+                          : null
                       }
                       style={{
                         height: normalise(18),
                         width: normalise(18),
                       }}
                       resizeMode="contain"
-                    /> */}
+                    />
                     <Text
                       style={{
                         color: Colors.white,

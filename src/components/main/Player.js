@@ -932,6 +932,7 @@ function Player(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {
           //Alert.alert("Modal has been closed.");
         }}>

@@ -951,7 +951,7 @@ function InsideaMessage(props) {
             animationType="fade"
             transparent={true}
             visible={modalVisible}
-            presentationStyle={'pageSheet'}
+            presentationStyle={'overFullScreen'}
             onRequestClose={() => {
               //Alert.alert("Modal has been closed.");
             }}>

@@ -227,15 +227,7 @@ function Notification(props) {
     });
   };
 
-  return isloadings ? (
-    <View style={{ flex: 1, backgroundColor: '#000000' }}>
-      <ActivityIndicator
-        color="#ffffff"
-        size="large"
-        style={{ marginTop: 4 * normaliseNew(90) }}
-      />
-    </View>
-  ) : (
+  return (
     <View style={styles.container}>
       <StatusBar />
 

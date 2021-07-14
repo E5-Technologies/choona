@@ -184,7 +184,7 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {}}>
         <ImageBackground
           source={ImagePath.page_gradient}
@@ -304,9 +304,9 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={false}
+        transparent={true}
         visible={modalPrivacy}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {
           setModalPrivacy(false);
         }}>
@@ -337,9 +337,9 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={false}
+        transparent={true}
         visible={modaltandcs}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {
           setModaltandcs(false);
         }}>
