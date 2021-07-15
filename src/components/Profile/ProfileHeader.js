@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     color: Colors.darkgrey,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(11),
-    width: normalise(78),
+    marginRight: normalise(8),
   },
   profileHeaderDetailsLinkSub: {
     color: Colors.white,

@@ -41,6 +41,8 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import EmptyComponent from '../Empty/EmptyComponent';
+
 let status;
 
 function Following(props) {
@@ -253,24 +255,21 @@ function Following(props) {
             props.navigation.goBack();
           }}
         />
-
         <View
           style={{
-            width: '92%',
-            alignSelf: 'center',
+            marginHorizontal: normalise(12),
+            paddingTop: normalise(12),
           }}>
           <TextInput
             autoCorrect={false}
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-              width: '100%',
-              backgroundColor: Colors.fadeblack,
-              borderRadius: normalise(8),
-              marginTop: normalise(20),
+              backgroundColor: Colors.white,
+              borderRadius: normalise(6),
               padding: normalise(10),
-              color: Colors.white,
-              paddingLeft: normalise(35),
+              color: Colors.black,
+              paddingLeft: normalise(30),
             }}
             value={search}
             placeholder={'Search'}
@@ -283,10 +282,10 @@ function Following(props) {
           <Image
             source={ImagePath.searchicongrey}
             style={{
-              height: normalise(16),
-              width: normalise(16),
+              height: normalise(15),
+              width: normalise(15),
               bottom: normalise(25),
-              paddingLeft: normalise(40),
+              paddingLeft: normalise(30),
             }}
             resizeMode="contain"
           />
@@ -297,7 +296,7 @@ function Following(props) {
                 setSearch(''), props.followingSearch('');
               }}
               style={{
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.grey_text,
                 padding: 6,
                 paddingTop: 4,
                 paddingBottom: 4,
@@ -318,63 +317,26 @@ function Following(props) {
             </TouchableOpacity>
           )}
         </View>
-
         {_.isEmpty(props.followingData) ? (
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                height: '45%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(15),
-                  textAlign: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                  fontWeight: 'bold',
-                }}>
-                YOU DON'T FOLLOW ANYONE
-              </Text>
-
-              <Text
-                style={{
-                  color: Colors.grey_text,
-                  fontSize: normalise(12),
-                  textAlign: 'center',
-                  fontFamily: 'ProximaNova-Semibold',
-                  fontWeight: 'bold',
-                  width: '80%',
-                  marginTop: normalise(5),
-                }}>
-                Choona is a lonely place when you aren't following anyone, See
-                if you already have friends by connecting below
-              </Text>
-            </View>
-
-            {/* <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(12),
-                  marginLeft: normalise(10),
-                  fontFamily: 'ProximaNova-Semibold',
-                  fontWeight: 'bold',
-                }}>
-                FOLLOW SOME OF OUR POPULAR USERS
-              </Text> */}
-
-            <FlatList
-              style={{ marginTop: normalise(10) }}
-              data={top5followingList}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              renderItem={rendertop5FollowersItem}
-              ItemSeparatorComponent={Seperator}
+          <>
+            <EmptyComponent
+              text={
+                "Choona is a lonely place when you aren't following anyone. See if you already have friends by connecting below."
+              }
+              title={"You don't follow anyone"}
             />
-          </View>
+            <View style={{ flex: 1 }}>
+              <FlatList
+                data={top5followingList}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item, index) => {
+                  index.toString();
+                }}
+                renderItem={rendertop5FollowersItem}
+                ItemSeparatorComponent={Seperator}
+              />
+            </View>
+          </>
         ) : (
           <FlatList
             data={props.followingData}

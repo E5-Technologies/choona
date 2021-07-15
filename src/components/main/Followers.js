@@ -167,9 +167,7 @@ function Followers(props) {
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
       <Loader visible={bool} />
-
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -185,23 +183,20 @@ function Followers(props) {
             props.navigation.goBack();
           }}
         />
-
         <View
           style={{
-            width: '92%',
-            alignSelf: 'center',
+            marginHorizontal: normalise(12),
+            paddingTop: normalise(12),
           }}>
           <TextInput
             autoCorrect={false}
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-              width: '100%',
-              backgroundColor: Colors.fadeblack,
-              borderRadius: normalise(8),
-              marginTop: normalise(20),
+              backgroundColor: Colors.white,
+              borderRadius: normalise(6),
               padding: normalise(10),
-              color: Colors.white,
+              color: Colors.black,
               paddingLeft: normalise(30),
             }}
             value={search}
@@ -211,7 +206,6 @@ function Followers(props) {
               setSearch(text), props.followerSearch(text);
             }}
           />
-
           <Image
             source={ImagePath.searchicongrey}
             style={{
@@ -222,14 +216,13 @@ function Followers(props) {
             }}
             resizeMode="contain"
           />
-
           {search === '' ? null : (
             <TouchableOpacity
               onPress={() => {
                 setSearch(''), props.followerSearch('');
               }}
               style={{
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.grey_text,
                 padding: 6,
                 paddingTop: 4,
                 paddingBottom: 4,
@@ -250,7 +243,6 @@ function Followers(props) {
             </TouchableOpacity>
           )}
         </View>
-
         <FlatList
           data={props.followerData}
           showsVerticalScrollIndicator={false}
