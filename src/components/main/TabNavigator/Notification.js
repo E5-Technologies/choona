@@ -37,6 +37,7 @@ import {
   userFollowUnfollowRequest,
 } from '../../../action/UserAction';
 import Contacts from 'react-native-contacts';
+import EmptyComponent from '../../Empty/EmptyComponent';
 
 var isLoading = true;
 const activityUrl = constants.BASE_URL + '/activity/list';
@@ -340,64 +341,19 @@ function Notification(props) {
               }
             />
           </ScrollView>
-        ) : empityVisible.length === 0 ? (
-          <View style={styles.emptyWrapper}>
-            {/* <View style={styles.emptyContainer}> */}
-            <Image
-              source={ImagePath.emptyNotify}
-              style={styles.emptyImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.emptyContainerText2}>
-              No Notifications Yet...
-            </Text>
-            <Text style={styles.emptyContainerText}>
-              You haven't recieved any notifications yet.
-            </Text>
-            <Text style={styles.emptyContainerText}>
-              Choona is more fun with more people,
-            </Text>
-            <Text style={styles.emptyContainerText}>
-              search your phonebook below.
-            </Text>
-            <TouchableOpacity
-              style={{
-                marginBottom: normalise(30),
-                marginTop: normalise(30),
-                height: normalise(48),
-                width: '80%',
-                alignSelf: 'center',
-                borderRadius: normalise(25),
-                backgroundColor: Colors.white,
-                borderWidth: normalise(0.5),
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.5,
-                shadowRadius: 9,
-                elevation: 11,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderColor: Colors.white,
-                position: 'absolute',
-                bottom: 0,
-              }}
-              onPress={() => {
-                setIsLoading(true);
-                getContacts();
-              }}>
-              <Text
-                style={{
-                  marginLeft: normalise(10),
-                  color: Colors.darkerblack,
-                  fontSize: normalise(12),
-                  fontWeight: 'bold',
-                }}>
-                SEARCH PHONEBOOK
-              </Text>
-            </TouchableOpacity>
-            {/* </View> */}
-          </View>
+        ) : empityVisible.length === 1 ? (
+          <EmptyComponent
+            buttonPress={() => {
+              setIsLoading(true);
+              getContacts();
+            }}
+            buttonText={'Search Phonebook'}
+            image={ImagePath ? ImagePath.emptyNotify : null}
+            text={
+              'You haven’t recieved any notifications yet. Choona is more fun with more people, search your phonebook below.'
+            }
+            title={'No Notifcations Yet...'}
+          />
         ) : (
           <View>
             <ActivityIndicator

@@ -155,7 +155,7 @@ function OthersProfile(props) {
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
-          imageone={ImagePath.backicon}
+          imageone={ImagePath ? ImagePath.backicon : null}
           title={props.othersProfileresp.full_name}
           thirditemtext={true}
           texttwo={''}
@@ -191,7 +191,7 @@ function OthersProfile(props) {
           </View>
         ) : _.isEmpty(profilePosts) ? (
           <EmptyComponent
-            image={ImagePath.emptyPost}
+            image={ImagePath ? ImagePath.emptyPost : null}
             text={`${
               props.othersProfileresp.username
                 ? props.othersProfileresp.username

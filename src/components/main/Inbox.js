@@ -42,6 +42,7 @@ import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import _ from 'lodash';
+import EmptyComponent from '../Empty/EmptyComponent';
 
 let status;
 
@@ -201,10 +202,10 @@ function Inbox(props) {
         <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={false}
-            imageone={ImagePath.backicon}
+            imageone={ImagePath ? ImagePath.backicon : null}
             title={'INBOX'}
             thirditemtext={false}
-            imagetwo={ImagePath.newmessage}
+            imagetwo={ImagePath ? ImagePath.newmessage : null}
             imagetwoheight={25}
             imagetwowidth={25}
             onPressFirstItem={() => {
@@ -244,7 +245,7 @@ function Inbox(props) {
               />
 
               <Image
-                source={ImagePath.searchicongrey}
+                source={ImagePath ? ImagePath.searchicongrey : null}
                 style={{
                   height: normalise(15),
                   width: normalise(15),
@@ -285,88 +286,17 @@ function Inbox(props) {
           )}
 
           {_.isEmpty(props.chatList) && nonEmpty ? (
-            <View
-              style={{
-                flex: 1,
-                // justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {/* <Text style={{ color: Colors.white, fontSize: normalise(15) }}>
-                No Messages
-              </Text> */}
-
-              <Image
-                source={ImagePath.emptyInbox}
-                style={{
-                  height: 3 * normalise(85),
-                  width: 3 * normalise(85),
-                  marginTop: '6%',
-                  alignSelf: 'center',
-                }}
-                resizeMode="cover"
-              />
-
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(15),
-                  fontWeight: '500',
-                  marginTop: normalise(3),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                Your Inbox is Empty
-              </Text>
-              <Text
-                style={{
-                  color: Colors.fordGray,
-                  fontSize: normalise(12),
-                  fontWeight: '100',
-                  marginTop: normalise(10),
-                  width: '65%',
-                  textAlign: 'center',
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Regular',
-                }}>
-                You haven’t started sending music to people, click the button
-                below to send your first song.
-              </Text>
-              <TouchableOpacity
-                style={{
-                  marginBottom: normalise(30),
-                  marginTop: normalise(50),
-                  height: normalise(48),
-                  width: '80%',
-                  alignSelf: 'center',
-                  borderRadius: normalise(25),
-                  backgroundColor: Colors.white,
-                  borderWidth: normalise(0.5),
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 9,
-                  elevation: 11,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderColor: Colors.white,
-                }}
-                onPress={() => {
-                  props.navigation.navigate('AddSongsInMessage');
-                }}>
-                <Text
-                  style={{
-                    marginLeft: normalise(10),
-                    color: Colors.darkerblack,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                  }}>
-                  SEND A SONG TO SOMEONE
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <EmptyComponent
+              buttonPress={() => {
+                props.navigation.navigate('AddSongsInMessage');
+              }}
+              buttonText={'Send a song to someone'}
+              image={ImagePath ? ImagePath.emptyInbox : null}
+              text={
+                'You haven’t started sending music to people, click the button below to send your first song.'
+              }
+              title={'Your Inbox is empty'}
+            />
           ) : (
             <FlatList
               data={mesageList}

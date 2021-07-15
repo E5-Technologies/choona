@@ -55,6 +55,8 @@ import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 
+import EmptyComponent from '../../Empty/EmptyComponent';
+
 let status;
 let userstatus;
 let messageStatus;
@@ -219,7 +221,7 @@ function Contact(props) {
           //Alert.alert("Modal has been closed.");
         }}>
         <ImageBackground
-          source={ImagePath.page_gradient}
+          source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>
           <View style={styles.modalView}>
             <TouchableOpacity
@@ -232,7 +234,7 @@ function Contact(props) {
                   setModalVisible(!modalVisible);
               }}>
               <Image
-                source={ImagePath.boxicon}
+                source={ImagePath ? ImagePath.boxicon : null}
                 style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
@@ -259,7 +261,7 @@ function Contact(props) {
                 }
               }}>
               <Image
-                source={ImagePath.sendicon}
+                source={ImagePath ? ImagePath.sendicon : null}
                 style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
@@ -289,7 +291,7 @@ function Contact(props) {
                 }, 1000);
               }}>
               <Image
-                source={ImagePath.more_copy}
+                source={ImagePath ? ImagePath.more_copy : null}
                 style={{ height: normalise(18), width: normalise(18) }}
                 resizeMode="contain"
               />
@@ -349,9 +351,11 @@ function Contact(props) {
               }}>
               <Image
                 source={
-                  props.userProfileResp.register_type === 'spotify'
-                    ? ImagePath.spotifyicon
-                    : ImagePath.applemusic
+                  ImagePath
+                    ? props.userProfileResp.register_type === 'spotify'
+                      ? ImagePath.spotifyicon
+                      : ImagePath.applemusic
+                    : null
                 }
                 style={{
                   height: normalise(18),
@@ -398,7 +402,7 @@ function Contact(props) {
                 }
               }}>
               <Image
-                source={ImagePath.addicon}
+                source={ImagePath ? ImagePath.addicon : null}
                 style={{
                   height: normalise(18),
                   width: normalise(18),
@@ -574,7 +578,7 @@ function Contact(props) {
             sesUsersToSEndSong(popArray);
           }}>
           <Image
-            source={ImagePath.crossIcon}
+            source={ImagePath ? ImagePath.crossIcon : null}
             style={{
               marginTop: normalise(-1.5),
               marginStart: normalise(8.5),
@@ -702,7 +706,7 @@ function Contact(props) {
             />
 
             <Image
-              source={ImagePath.searchicongrey}
+              source={ImagePath ? ImagePath.searchicongrey : null}
               style={{
                 height: normalise(15),
                 width: normalise(15),
@@ -956,7 +960,7 @@ function Contact(props) {
               />
 
               <Image
-                source={ImagePath.searchicongrey}
+                source={ImagePath ? ImagePath.searchicongrey : null}
                 style={{
                   height: normalise(15),
                   width: normalise(15),
@@ -999,61 +1003,13 @@ function Contact(props) {
           )}
 
           {_.isEmpty(allSaveSong) && noEmpty ? (
-            <View
-              style={{
-                flex: 1,
-                // justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {/* <Text
-                 style={{
-                   marginBottom: '20%',
-                   marginTop: normalise(10),
-                   color: Colors.white,
-                   fontSize: normalise(12),
-                   fontWeight: 'bold',
-                 }}>
-                 NO SAVED SONGS
-               </Text> */}
-              <Image
-                source={ImagePath.emptySaveSong}
-                style={{
-                  height: 3 * normalise(85),
-                  width: 2.6 * normalise(85),
-                  marginTop: '5%',
-                  alignSelf: 'center',
-                }}
-                resizeMode="contain"
-              />
-
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(15),
-                  fontWeight: '500',
-                  // marginTop: normalise(3),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                No Saved Songs
-              </Text>
-              <Text
-                style={{
-                  color: Colors.fordGray,
-                  fontSize: normalise(12),
-                  fontWeight: '100',
-                  marginTop: normalise(8),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Regular',
-                }}>
-                When you see a song you love, just click the more menu and save
-                that song. Then you can access it forever from here.
-              </Text>
-            </View>
+            <EmptyComponent
+              image={ImagePath ? ImagePath.emptySaveSong : null}
+              text={
+                'When you see a song you love, just click the more menu and save that song. Then you can access it forever from here.'
+              }
+              title={'No Saved Songs'}
+            />
           ) : (
             <SwipeListView
               data={allSaveSong}
