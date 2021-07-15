@@ -12,10 +12,10 @@ target 'Choona' do
     :hermes_enabled => false
   )
 
-  # target 'ChoonaTests' do
-  #   inherit! :complete
-  #   # Pods for testing
-  # end
+  target 'ChoonaDev' do
+    inherit! :complete
+    # Pods for testing
+  end
 
   # Enables Flipper.
   #
