@@ -1,16 +1,14 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   Keyboard,
   FlatList,
   Image,
-  ImageBackground,
   TextInput,
+  Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
@@ -242,7 +240,6 @@ function AddSongsInMessage(props) {
               props.registerType === 'spotify'
                 ? data.item.preview_url
                 : data.item.attributes.previews[0].url,
-            id: '',
             artist:
               props.registerType === 'spotify'
                 ? singerList(data.item.artists)
@@ -332,7 +329,7 @@ function AddSongsInMessage(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -388,7 +385,7 @@ function AddSongsInMessage(props) {
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
-            title={`CHOOSE SONG TO SEND`}
+            title={'CHOOSE SONG TO SEND'}
             thirditemtext={true}
             imagetwo={ImagePath.newmessage}
             imagetwoheight={25}
@@ -413,7 +410,6 @@ function AddSongsInMessage(props) {
               }}
               value={search}
               keyboardAppearance={'dark'}
-
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
@@ -549,7 +545,7 @@ function AddSongsInMessage(props) {
             }}
             nestedScrollEnabled={true}
             keyboardAvoidingViewEnabled={true}
-            height={normalize(500)}
+            height={normalise(500)}
             duration={250}
             customStyles={{
               container: {
@@ -617,7 +613,7 @@ function AddSongsInMessage(props) {
                         marginTop: normalise(10),
                         marginEnd: normalise(15),
                       }}>
-                      {`NEXT`}
+                      {'NEXT'}
                     </Text>
                   </TouchableOpacity>
                 ) : null}
@@ -669,13 +665,13 @@ function AddSongsInMessage(props) {
                     style={{
                       position: 'absolute',
                       right: 10,
-                       top: normalise(6),
-                      backgroundColor:Colors.fordGray,
+                      top: normalise(6),
+                      backgroundColor: Colors.fordGray,
                       // paddingRight: normalise(10),
-                      borderRadius:5,
-                      padding:normalise(4),
-                      paddingHorizontal:normalise(7),
-                      alignSelf:'center'
+                      borderRadius: 5,
+                      padding: normalise(4),
+                      paddingHorizontal: normalise(7),
+                      alignSelf: 'center',
                     }}>
                     <Text
                       style={{
@@ -754,7 +750,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddSongsInMessage);
+export default connect(mapStateToProps, mapDispatchToProps)(AddSongsInMessage);

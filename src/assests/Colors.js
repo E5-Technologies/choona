@@ -11,7 +11,7 @@ const Colors = {
   grey_text: '#979797',
   activityBorderColor: '#25262A',
   emoji_board: '#EAEAEC',
-  fordGray:'#979797'
+  fordGray: '#979797',
 };
 
 export default Colors;

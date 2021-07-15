@@ -1,28 +1,22 @@
-import React, { useState, useEffect, Fragment, } from 'react';
-import {put, call, fork, takeLatest, all, select} from 'redux-saga/effects';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TextInput,
   AppState,
   ImageBackground,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Image,
-  TouchableWithoutFeedback,
   Modal,
   Platform,
   Clipboard,
   Linking,
-  Keyboard,
   ActivityIndicator,
   RefreshControl,
   FlatList,
 } from 'react-native';
-import OneSignal from 'react-native-onesignal';
 
 import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
@@ -31,15 +25,11 @@ import ImagePath from '../../../assests/ImagePath';
 import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import moment, { normalizeUnits } from 'moment';
 import StatusBar from '../../../utils/MyStatusBar';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
-import { useFocusEffect } from '@react-navigation/native';
-import updateToken from '../../main/ListCells/UpdateToken'
+import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
-
 
 import {
   USER_PROFILE_REQUEST,
@@ -105,12 +95,10 @@ let songStatus = '';
 let postStatus = '';
 let messageStatus;
 
-
 function Home(props) {
-
-  let timerValue = 30
-   let newpost = []
-   newpost=props.postData
+  let timerValue = 30;
+  let newpost = [];
+  newpost = props.postData;
   const [appState, setAppState] = useState(AppState.currentState);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -131,53 +119,38 @@ function Home(props) {
   const [onScrolled, setOnScrolled] = useState(false);
   const [offset, setOffset] = useState(1);
   const [refresing, setRefresing] = useState(false);
-  const [data,setData] = useState(props.postData)
-  const [loadMoreVisible,setLoadMoreVisible] = useState(false)
-  const[visibleminiPlayer,setVisibleMiniPlayer] = useState(true)
+  const [data, setData] = useState(props.postData);
+  const [loadMoreVisible, setLoadMoreVisible] = useState(false);
+  const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
 
   var bottomSheetRef;
   let changePlayer = false;
-  
 
-  var handleAppStateChange = (state) => {
-    console.log("state_Change:"+state);
+  var handleAppStateChange = state => {
+    // console.log('state_Change:' + state);
 
-    if(state != "active")
-    {
+    if (state !== 'active') {
+      if (global.playerReference !== null) {
+        if (global.playerReference?.isPlaying()) {
+          global.playerReference.pause();
 
-      if (global.playerReference != null)
-      {
-      if (global.playerReference.isPlaying()) {
-        global.playerReference.pause();
-        
-        findPlayingSong(props.postData);
-
-
+          findPlayingSong(props.postData);
+        }
+      }
     }
-  }
-  }
+  };
 
-  }
+  // loadMore()
 
+  const flatlistRef = React.useRef(null);
 
-
-// loadMore()
-  
-const flatlistRef = React.useRef(null);
-
-
-useScrollToTop(flatlistRef);
-
-
+  useScrollToTop(flatlistRef);
 
   useEffect(() => {
-
-
-  
     setHomeReq(true);
     setOffset(1);
     props.homePage(1);
-// console.log("useeffectprops"+props.postData)
+    // console.log("useeffectprops"+props.postData)
     AppState.addEventListener('change', handleAppStateChange);
     updateToken(props.SuccessToken);
     const unsuscribe = props.navigation.addListener('focus', payload => {
@@ -200,22 +173,22 @@ useScrollToTop(flatlistRef);
           toast('Error', 'Please Connect To Internet');
         });
     });
-  
+
     return () => {
       unsuscribe();
     };
   }, []);
 
-
-  const loadMore =async()=>{
-    setLoadMoreVisible(false)
+  const loadMore = async () => {
+    setLoadMoreVisible(false);
     // setHomeReq(true);
     props.loadMoreData();
-    flatlistRef.current.scrollToIndex({animated:true,index:0,viewPosition:0});
-  
-  }
-
-
+    flatlistRef.current.scrollToIndex({
+      animated: true,
+      index: 0,
+      viewPosition: 0,
+    });
+  };
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -223,9 +196,9 @@ useScrollToTop(flatlistRef);
         status = props.status;
         break;
 
-        case LOAD_MORE_REQUEST:
+      case LOAD_MORE_REQUEST:
         status = props.status;
-        break;s
+        break;
 
       case USER_PROFILE_SUCCESS:
         status = props.status;
@@ -237,25 +210,25 @@ useScrollToTop(flatlistRef);
         break;
 
       case LOAD_MORE_SUCCESS:
-      status=props.status;
-       if(props.loadData.length!=0){
-        const intersection = props.postData.filter(item1 => props.loadData.some(item2 => item1._id === item2._id))
-  if(intersection.length<=0)
-               {
-                setLoadMoreVisible(true)
-               }    
-               
-        // props.loadMoreData()
-      }
-  
-      break;
+        status = props.status;
+        if (props.loadData.length !== 0) {
+          const intersection = props.postData.filter(item1 =>
+            props.loadData.some(item2 => item1._id === item2._id),
+          );
+          if (intersection.length <= 0) {
+            setLoadMoreVisible(true);
+          }
+
+          // props.loadMoreData()
+        }
+
+        break;
 
       case HOME_PAGE_REQUEST:
         status = props.status;
         break;
 
       case HOME_PAGE_SUCCESS:
-
         status = props.status;
         setPostArray(props.postData);
         findPlayingSong(props.postData);
@@ -322,9 +295,11 @@ useScrollToTop(flatlistRef);
 
       case SAVE_SONGS_SUCCESS:
         songStatus = props.songStatus;
-        if (props.savedSongResponse.status === 200)
+        if (props.savedSongResponse.status === 200) {
           toast('Success', props.savedSongResponse.message);
-        else toast('Success', props.savedSongResponse.message);
+        } else {
+          toast('Success', props.savedSongResponse.message);
+        }
         break;
 
       case SAVE_SONGS_FAILURE:
@@ -377,7 +352,6 @@ useScrollToTop(flatlistRef);
             fromAddAnotherSong: false,
             index: 0,
             fromHome: true,
-            details: props.postData[positionInArray],
           });
         }
         break;
@@ -424,7 +398,7 @@ useScrollToTop(flatlistRef);
   }
 
   function hitreact1(modal1Visible) {
-    if (modal1Visible == true) {
+    if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
@@ -437,15 +411,15 @@ useScrollToTop(flatlistRef);
 
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -643,32 +617,25 @@ useScrollToTop(flatlistRef);
     }
   };
 
+  function _onSelectBack(ID, comment) {
+    // console.log("aaa"+JSON.stringify(props.postData))
+    props.postData.map((item, index) => {
+      // console.log("items",item._id)
+      if (item._id === ID) {
+        props.postData[index].comment_count = comment;
+      }
+    });
+  }
 
-function _onSelectBack(ID,comment){
-// console.log("aaa"+JSON.stringify(props.postData))
-  props.postData.map((item,index)=>{
-// console.log("items",item._id)
-if(item._id === ID){
-props.postData[index].comment_count = comment 
-
-}
-  })
-}
-
-
-function _onReaction(ID,reaction){
-    props.postData.map((item,index)=>{
- 
-   if(item._id === ID){
-    props.postData[index].reaction_count = reaction
-  
-   }
- 
-     })
-  } 
+  function _onReaction(ID, reaction) {
+    props.postData.map((item, index) => {
+      if (item._id === ID) {
+        props.postData[index].reaction_count = reaction;
+      }
+    });
+  }
 
   function renderItem(data) {
-   
     return (
       <HomeItemList
         image={data.item.song_image}
@@ -696,6 +663,7 @@ function _onReaction(ID,reaction){
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -721,17 +689,18 @@ function _onReaction(ID,reaction){
         onPressMusicbox={() => {
           if (!homeReq) {
             playSong(data);
-            setVisibleMiniPlayer(true)
+            setVisibleMiniPlayer(true);
           }
         }}
         onPressReactionbox={() => {
           if (!homeReq) {
             props.navigation.navigate('HomeItemReactions', {
-              // reactions: data.item.reaction,
+              reactionCount: data.item.reaction_count
+                ? data.item.reaction_count
+                : 0,
               post_id: data.item._id,
-              onSelectReaction: (ID,reaction)=>_onReaction(ID,reaction)
+              onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
             });
-           
           }
         }}
         onPressCommentbox={() => {
@@ -744,7 +713,7 @@ function _onReaction(ID,reaction){
               userComment: data.item.post_content,
               time: data.item.createdAt,
               id: data.item._id,
-              onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
+              onSelect: (ID, comment) => _onSelectBack(ID, comment),
             });
           }
         }}
@@ -757,6 +726,7 @@ function _onReaction(ID,reaction){
         marginBottom={
           data.index === props.postData.length - 1 ? normalise(60) : 0
         }
+        // playingSongRef={props.playingSongRef}
       />
       // </TouchableOpacity>
     );
@@ -768,9 +738,11 @@ function _onReaction(ID,reaction){
 
     if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
       for (var i = 0; i < arr.length; i++) {
-        if (props.userProfileResp._id == arr[i].receiver_id) {
+        if (props.userProfileResp._id === arr[i].receiver_id) {
           hasUnseenMessage = !arr[i].read;
-          if (hasUnseenMessage) break;
+          if (hasUnseenMessage) {
+            break;
+          }
         }
       }
 
@@ -817,12 +789,12 @@ function _onReaction(ID,reaction){
             flexDirection: 'row',
             paddingBottom: normalise(10),
           }}>
-          <Image
+          {/* <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-          />
+          /> */}
           <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
@@ -852,7 +824,7 @@ function _onReaction(ID,reaction){
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -881,7 +853,7 @@ function _onReaction(ID,reaction){
             sesUsersToSEndSong(popArray);
           }}>
           <Image
-            source={ImagePath.crossIcon}
+            source={ImagePath ? ImagePath.crossIcon : null}
             style={{
               marginTop: normalise(-1.5),
               marginStart: normalise(8.5),
@@ -924,7 +896,7 @@ function _onReaction(ID,reaction){
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -988,7 +960,7 @@ function _onReaction(ID,reaction){
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -1022,7 +994,7 @@ function _onReaction(ID,reaction){
             />
 
             <Image
-              source={ImagePath.searchicongrey}
+              source={ImagePath ? ImagePath.searchicongrey : null}
               style={{
                 height: normalise(15),
                 width: normalise(15),
@@ -1090,7 +1062,6 @@ function _onReaction(ID,reaction){
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={Seperator}
           />
-
         </View>
       </RBSheet>
     );
@@ -1102,9 +1073,7 @@ function _onReaction(ID,reaction){
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${
-          props.postData[positionInArray].isrc_code
-        }&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${props.postData[positionInArray].isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -1115,9 +1084,7 @@ function _onReaction(ID,reaction){
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
-          props.postData[positionInArray].isrc_code
-        }`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.postData[positionInArray].isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,
@@ -1245,7 +1212,7 @@ function _onReaction(ID,reaction){
       for (i = 0; i < array.length; i++) {
         array[i].playing = false;
       }
-    //  setVisibleMiniPlayer(false)
+      //  setVisibleMiniPlayer(false)
       setPostArray(array);
       // console.log(array);
     }
@@ -1268,20 +1235,18 @@ function _onReaction(ID,reaction){
     props.homePage(1);
   };
 
-function onfinish(){
-  //  alert("onfinish")
-  // console.log("lod"+JSON.stringify(props.postData))
+  function onfinish() {
+    //  alert("onfinish")
+    // console.log("lod"+JSON.stringify(props.postData))
 
-  if(props.postData.length !=0)  {
-    // console.log("timestamtp"+props.postData[0].createdAt)
-  let loadData ={"offset":1,"create":props.postData[0].createdAt}
- props.loadMorePost(loadData)
+    if (props.postData.length !== 0) {
+      // console.log("timestamtp"+props.postData[0].createdAt)
+      let loadData = { offset: 1, create: props.postData[0].createdAt };
+      props.loadMorePost(loadData);
+    } else {
+      console.log('empty');
+    }
   }
-  else{
-    console.log("empty")
-  }
-
-}
 
   // VIEW
   return (
@@ -1295,7 +1260,7 @@ function onfinish(){
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
-       <Timer value={timerValue} onFinish={()=>onfinish()} />
+        <Timer value={timerValue} onFinish={() => onfinish()} />
 
         <Loader visible={homeReq} />
         <Loader visible={contactsLoading} />
@@ -1320,48 +1285,48 @@ function onfinish(){
           imagetwowidth={25}
           middleImageReq={true}
           notRead={findIsNotRead()}
-          onIconPress = {true}
-          pressLogo={()=>{
-        
-             flatlistRef.current.scrollToIndex({animated:true,index:0,viewPosition:0});
+          onIconPress={true}
+          pressLogo={() => {
+            flatlistRef.current.scrollToIndex({
+              animated: true,
+              index: 0,
+              viewPosition: 0,
+            });
           }}
           onPressFirstItem={() => {
             props.navigation.navigate('Profile', { fromAct: false });
           }}
           onPressThirdItem={() => {
-               props.navigation.navigate('Inbox');
+            props.navigation.navigate('Inbox');
             //  props.navigation.navigate('BlankScreen');
-
           }}
         />
-  
 
         {_.isEmpty(props.postData) ? (
-        <View
-        style={{ flex: 1, alignItems: 'center',marginTop:'4%' }}>
-        <Image
-          source={ImagePath.emptyPost}
-          style={{
-            height: 2*normalise(90),
-            width: 2*normalise(90),
-            marginTop: '8%',
-          }}
-          resizeMode="contain"
-        />
-        <Text
-          style={{
-            // marginBottom: '20%',
-          
-            marginTop: normalise(30),
-            color: Colors.white,
-            fontSize: normalise(15),
-            // fontWeight: 'bold',
-            fontFamily: 'ProximaNova-Bold',
-          }}>
-            Your Feed is empty
-        </Text>
+          <View style={{ flex: 1, alignItems: 'center', marginTop: '4%' }}>
+            <Image
+              source={ImagePath ? ImagePath.emptyPost : null}
+              style={{
+                height: 2 * normalise(90),
+                width: 2 * normalise(90),
+                marginTop: '8%',
+              }}
+              resizeMode="contain"
+            />
+            <Text
+              style={{
+                // marginBottom: '20%',
 
-        <Text
+                marginTop: normalise(30),
+                color: Colors.white,
+                fontSize: normalise(15),
+                // fontWeight: 'bold',
+                fontFamily: 'ProximaNova-Bold',
+              }}>
+              Your Feed is empty
+            </Text>
+
+            <Text
               style={{
                 color: Colors.fordGray,
                 fontSize: normalise(12),
@@ -1369,13 +1334,13 @@ function onfinish(){
                 marginTop: normalise(7),
                 width: '68%',
                 textAlign: 'center',
-                alignSelf:'center',
+                alignSelf: 'center',
                 fontFamily: 'ProximaNova-Regular',
-              
               }}>
-        You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.
+              You don’t follow anyone yet, check your phonebook below to see if
+              anyone you know is already on Choona.
             </Text>
-        {/* <TouchableOpacity style={{
+            {/* <TouchableOpacity style={{
           height: normalise(50), width: '80%',
           borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
           shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
@@ -1393,47 +1358,46 @@ function onfinish(){
 
         </TouchableOpacity> */}
 
-        <TouchableOpacity
-          style={{
-            marginBottom: normalise(30),
-            marginTop: normalise(40),
-            height: normalise(50),
-            width: '80%',
-            alignSelf: 'center',
-            borderRadius: normalise(25),
-            backgroundColor: Colors.white,
-            borderWidth: normalise(0.5),
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.5,
-            shadowRadius: 9,
-            elevation: 11,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderColor: Colors.white,
-            position:'absolute',
-            bottom:0
-          }}
-          onPress={() => {
-            setContactsLoading(true), getContacts();
-          }}>
-          <Text
-            style={{
-              marginLeft: normalise(10),
-              color: Colors.darkerblack,
-              fontSize: normalise(12),
-              fontWeight: 'bold',
-            }}>
-            {/* CHECK YOUR PHONEBOOK */}
-            CHECK FOR FRIENDS
-          </Text>
-        </TouchableOpacity>
-      </View>
-   
-       ) : (
+            <TouchableOpacity
+              style={{
+                marginBottom: normalise(30),
+                marginTop: normalise(40),
+                height: normalise(50),
+                width: '80%',
+                alignSelf: 'center',
+                borderRadius: normalise(25),
+                backgroundColor: Colors.white,
+                borderWidth: normalise(0.5),
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.5,
+                shadowRadius: 9,
+                elevation: 11,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderColor: Colors.white,
+                position: 'absolute',
+                bottom: 0,
+              }}
+              onPress={() => {
+                setContactsLoading(true), getContacts();
+              }}>
+              <Text
+                style={{
+                  marginLeft: normalise(10),
+                  color: Colors.darkerblack,
+                  fontSize: normalise(12),
+                  fontWeight: 'bold',
+                }}>
+                {/* CHECK YOUR PHONEBOOK */}
+                CHECK FOR FRIENDS
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
           <View style={{ flex: 1 }}>
-{/* {
+            {/* {
   console.log("postData"+ JSON.stringify(props.postData))
 } */}
             <FlatList
@@ -1442,22 +1406,18 @@ function onfinish(){
               renderItem={renderItem}
               windowSize={150}
               showsVerticalScrollIndicator={false}
-              keyExtractor={(item) => item._id}
-
-
+              keyExtractor={item => item._id}
               ref={flatlistRef}
               initialScrollIndex={0}
               extraData={postArray}
               onEndReached={() => {
+                console.log('onend reached' + onScrolled);
 
-                console.log("onend reached"+onScrolled);
-                
-                if(onScrolled){
-                    setOffset(offset + 1);
-                    props.homePage(offset + 1);
-                      setOnScrolled(false);
-                } 
-                
+                if (onScrolled) {
+                  setOffset(offset + 1);
+                  props.homePage(offset + 1);
+                  setOnScrolled(false);
+                }
               }}
               onEndReachedThreshold={2}
               initialNumToRender={10}
@@ -1495,62 +1455,51 @@ function onfinish(){
                 />
               }
             />
-{
-  loadMoreVisible?
-  <TouchableOpacity 
-  style={{ 
-    borderRadius: 5,
-    
-    borderRadius:20,
-    alignSelf:'center',
-    position:'absolute',
-    top:20,
-  
-}}
-onPress={()=>loadMore()}
-  >
-   <LinearGradient colors={['#008373', '#4950AC','#7A1FD4']} 
-   start={{x: 1.0, y: 5.1}} end={{x: 2.0, y: 2.5}}
-  style={{flex:1,
-    borderRadius:20,
-    alignItems:'center',
-    justifyContent:'center',
-    paddingVertical:'2.7%',
-    paddingHorizontal:'4.3%'
-  }}
-
-   >
-  
-
-          <Text style={{color:'white',fontSize:normalise(10)}}>Load Newer Posts</Text>
-       
-        </LinearGradient>
-        </TouchableOpacity>
-        :
-        null
- 
-}   
+            {loadMoreVisible ? (
+              <TouchableOpacity
+                style={{
+                  borderRadius: 20,
+                  alignSelf: 'center',
+                  position: 'absolute',
+                  top: 20,
+                }}
+                onPress={() => loadMore()}>
+                <LinearGradient
+                  colors={['#008373', '#4950AC', '#7A1FD4']}
+                  start={{ x: 1.0, y: 5.1 }}
+                  end={{ x: 2.0, y: 2.5 }}
+                  style={{
+                    flex: 1,
+                    borderRadius: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: '2.7%',
+                    paddingHorizontal: '4.3%',
+                  }}>
+                  <Text style={{ color: 'white', fontSize: normalise(10) }}>
+                    Load Newer Posts
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : null}
             {renderAddToUsers()}
 
-{
-  console.log("props.statj"+props.status)
-}
+            {/* {console.log('props.statj' + props.status)} */}
             {(props.status === HOME_PAGE_SUCCESS ||
-            props.status === USER_PROFILE_SUCCESS ||
-            props.status === COUNTRY_CODE_SUCCESS ||
-            props.status === OTHERS_PROFILE_SUCCESS ||
-            props.status === EDIT_PROFILE_SUCCESS ||
-            props.status === DUMMY_ACTION_SUCCESS||
-            props.status===LOAD_MORE_SUCCESS ||
-            props.status===LOAD_MORE_REQUEST||
-            props.status===HOME_PAGE_REQUEST||
-            props.status===DUMMY_ACTION_REQUEST
-            )&&
-            visibleminiPlayer===true? (
+              props.status === USER_PROFILE_SUCCESS ||
+              props.status === COUNTRY_CODE_SUCCESS ||
+              props.status === OTHERS_PROFILE_SUCCESS ||
+              props.status === EDIT_PROFILE_SUCCESS ||
+              props.status === DUMMY_ACTION_SUCCESS ||
+              props.status === LOAD_MORE_SUCCESS ||
+              props.status === LOAD_MORE_REQUEST ||
+              props.status === HOME_PAGE_REQUEST ||
+              props.status === DUMMY_ACTION_REQUEST) &&
+            visibleminiPlayer === true ? (
               <MusicPlayerBar
                 onPress={() => {
                   props.navigation.navigate('Player', {
-                    comments:[],
+                    comments: [],
                     song_title: props.playingSongRef.song_name,
                     album_name: props.playingSongRef.album_name,
                     song_pic: props.playingSongRef.song_pic,
@@ -1577,10 +1526,9 @@ onPress={()=>loadMore()}
               />
             ) : null}
 
-
             <Modal
               animationType="fade"
-              transparent={true}
+              transparent={false}
               visible={visible}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");
@@ -1609,12 +1557,12 @@ onPress={()=>loadMore()}
               animationType="fade"
               transparent={true}
               visible={modalVisible}
-              presentationStyle={'pageSheet'}
+              presentationStyle={'overFullScreen'}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");
               }}>
               <ImageBackground
-                source={ImagePath.page_gradient}
+                source={ImagePath ? ImagePath.page_gradient : null}
                 style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <TouchableOpacity
@@ -1643,7 +1591,7 @@ onPress={()=>loadMore()}
                       setModalVisible(!modalVisible);
                     }}>
                     <Image
-                      source={ImagePath.boxicon}
+                      source={ImagePath ? ImagePath.boxicon : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1670,7 +1618,7 @@ onPress={()=>loadMore()}
                       }
                     }}>
                     <Image
-                      source={ImagePath.sendicon}
+                      source={ImagePath ? ImagePath.sendicon : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1702,7 +1650,7 @@ onPress={()=>loadMore()}
                       alignItems: 'center',
                     }}>
                     <Image
-                      source={ImagePath.more_copy}
+                      source={ImagePath ? ImagePath.more_copy : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1737,7 +1685,7 @@ onPress={()=>loadMore()}
                           ); //  DELETE POST
                     }}>
                     <Image
-                      source={ImagePath.more_unfollow}
+                      source={ImagePath ? ImagePath.more_unfollow : null}
                       style={{ height: normalise(18), width: normalise(18) }}
                       resizeMode="contain"
                     />
@@ -1752,10 +1700,7 @@ onPress={()=>loadMore()}
                         ? props.userProfileResp._id ===
                           props.postData[positionInArray].user_id
                           ? 'Delete Post'
-                          : `Unfollow ${
-                              props.postData[positionInArray].userDetails
-                                .username
-                            }`
+                          : `Unfollow ${props.postData[positionInArray].userDetails.username}`
                         : ''}
                     </Text>
                   </TouchableOpacity>
@@ -1808,11 +1753,13 @@ onPress={()=>loadMore()}
                     }}>
                     <Image
                       source={
-                        !_.isEmpty(props.userProfileResp)
-                          ? props.userProfileResp.register_type === 'spotify'
-                            ? ImagePath.spotifyicon
-                            : ImagePath.applemusic
-                          : ''
+                        ImagePath
+                          ? !_.isEmpty(props.userProfileResp)
+                            ? props.userProfileResp.register_type === 'spotify'
+                              ? ImagePath.spotifyicon
+                              : ImagePath.applemusic
+                            : null
+                          : null
                       }
                       style={{
                         height: normalise(18),
@@ -1843,7 +1790,7 @@ onPress={()=>loadMore()}
                     }}
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      if (props.userProfileResp.register_type === 'spotify')
+                      if (props.userProfileResp.register_type === 'spotify') {
                         props.navigation.navigate('AddToPlayListScreen', {
                           originalUri:
                             props.postData[positionInArray].original_song_uri,
@@ -1851,7 +1798,7 @@ onPress={()=>loadMore()}
                             props.postData[positionInArray].social_type,
                           isrc: props.postData[positionInArray].isrc_code,
                         });
-                      else {
+                      } else {
                         // setTimeout(() => {
                         //   toast("Oops", "Only, Spotify users can add to their playlist now.")
                         // }, 1000)
@@ -1861,7 +1808,7 @@ onPress={()=>loadMore()}
                       }
                     }}>
                     <Image
-                      source={ImagePath.addicon}
+                      source={ImagePath ? ImagePath.addicon : null}
                       style={{
                         height: normalise(18),
                         width: normalise(18),
@@ -1911,12 +1858,10 @@ onPress={()=>loadMore()}
                 </View>
               </ImageBackground>
             </Modal>
-
-            
           </View>
         )}
 
-        {modal1Visible == true ? (
+        {modal1Visible === true ? (
           <View
             style={{
               position: 'absolute',
@@ -2013,12 +1958,10 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
-    messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
     currentPage: state.UserReducer.currentPage,
-    SuccessToken : state.TokenReducer.token,
-    loadData:state.UserReducer.loadData,
-
+    SuccessToken: state.TokenReducer.token,
+    loadData: state.UserReducer.loadData,
   };
 };
 
@@ -2032,7 +1975,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(homePageReq(offset));
     },
 
-     loadMorePost: data => {
+    loadMorePost: data => {
       dispatch(loadMoreRequest(data));
     },
 
@@ -2074,7 +2017,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

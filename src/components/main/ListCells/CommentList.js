@@ -1,14 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 // import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
-import Hyperlink from 'react-native-hyperlink'
-
-
+import Hyperlink from 'react-native-hyperlink';
 
 function CommentList(props) {
   const onPressImage = () => {
@@ -17,12 +15,13 @@ function CommentList(props) {
     }
   };
 
-  
   let delimiter = /\s+/;
 
   //split string
   let _text = props.comment;
-  let token, index, parts = [];
+  let token,
+    index,
+    parts = [];
   while (_text) {
     delimiter.lastIndex = 0;
     token = delimiter.exec(_text);
@@ -39,22 +38,35 @@ function CommentList(props) {
     _text = _text.slice(index);
   }
   parts.push(_text);
-  
+
   //highlight hashtags
-  parts = parts.map((text) => {
+  parts = parts.map(text => {
     if (/^@/.test(text)) {
-      return <Text key={text} style={{color:'#3DB2EB'}} 
-      onPress={()=>{ 
-         props.navi.navigation.navigate('OthersProfile', {
-        id: text.substr(1,text.length-1),
-      })
-    }}>{text}</Text>;
+      return (
+        <Text
+          key={text}
+          style={{ color: '#3DB2EB' }}
+          onPress={() => {
+            props.navi.navigation.navigate('OthersProfile', {
+              id: text.substr(1, text.length - 1),
+            });
+          }}>
+          {text}
+        </Text>
+      );
     } else {
       return text;
     }
   });
   return (
-    <View style={[styles.commentContainer,{borderBottomWidth:props.showLine ? 1 :null,borderBottomColor:props.showLine ? '#25262A':null,}]}>
+    <View
+      style={[
+        styles.commentContainer,
+        {
+          borderBottomWidth: props.showLine ? 1 : null,
+          borderBottomColor: props.showLine ? '#25262A' : null,
+        },
+      ]}>
       <TouchableOpacity
         style={styles.commentAvatarButton}
         onPress={() => {
@@ -67,7 +79,7 @@ function CommentList(props) {
         />
       </TouchableOpacity>
       <View style={styles.commentInfoContainer}>
-        <View style={[styles.commentInfo,{marginBottom:'1%'}]}>
+        <View style={[styles.commentInfo, { marginBottom: '1%' }]}>
           <TouchableOpacity
             onPress={() => {
               onPressImage();
@@ -76,10 +88,18 @@ function CommentList(props) {
           </TouchableOpacity>
           <Text style={styles.commentTime}>{props.time}</Text>
         </View>
-       
-         <Hyperlink linkDefault={true}
-          linkStyle={ { color: '#ffffff',textDecorationLine:'underline',textDecorationStyle:'dotted',fontWeight:'bold' } }>
-        <Text  style={[styles.commentText,{paddingRight:'8%'}]}>{parts}</Text>
+
+        <Hyperlink
+          linkDefault={true}
+          linkStyle={{
+            color: '#ffffff',
+            textDecorationLine: 'underline',
+            textDecorationStyle: 'dotted',
+            fontWeight: 'bold',
+          }}>
+          <Text style={[styles.commentText, { paddingRight: '8%' }]}>
+            {parts}
+          </Text>
         </Hyperlink>
       </View>
     </View>
@@ -96,10 +116,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: normaliseNew(16),
     paddingTop: normaliseNew(16),
-    paddingBottom:normaliseNew(18),
-   
-
-    },
+    paddingBottom: normaliseNew(18),
+  },
   commentInfoContainer: {
     flex: 1,
   },
@@ -145,7 +163,7 @@ CommentList.propTypes = {
   image2: PropTypes.string,
   onPressSecondImage: PropTypes.func,
   comments: PropTypes.bool,
-  showLine:PropTypes.bool
+  showLine: PropTypes.bool,
 };
 CommentList.defaultProps = {
   image: '',
@@ -156,5 +174,5 @@ CommentList.defaultProps = {
   image2: '',
   onPressSecondImage: null,
   comments: false,
-  showLine:false,
+  showLine: false,
 };

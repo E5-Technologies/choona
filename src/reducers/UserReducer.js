@@ -13,7 +13,6 @@ import {
   EDIT_PROFILE_FAILURE,
   USER_SEARCH_REQUEST,
   USER_SEARCH_SUCCESS,
-  USER_SEARCH_FAILURE,
   USER_FOLLOW_UNFOLLOW_REQUEST,
   USER_FOLLOW_UNFOLLOW_SUCCESS,
   USER_FOLLOW_UNFOLLOW_FAILURE,
@@ -65,7 +64,7 @@ import {
   ASYNC_STORAGE_CLEAR,
   LOAD_MORE_REQUEST,
   LOAD_MORE_SUCCESS,
-  LOAD_MORE_DATA
+  LOAD_MORE_DATA,
 } from '../action/TypeConstants';
 import moment from 'moment';
 import _ from 'lodash';
@@ -79,7 +78,7 @@ const initialState = {
   editProfileResp: {},
   userSearch: [],
   followUnfollowResp: {},
-  othersProfileresp: {},
+  othersProfileresp: [],
   postData: [],
   currentPage: '',
   commentResp: {},
@@ -98,8 +97,8 @@ const initialState = {
   countryCodeOject: [],
   top5FollowedResponse: [],
   getUsersFromContact: [],
-  loadData:[],
-  loadmoredata:[],
+  loadData: [],
+  loadmoredata: [],
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -260,38 +259,31 @@ const UserReducer = (state = initialState, action) => {
         status: action.type,
       };
 
-      case LOAD_MORE_REQUEST:
+    case LOAD_MORE_REQUEST:
       return {
         ...state,
         status: action.type,
       };
 
-      case LOAD_MORE_DATA:
-        // let array = state.postData];
-        
-        var ids = new Set(state.loadData.map(d => d._id));
-var merged = [...state.loadData ,...state.postData.filter(d => !ids.has(d._id))];
+    case LOAD_MORE_DATA:
+      // let array = state.postData];
 
-
-        
-        
+      var ids = new Set(state.loadData.map(d => d._id));
+      var merged = [
+        ...state.loadData,
+        ...state.postData.filter(d => !ids.has(d._id)),
+      ];
       //  let array = [...state.loadData, ...state.postData];
 
-        
-       
-        
       return {
-          ...state,
-          status:"HOME_PAGE_SUCCESS",
-          postData: _.sortBy(merged, 'createdAt').reverse(),
-          currentPage: action.currentpage,
-          loadData:[]
+        ...state,
+        status: 'HOME_PAGE_SUCCESS',
+        postData: _.sortBy(merged, 'createdAt').reverse(),
+        currentPage: action.currentpage,
+        loadData: [],
       };
 
-
     case HOME_PAGE_SUCCESS:
-   
-
       if (action.offset === 1) {
         return {
           ...state,
@@ -310,17 +302,15 @@ var merged = [...state.loadData ,...state.postData.filter(d => !ids.has(d._id))]
         };
       }
 
-      case LOAD_MORE_SUCCESS:
-   console.log("loadmoresuccess"+ JSON.stringify(action))
-  //  alert("newarra"+array)
-  
- 
-     return{
-       ...state,
-        status:action.type,
-        loadData:action.data
-      
-      }
+    case LOAD_MORE_SUCCESS:
+      console.log('loadmoresuccess' + JSON.stringify(action));
+      //  alert("newarra"+array)
+
+      return {
+        ...state,
+        status: action.type,
+        loadData: action.data,
+      };
 
     case HOME_PAGE_FAILURE:
       return {

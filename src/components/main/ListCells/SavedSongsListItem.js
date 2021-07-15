@@ -130,17 +130,8 @@
 //     onPressSecondImage: null
 // }
 
-import React, { useEffect, Fragment, useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -171,12 +162,9 @@ function SavedSongListItem(props) {
     }
   };
 
-
-  console.log(props.receiver_id +","+ props.read+","+props.user_id);
+  console.log(props.receiver_id + ',' + props.read + ',' + props.user_id);
 
   return (
-
-
     <TouchableOpacity
       onPress={() => {
         onPressItem();
@@ -195,90 +183,75 @@ function SavedSongListItem(props) {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <TouchableOpacity
-        style={{flexDirection:'row'}}
-          onPress={() => {
-            onPressImage();
-          }}>
-
-
-
-        
-
-        {/* {(props.user_id === props.receiver_id && !props.read) && 
-                <Text style={{color:'#ffffff',alignSelf:'center',fontSize:6}}>{'\u2B24'}</Text>
-
-        } */}
-
-
-
-          <Image
-            source={
-              props.image === ''
-                ? ImagePath.profiletrack4
-                : { uri: props.image }
-            }
-            style={{
-              height: normalise(40),
-              width: normalise(40),
-            }}
-            resizeMode="contain"
-          />
-          {props.playIcon !== false && (
-            <Image
-              source={ImagePath.play}
-              style={{
-                height: normalise(23),
-                width: normalise(23),
-                position: 'absolute',
-                right: '25%',
-                top: '25%',
-              }}
-            />
-          )}
-        </TouchableOpacity>
-
         <View
           style={{
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: '50%',
-            marginRight: props.marginRight,
+            alignItems: 'center',
+            flexDirection: 'row',
           }}>
-          <Text
+          <TouchableOpacity
             style={{
-              color: Colors.white,
-              fontSize: normalise(12),
-              fontFamily: 'ProximaNova-Semibold',
+              flexDirection: 'row',
+              marginRight: normalise(8),
             }}
-            numberOfLines={1}>
-            {' '}
-            {props.title}{' '}
-          </Text>
+            onPress={() => {
+              onPressImage();
+            }}>
+            <Image
+              source={
+                props.image === ''
+                  ? ImagePath.profiletrack4
+                  : { uri: props.image }
+              }
+              style={{
+                height: normalise(40),
+                width: normalise(40),
+              }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
 
-          <Text
+          <View
             style={{
-              color: Colors.grey,
-              fontSize: normalise(11),
-              fontFamily: 'ProximaNova-Regular',
-            }}
-            numberOfLines={1}>
-            {' '}
-            {props.singer}{' '}
-          </Text>
-
-          {props.comments ? (
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              width: '66%',
+              // marginRight: props.marginRight,
+            }}>
             <Text
               style={{
-                color: Colors.grey,
-                fontSize: normalise(10),
-                fontFamily: 'ProximaNovaAW07-Medium',
+                color: Colors.white,
+                fontSize: normalise(12),
+                fontFamily: 'ProximaNova-Semibold',
               }}
               numberOfLines={1}>
               {' '}
-              {props.comments}{' '}
+              {props.title}{' '}
             </Text>
-          ) : null}
+
+            <Text
+              style={{
+                color: Colors.grey,
+                fontSize: normalise(11),
+                fontFamily: 'ProximaNova-Regular',
+              }}
+              numberOfLines={1}>
+              {' '}
+              {props.singer}{' '}
+            </Text>
+
+            {props.comments ? (
+              <Text
+                style={{
+                  color: Colors.grey,
+                  fontSize: normalise(10),
+                  fontFamily: 'ProximaNovaAW07-Medium',
+                }}
+                numberOfLines={1}>
+                {' '}
+                {props.comments}{' '}
+              </Text>
+            ) : null}
+          </View>
         </View>
 
         {props.change ? (
@@ -298,15 +271,77 @@ function SavedSongListItem(props) {
               }}
             />
           </TouchableOpacity>
+        ) : props.change2 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                onPressImage();
+              }}>
+              <Image
+                source={ImagePath.playOutline}
+                style={{
+                  height: normalise(25),
+                  width: normalise(25),
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                height: normalise(25),
+                width: normalise(25),
+                marginLeft: normalise(8),
+              }}
+              onPress={() => {
+                onPressSecondImage();
+              }}>
+              <Image
+                source={props.image2}
+                style={{
+                  height: normalise(25),
+                  width: normalise(25),
+                }}
+              />
+            </TouchableOpacity>
+          </View>
         ) : (
           <View
             style={{
-              height: normalise(40),
-              width: normalise(45),
-              backgroundColor: Colors.black,
-              justifyContent: 'center',
+              flexDirection: 'row',
             }}>
+            {props.playIcon !== false && (
+              <TouchableOpacity
+                onPress={() => {
+                  onPressImage();
+                }}>
+                <Image
+                  source={ImagePath.playOutline}
+                  style={{
+                    height: normalise(23),
+                    width: normalise(23),
+                  }}
+                />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                marginLeft: normalise(16),
+              }}
+              onPress={() => onPress()}>
+              <Image
+                style={{
+                  transform: [{ rotate: '90deg' }],
+                  width: normalise(14),
+                }}
+                source={ImagePath.threedots}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            {/* <TouchableOpacity
               style={{
                 height: normalise(25),
                 width: normalise(45),
@@ -324,7 +359,7 @@ function SavedSongListItem(props) {
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         )}
       </View>
@@ -344,10 +379,10 @@ SavedSongListItem.propTypes = {
   change: PropTypes.bool,
   image2: PropTypes.any,
   playIcon: PropTypes.bool,
-  receiver_id:PropTypes.any,
-  user_id:PropTypes.any,
+  receiver_id: PropTypes.any,
+  user_id: PropTypes.any,
 
-  read:PropTypes.bool,
+  read: PropTypes.bool,
   onPressSecondImage: PropTypes.func,
   comments: PropTypes.bool,
   marginRight: PropTypes.number,
@@ -356,10 +391,10 @@ SavedSongListItem.propTypes = {
 
 SavedSongListItem.defaultProps = {
   image: '',
-  receiver_id:"",
-  user_id:"",
+  receiver_id: '',
+  user_id: '',
 
-  read:false,
+  read: false,
   title: '',
   onPress: null,
   onPressImage: null,

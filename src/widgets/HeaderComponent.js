@@ -1,13 +1,12 @@
-import React,{useState} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 import PropTypes from 'prop-types';
 
 import HeaderStyles from '../styles/header';
 
-
 function HeaderComponent(props) {
-  const [onDisable,setOnDisable] = useState(false)
+  const [onDisable, setOnDisable] = useState(false);
   function onPressFirstItem() {
     if (props.onPressFirstItem) {
       props.onPressFirstItem();
@@ -16,7 +15,7 @@ function HeaderComponent(props) {
 
   function onPressThirdItem() {
     if (props.onPressThirdItem) {
-      setOnDisable(true)
+      setOnDisable(true);
       props.onPressThirdItem();
     }
   }
@@ -52,7 +51,7 @@ function HeaderComponent(props) {
       {/* Right */}
       {props.thirditemtext ? (
         <TouchableOpacity
-         disabled={onDisable}
+          disabled={onDisable}
           onPress={() => {
             onPressThirdItem();
           }}

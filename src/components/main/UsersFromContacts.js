@@ -1,14 +1,12 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
+  Platform,
   Image,
-  ImageBackground,
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
@@ -44,11 +42,10 @@ let status;
 function UsersFromContacts(props) {
   const [search, setSearch] = useState('');
   const [bool, setBool] = useState(false);
-  const [numberArray, setNumberArray] = useState(props.route.params.data);
+  const [numberArray] = useState(props.route.params.data);
   const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
-   
     isInternetConnected()
       .then(() => {
         props.getUsersFromContacts({ phone: numberArray });
@@ -102,9 +99,8 @@ function UsersFromContacts(props) {
   }
 
   function renderUserItem(data) {
-    
     // if (props.userProfileResp._id === data.item._id) {
-   
+
     //   return (
     //     <ActivityListItem
     //       image={constants.profile_picture_base_url + data.item.profile_image}
@@ -120,30 +116,28 @@ function UsersFromContacts(props) {
     //     />
     //   );
     // } else {
-      return (
-        <ActivityListItem
-          image={constants.profile_picture_base_url + data.item.profile_image}
-          user={data.item.username}
-          type={true}
-          follow={!data.item.isFollowing}
-          loginUserId={props.userProfileResp._id}
-          TouchableOpacityDisabled={false}
-          marginBottom={
-            data.index === props.usersFromContacts.length - 1
-              ? normalise(20)
-              : 0
-          }
-          onPressImage={() => {
-            props.navigation.navigate('OthersProfile', {
-              id: data.item._id,
-              following: data.item.isFollowing,
-            });
-          }}
-          onPress={() => {
-            props.followReq({ follower_id: data.item._id });
-          }}
-        />
-      );
+    return (
+      <ActivityListItem
+        image={constants.profile_picture_base_url + data.item.profile_image}
+        user={data.item.username}
+        type={true}
+        follow={!data.item.isFollowing}
+        loginUserId={props.userProfileResp._id}
+        TouchableOpacityDisabled={false}
+        marginBottom={
+          data.index === props.usersFromContacts.length - 1 ? normalise(20) : 0
+        }
+        onPressImage={() => {
+          props.navigation.navigate('OthersProfile', {
+            id: data.item._id,
+            following: data.item.isFollowing,
+          });
+        }}
+        onPress={() => {
+          props.followReq({ follower_id: data.item._id });
+        }}
+      />
+    );
     // }
   }
 
@@ -162,7 +156,7 @@ function UsersFromContacts(props) {
           <HeaderComponent
             firstitemtext={false}
             imageone={ImagePath.backicon}
-            title={`USERS`}
+            title={'USERS'}
             thirditemtext={true}
             texttwo={''}
             onPressFirstItem={() => {
@@ -192,7 +186,8 @@ function UsersFromContacts(props) {
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
-                setSearch(text), filterArray(text);
+                setSearch(text);
+                filterArray(text);
               }}
             />
 
@@ -206,11 +201,12 @@ function UsersFromContacts(props) {
               }}
               resizeMode="contain"
             />
- 
+
             {search === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setSearch(''), filterArray('');
+                  setSearch('');
+                  filterArray('');
                 }}
                 style={{
                   backgroundColor: Colors.black,
@@ -234,7 +230,7 @@ function UsersFromContacts(props) {
               </TouchableOpacity>
             )}
           </View>
-        
+
           {_.isEmpty(usersList) ? (
             <View
               style={{
@@ -265,7 +261,6 @@ function UsersFromContacts(props) {
             />
           )}
         </SafeAreaView>
-      
       </TouchableWithoutFeedback>
     </View>
   );
@@ -291,7 +286,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UsersFromContacts);
+export default connect(mapStateToProps, mapDispatchToProps)(UsersFromContacts);

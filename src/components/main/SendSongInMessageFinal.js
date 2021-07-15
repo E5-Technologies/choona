@@ -1,12 +1,9 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
-  Keyboard,
   TextInput,
   Image,
   FlatList,
@@ -15,10 +12,7 @@ import Seperator from './ListCells/Seperator';
 
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
-import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
-import SavedSongsListItem from './ListCells/SavedSongsListItem';
-import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import constants from '../../utils/helpers/constants';
 import { connect } from 'react-redux';
@@ -75,9 +69,9 @@ function SendSongInMessageFinal(props) {
   // GET SPOTIFY SONG URL
   const callApi = async () => {
     return await axios.get(
-      `${constants.BASE_URL}/${`song/spotify/${
-        props.route.params.details.id
-      }`}`,
+      `${
+        constants.BASE_URL
+      }/${`song/spotify/${props.route.params.details.id}`}`,
       {
         headers: {
           Accept: 'application/json',
@@ -151,17 +145,6 @@ function SendSongInMessageFinal(props) {
     );
   }
 
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
-
   function sendMessage() {
     let chatBody = [];
 
@@ -217,7 +200,7 @@ function SendSongInMessageFinal(props) {
           : props.registerType,
 
         read: false,
-        unread_count:0,
+        unread_count: 0,
         time: moment().toString(),
         order: moment().valueOf(),
       };
@@ -259,7 +242,7 @@ function SendSongInMessageFinal(props) {
             }
           }}
           onPressThirdItem={() => {
-            // if (search.trim() != "") {
+            // if (search.trim() !== "") {
             sendMessage();
             // if (fromAddAnotherSong) {
             //     props.navigation.replace('InsideaMessage', { index: index })

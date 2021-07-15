@@ -23,7 +23,6 @@ function ActivityListItem(props) {
 
   return (
     <View style={styles.container}>
-     
       <View style={styles.detailsContainer}>
         <View style={styles.detailsInfo}>
           <TouchableOpacity
@@ -37,10 +36,10 @@ function ActivityListItem(props) {
             />
           </TouchableOpacity>
           <TouchableOpacity
-          style={{flex:1}}
+            style={{ flex: 1 }}
             disabled={props.TouchableOpacityDisabled}
             onPress={() => {
-               onPress();
+              onPressImage();
             }}>
             <Text style={styles.detailsText} numberOfLines={2}>
               {props.title ? (
@@ -65,32 +64,28 @@ function ActivityListItem(props) {
               )}
             </Text>
           </TouchableOpacity>
-     
-   
         </View>
-        {
-          // props.userId != props.loginUserId?
-        
-        props.type ? (
-          props.userId != props.loginUserId?
-          <TouchableOpacity
-            style={[
-              styles.followButton,
-              { backgroundColor: follow ? Colors.white : Colors.fadeblack },
-            ]}
-            onPress={() => {
-              onPress();
-              setFollow(!follow);
-            }}>
-            {follow ? (
-              <Text style={[styles.followButtonText,{}]}>FOLLOW</Text>
-            ) : (
-              <Text style={[styles.followButtonText, { color: Colors.white }]}>
-                FOLLOWING
-              </Text>
-            )}
-          </TouchableOpacity>:
-          null
+        {props.type ? (
+          props.userId !== props.loginUserId ? (
+            <TouchableOpacity
+              style={[
+                styles.followButton,
+                { backgroundColor: follow ? Colors.white : Colors.fadeblack },
+              ]}
+              onPress={() => {
+                onPress();
+                setFollow(!follow);
+              }}>
+              {follow ? (
+                <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
+              ) : (
+                <Text
+                  style={[styles.followButtonText, { color: Colors.white }]}>
+                  FOLLOWING
+                </Text>
+              )}
+            </TouchableOpacity>
+          ) : null
         ) : (
           <TouchableOpacity
             onPress={() => {
@@ -103,11 +98,8 @@ function ActivityListItem(props) {
               style={{ height: normaliseNew(35), width: normaliseNew(35) }}
               resizeMode="contain"
             />
-            
           </TouchableOpacity>
-        )
-      
-      }
+        )}
       </View>
     </View>
   );
@@ -187,6 +179,6 @@ ActivityListItem.defaultProps = {
   onPressImage: null,
   marginTop: 0,
   TouchableOpacityDisabled: true,
-  userId:'',
-  loginUserId:''
+  userId: '',
+  loginUserId: '',
 };

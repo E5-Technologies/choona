@@ -1,13 +1,8 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  StatusBar,
-  
   Image,
   Platform,
   Dimensions,
@@ -19,10 +14,7 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import {
-  createBottomTabNavigator,
-  BottomTabBar,
-} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTokenRequest } from './src/action/index';
 import Colors from './src/assests/Colors';
@@ -59,20 +51,17 @@ import AddSongsInMessage from './src/components/main/AddSongsInMessage';
 import SendSongInMessageFinal from './src/components/main/SendSongInMessageFinal';
 import GenreClicked from './src/components/main/GenreClicked';
 import GenreSongClicked from './src/components/main/GenreSongClicked';
-import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 import FeaturedTrack from './src/components/main/FeaturedTrack';
 import AddAnotherSong from './src/components/main/AddAnotherSong';
 import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts';
-import { getDeviceToken } from './src/utils/helpers/FirebaseToken';
 import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
 import { editProfileRequest } from './src/action/UserAction';
-import firebase from '@react-native-firebase/messaging';
 import _ from 'lodash';
 import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
-import PlayerComment from './src/components/main/PlayerComment'
+import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
 
 const Stack = createStackNavigator();
@@ -123,7 +112,7 @@ const App = () => {
     OneSignal.setLogLevel(6, 0);
     OneSignal.setRequiresUserPrivacyConsent(false);
     OneSignal.promptForPushNotificationsWithUserResponse(response => {
-      console.log('Prompt response:', response);
+      // console.log('Prompt response:', response);
     });
   }, []);
 
@@ -145,97 +134,23 @@ const App = () => {
     const UserReducer = useSelector(state => state.UserReducer);
 
     return (
-
       <View style={styles.appStyle}>
-
-      <Tab.Navigator
-        initialRouteName={'Home'}
-        tabBarOptions={{
-          activeBackgroundColor: Colors.darkerblack,
-          inactiveBackgroundColor: Colors.darkerblack,
-          safeAreaInsets: { bottom: 0 },
-          style: {
-            height: Platform.OS === 'android' ? normalise(45) : normalise(68),
-            borderTopColor: Colors.fadeblack,
-          },
-        }}>
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                      ? normalise(0)
-                      : normalise(10),
-                  height: normalise(20),
-                  width: normalise(20),
-                }}
-                source={focused ? ImagePath.homeactive : ImagePath.homeinactive}
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-        <Tab.Screen
-          name="Search"
-          component={Search}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                      ? normalise(0)
-                      : normalise(10),
-                  height: normalise(20),
-                  width: normalise(20),
-                }}
-                source={
-                  focused ? ImagePath.searchactive : ImagePath.searchinactive
-                }
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-        <Tab.Screen
-          name="Add"
-          component={AddSong}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                      ? normalise(0)
-                      : normalise(10),
-                  height: normalise(40),
-                  width: normalise(40),
-                }}
-                source={focused ? ImagePath.addButton : ImagePath.addButton}
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-        <Tab.Screen
-          name="Notification"
-          component={Notification}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View>
+        <Tab.Navigator
+          initialRouteName={'Home'}
+          tabBarOptions={{
+            activeBackgroundColor: Colors.darkerblack,
+            inactiveBackgroundColor: Colors.darkerblack,
+            safeAreaInsets: { bottom: 0 },
+            style: {
+              height: Platform.OS === 'android' ? normalise(45) : normalise(68),
+              borderTopColor: Colors.fadeblack,
+            },
+          }}>
+          <Tab.Screen
+            name="Home"
+            component={Home}
+            options={{
+              tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
                     marginTop:
@@ -248,60 +163,156 @@ const App = () => {
                     width: normalise(20),
                   }}
                   source={
-                    focused
-                      ? ImagePath.notificationactive
-                      : ImagePath.notificationinactive
+                    ImagePath
+                      ? focused
+                        ? ImagePath.homeactive
+                        : ImagePath.homeinactive
+                      : null
                   }
                   resizeMode="contain"
                 />
-                {!_.isEmpty(UserReducer.userProfileResp) ? (
-                  UserReducer.userProfileResp.isActivity ? (
-                    <View
-                      style={{
-                        position: 'absolute',
-                        right: normalise(-2),
-                        top: normalise(-2),
-                        backgroundColor: Colors.red,
-                        borderRadius: normalize(8),
-                        height: 10,
-                        width: 10,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    />
-                  ) : null
-                ) : null}
-              </View>
-            ),
-            tabBarLabel: '',
-          }}
-        />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
+            name="Search"
+            component={Search}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  style={{
+                    marginTop:
+                      Platform.OS === 'android'
+                        ? normalise(10)
+                        : Dimensions.get('window').height > 736
+                        ? normalise(0)
+                        : normalise(10),
+                    height: normalise(20),
+                    width: normalise(20),
+                  }}
+                  source={
+                    ImagePath
+                      ? focused
+                        ? ImagePath.searchactive
+                        : ImagePath.searchinactive
+                      : null
+                  }
+                  resizeMode="contain"
+                />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
+            name="Add"
+            component={AddSong}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  style={{
+                    marginTop:
+                      Platform.OS === 'android'
+                        ? normalise(10)
+                        : Dimensions.get('window').height > 736
+                        ? normalise(0)
+                        : normalise(10),
+                    height: normalise(40),
+                    width: normalise(40),
+                  }}
+                  source={
+                    ImagePath
+                      ? focused
+                        ? ImagePath.addButton
+                        : ImagePath.addButton
+                      : null
+                  }
+                  resizeMode="contain"
+                />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
+            name="Notification"
+            component={Notification}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <View>
+                  <Image
+                    style={{
+                      marginTop:
+                        Platform.OS === 'android'
+                          ? normalise(10)
+                          : Dimensions.get('window').height > 736
+                          ? normalise(0)
+                          : normalise(10),
+                      height: normalise(20),
+                      width: normalise(20),
+                    }}
+                    source={
+                      ImagePath
+                        ? focused
+                          ? ImagePath.notificationactive
+                          : ImagePath.notificationinactive
+                        : null
+                    }
+                    resizeMode="contain"
+                  />
+                  {!_.isEmpty(UserReducer.userProfileResp) ? (
+                    UserReducer.userProfileResp.isActivity ? (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          right: normalise(-2),
+                          top: normalise(-2),
+                          backgroundColor: Colors.red,
+                          borderRadius: normalize(8),
+                          height: 10,
+                          width: 10,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      />
+                    ) : null
+                  ) : null}
+                </View>
+              ),
+              tabBarLabel: '',
+            }}
+          />
 
-        <Tab.Screen
-          name="Contact"
-          component={Contact}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                      ? normalise(0)
-                      : normalise(10),
-                  height: normalize(22),
-                  width: normalize(22),
-                }}
-                source={focused ? ImagePath.boxactive : ImagePath.boxinactive}
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-      </Tab.Navigator>
-   </View>
+          <Tab.Screen
+            name="Contact"
+            component={Contact}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  style={{
+                    marginTop:
+                      Platform.OS === 'android'
+                        ? normalise(10)
+                        : Dimensions.get('window').height > 736
+                        ? normalise(0)
+                        : normalise(10),
+                    height: normalise(22),
+                    width: normalise(22),
+                  }}
+                  source={
+                    ImagePath
+                      ? focused
+                        ? ImagePath.boxactive
+                        : ImagePath.boxinactive
+                      : null
+                  }
+                  resizeMode="contain"
+                />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+        </Tab.Navigator>
+      </View>
     );
   };
 
@@ -368,14 +379,9 @@ const App = () => {
               name="AddToPlayListScreen"
               component={AddToPlayListScreen}
             />
-              <Stack.Screen
-              name="SingleSongClick"
-              component={SingleSongClick}
-            />
+            <Stack.Screen name="SingleSongClick" component={SingleSongClick} />
             <Stack.Screen name="PlayerComment" component={PlayerComment} />
-
           </Stack.Navigator>
-          
         )}
       </NavigationContainer>
     );
@@ -383,9 +389,7 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  appStyle: { flex: 1, backgroundColor: "#000000" }
+  appStyle: { flex: 1, backgroundColor: Colors.black },
 });
-
-
 
 export default App;

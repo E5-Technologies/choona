@@ -1,7 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
   ScrollView,
   View,
   Text,
@@ -9,30 +8,23 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
-  Platform
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import { tokenRequest } from '../../action/index';
-import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
-import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import Permissions,{requestMultiple,request,check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   EDIT_PROFILE_REQUEST,
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
-  COUNTRY_CODE_REQUEST,
-  COUNTRY_CODE_SUCCESS,
-  COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
 import {
   editProfileRequest,
@@ -71,9 +63,6 @@ function EditProfile(props) {
     });
   };
 
-
-  
-
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case EDIT_PROFILE_REQUEST:
@@ -95,16 +84,10 @@ function EditProfile(props) {
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
-   
-    accessPremission()
-
-
+    accessPremission();
   };
 
-
-  const accessPremission=()=>{
-
-
+  const accessPremission = () => {
     Alert.alert(
       'Choose Profile Image',
       'Select from where you want to choose the image.',
@@ -112,40 +95,19 @@ function EditProfile(props) {
         {
           text: 'Camera',
           onPress: () => {
-
             pickImagewithCamera();
-
-
-
-
-
-
-            
-            
-
-
           },
         },
         {
           text: 'Gallery',
           onPress: () => {
-
-
-
-
-
             pickImagefromGallery();
-
-
-
-
-
           },
         },
       ],
       { cancelable: true },
     );
-  }
+  };
 
   // IMAGE PICKER FROM GALLERY
   const pickImagefromGallery = () => {
@@ -160,13 +122,12 @@ function EditProfile(props) {
       includeExif: true,
     })
       .then(image => {
-         console.log(`IMAGE: ${JSON.stringify(image)}`);
+        console.log(`IMAGE: ${JSON.stringify(image)}`);
         setPicture(true);
         setImageDetails(image);
         setProfilePic(image.path);
       })
       .catch(err => {
-
         alert(err);
         // console.log(err);
       });
@@ -187,14 +148,12 @@ function EditProfile(props) {
         setProfilePic(image.path);
       })
       .catch(err => {
-
         alert(err);
         // console.log(err);
       });
   };
 
   const updateProfile = () => {
-
     if (username === '') {
       alert('Please enter your username');
     }
@@ -378,12 +337,12 @@ function EditProfile(props) {
                 <View>
                   <Picker
                     textColor={Colors.white}
-                    textSize={normalize(9)}
+                    textSize={normalise(9)}
                     emptySelectText="Select"
                     editable={true}
                     data={props.countryCodeRequest}
                     selectedValue={
-                      codePick == '' ? props.countryCodeRequest[0] : codePick
+                      codePick === '' ? props.countryCodeRequest[0] : codePick
                     }
                     onPickerItemSelected={(selectedvalue, index) => {
                       //// console.log(index)
@@ -399,7 +358,7 @@ function EditProfile(props) {
                 placeholder={'Enter Phone number'}
                 placeholderTextColor={Colors.grey}
                 maxLength={15}
-                width={normalize(200)}
+                width={normalise(200)}
                 isNumber={true}
                 value={phoneNumber}
                 onChangeText={text => {
@@ -410,7 +369,7 @@ function EditProfile(props) {
               <Text
                 style={{
                   position: 'absolute',
-                  fontSize: normalize(12),
+                  fontSize: normalise(12),
                   top: 20,
                   color: Colors.white,
                   fontFamily: 'ProximaNova-Bold',
@@ -453,7 +412,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EditProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

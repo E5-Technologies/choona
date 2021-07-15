@@ -1,40 +1,32 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import env from 'react-native-config';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   StatusBar,
-  ImageBackground,
   Image,
   Platform,
-  Alert,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {
-  loginWithSpotify,
-  getSpotifyToken,
-} from '../../utils/helpers/SpotifyLogin';
+import { loginWithSpotify } from '../../utils/helpers/SpotifyLogin';
+// import toast from '../../utils/helpers/ShowErrorAlert';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
 import { loginRequest } from '../../action/UserAction';
-import isInternetConnected from '../../utils/helpers/NetInfo';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
-  AppleButton,
   AppleAuthError,
   AppleAuthRequestScope,
   AppleAuthRealUserStatus,
-  AppleAuthCredentialState,
+  // AppleAuthCredentialState,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
 import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
@@ -46,10 +38,8 @@ let status = '';
 function SignUp(props) {
   const [token2, setToken] = useState(undefined);
   const [userDetails, setUserDetails] = useState({});
-  const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
+  // const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
   const [loginType, setLoginType] = useState('');
-
-  console.log(token2);
 
   useEffect(() => {
     (async () => {
@@ -58,52 +48,39 @@ function SignUp(props) {
     })();
   });
 
-  useEffect(() => {
-    fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
-      updateCredentialStateForUser(`Error: ${error.code}`),
-    );
-    return () => {};
-  }, []);
+  // useEffect(() => {
+  //   fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
+  //     updateCredentialStateForUser(`Error: ${error.code}`),
+  //   );
+  //   return () => {};
+  // }, []);
 
   function spotifyLogin() {
+    console.log(1);
     loginWithSpotify()
       .then(value => {
+        console.log(2, !_.isEmpty(value));
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
-          // getDeviceToken()
-          //   .then(token => {
-          //     // console.log(token);
           let payload = {
             social_id: value.id,
             social_type: 'spotify',
             deviceToken: token2,
             deviceType: Platform.OS,
           };
-
           console.log({ payload });
 
           props.loginRequest(payload);
-          // })
-          // .catch(err => {
-          //   let payload = {
-          //     social_id: value.id,
-          //     social_type: 'spotify',
-          //     deviceToken: '',
-          //     deviceType: Platform.OS,
-          //   };
-
-          //   props.loginRequest(payload);
-          // });
         }
       })
       .catch(error => {
-        // console.log(error);
+        console.log(error);
       });
   }
 
   //ON APLLE BUTTON PRESS
-  async function onAppleButtonPress(updateCredentialStateForUser) {
+  async function onAppleButtonPress() {
     setLoginType('Apple');
     console.warn('Beginning Apple Authentication');
     // start a login request
@@ -121,16 +98,15 @@ function SignUp(props) {
       const {
         user: newUser,
         email,
-        nonce,
         identityToken,
         realUserStatus /* etc */,
       } = appleAuthRequestResponse;
 
       user = newUser;
 
-      fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
-        updateCredentialStateForUser(`Error: ${error.code}`),
-      );
+      // fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
+      //   updateCredentialStateForUser(`Error: ${error.code}`),
+      // );
 
       if (identityToken) {
         appleLoginWithOurServer(appleAuthRequestResponse);
@@ -153,19 +129,19 @@ function SignUp(props) {
     }
   }
 
-  //FETCH AND UPDATE CRED STATE
-  async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
-    if (user === null) {
-      updateCredentialStateForUser('N/A');
-    } else {
-      const credentialState = await appleAuth.getCredentialStateForUser(user);
-      if (credentialState === AppleAuthCredentialState.AUTHORIZED) {
-        updateCredentialStateForUser('AUTHORIZED');
-      } else {
-        updateCredentialStateForUser(credentialState);
-      }
-    }
-  }
+  // //FETCH AND UPDATE CRED STATE
+  // async function fetchAndUpdateCredentialState(updateCredentialStateForUser) {
+  //   if (user === null) {
+  //     updateCredentialStateForUser('N/A');
+  //   } else {
+  //     const credentialState = await appleAuth.getCredentialStateForUser(user);
+  //     if (credentialState === AppleAuthCredentialState.AUTHORIZED) {
+  //       updateCredentialStateForUser('AUTHORIZED');
+  //     } else {
+  //       updateCredentialStateForUser(credentialState);
+  //     }
+  //   }
+  // }
 
   //TOKEN FIREBASE
   function appleLoginWithOurServer(appleData) {
@@ -227,8 +203,6 @@ function SignUp(props) {
     }
   }
 
-  // console.log(loginType);
-  //VIEW
   return (
     <View
       style={{ flex: 1, backgroundColor: Colors.black, position: 'relative' }}>
@@ -250,24 +224,34 @@ function SignUp(props) {
           height: normalise(375),
         }}>
         <Image
-          source={ImagePath.albumsPic}
+          source={ImagePath ? ImagePath.albumsPic : null}
           style={{
             height: normalise(300),
             width: '100%',
           }}
           resizeMode="contain"
         />
-
         <Image
-          source={ImagePath.applogo}
+          source={ImagePath ? ImagePath.applogo : null}
           style={{
             height: normalise(40),
             alignSelf: 'center',
           }}
           resizeMode="contain"
         />
+        {env.IS_PRODUCTION === 'false' && (
+          <Text
+            style={{
+              color: '#fff',
+              fontFamily: 'ProximaNova-Bold',
+              fontSize: 20,
+              marginTop: 10,
+              textAlign: 'center',
+            }}>
+            Staging
+          </Text>
+        )}
       </View>
-
       <View
         style={{
           height: Platform.OS === 'android' ? '45%' : '50%',
@@ -299,10 +283,11 @@ function SignUp(props) {
             justifyContent: 'center',
           }}
           onPress={() => {
-            spotifyLogin(), setLoginType('Spotify');
+            spotifyLogin();
+            setLoginType('Spotify');
           }}>
           <Image
-            source={ImagePath.spotifyicon}
+            source={ImagePath ? ImagePath.spotifyicon : null}
             style={{
               height: normalise(32),
               width: normalise(32),
@@ -343,9 +328,9 @@ function SignUp(props) {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => onAppleButtonPress(updateCredentialStateForUser)}>
+            onPress={() => onAppleButtonPress()}>
             <Image
-              source={ImagePath.applemusic}
+              source={ImagePath ? ImagePath.applemusic : null}
               style={{
                 height: normalise(32),
                 width: normalise(32),
@@ -354,7 +339,6 @@ function SignUp(props) {
               }}
               resizeMode="contain"
             />
-
             <Text
               style={{
                 marginLeft: normalise(10),
@@ -366,21 +350,6 @@ function SignUp(props) {
             </Text>
           </TouchableOpacity>
         ) : null}
-
-        {/* {Platform.OS === 'ios' ? (
-          <AppleButton
-            style={{
-              marginTop: normalise(10),
-              marginBottom: normalise(20),
-              width: '80%',
-              height: normalize(48),
-            }}
-            cornerRadius={100}
-            buttonStyle={AppleButton.Style.WHITE}
-            buttonType={AppleButton.Type.SIGN_IN}
-            onPress={() => onAppleButtonPress(updateCredentialStateForUser)}
-          />
-        ) : null} */}
       </View>
     </View>
   );
@@ -402,7 +371,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -1,16 +1,5 @@
-import React, {useEffect, Fragment} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Platform,
-  PermissionsAndroid,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Image, PermissionsAndroid } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
@@ -111,24 +100,24 @@ export default function Splash(props) {
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Image
-        source={ImagePath.appIcon512}
-        style={{height: normalise(130), width: '60%'}}
+        source={ImagePath ? ImagePath.appIcon512 : null}
+        style={{ height: normalise(130), width: '60%' }}
         resizeMode="contain"
-      />    
+      />
 
-<View
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: normalise(-50),
-                }}>
-                <Image
-                  source={ImagePath.addPostIllus}
-                  style={{ height: normalise(170), width: '100%' }}
-                  resizeMode="cover"
-                />
-              </View>
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: normalise(-50),
+        }}>
+        <Image
+          source={ImagePath ? ImagePath.addPostIllus : null}
+          style={{ height: normalise(170), width: '100%' }}
+          resizeMode="cover"
+        />
+      </View>
       {/* <Text
         style={{
           color: Colors.white,

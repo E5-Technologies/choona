@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { View, Text, TextInput, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import normalize from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
@@ -55,8 +48,7 @@ function TextInputField(props) {
             : Colors.fadeblack,
           color: Colors.white,
         }}
-        keyboardAppearance='dark'
-
+        keyboardAppearance="dark"
         onFocus={() => {
           setFocused(true);
         }}
@@ -76,7 +68,11 @@ function TextInputField(props) {
       {props.tick_req && props.tick_visible ? (
         <Image
           source={
-            props.userNameAvailable ? ImagePath.green_tick : ImagePath.crossIcon
+            ImagePath
+              ? props.userNameAvailable
+                ? ImagePath.green_tick
+                : ImagePath.crossIcon
+              : null
           }
           style={{
             position: 'absolute',

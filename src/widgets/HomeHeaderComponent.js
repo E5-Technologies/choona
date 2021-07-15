@@ -14,17 +14,15 @@ function HomeHeaderComponent(props) {
   }
 
   function onPressThirdItem() {
-  
     if (props.onPressThirdItem) {
       props.onPressThirdItem();
     }
   }
 
   function onPressLogo() {
-
-   if(props.pressLogo){
+    if (props.pressLogo) {
       props.pressLogo();
-   }
+    }
   }
   return (
     <View style={HeaderStyles.headerContainer}>
@@ -45,14 +43,14 @@ function HomeHeaderComponent(props) {
               onPressFirstItem();
             }}>
             <Image
-              source={{ uri: props.imageone ?? props.imageone }}
+              source={props && props.imageone ? { uri: props.imageone } : null}
               style={{
                 // height: props.imageoneheight,
                 // width: props.imageonewidth,
-                height:normalise(26),
-                width:normalise(26),
+                height: normalise(26),
+                width: normalise(26),
                 // borderRadius: props.borderRadius,
-                borderRadius:normalise(60),
+                borderRadius: normalise(60),
                 marginTop: normalise(-11),
               }}
               resizeMode="contain"
@@ -63,21 +61,23 @@ function HomeHeaderComponent(props) {
       {/* Middle */}
       {!props.middleImageReq ? (
         <Text style={HeaderStyles.headerText}>{props.title}</Text>
+      ) : props.onIconPress ? (
+        <TouchableOpacity
+          onPress={() => {
+            onPressLogo();
+          }}>
+          <Image
+            style={HeaderStyles.logo}
+            source={ImagePath ? ImagePath.home_icon_choona : null}
+            resizeMode={'contain'}
+          />
+        </TouchableOpacity>
       ) : (
-        props.onIconPress?
-        <TouchableOpacity onPress={()=>{onPressLogo();}} >
         <Image
           style={HeaderStyles.logo}
-          source={ImagePath.home_icon_choona}
+          source={ImagePath ? ImagePath.home_icon_choona : null}
           resizeMode={'contain'}
         />
-        </TouchableOpacity>
-        :
-        <Image
-        style={HeaderStyles.logo}
-        source={ImagePath.home_icon_choona}
-        resizeMode={'contain'}
-      />
       )}
       {/* Right */}
       <TouchableOpacity
@@ -90,7 +90,7 @@ function HomeHeaderComponent(props) {
         ) : (
           <>
             <Image
-              source={props.imagetwo ?? props.imagetwo}
+              source={props && props.imagetwo ? props.imagetwo : null}
               style={{
                 height: props.imagetwoheight,
                 width: props.imagetwowidth,
@@ -129,8 +129,8 @@ HomeHeaderComponent.propTypes = {
   borderRadius: PropTypes.number,
   staticFirstImage: PropTypes.bool,
   read: PropTypes.bool,
-  onIconPress:PropTypes.bool,
-  pressLogo:PropTypes.func
+  onIconPress: PropTypes.bool,
+  pressLogo: PropTypes.func,
 };
 HomeHeaderComponent.defaultProps = {
   firstitemtext: true,
@@ -154,6 +154,6 @@ HomeHeaderComponent.defaultProps = {
   height: normalise(35),
   staticFirstImage: true,
   notRead: false,
-  onIconPress:false,
-  pressLogo:null,
+  onIconPress: false,
+  pressLogo: null,
 };

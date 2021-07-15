@@ -1,11 +1,11 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   Image,
+  Platform,
   Clipboard,
   Keyboard,
   TouchableWithoutFeedback,
@@ -65,7 +65,7 @@ import { getUsersFromHome } from '../../../action/UserAction';
 import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
-import { func } from 'prop-types';
+import EmptyComponent from '../../Empty/EmptyComponent';
 
 let status;
 let postStatus;
@@ -97,7 +97,7 @@ function Search(props) {
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
-  const [totalReact,setTotalReact] = useState([])
+  const [totalReact, setTotalReact] = useState([]);
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
@@ -110,7 +110,6 @@ function Search(props) {
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
   useEffect(() => {
-    
     const unsuscribe = props.navigation.addListener('focus', payload => {
       setUserSearchData([]);
       sesUsersToSEndSong([]);
@@ -134,7 +133,7 @@ function Search(props) {
         setSongData([]);
         setTimeout(() => {
           setSongData(props.userSearch);
-          
+
           setBool(false);
         }, 1000);
         break;
@@ -170,18 +169,27 @@ function Search(props) {
         postStatus = props.postStatus;
         setSearchPostData(props.searchPostData);
         // console.log("userpost"+props.userSearchFromHome)
-        let newarray = []
-        props.searchPostData.map((item,index)=>{
-          let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
-         
-          newarray.push(newObject)
-          if(index===props.searchPostData.length-1){
-            setTotalReact(newarray)
+        let newarray = [];
+        props.searchPostData.map((item, index) => {
+          let newObject = {
+            id: item._id,
+            react: [
+              item.fire_count,
+              item.love_count,
+              item.dancer_count,
+              item.man_dancing_count,
+              item.face_count,
+              item.thumbsup_count,
+            ],
+          };
+
+          newarray.push(newObject);
+          if (index === props.searchPostData.length - 1) {
+            setTotalReact(newarray);
             //  console.log("newarrr"+ JSON.stringify(newarray))
           }
-        
-        })
-       
+        });
+
         break;
 
       case SEARCH_POST_FAILURE:
@@ -200,8 +208,7 @@ function Search(props) {
       case TOP_50_SONGS_SUCCESS:
         top50Status = props.top50SongsStatus;
         setTop50(props.top50SongsResponse);
-      
-       
+
         break;
 
       case TOP_50_SONGS_FAILURE:
@@ -212,7 +219,7 @@ function Search(props) {
   }
 
   if (userstatus === '' || props.userstatus !== userstatus) {
-    console.log("status"+props.userstatus)
+    console.log('status' + props.userstatus);
     switch (props.userstatus) {
       case GET_USER_FROM_HOME_REQUEST:
         userstatus = props.userstatus;
@@ -221,9 +228,7 @@ function Search(props) {
       case GET_USER_FROM_HOME_SUCCESS:
         userstatus = props.userstatus;
         setUserSearchData(props.userSearchFromHome);
-   
-    
-       
+
         break;
 
       case GET_USER_FROM_HOME_FAILURE:
@@ -254,7 +259,6 @@ function Search(props) {
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
-          details: props.searchPostData[positionInArray],
         });
         break;
 
@@ -265,14 +269,15 @@ function Search(props) {
     }
   }
 
- 
-  
   // RENDER FUNCTION FLATLIST
   function renderUserData(data) {
     return (
       <ActivityListItem
         image={constants.profile_picture_base_url + data.item.profile_image}
         user={data.item.username}
+        type={true}
+        userId={data.item.user_id}
+        loginUserId={props.userProfileResp._id}
         follow={data.item.isFollowing ? false : true}
         bottom={data.index === props.userSearch.length - 1 ? true : false}
         marginBottom={
@@ -294,91 +299,87 @@ function Search(props) {
     );
   }
 
-
-  function _onReaction(ID,reaction,reactionList){
-
-    let newarray = searchPostData
+  function _onReaction(ID, reaction, reactionList) {
+    let newarray = searchPostData;
     // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
-      newarray.map((item,index)=>{
-     
-     if(item._id === ID){
-  
-  if(reactionList.length>0){
-  var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
-  var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
-  var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
-  var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
-  var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
-  var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
-  
-  //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-  if(found!=-1){
-    newarray[index].fire_count=reactionList[found].data.length
-       }else{
-         newarray[index].fire_count=0
-       }
-       if(found_love!=-1){
-    newarray[index].love_count=reactionList[found_love].data.length
-       }
-       else{
-         newarray[index].love_count=0
-       }
-       if(found_dance !=-1){
-    newarray[index].dancer_count=reactionList[found_dance].data.length
-       }
-       else{
-         newarray[index].dancer_count=0
-       }
-       if(found_ManDance !=-1){
-    newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
-       }
-       else{
-         newarray[index].man_dancing_count=0
-       }
-       if(found_face != -1){
-    newarray[index].face_count=reactionList[found_face].data.length
-       }
-       else{
-         newarray[index].face_count=0
-       }
-       if(found_thumb != -1){
-    newarray[index].thumbsup_count=reactionList[found_thumb].data.length
-       }
-       else{
-         newarray[index].thumbsup_count=0
-       }
-  
-       newarray[index].reaction_count= reaction
-      }
+    newarray.map((item, index) => {
+      if (item._id === ID) {
+        if (reactionList.length > 0) {
+          var found = reactionList.findIndex(element => {
+            return element.header === react[0];
+          });
+          var found_love = reactionList.findIndex(element => {
+            return element.header === react[1];
+          });
+          var found_dance = reactionList.findIndex(element => {
+            return element.header === react[2];
+          });
+          var found_ManDance = reactionList.findIndex(element => {
+            return element.header === react[3];
+          });
+          var found_face = reactionList.findIndex(element => {
+            return element.header === react[4];
+          });
+          var found_thumb = reactionList.findIndex(element => {
+            return element.header === react[5];
+          });
+
+          //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+          if (found !== -1) {
+            newarray[index].fire_count = reactionList[found].data.length;
+          } else {
+            newarray[index].fire_count = 0;
           }
-        
-     if(index===newarray.length-1){
-   
-       setSearchPostData([...newarray])
-     
+          if (found_love !== -1) {
+            newarray[index].love_count = reactionList[found_love].data.length;
+          } else {
+            newarray[index].love_count = 0;
+          }
+          if (found_dance !== -1) {
+            newarray[index].dancer_count =
+              reactionList[found_dance].data.length;
+          } else {
+            newarray[index].dancer_count = 0;
+          }
+          if (found_ManDance !== -1) {
+            newarray[index].man_dancing_count =
+              reactionList[found_ManDance].data.length;
+          } else {
+            newarray[index].man_dancing_count = 0;
+          }
+          if (found_face !== -1) {
+            newarray[index].face_count = reactionList[found_face].data.length;
+          } else {
+            newarray[index].face_count = 0;
+          }
+          if (found_thumb !== -1) {
+            newarray[index].thumbsup_count =
+              reactionList[found_thumb].data.length;
+          } else {
+            newarray[index].thumbsup_count = 0;
+          }
 
-    }
-       })
-    } 
+          newarray[index].reaction_count = reaction;
+        }
+      }
 
-    function _onSelectBack(ID,comment){
-  
-      let newarray = searchPostData
-      newarray.map((item,index)=>{
-      
-       if(item._id === ID){
-    
-        newarray[index].comment_count = comment
-  
-       }
-      if(index=== newarray.length-1){
-         setSearchPostData([...newarray])
-      
-  
+      if (index === newarray.length - 1) {
+        setSearchPostData([...newarray]);
       }
-        })
-        
+    });
+  }
+
+  function _onSelectBack(ID, comment) {
+    let newarray = searchPostData;
+    newarray.map((item, index) => {
+      if (item._id === ID) {
+        newarray[index].comment_count = comment;
       }
+      if (index === newarray.length - 1) {
+        setSearchPostData([...newarray]);
+      }
+    });
+  }
 
   function renderSongData(data) {
     return (
@@ -400,10 +401,12 @@ function Search(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
-          hitreact(reaction, data.index), sendReaction(data.item._id, reaction);
+          hitreact(reaction, data.index);
+          sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
@@ -419,7 +422,7 @@ function Search(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments:[],
+            comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -445,8 +448,8 @@ function Search(props) {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
-
+            onSelectReaction: (ID, reaction, reactionList) =>
+              _onReaction(ID, reaction, reactionList),
           });
         }}
         onPressCommentbox={() => {
@@ -459,7 +462,7 @@ function Search(props) {
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
-            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
+            onSelect: (ID, comment) => _onSelectBack(ID, comment),
           });
         }}
         onPressSecondImage={() => {
@@ -477,25 +480,21 @@ function Search(props) {
     return (
       <TouchableOpacity
         style={{
-          marginBottom:
-            data.index === top50.length - 1 ? normalise(30) : normalise(8),
-          margin: normalise(6),
+          margin: normalise(4),
         }}
-        
         onPress={() => {
           props.navigation.navigate('GenreSongClicked', {
             data: data.item._id,
-            ptID:0
+            ptID: 0,
           });
         }}>
-        
         <Image
           source={{
             uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
           }}
           style={{
-            height: normalise(140),
-            width: normalise(140),
+            height: normalise(150),
+            width: normalise(150),
           }}
           resizeMode="contain"
         />
@@ -507,15 +506,15 @@ function Search(props) {
   // SEND REACTION
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -525,93 +524,104 @@ function Search(props) {
       text_match: myReaction,
     };
 
-    console.log("totalReact"+totalReact) 
+    console.log('totalReact' + totalReact);
 
-    searchPostData.map((item,index)=>{
-    
-      if(id===item._id)
-    
-    if(myReaction==='A'){
-      if(searchPostData[index].fire_count===totalReact[index].react[0]){
-        searchPostData[index].fire_count=searchPostData[index].fire_count+1
-        searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].fire_count!=0){
-        searchPostData[index].fire_count=searchPostData[index].fire_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
+    searchPostData.map((item, index) => {
+      if (id === item._id) {
+        if (myReaction === 'A') {
+          if (searchPostData[index].fire_count === totalReact[index].react[0]) {
+            searchPostData[index].fire_count =
+              searchPostData[index].fire_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].fire_count !== 0) {
+              searchPostData[index].fire_count =
+                searchPostData[index].fire_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'B') {
+          if (searchPostData[index].love_count === totalReact[index].react[1]) {
+            searchPostData[index].love_count =
+              searchPostData[index].love_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].love_count !== 0) {
+              searchPostData[index].love_count =
+                searchPostData[index].love_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'C') {
+          if (
+            searchPostData[index].dancer_count === totalReact[index].react[2]
+          ) {
+            searchPostData[index].dancer_count =
+              searchPostData[index].dancer_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].dancer_count !== 0) {
+              searchPostData[index].dancer_count =
+                searchPostData[index].dancer_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'D') {
+          if (
+            searchPostData[index].man_dancing_count ===
+            totalReact[index].react[3]
+          ) {
+            searchPostData[index].man_dancing_count =
+              searchPostData[index].man_dancing_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].man_dancing_count !== 0) {
+              searchPostData[index].man_dancing_count =
+                searchPostData[index].man_dancing_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else if (myReaction === 'E') {
+          if (searchPostData[index].face_count === totalReact[index].react[4]) {
+            searchPostData[index].face_count =
+              searchPostData[index].face_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].face_count !== 0) {
+              searchPostData[index].face_count =
+                searchPostData[index].face_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
+        } else {
+          if (
+            searchPostData[index].thumbsup_count === totalReact[index].react[5]
+          ) {
+            searchPostData[index].thumbsup_count =
+              searchPostData[index].thumbsup_count + 1;
+            searchPostData[index].reaction_count =
+              searchPostData[index].reaction_count + 1;
+          } else {
+            if (searchPostData[index].thumbsup_count !== 0) {
+              searchPostData[index].thumbsup_count =
+                searchPostData[index].thumbsup_count - 1;
+              searchPostData[index].reaction_count =
+                searchPostData[index].reaction_count - 1;
+            }
+          }
         }
       }
-    }
-    else if(myReaction==='B'){
-      if(searchPostData[index].love_count===totalReact[index].react[1]){
-        searchPostData[index].love_count=searchPostData[index].love_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].love_count!=0){
-        searchPostData[index].love_count=searchPostData[index].love_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='C'){
-      if(searchPostData[index].dancer_count===totalReact[index].react[2]){
-        searchPostData[index].dancer_count=searchPostData[index].dancer_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-      }
-      else{
-        if(searchPostData[index].dancer_count!=0){
-        searchPostData[index].dancer_count=searchPostData[index].dancer_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
-        }
-
-      }
-    }
-    else if(myReaction==='D'){
-      if(searchPostData[index].man_dancing_count===totalReact[index].react[3]){
-        searchPostData[index].man_dancing_count=searchPostData[index].man_dancing_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].man_dancing_count!=0){
-        searchPostData[index].man_dancing_count=searchPostData[index].man_dancing_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1
-        }
-      }
-    }
-    else if(myReaction==='E'){
-      if(searchPostData[index].face_count===totalReact[index].react[4]){
-        searchPostData[index].face_count=searchPostData[index].face_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].face_count!=0){
-        searchPostData[index].face_count=searchPostData[index].face_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1  
-      }
-
-      }
-    }
-    else{
-      if(searchPostData[index].thumbsup_count===totalReact[index].react[5]){
-        searchPostData[index].thumbsup_count=searchPostData[index].thumbsup_count+1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count+1
-        
-      }
-      else{
-        if(searchPostData[index].thumbsup_count!=0){
-        searchPostData[index].thumbsup_count=searchPostData[index].thumbsup_count-1
-         searchPostData[index].reaction_count=searchPostData[index].reaction_count-1  
-      }
-      }
-    }
-    }
-  )
+    });
 
     isInternetConnected()
       .then(() => {
@@ -654,20 +664,17 @@ function Search(props) {
   //MODAL MORE PRESSED
   const MorePressed = () => {
     return (
-
       <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {
           //Alert.alert("Modal has been closed.");
         }}>
         <ImageBackground
           source={ImagePath.page_gradient}
-          style={{ flex: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'center',}}>
+          style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
           <View style={styles.modalView}>
             <TouchableOpacity
               style={{
@@ -718,7 +725,8 @@ function Search(props) {
               }}
               onPress={() => {
                 if (bottomSheetRef) {
-                  setModalVisible(false), bottomSheetRef.open();
+                  setModalVisible(false);
+                  bottomSheetRef.open();
                 }
               }}>
               <Image
@@ -825,13 +833,10 @@ function Search(props) {
                 CANCEL
               </Text>
             </TouchableOpacity>
-          
           </View>
         </ImageBackground>
-      
       </Modal>
-   
-   );
+    );
   };
   //END OF MODAL MORE PRESSED
 
@@ -876,17 +881,6 @@ function Search(props) {
       setTop50(props.top50SongsResponse);
     }
   };
-
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
 
   const searchUser = text => {
     if (text.length >= 1) {
@@ -978,7 +972,7 @@ function Search(props) {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -1036,7 +1030,7 @@ function Search(props) {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -1091,7 +1085,8 @@ function Search(props) {
             {usersToSEndSong.length > 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
+                  bottomSheetRef.close();
+                  sendMessagesToUsers();
                 }}>
                 <Text
                   style={{
@@ -1101,7 +1096,7 @@ function Search(props) {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -1130,7 +1125,8 @@ function Search(props) {
               placeholder={'Search'}
               placeholderTextColor={Colors.grey_text}
               onChangeText={text => {
-                setUserSeach(text), searchUser(text);
+                setUserSeach(text);
+                searchUser(text);
               }}
             />
 
@@ -1148,7 +1144,8 @@ function Search(props) {
             {userSeach === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
+                  setUserSeach('');
+                  setUserSearchData([]);
                 }}
                 style={{
                   backgroundColor: Colors.black,
@@ -1217,8 +1214,8 @@ function Search(props) {
         let finalArray = [];
         setContactsLoading(false);
         //// console.log(JSON.stringify(contacts));
-        contactsArray.map((item, index) => {
-          item.phoneNumbers.map((item, index) => {
+        contactsArray.map(item => {
+          item.phoneNumbers.map(item => {
             let number = item.number.replace(/[- )(]/g, '');
             let check = number.charAt(0);
             let number1 = parseInt(number);
@@ -1278,286 +1275,212 @@ function Search(props) {
             thirditemtext={true}
             texttwo={''}
           />
-
           <View
             style={{
+              backgroundColor: Colors.fadeblack,
               flexDirection: 'row',
               justifyContent: 'space-between',
-              // marginTop: normalise(15),
+              height: normalise(40),
             }}>
             <TouchableOpacity
               style={{
-                backgroundColor: Colors.fadeblack,
                 width: '33%',
                 height: normalise(40),
-                justifyContent: 'flex-end',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
               onPress={() => {
-                setUsersSearch(true),
-                  setGenreSearch(false),
-                  setSongSearch(false);
+                setUsersSearch(true);
+                setGenreSearch(false);
+                setSongSearch(false);
               }}>
               <Text
                 style={{
                   color: usersSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Black',
-                  position: 'absolute',
-                  top: normalise(14),
-                  // left: normalise(26),
-                  alignSelf: 'center',
-                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  fontSize: normalise(11),
+                  textTransform: 'uppercase',
                 }}>
-                USERS
+                Users
               </Text>
-
               {usersSearch ? (
                 <Image
                   source={ImagePath.gradient_border_horizontal}
-                  style={{ width: '100%', height: normalise(2) }}
+                  style={{
+                    width: '100%',
+                    height: normalise(3),
+                    position: 'absolute',
+                    bottom: 0,
+                  }}
                 />
               ) : null}
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{
-                backgroundColor: Colors.fadeblack,
                 width: '34%',
                 height: normalise(40),
-                justifyContent: 'flex-end',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderLeftWidth: normalise(1),
+                borderLeftColor: Colors.darkerblack,
+                borderRightWidth: normalise(1),
+                borderRightColor: Colors.darkerblack,
               }}
               onPress={() => {
                 props.getTop50SongReq();
-                setUsersSearch(false),
-                  setGenreSearch(true),
-                  setSongSearch(false);
+                setUsersSearch(false);
+                setGenreSearch(true);
+                setSongSearch(false);
               }}>
               <Text
                 style={{
                   color: genreSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Black',
-                  position: 'absolute',
-                  top: normalise(14),
-                  // left: normalise(26),
-                  alignSelf: 'center',
-                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  fontSize: normalise(11),
+                  textTransform: 'uppercase',
                 }}>
-                TOP SONGS
+                Top Songs
               </Text>
-
               {genreSearch ? (
                 <Image
                   source={ImagePath.gradient_border_horizontal}
-                  style={{ width: '100%', height: normalise(2) }}
+                  style={{
+                    width: '100%',
+                    height: normalise(3),
+                    position: 'absolute',
+                    bottom: 0,
+                  }}
                 />
               ) : null}
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{
-                backgroundColor: Colors.fadeblack,
                 width: '33%',
                 height: normalise(40),
-                justifyContent: 'flex-end',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
               onPress={() => {
-                setUsersSearch(false),
-                  setGenreSearch(false),
-                  setSongSearch(true);
+                setUsersSearch(false);
+                setGenreSearch(false);
+                setSongSearch(true);
               }}>
               <Text
                 style={{
                   color: songSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Black',
-                  position: 'absolute',
-                  top: normalise(14),
-                  // left: normalise(26),
-                  alignSelf: 'center',
-                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  fontSize: normalise(11),
+                  textTransform: 'uppercase',
                 }}>
-                SONGS
+                Songs
               </Text>
-
               {songSearch ? (
                 <Image
                   source={ImagePath.gradient_border_horizontal}
-                  style={{ width: '100%', height: normalise(2) }}
+                  style={{
+                    width: '100%',
+                    height: normalise(3),
+                    position: 'absolute',
+                    bottom: 0,
+                  }}
                 />
               ) : null}
             </TouchableOpacity>
           </View>
-
-          <View
-            style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
+          {usersSearch || songSearch ? (
+            <View
               style={{
-                height: normalise(35),
-                width: '100%',
-                // backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                // color: Colors.white,
-                
-                backgroundColor:Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              keyboardAppearance='dark'
+                width: '92%',
+                alignSelf: 'center',
+              }}>
+              <TextInput
+                style={{
+                  height: normalise(35),
+                  width: '100%',
+                  // backgroundColor: Colors.fadeblack,
+                  borderRadius: normalise(8),
+                  marginTop: normalise(16),
+                  padding: normalise(10),
+                  // color: Colors.white,
 
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              value={
-                usersSearch
-                  ? usersSearchText
-                  : genreSearch
-                  ? genreSearchText
-                  : songSearchText
-              }
-              placeholder={
-                usersSearch
-                  ? 'Search Users'
-                  : genreSearch
-                  ? 'Search Popular Songs'
-                  : 'Search Songs'
-              }
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                search(text),
+                  backgroundColor: Colors.white,
+                  paddingLeft: normalise(30),
+                }}
+                keyboardAppearance="dark"
+                autoCorrect={false}
+                value={usersSearch ? usersSearchText : songSearchText}
+                placeholder={usersSearch ? 'Search Users' : 'Search Songs'}
+                placeholderTextColor={Colors.darkgrey}
+                onChangeText={text => {
+                  search(text);
                   usersSearch
                     ? setUsersSearchText(text)
-                    : genreSearch
-                    ? setGenreSearchText(text)
                     : setSongSearchText(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {(usersSearch && usersSearchText) ||
-            (genreSearch && genreSearchText) ||
-            (songSearch && songSearchText) ? (
-              <TouchableOpacity
-                onPress={() => {
-                  clearSearch();
-                  usersSearch
-                    ? setUsersSearchText('')
-                    : genreSearch
-                    ? setGenreSearchText('')
-                    : setSongSearchText('');
                 }}
+              />
+              <Image
+                source={ImagePath.searchicongrey}
                 style={{
-                  // backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 5,
-                  backgroundColor:Colors.fordGray,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
+                  height: normalise(15),
+                  width: normalise(15),
+                  bottom: normalise(25),
+                  paddingLeft: normalise(30),
+                }}
+                resizeMode="contain"
+              />
+              {(usersSearch && usersSearchText) ||
+              (songSearch && songSearchText) ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    clearSearch();
+                    usersSearch
+                      ? setUsersSearchText('')
+                      : genreSearch
+                      ? setGenreSearchText('')
+                      : setSongSearchText('');
+                  }}
                   style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
+                    // backgroundColor: Colors.black,
+                    padding: 6,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    borderRadius: 5,
+                    backgroundColor: Colors.fordGray,
+                    position: 'absolute',
+                    right: 0,
+                    bottom:
+                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                    marginRight: normalise(10),
                   }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(10),
+                      fontWeight: 'bold',
+                    }}>
+                    CLEAR
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          ) : (
+            <View />
+          )}
           {usersSearch ? ( //USERS VIEW
             _.isEmpty(songData) ? (
-              <View
-              style={{
-                flex: 1,
-                // justifyContent: 'center',
-                // alignItems: 'center',
-              }} >
-              <Image
-                source={ImagePath.emptyUser}
-                style={{ height: 2*normalise(95), width: 2*normalise(95),marginTop:'2%',alignSelf:'center' }}
-                resizeMode="contain"
-                
-              />
-
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                 
-                  marginTop: normalise(10),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                Search Users to Follow
-              </Text>
-              <Text
-                style={{
-                  color: Colors.fordGray,
-                  fontSize: normalise(12),
-                  fontWeight: '100',
-                  marginTop: normalise(5),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Regular',
-                
-                }}>
-                Search above to find users you want to follow by either their username or just typing their name.
-              </Text>
-              <TouchableOpacity
-                style={{
-                  marginBottom: normalise(30),
-                  marginTop: normalise(30),
-                  height: normalise(50),
-                  width: '80%',
-                  alignSelf: 'center',
-                  borderRadius: normalise(25),
-                  backgroundColor: Colors.white,
-                  borderWidth: normalise(0.5),
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 9,
-                  elevation: 11,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderColor: Colors.white,
+              <EmptyComponent
+                buttonPress={() => {
+                  setContactsLoading(true);
+                  getContacts();
                 }}
-                onPress={() => {
-                  setContactsLoading(true), getContacts();
-                }}>
-                <Text
-                  style={{
-                    marginLeft: normalise(10),
-                    color: Colors.darkerblack,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                  }}>
-                  SEARCH PHONEBOOK
-                </Text>
-              </TouchableOpacity>
-            </View>
-         
-         ) : (
+                buttonText={'Search Phonebook'}
+                image={ImagePath.emptyUser}
+                text={
+                  'Search above to find users you want to follow by either their username or just typing their name.'
+                }
+                title={'Search Users to Follow'}
+              />
+            ) : (
               <View>
                 <View
                   style={{
@@ -1595,47 +1518,49 @@ function Search(props) {
           {songSearch ? ( //SONG VIEW
             _.isEmpty(searchPostData) ? (
               <View
-              style={{
-                flex: 1,
-                // justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={ImagePath.emptySong}
-                style={{ height: 2*normalise(95), width: 2*normalise(95) ,marginTop:'2%' }}
-                resizeMode="contain"
-              />
+                style={{
+                  flex: 1,
+                  // justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={ImagePath.emptySong}
+                  style={{
+                    height: 2 * normalise(95),
+                    width: 2 * normalise(95),
+                    marginTop: '2%',
+                  }}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(14),
 
-<Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                 
-                  marginTop: normalise(13),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                Explore posts containing a song
-              </Text>
-              <Text
-                style={{
-                  color: Colors.fordGray,
-                  fontSize: normalise(12),
-                  fontWeight: '100',
-                  marginTop: normalise(5),
-                  width: '68%',
-                  textAlign: 'center',
-                  alignSelf:'center',
-                  fontFamily: 'ProximaNova-Regular',
-                
-                }}>
-                Search for a song or artist you love to find which other Choona users are posting then as well.
-              </Text>
-            </View>
-        
-              ) : (
+                    marginTop: normalise(13),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontFamily: 'ProximaNova-Bold',
+                  }}>
+                  Explore posts containing a song
+                </Text>
+                <Text
+                  style={{
+                    color: Colors.fordGray,
+                    fontSize: normalise(12),
+                    fontWeight: '100',
+                    marginTop: normalise(5),
+                    width: '68%',
+                    textAlign: 'center',
+                    alignSelf: 'center',
+                    fontFamily: 'ProximaNova-Regular',
+                  }}>
+                  Search for a song or artist you love to find which other
+                  Choona users are posting then as well.
+                </Text>
+              </View>
+            ) : (
               <View>
                 <View
                   style={{
@@ -1672,7 +1597,7 @@ function Search(props) {
             )
           ) : null}
 
-          {genreSearch ? ( //GENRE VIEW
+          {genreSearch ? ( //Top Songs VIEW
             _.isEmpty(top50) ? (
               <View
                 style={{
@@ -1680,9 +1605,6 @@ function Search(props) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                {/* <Image source={ImagePath.music_icon} style={{ height: normalise(40), width: normalise(40) }}
-                                    resizeMode='contain' /> */}
-
                 <Text
                   style={{
                     color: Colors.white,
@@ -1699,9 +1621,8 @@ function Search(props) {
               <FlatList
                 style={{
                   alignSelf: 'center',
-                  paddingLeft: normalise(8),
-                  paddingLeft: normalise(8),
                   width: '100%',
+                  padding: normalise(2),
                 }}
                 data={top50}
                 renderItem={renderGenreData}
@@ -1800,7 +1721,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     userSearchReq: (payload, sendSong) => {
-    
       dispatch(userSearchRequest(payload, sendSong));
     },
 
@@ -1809,9 +1729,7 @@ const mapDispatchToProps = dispatch => {
     },
 
     searchPost: (text, flag) => {
-
       dispatch(searchPostReq(text, flag));
-
     },
 
     reactionOnPostRequest: payload => {
@@ -1827,7 +1745,6 @@ const mapDispatchToProps = dispatch => {
     },
 
     getTop50SongReq: () => {
-  
       dispatch(getTop50SongsRequest());
     },
 
@@ -1841,7 +1758,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

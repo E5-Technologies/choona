@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   SafeAreaView,
   StyleSheet,
   View,
@@ -11,6 +12,7 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -23,9 +25,6 @@ import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
   USER_PROFILE_FAILURE,
-  COUNTRY_CODE_REQUEST,
-  COUNTRY_CODE_SUCCESS,
-  COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
 import {
   getProfileRequest,
@@ -36,83 +35,73 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
-import useSWR from 'swr';
 import axios from 'axios';
 
+import ProfileHeader from '../Profile/ProfileHeader';
+import ProfileHeaderFeatured from '../Profile/ProfileHeaderFeatured';
+import EmptyComponent from '../Empty/EmptyComponent';
+
+import HeaderStyles from '../../styles/header';
+
 let status = '';
+let totalCount = '0';
 
 const postsUrl = constants.BASE_URL + '/user/posts';
 
 function Profile(props) {
+  const getProfileReq = props.getProfileReq;
+  const token = props.header.token;
+
+  const [isLoading, setIsLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalPrivacy, setModalPrivacy] = useState(false);
   const [modaltandcs, setModaltandcs] = useState(false);
-  const [flag, setFlag] = useState('');
-  const [activity, setActivity] = useState(props.route.params.fromAct);
-  const [nonempty,setNonEmpty]= useState(false)
+  const [activity] = useState(props.route.params.fromAct);
+  const [nonempty, setNonEmpty] = useState(false);
 
-  const getPosts = async pageId => {
-    const response = await axios.get(`${postsUrl}?page=${pageId}`, {
+  const [pageId, setPageId] = useState(1);
+
+  const [profilePosts, setProfilePosts] = useState([]);
+
+  const onEndReached = async () => {
+    setPageId(pageId + 1);
+    const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'x-access-token': props.header.token,
       },
     });
-  
-    // console.log("rs" + JSON.stringify(response.data))
-    return await response.data.data;
+    setIsLoading(false);
+    setProfilePosts([...profilePosts, ...response.data.data]);
+    setNonEmpty(true);
   };
 
-  const [pageId, setPageId] = useState(1);
-  const key = `${postsUrl}?page=${pageId}`;
-  const { data: posts, mutate } = useSWR(key, () => getPosts(pageId));
-
-  // const[profilePosts,setProfilePosts] = useState(posts ? posts.data : []);
-  const[profilePosts,setProfilePosts] = useState([]);
-
-
-  const onEndReached=async()=>{
-  
-    setPageId(pageId+1)
-   const response = await axios.get(`${postsUrl}?page=${pageId+1}`, {
-     headers: {
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-       'x-access-token': props.header.token,
-     },
-   });
-  setProfilePosts([...profilePosts,...response.data.data])
-  setNonEmpty(true)
-  
-   } 
-
   useEffect(() => {
-    // const unsuscribe = props.navigation.addListener('focus', payload => {
-      isInternetConnected()
-        .then(async() => {
-          props.getProfileReq();
-          props.getCountryCode();
-            
-   const response = await axios.get(`${postsUrl}?page=${1}`, {
-     headers: {
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-       'x-access-token': props.header.token,
-     },
-   });
- profilePosts.length===0 ?
- ( setProfilePosts(response.data.data),setNonEmpty(true)):null
-        })
-        .catch(() => {
-          toast('Error', 'Please Connect To Internet');
-        });
-    // });
+    isInternetConnected()
+      .then(async () => {
+        getProfileReq();
 
-    // return () => {
-    //   unsuscribe();
-    // };
-  },[]);
+        const response = await axios.get(`${postsUrl}?page=${1}`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token,
+          },
+        });
+        setIsLoading(false);
+
+        response.data.data.length === 0
+          ? (totalCount = totalCount)
+          : (totalCount = response.data.data.length);
+        profilePosts.length === 0
+          ? (setProfilePosts(response.data.data), setNonEmpty(true))
+          : null;
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
+  }, []);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -132,27 +121,6 @@ function Profile(props) {
         status = props.status;
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
-
-      case COUNTRY_CODE_REQUEST:
-        status = props.status;
-        break;
-
-      case COUNTRY_CODE_SUCCESS:
-        status = props.status;
-        getLocationFlag(props.userProfileResp.location);
-        break;
-
-      case COUNTRY_CODE_FAILURE:
-        status = props.status;
-        toast('Oops', 'Something Went Wrong, Please Try Again');
-        break;
-    }
-  }
-
-  function getLocationFlag(country) {
-    let index = props.countryCode.findIndex(obj => obj.name === country);
-    if (index !== -1) {
-      setFlag(props.countryCode[index].flag);
     }
   }
 
@@ -171,17 +139,13 @@ function Profile(props) {
     }
   }
 
-
-
-
-
   function renderProfileData(data) {
-    let array=[]
-    array.push(data.item)
+    let array = [];
+    array.push(data.item);
     return (
       <TouchableOpacity
         onPress={() => {
-            props.navigation.navigate('PostListForUser', {
+          props.navigation.navigate('PostListForUser', {
             profile_name: props.userProfileResp.full_name,
             posts: array,
             index: '0',
@@ -192,7 +156,7 @@ function Profile(props) {
           marginBottom:
             data.index === profilePosts.length - 1
               ? normalise(30)
-              : normalise(5),
+              : normalise(4),
         }}>
         <Image
           source={{
@@ -205,8 +169,8 @@ function Profile(props) {
                   ),
           }}
           style={{
-            width: Dimensions.get('window').width / 2.1,
-            height: Dimensions.get('window').height * 0.22,
+            width: Math.floor(Dimensions.get('window').width / 2.1),
+            height: Math.floor(Dimensions.get('window').height * 0.22),
           }}
           resizeMode="cover"
         />
@@ -220,15 +184,16 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {}}>
         <ImageBackground
           source={ImagePath.page_gradient}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity 
-            onPress={()=>{setModalPrivacy(true)}}
-            >
+            <TouchableOpacity
+              onPress={() => {
+                setModalPrivacy(true);
+              }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -249,10 +214,12 @@ function Profile(props) {
                 Terms of Usage
               </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={{ marginTop: normalise(18) }}
-            onPress={()=>{setModaltandcs(true)}}
-            >
+
+            <TouchableOpacity
+              style={{ marginTop: normalise(18) }}
+              onPress={() => {
+                setModaltandcs(true);
+              }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -262,7 +229,6 @@ function Profile(props) {
                 Terms & Conditions
               </Text>
             </TouchableOpacity>
-
 
             {/* <TouchableOpacity
                             style={{ marginTop: normalise(18) }}>
@@ -276,11 +242,11 @@ function Profile(props) {
             <TouchableOpacity
               style={{ marginTop: normalise(18) }}
               onPress={() => {
-                setModalVisible(!modalVisible), props.logoutReq();
+                setModalVisible(!modalVisible);
+                props.logoutReq();
               }}>
               <Text
                 style={{
-                
                   color: Colors.red,
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
@@ -289,14 +255,17 @@ function Profile(props) {
               </Text>
             </TouchableOpacity>
             <Text
-                style={{
-                  marginTop: normalise(18),
-                  color: Colors.grey,
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Version <Text style={{fontSize:normalise(12)}}> 1.0 </Text>
+              style={{
+                marginTop: normalise(18),
+                color: Colors.grey,
+                fontSize: normalise(13),
+                fontFamily: 'ProximaNova-Semibold',
+              }}>
+              Version{' '}
+              <Text style={{ fontSize: normalise(12) }}>
+                {DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})
               </Text>
+            </Text>
 
             <TouchableOpacity
               onPress={() => {
@@ -335,17 +304,18 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={false}
+        transparent={true}
         visible={modalPrivacy}
-        presentationStyle={'pageSheet'}
-        onRequestClose={() => {setModalPrivacy(false)}}>
-       
-<View style={{flex:1,backgroundColor:'#0D1E25'}}>
-<View style={{marginTop:'5%' }}>
+        presentationStyle={'overFullScreen'}
+        onRequestClose={() => {
+          setModalPrivacy(false);
+        }}>
+        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
+          <View style={{ marginTop: '5%' }}>
             <TouchableOpacity
               style={{ marginLeft: normalise(10) }}
               onPress={() => {
-               setModalPrivacy(false)
+                setModalPrivacy(false);
               }}>
               <Image
                 source={ImagePath.backicon}
@@ -354,12 +324,11 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-<WebView
-        source={{ uri: 'https://www.choona.co/privacy' }}
-        // style={{ marginTop: 20 }}
-      />
-</View>
-
+          <WebView
+            source={{ uri: 'https://www.choona.co/privacy' }}
+            // style={{ marginTop: 20 }}
+          />
+        </View>
       </Modal>
     );
   };
@@ -368,17 +337,18 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={false}
+        transparent={true}
         visible={modaltandcs}
-        presentationStyle={'pageSheet'}
-        onRequestClose={() => {setModaltandcs(false)}}>
-       
-<View style={{flex:1,backgroundColor:'#0D1E25'}}>
-<View style={{marginTop:'5%' }}>
+        presentationStyle={'overFullScreen'}
+        onRequestClose={() => {
+          setModaltandcs(false);
+        }}>
+        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
+          <View style={{ marginTop: '5%' }}>
             <TouchableOpacity
               style={{ marginLeft: normalise(10) }}
               onPress={() => {
-               setModaltandcs(false)
+                setModaltandcs(false);
               }}>
               <Image
                 source={ImagePath.backicon}
@@ -387,35 +357,26 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-<WebView
-        source={{ uri: 'https://www.choona.co/tandcs' }}
-        // style={{ marginTop: 20 }}
-      />
-</View>
-
+          <WebView
+            source={{ uri: 'https://www.choona.co/tandcs' }}
+            // style={{ marginTop: 20 }}
+          />
+        </View>
       </Modal>
     );
   };
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.black} />
-
-      <Loader visible={props.status === USER_PROFILE_REQUEST} />
-      <Loader visible={props.status === COUNTRY_CODE_REQUEST} />
-    
+      <StatusBar backgroundColor={Colors.darkerblack} />
+      {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
       <SafeAreaView style={{ flex: 1 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            width: '90%',
-            alignSelf: 'center',
-            justifyContent: 'space-between',
-          }}>
-          <View style={{ marginTop: normalise(10) }}>
+        <View style={HeaderStyles.headerContainer}>
+          <View style={HeaderStyles.leftItem}>
             <TouchableOpacity
               style={{ marginRight: normalise(10) }}
               onPress={() => {
+                totalCount = 0;
                 props.navigation.goBack();
               }}>
               <Image
@@ -425,12 +386,16 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-
+          <Text style={HeaderStyles.headerText}>
+            {props.userProfileResp.full_name}
+          </Text>
           <View
-            style={{
-              flexDirection: 'row',
-              marginTop: normalise(10),
-            }}>
+            style={[
+              HeaderStyles.rightItem,
+              {
+                flexDirection: 'row',
+              },
+            ]}>
             <TouchableOpacity
               style={{ marginRight: normalise(10) }}
               onPress={() => {
@@ -442,7 +407,6 @@ function Profile(props) {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(!modalVisible);
@@ -455,384 +419,39 @@ function Profile(props) {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View
-          style={{
-            width: '90%',
-            alignSelf: 'center',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: normalise(15),
-          }}>
-          <Image
-            source={{
-              uri:
-                constants.profile_picture_base_url +
-                props.userProfileResp.profile_image,
-            }}
-            style={{
-              height: normalise(68),
-              width: normalise(68),
-              borderRadius: normalise(40),
-            }}
-          />
-
-          <View
-            style={{
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              marginLeft: normalise(20),
-            }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(15),
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {props.userProfileResp.full_name}
-            </Text>
-
-            <Text
-              style={{
-                // marginTop: normalise(2),
-                color: Colors.darkgrey,
-                fontSize: normalise(11),
-                fontFamily: 'ProximaNova-Regular',
-              }}>
-              {props.userProfileResp.username}
-            </Text>
-
-            <Text
-              style={{
-                marginTop: normalise(1),
-                color: Colors.darkgrey,
-                fontSize: normalise(11),
-                fontFamily: 'ProximaNova-Regular',
-              }}>
-              {props.userProfileResp.location}
-              {/* {flag} */}
-            </Text>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: normalise(2),
-              }}>
-              <TouchableOpacity
-                onPress={() => {
-                  props.navigation.push('Following', { type: 'user', id: '' });
-                }}>
-                <Text
-                  style={{
-                    color: Colors.darkgrey,
-                    fontSize: normalise(11),
-                    fontFamily: 'ProximaNova-Regular',
-                  }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    {props.userProfileResp.following}
-                  </Text>{' '}
-                  Following
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  props.navigation.push('Followers', { type: 'user', id: '' });
-                }}>
-                <Text
-                  style={{
-                    marginLeft: normalise(8),
-                    color: Colors.darkgrey,
-                    fontSize: normalise(11),
-                    fontFamily: 'ProximaNova-Regular',
-                  }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontFamily: 'ProximaNova-Regular',
-                    }}>
-                    {props.userProfileResp.follower}
-                  </Text>{' '}
-                  Followers
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <ProfileHeader
+          navigation={props.navigation}
+          profile={props.userProfileResp}
+          totalCount={totalCount}
+          user={true}
+        />
+        <ProfileHeaderFeatured
+          navigation={props.navigation}
+          profile={props.userProfileResp}
+          user={true}
+        />
+        {isLoading ? (
+          <View>
+            <ActivityIndicator
+              color="#ffffff"
+              size="large"
+              style={{ marginTop: normalise(25) }}
+            />
           </View>
-        </View>
-
-        <ImageBackground
-          source={ImagePath.gradientbar}
-          style={{
-            width: '100%',
-            height: normalise(50),
-            marginTop: normalise(10),
-          }}>
-          {_.isEmpty(props.userProfileResp.feature_song) ? ( // IF DATA IS EMPTY
-            <View
-              style={{
-                width: '90%',
-                alignSelf: 'center',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                height: normalise(50),
-              }}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.fadeblack,
-                  height: normalise(40),
-                  width: normalise(40),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  // borderColor: Colors.white, borderWidth:1, borderRadius: normalise(5)
-                }}
-                onPress={() => {
-                  props.navigation.navigate('FeaturedTrack');
-                }}>
-                <Image
-                  source={ImagePath.addicon}
-                  style={{
-                    height: normalise(20),
-                    width: normalise(20),
-                    borderRadius: normalise(10),
-                  }}
-                />
-              </TouchableOpacity>
-
-              <View
-                style={{
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  marginLeft: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(9),
-                    fontFamily: 'ProximaNova-Bold',
-                    opacity: 0.5,
-                  }}>
-                  FEATURED TRACK
-                </Text>
-
-                <Text
-                  style={{
-                    width: '70%',
-                    marginTop: normalise(1),
-                    fontFamily: 'ProximaNova-Regular',
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                  }}>
-                  You don't currently have a featured track. Let's add one
-                </Text>
-              </View>
-            </View>
-          ) : (
-            // IF DATA IS NOT EMPTY
-            <View
-              style={{
-                width: '90%',
-                alignSelf: 'center',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                height: normalise(50),
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    props.navigation.navigate('Player', {
-                      song_title: JSON.parse(
-                        props.userProfileResp.feature_song,
-                      )[0].song_name,
-                      album_name: JSON.parse(
-                        props.userProfileResp.feature_song,
-                      )[0].album_name,
-                      song_pic: JSON.parse(
-                        props.userProfileResp.feature_song,
-                      )[0].song_pic,
-                      uri: JSON.parse(props.userProfileResp.feature_song)[0]
-                        .song_uri,
-                      artist: JSON.parse(props.userProfileResp.feature_song)[0]
-                        .artist_name,
-                      changePlayer: true,
-                      originalUri: JSON.parse(
-                        props.userProfileResp.feature_song,
-                      )[0].hasOwnProperty('original_song_uri')
-                        ? JSON.parse(props.userProfileResp.feature_song)[0]
-                            .original_song_uri
-                        : undefined,
-                      registerType: props.userProfileResp.register_type,
-                      isrc: JSON.parse(props.userProfileResp.feature_song)[0]
-                        .isrc_code,
-                    });
-                  }}>
-                  <Image
-                    source={{
-                      uri: JSON.parse(props.userProfileResp.feature_song)[0]
-                        .song_pic,
-                    }}
-                    style={{ height: normalise(40), width: normalise(40) }}
-                  />
-                  <Image
-                    source={ImagePath.play}
-                    style={{
-                      height: normalise(25),
-                      width: normalise(25),
-                      position: 'absolute',
-                      marginLeft: normalise(8),
-                      marginTop: normalise(8),
-                    }}
-                  />
-                </TouchableOpacity>
-
-                <View
-                  style={{
-                    marginStart: normalise(10),
-                    width: '70%',
-                  }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(9),
-                      fontFamily: 'ProximaNova-Regular',
-                    }}>
-                    FEATURED TRACK
-                  </Text>
-
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(10),
-                      fontFamily: 'ProximaNova-Bold',
-                    }}>
-                    {
-                      JSON.parse(props.userProfileResp.feature_song)[0]
-                        .song_name
-                    }
-                  </Text>
-
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(9),
-                      fontFamily: 'ProximaNova-Regular',
-                    }}>
-                    {
-                      JSON.parse(props.userProfileResp.feature_song)[0]
-                        .album_name
-                    }
-                  </Text>
-                </View>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => {
-                  props.navigation.navigate('FeaturedTrack');
-                }}>
-                <Image
-                  source={ImagePath.change}
-                  style={{
-                    height: normalise(40),
-                    width: normalise(40),
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-        </ImageBackground>
-
-        {_.isEmpty(profilePosts)&&nonempty ? (
-          <View
-          style={{ flex: 1, alignItems: 'center' }}>
-          {/* <View
-            style={{
-              height: '50%',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              width: '60%',
-            }}> */}
-
-<Image
-            source={ImagePath.emptyPost}
-            style={{
-              height: 2*normalise(90),
-              width: 2*normalise(90),
-               marginTop: '8%',
-            }}
-            resizeMode="contain"
+        ) : _.isEmpty(profilePosts) && nonempty ? (
+          <EmptyComponent
+            buttonPress={() =>
+              props.navigation.replace('bottomTab', { screen: 'Add' })
+            }
+            buttonText={'Add your first post'}
+            image={ImagePath.emptyPost}
+            text={
+              'You haven’t uploaded any songs to Choona yet, click the button below to add your first song.'
+            }
+            title={'Your Profile is Empty'}
           />
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(15),
-                // fontWeight: 'bold',
-                textAlign: 'center',
-                marginTop:'5%',
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              Your Profile is Empty
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.fordGray,
-                fontSize: normalise(12),
-                fontWeight: '100',
-                marginTop: normalise(7),
-                width: '65%',
-                textAlign: 'center',
-                alignSelf:'center',
-                fontFamily: 'ProximaNova-Regular',
-              }}>
-              You haven’t uploaded any songs to Choona yet, click the button below to add your first song.
-            </Text>
-          {/* </View> */}
-
-          {/* <View
-            style={{
-              height: '50%',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              width: '80%',
-            }}> */}
-            <TouchableOpacity
-              style={{
-                marginBottom: normalise(10),
-                height: normalise(48),
-                width: '80%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: normalise(20),
-                backgroundColor: Colors.white,
-                position:'absolute',
-                bottom:8
-              }}
-              onPress={() => {
-                props.navigation.replace('bottomTab', { screen: 'Add' });
-              }}>
-              <Text
-                style={{
-                  color: Colors.black,
-                  fontSize: normalise(12),
-                  fontWeight: 'bold',
-                }}>
-               ADD YOUR FIRST POST
-              </Text>
-            </TouchableOpacity>
-          {/* </View> */}
-        </View>
-     
-       ) : (
+        ) : (
           <FlatList
-            style={{ paddingTop: normalise(10) }}
             data={profilePosts}
             renderItem={renderProfileData}
             keyExtractor={(item, index) => {
@@ -840,16 +459,10 @@ function Profile(props) {
             }}
             showsVerticalScrollIndicator={false}
             numColumns={2}
-
-            onEndReached={()=>
-              onEndReached()
-                
-              }
-               onEndReachedThreshold={1}
-
+            onEndReached={() => onEndReached()}
+            onEndReachedThreshold={1}
           />
         )}
-
         {renderModal()}
         {policyModel()}
         {tandcsModel()}
@@ -883,10 +496,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styles = StyleSheet.create({
   centeredView: {

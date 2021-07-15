@@ -1,8 +1,7 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Modal,
   Linking,
@@ -70,9 +69,8 @@ function Contact(props) {
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [bool, setBool] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
-  const[noEmpty,setNoEmpty]=useState(false)
-  const[allSaveSong,setAllSaveSong]=useState([])
-
+  const [noEmpty, setNoEmpty] = useState(false);
+  const [allSaveSong, setAllSaveSong] = useState([]);
 
   var bottomSheetRef;
 
@@ -84,7 +82,7 @@ function Contact(props) {
           setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
-          setSearch('')
+          setSearch('');
         })
         .catch(() => {
           toast('Oops', 'Please Connect To Internet');
@@ -103,8 +101,8 @@ function Contact(props) {
         break;
 
       case SAVED_SONGS_LIST_SUCCESS:
-        setAllSaveSong(props.savedSong)
-        setNoEmpty(true)
+        setAllSaveSong(props.savedSong);
+        setNoEmpty(true);
         status = props.status;
         break;
 
@@ -216,7 +214,7 @@ function Contact(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {
           //Alert.alert("Modal has been closed.");
         }}>
@@ -383,19 +381,21 @@ function Contact(props) {
               }}
               onPress={() => {
                 setModalVisible(!modalVisible);
-                if (props.userProfileResp.register_type === 'spotify')
+                if (props.userProfileResp.register_type === 'spotify') {
                   props.navigation.navigate('AddToPlayListScreen', {
                     originalUri: props.savedSong[index].original_song_uri,
                     registerType: props.savedSong[index].original_reg_type,
                     isrc: props.savedSong[index].isrc_code,
                   });
+                }
                 // setTimeout(() => {
                 //     toast("Oops", "Only, Spotify users can add to their playlist now.")
                 // }, 1000)
-                else
+                else {
                   props.navigation.navigate('AddToPlayListScreen', {
                     isrc: props.savedSong[index].isrc_code,
                   });
+                }
               }}>
               <Image
                 source={ImagePath.addicon}
@@ -466,7 +466,6 @@ function Contact(props) {
 
   // RENDER USER SEARCH FLATLIST DATA
   function renderAddUsersToMessageItem(data) {
- 
     return (
       <TouchableOpacity
         style={{
@@ -500,19 +499,23 @@ function Contact(props) {
             sesUsersToSEndSong(array);
           }
         }}>
-        <View style={{ flexDirection: 'row',alignItems:'center' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
             source={{
               uri: constants.profile_picture_base_url + data.item.profile_image,
             }}
-            style={{ height: 35, width: 35, borderRadius:2* normalise(13.5),marginRight:'5%' }}
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 2 * normalise(13.5),
+              marginRight: '5%',
+            }}
           />
           <View
-            style={{flex:1,
-            
+            style={{
               borderColor: Colors.activityBorderColor,
               borderBottomWidth: normalise(0.5),
-               paddingBottom: normalise(10),
+              paddingBottom: normalise(10),
             }}>
             <Text
               style={{
@@ -522,7 +525,7 @@ function Contact(props) {
               }}>
               {data.item.full_name}
             </Text>
-          
+
             <Text
               style={{
                 color: Colors.white,
@@ -665,7 +668,7 @@ function Contact(props) {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -722,7 +725,7 @@ function Contact(props) {
                   borderRadius: 2,
                   position: 'absolute',
                   right: 0,
-                borderRadius:5,
+                  borderRadius: 5,
                   bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
                   marginRight: normalise(10),
                 }}>
@@ -777,9 +780,7 @@ function Contact(props) {
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${
-          props.savedSong[index].isrc_code
-        }&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${props.savedSong[index].isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -790,9 +791,7 @@ function Contact(props) {
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
-          props.savedSong[index].isrc_code
-        }`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.savedSong[index].isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,
@@ -882,30 +881,28 @@ function Contact(props) {
     );
   }
 
-
   function filterArray(keyword) {
-
     let data = _.filter(props.savedSong, item => {
       return (
-        item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1 
+        item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
         // ||
         // item.artist_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
       );
     });
 
-      // alert("data"+data.length);
-     setAllSaveSong([]);
-     setNoEmpty(false)
+    // alert("data"+data.length);
+    setAllSaveSong([]);
+    setNoEmpty(false);
     setBool(true);
     setTimeout(() => {
       //  alert(data.length)
-      if(data.length===0) setNoEmpty(true)
+      if (data.length === 0) {
+        setNoEmpty(true);
+      }
       setAllSaveSong(data);
       setBool(false);
     }, 800);
   }
-
-
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -927,91 +924,88 @@ function Contact(props) {
             thirditemtext={true}
             texttwo={''}
           />
-     
 
-{_.isEmpty(props.savedSong)&&noEmpty ? null :
+          {_.isEmpty(props.savedSong) && noEmpty ? null : (
+            <View
+              style={{
+                width: '92%',
+                alignSelf: 'center',
+              }}>
+              <TextInput
+                style={{
+                  height: normalise(35),
+                  width: '100%',
+                  // backgroundColor: Colors.fadeblack,
+                  borderRadius: normalise(8),
+                  marginTop: normalise(20),
+                  padding: normalise(10),
+                  // color: Colors.white,
 
-<View
-  style={{
-    width: '92%',
-    alignSelf: 'center',
-  }}>
-  <TextInput
-    style={{
-      height: normalise(35),
-      width: '100%',
-      // backgroundColor: Colors.fadeblack,
-      borderRadius: normalise(8),
-      marginTop: normalise(20),
-      padding: normalise(10),
-      // color: Colors.white,
-      
-      backgroundColor:Colors.white,
-      paddingLeft: normalise(30),
-    }}
-    autoCorrect={false}
-    keyboardAppearance={'dark'}
-    value={search}
-    placeholder={'Search'}
-    placeholderTextColor={Colors.darkgrey}
-    onChangeText={text => {
-      setSearch(text),  filterArray(text);
-      //  props.getSavedSongs(text);
-    }}
-  />
+                  backgroundColor: Colors.white,
+                  paddingLeft: normalise(30),
+                }}
+                autoCorrect={false}
+                keyboardAppearance={'dark'}
+                value={search}
+                placeholder={'Search'}
+                placeholderTextColor={Colors.darkgrey}
+                onChangeText={text => {
+                  setSearch(text), filterArray(text);
+                  //  props.getSavedSongs(text);
+                }}
+              />
 
-  <Image
-    source={ImagePath.searchicongrey}
-    style={{
-      height: normalise(15),
-      width: normalise(15),
-      bottom: normalise(25),
-      paddingLeft: normalise(30),
-    }}
-    resizeMode="contain"
-  />
+              <Image
+                source={ImagePath.searchicongrey}
+                style={{
+                  height: normalise(15),
+                  width: normalise(15),
+                  bottom: normalise(25),
+                  paddingLeft: normalise(30),
+                }}
+                resizeMode="contain"
+              />
 
-  {search === '' ? null : (
-    <TouchableOpacity
-      onPress={() => {
-        setSearch(''),
-        setAllSaveSong(props.savedSong)
-        // props.getSavedSongs('');
-      }}
-      style={{
-        backgroundColor: Colors.black,
-        padding: 6,
-        paddingTop: 4,
-        paddingBottom: 4,
-        borderRadius: 5,
-        backgroundColor:Colors.fordGray,
-        position: 'absolute',
-        right: 0,
-        bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-        marginRight: normalise(10),
-      }}>
-      <Text
-        style={{
-          color: Colors.white,
-          fontSize: normalise(10),
-          fontWeight: 'bold',
-        }}>
-        CLEAR
-      </Text>
-    </TouchableOpacity>
-  )}
-</View>
-}
-        
+              {search === '' ? null : (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearch(''), setAllSaveSong(props.savedSong);
+                    // props.getSavedSongs('');
+                  }}
+                  style={{
+                    backgroundColor: Colors.black,
+                    padding: 6,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    borderRadius: 5,
+                    backgroundColor: Colors.fordGray,
+                    position: 'absolute',
+                    right: 0,
+                    bottom:
+                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                    marginRight: normalise(10),
+                  }}>
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(10),
+                      fontWeight: 'bold',
+                    }}>
+                    CLEAR
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
 
-          {_.isEmpty(allSaveSong)&& noEmpty ? (
-               <View
-               style={{
-                 flex: 1,
-                 // justifyContent: 'center',
-                 alignItems: 'center',
-               }}>
-               {/* <Text
+          {_.isEmpty(allSaveSong) && noEmpty ? (
+            <View
+              style={{
+                flex: 1,
+                // justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {/* <Text
                  style={{
                    marginBottom: '20%',
                    marginTop: normalise(10),
@@ -1021,42 +1015,45 @@ function Contact(props) {
                  }}>
                  NO SAVED SONGS
                </Text> */}
-                 <Image
-                   source={ImagePath.emptySaveSong}
-                   style={{ height: 3*normalise(85), width: 2.6*normalise(85),marginTop:'5%',alignSelf:'center' }}
-                   resizeMode="contain"
-                   
-                 />
- 
-                 <Text
-                   style={{
-                     color: Colors.white,
-                     fontSize: normalise(15),
-                     fontWeight: '500',
-                     // marginTop: normalise(3),
-                     width: '68%',
-                     textAlign: 'center',
-                     alignSelf:'center',
-                     fontFamily: 'ProximaNova-Bold',
-                   }}>
+              <Image
+                source={ImagePath.emptySaveSong}
+                style={{
+                  height: 3 * normalise(85),
+                  width: 2.6 * normalise(85),
+                  marginTop: '5%',
+                  alignSelf: 'center',
+                }}
+                resizeMode="contain"
+              />
+
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(15),
+                  fontWeight: '500',
+                  // marginTop: normalise(3),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf: 'center',
+                  fontFamily: 'ProximaNova-Bold',
+                }}>
                 No Saved Songs
-                 </Text>
-                 <Text
-                   style={{
-                     color: Colors.fordGray,
-                     fontSize: normalise(12),
-                     fontWeight: '100',
-                     marginTop: normalise(8),
-                     width: '68%',
-                     textAlign: 'center',
-                     alignSelf:'center',
-                     fontFamily: 'ProximaNova-Regular',
-                   
-                   }}>
-                     When you see a song you love, just click the more menu and save that song. Then you can access it forever from here.
-                 </Text>
-             </View>
-          
+              </Text>
+              <Text
+                style={{
+                  color: Colors.fordGray,
+                  fontSize: normalise(12),
+                  fontWeight: '100',
+                  marginTop: normalise(8),
+                  width: '68%',
+                  textAlign: 'center',
+                  alignSelf: 'center',
+                  fontFamily: 'ProximaNova-Regular',
+                }}>
+                When you see a song you love, just click the more menu and save
+                that song. Then you can access it forever from here.
+              </Text>
+            </View>
           ) : (
             <SwipeListView
               data={allSaveSong}
@@ -1189,7 +1186,4 @@ const mapDistapchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDistapchToProps,
-)(Contact);
+export default connect(mapStateToProps, mapDistapchToProps)(Contact);

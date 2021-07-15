@@ -1,19 +1,18 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Image,
   ImageBackground,
+  Platform,
   Modal,
   TextInput,
   Clipboard,
   Linking,
-  ActivityIndicator
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -22,7 +21,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import HomeItemList from './ListCells/HomeItemList';
 import { connect } from 'react-redux';
-import { searchPostReq ,deletePostReq } from '../../action/PostAction';
+import { searchPostReq, deletePostReq } from '../../action/PostAction';
 import { saveSongRequest } from '../../action/SongAction';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
@@ -30,9 +29,6 @@ import {
   reactionOnPostRequest,
   getUsersFromHome,
   userFollowUnfollowRequest,
-  getProfileRequest,
-  homePageReq,
-  dummyRequest,
 } from '../../action/UserAction';
 import {
   GET_POST_FROM_TOP_50_REQUEST,
@@ -57,6 +53,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { createChatTokenRequest } from '../../action/MessageAction';
 import constants from '../../utils/helpers/constants';
 
+import { API_HOST } from '../../config';
 
 import axios from 'axios';
 let status;
@@ -64,30 +61,40 @@ let userStatus;
 let messageStatus;
 
 function GenreSongClicked(props) {
+  let commentList = [];
+  commentList = props.getPostFromTop50;
 
-  let commentList = []
-  commentList=props.getPostFromTop50
+  const onTotal = () => {
+    let newarray = [];
+    commentList.map((item, index) => {
+      let newObject = {
+        id: item._id,
+        react: [
+          item.fire_count,
+          item.love_count,
+          item.dancer_count,
+          item.man_dancing_count,
+          item.face_count,
+          item.thumbsup_count,
+        ],
+      };
 
-  const onTotal=()=>{
-    let newarray = []
-commentList.map((item,index)=>{
-  let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
- 
-  newarray.push(newObject)
-  if(index===commentList.length-1){
-   
-     console.log("newarrr"+ JSON.stringify(newarray))
-  }})
-return newarray
-  }
+      newarray.push(newObject);
 
-  let totalReact=[]
- totalReact= props.route.params.ptID===1?(
-       totalReact.length===0?
-        onTotal():null
-      )
-     :
-     null 
+      if (index === commentList.length - 1) {
+        console.log('newarrr' + JSON.stringify(newarray));
+      }
+    });
+    return newarray;
+  };
+
+  let totalReact = [];
+  totalReact =
+    props.route.params.ptID === 1
+      ? totalReact.length === 0
+        ? onTotal()
+        : null
+      : null;
   const [name, setName] = useState(props.route.params.data);
 
   const [positionInArray, setPositionInArray] = useState(0);
@@ -96,18 +103,15 @@ return newarray
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
   const [bool, setBool] = useState(false);
-  const [isLoading,setIsLoading]=useState(true)
-  const [updateList,setUpdateList]=useState([])
+  const [isLoading, setIsLoading] = useState(true);
+  const [updateList, setUpdateList] = useState([]);
   // const [totalReact,setTotalReact] = useState([])
-
- 
 
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-  
 
   let flag = false;
   let changePlayer = false;
@@ -115,46 +119,33 @@ return newarray
   const postsUrl = constants.BASE_URL + '/post/details/:';
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
-// console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
-  const getdata=async()=>{
- let  response=  await axios.get(`https://api.choona.co/api/post/details/${name}`, {
+  // console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
+  const getdata = async () => {
+    let response = await axios.get(API_HOST + `/api/post/details/${name}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'x-access-token': props.header.token,
       },
-    })
-    setName(response.data.data.song_name)
-    setIsLoading(false)
-    props.searchPost(response.data.data.song_name, flag),
-       
-            setUserSearchData([]);
-          sesUsersToSEndSong([]);
-          setUserSeach('');
-      
-          
-    console.log("response"+JSON.stringify(response.data.data))
-    
-    
-  }
+    });
+    setName(response.data.data.song_name);
+    setIsLoading(false);
+    props.searchPost(response.data.data.song_name, flag), setUserSearchData([]);
+    sesUsersToSEndSong([]);
+    setUserSeach('');
+
+    console.log('response' + JSON.stringify(response.data.data));
+  };
   useEffect(() => {
-  
     // const unsuscribe = props.navigation.addListener('focus', payload => {
     //   isInternetConnected()
-   //     .then(() => {
-    
-          props.searchPost(name, flag),
-          setUserSearchData([]);
-          sesUsersToSEndSong([]);
-          setUserSeach('');
-          props.route.params.ptID===1?(
-          getdata()
-          
-          )
-          :
-         setIsLoading(false)
-           
-              
+    //     .then(() => {
+
+    props.searchPost(name, flag), setUserSearchData([]);
+    sesUsersToSEndSong([]);
+    setUserSeach('');
+    props.route.params.ptID === 1 ? getdata() : setIsLoading(false);
+
     //     })
     //     .catch(() => {
     //       toast('Opps', 'Please Connect To Internet');
@@ -163,10 +154,7 @@ return newarray
     // return () => {
     //    unsuscribe();
     // };
-  },[]);
-
-
-  
+  }, []);
 
   if (userStatus === '' || props.userStatus !== userStatus) {
     switch (props.userStatus) {
@@ -204,7 +192,7 @@ return newarray
   }
 
   if (status === '' || status !== props.status) {
-    console.log("status"+props.status)
+    console.log('status' + props.status);
     switch (props.status) {
       case GET_POST_FROM_TOP_50_REQUEST:
         status = props.status;
@@ -243,7 +231,6 @@ return newarray
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
-          details: props.getPostFromTop50[positionInArray],
         });
         break;
 
@@ -257,15 +244,15 @@ return newarray
   // SEND REACTION
   function sendReaction(id, reaction) {
     const myReaction =
-      reaction == react[0]
+      reaction === react[0]
         ? 'A'
-        : reaction == react[1]
+        : reaction === react[1]
         ? 'B'
-        : reaction == react[2]
+        : reaction === react[2]
         ? 'C'
-        : reaction == react[3]
+        : reaction === react[3]
         ? 'D'
-        : reaction == react[4]
+        : reaction === react[4]
         ? 'E'
         : 'F';
 
@@ -274,97 +261,96 @@ return newarray
       text: reaction,
       text_match: myReaction,
     };
-   
-  //   commentList.map((item,index)=>{
-    
-  //     if(id===item._id)
-    
-  //   if(myReaction==='A'){
-  //     if(commentList[index].fire_count===totalReact[index].react[0]){
-  //       commentList[index].fire_count=commentList[index].fire_count+1
-  //       commentList[index].reaction_count=commentList[index].reaction_count+1
-        
-  //     }
-  //     else{
-  //       if(commentList[index].fire_count!=0){
-  //         commentList[index].fire_count=commentList[index].fire_count-1
-  //         commentList[index].reaction_count=commentList[index].reaction_count-1
-  //       }
-  //     }
-  //   }
-  //   else if(myReaction==='B'){
-  //     if(commentList[index].love_count===totalReact[index].react[1]){
-  //       commentList[index].love_count=commentList[index].love_count+1
-  //       commentList[index].reaction_count=commentList[index].reaction_count+1
-        
-  //     }
-  //     else{
-  //       if(commentList[index].love_count!=0){
-  //         commentList[index].love_count=commentList[index].love_count-1
-  //         commentList[index].reaction_count=commentList[index].reaction_count-1
-  //       }
-  //     }
-  //   }
-  //   else if(myReaction==='C'){
-  //     if(commentList[index].dancer_count===totalReact[index].react[2]){
-  //       commentList[index].dancer_count=commentList[index].dancer_count+1
-  //       commentList[index].reaction_count=commentList[index].reaction_count+1
-  //     }
-  //     else{
-  //       if(commentList[index].dancer_count!=0){
-  //         commentList[index].dancer_count=commentList[index].dancer_count-1
-  //         commentList[index].reaction_count=commentList[index].reaction_count-1
-  //       }
 
-  //     }
-  //   }
-  //   else if(myReaction==='D'){
-  //     if(commentList[index].man_dancing_count===totalReact[index].react[3]){
-  //       commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
-  //       commentList[index].reaction_count=commentList[index].reaction_count+1
-        
-  //     }
-  //     else{
-  //       if(commentList[index].man_dancing_count!=0){
-  //         commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
-  //         commentList[index].reaction_count=commentList[index].reaction_count-1
-  //       }
-  //     }
-  //   }
-  //   else if(myReaction==='E'){
-  //     if(commentList[index].face_count===totalReact[index].react[4]){
-  //       commentList[index].face_count=commentList[index].face_count+1
-  //       commentList[index].reaction_count=commentList[index].reaction_count+1
-        
-  //     }
-  //     else{
-  //       if(commentList[index].face_count!=0){
-  //         commentList[index].face_count=commentList[index].face_count-1
-  //         commentList[index].reaction_count=commentList[index].reaction_count-1  
-  //     }
+    //   commentList.map((item,index)=>{
 
-  //     }
-  //   }
-  //   else{
-  //     if(commentList[index].thumbsup_count===totalReact[index].react[5]){
-  //       commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
-  //       commentList[index].reaction_count=commentList[index].reaction_count+1
-        
-  //     }
-  //     else{
-  //       if(commentList[index].thumbsup_count!=0){
-  //         commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
-  //         commentList[index].reaction_count=commentList[index].reaction_count-1  
-  //     }
-  //     }
-  //   }
-  //   }
-  // )
+    //     if(id===item._id)
+
+    //   if(myReaction==='A'){
+    //     if(commentList[index].fire_count===totalReact[index].react[0]){
+    //       commentList[index].fire_count=commentList[index].fire_count+1
+    //       commentList[index].reaction_count=commentList[index].reaction_count+1
+
+    //     }
+    //     else{
+    //       if(commentList[index].fire_count!=0){
+    //         commentList[index].fire_count=commentList[index].fire_count-1
+    //         commentList[index].reaction_count=commentList[index].reaction_count-1
+    //       }
+    //     }
+    //   }
+    //   else if(myReaction==='B'){
+    //     if(commentList[index].love_count===totalReact[index].react[1]){
+    //       commentList[index].love_count=commentList[index].love_count+1
+    //       commentList[index].reaction_count=commentList[index].reaction_count+1
+
+    //     }
+    //     else{
+    //       if(commentList[index].love_count!=0){
+    //         commentList[index].love_count=commentList[index].love_count-1
+    //         commentList[index].reaction_count=commentList[index].reaction_count-1
+    //       }
+    //     }
+    //   }
+    //   else if(myReaction==='C'){
+    //     if(commentList[index].dancer_count===totalReact[index].react[2]){
+    //       commentList[index].dancer_count=commentList[index].dancer_count+1
+    //       commentList[index].reaction_count=commentList[index].reaction_count+1
+    //     }
+    //     else{
+    //       if(commentList[index].dancer_count!=0){
+    //         commentList[index].dancer_count=commentList[index].dancer_count-1
+    //         commentList[index].reaction_count=commentList[index].reaction_count-1
+    //       }
+
+    //     }
+    //   }
+    //   else if(myReaction==='D'){
+    //     if(commentList[index].man_dancing_count===totalReact[index].react[3]){
+    //       commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
+    //       commentList[index].reaction_count=commentList[index].reaction_count+1
+
+    //     }
+    //     else{
+    //       if(commentList[index].man_dancing_count!=0){
+    //         commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
+    //         commentList[index].reaction_count=commentList[index].reaction_count-1
+    //       }
+    //     }
+    //   }
+    //   else if(myReaction==='E'){
+    //     if(commentList[index].face_count===totalReact[index].react[4]){
+    //       commentList[index].face_count=commentList[index].face_count+1
+    //       commentList[index].reaction_count=commentList[index].reaction_count+1
+
+    //     }
+    //     else{
+    //       if(commentList[index].face_count!=0){
+    //         commentList[index].face_count=commentList[index].face_count-1
+    //         commentList[index].reaction_count=commentList[index].reaction_count-1
+    //     }
+
+    //     }
+    //   }
+    //   else{
+    //     if(commentList[index].thumbsup_count===totalReact[index].react[5]){
+    //       commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
+    //       commentList[index].reaction_count=commentList[index].reaction_count+1
+
+    //     }
+    //     else{
+    //       if(commentList[index].thumbsup_count!=0){
+    //         commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
+    //         commentList[index].reaction_count=commentList[index].reaction_count-1
+    //     }
+    //     }
+    //   }
+    //   }
+    // )
 
     isInternetConnected()
       .then(() => {
         props.reactionOnPostRequest(reactionObject);
-
       })
       .catch(() => {
         toast('Error', 'Please Connect To Internet');
@@ -376,27 +362,27 @@ return newarray
     // alert("res"+ x + rindex +"sdd" +JSON.stringify(props.getPostFromTop50))
 
     // console.log("rs"+JSON.stringify(props.getPostFromTop50[rindex].reaction))
-    
+
     // if (!_.isEmpty(props.getPostFromTop50[rindex].reaction)) {
-      // console.log('here');
+    // console.log('here');
 
-      // const present = props.getPostFromTop50[rindex].reaction.some(
-      //   obj =>
-      //     obj.user_id.includes(props.userProfileResp._id) &&
-      //     obj.text.includes(x),
-        
-      // );
-      //  alert('nooo'+present)
+    // const present = props.getPostFromTop50[rindex].reaction.some(
+    //   obj =>
+    //     obj.user_id.includes(props.userProfileResp._id) &&
+    //     obj.text.includes(x),
 
-      // if (present) {
-      // } else {
-        setVisible(true);
-        setModalReact(x);
-        setTimeout(() => {
-          setVisible(false);
-        }, 2000);
-            
-      // }
+    // );
+    //  alert('nooo'+present)
+
+    // if (present) {
+    // } else {
+    setVisible(true);
+    setModalReact(x);
+    setTimeout(() => {
+      setVisible(false);
+    }, 2000);
+
+    // }
     // } else {
     //   setVisible(true);
     //   setModalReact(x);
@@ -406,99 +392,96 @@ return newarray
     //  }
   }
 
-  function _onSelectBack(ID,comment){
-  
-    let newarray = commentList
-    newarray.map((item,index)=>{
-    
-     if(item._id === ID){
-  
-      newarray[index].comment_count = comment
-
-     }
-    if(index=== newarray.length-1){
-       setUpdateList([...newarray])
-      // commentList = ([...newarray])
-
-    }
-      })
-      
-    }
-
-
-
-    function _onReaction(ID,reaction,reactionList){
-
-      let newarray = commentList
-      // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
-        newarray.map((item,index)=>{
-       
-       if(item._id === ID){
-    
-    if(reactionList.length>0){
-    var found = reactionList.findIndex((element)=>{ return element.header===react[0]});
-    var found_love = reactionList.findIndex((element)=> {return element.header===react[1]});
-    var found_dance = reactionList.findIndex((element)=>{return element.header===react[2] });
-    var found_ManDance = reactionList.findIndex((element)=>{return element.header===react[3]});
-    var found_face = reactionList.findIndex((element)=>{return element.header=== react[4]});
-    var found_thumb = reactionList.findIndex((element)=>{return element.header===react[5]});
-    
-    //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
-    if(found!=-1){
-      newarray[index].fire_count=reactionList[found].data.length
-         }else{
-           newarray[index].fire_count=0
-         }
-         if(found_love!=-1){
-      newarray[index].love_count=reactionList[found_love].data.length
-         }
-         else{
-           newarray[index].love_count=0
-         }
-         if(found_dance !=-1){
-      newarray[index].dancer_count=reactionList[found_dance].data.length
-         }
-         else{
-           newarray[index].dancer_count=0
-         }
-         if(found_ManDance !=-1){
-      newarray[index].man_dancing_count=reactionList[found_ManDance].data.length
-         }
-         else{
-           newarray[index].man_dancing_count=0
-         }
-         if(found_face != -1){
-      newarray[index].face_count=reactionList[found_face].data.length
-         }
-         else{
-           newarray[index].face_count=0
-         }
-         if(found_thumb != -1){
-      newarray[index].thumbsup_count=reactionList[found_thumb].data.length
-         }
-         else{
-           newarray[index].thumbsup_count=0
-         }
-    
-         newarray[index].reaction_count= reaction
-        }
-            }
-          
-       if(index===newarray.length-1){
-     
-         setUpdateList([...newarray])
-        commentList = ([...newarray])
-
+  function _onSelectBack(ID, comment) {
+    let newarray = commentList;
+    newarray.map((item, index) => {
+      if (item._id === ID) {
+        newarray[index].comment_count = comment;
       }
-         })
-      } 
+      if (index === newarray.length - 1) {
+        setUpdateList([...newarray]);
+        // commentList = ([...newarray])
+      }
+    });
+  }
+
+  function _onReaction(ID, reaction, reactionList) {
+    let newarray = commentList;
+    // console.log("items"+JSON.stringify(reactionList[0].data[0].text_match))
+    newarray.map((item, index) => {
+      if (item._id === ID) {
+        if (reactionList.length > 0) {
+          var found = reactionList.findIndex(element => {
+            return element.header === react[0];
+          });
+          var found_love = reactionList.findIndex(element => {
+            return element.header === react[1];
+          });
+          var found_dance = reactionList.findIndex(element => {
+            return element.header === react[2];
+          });
+          var found_ManDance = reactionList.findIndex(element => {
+            return element.header === react[3];
+          });
+          var found_face = reactionList.findIndex(element => {
+            return element.header === react[4];
+          });
+          var found_thumb = reactionList.findIndex(element => {
+            return element.header === react[5];
+          });
+
+          //  alert("found"+found + found_love  + found_dance+ found_ManDance + found_face+ found_thumb)
+          if (found !== -1) {
+            newarray[index].fire_count = reactionList[found].data.length;
+          } else {
+            newarray[index].fire_count = 0;
+          }
+          if (found_love !== -1) {
+            newarray[index].love_count = reactionList[found_love].data.length;
+          } else {
+            newarray[index].love_count = 0;
+          }
+          if (found_dance !== -1) {
+            newarray[index].dancer_count =
+              reactionList[found_dance].data.length;
+          } else {
+            newarray[index].dancer_count = 0;
+          }
+          if (found_ManDance !== -1) {
+            newarray[index].man_dancing_count =
+              reactionList[found_ManDance].data.length;
+          } else {
+            newarray[index].man_dancing_count = 0;
+          }
+          if (found_face !== -1) {
+            newarray[index].face_count = reactionList[found_face].data.length;
+          } else {
+            newarray[index].face_count = 0;
+          }
+          if (found_thumb !== -1) {
+            newarray[index].thumbsup_count =
+              reactionList[found_thumb].data.length;
+          } else {
+            newarray[index].thumbsup_count = 0;
+          }
+
+          newarray[index].reaction_count = reaction;
+        }
+      }
+
+      if (index === newarray.length - 1) {
+        setUpdateList([...newarray]);
+        commentList = [...newarray];
+      }
+    });
+  }
 
   // function _onReaction(ID,reaction){
   //   let newarray = commentList
   //   newarray.map((item,index)=>{
-    
+
   //    if(item._id === ID){
-  
+
   //     newarray[index].reaction_count = reaction
 
   //    }
@@ -509,107 +492,102 @@ return newarray
   //     })
   // }
 
-// GET ISRC CODE
-const callApi = async () => {
-  if (props.registerType === 'spotify') {
-    const spotifyToken = await getSpotifyToken();
+  // GET ISRC CODE
+  const callApi = async () => {
+    if (props.registerType === 'spotify') {
+      const spotifyToken = await getSpotifyToken();
 
-    return await axios.get(
-      `https://api.spotify.com/v1/search?q=isrc:${
-        props.postData[positionInArray].isrc_code
-      }&type=track`,
-      {
-        headers: {
-          Authorization: spotifyToken,
+      return await axios.get(
+        `https://api.spotify.com/v1/search?q=isrc:${props.postData[positionInArray].isrc_code}&type=track`,
+        {
+          headers: {
+            Authorization: spotifyToken,
+          },
         },
-      },
-    );
-  } else {
-    const AppleToken = await getAppleDevToken();
+      );
+    } else {
+      const AppleToken = await getAppleDevToken();
 
-    return await axios.get(
-      `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${
-        props.postData[positionInArray].isrc_code
-      }`,
-      {
-        headers: {
-          Authorization: AppleToken,
+      return await axios.get(
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.postData[positionInArray].isrc_code}`,
+        {
+          headers: {
+            Authorization: AppleToken,
+          },
         },
-      },
-    );
-  }
-};
+      );
+    }
+  };
 
- //OPEN IN APPLE / SPOTIFY
- const openInAppleORSpotify = async () => {
-   console.log("props.registr"+props.registerType)
-  try {
-    const res = await callApi();
-    // console.log(res);
+  //OPEN IN APPLE / SPOTIFY
+  const openInAppleORSpotify = async () => {
+    console.log('props.registr' + props.registerType);
+    try {
+      const res = await callApi();
+      // console.log(res);
 
-    if (res.status === 200) {
-      if (
-        !_.isEmpty(
-          props.registerType === 'spotify'
-            ? res.data.tracks.items
-            : res.data.data,
-        )
-      ) {
-        if (props.userProfileResp.register_type === 'spotify') {
-          // console.log('success - spotify');
-          // console.log(res.data.tracks.items[0].external_urls.spotify);
-          Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-            .then(supported => {
-              if (supported) {
-                Linking.openURL(
-                  res.data.tracks.items[0].external_urls.spotify,
-                )
-                  .then(() => {
-                    // console.log('success');
-                  })
-                  .catch(() => {
-                    // console.log('error');
-                  });
-              }
-            })
-            .catch(() => {
-              // console.log('not supported');
-            });
-          setBool(false);
+      if (res.status === 200) {
+        if (
+          !_.isEmpty(
+            props.registerType === 'spotify'
+              ? res.data.tracks.items
+              : res.data.data,
+          )
+        ) {
+          if (props.userProfileResp.register_type === 'spotify') {
+            // console.log('success - spotify');
+            // console.log(res.data.tracks.items[0].external_urls.spotify);
+            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+              .then(supported => {
+                if (supported) {
+                  Linking.openURL(
+                    res.data.tracks.items[0].external_urls.spotify,
+                  )
+                    .then(() => {
+                      // console.log('success');
+                    })
+                    .catch(() => {
+                      // console.log('error');
+                    });
+                }
+              })
+              .catch(() => {
+                // console.log('not supported');
+              });
+            setBool(false);
+          } else {
+            // console.log('success - apple');
+            // console.log(res.data.data[0].attributes.url);
+            Linking.canOpenURL(res.data.data[0].attributes.url)
+              .then(supported => {
+                if (supported) {
+                  Linking.openURL(res.data.data[0].attributes.url)
+                    .then(() => {
+                      // console.log('success');
+                    })
+                    .catch(() => {
+                      // console.log('error');
+                    });
+                }
+              })
+              .catch(() => {
+                // console.log('not supported');
+              });
+            setBool(false);
+          }
         } else {
-          // console.log('success - apple');
-          // console.log(res.data.data[0].attributes.url);
-          Linking.canOpenURL(res.data.data[0].attributes.url)
-            .then(supported => {
-              if (supported) {
-                Linking.openURL(res.data.data[0].attributes.url)
-                  .then(() => {
-                    // console.log('success');
-                  })
-                  .catch(() => {
-                    // console.log('error');
-                  });
-              }
-            })
-            .catch(() => {
-              // console.log('not supported');
-            });
           setBool(false);
+          toast('', 'No Song Found');
         }
       } else {
         setBool(false);
-        toast('', 'No Song Found');
+        toast('Oops', 'Something Went Wrong');
       }
-    } else {
+    } catch (error) {
       setBool(false);
-      toast('Oops', 'Something Went Wrong');
+      // console.log(error);
     }
-  } catch (error) {
-    setBool(false);
-    // console.log(error);
-  }
-};
-
+  };
 
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
@@ -633,6 +611,7 @@ const callApi = async () => {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
@@ -652,7 +631,7 @@ const callApi = async () => {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments:[],
+            comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -678,9 +657,8 @@ const callApi = async () => {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID,reaction,reactionList)=>_onReaction(ID,reaction,reactionList) ,
-
-
+            onSelectReaction: (ID, reaction, reactionList) =>
+              _onReaction(ID, reaction, reactionList),
           });
         }}
         onPressCommentbox={() => {
@@ -693,8 +671,7 @@ const callApi = async () => {
             userComment: data.item.post_content,
             time: data.item.createdAt,
             id: data.item._id,
-            onSelect: (ID,comment)=>_onSelectBack(ID,comment) ,
-
+            onSelect: (ID, comment) => _onSelectBack(ID, comment),
           });
         }}
         onPressSecondImage={() => {
@@ -711,21 +688,18 @@ const callApi = async () => {
   //MODAL MORE PRESSED
   const MorePressed = () => {
     return (
-
-
       <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      presentationStyle={'pageSheet'}
-      onRequestClose={() => {
-        //Alert.alert("Modal has been closed.");
-      }}>
-      <ImageBackground
-        source={ImagePath.page_gradient}
-        style={styles.centeredView}>
-     
-     {/* <View style={[styles.centeredView,{}]}> */}
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        presentationStyle={'overFullScreen'}
+        onRequestClose={() => {
+          //Alert.alert("Modal has been closed.");
+        }}>
+        <ImageBackground
+          source={ImagePath.page_gradient}
+          style={styles.centeredView}>
+          {/* <View style={[styles.centeredView,{}]}> */}
           <View style={styles.modalView}>
             <Text
               style={{
@@ -744,9 +718,9 @@ const callApi = async () => {
                 marginBottom: normalise(12),
               }}
             />
-{
-  // console.log("props.getpost"+JSON.stringify( props.getPostFromTop50[positionInArray].original_song_uri))
-}
+            {
+              // console.log("props.getpost"+JSON.stringify( props.getPostFromTop50[positionInArray].original_song_uri))
+            }
             <TouchableOpacity
               style={{
                 flexDirection: 'row',
@@ -849,39 +823,39 @@ const callApi = async () => {
                 Copy Link
               </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
 
-                      props.userProfileResp._id !==
-                      props.getPostFromTop50[positionInArray].user_id // USER - FOLLOW/UNFOLLOW
-                        ? props.followUnfollowReq({
-                            follower_id:
-                            props.getPostFromTop50[positionInArray].userDetails._id,
-                          }) // USER - FOLLOW/UNFOLLOW
-                        : props.deletePostReq(
-                          props.getPostFromTop50[positionInArray]._id,
-                          ); //  DELETE POST
-                    }}>
-                    <Image
-                      source={ImagePath.more_unfollow}
-                      style={{ height: normalise(18), width: normalise(18) }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      {/* {!_.isEmpty(props.userProfileResp)
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+
+                props.userProfileResp._id !==
+                props.getPostFromTop50[positionInArray].user_id // USER - FOLLOW/UNFOLLOW
+                  ? props.followUnfollowReq({
+                      follower_id:
+                        props.getPostFromTop50[positionInArray].userDetails._id,
+                    }) // USER - FOLLOW/UNFOLLOW
+                  : props.deletePostReq(
+                      props.getPostFromTop50[positionInArray]._id,
+                    ); //  DELETE POST
+              }}>
+              <Image
+                source={ImagePath.more_unfollow}
+                style={{ height: normalise(18), width: normalise(18) }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  color: Colors.white,
+                  marginLeft: normalise(15),
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Regular',
+                }}>
+                {/* {!_.isEmpty(props.userProfileResp)
                         ? props.userProfileResp._id ===
                         props.getPostFromTop50[positionInArray].user_id
                           ? 'Delete Post'
@@ -890,172 +864,163 @@ const callApi = async () => {
                                 .username
                             }`
                         : ''} */}
-                        Delete Post
-                    </Text>
-                  </TouchableOpacity>
+                Delete Post
+              </Text>
+            </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                    
-                      if (
-                        props.getPostFromTop50[positionInArray].userDetails
-                          .register_type === props.registerType
-                      ) {
-                        // console.log('same reg type');
-                        setModalVisible(false);
-                         setBool(true),
-                          Linking.canOpenURL(
-                            props.getPostFromTop50[positionInArray].original_song_uri,
-                          )
-                            .then(() => {
-                              Linking.openURL(
-                                props.getPostFromTop50[positionInArray]
-                                  .original_song_uri,
-                              )
-                                .then(() => {
-                                  // console.log('success');
-                                  setBool(false);
-                                })
-                                .catch(() => {
-                                  // console.log('error');
-                                });
-                            })
-                            .catch(err => {
-                              // console.log('unsupported');
-                            });
-                      } else {
-                         console.log('diffirent reg type');
-                        setModalVisible(false);
-                        setBool(true),
-                          isInternetConnected()
-                            .then(() => {
-                              openInAppleORSpotify();
-                            })
-                            .catch(() => {
-                              toast('', 'Please Connect To Internet');
-                            });
-                      }
-                    }}>
-                    <Image
-                      source={
-                        !_.isEmpty(props.userProfileResp)
-                          ? props.userProfileResp.register_type === 'spotify'
-                            ? ImagePath.spotifyicon
-                            : ImagePath.applemusic
-                          : ''
-                      }
-                      style={{
-                        height: normalise(18),
-                        width: normalise(18),
-                      }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      {!_.isEmpty(props.userProfileResp)
-                        ? props.userProfileResp.register_type === 'spotify'
-                          ? 'Open on Spotify'
-                          : 'Open on Apple'
-                        : ''}
-                    </Text>
-                  </TouchableOpacity>
-
-
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                      if (props.userProfileResp.register_type === 'spotify')
-                        props.navigation.navigate('AddToPlayListScreen', {
-                          originalUri:
-                          props.getPostFromTop50[positionInArray].original_song_uri,
-                          registerType:
-                          props.getPostFromTop50[positionInArray].social_type,
-                          isrc: props.getPostFromTop50[positionInArray].isrc_code,
-                        });
-                      else {
-                        // setTimeout(() => {
-                        //   toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        // }, 1000)
-                        props.navigation.navigate('AddToPlayListScreen', {
-                          isrc: props.getPostFromTop50[positionInArray].isrc_code,
-                        });
-                      }
-                    }}>
-                    <Image
-                      source={ImagePath.addicon}
-                      style={{
-                        height: normalise(18),
-                        width: normalise(18),
-                        // borderRadius: normalise(9),
-                      }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      Add to Playlist
-                    </Text>
-                  </TouchableOpacity>
-
-
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-            style={{
-              // marginStart: normalise(20),
-              // marginEnd: normalise(20),
-              // marginBottom: normalise(20),
-              marginTop:normalise(30),
-              height: normalise(40),
-              // width: '95%',
-              backgroundColor: Colors.darkerblack,
-              opacity: 10,
-              borderRadius: 6,
-              // padding: 35,
-              alignItems: 'center',
-              justifyContent: 'center',
-              
-            }}>
-            <Text
+            <TouchableOpacity
               style={{
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Bold',
-                color: Colors.white,
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                if (
+                  props.getPostFromTop50[positionInArray].userDetails
+                    .register_type === props.registerType
+                ) {
+                  // console.log('same reg type');
+                  setModalVisible(false);
+                  setBool(true),
+                    Linking.canOpenURL(
+                      props.getPostFromTop50[positionInArray].original_song_uri,
+                    )
+                      .then(() => {
+                        Linking.openURL(
+                          props.getPostFromTop50[positionInArray]
+                            .original_song_uri,
+                        )
+                          .then(() => {
+                            // console.log('success');
+                            setBool(false);
+                          })
+                          .catch(() => {
+                            // console.log('error');
+                          });
+                      })
+                      .catch(err => {
+                        // console.log('unsupported');
+                      });
+                } else {
+                  console.log('diffirent reg type');
+                  setModalVisible(false);
+                  setBool(true),
+                    isInternetConnected()
+                      .then(() => {
+                        openInAppleORSpotify();
+                      })
+                      .catch(() => {
+                        toast('', 'Please Connect To Internet');
+                      });
+                }
               }}>
-              CANCEL
-            </Text>
-          </TouchableOpacity>
-     
+              <Image
+                source={
+                  !_.isEmpty(props.userProfileResp)
+                    ? props.userProfileResp.register_type === 'spotify'
+                      ? ImagePath.spotifyicon
+                      : ImagePath.applemusic
+                    : ''
+                }
+                style={{
+                  height: normalise(18),
+                  width: normalise(18),
+                }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  color: Colors.white,
+                  marginLeft: normalise(15),
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Regular',
+                }}>
+                {!_.isEmpty(props.userProfileResp)
+                  ? props.userProfileResp.register_type === 'spotify'
+                    ? 'Open on Spotify'
+                    : 'Open on Apple'
+                  : ''}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                marginTop: normalise(18),
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                if (props.userProfileResp.register_type === 'spotify') {
+                  props.navigation.navigate('AddToPlayListScreen', {
+                    originalUri:
+                      props.getPostFromTop50[positionInArray].original_song_uri,
+                    registerType:
+                      props.getPostFromTop50[positionInArray].social_type,
+                    isrc: props.getPostFromTop50[positionInArray].isrc_code,
+                  });
+                } else {
+                  // setTimeout(() => {
+                  //   toast("Oops", "Only, Spotify users can add to their playlist now.")
+                  // }, 1000)
+                  props.navigation.navigate('AddToPlayListScreen', {
+                    isrc: props.getPostFromTop50[positionInArray].isrc_code,
+                  });
+                }
+              }}>
+              <Image
+                source={ImagePath.addicon}
+                style={{
+                  height: normalise(18),
+                  width: normalise(18),
+                  // borderRadius: normalise(9),
+                }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  color: Colors.white,
+                  marginLeft: normalise(15),
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Regular',
+                }}>
+                Add to Playlist
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+              style={{
+                // marginStart: normalise(20),
+                // marginEnd: normalise(20),
+                // marginBottom: normalise(20),
+                marginTop: normalise(30),
+                height: normalise(40),
+                // width: '95%',
+                backgroundColor: Colors.darkerblack,
+                opacity: 10,
+                borderRadius: 6,
+                // padding: 35,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  color: Colors.white,
+                }}>
+                CANCEL
+              </Text>
+            </TouchableOpacity>
           </View>
 
-        {/* </View> */}
-     
-      </ImageBackground>
-    </Modal>
-
-
-
-   );
+          {/* </View> */}
+        </ImageBackground>
+      </Modal>
+    );
   };
   //END OF MODAL MORE PRESSED
 
@@ -1149,7 +1114,7 @@ const callApi = async () => {
     return (
       <TouchableOpacity
         style={{
-          height: normalize(30),
+          height: normalise(30),
           paddingHorizontal: normalise(18),
           marginStart: normalise(20),
           marginTop: normalise(5),
@@ -1207,7 +1172,7 @@ const callApi = async () => {
         }}
         nestedScrollEnabled={true}
         keyboardAvoidingViewEnabled={true}
-        height={normalize(500)}
+        height={normalise(500)}
         duration={250}
         customStyles={{
           container: {
@@ -1272,7 +1237,7 @@ const callApi = async () => {
                     marginTop: normalise(10),
                     marginEnd: normalise(15),
                   }}>
-                  {`NEXT`}
+                  {'NEXT'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -1283,53 +1248,52 @@ const callApi = async () => {
               //  width: '90%',
               // flex:0.8,
               // alignSelf: 'center',
-               height: normalise(35),
+              height: normalise(35),
               marginTop: normalise(20),
               borderRadius: normalise(8),
               backgroundColor: Colors.fadeblack,
-              flexDirection:'row',
-              borderWidth:1,
-            alignItems:'center',
-            marginHorizontal:'5%'
+              flexDirection: 'row',
+              borderWidth: 1,
+              alignItems: 'center',
+              marginHorizontal: '5%',
             }}>
-              <View style={{
-                flex:1,
+            <View
+              style={{
+                flex: 1,
                 // backgroundColor:"red",
-                height:normalise(35),
-                flexDirection:'row',
-                alignItems:'center',
-                paddingLeft:"2%"
-
+                height: normalise(35),
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingLeft: '2%',
               }}>
-                 <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                // bottom: normalise(25),
-                // paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                // height: normalise(35),
-                 width: '90%',
-                padding: normalise(10),
-                color: Colors.white,
-                // paddingLeft: normalise(30),
-              }}
-              value={userSeach}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSeach(text), searchUser(text);
-              }}
-            />
-</View>
-         
+              <Image
+                source={ImagePath.searchicongrey}
+                style={{
+                  height: normalise(15),
+                  width: normalise(15),
+                  // bottom: normalise(25),
+                  // paddingLeft: normalise(30),
+                }}
+                resizeMode="contain"
+              />
+              <TextInput
+                autoCorrect={false}
+                keyboardAppearance={'dark'}
+                style={{
+                  // height: normalise(35),
+                  width: '90%',
+                  padding: normalise(10),
+                  color: Colors.white,
+                  // paddingLeft: normalise(30),
+                }}
+                value={userSeach}
+                placeholder={'Search'}
+                placeholderTextColor={Colors.grey_text}
+                onChangeText={text => {
+                  setUserSeach(text), searchUser(text);
+                }}
+              />
+            </View>
 
             {userSeach === '' ? null : (
               <TouchableOpacity
@@ -1393,35 +1357,9 @@ const callApi = async () => {
     );
   };
 
-  return (
-
-    isLoading?(
-      <View style={{ flex: 1, backgroundColor: Colors.black,paddingTop:'6.7%' }}>
-        <SafeAreaView style={{ flex: 1 }}>
-        <HeaderComponent
-          firstitemtext={false}
-          imageone={ImagePath.backicon}
-          title={'POSTS'}
-          thirditemtext={true}
-          texttwo={''}
-          onPressFirstItem={() => {
-             props.navigation.goBack();
-// alert("hello")
-           
-          }}
-        />
-        
-   <Loader visible={isLoading}></Loader>
-   </SafeAreaView>
-   </View>
-      )
-    :
-
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
-
-       <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
-<Loader visible={bool} /> 
+  return isLoading ? (
+    <View
+      style={{ flex: 1, backgroundColor: Colors.black, paddingTop: '6.7%' }}>
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -1430,9 +1368,30 @@ const callApi = async () => {
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
-             props.navigation.goBack();
-// alert("hello")
-           
+            props.navigation.goBack();
+            // alert("hello")
+          }}
+        />
+
+        <Loader visible={isLoading} />
+      </SafeAreaView>
+    </View>
+  ) : (
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+      <StatusBar backgroundColor={Colors.darkerblack} />
+
+      <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
+      <Loader visible={bool} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={'POSTS'}
+          thirditemtext={true}
+          texttwo={''}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+            // alert("hello")
           }}
         />
 
@@ -1447,7 +1406,6 @@ const callApi = async () => {
               <Text style={{ fontSize: normalise(12), color: Colors.white }}>
                 NO POSTS
               </Text>
-             
             </View>
           ) : (
             <FlatList
@@ -1497,23 +1455,18 @@ const callApi = async () => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-      justifyContent: 'flex-end',
+    justifyContent: 'flex-end',
     //  alignItems: 'center',
     // marginTop: normalise(40),
-  
- 
-   
-
   },
   modalView: {
     //  margin: 20,
-    
 
     backgroundColor: '#000000',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-     paddingVertical: 35,
-     paddingHorizontal:30
+    paddingVertical: 35,
+    paddingHorizontal: 30,
     // alignItems: 'center',
     // shadowColor: '#000',
     // shadowOffset: {
@@ -1525,10 +1478,8 @@ const styles = StyleSheet.create({
     // elevation: 5,
     // borderWidth:1,
     // borderColor:'white',
-  //  position:'absolute',
-  //  bottom:0
-
- 
+    //  position:'absolute',
+    //  bottom:0
   },
   openButton: {
     backgroundColor: '#F194FF',
@@ -1547,7 +1498,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  console.log("statetoprops",JSON.stringify(state.PostReducer))
+  console.log('statetoprops', JSON.stringify(state.PostReducer));
   return {
     status: state.PostReducer.status,
     getPostFromTop50: state.PostReducer.getPostFromTop50,
@@ -1561,10 +1512,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  console.log("mapdispath")
+  console.log('mapdispath');
   return {
     searchPost: (text, flag) => {
-  
       dispatch(searchPostReq(text, flag));
     },
 
@@ -1593,11 +1543,7 @@ const mapDispatchToProps = dispatch => {
 
 // export default GenreSongClicked
 
-GenreSongClicked.defaultProps= {
-ptID:0,
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(GenreSongClicked);
-
+GenreSongClicked.defaultProps = {
+  ptID: 0,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(GenreSongClicked);

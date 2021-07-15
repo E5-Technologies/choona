@@ -1,4 +1,4 @@
-import {all, call, fork, put, takeLatest, select} from 'redux-saga/effects';
+import { call, put, takeLatest, select } from 'redux-saga/effects';
 import {
   SAVE_SONGS_REQUEST,
   SAVE_SONGS_SUCCESS,
@@ -16,7 +16,7 @@ import {
   TOP_50_SONGS_SUCCESS,
   TOP_50_SONGS_FAILURE,
 } from '../action/TypeConstants';
-import {getApi, postApi} from '../utils/helpers/ApiRequest';
+import { getApi, postApi } from '../utils/helpers/ApiRequest';
 
 const getItems = state => state.TokenReducer;
 
@@ -30,11 +30,11 @@ export function* saveSongAction(action) {
       accesstoken: items.token,
     };
 
-    const response = yield call(postApi, `song/store`, action.payload, Header);
+    const response = yield call(postApi, 'song/store', action.payload, Header);
 
-    yield put({type: SAVE_SONGS_SUCCESS, data: response.data});
+    yield put({ type: SAVE_SONGS_SUCCESS, data: response.data });
   } catch (error) {
-    yield put({type: SAVE_SONGS_FAILURE, error: error});
+    yield put({ type: SAVE_SONGS_FAILURE, error: error });
   }
 }
 
@@ -51,13 +51,13 @@ export function* savedSongListAction(action) {
     const response = yield call(
       postApi,
       'song/search',
-      {keyword: action.search},
+      { keyword: action.search },
       Header,
     );
 
-    yield put({type: SAVED_SONGS_LIST_SUCCESS, data: response.data.data});
+    yield put({ type: SAVED_SONGS_LIST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: SAVED_SONGS_LIST_FAILURE, error: error});
+    yield put({ type: SAVED_SONGS_LIST_FAILURE, error: error });
   }
 }
 
@@ -73,17 +73,17 @@ export function* unsaveSongAction(action) {
 
     const response = yield call(getApi, `song/remove/${action.id}`, Header);
 
-    yield put({type: UNSAVE_SONG_SUCCESS, data: response.data});
+    yield put({ type: UNSAVE_SONG_SUCCESS, data: response.data });
   } catch (error) {
-    yield put({type: UNSAVE_SONG_FAILURE, error: error});
+    yield put({ type: UNSAVE_SONG_FAILURE, error: error });
   }
 }
 
 export function* saveSongRefAction(action) {
   try {
-    yield put({type: SAVE_SONG_REFERENCE_SUCCESS, data: action.object});
+    yield put({ type: SAVE_SONG_REFERENCE_SUCCESS, data: action.object });
   } catch (error) {
-    yield put({type: SAVE_SONG_REFERENCE_FAILURE, error: error});
+    yield put({ type: SAVE_SONG_REFERENCE_FAILURE, error: error });
   }
 }
 
@@ -98,9 +98,9 @@ export function* getTop50Song() {
 
   try {
     let response = yield call(getApi, 'post/topfifty', Header);
-    yield put({type: TOP_50_SONGS_SUCCESS, data: response.data.data});
+    yield put({ type: TOP_50_SONGS_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: TOP_50_SONGS_FAILURE, error: error});
+    yield put({ type: TOP_50_SONGS_FAILURE, error: error });
   }
 }
 

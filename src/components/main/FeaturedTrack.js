@@ -1,8 +1,6 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
@@ -103,8 +101,8 @@ function FeaturedTrack(props) {
       const getSpotifyApi = async () => {
         try {
           const res = await callApi(song.id);
+          let suc = res.data.data.audio;
           if (res.data.status === 200) {
-            let suc = res.data.data.audio;
             let formdata = new FormData();
             let array = [
               {
@@ -154,6 +152,7 @@ function FeaturedTrack(props) {
       getSpotifyApi();
     } else {
       let formdata = new FormData();
+
       let array = [
         {
           song_name:
@@ -251,7 +250,6 @@ function FeaturedTrack(props) {
               props.registerType === 'spotify'
                 ? data.item.preview_url
                 : data.item.attributes.previews[0].url,
-            id: '',
             artist:
               props.registerType === 'spotify'
                 ? singerList(data.item.artists)
@@ -309,7 +307,6 @@ function FeaturedTrack(props) {
                 color: Colors.white,
                 paddingLeft: normalise(30),
               }}
-              keyboardAppearance='dark'
               value={search}
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
@@ -449,7 +446,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FeaturedTrack);
+export default connect(mapStateToProps, mapDispatchToProps)(FeaturedTrack);

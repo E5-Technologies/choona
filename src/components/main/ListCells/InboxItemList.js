@@ -1,14 +1,5 @@
-import React, { useEffect, Fragment, useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -61,7 +52,7 @@ function InboxListItem(props) {
             style={{
               height: normalise(30),
               width: normalise(30),
-              borderRadius: 2*normalise(60),
+              borderRadius: 2 * normalise(60),
             }}
             resizeMode="contain"
           />

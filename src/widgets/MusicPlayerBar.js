@@ -1,25 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TextInput,
-  TouchableOpacity,
-  TouchableHighlight,
-  Button,
-  Image,
-  FlatList,
-  Alert,
-  CheckBox,
-  Slider,
-  Platform,
-  ImageBackground,
-  Dimensions,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
@@ -28,9 +9,6 @@ import { connect } from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
-
-
-  
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
@@ -41,9 +19,6 @@ function MusicPlayerBar(props) {
       : null;
 
   useEffect(() => {
-
-
-
     getPlatingState();
     getPlayingPosition();
     setTimeout(() => {
@@ -52,39 +27,31 @@ function MusicPlayerBar(props) {
   }, [play]);
 
   function getPlatingState() {
-
-      setInterval(() => {
-
-        const ref =
+    setInterval(() => {
+      const ref =
         global.playerReference !== null && global.playerReference !== undefined
           ? global.playerReference
           : null;
-        if (ref !== null && ref !== undefined) {
-
+      if (ref !== null && ref !== undefined) {
         const isPlaying = ref.isPlaying();
 
         setPlay(isPlaying);
-        }
-      }, 1000);
-    
+      }
+    }, 1000);
   }
 
   function getPlayingPosition() {
-      setInterval(() => {
-
-        const ref =
+    setInterval(() => {
+      const ref =
         global.playerReference !== null && global.playerReference !== undefined
           ? global.playerReference
           : null;
-        if (ref !== null && ref !== undefined) {
-
-
+      if (ref !== null && ref !== undefined) {
         ref.getCurrentTime(seconds => {
           setTime(seconds);
         });
       }
-      }, 1000);
-    
+    }, 1000);
   }
 
   const playOrPause = () => {
@@ -118,7 +85,7 @@ function MusicPlayerBar(props) {
       // source={ImagePath.gradientbar}
       style={{
         width: '100%',
-        height: normalize(45),
+        height: normalise(45),
         backgroundColor: Colors.fadeblack,
         opacity: 0.9,
         position: 'absolute',
@@ -128,7 +95,7 @@ function MusicPlayerBar(props) {
 
       {/* <Slider
                     style={{
-                        width: Platform.OS == 'ios' ? '100%' : normalise(335),
+                        width: Platform.OS === 'ios' ? '100%' : normalise(335),
                         height: Platform.OS === 'android' ? 5 : 0, alignSelf: 'center'
                     }}
                     minimumValue={0}
@@ -154,10 +121,10 @@ function MusicPlayerBar(props) {
           style={{
             width: '100%',
             // alignSelf: 'center',
-            paddingRight:normalize(13),
+            paddingRight: normalise(13),
             alignItems: 'center',
             justifyContent: 'space-between',
-            // marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8),
+            // marginTop: Platform.OS === 'ios' ? normalise(10) : normalise(8),
             flexDirection: 'row',
           }}>
           <TouchableOpacity
@@ -165,8 +132,13 @@ function MusicPlayerBar(props) {
               onPress();
             }}>
             <Image
-              source={{ uri: props.playingSongRef.song_pic }}
-              style={{ height: normalize(45), width: normalize(50) }}
+              source={
+                props?.playingSongRef?.song_pic
+                  ? { uri: props.playingSongRef.song_pic }
+                  : null
+              }
+              style={{ height: normalise(45), width: normalise(45) }}
+              resizeMode="contain"
             />
           </TouchableOpacity>
 
@@ -207,8 +179,10 @@ function MusicPlayerBar(props) {
               playOrPause(), onPressPlayOrPause();
             }}>
             <Image
-              source={play ? ImagePath.pause : ImagePath.play}
-              style={{ height: normalize(25), width: normalize(25) }}
+              source={
+                ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+              }
+              style={{ height: normalise(25), width: normalise(25) }}
               resizeMode={'contain'}
             />
           </TouchableOpacity>
@@ -238,7 +212,4 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MusicPlayerBar);
+export default connect(mapStateToProps, mapDispatchToProps)(MusicPlayerBar);

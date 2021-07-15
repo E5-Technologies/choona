@@ -1,38 +1,31 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
   Text,
   TouchableOpacity,
   FlatList,
   Image,
-  ImageBackground,
-  Platform,
-  Modal,
-  Dimensions,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import { connect } from 'react-redux';
-import constants from '../../utils/helpers/constants';
 import {
-  USER_PROFILE_REQUEST,
-  USER_PROFILE_SUCCESS,
-  USER_PROFILE_FAILURE,
-} from '../../action/TypeConstants';
-import { getProfileRequest, userLogoutReq } from '../../action/UserAction';
-import toast from '../../utils/helpers/ShowErrorAlert';
-import Loader from '../../widgets/AuthLoader';
-import isInternetConnected from '../../utils/helpers/NetInfo';
-import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
-import HomeItemList from './ListCells/HomeItemList';
+  getProfileRequest,
+  homePageReq,
+  reactionOnPostRequest,
+  userFollowUnfollowRequest,
+  getUsersFromHome,
+} from '../../action/UserAction';
+import { deletePostReq } from '../../action/PostAction';
+import { saveSongRequest } from '../../action/SongAction';
+import { createChatTokenRequest } from '../../action/MessageAction';
 
-let status = '';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import HomeItemList from './ListCells/HomeItemList';
 
 function UserPostSongList(props) {
   const [postData, setPostData] = useState(props.route.params.postList);
@@ -43,15 +36,10 @@ function UserPostSongList(props) {
   const [modal1Visible, setModal1Visible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
 
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-
   // console.log(postData);
 
   function hitreact1(modal1Visible) {
-    if (modal1Visible == true) {
+    if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
@@ -100,10 +88,12 @@ function UserPostSongList(props) {
         time={data.item.createdAt}
         title={data.item.song_name}
         singer={data.item.artist_name}
+        songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
         onReactionPress={reaction => {
-          hitreact(reaction), sendReaction(data.item._id, reaction);
+          hitreact(reaction);
+          sendReaction(data.item._id, reaction);
         }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
@@ -119,7 +109,7 @@ function UserPostSongList(props) {
         }}
         onPressMusicbox={() => {
           props.navigation.navigate('Player', {
-            comments:[],
+            comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -224,7 +214,6 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
-    messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
   };
 };
@@ -265,7 +254,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UserPostSongList);
+export default connect(mapStateToProps, mapDispatchToProps)(UserPostSongList);

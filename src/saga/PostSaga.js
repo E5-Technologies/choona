@@ -1,4 +1,4 @@
-import {put, call, fork, takeLatest, all, select} from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -22,11 +22,8 @@ import {
   getSpotifyApi,
   getAppleDevelopersToken,
 } from '../utils/helpers/ApiRequest';
-import AsyncStorage from '@react-native-community/async-storage';
-import constants from '../utils/helpers/constants';
-import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
-import {Header} from 'react-native/Libraries/NewAppScreen';
+import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
 
 const getItems = state => state.TokenReducer;
 
@@ -34,7 +31,6 @@ export function* searchSongsForPostAction(action) {
   const spotifyToken = yield call(getSpotifyToken);
   const items = yield select(getItems);
   const AppleToken = yield call(getAppleDevToken);
- 
 
   let spotifyHeader = {
     Authorization:
@@ -45,48 +41,40 @@ export function* searchSongsForPostAction(action) {
 
   try {
     if (items.registerType === 'spotify') {
-     if( action.listName !='Recently'){
-      const response = yield call(
-        getSpotifyApi,
-        `https://api.spotify.com/v1/search?q=${encodeURI(
-          action.text,
-        )}&type=track&market=US`,
-        spotifyHeader,
-      );
+      if (action.listName !== 'Recently') {
+        const response = yield call(
+          getSpotifyApi,
+          `https://api.spotify.com/v1/search?q=${encodeURI(
+            action.text,
+          )}&type=track&market=US`,
+          spotifyHeader,
+        );
 
-      yield put({
-        type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
-        data: response.data.tracks.items,
-        post: action.post,
-        listName:action.listName
-      });
-    }
-    else{
-    
-     try{
-     
-      const response = yield call(
-        getSpotifyApi,
-        `https://api.spotify.com/v1/me/player/recently-played`,
-        spotifyHeader,
-      );
-       console.log("response"+JSON.stringify(response))
-      yield put({
-        type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
-        data: response.data.items,
-        post: action.post,
-        listName:'Recently'
-      });
-     }
-     catch(error){
-       alert("error")
-       console.log("alert"+error)
-       
-     }
-     
- 
-    
-    }
+        yield put({
+          type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+          data: response.data.tracks.items,
+          post: action.post,
+          listName: action.listName,
+        });
+      } else {
+        try {
+          const response = yield call(
+            getSpotifyApi,
+            'https://api.spotify.com/v1/me/player/recently-played',
+            spotifyHeader,
+          );
+          console.log('response' + JSON.stringify(response));
+          yield put({
+            type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+            data: response.data.items,
+            post: action.post,
+            listName: 'Recently',
+          });
+        } catch (error) {
+          alert('error');
+          console.log('alert' + error);
+        }
+      }
     } else {
       const response = yield call(
         getAppleDevelopersToken,
@@ -102,7 +90,7 @@ export function* searchSongsForPostAction(action) {
       });
     }
   } catch (error) {
-    yield put({type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error});
+    yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error });
   }
 }
 
@@ -116,11 +104,11 @@ export function* createPostAction(action) {
   };
 
   try {
-    const response = yield call(postApi, `post/store`, action.payload, header);
+    const response = yield call(postApi, 'post/store', action.payload, header);
 
-    yield put({type: CREATE_POST_SUCCESS, data: response.data});
+    yield put({ type: CREATE_POST_SUCCESS, data: response.data });
   } catch (error) {
-    yield put({type: CREATE_POST_FAILURE, data: error});
+    yield put({ type: CREATE_POST_FAILURE, data: error });
   }
 }
 
@@ -139,14 +127,14 @@ export function* deletePostAction(action) {
       `post/delete/${action.payload}`,
       Header,
     );
-    yield put({type: DELETE_POST_SUCCESS, data: response.data.data});
+    yield put({ type: DELETE_POST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: DELETE_POST_FAILURE, error: error});
+    yield put({ type: DELETE_POST_FAILURE, error: error });
   }
 }
 
 export function* searchPostAction(action) {
-   console.log("postsaga"+JSON.stringify(action))
+  console.log('postsaga' + JSON.stringify(action));
   try {
     const items = yield select(getItems);
     const Header = {
@@ -155,39 +143,35 @@ export function* searchPostAction(action) {
       accesstoken: items.token,
     };
 
-
     const text = action.text.replace('&', '');
     // console.log("api called"+`post/list?keyword=${encodeURI(text)}`);
 
-    if(action.flag){
-    const response = yield call(
-      getApi,
-      `post/list?keyword=${encodeURI(text)}`,
-      Header,
-    );
-   
-     console.log("success"+JSON.stringify(response.data.data))
-    yield put({
-      type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
-      data: response.data.data,
-      
-    });
-  }
-  else{
-    const response = yield call(
-      getApi,
-      `post/list?keyword=${encodeURI(text)}&type=top`,
-      Header,
-    );
-     console.log("success"+JSON.stringify(response.data.data))
-    yield put({
-      type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
-      data: response.data.data,
-      
-    });
-  }
+    if (action.flag) {
+      const response = yield call(
+        getApi,
+        `post/list?keyword=${encodeURI(text)}`,
+        Header,
+      );
+
+      console.log('success' + JSON.stringify(response.data.data));
+      yield put({
+        type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
+        data: response.data.data,
+      });
+    } else {
+      const response = yield call(
+        getApi,
+        `post/list?keyword=${encodeURI(text)}&type=top`,
+        Header,
+      );
+      console.log('success' + JSON.stringify(response.data.data));
+      yield put({
+        type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
+        data: response.data.data,
+      });
+    }
   } catch (error) {
-    console.log("error"+error)
+    console.log('error' + error);
     yield put({
       type: action.flag ? SEARCH_POST_FAILURE : GET_POST_FROM_TOP_50_FAILURE,
       error: error,

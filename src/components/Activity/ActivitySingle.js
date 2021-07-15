@@ -6,7 +6,6 @@ import constants from '../../utils/helpers/constants';
 import ActivityListItem from '../main/ListCells/ActivityListItem';
 
 function ActivitySingle({ item, props }) {
- 
   if (item.activity_type === 'following') {
     return (
       <ActivityListItem
@@ -47,7 +46,7 @@ function ActivitySingle({ item, props }) {
           //   fromAct: true,
           props.navigation.navigate('SingleSongClick', {
             data: item.post_id,
-            ptID:1,
+            ptID: 1,
           });
           // });
         }}
@@ -75,7 +74,7 @@ function ActivitySingle({ item, props }) {
           // });
           props.navigation.navigate('SingleSongClick', {
             data: item.post_id,
-            ptID:1,
+            ptID: 1,
           });
         }}
       />

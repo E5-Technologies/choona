@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   KeyboardAvoidingView,
@@ -11,8 +11,6 @@ import {
   Platform,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
-import { tokenRequest } from '../../action/index';
-import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
@@ -26,14 +24,12 @@ import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAILURE,
-  USER_LOGIN_FAILURE,
   COUNTRY_CODE_REQUEST,
   COUNTRY_CODE_SUCCESS,
   COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
 import { signupRequest, getCountryCodeRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
-import { register } from 'react-native-app-auth';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -73,22 +69,15 @@ function Login(props) {
   }
 
   useEffect(() => {
-
-
     (async () => {
       const { userId } = await OneSignal.getDeviceState();
 
       setDeviceToken(userId);
     })();
 
-
     isInternetConnected()
       .then(() => {
         props.countrycodeRequest();
-
-
-    
-
       })
       .catch(() => {
         toast('Check your Internet');
@@ -104,9 +93,7 @@ function Login(props) {
   const [fullname, setFullname] = useState(
     props.route.params.loginType === 'Spotify'
       ? ''
-      : `${props.route.params.userDetails.fullName.givenName} ${
-          props.route.params.userDetails.fullName.familyName
-        }`,
+      : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`,
   );
 
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -304,7 +291,7 @@ function Login(props) {
                 props.navigation.goBack();
               }}>
               <Image
-                source={ImagePath.backicon}
+                source={ImagePath ? ImagePath.backicon : null}
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
@@ -333,7 +320,7 @@ function Login(props) {
             }}>
             {picture ? (
               <Image
-                source={{ uri: profilePic }}
+                source={profilePic ? { uri: profilePic } : null}
                 style={{
                   height: normalise(120),
                   width: normalise(120),
@@ -347,7 +334,7 @@ function Login(props) {
                   showPickerOptions();
                 }}>
                 <Image
-                  source={ImagePath.add_white}
+                  source={ImagePath ? ImagePath.add_white : null}
                   style={{
                     height: normalise(40),
                     width: normalise(40),
@@ -420,12 +407,12 @@ function Login(props) {
             <View>
               <Picker
                 textColor={Colors.white}
-                textSize={normalize(9)}
+                textSize={normalise(9)}
                 emptySelectText="Select"
                 editable={true}
                 data={props.countryCodeRequest}
                 selectedValue={
-                  codePick == '' ? props.countryCodeRequest[0] : codePick
+                  codePick === '' ? props.countryCodeRequest[0] : codePick
                 }
                 onPickerItemSelected={(selectedvalue, index) => {
                   var result = props.countryObject.find(obj => {
@@ -442,7 +429,7 @@ function Login(props) {
             <TextInputField
               placeholder={'Enter Phone number'}
               placeholderTextColor={Colors.grey}
-              width={normalize(200)}
+              width={normalise(200)}
               maxLength={15}
               isNumber={true}
               value={phoneNumber}
@@ -454,7 +441,7 @@ function Login(props) {
             <Text
               style={{
                 position: 'absolute',
-                fontSize: normalize(12),
+                fontSize: normalise(12),
                 top: 20,
                 color: Colors.white,
                 fontFamily: 'ProximaNova-Bold',
@@ -472,18 +459,18 @@ function Login(props) {
           {props.route.params.loginType === 'Spotify' ? (
             <View
               style={{
-                marginTop: normalize(30),
-                height: normalize(45),
-                borderRadius: normalize(10),
+                marginTop: normalise(30),
+                height: normalise(45),
+                borderRadius: normalise(10),
                 borderWidth: normalise(1),
                 borderColor: Colors.activityBorderColor,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: normalize(5),
+                padding: normalise(5),
               }}>
               <Image
-                source={ImagePath.spotifyicon}
+                source={ImagePath ? ImagePath.spotifyicon : null}
                 style={{
                   height: normalise(22),
                   width: normalise(22),
@@ -540,7 +527,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

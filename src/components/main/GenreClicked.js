@@ -1,21 +1,15 @@
-import React, {useEffect, Fragment, useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
-  Text,
   TouchableOpacity,
   FlatList,
   Image,
-  ImageBackground,
-  TextInput,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
-import ActivityListItem from '../../components/main/ListCells/ActivityListItem';
 import StatusBar from '../../utils/MyStatusBar';
 
 const genreData = [
@@ -71,10 +65,10 @@ export default function GenreClicked(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.black}}>
+    <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -87,7 +81,11 @@ export default function GenreClicked(props) {
         />
 
         <FlatList
-          style={{paddingTop: normalise(20), alignSelf: 'center', width: '95%'}}
+          style={{
+            paddingTop: normalise(20),
+            alignSelf: 'center',
+            width: '95%',
+          }}
           data={genreData}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => {
