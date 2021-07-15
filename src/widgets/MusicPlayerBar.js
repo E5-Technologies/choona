@@ -92,18 +92,6 @@ function MusicPlayerBar(props) {
         bottom: 0,
       }}>
       <Loader visible={bool} />
-
-      {/* <Slider
-                    style={{
-                        width: Platform.OS === 'ios' ? '100%' : normalise(335),
-                        height: Platform.OS === 'android' ? 5 : 0, alignSelf: 'center'
-                    }}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#FFFFFF"
-                    maximumTrackTintColor="#000000"
-                /> */}
-
       <View
         style={{
           height: normalise(2),
@@ -112,7 +100,6 @@ function MusicPlayerBar(props) {
           backgroundColor: Colors.white,
         }}
       />
-
       <TouchableOpacity
         onPress={() => {
           onPress();
@@ -120,60 +107,57 @@ function MusicPlayerBar(props) {
         <View
           style={{
             width: '100%',
-            // alignSelf: 'center',
             paddingRight: normalise(13),
             alignItems: 'center',
             justifyContent: 'space-between',
-            // marginTop: Platform.OS === 'ios' ? normalise(10) : normalise(8),
             flexDirection: 'row',
           }}>
-          <TouchableOpacity
-            onPress={() => {
-              onPress();
-            }}>
-            <Image
-              source={
-                props?.playingSongRef?.song_pic
-                  ? { uri: props.playingSongRef.song_pic }
-                  : null
-              }
-              style={{ height: normalise(45), width: normalise(45) }}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-
           <View
             style={{
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
               alignItems: 'center',
-              position: 'absolute',
-              left: 60,
-              width: '70%',
+              flexDirection: 'row',
             }}>
-            <Text
+            <TouchableOpacity
+              onPress={() => {
+                onPress();
+              }}>
+              <Image
+                source={
+                  props?.playingSongRef?.song_pic
+                    ? { uri: props.playingSongRef.song_pic }
+                    : null
+                }
+                style={{ height: normalise(45), width: normalise(45) }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <View
               style={{
-                color: Colors.white,
-                fontSize: normalise(11),
-                fontFamily: 'ProximaNova-Semibold',
-                width: '100%',
-              }}
-              numberOfLines={1}>
-              {props.playingSongRef.song_name}
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.grey_text,
-                fontSize: normalise(10),
-                fontFamily: 'ProximaNovaAW07-Medium',
-                width: '100%',
-              }}
-              numberOfLines={1}>
-              {props.playingSongRef.artist}
-            </Text>
+                marginLeft: normalise(8),
+                width: '75%',
+              }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(11),
+                  fontFamily: 'ProximaNova-Semibold',
+                  width: '100%',
+                }}
+                numberOfLines={1}>
+                {props.playingSongRef.song_name}
+              </Text>
+              <Text
+                style={{
+                  color: Colors.grey_text,
+                  fontSize: normalise(10),
+                  fontFamily: 'ProximaNovaAW07-Medium',
+                  width: '100%',
+                }}
+                numberOfLines={1}>
+                {props.playingSongRef.artist}
+              </Text>
+            </View>
           </View>
-
           <TouchableOpacity
             onPress={() => {
               playOrPause(), onPressPlayOrPause();
