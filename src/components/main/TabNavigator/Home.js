@@ -89,6 +89,7 @@ import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import MusicPlayer from '../../../widgets/MusicPlayer';
 import Timer from '../Timer';
+import EmptyComponent from '../../Empty/EmptyComponent';
 
 let status = '';
 let songStatus = '';
@@ -1303,98 +1304,18 @@ function Home(props) {
         />
 
         {_.isEmpty(props.postData) ? (
-          <View style={{ flex: 1, alignItems: 'center', marginTop: '4%' }}>
-            <Image
-              source={ImagePath ? ImagePath.emptyPost : null}
-              style={{
-                height: 2 * normalise(90),
-                width: 2 * normalise(90),
-                marginTop: '8%',
-              }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                // marginBottom: '20%',
-
-                marginTop: normalise(30),
-                color: Colors.white,
-                fontSize: normalise(15),
-                // fontWeight: 'bold',
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              Your Feed is empty
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.fordGray,
-                fontSize: normalise(12),
-                fontWeight: '100',
-                marginTop: normalise(7),
-                width: '68%',
-                textAlign: 'center',
-                alignSelf: 'center',
-                fontFamily: 'ProximaNova-Regular',
-              }}>
-              You don’t follow anyone yet, check your phonebook below to see if
-              anyone you know is already on Choona.
-            </Text>
-            {/* <TouchableOpacity style={{
-          height: normalise(50), width: '80%',
-          borderRadius: normalise(25), backgroundColor: Colors.facebookblue, borderWidth: normalise(0.5),
-          shadowColor: "#000", shadowOffset: { width: 0, height: 5, },
-          shadowOpacity: 0.36, shadowRadius: 6.68, elevation: 11, flexDirection: 'row',
-          alignItems: 'center', justifyContent: 'center'
-        }} >
-          <Image source={ImagePath.facebook}
-            style={{ height: normalise(20), width: normalise(20) }}
-            resizeMode='contain' />
-
-          <Text style={{
-            marginLeft: normalise(10), color: Colors.white, fontSize: normalise(12),
-            fontWeight: 'bold'
-          }}>CONNECT WITH FACEBOOK</Text>
-
-        </TouchableOpacity> */}
-
-            <TouchableOpacity
-              style={{
-                marginBottom: normalise(30),
-                marginTop: normalise(40),
-                height: normalise(50),
-                width: '80%',
-                alignSelf: 'center',
-                borderRadius: normalise(25),
-                backgroundColor: Colors.white,
-                borderWidth: normalise(0.5),
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.5,
-                shadowRadius: 9,
-                elevation: 11,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderColor: Colors.white,
-                position: 'absolute',
-                bottom: 0,
-              }}
-              onPress={() => {
-                setContactsLoading(true), getContacts();
-              }}>
-              <Text
-                style={{
-                  marginLeft: normalise(10),
-                  color: Colors.darkerblack,
-                  fontSize: normalise(12),
-                  fontWeight: 'bold',
-                }}>
-                {/* CHECK YOUR PHONEBOOK */}
-                CHECK FOR FRIENDS
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <EmptyComponent
+            buttonPress={() => {
+              setContactsLoading(true);
+              getContacts();
+            }}
+            buttonText={'Check for friends'}
+            image={ImagePath ? ImagePath.emptyPost : null}
+            text={
+              'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
+            }
+            title={'Your Feed is empty'}
+          />
         ) : (
           <View style={{ flex: 1 }}>
             {/* {

@@ -187,7 +187,7 @@ function Profile(props) {
         presentationStyle={'overFullScreen'}
         onRequestClose={() => {}}>
         <ImageBackground
-          source={ImagePath.page_gradient}
+          source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>
           <View style={styles.modalView}>
             <TouchableOpacity
@@ -318,7 +318,7 @@ function Profile(props) {
                 setModalPrivacy(false);
               }}>
               <Image
-                source={ImagePath.backicon}
+                source={ImagePath ? ImagePath.backicon : null}
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
@@ -351,7 +351,7 @@ function Profile(props) {
                 setModaltandcs(false);
               }}>
               <Image
-                source={ImagePath.backicon}
+                source={ImagePath ? ImagePath.backicon : null}
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
@@ -380,7 +380,7 @@ function Profile(props) {
                 props.navigation.goBack();
               }}>
               <Image
-                source={ImagePath.backicon}
+                source={ImagePath ? ImagePath.backicon : null}
                 style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
@@ -402,7 +402,7 @@ function Profile(props) {
                 props.navigation.navigate('EditProfile');
               }}>
               <Image
-                source={ImagePath.settings}
+                source={ImagePath ? ImagePath.settings : null}
                 style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode="contain"
               />
@@ -412,7 +412,7 @@ function Profile(props) {
                 setModalVisible(!modalVisible);
               }}>
               <Image
-                source={ImagePath.iconmenu}
+                source={ImagePath ? ImagePath.iconmenu : null}
                 style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode="contain"
               />
@@ -444,7 +444,7 @@ function Profile(props) {
               props.navigation.replace('bottomTab', { screen: 'Add' })
             }
             buttonText={'Add your first post'}
-            image={ImagePath.emptyPost}
+            image={ImagePath ? ImagePath.emptyPost : null}
             text={
               'You haven’t uploaded any songs to Choona yet, click the button below to add your first song.'
             }

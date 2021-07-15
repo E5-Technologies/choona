@@ -1517,49 +1517,13 @@ function Search(props) {
 
           {songSearch ? ( //SONG VIEW
             _.isEmpty(searchPostData) ? (
-              <View
-                style={{
-                  flex: 1,
-                  // justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={ImagePath.emptySong}
-                  style={{
-                    height: 2 * normalise(95),
-                    width: 2 * normalise(95),
-                    marginTop: '2%',
-                  }}
-                  resizeMode="contain"
-                />
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(14),
-
-                    marginTop: normalise(13),
-                    width: '68%',
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    fontFamily: 'ProximaNova-Bold',
-                  }}>
-                  Explore posts containing a song
-                </Text>
-                <Text
-                  style={{
-                    color: Colors.fordGray,
-                    fontSize: normalise(12),
-                    fontWeight: '100',
-                    marginTop: normalise(5),
-                    width: '68%',
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    fontFamily: 'ProximaNova-Regular',
-                  }}>
-                  Search for a song or artist you love to find which other
-                  Choona users are posting then as well.
-                </Text>
-              </View>
+              <EmptyComponent
+                image={ImagePath.emptySong}
+                text={
+                  'Search for a song or artist you love to find which other Choona users are posting them as well.'
+                }
+                title={'Explore posts containing a song'}
+              />
             ) : (
               <View>
                 <View
@@ -1598,25 +1562,12 @@ function Search(props) {
           ) : null}
 
           {genreSearch ? ( //Top Songs VIEW
-            _.isEmpty(top50) ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(15),
-                    fontWeight: '500',
-                    marginTop: normalise(20),
-                    width: '68%',
-                    textAlign: 'center',
-                  }}>
-                  No songs are posted today
-                </Text>
-              </View>
+            _.isEmpty(!top50) ? (
+              <EmptyComponent
+                image={ImagePath.emptyPost}
+                text={'No songs have been posted today.'}
+                // title={'No songs have been posted today'}
+              />
             ) : (
               <FlatList
                 style={{
