@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { View, Image, PermissionsAndroid } from 'react-native';
-import normalise from '../../utils/helpers/Dimens';
+import { Dimensions, View, Image, PermissionsAndroid } from 'react-native';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import StatusBar from '../../utils/MyStatusBar';
+import normalise from '../../utils/helpers/Dimens';
 
 export default function Splash(props) {
   useEffect(() => {
@@ -89,32 +89,23 @@ export default function Splash(props) {
     await contactReadPermission();
   }
 
-  //VIEW
   return (
     <View
       style={{
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.darkerblack,
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <Image
-        source={ImagePath ? ImagePath.appIcon512 : null}
-        style={{ height: normalise(130), width: '60%' }}
-        resizeMode="contain"
-      />
-
       <View
         style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: normalise(-50),
+          top: normalise(-38),
         }}>
         <Image
-          source={ImagePath ? ImagePath.addPostIllus : null}
-          style={{ height: normalise(170), width: '100%' }}
+          source={ImagePath ? ImagePath.choonaSplashBg : null}
+          style={{
+            height: Dimensions.get('window').height + normalise(200),
+            width: Dimensions.get('window').width,
+          }}
           resizeMode="cover"
         />
       </View>
