@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import env from 'react-native-config';
 import {
+  Dimensions,
   View,
   Text,
   TouchableOpacity,
@@ -214,25 +215,35 @@ function SignUp(props) {
           barStyle={'light-content'}
         />
       )}
-
       <View
         style={{
           position: 'absolute',
-          top: 0,
+          bottom: 0,
           right: 0,
           left: 0,
-          height: normalise(375),
+          top: normalise(-38),
         }}>
         <Image
-          source={ImagePath ? ImagePath.albumsPic : null}
+          source={ImagePath ? ImagePath.choonaSplashBg : null}
           style={{
-            height: normalise(300),
-            width: '100%',
+            height: Dimensions.get('window').height + normalise(200),
+            width: Dimensions.get('window').width,
           }}
-          resizeMode="contain"
+          resizeMode="cover"
         />
+      </View>
+      <View
+        style={{
+          position: 'absolute',
+          top: normalise(-150),
+          right: 0,
+          left: 0,
+          bottom: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
         <Image
-          source={ImagePath ? ImagePath.applogo : null}
+          source={ImagePath ? ImagePath.splashLogo : null}
           style={{
             height: normalise(40),
             alignSelf: 'center',
@@ -254,100 +265,64 @@ function SignUp(props) {
       </View>
       <View
         style={{
-          height: Platform.OS === 'android' ? '45%' : '50%',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          paddingHorizontal: normalise(16),
+          paddingHorizontal: normalise(32),
           position: 'absolute',
-          bottom: normalise(0),
+          bottom: normalise(48),
           left: 0,
           right: 0,
         }}>
+        <Text
+          style={{
+            color: Colors.white,
+            fontFamily: 'ProximaNova-SemiBold',
+            fontSize: normalise(11),
+            marginBottom: normalise(12),
+          }}>
+          SIMPLY SIGN IN WITH ONE OF THE BELOW
+        </Text>
         <TouchableOpacity
           style={{
-            height: normalise(56),
+            backgroundColor: '#1ED760',
+            borderRadius: normalise(26),
+            height: normalise(52),
             width: '100%',
-            alignSelf: 'center',
-            borderRadius: normalise(28),
-            backgroundColor: Colors.darkerblack,
-            borderWidth: normalise(1),
-            borderColor: Colors.darkerblack,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 5 },
-            shadowOpacity: 0.36,
-            shadowRadius: 6.68,
-            elevation: 11,
-            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+            marginBottom: normalise(12),
           }}
           onPress={() => {
             spotifyLogin();
             setLoginType('Spotify');
           }}>
           <Image
-            source={ImagePath ? ImagePath.spotifyicon : null}
+            source={ImagePath ? ImagePath.spotifyButtonLogo : null}
             style={{
-              height: normalise(32),
-              width: normalise(32),
-              position: 'absolute',
-              left: 12,
+              height: normalise(28),
             }}
             resizeMode="contain"
           />
-
-          <Text
-            style={{
-              marginLeft: normalise(10),
-              color: Colors.white,
-              fontSize: normalise(12),
-              fontFamily: 'ProximaNova-Bold',
-            }}>
-            LOGIN WITH SPOTIFY
-          </Text>
         </TouchableOpacity>
 
         {Platform.OS === 'ios' ? (
           <TouchableOpacity
             style={{
-              marginBottom: normalise(40),
-              marginTop: normalise(20),
-              height: normalise(56),
+              backgroundColor: '#E74E4C',
+              borderRadius: normalise(26),
+              height: normalise(52),
               width: '100%',
-              alignSelf: 'center',
-              borderRadius: normalise(28),
-              backgroundColor: Colors.white,
-              borderWidth: normalise(0.5),
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 5 },
-              shadowOpacity: 0.36,
-              shadowRadius: 6.68,
-              elevation: 11,
-              flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
             }}
             onPress={() => onAppleButtonPress()}>
             <Image
-              source={ImagePath ? ImagePath.applemusic : null}
+              source={ImagePath ? ImagePath.appleButtonLogo : null}
               style={{
-                height: normalise(32),
-                width: normalise(32),
-                position: 'absolute',
-                left: 12,
+                height: normalise(26),
               }}
               resizeMode="contain"
             />
-            <Text
-              style={{
-                marginLeft: normalise(10),
-                color: Colors.black,
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              LOGIN WITH APPLE MUSIC
-            </Text>
           </TouchableOpacity>
         ) : null}
       </View>
