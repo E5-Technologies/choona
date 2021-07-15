@@ -159,7 +159,8 @@ function Home(props) {
         .then(() => {
           // console.log('home use Effect');
           setOnScrolled(false);
-          props.getProfileReq(), setUserSearchData([]);
+          props.getProfileReq();
+          setUserSearchData([]);
           sesUsersToSEndSong([]);
           setUserSeach('');
           if (!homeReq) {
@@ -212,6 +213,7 @@ function Home(props) {
 
       case LOAD_MORE_SUCCESS:
         status = props.status;
+        props.homePage(1);
         if (props.loadData.length !== 0) {
           const intersection = props.postData.filter(item1 =>
             props.loadData.some(item2 => item1._id === item2._id),
@@ -1318,9 +1320,6 @@ function Home(props) {
           />
         ) : (
           <View style={{ flex: 1 }}>
-            {/* {
-  console.log("postData"+ JSON.stringify(props.postData))
-} */}
             <FlatList
               // style={{marginTop: normalise(10)}}
               data={props.postData}

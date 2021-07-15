@@ -27,6 +27,7 @@ import {
   EDIT_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
 import {
+  getProfileRequest,
   editProfileRequest,
   getCountryCodeRequest,
 } from '../../action/UserAction';
@@ -248,6 +249,7 @@ function EditProfile(props) {
           thirditemtext={true}
           texttwo={'SAVE'}
           onPressFirstItem={() => {
+            props.getProfileReq();
             props.navigation.goBack();
           }}
           onPressThirdItem={() => {
@@ -403,6 +405,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    getProfileReq: () => {
+      dispatch(getProfileRequest());
+    },
     editProfileReq: payload => {
       dispatch(editProfileRequest(payload));
     },
