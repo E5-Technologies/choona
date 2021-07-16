@@ -48,7 +48,6 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
 		8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */; };
-		AB39DBFE789C6573B7359352 /* libPods-Choona.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B1204B6419B10F2DBD2851E /* libPods-Choona.a */; };
 		C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */; };
 		C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */; };
 		F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */; };
@@ -139,7 +138,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				27A9F5DB450BC7D7E12DC0EA /* libPods-Choona.a in Frameworks */,
-				AB39DBFE789C6573B7359352 /* libPods-Choona.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
