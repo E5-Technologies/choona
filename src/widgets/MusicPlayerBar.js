@@ -1,198 +1,199 @@
 import React, { useState, useEffect } from 'react';
-import propTypes from "prop-types";
-import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    StatusBar,
-    TextInput,
-    TouchableOpacity,
-    TouchableHighlight,
-    Button,
-    Image,
-    FlatList,
-    Alert,
-    CheckBox,
-    Slider,
-    Platform,
-    ImageBackground,
-    Dimensions
-} from 'react-native';
+import propTypes from 'prop-types';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 
-import normalise from "../utils/helpers/Dimens";
-import Colors from "../assests/Colors";
+import normalise from '../utils/helpers/Dimens';
+import Colors from '../assests/Colors';
 import ImagePath from '../assests/ImagePath';
 import { connect } from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
+  const [play, setPlay] = useState(false);
+  const [bool, setBool] = useState(true);
+  const [time, setTime] = useState(0);
 
-    const [play, setPlay] = useState(false);
-    const [bool, setBool] = useState(true);
-    const [time, setTime] = useState(0);
+  const ref =
+    global.playerReference !== null && global.playerReference !== undefined
+      ? global.playerReference
+      : null;
 
-    const ref = global.playerReference !== null && global.playerReference !== undefined ? global.playerReference : null;
+  useEffect(() => {
+    getPlatingState();
+    getPlayingPosition();
+    setTimeout(() => {
+      setBool(false);
+    }, 1000);
+  }, [play]);
 
-    useEffect(() => {
-        getPlatingState();
-        getPlayingPosition();
-        setTimeout(() => {
-            setBool(false);
-        }, 1000)
-    }, []);
+  function getPlatingState() {
+    setInterval(() => {
+      const ref =
+        global.playerReference !== null && global.playerReference !== undefined
+          ? global.playerReference
+          : null;
+      if (ref !== null && ref !== undefined) {
+        const isPlaying = ref.isPlaying();
 
+        setPlay(isPlaying);
+      }
+    }, 1000);
+  }
 
-    function getPlatingState() {
+  function getPlayingPosition() {
+    setInterval(() => {
+      const ref =
+        global.playerReference !== null && global.playerReference !== undefined
+          ? global.playerReference
+          : null;
+      if (ref !== null && ref !== undefined) {
+        ref.getCurrentTime(seconds => {
+          setTime(seconds);
+        });
+      }
+    }, 1000);
+  }
 
-        if (ref !== null) {
-
-            setInterval(() => {
-                const isPlaying = ref.isPlaying();
-                setPlay(isPlaying);
-            }, 1000)
-
-
+  const playOrPause = () => {
+    const res = ref.isPlaying();
+    if (res) {
+      ref.pause();
+      // console.log('paused');
+    } else {
+      ref.play(success => {
+        if (success) {
+          // console.log('Playback End');
         }
-    };
+      });
+    }
+  };
 
+  const onPress = () => {
+    if (props.onPress) {
+      props.onPress();
+    }
+  };
 
-    function getPlayingPosition() {
+  const onPressPlayOrPause = () => {
+    if (props.onPressPlayOrPause) {
+      props.onPressPlayOrPause();
+    }
+  };
 
-        if (ref !== null) {
-
-            setInterval(() => {
-                ref.getCurrentTime((seconds) => { setTime(seconds) });
-            }, 1000)
-
-
-        }
-    };
-
-
-    const playOrPause = () => {
-        const res = ref.isPlaying();
-        if (res) {
-            ref.pause();
-            console.log('paused');
-        }
-        else {
-            ref.play((success) => {
-                if (success) {
-                    console.log('Playback End');
+  return props.playingSongRef !== '' ? (
+    <View
+      // source={ImagePath.gradientbar}
+      style={{
+        width: '100%',
+        height: normalise(45),
+        backgroundColor: Colors.fadeblack,
+        opacity: 0.9,
+        position: 'absolute',
+        bottom: 0,
+      }}>
+      <Loader visible={bool} />
+      <View
+        style={{
+          height: normalise(2),
+          width: `${time * 3.4}%`,
+          alignSelf: 'flex-start',
+          backgroundColor: Colors.white,
+        }}
+      />
+      <TouchableOpacity
+        onPress={() => {
+          onPress();
+        }}>
+        <View
+          style={{
+            width: '100%',
+            paddingRight: normalise(13),
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+          }}>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                onPress();
+              }}>
+              <Image
+                source={
+                  props?.playingSongRef?.song_pic
+                    ? { uri: props.playingSongRef.song_pic }
+                    : null
                 }
-            })
-        }
-    };
-
-
-    const onPress = () => {
-        if (props.onPress) {
-            props.onPress()
-        }
-    };
-
-
-    const onPressPlayOrPause = () => {
-        if (props.onPressPlayOrPause) {
-            props.onPressPlayOrPause()
-        }
-    };
-    
-
-    return (
-
-        props.playingSongRef !== "" ?
-
+                style={{ height: normalise(45), width: normalise(45) }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
             <View
-                // source={ImagePath.gradientbar}
+              style={{
+                marginLeft: normalise(8),
+                width: '75%',
+              }}>
+              <Text
                 style={{
-                    width: '100%', height: normalize(45),
-                    backgroundColor: Colors.fadeblack,
-                    opacity: 0.9, position: 'absolute', bottom: 0
-                }}>
-
-                <Loader visible={bool} />
-
-                {/* <Slider
-                    style={{
-                        width: Platform.OS == 'ios' ? '100%' : normalise(335),
-                        height: Platform.OS === 'android' ? 5 : 0, alignSelf: 'center'
-                    }}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#FFFFFF"
-                    maximumTrackTintColor="#000000"
-                /> */}
-
-                <View style={{
-                    height: normalise(2), width: `${time * 3.4}%`, alignSelf: 'flex-start',
-                    backgroundColor: Colors.white
-                }} />
-
-                <TouchableOpacity onPress={() => { onPress() }}>
-                    <View style={{
-                        width: '90%', alignSelf: 'center', alignItems: 'center', justifyContent: 'space-between',
-                        marginTop: Platform.OS === 'ios' ? normalize(10) : normalize(8), flexDirection: 'row'
-                    }}>
-
-                        <TouchableOpacity onPress={() => { onPress() }}>
-                            <Image source={{ uri: props.playingSongRef.song_pic }}
-                                style={{ height: normalize(25), width: normalize(25) }} />
-                        </TouchableOpacity>
-
-                        <View style={{
-                            flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center',
-                            position: 'absolute', left: 50, width: '70%'
-                        }}>
-
-                            <Text style={{
-                                color: Colors.white, fontSize: normalise(11),
-                                fontFamily: 'ProximaNova-Semibold',
-                                width: '100%',
-                            }} numberOfLines={1}>{props.playingSongRef.song_name}</Text>
-
-                            <Text style={{
-                                color: Colors.grey_text, fontSize: normalise(10),
-                                fontFamily: 'ProximaNovaAW07-Medium', width: '100%',
-                            }} numberOfLines={1}>{props.playingSongRef.album_name}</Text>
-                        </View>
-
-                        <TouchableOpacity onPress={() => { playOrPause(), onPressPlayOrPause() }}>
-                            <Image source={play ? ImagePath.pause : ImagePath.play}
-                                style={{ height: normalize(25), width: normalize(25) }}
-                                resizeMode={'contain'} />
-                        </TouchableOpacity>
-
-                    </View>
-                </TouchableOpacity>
-            </View> : null
-    )
-
-};
-
+                  color: Colors.white,
+                  fontSize: normalise(11),
+                  fontFamily: 'ProximaNova-Semibold',
+                  width: '100%',
+                }}
+                numberOfLines={1}>
+                {props.playingSongRef.song_name}
+              </Text>
+              <Text
+                style={{
+                  color: Colors.grey_text,
+                  fontSize: normalise(10),
+                  fontFamily: 'ProximaNovaAW07-Medium',
+                  width: '100%',
+                }}
+                numberOfLines={1}>
+                {props.playingSongRef.artist}
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              playOrPause(), onPressPlayOrPause();
+            }}>
+            <Image
+              source={
+                ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+              }
+              style={{ height: normalise(25), width: normalise(25) }}
+              resizeMode={'contain'}
+            />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </View>
+  ) : null;
+}
 
 MusicPlayerBar.propTypes = {
-    onPress: propTypes.func,
-    onPressPlayOrPause: propTypes.func
+  onPress: propTypes.func,
+  onPressPlayOrPause: propTypes.func,
 };
 
 MusicPlayerBar.defaultProps = {
-    onPress: null,
-    onPressPlayOrPause: null
+  onPress: null,
+  onPressPlayOrPause: null,
 };
 
-const mapStateToProps = (state) => {
-    return {
-        playingSongRef: state.SongReducer.playingSongRef
-    }
+const mapStateToProps = state => {
+  return {
+    playingSongRef: state.SongReducer.playingSongRef,
+  };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-
-    }
+const mapDispatchToProps = dispatch => {
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MusicPlayerBar);

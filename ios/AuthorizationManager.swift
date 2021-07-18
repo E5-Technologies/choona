@@ -237,7 +237,11 @@ class AuthorizationManager: NSObject {
             if #available(iOS 11.0, *) {
                 cloudServiceController.requestUserToken(forDeveloperToken: developerToken, completionHandler: completionHandler)
             } else {
+              if #available(iOS 10.3, *) {
                 cloudServiceController.requestPersonalizationToken(forClientToken: developerToken, withCompletionHandler: completionHandler)
+              } else {
+                // Fallback on earlier versions
+              }
             }
         }
     }

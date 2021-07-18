@@ -1,138 +1,184 @@
-import React, { useEffect, Fragment, useState } from 'react';
-import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    StatusBar,
-    TouchableOpacity,
-    Image
-} from 'react-native';
-import normalise from '../../../utils/helpers/Dimens';
-import Colors from '../../../assests/Colors';
-import ImagePath from '../../../assests/ImagePath';
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import PropTypes from 'prop-types';
 
+import ImagePath from '../../../assests/ImagePath';
+import normaliseNew from '../../../utils/helpers/DimensNew';
+import Colors from '../../../assests/Colors';
 
 function ActivityListItem(props) {
+  const [follow, setFollow] = useState(props.follow);
 
-    const [follow, setFollow] = useState(props.follow)
-
-    const onPress = () => {
-        if (props.onPress) {
-            props.onPress()
-        }
+  const onPress = () => {
+    if (props.onPress) {
+      props.onPress();
     }
+  };
 
-    const onPressImage = () => {
-        if (props.onPressImage) {
-            props.onPressImage()
-        }
-    };
+  const onPressImage = () => {
+    if (props.onPressImage) {
+      props.onPressImage();
+    }
+  };
 
-    return (
-
-        <View style={{
-            width: '90%',
-            alignSelf: 'center',
-            marginTop: props.marginTop,
-            marginBottom: props.marginBottom,
-        }}>
-
-            <View style={{
-                flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'space-between', marginTop: normalise(10),
-                marginBottom: normalise(10),
+  return (
+    <View style={styles.container}>
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailsInfo}>
+          <TouchableOpacity
+            onPress={() => {
+              onPressImage();
             }}>
-
-                <TouchableOpacity
-                    onPress={() => { onPressImage() }}>
-                    <Image source={props.image === "" ? ImagePath.dp : { uri: props.image }}
-                        style={{ height: normalise(35), width: normalise(35), borderRadius: normalise(35) }}
-                        resizeMode="contain" />
-                </TouchableOpacity>
-
-                <TouchableOpacity disabled={props.TouchableOpacityDisabled}
-                    style={{ width: props.type ? '50%' : '70%' }}
-                    onPress={() => { onPressImage() }}>
-                    <Text style={{
-                        color: Colors.white, fontSize: normalise(11),
-                        width: '90%',
-                        fontFamily: 'ProximaNova-Regular', fontWeight: 'bold',
-                        marginRight: props.type ? normalise(10) : 0,
-                        textAlign: 'left'
-                    }} numberOfLines={2}>{props.title}</Text>
-                </TouchableOpacity>
-
-                {props.type ?
-                    <TouchableOpacity
-                        style={{
-                            height: normalise(25), width: normalise(80),
-                            borderRadius: normalise(12),
-                            backgroundColor: follow ? Colors.white : Colors.fadeblack,
-                            justifyContent: 'center', alignItems: 'center',
-                        }} onPress={() => { onPress(), setFollow(!follow) }} >
-
-                        {follow ?
-                            <Text style={{
-                                color: Colors.black,
-                                fontWeight: 'bold',
-                                fontFamily: 'ProximaNova-Regular',
-                                fontSize: normalise(10)
-                            }}>FOLLOW</Text> :
-                            <Text style={{
-                                color: Colors.white,
-                                fontWeight: 'bold',
-                                fontFamily: 'ProximaNova-Regular',
-                                fontSize: normalise(10)
-                            }}>FOLLOWING</Text>}
-                    </TouchableOpacity>
-
-                    :
-                    <TouchableOpacity onPress={() => { onPress() }}>
-                        <Image source={props.image2 === "" ? ImagePath.dp2 : { uri: props.image2 }}
-                            style={{ height: normalise(35), width: normalise(35) }}
-                            resizeMode='contain' />
-                    </TouchableOpacity>}
-            </View>
-
-
-            {props.bottom ? null :
-                <View style={{
-                    borderBottomWidth: 0.5,
-                    borderBottomColor: Colors.activityBorderColor
-                }} />
-            }
-
-
+            <Image
+              source={props.image === '' ? ImagePath.dp : { uri: props.image }}
+              style={styles.detailsAvatar}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            disabled={props.TouchableOpacityDisabled}
+            onPress={() => {
+              onPressImage();
+            }}>
+            <Text style={styles.detailsText} numberOfLines={2}>
+              {props.title ? (
+                <>
+                  <Text style={styles.detailsTextBold}>{props.user} </Text>
+                  {props.title}
+                </>
+              ) : props.reaction ? (
+                <>
+                  <Text style={styles.detailsTextBold}>{props.user} </Text>
+                  reacted {props.reaction} on your post
+                </>
+              ) : props.comment ? (
+                <>
+                  <Text style={styles.detailsTextBold}>{props.user} </Text>
+                  commented "{props.comment}" on your post
+                </>
+              ) : props.user ? (
+                <Text style={styles.detailsTextBold}>{props.user}</Text>
+              ) : (
+                ''
+              )}
+            </Text>
+          </TouchableOpacity>
         </View>
-    )
+        {props.type ? (
+          props.userId !== props.loginUserId ? (
+            <TouchableOpacity
+              style={[
+                styles.followButton,
+                { backgroundColor: follow ? Colors.white : Colors.fadeblack },
+              ]}
+              onPress={() => {
+                onPress();
+                setFollow(!follow);
+              }}>
+              {follow ? (
+                <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
+              ) : (
+                <Text
+                  style={[styles.followButtonText, { color: Colors.white }]}>
+                  FOLLOWING
+                </Text>
+              )}
+            </TouchableOpacity>
+          ) : null
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              onPress();
+            }}>
+            <Image
+              source={
+                props.image2 === '' ? ImagePath.dp2 : { uri: props.image2 }
+              }
+              style={{ height: normaliseNew(35), width: normaliseNew(35) }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
 }
 
 export default ActivityListItem;
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginHorizontal: normaliseNew(16),
+    paddingVertical: normaliseNew(16),
+  },
+  detailsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  detailsInfo: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    marginRight: normaliseNew(8),
+  },
+  detailsAvatar: {
+    borderRadius: normaliseNew(16),
+    height: normaliseNew(32),
+    marginRight: normaliseNew(8),
+    width: normaliseNew(32),
+  },
+  detailsText: {
+    color: Colors.white,
+    flexWrap: 'wrap',
+    fontSize: normaliseNew(12),
+    lineHeight: normaliseNew(15),
+    textAlign: 'left',
+  },
+  detailsTextBold: {
+    fontFamily: 'ProximaNova-Bold',
+  },
+  followButton: {
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: normaliseNew(16),
+    height: normaliseNew(32),
+    justifyContent: 'center',
+    width: normaliseNew(90),
+  },
+  followButtonText: {
+    color: Colors.black,
+    fontFamily: 'ProximaNova-Bold',
+    fontSize: normaliseNew(10),
+  },
+});
+
 ActivityListItem.propTypes = {
-    image: PropTypes.string,
-    image2: PropTypes.string,
-    title: PropTypes.string,
-    onPress: PropTypes.func,
-    type: PropTypes.bool,
-    follow: PropTypes.bool,
-    marginBottom: PropTypes.number,
-    onPressImage: PropTypes.bool,
-    marginTop: PropTypes.number,
-    TouchableOpacityDisabled: PropTypes.bool
+  image: PropTypes.string,
+  image2: PropTypes.string,
+  title: PropTypes.string,
+  onPress: PropTypes.func,
+  type: PropTypes.bool,
+  follow: PropTypes.bool,
+  marginBottom: PropTypes.number,
+  onPressImage: PropTypes.bool,
+  marginTop: PropTypes.number,
+  TouchableOpacityDisabled: PropTypes.bool,
 };
 
 ActivityListItem.defaultProps = {
-    image: "",
-    image2: "",
-    title: "",
-    onPress: null,
-    type: true,
-    marginBottom: 0,
-    onPressImage: null,
-    marginTop: 0,
-    TouchableOpacityDisabled: true
-}
+  image: '',
+  image2: '',
+  title: '',
+  onPress: null,
+  type: true,
+  marginBottom: 0,
+  onPressImage: null,
+  marginTop: 0,
+  TouchableOpacityDisabled: true,
+  userId: '',
+  loginUserId: '',
+};
