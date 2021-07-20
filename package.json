@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "postinstall": "npx jetify && npx pod-install",
     "clean": "react-native-clean-project",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest ios"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^1.0.0",
