@@ -90,11 +90,7 @@ function Login(props) {
   //     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
   const [username, setUsername] = useState('');
 
-  const [fullname, setFullname] = useState(
-    props.route.params.loginType === 'Spotify'
-      ? ''
-      : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`,
-  );
+  const [fullname, setFullname] = useState('');
 
   const [phoneNumber, setPhoneNumber] = useState('');
 
