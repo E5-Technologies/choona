@@ -8,6 +8,7 @@ import {
   Dimensions,
   AppState,
 } from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
 
 import { NavigationContainer } from '@react-navigation/native';
 import {
@@ -320,7 +321,7 @@ const App = () => {
     return <Splash />;
   } else {
     return (
-      <NavigationContainer>
+      <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
         {TokenReducer.token === null ? (
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
