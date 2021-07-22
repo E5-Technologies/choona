@@ -29,6 +29,7 @@ import {
   EDIT_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
 import {
+  getProfileRequest,
   featuredSongSearchReq,
   editProfileRequest,
 } from '../../action/UserAction';
@@ -43,6 +44,7 @@ function FeaturedTrack(props) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
   const [spotifyUrl, setSpotifyUrl] = useState('');
+  console.log(status);
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
@@ -66,6 +68,7 @@ function FeaturedTrack(props) {
 
       case EDIT_PROFILE_SUCCESS:
         status = props.status;
+        props.getProfileReq();
         props.navigation.goBack();
         break;
 
@@ -356,7 +359,6 @@ function FeaturedTrack(props) {
               </TouchableOpacity>
             )}
           </View>
-
           {_.isEmpty(data) ? null : (
             <View
               style={{
@@ -383,7 +385,6 @@ function FeaturedTrack(props) {
                 }}>{` RESULTS (${props.featuredTrackResp.length})`}</Text>
             </View>
           )}
-
           {_.isEmpty(data) ? (
             <View
               style={{
@@ -395,7 +396,6 @@ function FeaturedTrack(props) {
                 source={ImagePath.searchicongrey}
                 style={{ height: normalise(35), width: normalise(35) }}
               />
-
               <Text
                 style={{
                   color: Colors.white,
@@ -436,10 +436,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    getProfileReq: () => {
+      dispatch(getProfileRequest());
+    },
     featuredSongSearchReq: text => {
       dispatch(featuredSongSearchReq(text));
     },
-
     editProfileReq: payload => {
       dispatch(editProfileRequest(payload));
     },

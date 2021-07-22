@@ -107,25 +107,20 @@ function HomeItemList(props) {
         songUri={props.songUri}
         title={props.title}
       />
-      <TouchableOpacity
-        onPress={() => {
-          onPressMusicbox();
-        }}>
-        <Image
-          source={
-            ImagePath
-              ? props.image === ''
-                ? ImagePath.profiletrack1
-                : { uri: props.image }
-              : null
-          }
-          style={{
-            aspectRatio: 1,
-            width: '100%',
-          }}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
+      <Image
+        source={
+          ImagePath
+            ? props.image === ''
+              ? ImagePath.profiletrack1
+              : { uri: props.image }
+            : null
+        }
+        style={{
+          aspectRatio: 1,
+          width: '100%',
+        }}
+        resizeMode="cover"
+      />
       <HomeListItemFooter
         commentCount={props.comment_count}
         numberOfLines={numberOfLines}

@@ -162,7 +162,7 @@ function SavedSongListItem(props) {
     }
   };
 
-  console.log(props.receiver_id + ',' + props.read + ',' + props.user_id);
+  // console.log(props.receiver_id + ',' + props.read + ',' + props.user_id);
 
   return (
     <TouchableOpacity

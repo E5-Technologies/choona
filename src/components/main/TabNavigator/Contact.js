@@ -305,7 +305,6 @@ function Contact(props) {
                 Copy Link
               </Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{
                 flexDirection: 'row',
@@ -911,11 +910,8 @@ function Contact(props) {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
-
       <Loader visible={bool} />
-
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -928,8 +924,7 @@ function Contact(props) {
             thirditemtext={true}
             texttwo={''}
           />
-
-          {_.isEmpty(props.savedSong) && noEmpty ? null : (
+          {allSaveSong.length !== 0 && (
             <View
               style={{
                 width: '92%',
@@ -958,7 +953,6 @@ function Contact(props) {
                   //  props.getSavedSongs(text);
                 }}
               />
-
               <Image
                 source={ImagePath ? ImagePath.searchicongrey : null}
                 style={{
@@ -969,7 +963,6 @@ function Contact(props) {
                 }}
                 resizeMode="contain"
               />
-
               {search === '' ? null : (
                 <TouchableOpacity
                   onPress={() => {
@@ -1001,8 +994,19 @@ function Contact(props) {
               )}
             </View>
           )}
-
-          {_.isEmpty(allSaveSong) && noEmpty ? (
+          {allSaveSong.length !== 0 ? (
+            <SwipeListView
+              data={allSaveSong}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={Seperator}
+              keyExtractor={(item, index, rowData) => {
+                index.toString();
+              }}
+              disableRightSwipe={true}
+              rightOpenValue={-75}
+            />
+          ) : (
             <EmptyComponent
               image={ImagePath ? ImagePath.emptySaveSong : null}
               text={
@@ -1010,54 +1014,9 @@ function Contact(props) {
               }
               title={'No Saved Songs'}
             />
-          ) : (
-            <SwipeListView
-              data={allSaveSong}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-              // renderHiddenItem={(rowData, rowMap) => (
-              //   <TouchableOpacity
-              //     style={{
-              //       backgroundColor: Colors.red,
-              //       flexDirection: 'column',
-              //       alignItems: 'center',
-              //       justifyContent: 'space-evenly',
-              //       height: normalise(39),
-              //       width: normalise(42),
-              //       marginTop: normalise(10),
-              //       position: 'absolute',
-              //       right: 21,
-              //     }}
-              //     onPress={() => {
-              //       props.unsaveSongReq(rowData.item._id);
-              //       rowMap[rowData.item.key].closeRow();
-              //     }}>
-              //     <Image
-              //       source={ImagePath.unsaved}
-              //       style={{height: normalise(15), width: normalise(15)}}
-              //       resizeMode="contain"
-              //     />
-              //     <Text
-              //       style={{
-              //         fontSize: normalise(8),
-              //         color: Colors.white,
-              //         fontWeight: 'bold',
-              //       }}>
-              //       UNSAVE
-              //     </Text>
-              //   </TouchableOpacity>
-              // )}
-              keyExtractor={(item, index, rowData) => {
-                index.toString();
-              }}
-              disableRightSwipe={true}
-              rightOpenValue={-75}
-            />
           )}
         </SafeAreaView>
       </TouchableWithoutFeedback>
-
       {renderModalMorePressed()}
       {renderAddToUsers()}
     </View>

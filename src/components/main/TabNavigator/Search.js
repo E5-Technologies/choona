@@ -219,7 +219,7 @@ function Search(props) {
   }
 
   if (userstatus === '' || props.userstatus !== userstatus) {
-    console.log('status' + props.userstatus);
+    // console.log('status' + props.userstatus);
     switch (props.userstatus) {
       case GET_USER_FROM_HOME_REQUEST:
         userstatus = props.userstatus;
@@ -1467,7 +1467,7 @@ function Search(props) {
             <View />
           )}
           {usersSearch ? ( //USERS VIEW
-            _.isEmpty(songData) ? (
+            songData.length === 0 ? (
               <EmptyComponent
                 buttonPress={() => {
                   setContactsLoading(true);
@@ -1516,7 +1516,7 @@ function Search(props) {
           ) : null}
 
           {songSearch ? ( //SONG VIEW
-            _.isEmpty(searchPostData) ? (
+            searchPostData.length === 0 ? (
               <EmptyComponent
                 image={ImagePath.emptySong}
                 text={
@@ -1560,9 +1560,9 @@ function Search(props) {
               </View>
             )
           ) : null}
-
+          {console.log({ genreSearch }, { top50 })}
           {genreSearch ? ( //Top Songs VIEW
-            _.isEmpty(!top50) ? (
+            top50.length === 0 ? (
               <EmptyComponent
                 image={ImagePath.emptyPost}
                 text={'No songs have been posted today.'}
