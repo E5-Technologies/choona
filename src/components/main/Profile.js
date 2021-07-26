@@ -59,6 +59,7 @@ function Profile(props) {
   const [activity] = useState(props.route.params.fromAct);
   const [nonempty, setNonEmpty] = useState(false);
 
+  console.log(modaltandcs, modalPrivacy);
   const [pageId, setPageId] = useState(1);
 
   const [profilePosts, setProfilePosts] = useState([]);
@@ -184,7 +185,7 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'overFullScreen'}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {}}>
         <ImageBackground
           source={ImagePath ? ImagePath.page_gradient : null}
@@ -203,7 +204,6 @@ function Profile(props) {
                 Privacy Policy
               </Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
@@ -214,7 +214,6 @@ function Profile(props) {
                 Terms of Usage
               </Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{ marginTop: normalise(18) }}
               onPress={() => {
@@ -226,7 +225,7 @@ function Profile(props) {
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
                 }}>
-                Terms & Conditions
+                Terms &amp; Conditions
               </Text>
             </TouchableOpacity>
 
@@ -304,9 +303,9 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent={false}
         visible={modalPrivacy}
-        presentationStyle={'overFullScreen'}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           setModalPrivacy(false);
         }}>
@@ -324,10 +323,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView
-            source={{ uri: 'https://www.choona.co/privacy' }}
-            // style={{ marginTop: 20 }}
-          />
+          <WebView source={{ uri: 'https://www.choona.co/privacy' }} />
         </View>
       </Modal>
     );
@@ -337,9 +333,9 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent={false}
         visible={modaltandcs}
-        presentationStyle={'overFullScreen'}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           setModaltandcs(false);
         }}>
@@ -357,10 +353,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView
-            source={{ uri: 'https://www.choona.co/tandcs' }}
-            // style={{ marginTop: 20 }}
-          />
+          <WebView source={{ uri: 'https://www.choona.co/tandcs' }} />
         </View>
       </Modal>
     );

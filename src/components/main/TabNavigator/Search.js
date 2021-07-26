@@ -524,8 +524,6 @@ function Search(props) {
       text_match: myReaction,
     };
 
-    console.log('totalReact' + totalReact);
-
     searchPostData.map((item, index) => {
       if (id === item._id) {
         if (myReaction === 'A') {
@@ -1560,7 +1558,6 @@ function Search(props) {
               </View>
             )
           ) : null}
-          {console.log({ genreSearch }, { top50 })}
           {genreSearch ? ( //Top Songs VIEW
             top50.length === 0 ? (
               <EmptyComponent

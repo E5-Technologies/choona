@@ -1448,7 +1448,7 @@ function Home(props) {
 
             <Modal
               animationType="fade"
-              transparent={false}
+              transparent={true}
               visible={visible}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");

@@ -21,7 +21,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="choona-splash-bg" translatesAutoresizingMaskIntoConstraints="NO" id="wwn-zH-X19">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="choona-splash-logo" translatesAutoresizingMaskIntoConstraints="NO" id="wwn-zH-X19">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                         </subviews>
@@ -44,6 +44,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="choona-splash-bg" width="375" height="812"/>
+        <image name="choona-splash-logo" width="128" height="128"/>
     </resources>
 </document>
