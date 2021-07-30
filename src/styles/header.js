@@ -52,6 +52,7 @@ const HeaderStyles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Bold',
     fontSize: normalise(15),
+    textTransform: 'capitalize',
   },
   leftItem: {
     left: normalise(16),

@@ -36,9 +36,22 @@ function HomeHeaderComponent(props) {
           <Text style={HeaderStyles.headerItemText}>{props.textone}</Text>
         </TouchableOpacity>
       ) : (
-        <View style={HeaderStyles.leftItem}>
+        <View
+          style={{
+            left: normalise(8),
+            position: 'absolute',
+            top: normalise(1),
+          }}>
           <TouchableOpacity
-            style={HeaderStyles.leftItemInner}
+            style={{
+              left: normalise(0),
+              position: 'absolute',
+              height: normalise(42),
+              width: normalise(42),
+              top: normalise(0),
+              paddingTop: normalise(8),
+              paddingLeft: normalise(8),
+            }}
             onPress={() => {
               onPressFirstItem();
             }}>
@@ -51,7 +64,7 @@ function HomeHeaderComponent(props) {
                 width: normalise(26),
                 // borderRadius: props.borderRadius,
                 borderRadius: normalise(60),
-                marginTop: normalise(-11),
+                // marginTop: normalise(-11),
               }}
               resizeMode="contain"
             />

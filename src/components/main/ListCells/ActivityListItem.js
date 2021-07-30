@@ -52,7 +52,8 @@ function ActivityListItem(props) {
                   <Text style={styles.detailsTextBold}>{props.user} </Text>
                   reacted {props.reaction} on your post
                 </>
-              ) : props.comment.includes('mentioned you in comment') ? (
+              ) : props.comment &&
+                props.comment.includes('mentioned you in comment') ? (
                 <>
                   <Text style={styles.detailsTextBold}>{props.user} </Text>
                   mentioned you in a post
