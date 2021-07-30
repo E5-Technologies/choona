@@ -37,12 +37,14 @@ const HomeListItemHeader = ({
         </View>
       </View>
       {songUri && (
-        <TouchableOpacity onPress={() => onPressMusicbox()}>
+        <TouchableOpacity
+          onPress={() => onPressMusicbox()}
+          style={styles.listItemHeaderPlayButton}>
           <Image
             source={
               ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
             }
-            style={styles.listItemHeaderPlayButton}
+            style={styles.listItemHeaderPlay}
             resizeMode="contain"
           />
         </TouchableOpacity>
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: normalise(12),
     paddingVertical: normalise(12),
+    position: 'relative',
   },
   listItemHeaderSongDetails: {
     alignItems: 'center',
@@ -87,5 +90,14 @@ const styles = StyleSheet.create({
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(9),
   },
-  listItemHeaderPlayButton: { height: normalise(24), width: normalise(24) },
+  listItemHeaderPlayButton: {
+    height: normalise(36),
+    paddingLeft: normalise(6),
+    paddingTop: normalise(6),
+    position: 'absolute',
+    right: normalise(6),
+    top: normalise(6),
+    width: normalise(36),
+  },
+  listItemHeaderPlay: { height: normalise(24), width: normalise(24) },
 });

@@ -161,12 +161,21 @@ function MusicPlayerBar(props) {
           <TouchableOpacity
             onPress={() => {
               playOrPause(), onPressPlayOrPause();
+            }}
+            style={{
+              height: normalise(44),
+              paddingLeft: normalise(10),
+              paddingTop: normalise(10),
+              position: 'absolute',
+              right: normalise(0),
+              top: normalise(0),
+              width: normalise(44),
             }}>
             <Image
               source={
                 ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
               }
-              style={{ height: normalise(25), width: normalise(25) }}
+              style={{ height: normalise(24), width: normalise(24) }}
               resizeMode={'contain'}
             />
           </TouchableOpacity>
