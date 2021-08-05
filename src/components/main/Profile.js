@@ -185,7 +185,7 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'pageSheet'}
+        presentationStyle={'overFullScreen'}
         onRequestClose={() => {}}>
         <ImageBackground
           source={ImagePath ? ImagePath.page_gradient : null}
@@ -193,6 +193,7 @@ function Profile(props) {
           <View style={styles.modalView}>
             <TouchableOpacity
               onPress={() => {
+                setModalVisible(!modalVisible);
                 setModalPrivacy(true);
               }}>
               <Text
@@ -204,7 +205,12 @@ function Profile(props) {
                 Privacy Policy
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ marginTop: normalise(18) }}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                setModaltandcs(true);
+              }}
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -217,6 +223,8 @@ function Profile(props) {
             <TouchableOpacity
               style={{ marginTop: normalise(18) }}
               onPress={() => {
+                // console.log('tandcs');
+                setModalVisible(!modalVisible);
                 setModaltandcs(true);
               }}>
               <Text
@@ -228,7 +236,6 @@ function Profile(props) {
                 Terms &amp; Conditions
               </Text>
             </TouchableOpacity>
-
             {/* <TouchableOpacity
                             style={{ marginTop: normalise(18) }}>
                             <Text style={{
@@ -310,9 +317,9 @@ function Profile(props) {
           setModalPrivacy(false);
         }}>
         <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
-          <View style={{ marginTop: '5%' }}>
+          <View style={{ marginTop: '10%' }}>
             <TouchableOpacity
-              style={{ marginLeft: normalise(10) }}
+              style={{ marginLeft: normalise(15), top: normalise(-15) }}
               onPress={() => {
                 setModalPrivacy(false);
               }}>
@@ -323,7 +330,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.co/privacy' }} />
+          <WebView source={{ uri: 'https://www.choona.co' }} />
         </View>
       </Modal>
     );
@@ -340,9 +347,9 @@ function Profile(props) {
           setModaltandcs(false);
         }}>
         <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
-          <View style={{ marginTop: '5%' }}>
+          <View style={{ marginTop: '10%' }}>
             <TouchableOpacity
-              style={{ marginLeft: normalise(10) }}
+              style={{ marginLeft: normalise(15), top: normalise(-15) }}
               onPress={() => {
                 setModaltandcs(false);
               }}>
@@ -353,7 +360,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.co/tandcs' }} />
+          <WebView source={{ uri: 'https://www.choona.co' }} />
         </View>
       </Modal>
     );
