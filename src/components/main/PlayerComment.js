@@ -585,6 +585,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: normaliseNew(13),
     fontFamily: 'ProximaNova-Semibold',
+    textTransform: 'lowercase',
   },
   commentHeaderInfoTime: {
     color: Colors.grey_text,

@@ -394,6 +394,7 @@ function HomeItemComments(props) {
                         fontSize: 11,
                         color: 'grey',
                         marginBottom: '5%',
+                        textTransform: 'lowercase',
                       }}>
                       @{item.username}
                     </Text>
@@ -731,6 +732,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: normaliseNew(13),
     fontFamily: 'ProximaNova-Semibold',
+    textTransform: 'lowercase',
   },
   commentHeaderInfoTime: {
     color: Colors.grey_text,

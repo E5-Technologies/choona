@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: 14,
+    textTransform: 'lowercase',
     top: normalise(-2),
   },
   listItemFooterDate: {

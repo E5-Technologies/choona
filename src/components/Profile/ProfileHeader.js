@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     fontSize: normalise(12),
     fontFamily: 'ProximaNova-Regular',
     marginBottom: normalise(2),
+    textTransform: 'lowercase',
   },
   profileHeaderDetailsSubText: {
     color: Colors.darkgrey,

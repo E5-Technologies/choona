@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: normaliseNew(13),
+    textTransform: 'lowercase',
   },
   commentTime: {
     color: Colors.grey_text,

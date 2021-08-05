@@ -813,6 +813,7 @@ function Home(props) {
                 color: Colors.white,
                 fontSize: 14,
                 fontFamily: 'ProximaNova-Semibold',
+                textTransform: 'lowercase',
               }}>
               {data.item.username}
             </Text>
@@ -838,7 +839,12 @@ function Home(props) {
           marginEnd:
             data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
         }}>
-        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
+        <Text
+          style={{
+            color: Colors.black,
+            fontWeight: 'bold',
+            textTransform: 'lowercase',
+          }}>
           {data.item.username}
         </Text>
         <TouchableOpacity

@@ -136,6 +136,7 @@ function SendSongInMessageFinal(props) {
                 color: Colors.white,
                 fontSize: 14,
                 fontFamily: 'ProximaNova-Semibold',
+                textTransform: 'lowercase',
               }}>
               {data.item.username}
             </Text>

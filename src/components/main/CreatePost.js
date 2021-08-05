@@ -481,6 +481,7 @@ function AddSong(props) {
                                 fontSize: 11,
                                 color: 'grey',
                                 marginBottom: '5%',
+                                textTransform: 'lowercase',
                               }}>
                               @{item.username}
                             </Text>
