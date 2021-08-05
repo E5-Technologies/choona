@@ -207,7 +207,11 @@ function Search(props) {
 
       case TOP_50_SONGS_SUCCESS:
         top50Status = props.top50SongsStatus;
-        setTop50(props.top50SongsResponse);
+        setTop50(
+          props.top50SongsResponse
+            .sort((a, b) => (a.date < b.date ? 1 : -1))
+            .sort((a, b) => (a.count < b.count ? 1 : -1)),
+        );
 
         break;
 
@@ -217,6 +221,8 @@ function Search(props) {
         break;
     }
   }
+
+  console.log(top50);
 
   if (userstatus === '' || props.userstatus !== userstatus) {
     // console.log('status' + props.userstatus);
