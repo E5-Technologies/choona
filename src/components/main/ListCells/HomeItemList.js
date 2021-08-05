@@ -77,6 +77,7 @@ function HomeItemList(props) {
       return (
         <Text
           key={text}
+          style={{ color: '#3DB2EB' }}
           onPress={() => {
             props.navi.navigation.navigate('OthersProfile', {
               id: text.substr(1, text.length - 1),
