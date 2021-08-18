@@ -85,12 +85,25 @@ function Login(props) {
   }, []);
 
   // const dispatch = useDispatch()
+  const [username, setUsername] = useState(
+    props.route.params.loginType === 'Spotify'
+      ? props.route.params.userDetails.id
+      : props.route.params.userDetails.fullName.givenName,
+  );
 
-  // const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
-  //     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
-  const [username, setUsername] = useState('');
-
-  const [fullname, setFullname] = useState('');
+  const [fullname, setFullname] = useState(
+    props.route.params.loginType === 'Apple'
+      ? `${
+          props.route.params.userDetails?.fullName?.givenName
+            ? props.route.params.userDetails?.fullName?.givenName
+            : ''
+        } ${
+          props.route.params.userDetails?.fullName?.familyName
+            ? props.route.params.userDetails?.fullName?.familyName
+            : ''
+        }`
+      : props.route.params.userDetails?.display_name,
+  );
 
   const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -108,7 +121,7 @@ function Login(props) {
 
   const [userNameAvailable, setUserNameAvailable] = useState(true);
 
-  const [codePick, setCodePick] = useState('');
+  const [codePick, setCodePick] = useState(null);
   const [deviceToken, setDeviceToken] = useState('');
 
   // console.log('Location', location);
@@ -396,7 +409,6 @@ function Login(props) {
               setFullname(text);
             }}
           />
-          {/* {console.log(props.countryCodeRequest, props.countryObject)} */}
 
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -407,9 +419,7 @@ function Login(props) {
                 emptySelectText="Select"
                 editable={true}
                 data={props.countryCodeRequest}
-                selectedValue={
-                  codePick === '' ? props.countryCodeRequest[0] : codePick
-                }
+                selectedValue={codePick}
                 onPickerItemSelected={(selectedvalue, index) => {
                   var result = props.countryObject.find(obj => {
                     // console.log({ obj }, { selectedvalue });

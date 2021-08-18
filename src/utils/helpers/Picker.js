@@ -21,7 +21,7 @@ function NewPicker(props) {
   );
   const [selValue, setSelValue] = useState(props.selectedValue);
 
-  function getSelectedValue() {
+  function getSelectedValue(i) {
     for (i === 0; i < props.data.length; i++) {
       if (props.valueParam !== '') {
         if (props.data[i][props.valueParam] === props.selectedValue) {
