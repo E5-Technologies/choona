@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -12,7 +12,9 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
 } from 'react-native';
+
 import normalise from '../../../utils/helpers/Dimens';
+import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
@@ -31,13 +33,17 @@ import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
+import axios from 'axios';
+
 let status;
 
 function AddSong(props) {
   const inputRef = React.useRef(null);
-
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(0);
 
   let post = true;
@@ -170,6 +176,54 @@ function AddSong(props) {
     );
   }
 
+  useEffect(() => {
+    const callApi = async () => {
+      if (props.registerType === 'spotify') {
+        const spotifyToken = await getSpotifyToken();
+        return await axios.get(
+          'https://api.spotify.com/v1/me/player/recently-played',
+          {
+            headers: {
+              Authorization: spotifyToken,
+            },
+          },
+        );
+      } else {
+        const AppleToken = await getAppleDevToken();
+        return await axios.get(
+          'https://api.music.apple.com/v1/me/recent/played/tracks',
+          {
+            headers: {
+              Authorization: AppleToken,
+            },
+          },
+        );
+      }
+    };
+
+    const openInAppleORSpotify = async () => {
+      try {
+        const res = await callApi();
+
+        if (res.status === 200) {
+          const array = [];
+          res.data.items.map(item => array.push(item.track));
+          setRecentlyPlayed(array);
+        } else {
+          toast('Oops', 'Something Went Wrong');
+        }
+      } catch (error) {}
+    };
+
+    isInternetConnected()
+      .then(() => {
+        openInAppleORSpotify();
+      })
+      .catch(() => {
+        toast('', 'Please Connect To Internet');
+      });
+  }, [props.registerType]);
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar />
@@ -188,7 +242,6 @@ function AddSong(props) {
             thirditemtext={true}
             texttwo={''}
           />
-
           <View
             style={{
               width: '92%',
@@ -207,7 +260,7 @@ function AddSong(props) {
                 paddingLeft: normalise(30),
               }}
               value={search}
-              placeholder={'Search'}
+              placeholder={'Search a new song'}
               ref={inputRef}
               returnKeyType={'done'}
               keyboardAppearance={'dark'}
@@ -226,6 +279,8 @@ function AddSong(props) {
                     .catch(() => {
                       toast('Error', 'Please Connect To Internet');
                     });
+                } else if (text.length === 0) {
+                  setSearch(null);
                 }
               }}
             />
@@ -268,17 +323,38 @@ function AddSong(props) {
               </TouchableOpacity>
             )}
           </View>
-
-          {_.isEmpty(data) ? null : (
+          {_.isEmpty(data) || search === null || search === '' ? (
             <View
               style={{
                 flexDirection: 'row',
+                width: '100%',
+                height: normaliseNew(40),
                 alignItems: 'center',
-                width: '90%',
-                alignSelf: 'center',
-                marginTop: normalise(5),
+                backgroundColor: Colors.darkerblack,
               }}>
-              <Image
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normaliseNew(10),
+                  marginLeft: normaliseNew(16),
+                  fontFamily: 'ProximaNova-Bold',
+                }}>
+                YOUR RECENTLY PLAYED ON{' '}
+                {props.registerType === 'spotify' ? 'SPOTIFY' : 'APPLE MUSIC'}
+              </Text>
+            </View>
+          ) : (
+            <View
+              style={
+                {
+                  // flexDirection: 'row',
+                  // alignItems: 'center',
+                  // width: '90%',
+                  // alignSelf: 'center',
+                  // marginTop: normalise(5),
+                }
+              }>
+              {/* <Image
                 source={
                   props.registerType === 'spotify'
                     ? ImagePath.spotifyicon
@@ -292,65 +368,76 @@ function AddSong(props) {
                   fontSize: normalise(12),
                   marginLeft: normalise(10),
                   fontWeight: 'bold',
-                }}>{` RESULTS (${props.spotifyResponse.length})`}</Text>
+                }}>{` RESULTS (${props.spotifyResponse.length})`}</Text> */}
             </View>
           )}
-
-          {_.isEmpty(data) ? (
-            <KeyboardAvoidingView
-              enabled={false}
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <View
+          {_.isEmpty(data) || search === null || search === '' ? (
+            _.isEmpty(recentlyPlayed) ? (
+              <KeyboardAvoidingView
+                enabled={false}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Image
-                  source={ImagePath.searchicongrey}
-                  style={{ height: normalise(35), width: normalise(35) }}
-                />
-                <Text
+                <View
                   style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(20),
-                    width: '60%',
-                    textAlign: 'center',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  Search for the song you want to{' '}
-                </Text>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    width: '60%',
-                  }}>
-                  share above.
-                </Text>
-                <Image
-                  source={ImagePath.addPostIllus}
-                  resizeMode="contain"
-                  style={{
-                    height: undefined,
-                    width: '100%',
-                    aspectRatio: 1125 / 712,
-                    position: 'absolute',
-                    bottom: -80,
-                  }}
-                />
-              </View>
-            </KeyboardAvoidingView>
+                  <Image
+                    source={ImagePath.searchicongrey}
+                    style={{ height: normalise(35), width: normalise(35) }}
+                  />
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(12),
+                      fontWeight: 'bold',
+                      marginTop: normalise(20),
+                      width: '60%',
+                      textAlign: 'center',
+                    }}>
+                    Search for the song you want to{' '}
+                  </Text>
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(12),
+                      fontWeight: 'bold',
+                      width: '60%',
+                    }}>
+                    share above.
+                  </Text>
+                  <Image
+                    source={ImagePath.addPostIllus}
+                    resizeMode="contain"
+                    style={{
+                      height: undefined,
+                      width: '100%',
+                      aspectRatio: 1125 / 712,
+                      position: 'absolute',
+                      bottom: -80,
+                    }}
+                  />
+                </View>
+              </KeyboardAvoidingView>
+            ) : (
+              <FlatList
+                data={recentlyPlayed}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => {
+                  index.toString();
+                }}
+                ItemSeparatorComponent={Seperator}
+                showsVerticalScrollIndicator={false}
+              />
+            )
           ) : (
             <FlatList
-              style={{ marginTop: normalise(10) }}
+              // style={{ marginTop: normalise(10) }}
               data={data}
               renderItem={renderItem}
               keyExtractor={(item, index) => {
