@@ -333,59 +333,18 @@ function EditProfile(props) {
               marginTop={normalise(20)}
             />
 
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              {loading ? null : (
-                <View>
-                  <Picker
-                    textColor={Colors.white}
-                    textSize={normalise(9)}
-                    emptySelectText="Select"
-                    editable={true}
-                    data={props.countryCodeRequest}
-                    selectedValue={
-                      codePick === '' ? props.countryCodeRequest[0] : codePick
-                    }
-                    onPickerItemSelected={(selectedvalue, index) => {
-                      //// console.log(index)
-                      setLocation(props.countryObject[index].name);
-                      // // console.log(props.countryObject[index].name)
-                      setCodePick(selectedvalue);
-                    }}
-                  />
-                </View>
-              )}
-
-              <TextInputField
-                placeholder={'Enter Phone number'}
-                placeholderTextColor={Colors.grey}
-                maxLength={15}
-                width={normalise(200)}
-                isNumber={true}
-                value={phoneNumber}
-                onChangeText={text => {
-                  setPhoneNumber(text);
-                }}
-              />
-
-              <Text
-                style={{
-                  position: 'absolute',
-                  fontSize: normalise(12),
-                  top: 20,
-                  color: Colors.white,
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                PHONE NUMBER
-              </Text>
-            </View>
-
-            {/* <TextInputField text={"ENTER LOCATION"}
-                            placeholder={"Type Location"}
-                            value={location}
-                            placeholderTextColor={Colors.grey}
-                            onChangeText={(text) => { setLocation(text) }}
-                            borderColor={location === "" ? Colors.grey : Colors.white} /> */}
+            <TextInputField
+              text={'PHONE NUMBER'}
+              placeholder={'Enter Phone number'}
+              placeholderTextColor={Colors.grey}
+              maxLength={15}
+              // width={normalise(250)}
+              isNumber={true}
+              value={phoneNumber}
+              onChangeText={text => {
+                setPhoneNumber(text);
+              }}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -93,15 +93,9 @@ function Login(props) {
 
   const [fullname, setFullname] = useState(
     props.route.params.loginType === 'Apple'
-      ? `${
-          props.route.params.userDetails?.fullName?.givenName
-            ? props.route.params.userDetails?.fullName?.givenName
-            : ''
-        } ${
-          props.route.params.userDetails?.fullName?.familyName
-            ? props.route.params.userDetails?.fullName?.familyName
-            : ''
-        }`
+      ? props.route.params.userDetails?.fullName?.givenName
+        ? `${props.route.params.userDetails?.fullName?.givenName} ${props.route.params.userDetails?.fullName?.familyName}`
+        : null
       : props.route.params.userDetails?.display_name,
   );
 
@@ -110,7 +104,6 @@ function Login(props) {
   const [imageDetails, setImageDetails] = useState({});
 
   const [location, setLocation] = useState('United Kingdom');
-  console.log(location);
 
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState('');
@@ -123,10 +116,6 @@ function Login(props) {
 
   const [codePick, setCodePick] = useState(null);
   const [deviceToken, setDeviceToken] = useState('');
-
-  // console.log('Location', location);
-
-  //// console.log('DETAILS' + JSON.stringify(userDetails))
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
@@ -405,6 +394,7 @@ function Login(props) {
             placeholderTextColor={Colors.grey}
             maxLength={25}
             value={fullname}
+            autoCapitalize
             onChangeText={text => {
               setFullname(text);
             }}
@@ -419,16 +409,15 @@ function Login(props) {
                 emptySelectText="Select"
                 editable={true}
                 data={props.countryCodeRequest}
-                selectedValue={codePick}
+                selectedValue={
+                  codePick === null ? props.countryCodeRequest[0] : codePick
+                }
                 onPickerItemSelected={(selectedvalue, index) => {
-                  var result = props.countryObject.find(obj => {
-                    // console.log({ obj }, { selectedvalue });
-                    return obj.dial_code === selectedvalue.substring(4);
-                  });
-                  setLocation(result.name);
+                  //// console.log(index)
+                  setLocation(props.countryObject[index].name);
+                  // // console.log(props.countryObject[index].name)
                   setCodePick(selectedvalue);
                 }}
-                //uniqueKey={"areaCode"}
               />
             </View>
 

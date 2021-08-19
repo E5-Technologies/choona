@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,24 +15,17 @@ import normalize from '../../utils/helpers/Dimens';
 function NewPicker(props) {
   const [showDropdown, manageShowDropdown] = useState(false);
   const [itemIndex, setItemIndex] = useState(0);
+  const [text, setText] = useState(undefined);
+  const [selValue, setSelValue] = useState(undefined);
 
-  const [text, setText] = useState(
-    props.selectedValue === '' ? props.emptySelectText : getSelectedValue(),
-  );
-  const [selValue, setSelValue] = useState(props.selectedValue);
-
-  function getSelectedValue(i) {
-    for (i === 0; i < props.data.length; i++) {
-      if (props.valueParam !== '') {
-        if (props.data[i][props.valueParam] === props.selectedValue) {
-          return props.data[i][props.itemParam];
-        }
-      } else {
-        return props.selectedValue;
-      }
+  useEffect(() => {
+    if (props.selectedValue === null) {
+      setText(props.emptySelectText);
+    } else {
+      setText(props.selectedValue);
+      setSelValue(props.selectedValue);
     }
-    return '';
-  }
+  }, [props.emptySelectText, props.selectedValue]);
 
   function toggleShowDropdown() {
     if (showDropdown) {
