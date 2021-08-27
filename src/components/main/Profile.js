@@ -330,7 +330,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.co' }} />
+          <WebView source={{ uri: 'https://www.choona.co/privacy' }} />
         </View>
       </Modal>
     );
@@ -360,7 +360,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.co' }} />
+          <WebView source={{ uri: 'https://www.choona.co/terms' }} />
         </View>
       </Modal>
     );
