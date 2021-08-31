@@ -197,7 +197,7 @@ function HomeItemReaction(props) {
     let ID = props.route.params.post_id;
     let Comment = reaction_count;
     let ReactionList = reactionList;
-    console.log('hhh', JSON.stringify(ReactionList));
+    // console.log('hhh', JSON.stringify(ReactionList));
     const { navigation, route } = props;
     route.params.onSelectReaction(ID, Comment, ReactionList);
     navigation.goBack();

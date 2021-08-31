@@ -20,7 +20,7 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
-import { loginRequest } from '../../action/UserAction';
+import { loginRequest, signupRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
@@ -32,6 +32,8 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
 import OneSignal from 'react-native-onesignal';
+import axios from 'axios';
+import constants from '../../utils/helpers/constants';
 
 let user = null;
 let status = '';
@@ -41,6 +43,7 @@ function SignUp(props) {
   const [userDetails, setUserDetails] = useState({});
   // const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
   const [loginType, setLoginType] = useState('');
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -57,10 +60,8 @@ function SignUp(props) {
   // }, []);
 
   function spotifyLogin() {
-    console.log(1);
     loginWithSpotify()
       .then(value => {
-        console.log(2, !_.isEmpty(value));
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
@@ -192,10 +193,52 @@ function SignUp(props) {
         status = props.status;
 
         if (props.error.status === 201) {
-          props.navigation.navigate('SignUp', {
-            userDetails: userDetails,
-            loginType: loginType,
-          });
+          if (loginType === 'Apple') {
+            let formdata = new FormData();
+            formdata.append(
+              'full_name',
+              `${userDetails.fullName.givenName} ${userDetails.fullName.familyName}`,
+            );
+            formdata.append('profile_image', '');
+            formdata.append('phone', '');
+            formdata.append('location', '');
+            formdata.append('email', userDetails.email);
+            formdata.append('deviceToken', token2);
+            formdata.append('deviceType', Platform.OS);
+            formdata.append('social_id', userDetails.user);
+            formdata.append('register_type', 'apple');
+
+            axios
+              .post(
+                constants.BASE_URL + '/user/available',
+                {
+                  username: `${userDetails.fullName.givenName}${userDetails.fullName.familyName}`,
+                },
+                {
+                  headers: {
+                    Accept: 'application/json',
+                    contenttype: 'application/json',
+                  },
+                },
+              )
+              .then(res => {
+                if (res.data.status === 200) {
+                  formdata.append(
+                    'username',
+                    `${userDetails.fullName.givenName}${userDetails.fullName.familyName}`,
+                  );
+                  props.signUpRequest(formdata);
+                } else {
+                  formdata.append('username', userDetails.nonce);
+                  props.signUpRequest(formdata);
+                }
+              });
+          } else {
+            props.navigation.navigate('SignUp', {
+              userDetails: userDetails,
+              loginType: loginType,
+            });
+          }
         } else {
           alert(props.error.message);
         }
@@ -293,6 +336,7 @@ function SignUp(props) {
             marginBottom: normalise(12),
           }}
           onPress={() => {
+            console.log(1);
             spotifyLogin();
             setLoginType('Spotify');
           }}>
@@ -340,6 +384,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    signUpRequest: payload => {
+      dispatch(signupRequest(payload));
+    },
     loginRequest: payload => {
       dispatch(loginRequest(payload));
     },

@@ -355,7 +355,7 @@ function Player(props) {
   function _onReaction(ID, reaction) {}
 
   function _onSelectBack(data, comment) {
-    console.log('aaa' + JSON.stringify(comment));
+    // console.log('aaa' + JSON.stringify(comment));
     setCommentData(data);
     setArrayLength(`${comment} ${comment > 1 ? '' : ''}`);
   }

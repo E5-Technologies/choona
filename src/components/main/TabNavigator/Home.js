@@ -1280,8 +1280,10 @@ function Home(props) {
           imageone={
             _.isEmpty(props.userProfileResp)
               ? ''
-              : constants.profile_picture_base_url +
+              : props.userProfileResp.profile_image
+              ? constants.profile_picture_base_url +
                 props.userProfileResp.profile_image
+              : null
           }
           staticFirstImage={false}
           imageoneheight={normalise(26)}

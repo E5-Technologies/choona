@@ -56,7 +56,11 @@ function HomeHeaderComponent(props) {
               onPressFirstItem();
             }}>
             <Image
-              source={props && props.imageone ? { uri: props.imageone } : null}
+              source={
+                props && props.imageone
+                  ? { uri: props.imageone }
+                  : ImagePath.userPlaceholder
+              }
               style={{
                 // height: props.imageoneheight,
                 // width: props.imageonewidth,

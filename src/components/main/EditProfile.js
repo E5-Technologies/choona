@@ -43,7 +43,9 @@ function EditProfile(props) {
   const [location, setLocation] = useState(props.userProfileResp.location);
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState(
-    constants.profile_picture_base_url + props.userProfileResp.profile_image,
+    props.userProfileResp.profile_image
+      ? constants.profile_picture_base_url + props.userProfileResp.profile_image
+      : null,
   );
   const [imageDetails, setImageDetails] = useState('');
   const [userNameAvailable, setUserNameAvailable] = useState(true);
@@ -269,15 +271,27 @@ function EditProfile(props) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Image
-              source={{ uri: profilePic }}
-              style={{
-                height: normalise(120),
-                width: normalise(120),
-                borderRadius: normalise(60),
-              }}
-              resizeMode="contain"
-            />
+            {profilePic ? (
+              <Image
+                source={{ uri: profilePic }}
+                style={{
+                  height: normalise(120),
+                  width: normalise(120),
+                  borderRadius: normalise(60),
+                }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={ImagePath.userPlaceholder}
+                style={{
+                  height: normalise(80),
+                  width: normalise(80),
+                  borderRadius: normalise(60),
+                }}
+                resizeMode="contain"
+              />
+            )}
           </View>
 
           <TouchableOpacity
