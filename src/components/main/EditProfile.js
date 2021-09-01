@@ -26,11 +26,7 @@ import {
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
-import {
-  getProfileRequest,
-  editProfileRequest,
-  getCountryCodeRequest,
-} from '../../action/UserAction';
+import { getProfileRequest, editProfileRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
 import Picker from '../../utils/helpers/Picker';
@@ -51,20 +47,6 @@ function EditProfile(props) {
   const [userNameAvailable, setUserNameAvailable] = useState(true);
   const [codePick, setCodePick] = useState('');
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getCountry();
-  }, []);
-
-  const getCountry = () => {
-    props.countryObject.map((item, index) => {
-      if (item.name === location) {
-        setCodePick(item.flag + item.dial_code);
-        // console.log(item.flag + item.dial_code);
-        setLoading(false);
-      }
-    });
-  };
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -267,7 +249,7 @@ function EditProfile(props) {
               borderRadius: normalise(60),
               backgroundColor: Colors.fadeblack,
               alignSelf: 'center',
-              marginTop: normalise(40),
+              marginTop: normalise(32),
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -285,8 +267,8 @@ function EditProfile(props) {
               <Image
                 source={ImagePath.userPlaceholder}
                 style={{
-                  height: normalise(80),
-                  width: normalise(80),
+                  height: normalise(70),
+                  width: normalise(70),
                   borderRadius: normalise(60),
                 }}
                 resizeMode="contain"
@@ -306,6 +288,7 @@ function EditProfile(props) {
                 alignSelf: 'center',
                 fontWeight: 'bold',
                 textDecorationLine: 'underline',
+                marginBottom: normalise(36),
               }}>
               CHANGE PROFILE PIC
             </Text>
@@ -315,14 +298,12 @@ function EditProfile(props) {
             style={{
               width: '90%',
               alignSelf: 'center',
-              marginBottom: normalise(30),
             }}>
             <TextInputField
               text={'CHOOSE USERNAME'}
+              backgroundColor={'#fff'}
               autocorrect={false}
               placeholder={'Enter Username'}
-              placeholderTextColor={Colors.grey}
-              marginTop={normalise(30)}
               tick_req={true}
               value={username}
               userNameAvailable={userNameAvailable}
@@ -337,7 +318,6 @@ function EditProfile(props) {
               placeholder={'Enter Name'}
               maxLength={25}
               value={fullname}
-              placeholderTextColor={Colors.grey}
               onChangeText={text => {
                 setFullname(text);
               }}
@@ -350,9 +330,7 @@ function EditProfile(props) {
             <TextInputField
               text={'PHONE NUMBER'}
               placeholder={'Enter Phone number'}
-              placeholderTextColor={Colors.grey}
               maxLength={15}
-              // width={normalise(250)}
               isNumber={true}
               value={phoneNumber}
               onChangeText={text => {
@@ -371,8 +349,6 @@ const mapStateToProps = state => {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     error: state.UserReducer.error,
-    countryCodeRequest: state.UserReducer.countryCodeRequest,
-    countryObject: state.UserReducer.countryCodeOject,
   };
 };
 
@@ -383,9 +359,6 @@ const mapDispatchToProps = dispatch => {
     },
     editProfileReq: payload => {
       dispatch(editProfileRequest(payload));
-    },
-    countrycodeRequest: () => {
-      dispatch(getCountryCodeRequest());
     },
   };
 };

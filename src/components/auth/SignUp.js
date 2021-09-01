@@ -24,11 +24,8 @@ import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAILURE,
-  COUNTRY_CODE_REQUEST,
-  COUNTRY_CODE_SUCCESS,
-  COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
-import { signupRequest, getCountryCodeRequest } from '../../action/UserAction';
+import { signupRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
@@ -51,20 +48,6 @@ function Login(props) {
         status = props.status;
         toast('Oops', props.error.message);
         break;
-
-      case COUNTRY_CODE_REQUEST:
-        status = props.status;
-        break;
-
-      case COUNTRY_CODE_SUCCESS:
-        status = props.status;
-        //// console.log("COUNTRY", props.countryObject)
-        //setLocation(props.countryObject[0].name)
-        break;
-
-      case COUNTRY_CODE_FAILURE:
-        status = props.status;
-        break;
     }
   }
 
@@ -76,9 +59,7 @@ function Login(props) {
     })();
 
     isInternetConnected()
-      .then(() => {
-        props.countrycodeRequest();
-      })
+      .then(() => {})
       .catch(() => {
         toast('Check your Internet');
       });
@@ -312,7 +293,7 @@ function Login(props) {
               borderRadius: normalise(60),
               backgroundColor: Colors.fadeblack,
               alignSelf: 'center',
-              marginTop: normalise(40),
+              marginTop: normalise(32),
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -322,7 +303,7 @@ function Login(props) {
                 style={{
                   height: normalise(120),
                   width: normalise(120),
-                  borderRadius: normalise(55),
+                  borderRadius: normalise(60),
                 }}
                 resizeMode="contain"
               />
@@ -356,6 +337,7 @@ function Login(props) {
                   alignSelf: 'center',
                   fontFamily: 'ProximaNova-Bold',
                   textDecorationLine: 'underline',
+                  marginBottom: normalise(36),
                 }}>
                 CHANGE PROFILE PIC
               </Text>
@@ -376,8 +358,6 @@ function Login(props) {
           <TextInputField
             text={'CHOOSE USERNAME'}
             placeholder={'Enter Username'}
-            placeholderTextColor={Colors.grey}
-            marginTop={normalise(30)}
             tick_req={true}
             value={username}
             userNameAvailable={userNameAvailable}
@@ -391,7 +371,6 @@ function Login(props) {
           <TextInputField
             text={'FULL NAME'}
             placeholder={'Enter Name'}
-            placeholderTextColor={Colors.grey}
             maxLength={25}
             value={fullname}
             autoCapitalize
@@ -400,56 +379,16 @@ function Login(props) {
             }}
           />
 
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Picker
-                textColor={Colors.white}
-                textSize={normalise(9)}
-                emptySelectText="Select"
-                editable={true}
-                data={props.countryCodeRequest}
-                selectedValue={
-                  codePick === null ? props.countryCodeRequest[0] : codePick
-                }
-                onPickerItemSelected={(selectedvalue, index) => {
-                  //// console.log(index)
-                  setLocation(props.countryObject[index].name);
-                  // // console.log(props.countryObject[index].name)
-                  setCodePick(selectedvalue);
-                }}
-              />
-            </View>
-
-            <TextInputField
-              placeholder={'Enter Phone number'}
-              placeholderTextColor={Colors.grey}
-              width={normalise(200)}
-              maxLength={15}
-              isNumber={true}
-              value={phoneNumber}
-              onChangeText={text => {
-                setPhoneNumber(text);
-              }}
-            />
-
-            <Text
-              style={{
-                position: 'absolute',
-                fontSize: normalise(12),
-                top: 20,
-                color: Colors.white,
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              PHONE NUMBER
-            </Text>
-          </View>
-
-          {/* <TextInputField text={"ENTER LOCATION"}
-                        placeholder={"Type Location"}
-                        placeholderTextColor={Colors.grey}
-                        value={location}
-                        onChangeText={(text) => { setLocation(text) }} /> */}
+          <TextInputField
+            text={'PHONE NUMBER'}
+            placeholder={'Enter Phone number'}
+            maxLength={15}
+            isNumber={true}
+            value={phoneNumber}
+            onChangeText={text => {
+              setPhoneNumber(text);
+            }}
+          />
 
           {props.route.params.loginType === 'Spotify' ? (
             <View
@@ -506,8 +445,6 @@ const mapStateToProps = state => {
     status: state.UserReducer.status,
     signupResponse: state.UserReducer.signupResponse,
     error: state.UserReducer.error,
-    countryCodeRequest: state.UserReducer.countryCodeRequest,
-    countryObject: state.UserReducer.countryCodeOject,
   };
 };
 
@@ -515,9 +452,6 @@ const mapDispatchToProps = dispatch => {
   return {
     signUpRequest: payload => {
       dispatch(signupRequest(payload));
-    },
-    countrycodeRequest: () => {
-      dispatch(getCountryCodeRequest());
     },
   };
 };
