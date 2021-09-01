@@ -13,12 +13,6 @@ const CompleteProfileBlock = ({ navigation, setIsShown }) => {
         navigation.navigate('EditProfile');
       }}
       style={styles.completeProfileBlockContainer}>
-      <LinearGradient
-        colors={['#09784D', '#297283', '#9F00FF']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.completeProfileBlockBorder}
-      />
       <Text style={styles.completeProfileBlockText}>
         <Text style={styles.completeProfileBlockTextBold}>Nearly there...</Text>{' '}
         Complete your profile and reserve your username, so your friends can
@@ -27,6 +21,12 @@ const CompleteProfileBlock = ({ navigation, setIsShown }) => {
       <Image
         source={ImagePath.chevron}
         style={styles.completeProfileBlockChevron}
+      />
+      <LinearGradient
+        colors={['#09784D', '#297283', '#9F00FF']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.completeProfileBlockBorder}
       />
     </Pressable>
   );
@@ -43,22 +43,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     left: 0,
     minHeight: normalise(45),
-    position: 'absolute',
+    position: 'relative',
     right: 0,
     paddingHorizontal: normalise(12),
     paddingVertical: normalise(8),
-    zIndex: 20,
+    zIndex: 10,
   },
   completeProfileBlockBorder: {
-    backgroundColor: 'red',
+    bottom: 0,
     height: normalise(2),
     left: 0,
     position: 'absolute',
     right: 0,
-    top: 0,
   },
   completeProfileBlockText: {
     fontFamily: 'ProximaNova-Regular',
+    width: normalise(280),
   },
   completeProfileBlockTextBold: {
     fontFamily: 'ProximaNova-Bold',

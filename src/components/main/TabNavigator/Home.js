@@ -198,8 +198,6 @@ function Home(props) {
     }
   }, [props.registerType]);
 
-  console.log(isShown);
-
   const loadMore = async () => {
     setLoadMoreVisible(false);
     // setHomeReq(true);

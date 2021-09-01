@@ -222,8 +222,6 @@ function Search(props) {
     }
   }
 
-  console.log(top50);
-
   if (userstatus === '' || props.userstatus !== userstatus) {
     // console.log('status' + props.userstatus);
     switch (props.userstatus) {
