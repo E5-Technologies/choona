@@ -361,11 +361,13 @@ function HomeItemComments(props) {
                   <Image
                     source={
                       item
-                        ? {
-                            uri:
-                              constants.profile_picture_base_url +
-                              item.profile_image,
-                          }
+                        ? item.profile_image
+                          ? {
+                              uri:
+                                constants.profile_picture_base_url +
+                                item.profile_image,
+                            }
+                          : ImagePath.userPlaceholder
                         : null
                     }
                     resizeMode="contain"

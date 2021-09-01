@@ -85,10 +85,8 @@ function SingleSongClick(props) {
   let flag = 'single';
   let changePlayer = false;
   var bottomSheetRef;
-  const postsUrl = constants.BASE_URL + '/post/details/:';
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
-  // console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
   const getdata = async () => {
     let response = await axios.get(API_HOST + `/api/post/details/${name}`, {
       headers: {
@@ -100,7 +98,7 @@ function SingleSongClick(props) {
     console.log('response_post' + JSON.stringify(response));
     if (response.data.data.length !== 0) {
       let newarray = [];
-      newarray.push(response.data.data[0]);
+      newarray.push(response.data.data);
       setUpdateData(newarray);
 
       let reactArray = [];
@@ -1069,9 +1067,15 @@ function SingleSongClick(props) {
             paddingBottom: normalise(10),
           }}>
           <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
+            source={
+              data.item.profile_image
+                ? {
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
+                : ImagePath.userPlaceholder
+            }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View style={{ marginStart: normalise(10) }}>

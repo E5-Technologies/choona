@@ -48,7 +48,9 @@ function InboxListItem(props) {
               onPressImage();
             }}> */}
           <Image
-            source={{ uri: props.image }}
+            source={
+              props.image ? { uri: props.image } : ImagePath.userPlaceholder
+            }
             style={{
               height: normalise(30),
               width: normalise(30),

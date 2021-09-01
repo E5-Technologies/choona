@@ -25,6 +25,7 @@ import {
   SEND_CHAT_MESSAGE_FAILURE,
 } from '../../action/TypeConstants';
 import axios from 'axios';
+import ImagePath from '../../assests/ImagePath';
 
 let status;
 
@@ -116,16 +117,22 @@ function SendSongInMessageFinal(props) {
         onPress={() => {}}>
         <View style={{ flexDirection: 'row' }}>
           <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
+            source={
+              data.item.profile_image
+                ? {
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
+                : ImagePath.userPlaceholder
+            }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: normalise(12),
                 fontFamily: 'ProximaNova-Semibold',
               }}>
               {data.item.full_name}
@@ -133,9 +140,9 @@ function SendSongInMessageFinal(props) {
 
             <Text
               style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
+                color: Colors.grey_text,
+                fontSize: normalise(10),
+                fontFamily: 'ProximaNova-Regular',
                 textTransform: 'lowercase',
               }}>
               {data.item.username}
@@ -353,10 +360,11 @@ function SendSongInMessageFinal(props) {
         <Text
           style={{
             color: Colors.white,
+            fontFamily: 'ProximaNova-Regular',
             margin: normalise(15),
             marginBottom: normalise(5),
           }}>
-          Sending song to:
+          Sending to:
         </Text>
 
         <FlatList // USER SEARCH FLATLIST

@@ -1270,9 +1270,15 @@ function Player(props) {
         }}>
         <View style={{ flexDirection: 'row' }}>
           <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
+            source={
+              data.item.profile_image
+                ? {
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
+                : ImagePath.userPlaceholder
+            }
             style={{ height: 35, width: 35, borderRadius: 2 * normalise(13.5) }}
           />
           <View style={{ marginStart: normalise(10) }}>
@@ -1572,9 +1578,14 @@ function Player(props) {
               {changePlayer ? null : (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Image
-                    source={{
-                      uri: constants.profile_picture_base_url + profilePic,
-                    }}
+                    source={
+                      profilePic
+                        ? {
+                            uri:
+                              constants.profile_picture_base_url + profilePic,
+                          }
+                        : ImagePath.userPlaceholder
+                    }
                     style={{
                       height: normalise(24),
                       width: normalise(24),

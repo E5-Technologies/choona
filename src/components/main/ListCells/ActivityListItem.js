@@ -30,7 +30,13 @@ function ActivityListItem(props) {
               onPressImage();
             }}>
             <Image
-              source={props.image === '' ? ImagePath.dp : { uri: props.image }}
+              source={
+                props.image
+                  ? props.image === ''
+                    ? ImagePath.userPlaceholder
+                    : { uri: props.image }
+                  : ImagePath.userPlaceholder
+              }
               style={styles.detailsAvatar}
               resizeMode="cover"
             />

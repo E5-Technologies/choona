@@ -73,7 +73,13 @@ function CommentList(props) {
           onPressImage();
         }}>
         <Image
-          source={props.image === '' ? ImagePath.dp1 : { uri: props.image }}
+          source={
+            props.image
+              ? props.image === ''
+                ? ImagePath.userPlaceholder
+                : { uri: props.image }
+              : ImagePath.userPlaceholder
+          }
           style={styles.commentAvatar}
           resizeMode="cover"
         />

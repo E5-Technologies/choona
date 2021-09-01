@@ -372,10 +372,15 @@ function HomeItemComments(props) {
                     setShowMention(false);
                   }}>
                   <Image
-                    source={{
-                      uri:
-                        constants.profile_picture_base_url + item.profile_image,
-                    }}
+                    source={
+                      item.profile_image
+                        ? {
+                            uri:
+                              constants.profile_picture_base_url +
+                              item.profile_image,
+                          }
+                        : ImagePath.userPlaceholder
+                    }
                     resizeMode="contain"
                     style={{
                       height: Dimensions.get('window').width / 12,

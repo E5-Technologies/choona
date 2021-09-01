@@ -116,10 +116,8 @@ function GenreSongClicked(props) {
   let flag = false;
   let changePlayer = false;
   var bottomSheetRef;
-  const postsUrl = constants.BASE_URL + '/post/details/:';
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
-  // console.log("topsong50"+JSON.stringify(props.getPostFromTop50))
   const getdata = async () => {
     let response = await axios.get(API_HOST + `/api/post/details/${name}`, {
       headers: {
@@ -1080,9 +1078,15 @@ function GenreSongClicked(props) {
             paddingBottom: normalise(10),
           }}>
           <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
+            source={
+              data.item.profile_image
+                ? {
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
+                : ImagePath.userPlaceholder
+            }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View style={{ marginStart: normalise(10) }}>

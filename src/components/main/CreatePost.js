@@ -35,6 +35,7 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
+import ImagePath from '../../assests/ImagePath';
 
 let status;
 
@@ -451,11 +452,15 @@ function AddSong(props) {
                             tagFriend.push(item.username);
                           }}>
                           <Image
-                            source={{
-                              uri:
-                                constants.profile_picture_base_url +
-                                item.profile_image,
-                            }}
+                            source={
+                              item.profile_image
+                                ? {
+                                    uri:
+                                      constants.profile_picture_base_url +
+                                      item.profile_image,
+                                  }
+                                : ImagePath.userPlaceholder
+                            }
                             resizeMode="contain"
                             style={{
                               height: Dimensions.get('window').width / 12,

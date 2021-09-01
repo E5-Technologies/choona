@@ -940,9 +940,15 @@ function Search(props) {
             paddingBottom: normalise(10),
           }}>
           <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
+            source={
+              data.item.profile_image
+                ? {
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
+                : ImagePath.userPlaceholder
+            }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
           />
           <View style={{ marginStart: normalise(10) }}>

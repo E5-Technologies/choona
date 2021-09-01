@@ -625,9 +625,15 @@ function PostListForUser(props) {
         }}>
         <View style={{ flexDirection: 'row' }}>
           <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
+            source={
+              data.item.profile_image
+                ? {
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
+                : ImagePath.userPlaceholder
+            }
             style={{
               height: 35,
               width: 35,
