@@ -217,7 +217,7 @@ function AddSong(props) {
 
     isInternetConnected()
       .then(() => {
-        openInAppleORSpotify();
+        setInterval(openInAppleORSpotify, 60000);
       })
       .catch(() => {
         toast('', 'Please Connect To Internet');
