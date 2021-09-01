@@ -40,7 +40,7 @@ const HomeListItemFooter = ({
               source={
                 ImagePath
                   ? userAvatar === ''
-                    ? ImagePath.dp1
+                    ? ImagePath.userPlaceholder
                     : { uri: constants.profile_picture_base_url + userAvatar }
                   : null
               }

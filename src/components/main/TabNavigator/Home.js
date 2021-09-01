@@ -91,6 +91,10 @@ import MusicPlayer from '../../../widgets/MusicPlayer';
 import Timer from '../Timer';
 import EmptyComponent from '../../Empty/EmptyComponent';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
+import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
+
 let status = '';
 let songStatus = '';
 let postStatus = '';
@@ -123,6 +127,7 @@ function Home(props) {
   const [data, setData] = useState(props.postData);
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
+  const [isShown, setIsShown] = useState(true);
 
   var bottomSheetRef;
   let changePlayer = false;
@@ -180,6 +185,20 @@ function Home(props) {
       unsuscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (props.registerType === 'apple') {
+      AsyncStorage.getItem('isShown').then(value => {
+        if (value === null) {
+          // Whatever you want to do just once.
+          AsyncStorage.setItem('isShown', 'false');
+          setIsShown(false);
+        }
+      });
+    }
+  }, [props.registerType]);
+
+  console.log(isShown);
 
   const loadMore = async () => {
     setLoadMoreVisible(false);
@@ -1312,6 +1331,13 @@ function Home(props) {
             //  props.navigation.navigate('BlankScreen');
           }}
         />
+
+        {!isShown && (
+          <CompleteProfileBlock
+            navigation={props.navigation}
+            setIsShown={setIsShown}
+          />
+        )}
 
         {_.isEmpty(props.postData) ? (
           <EmptyComponent
