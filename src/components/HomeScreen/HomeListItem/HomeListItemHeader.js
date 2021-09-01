@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Colors from '../../../assests/Colors';
@@ -13,6 +13,8 @@ const HomeListItemHeader = ({
   songUri,
   title,
 }) => {
+  const [disabled, setDisabled] = useState(false);
+
   return (
     <View style={styles.listItemHeaderContainer}>
       <View style={styles.listItemHeaderSongDetails}>
@@ -38,7 +40,14 @@ const HomeListItemHeader = ({
       </View>
       {songUri && (
         <TouchableOpacity
-          onPress={() => onPressMusicbox()}
+          disabled={disabled}
+          onPress={() => {
+            setDisabled(true);
+            onPressMusicbox();
+            setTimeout(() => {
+              setDisabled(false);
+            }, 1000);
+          }}
           style={styles.listItemHeaderPlayButton}>
           <Image
             source={

@@ -105,6 +105,7 @@ function Player(props) {
   const [hasSongLoaded, setHasSongLoaded] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(0);
   const [textinputHeight, setHeight] = useState(50);
+  const [disabled, setDisabled] = useState(false);
 
   const [reactions, setSReactions] = useState(
     props.route.params.changePlayer ? [] : props.route.params.reactions,
@@ -1715,10 +1716,15 @@ function Player(props) {
                 </Text>
               </View>
               <TouchableOpacity
+                disabled={disabled}
                 onPress={() => {
+                  setDisabled(true);
                   if (hasSongLoaded) {
                     playing();
                   }
+                  setTimeout(() => {
+                    setDisabled(false);
+                  }, 1000);
                 }}>
                 <Image
                   source={playVisible ? ImagePath.play : ImagePath.pause}

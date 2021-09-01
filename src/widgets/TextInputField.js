@@ -17,8 +17,7 @@ function TextInputField(props) {
   return (
     <View
       style={{
-        marginTop: normalize(props.marginTop),
-        marginBottom: normalize(props.marginBottom),
+        marginBottom: normalize(16),
       }}>
       <Text
         style={{
@@ -34,10 +33,10 @@ function TextInputField(props) {
           width: props.width,
           marginTop: normalize(10),
           fontFamily: 'ProximaNova-Semibold',
-          fontSize: normalize(12),
-          backgroundColor: Colors.fadeblack,
-          height: normalize(45),
-          borderRadius: normalize(5),
+          fontSize: normalize(14),
+          backgroundColor: Colors.white,
+          height: normalize(44),
+          borderRadius: normalize(6),
           borderWidth: normalize(0.5),
           padding: normalize(5),
           paddingLeft: normalize(16),
@@ -46,7 +45,7 @@ function TextInputField(props) {
             : focused
             ? Colors.white
             : Colors.fadeblack,
-          color: Colors.white,
+          color: Colors.fadeblack,
         }}
         keyboardAppearance="dark"
         onFocus={() => {
@@ -59,7 +58,7 @@ function TextInputField(props) {
         keyboardType={props.isNumber ? 'phone-pad' : 'default'}
         autoCapitalize={props.autoCapitalize}
         value={props.value}
-        placeholderTextColor={props.placeholderTextColor}
+        placeholderTextColor={Colors.grey_text}
         secureTextEntry={props.isPassword}
         onChangeText={text => {
           onChangeText(text);

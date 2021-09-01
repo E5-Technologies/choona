@@ -12,6 +12,7 @@ function MusicPlayerBar(props) {
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   const ref =
     global.playerReference !== null && global.playerReference !== undefined
@@ -159,8 +160,14 @@ function MusicPlayerBar(props) {
             </View>
           </View>
           <TouchableOpacity
+            disabled={disabled}
             onPress={() => {
-              playOrPause(), onPressPlayOrPause();
+              setDisabled(true);
+              playOrPause();
+              onPressPlayOrPause();
+              setTimeout(() => {
+                setDisabled(false);
+              }, 1000);
             }}
             style={{
               height: normalise(44),
