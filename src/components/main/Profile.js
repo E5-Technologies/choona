@@ -59,7 +59,6 @@ function Profile(props) {
   const [activity] = useState(props.route.params.fromAct);
   const [nonempty, setNonEmpty] = useState(false);
 
-  console.log(modaltandcs, modalPrivacy);
   const [pageId, setPageId] = useState(1);
 
   const [profilePosts, setProfilePosts] = useState([]);
@@ -92,9 +91,10 @@ function Profile(props) {
         });
         setIsLoading(false);
 
+        console.log(response.data);
         response.data.data.length === 0
           ? (totalCount = totalCount)
-          : (totalCount = response.data.data.length);
+          : (totalCount = response.data.postCount);
         profilePosts.length === 0
           ? (setProfilePosts(response.data.data), setNonEmpty(true))
           : null;
@@ -102,7 +102,7 @@ function Profile(props) {
       .catch(() => {
         toast('Error', 'Please Connect To Internet');
       });
-  }, []);
+  }, [getProfileReq, profilePosts.length, token]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -387,7 +387,7 @@ function Profile(props) {
             </TouchableOpacity>
           </View>
           <Text style={HeaderStyles.headerText}>
-            {props.userProfileResp.full_name}
+            {props.userProfileResp?.full_name}
           </Text>
           <View
             style={[
@@ -419,17 +419,21 @@ function Profile(props) {
             </TouchableOpacity>
           </View>
         </View>
-        <ProfileHeader
-          navigation={props.navigation}
-          profile={props.userProfileResp}
-          totalCount={totalCount}
-          user={true}
-        />
-        <ProfileHeaderFeatured
-          navigation={props.navigation}
-          profile={props.userProfileResp}
-          user={true}
-        />
+        {props.userProfileResp && (
+          <ProfileHeader
+            navigation={props.navigation}
+            profile={props.userProfileResp}
+            totalCount={totalCount}
+            user={true}
+          />
+        )}
+        {props.userProfileResp && (
+          <ProfileHeaderFeatured
+            navigation={props.navigation}
+            profile={props.userProfileResp}
+            user={true}
+          />
+        )}
         {isLoading ? (
           <View>
             <ActivityIndicator
