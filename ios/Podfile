@@ -12,6 +12,8 @@ target 'Choona' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'ChoonaDev' do
     inherit! :complete
     # Pods for testing
