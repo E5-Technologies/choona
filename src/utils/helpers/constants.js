@@ -15,4 +15,5 @@ export default {
   APPLE: 'APPLETOKEN',
   appleGetTokenApi: API_HOST + '/api/applemusic/token',
   spotifyPlayerBaseUrl: 'https://api.spotify.com/v1/me/player/',
+  website_url: env.WEBSITE_URL,
 };

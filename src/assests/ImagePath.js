@@ -59,6 +59,7 @@ const ImagePath = {
   green_tick: require('./images/green_tick.png'),
   page_gradient: require('./images/page_gradient.png'),
   more_copy: require('./images/more_copy.png'),
+  more_copy_web: require('./images/moreCopyWeb.png'),
   more_unfollow: require('./images/more_unfollow.png'),
   home_icon_choona: require('./images/home_icon_choona.png'),
   gradient_border_horizontal: require('./images/gradient_border_horizontal.png'),
@@ -92,6 +93,7 @@ const ImagePath = {
   emptyPost: require('./images/emptyPost.png'),
   userPlaceholder: require('./images/userPlaceholder.png'),
   chevron: require('./images/chevron.png'),
+  sendIcon: require('./images/send-icon.png'),
 };
 
 export default ImagePath;

@@ -19,6 +19,7 @@ import { saveSongRequest, unsaveSongRequest } from '../../action/SongAction';
 import { userFollowUnfollowRequest } from '../../action/UserAction';
 
 import Colors from '../../assests/Colors';
+import constants from '../../utils/helpers/constants';
 import ImagePath from '../../assests/ImagePath';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import normalise from '../../utils/helpers/Dimens';
@@ -44,6 +45,7 @@ const MoreModal = ({
   savedSong,
   show,
   setShow,
+  type,
   unsaveSongReq,
   userProfileResp,
 }) => {
@@ -68,7 +70,7 @@ const MoreModal = ({
         isrc_code: postData[index].isrc_code,
         original_song_uri: postData[index].original_song_uri,
         original_reg_type:
-          page === 'insideMessage'
+          page === 'insideMessage' || page === 'player'
             ? postData[index].original_reg_type
             : postData[index].userDetails.register_type,
       };
@@ -174,14 +176,14 @@ const MoreModal = ({
             </Text>
           </TouchableOpacity>
           {/* Send Song Action */}
-          {/* Copy Link */}
+          {/* Copy Link to Song */}
           <TouchableOpacity
             onPress={() => {
               Clipboard.setString(postData[index].original_song_uri);
               setShow(!show);
 
               setTimeout(() => {
-                toast('Success', 'Song copied to clipboard.');
+                toast('Success', 'Song Link copied to clipboard.');
               }, 1000);
             }}
             style={styles.modalButton}>
@@ -190,9 +192,32 @@ const MoreModal = ({
               style={styles.modalButtonIcon}
               resizeMode="contain"
             />
-            <Text style={styles.modalButtonText}>Copy Link</Text>
+            <Text style={styles.modalButtonText}>Copy Link to Song</Text>
           </TouchableOpacity>
-          {/* Copy Link */}
+          {/* Copy Link to Song */}
+          {/* Copy Link to Post */}
+          {page !== 'insideMessage' && (
+            <TouchableOpacity
+              onPress={() => {
+                Clipboard.setString(
+                  constants.website_url + '/s/' + postData[index]._id,
+                );
+                setShow(!show);
+
+                setTimeout(() => {
+                  toast('Success', 'Post Link copied to clipboard.');
+                }, 1000);
+              }}
+              style={styles.modalButton}>
+              <Image
+                source={ImagePath ? ImagePath.more_copy_web : null}
+                style={styles.modalButtonIcon}
+                resizeMode="contain"
+              />
+              <Text style={styles.modalButtonText}>Copy Web Link to Post</Text>
+            </TouchableOpacity>
+          )}
+          {/* Copy Link to Post */}
           {/* Unfollow/Delete Post Action */}
           {page !== 'savedSongs' && page !== 'player' && (
             <TouchableOpacity
@@ -219,9 +244,9 @@ const MoreModal = ({
                 {page === 'insideMessage'
                   ? 'Delete Song'
                   : !_.isEmpty(userProfileResp)
-                  ? userProfileResp._id === postData[index].user_id
+                  ? userProfileResp._id === postData[index]?.user_id
                     ? 'Delete Post'
-                    : `Unfollow ${postData[index].userDetails.username}`
+                    : `Unfollow ${postData[index]?.userDetails.username}`
                   : ''}
               </Text>
             </TouchableOpacity>

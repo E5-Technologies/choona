@@ -1583,6 +1583,7 @@ function Player(props) {
               page={'player'}
               postData={[
                 {
+                  _id: id,
                   song_uri: uri,
                   song_name: songTitle,
                   song_image: pic,
