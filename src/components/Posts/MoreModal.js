@@ -157,10 +157,14 @@ const MoreModal = ({
           <TouchableOpacity
             style={styles.modalButton}
             onPress={() => {
+              setShow(false);
               if (bottomSheetRef) {
-                setShow(false);
                 bottomSheetRef.open();
               }
+              navigation.navigate('PlayerScreenSelectUser', {
+                item: postData[index ? index : 0],
+                page: page,
+              });
             }}>
             <Image
               source={ImagePath ? ImagePath.sendicon : null}

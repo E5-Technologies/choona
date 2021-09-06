@@ -46,7 +46,7 @@ function SendSongInMessageFinal(props) {
   useEffect(() => {
     if (
       props.registerType === 'spotify' &&
-      props.route.params.details.preview_url === null
+      props.route.params.details?.preview_url === null
     ) {
       const getSpotifyApi = async () => {
         try {
@@ -85,19 +85,17 @@ function SendSongInMessageFinal(props) {
   if (status === '' || status !== props.status) {
     switch (props.status) {
       case SEND_CHAT_MESSAGE_REQUEST:
-        // console.log('HERE SEND');
         status = props.status;
         break;
 
       case SEND_CHAT_MESSAGE_SUCCESS:
         status = props.status;
-        // console.log('HERE SEND');
+        toast('Error', 'Message sent successfully.');
 
         break;
 
       case SEND_CHAT_MESSAGE_FAILURE:
         status = props.status;
-        // console.log('HERE FAIL');
         toast('Error', 'Something Went Wong, Please Try Again');
         break;
     }
@@ -222,7 +220,6 @@ function SendSongInMessageFinal(props) {
     };
 
     props.sendChatMessageRequest(chatPayload);
-    toast('Error', 'Message sent successfully.');
     //props.navigation.goBack();
   }
 
@@ -238,26 +235,10 @@ function SendSongInMessageFinal(props) {
           thirditemtext={true}
           texttwo={'SEND'}
           onPressFirstItem={() => {
-            // if (fromAddAnotherSong) {
-            //     props.navigation.replace('InsideaMessage', { index: index })
-            // } else {
-            //     props.navigation.goBack();
-            // }
-            if (props.route.params.fromPlayer) {
-              props.navigation.goBack();
-            } else {
-              props.navigation.pop(2);
-            }
+            props.navigation.goBack();
           }}
           onPressThirdItem={() => {
-            // if (search.trim() !== "") {
             sendMessage();
-            // if (fromAddAnotherSong) {
-            //     props.navigation.replace('InsideaMessage', { index: index })
-            // } else {
-            //     props.navigation.goBack();
-            // }
-
             if (props.route.params.fromPlayer === true) {
               // console.log('from player');
               props.navigation.goBack();
@@ -265,10 +246,6 @@ function SendSongInMessageFinal(props) {
               // console.log('not from player');
               props.navigation.pop(2);
             }
-
-            // } else {
-            //     toast("Error", "Please type in a message to send");
-            // }
           }}
         />
 

@@ -589,7 +589,8 @@ function InsideaMessage(props) {
             {usersToSEndSong.length > 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
+                  bottomSheetRef.close();
+                  sendMessagesToUsers();
                 }}>
                 <Text
                   style={{
