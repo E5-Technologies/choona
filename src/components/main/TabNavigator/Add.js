@@ -45,6 +45,7 @@ function AddSong(props) {
   const [data, setData] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
 
   let post = true;
 
@@ -176,53 +177,61 @@ function AddSong(props) {
     );
   }
 
-  useEffect(() => {
-    const callApi = async () => {
-      if (props.registerType === 'spotify') {
-        const spotifyToken = await getSpotifyToken();
-        return await axios.get(
-          'https://api.spotify.com/v1/me/player/recently-played',
-          {
-            headers: {
-              Authorization: spotifyToken,
-            },
+  const getRecentlyPlayedApi = async () => {
+    if (props.registerType === 'spotify') {
+      const spotifyToken = await getSpotifyToken();
+      return await axios.get(
+        'https://api.spotify.com/v1/me/player/recently-played',
+        {
+          headers: {
+            Authorization: spotifyToken,
           },
-        );
+        },
+      );
+    } else {
+      const AppleToken = await getAppleDevToken();
+      return await axios.get(
+        'https://api.music.apple.com/v1/me/recent/played/tracks',
+        {
+          headers: {
+            Authorization: AppleToken,
+          },
+        },
+      );
+    }
+  };
+
+  const onRefresh = () => {
+    setIsFetching(true);
+    getRecentlyPlayed();
+  };
+
+  const getRecentlyPlayed = async () => {
+    console.log(1);
+    try {
+      const res = await getRecentlyPlayedApi();
+      setIsFetching(false);
+      if (res.status === 200) {
+        console.log(res.data.items);
+        const array = [];
+        res.data.items.map(item => array.push(item.track));
+        setRecentlyPlayed(array);
+        console.log(2);
       } else {
-        const AppleToken = await getAppleDevToken();
-        return await axios.get(
-          'https://api.music.apple.com/v1/me/recent/played/tracks',
-          {
-            headers: {
-              Authorization: AppleToken,
-            },
-          },
-        );
+        toast('Oops', 'Something Went Wrong');
       }
-    };
+    } catch (error) {}
+  };
 
-    const openInAppleORSpotify = async () => {
-      try {
-        const res = await callApi();
-
-        if (res.status === 200) {
-          const array = [];
-          res.data.items.map(item => array.push(item.track));
-          setRecentlyPlayed(array);
-        } else {
-          toast('Oops', 'Something Went Wrong');
-        }
-      } catch (error) {}
-    };
-
+  useEffect(() => {
     isInternetConnected()
       .then(() => {
-        openInAppleORSpotify();
+        getRecentlyPlayed();
       })
       .catch(() => {
         toast('', 'Please Connect To Internet');
       });
-  }, [props.registerType]);
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -427,6 +436,8 @@ function AddSong(props) {
             ) : (
               <FlatList
                 data={recentlyPlayed}
+                onRefresh={() => onRefresh()}
+                refreshing={isFetching}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => {
                   index.toString();
