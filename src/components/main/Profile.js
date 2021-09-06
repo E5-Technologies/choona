@@ -100,7 +100,7 @@ function Profile(props) {
           : null;
       })
       .catch(() => {
-        toast('Error', 'Please Connect To Internet');
+        // toast('Error', 'Please Connect To Internet');
       });
   }, [getProfileReq, profilePosts.length, token]);
 
@@ -147,7 +147,7 @@ function Profile(props) {
       <TouchableOpacity
         onPress={() => {
           props.navigation.navigate('PostListForUser', {
-            profile_name: props.userProfileResp.full_name,
+            profile_name: props.userProfileResp?.full_name,
             posts: array,
             index: '0',
           });
@@ -162,7 +162,7 @@ function Profile(props) {
         <Image
           source={{
             uri:
-              props.userProfileResp.register_type === 'spotify'
+              props.userProfileResp?.register_type === 'spotify'
                 ? data.item.song_image
                 : data.item.song_image.replace(
                     '100x100bb.jpg',

@@ -56,6 +56,7 @@ import constants from '../../utils/helpers/constants';
 import { API_HOST } from '../../config';
 
 import axios from 'axios';
+import MoreModal from '../Posts/MoreModal';
 let status;
 let userStatus;
 let messageStatus;
@@ -95,7 +96,7 @@ function SingleSongClick(props) {
         'x-access-token': props.header.token,
       },
     });
-    console.log('response_post' + JSON.stringify(response));
+
     if (response.data.data.length !== 0) {
       let newarray = [];
       newarray.push(response.data.data);
@@ -590,8 +591,6 @@ function SingleSongClick(props) {
 
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
-    console.log(JSON.stringify(data));
-
     return (
       <HomeItemList
         image={data.item.song_image}
@@ -684,332 +683,6 @@ function SingleSongClick(props) {
       />
     );
   }
-
-  //MODAL MORE PRESSED
-  const MorePressed = () => {
-    return (
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        presentationStyle={'overFullScreen'}
-        onRequestClose={() => {
-          //Alert.alert("Modal has been closed.");
-        }}>
-        <ImageBackground
-          source={ImagePath.page_gradient}
-          style={styles.centeredView}>
-          {/* <View style={[styles.centeredView,{}]}> */}
-          <View style={styles.modalView}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              MORE
-            </Text>
-
-            <View
-              style={{
-                backgroundColor: Colors.activityBorderColor,
-                height: 0.5,
-                marginTop: normalise(12),
-                marginBottom: normalise(12),
-              }}
-            />
-            {
-              // console.log("props.getpost"+JSON.stringify( props.getPostFromTop50[positionInArray].original_song_uri))
-            }
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(10),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                let saveSongObject = {
-                  song_uri: updateData[positionInArray].song_uri,
-                  song_name: updateData[positionInArray].song_name,
-                  song_image: updateData[positionInArray].song_image,
-                  artist_name: updateData[positionInArray].artist_name,
-                  album_name: updateData[positionInArray].album_name,
-                  post_id: updateData[positionInArray]._id,
-                  isrc_code: updateData[positionInArray].isrc_code,
-                  original_song_uri:
-                    updateData[positionInArray].original_song_uri,
-                  original_reg_type: props.userProfileResp.register_type,
-                };
-
-                props.saveSongReq(saveSongObject);
-                setModalVisible(!modalVisible);
-              }}>
-              <Image
-                source={ImagePath.boxicon}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Save Song
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                if (bottomSheetRef) {
-                  setModalVisible(false);
-                  bottomSheetRef.open();
-                }
-              }}>
-              <Image
-                source={ImagePath.sendicon}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(13),
-                  marginLeft: normalise(15),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Send Song
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                Clipboard.setString(updateData[positionInArray].song_uri);
-                setModalVisible(!modalVisible);
-
-                setTimeout(() => {
-                  toast('Success', 'Song copied to clipboard.');
-                }, 1000);
-              }}>
-              <Image
-                source={ImagePath.more_copy}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Copy Link
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-
-                props.userProfileResp._id !==
-                updateData[positionInArray].user_id // USER - FOLLOW/UNFOLLOW
-                  ? props.followUnfollowReq({
-                      follower_id: props.userProfileResp._id,
-                    }) // USER - FOLLOW/UNFOLLOW
-                  : props.deletePostReq(updateData[positionInArray]._id); //  DELETE POST
-              }}>
-              <Image
-                source={ImagePath.more_unfollow}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Regular',
-                }}>
-                {/* {!_.isEmpty(props.userProfileResp)
-                        ? props.userProfileResp._id ===
-                        props.getPostFromTop50[positionInArray].user_id
-                          ? 'Delete Post'
-                          : `Unfollow ${
-                            props.getPostFromTop50[positionInArray].userDetails
-                                .username
-                            }`
-                        : ''} */}
-                Delete Post
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                if (
-                  props.userProfileResp.register_type === props.registerType
-                ) {
-                  // console.log('same reg type');
-                  setModalVisible(false);
-                  setBool(true);
-                  Linking.canOpenURL(
-                    updateData[positionInArray].original_song_uri,
-                  )
-                    .then(() => {
-                      Linking.openURL(
-                        updateData[positionInArray].original_song_uri,
-                      )
-                        .then(() => {
-                          // console.log('success');
-                          setBool(false);
-                        })
-                        .catch(() => {
-                          // console.log('error');
-                        });
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    });
-                } else {
-                  console.log('diffirent reg type');
-                  setModalVisible(false);
-                  setBool(true);
-                  isInternetConnected()
-                    .then(() => {
-                      openInAppleORSpotify();
-                    })
-                    .catch(() => {
-                      toast('', 'Please Connect To Internet');
-                    });
-                }
-              }}>
-              <Image
-                source={
-                  !_.isEmpty(props.userProfileResp)
-                    ? props.userProfileResp.register_type === 'spotify'
-                      ? ImagePath.spotifyicon
-                      : ImagePath.applemusic
-                    : ''
-                }
-                style={{
-                  height: normalise(18),
-                  width: normalise(18),
-                }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Regular',
-                }}>
-                {!_.isEmpty(props.userProfileResp)
-                  ? props.userProfileResp.register_type === 'spotify'
-                    ? 'Open on Spotify'
-                    : 'Open on Apple'
-                  : ''}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-                if (props.userProfileResp.register_type === 'spotify') {
-                  props.navigation.navigate('AddToPlayListScreen', {
-                    originalUri: updateData[positionInArray].original_song_uri,
-                    registerType: updateData[positionInArray].social_type,
-                    isrc: updateData[positionInArray].isrc_code,
-                  });
-                } else {
-                  // setTimeout(() => {
-                  //   toast("Oops", "Only, Spotify users can add to their playlist now.")
-                  // }, 1000)
-                  props.navigation.navigate('AddToPlayListScreen', {
-                    isrc: updateData[positionInArray].isrc_code,
-                  });
-                }
-              }}>
-              <Image
-                source={ImagePath.addicon}
-                style={{
-                  height: normalise(18),
-                  width: normalise(18),
-                  // borderRadius: normalise(9),
-                }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Regular',
-                }}>
-                Add to Playlist
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-              style={{
-                // marginStart: normalise(20),
-                // marginEnd: normalise(20),
-                // marginBottom: normalise(20),
-                marginTop: normalise(30),
-                height: normalise(40),
-                // width: '95%',
-                backgroundColor: Colors.darkerblack,
-                opacity: 10,
-                borderRadius: 6,
-                // padding: 35,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: normalise(12),
-                  fontFamily: 'ProximaNova-Bold',
-                  color: Colors.white,
-                }}>
-                CANCEL
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* </View> */}
-        </ImageBackground>
-      </Modal>
-    );
-  };
-  //END OF MODAL MORE PRESSED
 
   const searchUser = text => {
     if (text.length >= 1) {
@@ -1395,7 +1068,6 @@ function SingleSongClick(props) {
             // alert("hello")
           }}
         />
-        {console.log('asss' + JSON.stringify(updateData))}
 
         {updateData.length === 0 ? (
           <View
@@ -1419,7 +1091,17 @@ function SingleSongClick(props) {
             renderItem={renderGenreData}
           />
         )}
-        {MorePressed()}
+        <MoreModal
+          setBool={setBool}
+          bottomSheetRef={bottomSheetRef}
+          index={positionInArray}
+          setIndex={setPositionInArray}
+          navigation={props.navigation}
+          openInAppleORSpotify={openInAppleORSpotify}
+          postData={updateData}
+          show={modalVisible}
+          setShow={setModalVisible}
+        />
         {renderAddToUsers()}
 
         <Modal
