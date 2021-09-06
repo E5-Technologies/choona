@@ -126,8 +126,6 @@ const MoreModal = ({
     }
   };
 
-  console.log(postData);
-
   return (
     <Modal
       animationType="fade"
