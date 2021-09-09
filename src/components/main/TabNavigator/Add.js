@@ -11,6 +11,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  NativeModules,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -46,6 +47,7 @@ function AddSong(props) {
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
+  const [musicToken, setMusicToken] = useState('');
 
   let post = true;
 
@@ -194,6 +196,7 @@ function AddSong(props) {
         'https://api.music.apple.com/v1/me/recent/played/tracks',
         {
           headers: {
+            'Music-User-Token': musicToken,
             Authorization: AppleToken,
           },
         },
@@ -207,16 +210,18 @@ function AddSong(props) {
   };
 
   const getRecentlyPlayed = async () => {
-    console.log(1);
     try {
       const res = await getRecentlyPlayedApi();
+      console.log(res);
       setIsFetching(false);
       if (res.status === 200) {
-        console.log(res.data.items);
         const array = [];
-        res.data.items.map(item => array.push(item.track));
+        if (props.registerType === 'spotify') {
+          res.data.items.map(item => array.push(item.track));
+        } else {
+          res.data.data.map(item => array.push(item));
+        }
         setRecentlyPlayed(array);
-        console.log(2);
       } else {
         toast('Oops', 'Something Went Wrong');
       }
@@ -226,7 +231,38 @@ function AddSong(props) {
   useEffect(() => {
     isInternetConnected()
       .then(() => {
-        getRecentlyPlayed();
+        if (props.registerType === 'spotify') {
+          getRecentlyPlayed();
+        } else {
+          const fetchMusicToken = async () => {
+            const AppleToken = await getAppleDevToken();
+            if (AppleToken !== '') {
+              let newtoken = AppleToken.split(' ');
+              NativeModules.Print.printValue(newtoken.pop())
+                .then(res => {
+                  if (res === '') {
+                    toast(
+                      'Error',
+                      'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
+                    );
+                  } else {
+                    setMusicToken(res);
+                    getRecentlyPlayed();
+                  }
+                })
+                .catch(() => {
+                  toast(
+                    'Error',
+                    'There was an error getting your recently played tracks.',
+                  );
+                  // setBool(false);
+                });
+            } else {
+              toast('Oops', 'Something Went Wrong');
+            }
+          };
+          fetchMusicToken();
+        }
       })
       .catch(() => {
         toast('', 'Please Connect To Internet');
