@@ -84,7 +84,7 @@ function PlayerScreenSelectUser(props) {
 
   const searchUser = text => {
     if (text.length >= 1) {
-      setBool(true);
+      // setBool(true);
       props.followingSearch(text);
     }
   };
