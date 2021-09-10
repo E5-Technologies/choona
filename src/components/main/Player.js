@@ -354,7 +354,7 @@ function Player(props) {
     }
   }
 
-  function _onReaction(ID, reaction) {}
+  function _onReaction(ID, reaction) { }
 
   function _onSelectBack(data, comment) {
     // console.log('aaa' + JSON.stringify(comment));
@@ -954,9 +954,9 @@ function Player(props) {
                     source={
                       profilePic
                         ? {
-                            uri:
-                              constants.profile_picture_base_url + profilePic,
-                          }
+                          uri:
+                            constants.profile_picture_base_url + profilePic,
+                        }
                         : ImagePath.userPlaceholder
                     }
                     style={{
@@ -1421,7 +1421,8 @@ function Player(props) {
                     }}
                     onPress={() => {
                       if (bottomSheetRef) {
-                        setModalVisible(false), bottomSheetRef.open();
+                        setModalVisible(false);
+                        bottomSheetRef.open();
                       }
                     }}>
                     <Image
@@ -1534,11 +1535,11 @@ function Player(props) {
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
-                              .then(() => {})
-                              .catch(err => {});
+                              .then(() => { })
+                              .catch(err => { });
                           }
                         })
-                        .catch(err => {});
+                        .catch(err => { });
                     } else {
                       isInternetConnected()
                         .then(() => {
@@ -1556,11 +1557,11 @@ function Player(props) {
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
-                              .then(() => {})
-                              .catch(err => {});
+                              .then(() => { })
+                              .catch(err => { });
                           }
                         })
-                        .catch(err => {});
+                        .catch(err => { });
                     } else {
                       isInternetConnected()
                         .then(() => {
@@ -1588,33 +1589,35 @@ function Player(props) {
               </TouchableOpacity>
             </View>
             {RbSheet()}
-            <MoreModal
-              setBool={setBool}
-              bottomSheetRef={bottomSheetRef}
-              chatId={key}
-              index={0}
-              navigation={props.navigation}
-              openInAppleORSpotify={openInAppleORSpotify}
-              page={'player'}
-              postData={[
-                {
-                  _id: id,
-                  song_uri: uri,
-                  song_name: songTitle,
-                  song_image: pic,
-                  artist_name: artist,
-                  album_name: albumTitle,
-                  post_id: id,
-                  chat_id: key,
-                  type: comingFromMessage ? 'chat' : null,
-                  isrc_code: isrc,
-                  original_song_uri: originalUri,
-                  register_type: registerType,
-                },
-              ]}
-              show={modalVisible}
-              setShow={setModalVisible}
-            />
+            {modalVisible && (
+              <MoreModal
+                setBool={setBool}
+                bottomSheetRef={bottomSheetRef}
+                chatId={key}
+                index={0}
+                navigation={props.navigation}
+                openInAppleORSpotify={openInAppleORSpotify}
+                page={'player'}
+                postData={[
+                  {
+                    _id: id,
+                    song_uri: uri,
+                    song_name: songTitle,
+                    song_image: pic,
+                    artist_name: artist,
+                    album_name: albumTitle,
+                    post_id: id,
+                    chat_id: key,
+                    type: comingFromMessage ? 'chat' : null,
+                    isrc_code: isrc,
+                    original_song_uri: originalUri,
+                    register_type: registerType,
+                  },
+                ]}
+                show={modalVisible}
+                setShow={setModalVisible}
+              />
+            )}
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>

@@ -419,10 +419,10 @@ function InsideaMessage(props) {
             source={
               data.item.profile_image
                 ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
+                  uri:
+                    constants.profile_picture_base_url +
+                    data.item.profile_image,
+                }
                 : ImagePath.userPlaceholder
             }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
@@ -938,7 +938,7 @@ function InsideaMessage(props) {
                   {
                     _id:
                       props.searchedChatData[0].receiver_id ===
-                      props.userProfileResp._id
+                        props.userProfileResp._id
                         ? props.searchedChatData[0].sender_id
                         : props.searchedChatData[0].receiver_id,
                     username: props.chatList[index].username,
@@ -960,19 +960,22 @@ function InsideaMessage(props) {
               ADD ANOTHER SONG
             </Text>
           </TouchableOpacity>
-          <MoreModal
-            setBool={setBool}
-            bottomSheetRef={bottomSheetRef}
-            chatData={chatData}
-            index={positionInArray}
-            setIndex={setPositionInArray}
-            navigation={props.navigation}
-            page={'insideMessage'}
-            openInAppleORSpotify={openInAppleORSpotify}
-            postData={props.searchedChatData}
-            show={modalVisible}
-            setShow={setModalVisible}
-          />
+          {modalVisible && (
+            <MoreModal
+              setBool={setBool}
+              bottomSheetRef={bottomSheetRef}
+              chatData={props.chatData}
+              chatList={props.chatList}
+              index={positionInArray}
+              setIndex={setPositionInArray}
+              navigation={props.navigation}
+              page={'insideMessage'}
+              openInAppleORSpotify={openInAppleORSpotify}
+              postData={props.searchedChatData}
+              show={modalVisible}
+              setShow={setModalVisible}
+            />
+          )}
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </View>

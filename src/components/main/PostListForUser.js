@@ -310,14 +310,14 @@ function PostListForUser(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -629,10 +629,10 @@ function PostListForUser(props) {
             source={
               data.item.profile_image
                 ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
+                  uri:
+                    constants.profile_picture_base_url +
+                    data.item.profile_image,
+                }
                 : ImagePath.userPlaceholder
             }
             style={{
@@ -1140,17 +1140,19 @@ function PostListForUser(props) {
             </View>
           </Modal>
 
-          <MoreModal
-            setBool={setBool}
-            bottomSheetRef={bottomSheetRef}
-            index={positionInArray}
-            setIndex={setPositionInArray}
-            navigation={props.navigation}
-            openInAppleORSpotify={openInAppleORSpotify}
-            postData={posts}
-            show={modalVisible}
-            setShow={setModalVisible}
-          />
+          {modalVisible && (
+            <MoreModal
+              setBool={setBool}
+              bottomSheetRef={bottomSheetRef}
+              index={positionInArray}
+              setIndex={setPositionInArray}
+              navigation={props.navigation}
+              openInAppleORSpotify={openInAppleORSpotify}
+              postData={posts}
+              show={modalVisible}
+              setShow={setModalVisible}
+            />
+          )}
         </View>
       )}
 

@@ -83,10 +83,7 @@ function PlayerScreenSelectUser(props) {
   };
 
   const searchUser = text => {
-    if (text.length >= 1) {
-      // setBool(true);
-      props.followingSearch(text);
-    }
+    props.followingSearch(text);
   };
 
   if (status === '' || props.status !== status) {
@@ -117,12 +114,14 @@ function PlayerScreenSelectUser(props) {
         setUsersToSendSong([]);
         setUserSearch('');
         props.navigation.navigate('SendSongInMessageFinal', {
-          image: props.route.params.item.song_image,
+          image: props.route.params.item.song_image
+            ? props.route.params.item.song_image
+            : props.route.params.item.image,
           preview_url: props.route.params.item.preview_url,
           title: props.route.params.item.song_name,
           title2: props.route.params.item.artist_name,
           users: usersToSendSong,
-          details: props.route.params.item.post_content,
+          details: props.route.params.item,
           registerType: props.registerType,
           fromAddAnotherSong: false,
           index: 0,
@@ -165,10 +164,10 @@ function PlayerScreenSelectUser(props) {
               source={
                 data.item.profile_image
                   ? {
-                      uri:
-                        constants.profile_picture_base_url +
-                        data.item.profile_image,
-                    }
+                    uri:
+                      constants.profile_picture_base_url +
+                      data.item.profile_image,
+                  }
                   : ImagePath.userPlaceholder
               }
               style={{

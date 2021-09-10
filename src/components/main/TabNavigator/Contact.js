@@ -261,10 +261,10 @@ function Contact(props) {
             source={
               data.item.profile_image
                 ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
+                  uri:
+                    constants.profile_picture_base_url +
+                    data.item.profile_image,
+                }
                 : ImagePath.userPlaceholder
             }
             style={{
@@ -783,18 +783,20 @@ function Contact(props) {
           )}
         </SafeAreaView>
       </TouchableWithoutFeedback>
-      <MoreModal
-        page={'savedSongs'}
-        setBool={setBool}
-        bottomSheetRef={bottomSheetRef}
-        index={index}
-        setIndex={setIndex}
-        navigation={props.navigation}
-        openInAppleORSpotify={openInAppleORSpotify}
-        postData={props.savedSong}
-        show={modalVisible}
-        setShow={setModalVisible}
-      />
+      {modalVisible && (
+        <MoreModal
+          page={'savedSongs'}
+          setBool={setBool}
+          bottomSheetRef={bottomSheetRef}
+          index={index}
+          setIndex={setIndex}
+          navigation={props.navigation}
+          openInAppleORSpotify={openInAppleORSpotify}
+          postData={props.savedSong}
+          show={modalVisible}
+          setShow={setModalVisible}
+        />
+      )}
       {renderAddToUsers()}
     </View>
   );

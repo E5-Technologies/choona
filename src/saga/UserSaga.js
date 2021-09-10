@@ -604,7 +604,7 @@ export function* followingSearchAction(action) {
 
   const result = _.filter(followingData.followingDataCopy, item => {
     return (
-      item.username.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
+      item.full_name.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
     );
   });
 

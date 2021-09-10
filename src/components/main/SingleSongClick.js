@@ -99,7 +99,7 @@ function SingleSongClick(props) {
 
     if (response.data.data.length !== 0) {
       let newarray = [];
-      newarray.push(response.data.data);
+      newarray.push(response.data.data[0]);
       setUpdateData(newarray);
 
       let reactArray = [];
@@ -248,14 +248,14 @@ function SingleSongClick(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -743,10 +743,10 @@ function SingleSongClick(props) {
             source={
               data.item.profile_image
                 ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
+                  uri:
+                    constants.profile_picture_base_url +
+                    data.item.profile_image,
+                }
                 : ImagePath.userPlaceholder
             }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
@@ -1091,17 +1091,19 @@ function SingleSongClick(props) {
             renderItem={renderGenreData}
           />
         )}
-        <MoreModal
-          setBool={setBool}
-          bottomSheetRef={bottomSheetRef}
-          index={positionInArray}
-          setIndex={setPositionInArray}
-          navigation={props.navigation}
-          openInAppleORSpotify={openInAppleORSpotify}
-          postData={updateData}
-          show={modalVisible}
-          setShow={setModalVisible}
-        />
+        {modalVisible && (
+          <MoreModal
+            setBool={setBool}
+            bottomSheetRef={bottomSheetRef}
+            index={positionInArray}
+            setIndex={setPositionInArray}
+            navigation={props.navigation}
+            openInAppleORSpotify={openInAppleORSpotify}
+            postData={updateData}
+            show={modalVisible}
+            setShow={setModalVisible}
+          />
+        )}
         {renderAddToUsers()}
 
         <Modal

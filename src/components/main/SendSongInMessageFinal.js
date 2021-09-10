@@ -70,8 +70,7 @@ function SendSongInMessageFinal(props) {
   // GET SPOTIFY SONG URL
   const callApi = async () => {
     return await axios.get(
-      `${
-        constants.BASE_URL
+      `${constants.BASE_URL
       }/${`song/spotify/${props.route.params.details.id}`}`,
       {
         headers: {
@@ -112,16 +111,16 @@ function SendSongInMessageFinal(props) {
           width: '87%',
           alignSelf: 'center',
         }}
-        onPress={() => {}}>
+        onPress={() => { }}>
         <View style={{ flexDirection: 'row' }}>
           <Image
             source={
               data.item.profile_image
                 ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
+                  uri:
+                    constants.profile_picture_base_url +
+                    data.item.profile_image,
+                }
                 : ImagePath.userPlaceholder
             }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
@@ -174,30 +173,30 @@ function SendSongInMessageFinal(props) {
         album_name: type
           ? props.route.params.details.album_name
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.album.name
-          : props.route.params.details.attributes.albumName,
+            ? props.route.params.details.album.name
+            : props.route.params.details.attributes.albumName,
 
         image: imgsource,
 
         song_uri: type
           ? props.route.params.details.song_uri
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.preview_url === null
-            ? spotifyUrl
-            : props.route.params.details.preview_url
-          : props.route.params.details.attributes.previews[0].url,
+            ? props.route.params.details.preview_url === null
+              ? spotifyUrl
+              : props.route.params.details.preview_url
+            : props.route.params.details.attributes.previews[0].url,
 
         original_song_uri: type
           ? props.route.params.details.original_song_uri
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.external_urls.spotify
-          : props.route.params.details.attributes.url,
+            ? props.route.params.details.external_urls.spotify
+            : props.route.params.details.attributes.url,
 
         isrc_code: type
           ? props.route.params.details.isrc_code
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.external_ids.isrc
-          : props.route.params.details.attributes.isrc,
+            ? props.route.params.details.external_ids.isrc
+            : props.route.params.details.attributes.isrc,
 
         original_reg_type: type
           ? props.route.params.details.hasOwnProperty('social_type')

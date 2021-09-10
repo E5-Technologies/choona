@@ -194,8 +194,6 @@ export function* getChatMessages(action) {
           return y.order - x.order;
         });
 
-        console.log('CHATS', JSON.stringify(items));
-
         var chatResponse = {
           data: items,
         };

@@ -63,7 +63,7 @@ export function* searchSongsForPostAction(action) {
             'https://api.spotify.com/v1/me/player/recently-played',
             spotifyHeader,
           );
-          console.log('response' + JSON.stringify(response));
+          // console.log('response' + JSON.stringify(response));
           yield put({
             type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
             data: response.data.items,
@@ -134,7 +134,6 @@ export function* deletePostAction(action) {
 }
 
 export function* searchPostAction(action) {
-  console.log('postsaga' + JSON.stringify(action));
   try {
     const items = yield select(getItems);
     const Header = {
@@ -143,8 +142,9 @@ export function* searchPostAction(action) {
       accesstoken: items.token,
     };
 
-    const text = action.text.replace('&', '');
-    // console.log("api called"+`post/list?keyword=${encodeURI(text)}`);
+    const text = action.text.replace('&', '').replace(/ *\([^)]*\) */g, '');
+
+    console.log('api called' + `post/list?keyword=${encodeURI(text)}`);
 
     if (action.flag) {
       const response = yield call(
@@ -153,7 +153,7 @@ export function* searchPostAction(action) {
         Header,
       );
 
-      console.log('success' + JSON.stringify(response.data.data));
+      // console.log('success' + JSON.stringify(response.data.data));
       yield put({
         type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
         data: response.data.data,
@@ -164,7 +164,8 @@ export function* searchPostAction(action) {
         `post/list?keyword=${encodeURI(text)}&type=top`,
         Header,
       );
-      console.log('success' + JSON.stringify(response.data.data));
+
+      // console.log('success' + JSON.stringify(response.data.data));
       yield put({
         type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
         data: response.data.data,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Clipboard,
   Image,
@@ -48,7 +48,10 @@ const MoreModal = ({
   type,
   unsaveSongReq,
   userProfileResp,
+  othersProfileresp,
 }) => {
+  const [isFollowing] = useState(othersProfileresp.isFollowing);
+  console.log(postData);
   const saveUnsaveAction = () => {
     if (page === 'savedSongs') {
       unsaveSongReq(savedSong[index]._id);
@@ -83,7 +86,7 @@ const MoreModal = ({
     if (chatData.length > 1) {
       let deleteMessagPayload = {
         ChatId: postData[index].key,
-        chatToken: chatList[index].chat_token,
+        chatToken: chatList[0].chat_token,
       };
       deleteMessageReq(deleteMessagPayload);
       setShow(!show);
@@ -110,9 +113,9 @@ const MoreModal = ({
             .then(() => {
               setBool(false);
             })
-            .catch(() => {});
+            .catch(() => { });
         })
-        .catch(_err => {});
+        .catch(_err => { });
     } else {
       setShow(false);
       setBool(true);
@@ -231,8 +234,8 @@ const MoreModal = ({
                   setShow(!show);
                   userProfileResp._id !== postData[index].user_id // USER - FOLLOW/UNFOLLOW
                     ? followUnfollowReq({
-                        follower_id: postData[index].userDetails._id,
-                      }) // USER - FOLLOW/UNFOLLOW
+                      follower_id: postData[index].userDetails._id,
+                    }) // USER - FOLLOW/UNFOLLOW
                     : delPostReq(postData[index]._id);
                   //  DELETE POST
                 }
@@ -246,10 +249,10 @@ const MoreModal = ({
                 {page === 'insideMessage'
                   ? 'Delete Song'
                   : !_.isEmpty(userProfileResp)
-                  ? userProfileResp._id === postData[index]?.user_id
-                    ? 'Delete Post'
-                    : `Unfollow ${postData[index]?.userDetails.username}`
-                  : ''}
+                    ? userProfileResp._id === postData[index]?.user_id
+                      ? 'Delete Post'
+                      : `Unfollow ${postData[index]?.userDetails.username}`
+                    : ''}
               </Text>
             </TouchableOpacity>
           )}
@@ -328,6 +331,7 @@ const MoreModal = ({
 const mapStateToProps = state => {
   return {
     chatList: state.MessageReducer.chatList,
+    othersProfileresp: state.UserReducer.othersProfileresp,
     registerType: state.TokenReducer.registerType,
     savedSong: state.SongReducer.savedSongList,
     userProfileResp: state.UserReducer.userProfileResp,

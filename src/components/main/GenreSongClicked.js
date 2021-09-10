@@ -90,6 +90,8 @@ function GenreSongClicked(props) {
     return newarray;
   };
 
+  console.log(commentList);
+
   let totalReact = [];
   totalReact =
     props.route.params.ptID === 1
@@ -136,24 +138,13 @@ function GenreSongClicked(props) {
 
     console.log('response' + JSON.stringify(response.data.data));
   };
-  useEffect(() => {
-    // const unsuscribe = props.navigation.addListener('focus', payload => {
-    //   isInternetConnected()
-    //     .then(() => {
 
-    props.searchPost(name, flag), setUserSearchData([]);
+  useEffect(() => {
+    props.searchPost(name, flag);
+    setUserSearchData([]);
     sesUsersToSEndSong([]);
     setUserSeach('');
     props.route.params.ptID === 1 ? getdata() : setIsLoading(false);
-
-    //     })
-    //     .catch(() => {
-    //       toast('Opps', 'Please Connect To Internet');
-    //     });
-    // });
-    // return () => {
-    //    unsuscribe();
-    // };
   }, []);
 
   if (userStatus === '' || props.userStatus !== userStatus) {
@@ -190,9 +181,8 @@ function GenreSongClicked(props) {
         break;
     }
   }
-
   if (status === '' || status !== props.status) {
-    console.log('status' + props.status);
+    // console.log('status' + props.status);
     switch (props.status) {
       case GET_POST_FROM_TOP_50_REQUEST:
         status = props.status;
@@ -247,106 +237,20 @@ function GenreSongClicked(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
       text: reaction,
       text_match: myReaction,
     };
-
-    //   commentList.map((item,index)=>{
-
-    //     if(id===item._id)
-
-    //   if(myReaction==='A'){
-    //     if(commentList[index].fire_count===totalReact[index].react[0]){
-    //       commentList[index].fire_count=commentList[index].fire_count+1
-    //       commentList[index].reaction_count=commentList[index].reaction_count+1
-
-    //     }
-    //     else{
-    //       if(commentList[index].fire_count!=0){
-    //         commentList[index].fire_count=commentList[index].fire_count-1
-    //         commentList[index].reaction_count=commentList[index].reaction_count-1
-    //       }
-    //     }
-    //   }
-    //   else if(myReaction==='B'){
-    //     if(commentList[index].love_count===totalReact[index].react[1]){
-    //       commentList[index].love_count=commentList[index].love_count+1
-    //       commentList[index].reaction_count=commentList[index].reaction_count+1
-
-    //     }
-    //     else{
-    //       if(commentList[index].love_count!=0){
-    //         commentList[index].love_count=commentList[index].love_count-1
-    //         commentList[index].reaction_count=commentList[index].reaction_count-1
-    //       }
-    //     }
-    //   }
-    //   else if(myReaction==='C'){
-    //     if(commentList[index].dancer_count===totalReact[index].react[2]){
-    //       commentList[index].dancer_count=commentList[index].dancer_count+1
-    //       commentList[index].reaction_count=commentList[index].reaction_count+1
-    //     }
-    //     else{
-    //       if(commentList[index].dancer_count!=0){
-    //         commentList[index].dancer_count=commentList[index].dancer_count-1
-    //         commentList[index].reaction_count=commentList[index].reaction_count-1
-    //       }
-
-    //     }
-    //   }
-    //   else if(myReaction==='D'){
-    //     if(commentList[index].man_dancing_count===totalReact[index].react[3]){
-    //       commentList[index].man_dancing_count=commentList[index].man_dancing_count+1
-    //       commentList[index].reaction_count=commentList[index].reaction_count+1
-
-    //     }
-    //     else{
-    //       if(commentList[index].man_dancing_count!=0){
-    //         commentList[index].man_dancing_count=commentList[index].man_dancing_count-1
-    //         commentList[index].reaction_count=commentList[index].reaction_count-1
-    //       }
-    //     }
-    //   }
-    //   else if(myReaction==='E'){
-    //     if(commentList[index].face_count===totalReact[index].react[4]){
-    //       commentList[index].face_count=commentList[index].face_count+1
-    //       commentList[index].reaction_count=commentList[index].reaction_count+1
-
-    //     }
-    //     else{
-    //       if(commentList[index].face_count!=0){
-    //         commentList[index].face_count=commentList[index].face_count-1
-    //         commentList[index].reaction_count=commentList[index].reaction_count-1
-    //     }
-
-    //     }
-    //   }
-    //   else{
-    //     if(commentList[index].thumbsup_count===totalReact[index].react[5]){
-    //       commentList[index].thumbsup_count=commentList[index].thumbsup_count+1
-    //       commentList[index].reaction_count=commentList[index].reaction_count+1
-
-    //     }
-    //     else{
-    //       if(commentList[index].thumbsup_count!=0){
-    //         commentList[index].thumbsup_count=commentList[index].thumbsup_count-1
-    //         commentList[index].reaction_count=commentList[index].reaction_count-1
-    //     }
-    //     }
-    //   }
-    //   }
-    // )
 
     isInternetConnected()
       .then(() => {
@@ -359,37 +263,11 @@ function GenreSongClicked(props) {
 
   // HIT REACT
   function hitreact(x, rindex) {
-    // alert("res"+ x + rindex +"sdd" +JSON.stringify(props.getPostFromTop50))
-
-    // console.log("rs"+JSON.stringify(props.getPostFromTop50[rindex].reaction))
-
-    // if (!_.isEmpty(props.getPostFromTop50[rindex].reaction)) {
-    // console.log('here');
-
-    // const present = props.getPostFromTop50[rindex].reaction.some(
-    //   obj =>
-    //     obj.user_id.includes(props.userProfileResp._id) &&
-    //     obj.text.includes(x),
-
-    // );
-    //  alert('nooo'+present)
-
-    // if (present) {
-    // } else {
     setVisible(true);
     setModalReact(x);
     setTimeout(() => {
       setVisible(false);
     }, 2000);
-
-    // }
-    // } else {
-    //   setVisible(true);
-    //   setModalReact(x);
-    //   setTimeout(() => {
-    //     setVisible(false);
-    //   }, 2000);
-    //  }
   }
 
   function _onSelectBack(ID, comment) {
@@ -475,22 +353,6 @@ function GenreSongClicked(props) {
       }
     });
   }
-
-  // function _onReaction(ID,reaction){
-  //   let newarray = commentList
-  //   newarray.map((item,index)=>{
-
-  //    if(item._id === ID){
-
-  //     newarray[index].reaction_count = reaction
-
-  //    }
-  //   if(index=== newarray.length-1){
-  //     setCommentList([...newarray])
-
-  //   }
-  //     })
-  // }
 
   // GET ISRC CODE
   const callApi = async () => {
@@ -744,10 +606,10 @@ function GenreSongClicked(props) {
             source={
               data.item.profile_image
                 ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
+                  uri:
+                    constants.profile_picture_base_url +
+                    data.item.profile_image,
+                }
                 : ImagePath.userPlaceholder
             }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
@@ -1082,7 +944,6 @@ function GenreSongClicked(props) {
             </View>
           ) : (
             <FlatList
-              style={{ marginTop: normalise(10) }}
               data={commentList}
               showsVerticalScrollIndicator={false}
               keyExtractor={(item, index) => {
@@ -1093,17 +954,19 @@ function GenreSongClicked(props) {
           )
         ) : null}
 
-        <MoreModal
-          setBool={setBool}
-          bottomSheetRef={bottomSheetRef}
-          index={positionInArray}
-          setIndex={setPositionInArray}
-          navigation={props.navigation}
-          openInAppleORSpotify={openInAppleORSpotify}
-          postData={props.getPostFromTop50}
-          show={modalVisible}
-          setShow={setModalVisible}
-        />
+        {modalVisible && (
+          <MoreModal
+            setBool={setBool}
+            bottomSheetRef={bottomSheetRef}
+            index={positionInArray}
+            setIndex={setPositionInArray}
+            navigation={props.navigation}
+            openInAppleORSpotify={openInAppleORSpotify}
+            postData={props.getPostFromTop50}
+            show={modalVisible}
+            setShow={setModalVisible}
+          />
+        )}
         {renderAddToUsers()}
 
         <Modal
@@ -1181,7 +1044,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  console.log('statetoprops', JSON.stringify(state.PostReducer));
   return {
     status: state.PostReducer.status,
     getPostFromTop50: state.PostReducer.getPostFromTop50,
@@ -1195,7 +1057,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  console.log('mapdispath');
   return {
     searchPost: (text, flag) => {
       dispatch(searchPostReq(text, flag));

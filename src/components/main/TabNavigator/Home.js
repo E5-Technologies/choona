@@ -431,14 +431,14 @@ function Home(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -660,8 +660,8 @@ function Home(props) {
           _.isEmpty(postArray)
             ? false
             : props.postData.length === postArray.length
-            ? postArray[data.index].playing
-            : false
+              ? postArray[data.index].playing
+              : false
         }
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
@@ -743,7 +743,7 @@ function Home(props) {
         marginBottom={
           data.index === props.postData.length - 1 ? normalise(60) : 0
         }
-        // playingSongRef={props.playingSongRef}
+      // playingSongRef={props.playingSongRef}
       />
       // </TouchableOpacity>
     );
@@ -1295,9 +1295,9 @@ function Home(props) {
             _.isEmpty(props.userProfileResp)
               ? ''
               : props.userProfileResp.profile_image
-              ? constants.profile_picture_base_url +
+                ? constants.profile_picture_base_url +
                 props.userProfileResp.profile_image
-              : null
+                : null
           }
           staticFirstImage={false}
           imageoneheight={normalise(26)}
@@ -1444,7 +1444,7 @@ function Home(props) {
               props.status === LOAD_MORE_REQUEST ||
               props.status === HOME_PAGE_REQUEST ||
               props.status === DUMMY_ACTION_REQUEST) &&
-            visibleminiPlayer === true ? (
+              visibleminiPlayer === true ? (
               <MusicPlayerBar
                 onPress={() => {
                   props.navigation.navigate('Player', {
@@ -1500,17 +1500,19 @@ function Home(props) {
                 </Text>
               </View>
             </Modal>
-            <MoreModal
-              setBool={setBool}
-              bottomSheetRef={bottomSheetRef}
-              index={positionInArray}
-              setIndex={setPositionInArray}
-              navigation={props.navigation}
-              openInAppleORSpotify={openInAppleORSpotify}
-              postData={props.postData}
-              show={modalVisible}
-              setShow={setModalVisible}
-            />
+            {modalVisible && (
+              <MoreModal
+                setBool={setBool}
+                bottomSheetRef={bottomSheetRef}
+                index={positionInArray}
+                setIndex={setPositionInArray}
+                navigation={props.navigation}
+                openInAppleORSpotify={openInAppleORSpotify}
+                postData={props.postData}
+                show={modalVisible}
+                setShow={setModalVisible}
+              />
+            )}
           </View>
         )}
         {modal1Visible === true ? (
