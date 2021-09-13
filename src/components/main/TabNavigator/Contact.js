@@ -678,111 +678,110 @@ function Contact(props) {
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
       <Loader visible={bool} />
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={true}
-            textone={''}
-            title={'SAVED SONGS'}
-            thirditemtext={true}
-            texttwo={''}
-          />
-          {allSaveSong.length !== 0 && (
-            <View
+        }}> */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={true}
+          textone={''}
+          title={'SAVED SONGS'}
+          thirditemtext={true}
+          texttwo={''}
+        />
+        {allSaveSong.length !== 0 && (
+          <View
+            style={{
+              width: '92%',
+              alignSelf: 'center',
+            }}>
+            <TextInput
               style={{
-                width: '92%',
-                alignSelf: 'center',
-              }}>
-              <TextInput
-                style={{
-                  height: normalise(35),
-                  width: '100%',
-                  // backgroundColor: Colors.fadeblack,
-                  borderRadius: normalise(8),
-                  marginTop: normalise(20),
-                  padding: normalise(10),
-                  // color: Colors.white,
+                height: normalise(35),
+                width: '100%',
+                // backgroundColor: Colors.fadeblack,
+                borderRadius: normalise(8),
+                marginTop: normalise(20),
+                padding: normalise(10),
+                // color: Colors.white,
 
-                  backgroundColor: Colors.white,
-                  paddingLeft: normalise(30),
-                }}
-                autoCorrect={false}
-                keyboardAppearance={'dark'}
-                value={search}
-                placeholder={'Search'}
-                placeholderTextColor={Colors.darkgrey}
-                onChangeText={text => {
-                  setSearch(text), filterArray(text);
-                  //  props.getSavedSongs(text);
-                }}
-              />
-              <Image
-                source={ImagePath ? ImagePath.searchicongrey : null}
-                style={{
-                  height: normalise(15),
-                  width: normalise(15),
-                  bottom: normalise(25),
-                  paddingLeft: normalise(30),
-                }}
-                resizeMode="contain"
-              />
-              {search === '' ? null : (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearch(''), setAllSaveSong(props.savedSong);
-                    // props.getSavedSongs('');
-                  }}
-                  style={{
-                    backgroundColor: Colors.black,
-                    padding: 6,
-                    paddingTop: 4,
-                    paddingBottom: 4,
-                    borderRadius: 5,
-                    backgroundColor: Colors.fordGray,
-                    position: 'absolute',
-                    right: 0,
-                    bottom:
-                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                    marginRight: normalise(10),
-                  }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(10),
-                      fontWeight: 'bold',
-                    }}>
-                    CLEAR
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-          {allSaveSong.length !== 0 ? (
-            <SwipeListView
-              data={allSaveSong}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-              keyExtractor={(item, index, rowData) => {
-                index.toString();
+                backgroundColor: Colors.white,
+                paddingLeft: normalise(30),
               }}
-              disableRightSwipe={true}
-              rightOpenValue={-75}
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
+              value={search}
+              placeholder={'Search'}
+              placeholderTextColor={Colors.darkgrey}
+              onChangeText={text => {
+                setSearch(text), filterArray(text);
+                //  props.getSavedSongs(text);
+              }}
             />
-          ) : (
-            <EmptyComponent
-              image={ImagePath ? ImagePath.emptySaveSong : null}
-              text={
-                'When you see a song you love, just click the more menu and save that song. Then you can access it forever from here.'
-              }
-              title={'No Saved Songs'}
+            <Image
+              source={ImagePath ? ImagePath.searchicongrey : null}
+              style={{
+                height: normalise(15),
+                width: normalise(15),
+                bottom: normalise(25),
+                paddingLeft: normalise(30),
+              }}
+              resizeMode="contain"
             />
-          )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+            {search === '' ? null : (
+              <TouchableOpacity
+                onPress={() => {
+                  setSearch(''), setAllSaveSong(props.savedSong);
+                  // props.getSavedSongs('');
+                }}
+                style={{
+                  backgroundColor: Colors.black,
+                  padding: 6,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 5,
+                  backgroundColor: Colors.fordGray,
+                  position: 'absolute',
+                  right: 0,
+                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  marginRight: normalise(10),
+                }}>
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(10),
+                    fontWeight: 'bold',
+                  }}>
+                  CLEAR
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+        {allSaveSong.length !== 0 ? (
+          <SwipeListView
+            data={allSaveSong}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
+            keyExtractor={(item, index, rowData) => {
+              index.toString();
+            }}
+            disableRightSwipe={true}
+            rightOpenValue={-75}
+          />
+        ) : (
+          <EmptyComponent
+            image={ImagePath ? ImagePath.emptySaveSong : null}
+            text={
+              'When you see a song you love, just click the more menu and save that song. Then you can access it forever from here.'
+            }
+            title={'No Saved Songs'}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
       {modalVisible && (
         <MoreModal
           page={'savedSongs'}

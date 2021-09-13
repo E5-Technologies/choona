@@ -111,9 +111,9 @@ function AddSong(props) {
               props.registerType === 'spotify'
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '600x600',
-                  ),
+                  '{w}x{h}',
+                  '600x600',
+                ),
             title:
               props.registerType === 'spotify'
                 ? data.item.name
@@ -140,9 +140,9 @@ function AddSong(props) {
               props.registerType === 'spotify'
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '300x300',
-                  ),
+                  '{w}x{h}',
+                  '300x300',
+                ),
             username: '',
             profile_pic: '',
             originalUri:
@@ -225,7 +225,9 @@ function AddSong(props) {
       } else {
         toast('Oops', 'Something Went Wrong');
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -275,131 +277,131 @@ function AddSong(props) {
 
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
 
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={true}
-            textone={''}
-            title={'ADD SONG'}
-            thirditemtext={true}
-            texttwo={''}
-          />
-          <View
+        }}> */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={true}
+          textone={''}
+          title={'ADD SONG'}
+          thirditemtext={true}
+          texttwo={''}
+        />
+        <View
+          style={{
+            width: '92%',
+            alignSelf: 'center',
+          }}>
+          <TextInput
             style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              style={{
-                height: normalise(35),
-                width: '100%',
-                // backgroundColor: Colors.fadeblack,
-                backgroundColor: Colors.white,
-                borderRadius: normalise(8),
-                marginTop: normalise(16),
-                padding: normalise(10),
-                // fontSize:normalise(15),
-                paddingLeft: normalise(30),
-              }}
-              value={search}
-              placeholder={'Search a new song'}
-              ref={inputRef}
-              returnKeyType={'done'}
-              keyboardAppearance={'dark'}
-              placeholderTextColor={Colors.darkgrey}
-              onSubmitEditing={() => {
-                inputRef.current.blur();
-                Keyboard.dismiss();
-              }}
-              onChangeText={text => {
-                setSearch(text);
-                if (text.length >= 1) {
-                  isInternetConnected()
-                    .then(() => {
-                      props.seachSongsForPostRequest(text, post);
-                    })
-                    .catch(() => {
-                      toast('Error', 'Please Connect To Internet');
-                    });
-                } else if (text.length === 0) {
-                  setSearch(null);
-                }
-              }}
-            />
+              height: normalise(35),
+              width: '100%',
+              // backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.white,
+              borderRadius: normalise(8),
+              marginTop: normalise(16),
+              padding: normalise(10),
+              // fontSize:normalise(15),
+              paddingLeft: normalise(30),
+            }}
+            value={search}
+            placeholder={'Search a new song'}
+            ref={inputRef}
+            returnKeyType={'done'}
+            keyboardAppearance={'dark'}
+            placeholderTextColor={Colors.darkgrey}
+            onSubmitEditing={() => {
+              inputRef.current.blur();
+              Keyboard.dismiss();
+            }}
+            onChangeText={text => {
+              setSearch(text);
+              if (text.length >= 1) {
+                isInternetConnected()
+                  .then(() => {
+                    props.seachSongsForPostRequest(text, post);
+                  })
+                  .catch(() => {
+                    toast('Error', 'Please Connect To Internet');
+                  });
+              } else if (text.length === 0) {
+                setSearch(null);
+              }
+            }}
+          />
 
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
+          <Image
+            source={ImagePath.searchicongrey}
+            style={{
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+            }}
+            resizeMode="contain"
+          />
 
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), setData([]);
-                }}
-                style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 8,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  position: 'absolute',
-                  right: 0,
-                  borderRadius: 5,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          {_.isEmpty(data) || search === null || search === '' ? (
-            <View
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch(''), setData([]);
+              }}
               style={{
-                flexDirection: 'row',
-                width: '100%',
-                height: normaliseNew(40),
-                alignItems: 'center',
-                backgroundColor: Colors.darkerblack,
+                backgroundColor: Colors.fordGray,
+                padding: 8,
+                paddingTop: 4,
+                paddingBottom: 4,
+                position: 'absolute',
+                right: 0,
+                borderRadius: 5,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
               }}>
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: normaliseNew(10),
-                  marginLeft: normaliseNew(16),
-                  fontFamily: 'ProximaNova-Bold',
+                  fontSize: normalise(10),
+                  fontWeight: 'bold',
                 }}>
-                YOUR RECENTLY PLAYED ON{' '}
-                {props.registerType === 'spotify' ? 'SPOTIFY' : 'APPLE MUSIC'}
+                CLEAR
               </Text>
-            </View>
-          ) : (
-            <View
-              style={
-                {
-                  // flexDirection: 'row',
-                  // alignItems: 'center',
-                  // width: '90%',
-                  // alignSelf: 'center',
-                  // marginTop: normalise(5),
-                }
-              }>
-              {/* <Image
+            </TouchableOpacity>
+          )}
+        </View>
+        {_.isEmpty(data) || search === null || search === '' ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '100%',
+              height: normaliseNew(40),
+              alignItems: 'center',
+              backgroundColor: Colors.darkerblack,
+            }}>
+            <Text
+              style={{
+                color: Colors.white,
+                fontSize: normaliseNew(10),
+                marginLeft: normaliseNew(16),
+                fontFamily: 'ProximaNova-Bold',
+              }}>
+              YOUR RECENTLY PLAYED ON{' '}
+              {props.registerType === 'spotify' ? 'SPOTIFY' : 'APPLE MUSIC'}
+            </Text>
+          </View>
+        ) : (
+          <View
+            style={
+              {
+                // flexDirection: 'row',
+                // alignItems: 'center',
+                // width: '90%',
+                // alignSelf: 'center',
+                // marginTop: normalise(5),
+              }
+            }>
+            {/* <Image
                 source={
                   props.registerType === 'spotify'
                     ? ImagePath.spotifyicon
@@ -414,78 +416,66 @@ function AddSong(props) {
                   marginLeft: normalise(10),
                   fontWeight: 'bold',
                 }}>{` RESULTS (${props.spotifyResponse.length})`}</Text> */}
-            </View>
-          )}
-          {_.isEmpty(data) || search === null || search === '' ? (
-            _.isEmpty(recentlyPlayed) ? (
-              <KeyboardAvoidingView
-                enabled={false}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          </View>
+        )}
+        {_.isEmpty(data) || search === null || search === '' ? (
+          _.isEmpty(recentlyPlayed) ? (
+            <KeyboardAvoidingView
+              enabled={false}
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <View
                 style={{
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <View
+                <Image
+                  source={ImagePath.searchicongrey}
+                  style={{ height: normalise(35), width: normalise(35) }}
+                />
+                <Text
                   style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    color: Colors.white,
+                    fontSize: normalise(12),
+                    fontWeight: 'bold',
+                    marginTop: normalise(20),
+                    width: '60%',
+                    textAlign: 'center',
                   }}>
-                  <Image
-                    source={ImagePath.searchicongrey}
-                    style={{ height: normalise(35), width: normalise(35) }}
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                      marginTop: normalise(20),
-                      width: '60%',
-                      textAlign: 'center',
-                    }}>
-                    Search for the song you want to{' '}
-                  </Text>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                      width: '60%',
-                    }}>
-                    share above.
-                  </Text>
-                  <Image
-                    source={ImagePath.addPostIllus}
-                    resizeMode="contain"
-                    style={{
-                      height: undefined,
-                      width: '100%',
-                      aspectRatio: 1125 / 712,
-                      position: 'absolute',
-                      bottom: -80,
-                    }}
-                  />
-                </View>
-              </KeyboardAvoidingView>
-            ) : (
-              <FlatList
-                data={recentlyPlayed}
-                onRefresh={() => onRefresh()}
-                refreshing={isFetching}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => {
-                  index.toString();
-                }}
-                ItemSeparatorComponent={Seperator}
-                showsVerticalScrollIndicator={false}
-              />
-            )
+                  Search for the song you want to{' '}
+                </Text>
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(12),
+                    fontWeight: 'bold',
+                    width: '60%',
+                  }}>
+                  share above.
+                </Text>
+                <Image
+                  source={ImagePath.addPostIllus}
+                  resizeMode="contain"
+                  style={{
+                    height: undefined,
+                    width: '100%',
+                    aspectRatio: 1125 / 712,
+                    position: 'absolute',
+                    bottom: -80,
+                  }}
+                />
+              </View>
+            </KeyboardAvoidingView>
           ) : (
             <FlatList
-              // style={{ marginTop: normalise(10) }}
-              data={data}
+              data={recentlyPlayed}
+              onRefresh={() => onRefresh()}
+              refreshing={isFetching}
               renderItem={renderItem}
               keyExtractor={(item, index) => {
                 index.toString();
@@ -493,9 +483,21 @@ function AddSong(props) {
               ItemSeparatorComponent={Seperator}
               showsVerticalScrollIndicator={false}
             />
-          )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+          )
+        ) : (
+          <FlatList
+            // style={{ marginTop: normalise(10) }}
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            ItemSeparatorComponent={Seperator}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

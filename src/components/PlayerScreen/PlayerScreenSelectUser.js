@@ -220,96 +220,96 @@ function PlayerScreenSelectUser(props) {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <Loader visible={bool} />
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath ? ImagePath.backicon : ''}
-            title={'SELECT USER TO SEND TO'}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
-            }}
-          />
-          <View
+        }}> */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <Loader visible={bool} />
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath ? ImagePath.backicon : ''}
+          title={'SELECT USER TO SEND TO'}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
+        <View
+          style={{
+            width: '90%',
+            alignSelf: 'center',
+            height: normalise(35),
+            marginTop: normalise(20),
+            borderRadius: normalise(8),
+            backgroundColor: Colors.white,
+          }}>
+          <TextInput
             style={{
-              width: '90%',
-              alignSelf: 'center',
               height: normalise(35),
-              marginTop: normalise(20),
-              borderRadius: normalise(8),
-              backgroundColor: Colors.white,
-            }}>
-            <TextInput
-              style={{
-                height: normalise(35),
-                width: '85%',
-                padding: normalise(10),
-                // color: Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              value={userSearch}
-              placeholder={'Select User to Message'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSearch(text);
-                searchUser(text);
-              }}
-            />
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-            {userSearch === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserSearch('');
-                }}
-                style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 8,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  position: 'absolute',
-                  right: 0,
-                  borderRadius: 5,
-                  bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          <FlatList // USER SEARCH FLATLIST
-            style={{
-              height: '65%',
-              marginTop: normalise(5),
+              width: '85%',
+              padding: normalise(10),
+              // color: Colors.white,
+              paddingLeft: normalise(30),
             }}
-            data={props.followingData}
-            renderItem={renderAddUsersToMessageItem}
-            keyExtractor={(item, index) => {
-              item._id.toString();
+            value={userSearch}
+            placeholder={'Select User to Message'}
+            placeholderTextColor={Colors.grey_text}
+            onChangeText={text => {
+              setUserSearch(text);
+              searchUser(text);
             }}
-            showsVerticalScrollIndicator={false}
           />
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+          <Image
+            source={ImagePath.searchicongrey}
+            style={{
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+            }}
+            resizeMode="contain"
+          />
+          {userSearch === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setUserSearch('');
+              }}
+              style={{
+                backgroundColor: Colors.fordGray,
+                padding: 8,
+                paddingTop: 4,
+                paddingBottom: 4,
+                position: 'absolute',
+                right: 0,
+                borderRadius: 5,
+                bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
+                marginRight: normalise(10),
+              }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(10),
+                  fontWeight: 'bold',
+                }}>
+                CLEAR
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <FlatList // USER SEARCH FLATLIST
+          style={{
+            height: '65%',
+            marginTop: normalise(5),
+          }}
+          data={props.followingData}
+          renderItem={renderAddUsersToMessageItem}
+          keyExtractor={(item, index) => {
+            item._id.toString();
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

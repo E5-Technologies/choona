@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
   View,
   Text,
   Image,
   Platform,
-  Clipboard,
-  Linking,
-  Keyboard,
-  TouchableWithoutFeedback,
+  Dimensions,
   TextInput,
-  ImageBackground,
   TouchableOpacity,
   Modal,
 } from 'react-native';
@@ -64,7 +59,6 @@ import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import { getUsersFromHome } from '../../../action/UserAction';
 import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
@@ -499,8 +493,8 @@ function Search(props) {
             uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
           }}
           style={{
-            height: normalise(150),
-            width: normalise(150),
+            width: Math.floor(Dimensions.get('window').width / 2.1),
+            height: Math.floor(Dimensions.get('window').width / 2.1),
           }}
           resizeMode="contain"
         />
@@ -678,7 +672,7 @@ function Search(props) {
           });
       }
     } else if (songSearch) {
-      if (text.length >= 1) {
+      if (text.length >= 0) {
         isInternetConnected()
           .then(() => {
             props.searchPost(text, flag);
@@ -765,402 +759,352 @@ function Search(props) {
 
       <Loader visible={bool} />
 
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={true}
-            textone={''}
-            title={'EXPLORE'}
-            thirditemtext={true}
-            texttwo={''}
-          />
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={true}
+          textone={''}
+          title={'EXPLORE'}
+          thirditemtext={true}
+          texttwo={''}
+        />
+        <View
+          style={{
+            backgroundColor: Colors.fadeblack,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            height: normalise(40),
+          }}>
+          <TouchableOpacity
+            style={{
+              width: '33%',
+              height: normalise(40),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              setUsersSearch(true);
+              setGenreSearch(false);
+              setSongSearch(false);
+            }}>
+            <Text
+              style={{
+                color: usersSearch ? Colors.white : Colors.grey_text,
+                fontFamily: 'ProximaNova-Bold',
+                fontSize: normalise(11),
+                textTransform: 'uppercase',
+              }}>
+              Users
+            </Text>
+            {usersSearch ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={{
+                  width: '100%',
+                  height: normalise(3),
+                  position: 'absolute',
+                  bottom: 0,
+                }}
+              />
+            ) : null}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: '33%',
+              height: normalise(40),
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderLeftWidth: normalise(1),
+              borderLeftColor: Colors.darkerblack,
+              borderRightWidth: normalise(1),
+              borderRightColor: Colors.darkerblack,
+            }}
+            onPress={() => {
+              props.getTop50SongReq();
+              setUsersSearch(false);
+              setGenreSearch(true);
+              setSongSearch(false);
+            }}>
+            <Text
+              style={{
+                color: genreSearch ? Colors.white : Colors.grey_text,
+                fontFamily: 'ProximaNova-Bold',
+                fontSize: normalise(11),
+                textTransform: 'uppercase',
+              }}>
+              Top Songs
+            </Text>
+            {genreSearch ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={{
+                  width: '100%',
+                  height: normalise(3),
+                  position: 'absolute',
+                  bottom: 0,
+                }}
+              />
+            ) : null}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: '33%',
+              height: normalise(40),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              setUsersSearch(false);
+              setGenreSearch(false);
+              setSongSearch(true);
+            }}>
+            <Text
+              style={{
+                color: songSearch ? Colors.white : Colors.grey_text,
+                fontFamily: 'ProximaNova-Bold',
+                fontSize: normalise(11),
+                textTransform: 'uppercase',
+              }}>
+              Songs
+            </Text>
+            {songSearch ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={{
+                  width: '100%',
+                  height: normalise(3),
+                  position: 'absolute',
+                  bottom: 0,
+                }}
+              />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+        {usersSearch || songSearch ? (
           <View
             style={{
-              backgroundColor: Colors.fadeblack,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              height: normalise(40),
+              width: '100%',
+              alignSelf: 'center',
             }}>
-            <TouchableOpacity
+            <TextInput
               style={{
-                width: '33%',
-                height: normalise(40),
-                alignItems: 'center',
-                justifyContent: 'center',
+                height: normalise(35),
+                width: '94%',
+                // backgroundColor: Colors.fadeblack,
+                borderRadius: normalise(8),
+                marginTop: normalise(16),
+                padding: normalise(10),
+                // color: Colors.white,
+                marginHorizontal: normalise(12),
+                backgroundColor: Colors.white,
+                paddingLeft: normalise(30),
               }}
-              onPress={() => {
-                setUsersSearch(true);
-                setGenreSearch(false);
-                setSongSearch(false);
-              }}>
-              <Text
-                style={{
-                  color: usersSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
-                  textTransform: 'uppercase',
-                }}>
-                Users
-              </Text>
-              {usersSearch ? (
-                <Image
-                  source={ImagePath.gradient_border_horizontal}
-                  style={{
-                    width: '100%',
-                    height: normalise(3),
-                    position: 'absolute',
-                    bottom: 0,
-                  }}
-                />
-              ) : null}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: '34%',
-                height: normalise(40),
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderLeftWidth: normalise(1),
-                borderLeftColor: Colors.darkerblack,
-                borderRightWidth: normalise(1),
-                borderRightColor: Colors.darkerblack,
+              keyboardAppearance="dark"
+              autoCorrect={false}
+              value={usersSearch ? usersSearchText : songSearchText}
+              placeholder={usersSearch ? 'Search Users' : 'Search Songs'}
+              placeholderTextColor={Colors.darkgrey}
+              onChangeText={text => {
+                search(text);
+                usersSearch
+                  ? setUsersSearchText(text)
+                  : setSongSearchText(text);
               }}
-              onPress={() => {
-                props.getTop50SongReq();
-                setUsersSearch(false);
-                setGenreSearch(true);
-                setSongSearch(false);
-              }}>
-              <Text
-                style={{
-                  color: genreSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
-                  textTransform: 'uppercase',
-                }}>
-                Top Songs
-              </Text>
-              {genreSearch ? (
-                <Image
-                  source={ImagePath.gradient_border_horizontal}
-                  style={{
-                    width: '100%',
-                    height: normalise(3),
-                    position: 'absolute',
-                    bottom: 0,
-                  }}
-                />
-              ) : null}
-            </TouchableOpacity>
-            <TouchableOpacity
+            />
+            <Image
+              source={ImagePath.searchicongrey}
               style={{
-                width: '33%',
-                height: normalise(40),
-                alignItems: 'center',
-                justifyContent: 'center',
+                height: normalise(15),
+                width: normalise(15),
+                bottom: normalise(25),
+                paddingLeft: normalise(30),
+                marginHorizontal: normalise(12),
               }}
-              onPress={() => {
-                setUsersSearch(false);
-                setGenreSearch(false);
-                setSongSearch(true);
-              }}>
-              <Text
-                style={{
-                  color: songSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
-                  textTransform: 'uppercase',
-                }}>
-                Songs
-              </Text>
-              {songSearch ? (
-                <Image
-                  source={ImagePath.gradient_border_horizontal}
-                  style={{
-                    width: '100%',
-                    height: normalise(3),
-                    position: 'absolute',
-                    bottom: 0,
-                  }}
-                />
-              ) : null}
-            </TouchableOpacity>
-          </View>
-          {usersSearch || songSearch ? (
-            <View
-              style={{
-                width: '92%',
-                alignSelf: 'center',
-              }}>
-              <TextInput
-                style={{
-                  height: normalise(35),
-                  width: '100%',
-                  // backgroundColor: Colors.fadeblack,
-                  borderRadius: normalise(8),
-                  marginTop: normalise(16),
-                  padding: normalise(10),
-                  // color: Colors.white,
-
-                  backgroundColor: Colors.white,
-                  paddingLeft: normalise(30),
-                }}
-                keyboardAppearance="dark"
-                autoCorrect={false}
-                value={usersSearch ? usersSearchText : songSearchText}
-                placeholder={usersSearch ? 'Search Users' : 'Search Songs'}
-                placeholderTextColor={Colors.darkgrey}
-                onChangeText={text => {
-                  search(text);
+              resizeMode="contain"
+            />
+            {(usersSearch && usersSearchText) ||
+              (songSearch && songSearchText) ? (
+              <TouchableOpacity
+                onPress={() => {
+                  clearSearch();
                   usersSearch
-                    ? setUsersSearchText(text)
-                    : setSongSearchText(text);
+                    ? setUsersSearchText('')
+                    : genreSearch
+                      ? setGenreSearchText('')
+                      : setSongSearchText('');
                 }}
-              />
-              <Image
-                source={ImagePath.searchicongrey}
                 style={{
-                  height: normalise(15),
-                  width: normalise(15),
-                  bottom: normalise(25),
-                  paddingLeft: normalise(30),
-                }}
-                resizeMode="contain"
-              />
-              {(usersSearch && usersSearchText) ||
-                (songSearch && songSearchText) ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    clearSearch();
-                    usersSearch
-                      ? setUsersSearchText('')
-                      : genreSearch
-                        ? setGenreSearchText('')
-                        : setSongSearchText('');
-                  }}
+                  // backgroundColor: Colors.black,
+                  padding: 6,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 5,
+                  backgroundColor: Colors.fordGray,
+                  position: 'absolute',
+                  right: 0,
+                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  marginRight: normalise(10),
+                }}>
+                <Text
                   style={{
-                    // backgroundColor: Colors.black,
-                    padding: 6,
-                    paddingTop: 4,
-                    paddingBottom: 4,
-                    borderRadius: 5,
-                    backgroundColor: Colors.fordGray,
-                    position: 'absolute',
-                    right: 0,
-                    bottom:
-                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                    marginRight: normalise(10),
+                    color: Colors.white,
+                    fontSize: normalise(10),
+                    fontWeight: 'bold',
                   }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(10),
-                      fontWeight: 'bold',
-                    }}>
-                    CLEAR
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
-            </View>
+                  CLEAR
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        ) : (
+          <View />
+        )}
+        {usersSearch ? ( //USERS VIEW
+          songData.length === 0 ? (
+            <EmptyComponent
+              buttonPress={() => {
+                setContactsLoading(true);
+                getContacts();
+              }}
+              buttonText={'Search Phonebook'}
+              image={ImagePath.emptyUser}
+              text={
+                'Search above to find users you want to follow by either their username or just typing their name.'
+              }
+              title={'Search Users to Follow'}
+            />
           ) : (
-            <View />
-          )}
-          {usersSearch ? ( //USERS VIEW
-            songData.length === 0 ? (
-              <EmptyComponent
-                buttonPress={() => {
-                  setContactsLoading(true);
-                  getContacts();
-                }}
-                buttonText={'Search Phonebook'}
-                image={ImagePath.emptyUser}
-                text={
-                  'Search above to find users you want to follow by either their username or just typing their name.'
-                }
-                title={'Search Users to Follow'}
-              />
-            ) : (
-              <View>
-                <View
+            <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginHorizontal: normalise(12),
+                  justifyContent: 'flex-start',
+                }}>
+                <Text
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    width: '92%',
-                    alignSelf: 'center',
-                    marginTop: normalise(5),
-                    justifyContent: 'flex-start',
+                    fontFamily: 'ProximaNova-Bold',
+                    color: Colors.white,
+                    fontSize: normalise(12),
+                    fontWeight: 'bold',
                   }}>
-                  <Text
-                    style={{
-                      fontFamily: 'ProximaNova-Bold',
-                      color: Colors.white,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                    }}>
-                    {' '}
-                    RESULTS ({songData.length})
-                  </Text>
-                </View>
-
-                <FlatList
-                  style={{ height: '70%' }}
-                  data={songData}
-                  renderItem={renderUserData}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                  ItemSeparatorComponent={Seperator}
-                />
+                  {' '}
+                  RESULTS ({songData.length})
+                </Text>
               </View>
-            )
-          ) : null}
-
-          {songSearch ? ( //SONG VIEW
-            searchPostData.length === 0 ? (
-              <EmptyComponent
-                image={ImagePath.emptySong}
-                text={
-                  'Search for a song or artist you love to find which other Choona users are posting them as well.'
-                }
-                title={'Explore posts containing a song'}
-              />
-            ) : (
-              <View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    width: '92%',
-                    alignSelf: 'center',
-                    marginTop: normalise(5),
-                    justifyContent: 'flex-start',
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: 'ProximaNova-Bold',
-                      color: Colors.white,
-                      fontSize: normalise(12),
-                      fontWeight: 'bold',
-                    }}>
-                    {' '}
-                    RESULTS ({searchPostData.length})
-                  </Text>
-                </View>
-
-                <FlatList
-                  style={{ height: '70%' }}
-                  data={searchPostData}
-                  renderItem={renderSongData}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                />
-                {modalVisible && (
-                  <MoreModal
-                    setBool={setBool}
-                    bottomSheetRef={bottomSheetRef}
-                    index={positionInArray}
-                    setIndex={setPositionInArray}
-                    navigation={props.navigation}
-                    postData={props.searchPostData}
-                    show={modalVisible}
-                    setShow={setModalVisible}
-                  />
-                )}
-              </View>
-            )
-          ) : null}
-          {genreSearch ? ( //Top Songs VIEW
-            top50.length === 0 ? (
-              <EmptyComponent
-                image={ImagePath.emptyPost}
-                text={'No songs have been posted today.'}
-              // title={'No songs have been posted today'}
-              />
-            ) : (
               <FlatList
                 style={{
-                  alignSelf: 'center',
-                  width: '100%',
-                  padding: normalise(2),
+                  height: Dimensions.get('window').height - 295,
                 }}
-                data={top50}
-                renderItem={renderGenreData}
+                data={songData}
+                renderItem={renderUserData}
                 keyExtractor={(item, index) => index.toString()}
-                numColumns={2}
+                showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={Seperator}
+              />
+            </View>
+          )
+        ) : null}
+
+        {songSearch ? ( //SONG VIEW
+          searchPostData.length === 0 ? (
+            <EmptyComponent
+              image={ImagePath.emptySong}
+              text={
+                'Search for a song or artist you love to find which other Choona users are posting them as well.'
+              }
+              title={'Explore posts containing a song'}
+            />
+          ) : (
+            <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  width: '92%',
+                  alignSelf: 'center',
+                  marginTop: normalise(5),
+                  justifyContent: 'flex-start',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'ProximaNova-Bold',
+                    color: Colors.white,
+                    fontSize: normalise(12),
+                    fontWeight: 'bold',
+                  }}>
+                  {' '}
+                  RESULTS ({searchPostData.length})
+                </Text>
+              </View>
+
+              <FlatList
+                style={{ height: '70%' }}
+                data={searchPostData}
+                renderItem={renderSongData}
+                keyExtractor={(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
               />
-            )
-          ) : null}
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={visible}
-            onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
-            }}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: '#000000',
-                opacity: 0.9,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize:
-                    Platform.OS === 'android' ? normalise(70) : normalise(100),
-                }}>
-                {modalReact}
-              </Text>
+              {modalVisible && (
+                <MoreModal
+                  setBool={setBool}
+                  bottomSheetRef={bottomSheetRef}
+                  index={positionInArray}
+                  setIndex={setPositionInArray}
+                  navigation={props.navigation}
+                  postData={props.searchPostData}
+                  show={modalVisible}
+                  setShow={setModalVisible}
+                />
+              )}
             </View>
-          </Modal>
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+          )
+        ) : null}
+        {genreSearch ? ( //Top Songs VIEW
+          top50.length === 0 ? (
+            <EmptyComponent
+              image={ImagePath.emptyPost}
+              text={'No songs have been posted today.'}
+            // title={'No songs have been posted today'}
+            />
+          ) : (
+            <FlatList
+              data={top50}
+              renderItem={renderGenreData}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+            />
+          )
+        ) : null}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={visible}
+          onRequestClose={() => {
+            //Alert.alert("Modal has been closed.");
+          }}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#000000',
+              opacity: 0.9,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize:
+                  Platform.OS === 'android' ? normalise(70) : normalise(100),
+              }}>
+              {modalReact}
+            </Text>
+          </View>
+        </Modal>
+      </SafeAreaView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  modalView: {
-    // marginBottom: normalise(10),
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
-    backgroundColor: Colors.darkerblack,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    // margin: 20,
-    padding: 20,
-    paddingTop: normalise(24),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-  },
-});
 
 const mapStateToProps = state => {
   return {

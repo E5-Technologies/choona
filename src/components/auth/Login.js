@@ -316,15 +316,17 @@ function SignUp(props) {
           left: 0,
           right: 0,
         }}>
-        <Text
-          style={{
-            color: Colors.white,
-            fontFamily: 'ProximaNova-SemiBold',
-            fontSize: normalise(11),
-            marginBottom: normalise(12),
-          }}>
-          SIMPLY SIGN IN WITH ONE OF THE BELOW
-        </Text>
+        {Platform.OS === 'ios' && (
+          <Text
+            style={{
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              fontSize: normalise(11),
+              marginBottom: normalise(12),
+            }}>
+            SIMPLY SIGN IN WITH ONE OF THE BELOW
+          </Text>
+        )}
         <TouchableOpacity
           style={{
             backgroundColor: '#1ED760',
@@ -349,7 +351,7 @@ function SignUp(props) {
           />
         </TouchableOpacity>
 
-        {Platform.OS === 'ios' ? (
+        {Platform.OS === 'ios' && (
           <TouchableOpacity
             style={{
               backgroundColor: '#E74E4C',
@@ -368,7 +370,7 @@ function SignUp(props) {
               resizeMode="contain"
             />
           </TouchableOpacity>
-        ) : null}
+        )}
       </View>
     </View>
   );

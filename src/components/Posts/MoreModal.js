@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Clipboard,
   Image,
@@ -16,7 +16,10 @@ import _ from 'lodash';
 import { deleteMessageRequest } from '../../action/MessageAction';
 import { deletePostReq } from '../../action/PostAction';
 import { saveSongRequest, unsaveSongRequest } from '../../action/SongAction';
-import { userFollowUnfollowRequest } from '../../action/UserAction';
+import {
+  othersProfileRequest,
+  userFollowUnfollowRequest,
+} from '../../action/UserAction';
 
 import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
@@ -49,9 +52,20 @@ const MoreModal = ({
   unsaveSongReq,
   userProfileResp,
   othersProfileresp,
+  othersProfileReq,
 }) => {
-  const [isFollowing] = useState(othersProfileresp.isFollowing);
-  console.log(postData);
+  const [isFollowing, setIsFollowing] = useState(
+    othersProfileresp ? othersProfileresp.isFollowing : false,
+  );
+
+  useEffect(() => {
+    othersProfileReq(postData[index].userDetails._id);
+
+    if (othersProfileresp) {
+      setIsFollowing(othersProfileresp.isFollowing);
+    }
+  }, []);
+
   const saveUnsaveAction = () => {
     if (page === 'savedSongs') {
       unsaveSongReq(savedSong[index]._id);
@@ -127,6 +141,13 @@ const MoreModal = ({
           toast('', 'Please Connect To Internet');
         });
     }
+  };
+
+  const followUnfollowAction = () => {
+    setIsFollowing(!isFollowing);
+    followUnfollowReq({
+      follower_id: postData[index].userDetails._id,
+    });
   };
 
   return (
@@ -233,9 +254,7 @@ const MoreModal = ({
                 } else {
                   setShow(!show);
                   userProfileResp._id !== postData[index].user_id // USER - FOLLOW/UNFOLLOW
-                    ? followUnfollowReq({
-                      follower_id: postData[index].userDetails._id,
-                    }) // USER - FOLLOW/UNFOLLOW
+                    ? followUnfollowAction()
                     : delPostReq(postData[index]._id);
                   //  DELETE POST
                 }
@@ -251,7 +270,9 @@ const MoreModal = ({
                   : !_.isEmpty(userProfileResp)
                     ? userProfileResp._id === postData[index]?.user_id
                       ? 'Delete Post'
-                      : `Unfollow ${postData[index]?.userDetails.username}`
+                      : isFollowing
+                        ? ` Unfollow ${postData[index]?.userDetails.username}`
+                        : `Follow ${postData[index]?.userDetails.username}`
                     : ''}
               </Text>
             </TouchableOpacity>
@@ -348,6 +369,9 @@ const mapDispatchToProps = dispatch => {
     },
     followUnfollowReq: payload => {
       dispatch(userFollowUnfollowRequest(payload));
+    },
+    othersProfileReq: id => {
+      dispatch(othersProfileRequest(id));
     },
     saveSongReq: payload => {
       dispatch(saveSongRequest(payload));

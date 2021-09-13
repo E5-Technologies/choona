@@ -1,5 +1,12 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import Colors from '../../assests/Colors';
 import normalise from '../../utils/helpers/Dimens';
@@ -37,9 +44,9 @@ const styles = StyleSheet.create({
     marginHorizontal: normalise(32),
   },
   emptyImage: {
-    height: normalise(200),
+    height: Math.floor(Dimensions.get('window').width / 1.8),
     marginBottom: normalise(20),
-    width: normalise(200),
+    width: Math.floor(Dimensions.get('window').width / 1.8),
   },
   emptyTitle: {
     color: Colors.white,

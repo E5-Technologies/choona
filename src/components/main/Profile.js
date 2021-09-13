@@ -165,13 +165,13 @@ function Profile(props) {
               props.userProfileResp?.register_type === 'spotify'
                 ? data.item.song_image
                 : data.item.song_image.replace(
-                    '100x100bb.jpg',
-                    '500x500bb.jpg',
-                  ),
+                  '100x100bb.jpg',
+                  '500x500bb.jpg',
+                ),
           }}
           style={{
             width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').height * 0.22),
+            height: Math.floor(Dimensions.get('window').width / 2.1),
           }}
           resizeMode="cover"
         />
@@ -186,7 +186,7 @@ function Profile(props) {
         transparent={true}
         visible={modalVisible}
         presentationStyle={'overFullScreen'}
-        onRequestClose={() => {}}>
+        onRequestClose={() => { }}>
         <ImageBackground
           source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>

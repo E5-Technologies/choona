@@ -806,178 +806,178 @@ function InsideaMessage(props) {
 
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          {renderAddToUsers()}
+        }}> */}
+      <SafeAreaView style={{ flex: 1 }}>
+        {renderAddToUsers()}
 
-          <InsideMessegeHeader
-            firstitemtext={false}
-            imageone={
-              constants.profile_picture_base_url +
-              props.userProfileResp.profile_image
-            }
-            imagesecond={
-              constants.profile_picture_base_url +
-              props.chatList[index].profile_image
-            }
-            title={props.chatList[index].username}
-            thirditemtext={false}
-            // imagetwo={ImagePath.newmessage}
-            imagetwoheight={25}
-            imagetwowidth={25}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
-            }}
-          />
+        <InsideMessegeHeader
+          firstitemtext={false}
+          imageone={
+            constants.profile_picture_base_url +
+            props.userProfileResp.profile_image
+          }
+          imagesecond={
+            constants.profile_picture_base_url +
+            props.chatList[index].profile_image
+          }
+          title={props.chatList[index].username}
+          thirditemtext={false}
+          // imagetwo={ImagePath.newmessage}
+          imagetwoheight={25}
+          imagetwowidth={25}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
 
-          <View
+        <View
+          style={{
+            width: '92%',
+            alignSelf: 'center',
+          }}>
+          <TextInput
+            autoCorrect={false}
+            keyboardAppearance={'dark'}
             style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.white,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                // color: Colors.white,
-                paddingLeft: normalise(30),
-                paddingRight: normalise(50),
-              }}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text), props.searchMessageRequest(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), props.searchMessageRequest('');
-                }}
-                style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 5,
-
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          <SwipeListView
-            data={props.searchedChatData}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            disableRightSwipe={true}
-            rightOpenValue={-75}
-            ItemSeparatorComponent={Seperator}
-          />
-
-          <TouchableOpacity
-            style={{
-              marginBottom: normalise(30),
-              marginTop: normalise(10),
-              height: normalise(50),
-              width: '80%',
-              alignSelf: 'center',
-              borderRadius: normalise(25),
+              height: normalise(35),
+              width: '100%',
               backgroundColor: Colors.white,
-              borderWidth: normalise(0.5),
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.5,
-              shadowRadius: 9,
-              elevation: 11,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderColor: Colors.white,
+              borderRadius: normalise(8),
+              marginTop: normalise(20),
+              padding: normalise(10),
+              // color: Colors.white,
+              paddingLeft: normalise(30),
+              paddingRight: normalise(50),
             }}
-            onPress={() => {
-              props.navigation.replace('AddAnotherSong', {
-                users: [
-                  {
-                    _id:
-                      props.searchedChatData[0].receiver_id ===
-                        props.userProfileResp._id
-                        ? props.searchedChatData[0].sender_id
-                        : props.searchedChatData[0].receiver_id,
-                    username: props.chatList[index].username,
-                    full_name: props.chatList[index].full_name,
-                    profile_image: props.chatList[index].profile_image,
-                  },
-                ],
-                index: index,
-                othersProfile: false,
-              });
-            }}>
-            <Text
+            value={search}
+            placeholder={'Search'}
+            placeholderTextColor={Colors.darkgrey}
+            onChangeText={text => {
+              setSearch(text), props.searchMessageRequest(text);
+            }}
+          />
+
+          <Image
+            source={ImagePath.searchicongrey}
+            style={{
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+            }}
+            resizeMode="contain"
+          />
+
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch(''), props.searchMessageRequest('');
+              }}
               style={{
-                marginLeft: normalise(10),
-                color: Colors.gray,
-                fontSize: normalise(14),
-                fontFamily: 'ProximaNova-Bold',
+                backgroundColor: Colors.fordGray,
+                padding: 6,
+                paddingTop: 4,
+                paddingBottom: 4,
+                borderRadius: 5,
+
+                position: 'absolute',
+                right: 0,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
               }}>
-              ADD ANOTHER SONG
-            </Text>
-          </TouchableOpacity>
-          {modalVisible && (
-            <MoreModal
-              setBool={setBool}
-              bottomSheetRef={bottomSheetRef}
-              chatData={props.chatData}
-              chatList={props.chatList}
-              index={positionInArray}
-              setIndex={setPositionInArray}
-              navigation={props.navigation}
-              page={'insideMessage'}
-              openInAppleORSpotify={openInAppleORSpotify}
-              postData={props.searchedChatData}
-              show={modalVisible}
-              setShow={setModalVisible}
-            />
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(10),
+                  fontWeight: 'bold',
+                }}>
+                CLEAR
+              </Text>
+            </TouchableOpacity>
           )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+        </View>
+
+        <SwipeListView
+          data={props.searchedChatData}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => {
+            index.toString();
+          }}
+          disableRightSwipe={true}
+          rightOpenValue={-75}
+          ItemSeparatorComponent={Seperator}
+        />
+
+        <TouchableOpacity
+          style={{
+            marginBottom: normalise(30),
+            marginTop: normalise(10),
+            height: normalise(50),
+            width: '80%',
+            alignSelf: 'center',
+            borderRadius: normalise(25),
+            backgroundColor: Colors.white,
+            borderWidth: normalise(0.5),
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.5,
+            shadowRadius: 9,
+            elevation: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderColor: Colors.white,
+          }}
+          onPress={() => {
+            props.navigation.replace('AddAnotherSong', {
+              users: [
+                {
+                  _id:
+                    props.searchedChatData[0].receiver_id ===
+                      props.userProfileResp._id
+                      ? props.searchedChatData[0].sender_id
+                      : props.searchedChatData[0].receiver_id,
+                  username: props.chatList[index].username,
+                  full_name: props.chatList[index].full_name,
+                  profile_image: props.chatList[index].profile_image,
+                },
+              ],
+              index: index,
+              othersProfile: false,
+            });
+          }}>
+          <Text
+            style={{
+              marginLeft: normalise(10),
+              color: Colors.gray,
+              fontSize: normalise(14),
+              fontFamily: 'ProximaNova-Bold',
+            }}>
+            ADD ANOTHER SONG
+          </Text>
+        </TouchableOpacity>
+        {modalVisible && (
+          <MoreModal
+            setBool={setBool}
+            bottomSheetRef={bottomSheetRef}
+            chatData={props.chatData}
+            chatList={props.chatList}
+            index={positionInArray}
+            setIndex={setPositionInArray}
+            navigation={props.navigation}
+            page={'insideMessage'}
+            openInAppleORSpotify={openInAppleORSpotify}
+            postData={props.searchedChatData}
+            show={modalVisible}
+            setShow={setModalVisible}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

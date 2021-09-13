@@ -219,6 +219,7 @@ function SendSongInMessageFinal(props) {
     };
 
     props.sendChatMessageRequest(chatPayload);
+
     //props.navigation.goBack();
   }
 

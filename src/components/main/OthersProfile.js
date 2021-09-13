@@ -135,13 +135,13 @@ function OthersProfile(props) {
               props.othersProfileresp.register_type === 'spotify'
                 ? data.item.song_image
                 : data.item.song_image.replace(
-                    '100x100bb.jpg',
-                    '500x500bb.jpg',
-                  ),
+                  '100x100bb.jpg',
+                  '500x500bb.jpg',
+                ),
           }}
           style={{
             width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').height * 0.22),
+            height: Math.floor(Dimensions.get('window').width / 2.1),
           }}
           resizeMode="cover"
         />
@@ -192,16 +192,14 @@ function OthersProfile(props) {
         ) : _.isEmpty(profilePosts) ? (
           <EmptyComponent
             image={ImagePath ? ImagePath.emptyPost : null}
-            text={`${
-              props.othersProfileresp.username
+            text={`${props.othersProfileresp.username
                 ? props.othersProfileresp.username
                 : 'User'
-            } has not posted any songs yet`}
-            title={`${
-              props.othersProfileresp.username
+              } has not posted any songs yet`}
+            title={`${props.othersProfileresp.username
                 ? props.othersProfileresp.username
                 : 'User'
-            }'s Profile is empty`}
+              }'s Profile is empty`}
           />
         ) : (
           <FlatList
