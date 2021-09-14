@@ -54,17 +54,21 @@ const MoreModal = ({
   othersProfileresp,
   othersProfileReq,
 }) => {
-  const [isFollowing, setIsFollowing] = useState(
-    othersProfileresp ? othersProfileresp.isFollowing : false,
-  );
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const userId = postData && postData[index].userDetails._id;
 
   useEffect(() => {
-    othersProfileReq(postData[index].userDetails._id);
+    if (userId) {
+      othersProfileReq(userId);
+    }
+  }, [othersProfileReq, userId]);
 
+  useEffect(() => {
     if (othersProfileresp) {
       setIsFollowing(othersProfileresp.isFollowing);
     }
-  }, []);
+  }, [othersProfileresp]);
 
   const saveUnsaveAction = () => {
     if (page === 'savedSongs') {
