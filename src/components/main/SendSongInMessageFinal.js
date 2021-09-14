@@ -223,6 +223,8 @@ function SendSongInMessageFinal(props) {
     //props.navigation.goBack();
   }
 
+  console.log(2);
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />

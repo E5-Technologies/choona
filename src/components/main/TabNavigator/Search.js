@@ -888,7 +888,7 @@ function Search(props) {
             <TextInput
               style={{
                 height: normalise(35),
-                width: '94%',
+                // width: '92%',
                 // backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(8),
                 marginTop: normalise(16),
@@ -940,7 +940,7 @@ function Search(props) {
                   borderRadius: 5,
                   backgroundColor: Colors.fordGray,
                   position: 'absolute',
-                  right: 0,
+                  right: 12,
                   bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
                   marginRight: normalise(10),
                 }}>
@@ -978,6 +978,7 @@ function Search(props) {
                 style={{
                   flexDirection: 'row',
                   marginHorizontal: normalise(12),
+                  paddingBottom: normalise(8),
                   justifyContent: 'flex-start',
                 }}>
                 <Text
@@ -1019,10 +1020,8 @@ function Search(props) {
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'center',
-                  width: '92%',
-                  alignSelf: 'center',
-                  marginTop: normalise(5),
+                  marginHorizontal: normalise(12),
+                  paddingBottom: normalise(8),
                   justifyContent: 'flex-start',
                 }}>
                 <Text
