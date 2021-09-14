@@ -943,7 +943,7 @@ function Player(props) {
               style={{
                 marginHorizontal: normalise(15),
                 width: normalise(290),
-                marginTop: normalise(15),
+                marginTop: normalise(5),
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: changePlayer ? 'flex-end' : 'space-between',
@@ -1420,10 +1420,24 @@ function Player(props) {
                       borderRadius: normalise(5),
                     }}
                     onPress={() => {
-                      if (bottomSheetRef) {
-                        setModalVisible(false);
-                        bottomSheetRef.open();
-                      }
+                      props.navigation.navigate('PlayerScreenSelectUser', {
+                        item: {
+                          _id: id,
+                          song_uri: uri,
+                          song_name: songTitle,
+                          song_image: pic,
+                          artist_name: artist,
+                          album_name: albumTitle,
+                          post_id: id,
+                          chat_id: key,
+                          type: comingFromMessage ? 'chat' : null,
+                          isrc_code: isrc,
+                          original_song_uri: originalUri,
+                          register_type: registerType,
+                        },
+                        fromPlayer: true,
+                        fromHome: true,
+                      });
                     }}>
                     <Image
                       source={ImagePath.sendicon}

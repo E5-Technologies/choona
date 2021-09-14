@@ -192,23 +192,6 @@ function InsideaMessage(props) {
                 setPositionInArray(data.index);
               }}
               onPressItem={() => {
-                if (props.userProfileResp._id === data.item.receiver_id) {
-                  console.log('inside condition');
-
-                  const listener = FIREBASE_REF_MESSAGES.child(
-                    action.payload.chatToken,
-                  )
-                    .child(props.chatList[index].chat_token)
-                    .update(
-                      {
-                        read: true,
-                      },
-                      error => {
-                        emiter({ error: error || null });
-                      },
-                    );
-                }
-
                 props.navigation.navigate('Player', {
                   username: props.chatList[index].username,
                   time: props.chatList[index].time,
