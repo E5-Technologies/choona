@@ -56,7 +56,7 @@ const MoreModal = ({
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const userId = postData && postData[index].userDetails._id;
+  const userId = postData && postData[index].userDetails?._id;
 
   useEffect(() => {
     if (userId) {

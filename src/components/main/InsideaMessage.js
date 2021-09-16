@@ -897,8 +897,8 @@ function InsideaMessage(props) {
 
         <TouchableOpacity
           style={{
-            marginBottom: normalise(30),
-            marginTop: normalise(10),
+            marginBottom: normalise(10),
+            // marginTop: normalise(10),
             height: normalise(50),
             width: '80%',
             alignSelf: 'center',
@@ -940,7 +940,7 @@ function InsideaMessage(props) {
               fontSize: normalise(14),
               fontFamily: 'ProximaNova-Bold',
             }}>
-            ADD ANOTHER SONG
+            SEND ANOTHER SONG
           </Text>
         </TouchableOpacity>
         {modalVisible && (
