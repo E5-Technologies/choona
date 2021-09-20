@@ -98,6 +98,7 @@ function SingleSongClick(props) {
     });
 
     if (response.data.data.length !== 0) {
+      console.log(response.data.data);
       let newarray = [];
       newarray.push(response.data.data[0]);
       setUpdateData(newarray);
