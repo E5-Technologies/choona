@@ -275,7 +275,7 @@ const MoreModal = ({
                     ? userProfileResp._id === postData[index]?.user_id
                       ? 'Delete Post'
                       : isFollowing
-                        ? ` Unfollow ${postData[index]?.userDetails.username}`
+                        ? `Unfollow ${postData[index]?.userDetails.username}`
                         : `Follow ${postData[index]?.userDetails.username}`
                     : ''}
               </Text>
