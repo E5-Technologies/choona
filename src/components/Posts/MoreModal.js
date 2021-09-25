@@ -226,7 +226,7 @@ const MoreModal = ({
           </TouchableOpacity>
           {/* Copy Link to Song */}
           {/* Copy Link to Post */}
-          {page !== 'insideMessage' && (
+          {page !== 'insideMessage' && page !== 'savedSongs' && (
             <TouchableOpacity
               onPress={() => {
                 Clipboard.setString(
