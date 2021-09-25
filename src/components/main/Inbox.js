@@ -5,12 +5,10 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  Keyboard,
   Image,
   Platform,
   TextInput,
   Alert,
-  TouchableWithoutFeedback,
 } from 'react-native';
 
 import Seperator from './ListCells/Seperator';
@@ -22,8 +20,6 @@ import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
 import { connect } from 'react-redux';
-
-const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
 
 import {
   GET_CHAT_LIST_REQUEST,
@@ -50,8 +46,6 @@ function Inbox(props) {
   const [search, setSearch] = useState('');
   const [mesageList, setMessageList] = useState('');
   const [bool, setBool] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState(0);
-  const [newarr, setnewarr] = [];
   const [nonEmpty, setNonEmpty] = useState(false);
 
   useEffect(() => {
@@ -111,10 +105,6 @@ function Inbox(props) {
   }
 
   function sortArray(value) {
-    // const sortedMessages = [];
-    // .concat(value)
-    // .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
-
     setMessageList(value);
     setNonEmpty(true);
   }
@@ -127,7 +117,6 @@ function Inbox(props) {
       );
     });
 
-    // console.log(data);
     setMessageList([]);
     setNonEmpty(false);
     setBool(true);
@@ -152,9 +141,6 @@ function Inbox(props) {
         onPress={() =>
           props.navigation.navigate('InsideaMessage', { index: data.index })
         }
-        marginBottom={
-          data.index === props.chatList.length - 1 ? normalise(20) : 0
-        }
         onPressImage={() => {
           props.navigation.navigate('OthersProfile', { id: data.item.user_id });
         }}
@@ -177,28 +163,11 @@ function Inbox(props) {
     );
   }
 
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
-
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
       <Loader visible={bool} />
-
-      {/* <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}> */}
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -215,7 +184,6 @@ function Inbox(props) {
             props.navigation.navigate('AddSongsInMessage');
           }}
         />
-
         {_.isEmpty(props.chatList) ? null : (
           <View
             style={{
@@ -243,7 +211,6 @@ function Inbox(props) {
                 setSearch(text), filterArray(text);
               }}
             />
-
             <Image
               source={ImagePath ? ImagePath.searchicongrey : null}
               style={{
@@ -254,7 +221,6 @@ function Inbox(props) {
               }}
               resizeMode="contain"
             />
-
             {search === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
@@ -283,7 +249,6 @@ function Inbox(props) {
             )}
           </View>
         )}
-
         {_.isEmpty(props.chatList) && nonEmpty ? (
           <EmptyComponent
             buttonPress={() => {
@@ -308,7 +273,6 @@ function Inbox(props) {
           />
         )}
       </SafeAreaView>
-      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

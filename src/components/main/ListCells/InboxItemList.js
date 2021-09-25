@@ -12,12 +12,6 @@ function InboxListItem(props) {
     }
   };
 
-  const onPressImage = () => {
-    if (props.onPressImage) {
-      props.onPressImage();
-    }
-  };
-
   const onPressDelete = () => {
     if (props.onPressImage) {
       props.onPressDelete();
@@ -27,11 +21,10 @@ function InboxListItem(props) {
   return (
     <TouchableOpacity
       style={{
-        width: '90%',
-        height: normalise(45),
         alignSelf: 'center',
         marginTop: normalise(10),
         marginBottom: normalise(10),
+        paddingHorizontal: normalise(12),
       }}
       onPress={() => {
         onPress();
@@ -43,13 +36,11 @@ function InboxListItem(props) {
           alignItems: 'center',
         }}>
         <View style={{ flexDirection: 'row', width: '80%' }}>
-          {/* <TouchableOpacity
-            onPress={() => {
-              onPressImage();
-            }}> */}
           <Image
             source={
-              props.image ? { uri: props.image } : ImagePath.userPlaceholder
+              props.image.endsWith('thumb/')
+                ? ImagePath.userPlaceholder
+                : { uri: props.image }
             }
             style={{
               height: normalise(30),
@@ -58,8 +49,6 @@ function InboxListItem(props) {
             }}
             resizeMode="contain"
           />
-          {/* </TouchableOpacity> */}
-
           <View
             style={{
               flexDirection: 'column',
@@ -69,10 +58,6 @@ function InboxListItem(props) {
               marginHorizontal: normalise(10),
               justifyContent: 'flex-start',
             }}>
-            {/* <TouchableOpacity
-              onPress={() => {
-                onPressImage();
-              }}> */}
             <Text
               style={{
                 color: Colors.white,
@@ -82,8 +67,6 @@ function InboxListItem(props) {
               numberOfLines={1}>
               {props.title}
             </Text>
-            {/* </TouchableOpacity> */}
-
             <Text
               style={{
                 marginTop: normalise(2),

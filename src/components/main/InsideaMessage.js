@@ -5,16 +5,12 @@ import {
   Platform,
   View,
   Text,
-  ImageBackground,
   TouchableOpacity,
-  Modal,
-  Clipboard,
   Keyboard,
   Linking,
   FlatList,
   TextInput,
   Image,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -50,7 +46,6 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import axios from 'axios';
-import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status = '';
 let userStatus = '';
@@ -60,6 +55,7 @@ import MoreModal from '../Posts/MoreModal';
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
 
 function InsideaMessage(props) {
+  // console.log(props);
   const [index, setIndex] = useState(props.route.params.index);
   const [chatData, setChatData] = useState([]);
 
@@ -487,210 +483,6 @@ function InsideaMessage(props) {
     );
   }
 
-  const searchUser = text => {
-    if (text.length >= 1) {
-      props.getusersFromHome({ keyword: text });
-    }
-  };
-
-  function sendMessagesToUsers() {
-    var userIds = [];
-    usersToSEndSong.map(users => {
-      userIds.push(users._id);
-    });
-    props.createChatTokenRequest(userIds);
-  }
-
-  // BOTTOM SHEET FOR SELECTING USERS
-  const renderAddToUsers = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            bottomSheetRef = ref;
-          }
-        }}
-        closeOnDragDown={true}
-        closeOnPressMask={true}
-        onClose={() => {
-          //sesUsersToSEndSong([])
-        }}
-        nestedScrollEnabled={true}
-        keyboardAvoidingViewEnabled={true}
-        height={normalise(500)}
-        duration={250}
-        customStyles={{
-          container: {
-            backgroundColor: Colors.black,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-          },
-          // wrapper: {
-          //     backgroundColor: 'rgba(87,97,145,0.5)'
-
-          // },
-          draggableIcon: {
-            backgroundColor: Colors.grey,
-            width: normalise(70),
-            height: normalise(3),
-          },
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '75%',
-                justifyContent: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  fontWeight: 'bold',
-                  marginTop: normalise(10),
-                  textAlign: 'right',
-                }}>
-                SELECT USER TO SEND TO
-              </Text>
-
-              {userClicked ? (
-                <Text
-                  style={{
-                    color: Colors.white,
-                    marginTop: normalise(10),
-                    fontSize: normalise(14),
-                    fontWeight: 'bold',
-                  }}>
-                  {' '}
-                  (1)
-                </Text>
-              ) : null}
-            </View>
-
-            {usersToSEndSong.length > 0 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  bottomSheetRef.close();
-                  sendMessagesToUsers();
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(10),
-                    marginEnd: normalise(15),
-                  }}>
-                  {'NEXT'}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <View
-            style={{
-              width: '90%',
-              alignSelf: 'center',
-              height: normalise(35),
-              marginTop: normalise(20),
-              borderRadius: normalise(8),
-              backgroundColor: Colors.white,
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '85%',
-                padding: normalise(10),
-                // color: Colors.white,
-                // backgroundColor:Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              value={userSeach}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSeach(text), searchUser(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {userSeach === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
-                }}
-                style={{
-                  //  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 5,
-                  alignSelf: 'center',
-                  backgroundColor: Colors.fordGray,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {usersToSEndSong.length > 0 ? ( // ADD TO ARRAY FLATLIST
-            <FlatList
-              style={{
-                marginTop: normalise(10),
-                maxHeight: normalise(50),
-              }}
-              horizontal={true}
-              data={usersToSEndSong}
-              renderItem={renderUsersToSendSongItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsHorizontalScrollIndicator={false}
-            />
-          ) : null}
-
-          <FlatList // USER SEARCH FLATLIST
-            style={{
-              height: '65%',
-              marginTop: usersToSEndSong.length > 0 ? 0 : normalise(5),
-            }}
-            data={userSearchData}
-            renderItem={renderAddUsersToMessageItem}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      </RBSheet>
-    );
-  };
-
   // GET ISRC CODE
   const callApi = async () => {
     if (props.registerType === 'spotify') {
@@ -794,8 +586,6 @@ function InsideaMessage(props) {
           Keyboard.dismiss();
         }}> */}
       <SafeAreaView style={{ flex: 1 }}>
-        {renderAddToUsers()}
-
         <InsideMessegeHeader
           firstitemtext={false}
           imageone={
@@ -808,14 +598,12 @@ function InsideaMessage(props) {
           }
           title={props.chatList[index].username}
           thirditemtext={false}
-          // imagetwo={ImagePath.newmessage}
           imagetwoheight={25}
           imagetwowidth={25}
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}
         />
-
         <View
           style={{
             width: '92%',
@@ -898,9 +686,9 @@ function InsideaMessage(props) {
         <TouchableOpacity
           style={{
             marginBottom: normalise(10),
-            // marginTop: normalise(10),
-            height: normalise(50),
-            width: '80%',
+            marginTop: normalise(10),
+            height: normalise(44),
+            width: '90%',
             alignSelf: 'center',
             borderRadius: normalise(25),
             backgroundColor: Colors.white,
