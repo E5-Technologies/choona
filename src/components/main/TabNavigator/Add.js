@@ -9,7 +9,6 @@ import {
   Image,
   FlatList,
   Platform,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   NativeModules,
 } from 'react-native';
@@ -45,7 +44,6 @@ function AddSong(props) {
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-  const [typingTimeout, setTypingTimeout] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
   const [musicToken, setMusicToken] = useState('');
 
@@ -168,17 +166,6 @@ function AddSong(props) {
     );
   }
 
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
-
   const getRecentlyPlayedApi = async () => {
     if (props.registerType === 'spotify') {
       const spotifyToken = await getSpotifyToken();
@@ -204,11 +191,6 @@ function AddSong(props) {
     }
   };
 
-  const onRefresh = () => {
-    setIsFetching(true);
-    getRecentlyPlayed();
-  };
-
   const getRecentlyPlayed = async () => {
     try {
       const res = await getRecentlyPlayedApi();
@@ -228,6 +210,11 @@ function AddSong(props) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const onRefresh = () => {
+    setIsFetching(true);
+    getRecentlyPlayed();
   };
 
   useEffect(() => {
@@ -274,13 +261,7 @@ function AddSong(props) {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar />
-
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
-
-      {/* <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}> */}
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
@@ -486,7 +467,6 @@ function AddSong(props) {
           )
         ) : (
           <FlatList
-            // style={{ marginTop: normalise(10) }}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item, index) => {
@@ -497,7 +477,6 @@ function AddSong(props) {
           />
         )}
       </SafeAreaView>
-      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

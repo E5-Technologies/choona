@@ -127,25 +127,6 @@ function Notification(props) {
       setNotifications([]);
       setPageId(1);
       mutate();
-
-      AppState.addEventListener('change', updateProfile());
-      const unsuscribe = props.navigation.addListener('focus', () => {
-        isInternetConnected()
-          .then(() => {
-            // alert("focus");
-            updateProfile();
-            // setNotifications([]);
-            // setPageId(1);
-            // mutate();
-          })
-          .catch(() => {
-            toast('Error', 'Please Connect To Internet');
-          });
-      });
-      AppState.removeEventListener('change', updateProfile());
-      return () => {
-        unsuscribe();
-      };
     }, []),
   );
 
