@@ -43,7 +43,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-linear-gradient": "^2.5.6",
-    "react-native-onesignal": "^4.3.0",
+    "react-native-onesignal": "^4.3.1",
     "react-native-permissions": "^3.0.4",
     "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-reanimated": "^1.8.0",
