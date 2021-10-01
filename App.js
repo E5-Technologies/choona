@@ -66,6 +66,12 @@ import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
 import PlayerScreenSelectUser from './src/components/PlayerScreen/PlayerScreenSelectUser';
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://4659328257154e70ba3792dc4eddede2@o1022308.ingest.sentry.io/5988459',
+});
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 

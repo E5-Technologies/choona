@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -10,7 +10,6 @@ import {
   FlatList,
   Platform,
   KeyboardAvoidingView,
-  NativeModules,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -33,9 +32,7 @@ import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
-import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
-import axios from 'axios';
+import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
 
 let status;
 
@@ -43,10 +40,12 @@ function AddSong(props) {
   const inputRef = React.useRef(null);
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
-  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [musicToken, setMusicToken] = useState('');
-
+  const recentlyPlayed = useRecentlyPlayed(
+    props.registerType,
+    isFetching,
+    setIsFetching,
+  );
   let post = true;
 
   if (status === '' || status !== props.status) {
@@ -166,97 +165,9 @@ function AddSong(props) {
     );
   }
 
-  const getRecentlyPlayedApi = async () => {
-    if (props.registerType === 'spotify') {
-      const spotifyToken = await getSpotifyToken();
-      return await axios.get(
-        'https://api.spotify.com/v1/me/player/recently-played',
-        {
-          headers: {
-            Authorization: spotifyToken,
-          },
-        },
-      );
-    } else {
-      const AppleToken = await getAppleDevToken();
-      return await axios.get(
-        'https://api.music.apple.com/v1/me/recent/played/tracks',
-        {
-          headers: {
-            'Music-User-Token': musicToken,
-            Authorization: AppleToken,
-          },
-        },
-      );
-    }
-  };
-
-  const getRecentlyPlayed = async () => {
-    try {
-      const res = await getRecentlyPlayedApi();
-      console.log(res);
-      setIsFetching(false);
-      if (res.status === 200) {
-        const array = [];
-        if (props.registerType === 'spotify') {
-          res.data.items.map(item => array.push(item.track));
-        } else {
-          res.data.data.map(item => array.push(item));
-        }
-        setRecentlyPlayed(array);
-      } else {
-        toast('Oops', 'Something Went Wrong');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const onRefresh = () => {
     setIsFetching(true);
-    getRecentlyPlayed();
   };
-
-  useEffect(() => {
-    isInternetConnected()
-      .then(() => {
-        if (props.registerType === 'spotify') {
-          getRecentlyPlayed();
-        } else {
-          const fetchMusicToken = async () => {
-            const AppleToken = await getAppleDevToken();
-            if (AppleToken !== '') {
-              let newtoken = AppleToken.split(' ');
-              NativeModules.Print.printValue(newtoken.pop())
-                .then(res => {
-                  if (res === '') {
-                    toast(
-                      'Error',
-                      'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
-                    );
-                  } else {
-                    setMusicToken(res);
-                    getRecentlyPlayed();
-                  }
-                })
-                .catch(() => {
-                  toast(
-                    'Error',
-                    'There was an error getting your recently played tracks.',
-                  );
-                  // setBool(false);
-                });
-            } else {
-              toast('Oops', 'Something Went Wrong');
-            }
-          };
-          fetchMusicToken();
-        }
-      })
-      .catch(() => {
-        toast('', 'Please Connect To Internet');
-      });
-  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
@@ -372,32 +283,7 @@ function AddSong(props) {
             </Text>
           </View>
         ) : (
-          <View
-            style={
-              {
-                // flexDirection: 'row',
-                // alignItems: 'center',
-                // width: '90%',
-                // alignSelf: 'center',
-                // marginTop: normalise(5),
-              }
-            }>
-            {/* <Image
-                source={
-                  props.registerType === 'spotify'
-                    ? ImagePath.spotifyicon
-                    : ImagePath.applemusic
-                }
-                style={{ height: normalise(20), width: normalise(20) }}
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(12),
-                  marginLeft: normalise(10),
-                  fontWeight: 'bold',
-                }}>{` RESULTS (${props.spotifyResponse.length})`}</Text> */}
-          </View>
+          <View />
         )}
         {_.isEmpty(data) || search === null || search === '' ? (
           _.isEmpty(recentlyPlayed) ? (
@@ -453,17 +339,19 @@ function AddSong(props) {
               </View>
             </KeyboardAvoidingView>
           ) : (
-            <FlatList
-              data={recentlyPlayed}
-              onRefresh={() => onRefresh()}
-              refreshing={isFetching}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              ItemSeparatorComponent={Seperator}
-              showsVerticalScrollIndicator={false}
-            />
+            <>
+              <FlatList
+                data={recentlyPlayed}
+                onRefresh={() => onRefresh()}
+                refreshing={isFetching}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => {
+                  index.toString();
+                }}
+                ItemSeparatorComponent={Seperator}
+                showsVerticalScrollIndicator={false}
+              />
+            </>
           )
         ) : (
           <FlatList

@@ -30,22 +30,21 @@ import {
 import { connect } from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import constants from '../../utils/helpers/constants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
-import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
-import axios from 'axios';
+import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
 
 let status;
 
 function AddSongsInMessage(props) {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [musicToken, setMusicToken] = useState('');
+  const recentlyPlayed = useRecentlyPlayed(
+    props.registerType,
+    isFetching,
+    setIsFetching,
+  );
 
   let post = false;
 
@@ -77,97 +76,9 @@ function AddSongsInMessage(props) {
     }
   }
 
-  const getRecentlyPlayedApi = async () => {
-    if (props.registerType === 'spotify') {
-      const spotifyToken = await getSpotifyToken();
-      return await axios.get(
-        'https://api.spotify.com/v1/me/player/recently-played',
-        {
-          headers: {
-            Authorization: spotifyToken,
-          },
-        },
-      );
-    } else {
-      const AppleToken = await getAppleDevToken();
-      return await axios.get(
-        'https://api.music.apple.com/v1/me/recent/played/tracks',
-        {
-          headers: {
-            'Music-User-Token': musicToken,
-            Authorization: AppleToken,
-          },
-        },
-      );
-    }
-  };
-
   const onRefresh = () => {
     setIsFetching(true);
-    getRecentlyPlayed();
   };
-
-  const getRecentlyPlayed = async () => {
-    try {
-      const res = await getRecentlyPlayedApi();
-      console.log(res);
-      setIsFetching(false);
-      if (res.status === 200) {
-        const array = [];
-        if (props.registerType === 'spotify') {
-          res.data.items.map(item => array.push(item.track));
-        } else {
-          res.data.data.map(item => array.push(item));
-        }
-        setRecentlyPlayed(array);
-      } else {
-        toast('Oops', 'Something Went Wrong');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    isInternetConnected()
-      .then(() => {
-        if (props.registerType === 'spotify') {
-          getRecentlyPlayed();
-        } else {
-          const fetchMusicToken = async () => {
-            const AppleToken = await getAppleDevToken();
-            if (AppleToken !== '') {
-              let newtoken = AppleToken.split(' ');
-              NativeModules.Print.printValue(newtoken.pop())
-                .then(res => {
-                  if (res === '') {
-                    toast(
-                      'Error',
-                      'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
-                    );
-                  } else {
-                    setMusicToken(res);
-                    getRecentlyPlayed();
-                  }
-                })
-                .catch(() => {
-                  toast(
-                    'Error',
-                    'There was an error getting your recently played tracks.',
-                  );
-                  // setBool(false);
-                });
-            } else {
-              toast('Oops', 'Something Went Wrong');
-            }
-          };
-          fetchMusicToken();
-        }
-      })
-      .catch(() => {
-        toast('', 'Please Connect To Internet');
-      });
-  }, []);
 
   function singerList(artists) {
     let names = '';
