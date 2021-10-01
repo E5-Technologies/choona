@@ -142,7 +142,9 @@ export function* searchPostAction(action) {
       accesstoken: items.token,
     };
 
-    const text = action.text.replace('&', '').replace(/ *\([^)]*\) */g, '');
+    const text = action.text
+      .replace('&', '&amp;')
+      .replace(/ *\([^)]*\) */g, '');
 
     console.log('api called' + `post/list?keyword=${encodeURI(text)}`);
 
@@ -153,6 +155,7 @@ export function* searchPostAction(action) {
         Header,
       );
 
+      console.log(response.data.data);
       // console.log('success' + JSON.stringify(response.data.data));
       yield put({
         type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
@@ -165,6 +168,7 @@ export function* searchPostAction(action) {
         Header,
       );
 
+      console.log(response.data.data);
       // console.log('success' + JSON.stringify(response.data.data));
       yield put({
         type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
