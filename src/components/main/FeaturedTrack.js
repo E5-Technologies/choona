@@ -38,13 +38,17 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 
+import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
+
 let status;
 
 function FeaturedTrack(props) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
-  const [spotifyUrl, setSpotifyUrl] = useState('');
-  console.log(status);
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+    props.registerType,
+  );
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
@@ -221,7 +225,7 @@ function FeaturedTrack(props) {
         marginBottom={
           data.index === props.featuredTrackResp.length - 1 ? normalise(20) : 0
         }
-        change={true}
+        change2={true}
         image2={ImagePath.addicon}
         onPressSecondImage={() => {
           setFeaturedSong(data.item);
@@ -271,13 +275,7 @@ function FeaturedTrack(props) {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === FEATURED_SONG_SEARCH_REQUEST} />
-
-      {/* <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}> */}
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -290,7 +288,6 @@ function FeaturedTrack(props) {
           thirditemtext={true}
           texttwo={''}
         />
-
         <View
           style={{
             width: '92%',
@@ -301,11 +298,10 @@ function FeaturedTrack(props) {
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-
               width: '100%',
               backgroundColor: Colors.fadeblack,
               borderRadius: normalise(8),
-              marginTop: normalise(20),
+              marginTop: normalise(16),
               padding: normalise(10),
               color: Colors.white,
               paddingLeft: normalise(30),
@@ -359,58 +355,25 @@ function FeaturedTrack(props) {
             </TouchableOpacity>
           )}
         </View>
-        {_.isEmpty(data) ? null : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: '90%',
-              alignSelf: 'center',
-              marginTop: normalise(5),
-            }}>
-            <Image
-              source={
-                props.registerType === 'spotify'
-                  ? ImagePath.spotifyicon
-                  : ImagePath.applemusic
-              }
-              style={{ height: normalise(20), width: normalise(20) }}
-            />
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                marginLeft: normalise(10),
-                fontWeight: 'bold',
-              }}>{` RESULTS (${props.featuredTrackResp.length})`}</Text>
-          </View>
+        {_.isEmpty(data) ? (
+          <RecentlyPlayedHeader registerType={props.registerType} />
+        ) : (
+          <View />
         )}
         {_.isEmpty(data) ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{ height: normalise(35), width: normalise(35) }}
-            />
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(15),
-                fontWeight: 'bold',
-                marginTop: normalise(20),
-                width: '60%',
-                textAlign: 'center',
-              }}>
-              Search for the song you want to share above.
-            </Text>
-          </View>
+          <FlatList
+            data={recentlyPlayed}
+            onRefresh={() => refetch()}
+            refreshing={loading}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            ItemSeparatorComponent={Seperator}
+            showsVerticalScrollIndicator={false}
+          />
         ) : (
           <FlatList
-            style={{ marginTop: normalise(10) }}
             data={data}
             renderItem={renderItem}
             keyExtractor={(item, index) => {

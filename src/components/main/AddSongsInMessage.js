@@ -8,11 +8,9 @@ import {
   Image,
   TextInput,
   Platform,
-  NativeModules,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
-import normaliseNew from '../../utils/helpers/DimensNew';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -33,17 +31,15 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
 import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
 
 let status;
 
 function AddSongsInMessage(props) {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
-  const recentlyPlayed = useRecentlyPlayed(
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
     props.registerType,
-    isFetching,
-    setIsFetching,
   );
 
   let post = false;
@@ -75,10 +71,6 @@ function AddSongsInMessage(props) {
         break;
     }
   }
-
-  const onRefresh = () => {
-    setIsFetching(true);
-  };
 
   function singerList(artists) {
     let names = '';
@@ -286,42 +278,16 @@ function AddSongsInMessage(props) {
           )}
         </View>
         {/* Search Bar */}
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            height: normaliseNew(40),
-            alignItems: 'center',
-            backgroundColor: Colors.darkerblack,
-          }}>
-          {_.isEmpty(result) ? (
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normaliseNew(10),
-                marginLeft: normaliseNew(16),
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              YOUR RECENTLY PLAYED ON{' '}
-              {props.registerType === 'spotify' ? 'SPOTIFY' : 'APPLE MUSIC'}
-            </Text>
-          ) : (
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normaliseNew(10),
-                marginLeft: normaliseNew(16),
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              {result.length} Results
-            </Text>
-          )}
-        </View>
+        {_.isEmpty(result) || search === null || search === '' ? (
+          <RecentlyPlayedHeader registerType={props.registerType} />
+        ) : (
+          <View />
+        )}
         {_.isEmpty(result) ? (
           <FlatList
             data={recentlyPlayed}
-            onRefresh={() => onRefresh()}
-            refreshing={isFetching}
+            onRefresh={() => refetch()}
+            refreshing={loading}
             renderItem={renderItem}
             keyExtractor={(item, index) => {
               index.toString();

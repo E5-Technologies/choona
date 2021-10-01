@@ -6,9 +6,9 @@ import { Provider } from 'react-redux';
 import store from './src/utils/Store';
 import { NativeModules } from 'react-native';
 
-if (__DEV__) {
-  NativeModules.DevSettings.setIsDebuggingRemotely(true);
-}
+// if (__DEV__) {
+//   NativeModules.DevSettings.setIsDebuggingRemotely(true);
+// }
 
 LogBox.ignoreAllLogs();
 

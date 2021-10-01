@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NativeModules } from 'react-native';
 import axios from 'axios';
 
@@ -6,11 +6,12 @@ import { getSpotifyToken } from './SpotifyLogin';
 import { getAppleDevToken } from './AppleDevToken';
 import toast from './ShowErrorAlert';
 
-export function useRecentlyPlayed(registerType, isFetching, setIsFetching) {
+export function useRecentlyPlayed(registerType) {
+  const [loading, setLoading] = useState(false);
   const [musicToken, setMusicToken] = useState('');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
 
-  useEffect(() => {
+  const getRecentlyPlayed = useCallback(async () => {
     const getRecentlyPlayedApi = async () => {
       if (registerType === 'spotify') {
         const spotifyToken = await getSpotifyToken();
@@ -36,26 +37,28 @@ export function useRecentlyPlayed(registerType, isFetching, setIsFetching) {
       }
     };
 
-    const getRecentlyPlayed = async () => {
-      try {
-        const res = await getRecentlyPlayedApi();
-        setIsFetching(false);
-        if (res.status === 200) {
-          const array = [];
-          if (registerType === 'spotify') {
-            res.data.items.map(item => array.push(item.track));
-          } else {
-            res.data.data.map(item => array.push(item));
-          }
-          setRecentlyPlayed(array);
+    setLoading(true);
+    try {
+      const res = await getRecentlyPlayedApi();
+      setLoading(false);
+      if (res.status === 200) {
+        const array = [];
+        if (registerType === 'spotify') {
+          res.data.items.map(item => array.push(item.track));
         } else {
-          toast('Oops', 'Something Went Wrong');
+          res.data.data.map(item => array.push(item));
         }
-      } catch (error) {
-        console.log(error);
+        setRecentlyPlayed(array);
+      } else {
+        toast('Oops', 'Something Went Wrong');
       }
-    };
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  }, [musicToken, registerType]);
 
+  useEffect(() => {
     if (registerType === 'spotify') {
       getRecentlyPlayed();
     } else {
@@ -87,8 +90,13 @@ export function useRecentlyPlayed(registerType, isFetching, setIsFetching) {
       };
       fetchMusicToken();
     }
-  }, [musicToken, registerType, setIsFetching, isFetching]);
+  }, [getRecentlyPlayed, musicToken, registerType]);
 
-  const data = recentlyPlayed;
+  const data = {
+    recentlyPlayed: recentlyPlayed,
+    loading: loading,
+    refetch: () => getRecentlyPlayed(),
+  };
+
   return data;
 }

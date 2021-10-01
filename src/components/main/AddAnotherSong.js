@@ -7,9 +7,7 @@ import {
   FlatList,
   Image,
   TextInput,
-  Keyboard,
   Platform,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -34,6 +32,9 @@ import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
+import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
+
 let status;
 let messageStatus;
 
@@ -44,13 +45,16 @@ function AddAnotherSong(props) {
   const [index, setIndex] = useState([]);
   const [indexOfArray, setIndexOfArray] = useState(props.route.params.index);
   const [fromOthersProfile, setFromOthersProfile] = useState(
-    props.route.params.othersProfile,
+    props.route.params.othersProfile
+  );
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+    props.registerType
   );
 
   let post = false;
 
   useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
+    const unsuscribe = props.navigation.addListener('focus', (payload) => {
       setResult([]);
     });
 
@@ -86,29 +90,56 @@ function AddAnotherSong(props) {
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus;
 
-        props.navigation.replace('SendSongInMessageFinal', {
-          image:
-            props.registerType === 'spotify'
-              ? result[index].album.images[0].url
-              : result[index].attributes.artwork.url.replace(
-                '{w}x{h}',
-                '600x600',
-              ),
-          title:
-            props.registerType === 'spotify'
-              ? result[index].name
-              : result[index].attributes.name,
-          title2:
-            props.registerType === 'spotify'
-              ? singerList(result[index].artists)
-              : result[index].attributes.artistName,
-          users: usersToSend,
-          details: result[index],
-          registerType: props.registerType,
-          fromAddAnotherSong: fromOthersProfile ? false : true,
-          index: indexOfArray,
-          fromHome: false,
-        });
+        props.navigation.replace(
+          'SendSongInMessageFinal',
+          result.length > 0
+            ? {
+              image:
+                props.registerType === 'spotify'
+                  ? result[index].album.images[0].url
+                  : result[index].attributes.artwork.url.replace(
+                    '{w}x{h}',
+                    '600x600'
+                  ),
+              title:
+                props.registerType === 'spotify'
+                  ? result[index].name
+                  : result[index].attributes.name,
+              title2:
+                props.registerType === 'spotify'
+                  ? singerList(result[index].artists)
+                  : result[index].attributes.artistName,
+              users: usersToSend,
+              details: result[index],
+              registerType: props.registerType,
+              fromAddAnotherSong: fromOthersProfile ? false : true,
+              index: indexOfArray,
+              fromHome: false,
+            }
+            : {
+              image:
+                props.registerType === 'spotify'
+                  ? recentlyPlayed[index].album.images[0].url
+                  : recentlyPlayed[index].attributes.artwork.url.replace(
+                    '{w}x{h}',
+                    '600x600'
+                  ),
+              title:
+                props.registerType === 'spotify'
+                  ? recentlyPlayed[index].name
+                  : recentlyPlayed[index].attributes.name,
+              title2:
+                props.registerType === 'spotify'
+                  ? singerList(recentlyPlayed[index].artists)
+                  : recentlyPlayed[index].attributes.artistName,
+              users: usersToSend,
+              details: recentlyPlayed[index],
+              registerType: props.registerType,
+              fromAddAnotherSong: fromOthersProfile ? false : true,
+              index: indexOfArray,
+              fromHome: false,
+            }
+        );
         break;
 
       case CREATE_CHAT_TOKEN_FAILURE:
@@ -120,7 +151,7 @@ function AddAnotherSong(props) {
 
   function sendMessagesToUsers() {
     var userIds = [];
-    usersToSend.map(users => {
+    usersToSend.map((users) => {
       userIds.push(users._id);
     });
     props.createChatTokenRequest(userIds);
@@ -162,7 +193,7 @@ function AddAnotherSong(props) {
         marginBottom={
           data.index === props.searchResponse.length - 1 ? normalise(20) : 0
         }
-        change={true}
+        change2={true}
         image2={ImagePath.addicon}
         onPressSecondImage={() => {
           setIndex(data.index);
@@ -183,7 +214,7 @@ function AddAnotherSong(props) {
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
                   '{w}x{h}',
-                  '300x300',
+                  '300x300'
                 ),
             username: '',
             profile_pic: '',
@@ -213,13 +244,7 @@ function AddAnotherSong(props) {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
-
-      {/* <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}> */}
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -233,7 +258,6 @@ function AddAnotherSong(props) {
             props.navigation.goBack();
           }}
         />
-
         <View style={{ width: '92%', alignSelf: 'center' }}>
           <TextInput
             autoCorrect={false}
@@ -251,7 +275,7 @@ function AddAnotherSong(props) {
             keyboardAppearance={'dark'}
             placeholder={'Search'}
             placeholderTextColor={Colors.darkgrey}
-            onChangeText={text => {
+            onChangeText={(text) => {
               setSearch(text);
               if (text.length >= 1) {
                 isInternetConnected()
@@ -264,7 +288,6 @@ function AddAnotherSong(props) {
               }
             }}
           />
-
           <Image
             source={ImagePath.searchicongrey}
             style={{
@@ -275,7 +298,6 @@ function AddAnotherSong(props) {
             }}
             resizeMode="contain"
           />
-
           {search === '' ? null : (
             <TouchableOpacity
               onPress={() => {
@@ -291,73 +313,37 @@ function AddAnotherSong(props) {
                 right: 0,
                 bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
                 marginRight: normalise(10),
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(10),
                   fontWeight: 'bold',
-                }}>
+                }}
+              >
                 CLEAR
               </Text>
             </TouchableOpacity>
           )}
         </View>
-
-        {_.isEmpty(result) ? null : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: '90%',
-              alignSelf: 'center',
-              marginTop: normalise(5),
-            }}>
-            <Image
-              source={
-                props.registerType === 'spotify'
-                  ? ImagePath.spotifyicon
-                  : ImagePath.applemusic
-              }
-              style={{ height: normalise(20), width: normalise(20) }}
-            />
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(12),
-                marginLeft: normalise(10),
-                fontWeight: 'bold',
-              }}>
-              {' '}
-              RESULTS ({result.length})
-            </Text>
-          </View>
-        )}
-
         {_.isEmpty(result) ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{ height: normalise(25), width: normalise(25) }}
-            />
-
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(15),
-                fontFamily: 'ProximaNovaAW07-Medium',
-                marginTop: normalise(20),
-                width: '60%',
-                textAlign: 'center',
-              }}>
-              Search for the song you want to share{' '}
-            </Text>
-          </View>
+          <RecentlyPlayedHeader registerType={props.registerType} />
+        ) : (
+          <View />
+        )}
+        {_.isEmpty(result) ? (
+          <FlatList
+            data={recentlyPlayed}
+            onRefresh={() => refetch()}
+            refreshing={loading}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            ItemSeparatorComponent={Seperator}
+            showsVerticalScrollIndicator={false}
+          />
         ) : (
           <FlatList
             style={{ marginTop: normalise(10) }}
@@ -376,7 +362,7 @@ function AddAnotherSong(props) {
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     status: state.PostReducer.status,
     error: state.PostReducer.error,
@@ -388,13 +374,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     searchSongReq: (text, post) => {
       dispatch(seachSongsForPostRequest(text, post));
     },
 
-    createChatTokenRequest: payload => {
+    createChatTokenRequest: (payload) => {
       dispatch(createChatTokenRequest(payload));
     },
   };

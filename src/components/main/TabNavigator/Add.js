@@ -10,10 +10,10 @@ import {
   FlatList,
   Platform,
   KeyboardAvoidingView,
+  StyleSheet,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
-import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
@@ -33,6 +33,7 @@ import toast from '../../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
 
 let status;
 
@@ -40,11 +41,8 @@ function AddSong(props) {
   const inputRef = React.useRef(null);
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
-  const recentlyPlayed = useRecentlyPlayed(
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
     props.registerType,
-    isFetching,
-    setIsFetching,
   );
   let post = true;
 
@@ -76,29 +74,29 @@ function AddSong(props) {
     return names;
   }
 
-  function renderItem(data) {
+  function renderItem(item) {
     return (
       <SavedSongsListItem
         image={
           props.registerType === 'spotify'
-            ? data.item.album.images.length > 1
-              ? data.item.album.images[0].url
+            ? item.item.album.images.length > 1
+              ? item.item.album.images[0].url
               : 'qwe'
-            : data.item.attributes.artwork.url.replace('{w}x{h}', '300x300')
+            : item.item.attributes.artwork.url.replace('{w}x{h}', '300x300')
         }
         title={
           props.registerType === 'spotify'
-            ? data.item.name
-            : data.item.attributes.name
+            ? item.item.name
+            : item.item.attributes.name
         }
         singer={
           props.registerType === 'spotify'
-            ? singerList(data.item.artists)
-            : data.item.attributes.artistName
+            ? singerList(item.item.artists)
+            : item.item.attributes.artistName
         }
         marginRight={normalise(50)}
         marginBottom={
-          data.index === props.spotifyResponse.length - 1 ? normalise(20) : 0
+          item.index === props.spotifyResponse.length - 1 ? normalise(20) : 0
         }
         change2={true}
         image2={ImagePath.addButtonSmall}
@@ -106,20 +104,20 @@ function AddSong(props) {
           props.navigation.navigate('CreatePost', {
             image:
               props.registerType === 'spotify'
-                ? data.item.album.images[0].url
-                : data.item.attributes.artwork.url.replace(
+                ? item.item.album.images[0].url
+                : item.item.attributes.artwork.url.replace(
                   '{w}x{h}',
                   '600x600',
                 ),
             title:
               props.registerType === 'spotify'
-                ? data.item.name
-                : data.item.attributes.name,
+                ? item.item.name
+                : item.item.attributes.name,
             title2:
               props.registerType === 'spotify'
-                ? singerList(data.item.artists)
-                : data.item.attributes.artistName,
-            details: data.item,
+                ? singerList(item.item.artists)
+                : item.item.attributes.artistName,
+            details: item.item,
             registerType: props.registerType,
           });
         }}
@@ -127,16 +125,16 @@ function AddSong(props) {
           props.navigation.navigate('Player', {
             song_title:
               props.registerType === 'spotify'
-                ? data.item.name
-                : data.item.attributes.name,
+                ? item.item.name
+                : item.item.attributes.name,
             album_name:
               props.registerType === 'spotify'
-                ? data.item.album.name
-                : data.item.attributes.albumName,
+                ? item.item.album.name
+                : item.item.attributes.albumName,
             song_pic:
               props.registerType === 'spotify'
-                ? data.item.album.images[0].url
-                : data.item.attributes.artwork.url.replace(
+                ? item.item.album.images[0].url
+                : item.item.attributes.artwork.url.replace(
                   '{w}x{h}',
                   '300x300',
                 ),
@@ -144,20 +142,20 @@ function AddSong(props) {
             profile_pic: '',
             originalUri:
               props.registerType === 'spotify'
-                ? data.item.external_urls.spotify
-                : data.item.attributes.url,
+                ? item.item.external_urls.spotify
+                : item.item.attributes.url,
             uri:
               props.registerType === 'spotify'
-                ? data.item.preview_url
-                : data.item.attributes.previews[0].url,
+                ? item.item.preview_url
+                : item.item.attributes.previews[0].url,
             artist:
               props.registerType === 'spotify'
-                ? singerList(data.item.artists)
-                : data.item.attributes.artistName,
+                ? singerList(item.item.artists)
+                : item.item.attributes.artistName,
             changePlayer: true,
             registerType: props.registerType,
             changePlayer2: props.registerType === 'spotify' ? true : false,
-            id: props.registerType === 'spotify' ? data.item.id : null,
+            id: props.registerType === 'spotify' ? item.item.id : null,
             showPlaylist: false,
           });
         }}
@@ -165,15 +163,11 @@ function AddSong(props) {
     );
   }
 
-  const onRefresh = () => {
-    setIsFetching(true);
-  };
-
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={styles.containerView}>
       <StatusBar />
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.safeAreaContainer}>
         <HeaderComponent
           firstitemtext={true}
           textone={''}
@@ -223,7 +217,6 @@ function AddSong(props) {
               }
             }}
           />
-
           <Image
             source={ImagePath.searchicongrey}
             style={{
@@ -234,11 +227,11 @@ function AddSong(props) {
             }}
             resizeMode="contain"
           />
-
           {search === '' ? null : (
             <TouchableOpacity
               onPress={() => {
-                setSearch(''), setData([]);
+                setSearch('');
+                setData([]);
               }}
               style={{
                 backgroundColor: Colors.fordGray,
@@ -263,25 +256,7 @@ function AddSong(props) {
           )}
         </View>
         {_.isEmpty(data) || search === null || search === '' ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '100%',
-              height: normaliseNew(40),
-              alignItems: 'center',
-              backgroundColor: Colors.darkerblack,
-            }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normaliseNew(10),
-                marginLeft: normaliseNew(16),
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              YOUR RECENTLY PLAYED ON{' '}
-              {props.registerType === 'spotify' ? 'SPOTIFY' : 'APPLE MUSIC'}
-            </Text>
-          </View>
+          <RecentlyPlayedHeader registerType={props.registerType} />
         ) : (
           <View />
         )}
@@ -342,8 +317,8 @@ function AddSong(props) {
             <>
               <FlatList
                 data={recentlyPlayed}
-                onRefresh={() => onRefresh()}
-                refreshing={isFetching}
+                onRefresh={() => refetch()}
+                refreshing={loading}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => {
                   index.toString();
@@ -368,6 +343,11 @@ function AddSong(props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  containerView: { flex: 1, backgroundColor: Colors.black },
+  safeAreaContainer: { flex: 1 },
+});
 
 const mapStateToProps = state => {
   return {
