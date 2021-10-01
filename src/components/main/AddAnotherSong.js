@@ -239,7 +239,6 @@ function AddAnotherSong(props) {
             autoCorrect={false}
             style={{
               height: normalise(35),
-
               width: '100%',
               backgroundColor: Colors.fadeblack,
               borderRadius: normalise(8),
