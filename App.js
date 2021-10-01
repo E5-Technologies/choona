@@ -159,8 +159,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
@@ -188,8 +188,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
@@ -217,8 +217,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(40),
                     width: normalise(40),
                   }}
@@ -247,8 +247,8 @@ const App = () => {
                         Platform.OS === 'android'
                           ? normalise(10)
                           : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                            ? normalise(0)
+                            : normalise(10),
                       height: normalise(20),
                       width: normalise(20),
                     }}
@@ -267,7 +267,10 @@ const App = () => {
                         style={{
                           position: 'absolute',
                           right: normalise(-2),
-                          top: normalise(-2),
+                          top:
+                            Platform.OS === 'android'
+                              ? normalise(8)
+                              : normalise(-2),
                           backgroundColor: Colors.red,
                           borderRadius: normalize(8),
                           height: 10,
@@ -295,8 +298,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(22),
                     width: normalise(22),
                   }}

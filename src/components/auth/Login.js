@@ -316,7 +316,7 @@ function SignUp(props) {
           left: 0,
           right: 0,
         }}>
-        {Platform.OS === 'ios' && (
+        {Platform.OS === 'ios' ? (
           <Text
             style={{
               color: Colors.white,
@@ -326,6 +326,18 @@ function SignUp(props) {
             }}>
             SIMPLY SIGN IN WITH ONE OF THE BELOW
           </Text>
+        ) : Platform.OS === 'android' ? (
+          <Text
+            style={{
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              fontSize: normalise(11),
+              marginBottom: normalise(12),
+            }}>
+            LOGIN WITH{' '}
+          </Text>
+        ) : (
+          <></>
         )}
         <TouchableOpacity
           style={{
@@ -350,7 +362,6 @@ function SignUp(props) {
             resizeMode="contain"
           />
         </TouchableOpacity>
-
         {Platform.OS === 'ios' && (
           <TouchableOpacity
             style={{
