@@ -354,7 +354,7 @@ function Player(props) {
     }
   }
 
-  function _onReaction(ID, reaction) { }
+  function _onReaction(ID, reaction) {}
 
   function _onSelectBack(data, comment) {
     // console.log('aaa' + JSON.stringify(comment));
@@ -954,9 +954,9 @@ function Player(props) {
                     source={
                       profilePic
                         ? {
-                          uri:
-                            constants.profile_picture_base_url + profilePic,
-                        }
+                            uri:
+                              constants.profile_picture_base_url + profilePic,
+                          }
                         : ImagePath.userPlaceholder
                     }
                     style={{
@@ -964,7 +964,7 @@ function Player(props) {
                       width: normalise(24),
                       borderRadius: normalise(24),
                     }}
-                    resizeMode="contain"
+                    resizeMode="cover"
                   />
 
                   <View
@@ -1549,11 +1549,11 @@ function Player(props) {
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
-                              .then(() => { })
-                              .catch(err => { });
+                              .then(() => {})
+                              .catch(err => {});
                           }
                         })
-                        .catch(err => { });
+                        .catch(err => {});
                     } else {
                       isInternetConnected()
                         .then(() => {
@@ -1571,11 +1571,11 @@ function Player(props) {
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
-                              .then(() => { })
-                              .catch(err => { });
+                              .then(() => {})
+                              .catch(err => {});
                           }
                         })
-                        .catch(err => { });
+                        .catch(err => {});
                     } else {
                       isInternetConnected()
                         .then(() => {

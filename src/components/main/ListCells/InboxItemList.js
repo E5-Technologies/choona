@@ -47,7 +47,7 @@ function InboxListItem(props) {
               width: normalise(30),
               borderRadius: 2 * normalise(60),
             }}
-            resizeMode="contain"
+            resizeMode="cover"
           />
           <View
             style={{

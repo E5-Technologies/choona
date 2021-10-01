@@ -282,7 +282,7 @@ function HomeItemComments(props) {
                 <Image
                   source={image ? { uri: image } : null}
                   style={styles.commentHeaderAvatar}
-                  resizeMode="contain"
+                  resizeMode="cover"
                 />
               </TouchableOpacity>
               <View style={styles.commentHeaderInfoContainer}>
@@ -327,11 +327,11 @@ function HomeItemComments(props) {
             //  maxHeight:Dimensions.get("window").height/4.2,
             height:
               followingList.length + followerList.length === 2 ||
-              followingList.length + followerList.length === 1
+                followingList.length + followerList.length === 1
                 ? Dimensions.get('window').height / 5
                 : followingList.length + followerList.length === 3
-                ? Dimensions.get('window').height / 3.5
-                : Dimensions.get('window').height / 3,
+                  ? Dimensions.get('window').height / 3.5
+                  : Dimensions.get('window').height / 3,
             //  bottom: Dimensions.get("window").width/7,
             width: Dimensions.get('window').width / 1.25,
           }}>
@@ -363,14 +363,14 @@ function HomeItemComments(props) {
                       item
                         ? item.profile_image
                           ? {
-                              uri:
-                                constants.profile_picture_base_url +
-                                item.profile_image,
-                            }
+                            uri:
+                              constants.profile_picture_base_url +
+                              item.profile_image,
+                          }
                           : ImagePath.userPlaceholder
                         : null
                     }
-                    resizeMode="contain"
+                    resizeMode="cover"
                     style={{
                       height: Dimensions.get('window').width / 12,
                       width: Dimensions.get('window').width / 12,

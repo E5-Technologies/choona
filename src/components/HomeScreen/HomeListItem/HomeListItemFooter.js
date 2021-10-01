@@ -45,7 +45,7 @@ const HomeListItemFooter = ({
                   : null
               }
               style={styles.listItemFooterAvatar}
-              resizeMode="contain"
+              resizeMode="cover"
             />
           </TouchableOpacity>
           <View>

@@ -370,7 +370,7 @@ function AddSong(props) {
                       height: normalise(40),
                       width: normalise(40),
                     }}
-                    resizeMode="contain"
+                    resizeMode="cover"
                   />
                 </TouchableOpacity>
 

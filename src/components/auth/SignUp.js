@@ -59,7 +59,7 @@ function Login(props) {
     })();
 
     isInternetConnected()
-      .then(() => {})
+      .then(() => { })
       .catch(() => {
         toast('Check your Internet');
       });
@@ -305,7 +305,7 @@ function Login(props) {
                   width: normalise(120),
                   borderRadius: normalise(60),
                 }}
-                resizeMode="contain"
+                resizeMode="cover"
               />
             ) : (
               <TouchableOpacity

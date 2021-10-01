@@ -308,7 +308,7 @@ function HomeItemComments(props) {
                     ),
                   }}
                   style={styles.commentHeaderAvatar}
-                  resizeMode="contain"
+                  resizeMode="cover"
                 />
               </TouchableOpacity>
 
@@ -375,13 +375,13 @@ function HomeItemComments(props) {
                     source={
                       item.profile_image
                         ? {
-                            uri:
-                              constants.profile_picture_base_url +
-                              item.profile_image,
-                          }
+                          uri:
+                            constants.profile_picture_base_url +
+                            item.profile_image,
+                        }
                         : ImagePath.userPlaceholder
                     }
-                    resizeMode="contain"
+                    resizeMode="cover"
                     style={{
                       height: Dimensions.get('window').width / 12,
                       width: Dimensions.get('window').width / 12,

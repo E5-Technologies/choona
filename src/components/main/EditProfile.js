@@ -159,7 +159,7 @@ function EditProfile(props) {
         let uploadPicture = {
           name:
             imageDetails.filename === undefined ||
-            imageDetails.filename === null
+              imageDetails.filename === null
               ? 'xyz.jpg'
               : imageDetails.filename,
           type: imageDetails.mime,
@@ -261,7 +261,7 @@ function EditProfile(props) {
                   width: normalise(120),
                   borderRadius: normalise(60),
                 }}
-                resizeMode="contain"
+                resizeMode="cover"
               />
             ) : (
               <Image
