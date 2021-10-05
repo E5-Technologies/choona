@@ -970,7 +970,7 @@ function GenreSongClicked(props) {
         {renderAddToUsers()}
 
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={visible}
           onRequestClose={() => {

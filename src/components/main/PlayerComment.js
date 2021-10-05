@@ -19,7 +19,6 @@ import {
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import RBSheet from 'react-native-raw-bottom-sheet';
 
 import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
@@ -44,7 +43,6 @@ import CommentList from '../main/ListCells/CommentList';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 
 let status;
-let RbSheetRef;
 
 let comment_count = 0;
 let DataBack = [];
@@ -55,7 +53,6 @@ function HomeItemComments(props) {
   const [followingList, setFollowingList] = useState(props.followingData);
 
   const [showmention, setShowMention] = useState(false);
-  const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentText, setCommentText] = useState('');
   const [id] = useState(props.route.params.id);
   const [Selection, setSelection] = useState({ start: -1, end: -1 });
@@ -63,7 +60,6 @@ function HomeItemComments(props) {
   //   const [time] = useState(props.route.params.time);
   //   const [username] = useState(props.route.params.username);
   //   const [userComment] = useState(props.route.params.userComment);
-  const [totalcount, setTotalCount] = useState(0);
   const [textinputHeight, setHeight] = useState(normalise(20));
   useEffect(() => {
     //       console.log("id"+props.route.params.id)
@@ -169,62 +165,14 @@ function HomeItemComments(props) {
   const _onBackHandlerPress = () => {
     console.log('count' + JSON.stringify(DataBack).length);
     let data = DataBack;
-    let Comment = comment_count;
     const { navigation, route } = props;
     route.params.onSelect(data, data.length);
     navigation.goBack();
     return true;
   };
 
-  const RbSheet = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            RbSheetRef = ref;
-          }
-        }}
-        animationType={'slide'}
-        closeOnDragDown={false}
-        closeOnPressMask={true}
-        nestedScrollEnabled={true}
-        customStyles={{
-          container: {
-            minHeight: Dimensions.get('window').height / 2.2,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-            backgroundColor: 'transparent',
-          },
-        }}>
-        {/* > height: Dimensions.get('window').height / 2.2, backgroundColor:
-        'black', borderTopEndRadius: normalise(8), borderTopStartRadius:
-        normalise(8), }}> */}
-        <View style={{ width: '95%', flex: 1, alignSelf: 'center' }}>
-          {/* <FlatList
-            style={{height:'40%'}}
-            data={commentData}
-            renderItem={renderFlatlistData}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            keyboardShouldPersistTaps='always'
-            showsVerticalScrollIndicator={false}
-          /> */}
-        </View>
-      </RBSheet>
-    );
-  };
-
   const updateSize = height => {
     setHeight(height);
-  };
-
-  const onSelectionChange = ({ nativeEvent: { selection, text } }) => {
-    console.log('change selection to', selection, 'for value');
-
-    // );
-    // console.log("selectestext"+text);
-    // this.setState({ selection });
   };
 
   let delimiter = /\s+/;

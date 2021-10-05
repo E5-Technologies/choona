@@ -13,11 +13,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Dimensions,
-  Modal,
   Linking,
   Alert,
-  Platform,
-  Clipboard,
   Keyboard,
   BackHandler,
 } from 'react-native';
@@ -49,12 +46,6 @@ import {
   GET_SONG_FROM_ISRC_REQUEST,
   GET_SONG_FROM_ISRC_SUCCESS,
   GET_SONG_FROM_ISRC_FAILURE,
-  GET_USER_FROM_HOME_REQUEST,
-  GET_USER_FROM_HOME_SUCCESS,
-  GET_USER_FROM_HOME_FAILURE,
-  CREATE_CHAT_TOKEN_REQUEST,
-  CREATE_CHAT_TOKEN_SUCCESS,
-  CREATE_CHAT_TOKEN_FAILURE,
 } from '../../action/TypeConstants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
@@ -153,14 +144,6 @@ function Player(props) {
   var bottomSheetRef;
   //Prithviraj's variables.
   const [firstTimePlay, setFirstTimePlay] = useState(true);
-
-  // SEND SONG VARIABLES
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-
-  var myVar;
 
   function handleBackButtonClick() {
     console.log('hello');
@@ -266,19 +249,6 @@ function Player(props) {
         status = props.status;
         toast('Oops', 'Something Went Wrong');
         break;
-
-      case GET_USER_FROM_HOME_REQUEST:
-        status = props.status;
-        break;
-
-      case GET_USER_FROM_HOME_SUCCESS:
-        status = props.status;
-        setUserSearchData(props.userSearchFromHome);
-        break;
-
-      case GET_USER_FROM_HOME_FAILURE:
-        status = props.status;
-        break;
     }
   }
 
@@ -321,40 +291,7 @@ function Player(props) {
     }
   }
 
-  if (messageStatus === '' || props.messageStatus !== messageStatus) {
-    switch (props.messageStatus) {
-      case CREATE_CHAT_TOKEN_REQUEST:
-        messageStatus = props.messageStatus;
-        break;
-
-      case CREATE_CHAT_TOKEN_SUCCESS:
-        messageStatus = props.messageStatus;
-        // console.log('top50 page');
-        setUserSearchData([]);
-        sesUsersToSEndSong([]);
-        setUserSeach('');
-        props.navigation.navigate('SendSongInMessageFinal', {
-          image: pic,
-          title: songTitle,
-          title2: artist,
-          users: usersToSEndSong,
-          details: details,
-          registerType: props.regType,
-          fromAddAnotherSong: false,
-          index: 0,
-          fromHome: true,
-          fromPlayer: true,
-        });
-        break;
-
-      case CREATE_CHAT_TOKEN_FAILURE:
-        messageStatus = props.messageStatus;
-        toast('Error', 'Something Went Wong, Please Try Again');
-        break;
-    }
-  }
-
-  function _onReaction(ID, reaction) {}
+  function _onReaction(ID, reaction) { }
 
   function _onSelectBack(data, comment) {
     // console.log('aaa' + JSON.stringify(comment));
@@ -954,9 +891,9 @@ function Player(props) {
                     source={
                       profilePic
                         ? {
-                            uri:
-                              constants.profile_picture_base_url + profilePic,
-                          }
+                          uri:
+                            constants.profile_picture_base_url + profilePic,
+                        }
                         : ImagePath.userPlaceholder
                     }
                     style={{
@@ -1549,11 +1486,11 @@ function Player(props) {
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
-                              .then(() => {})
-                              .catch(err => {});
+                              .then(() => { })
+                              .catch(err => { });
                           }
                         })
-                        .catch(err => {});
+                        .catch(err => { });
                     } else {
                       isInternetConnected()
                         .then(() => {
@@ -1571,11 +1508,11 @@ function Player(props) {
                         .then(supported => {
                           if (supported) {
                             Linking.openURL(originalUri)
-                              .then(() => {})
-                              .catch(err => {});
+                              .then(() => { })
+                              .catch(err => { });
                           }
                         })
-                        .catch(err => {});
+                        .catch(err => { });
                     } else {
                       isInternetConnected()
                         .then(() => {
