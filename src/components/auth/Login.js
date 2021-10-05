@@ -378,7 +378,9 @@ function SignUp(props) {
               source={ImagePath ? ImagePath.appleSmallLogo : null}
               style={{
                 height: normalise(19),
+                marginRight: normalise(8),
                 top: normalise(-2),
+                width: normalise(16),
               }}
               resizeMode="contain"
             />
