@@ -38,6 +38,7 @@ const ImagePath = {
   splashLogo: require('./images/splashLogo.png'),
   spotifyButtonLogo: require('./images/spotifyLogo.png'),
   appleButtonLogo: require('./images/appleMusicLogo.png'),
+  appleSmallLogo: require('./images/appleSmallLogo.png'),
   profiletrack1: require('./images/profiletrack1.png'),
   profiletrack2: require('./images/profiletrack2.png'),
   profiletrack3: require('./images/profiletrack3.png'),

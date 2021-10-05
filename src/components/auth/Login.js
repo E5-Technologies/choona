@@ -365,27 +365,59 @@ function SignUp(props) {
         {Platform.OS === 'ios' && (
           <TouchableOpacity
             style={{
-              backgroundColor: '#E74E4C',
+              backgroundColor: '#ffffff',
               borderRadius: normalise(26),
               height: normalise(52),
               width: '100%',
               alignItems: 'center',
               justifyContent: 'center',
+              flexDirection: 'row',
             }}
             onPress={() => onAppleButtonPress()}>
             <Image
-              source={ImagePath ? ImagePath.appleButtonLogo : null}
+              source={ImagePath ? ImagePath.appleSmallLogo : null}
               style={{
-                height: normalise(26),
+                height: normalise(19),
+                top: normalise(-2),
               }}
               resizeMode="contain"
             />
+            <Text
+              style={{
+                color: Colors.darkerblack,
+                fontSize: normalise(14),
+                fontFamily: 'ProximaNova-SemiBold',
+                textTransform: 'uppercase',
+              }}>
+              Sign in with Apple
+            </Text>
           </TouchableOpacity>
         )}
       </View>
     </View>
   );
 }
+
+/* Login with Spotify */
+
+// position: absolute;
+// left: 34.93 %;
+// right: 28.53 %;
+// top: 84.24 %;
+// bottom: 8.87 %;
+
+// font - family: Proxima Nova;
+// font - style: normal;
+// font - weight: 600;
+// font - size: 14px;
+// line - height: 14px;
+// display: flex;
+// align - items: center;
+// text - align: center;
+// text - transform: uppercase;
+
+// /* NavBar */
+// color: #121317;
 
 const mapStateToProps = state => {
   return {
