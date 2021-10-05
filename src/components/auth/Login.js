@@ -321,10 +321,10 @@ function SignUp(props) {
             style={{
               color: Colors.white,
               fontFamily: 'ProximaNova-SemiBold',
-              fontSize: normalise(11),
+              fontSize: normalise(12),
               marginBottom: normalise(12),
             }}>
-            SIMPLY SIGN IN WITH ONE OF THE BELOW
+            SIGN IN WITH YOUR MUSIC SERVICE
           </Text>
         ) : Platform.OS === 'android' ? (
           <Text
@@ -334,7 +334,7 @@ function SignUp(props) {
               fontSize: normalise(11),
               marginBottom: normalise(12),
             }}>
-            LOGIN WITH{' '}
+            LOGIN WITH
           </Text>
         ) : (
           <></>
