@@ -18,8 +18,6 @@ import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
 import { seachSongsForPostRequest } from '../../action/PostAction';
-import { userSearchRequest } from '../../action/UserAction';
-import { createChatTokenRequest } from '../../action/MessageAction';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -147,7 +145,7 @@ function AddSongsInMessage(props) {
                 props.registerType === 'spotify'
                   ? singerList(data.item.artists)
                   : data.item.attributes.artistName,
-              registerType: props.registerType,
+              original_reg_type: props.registerType,
             },
           });
         }}
@@ -327,13 +325,6 @@ const mapDispatchToProps = dispatch => {
   return {
     searchSongReq: (text, post) => {
       dispatch(seachSongsForPostRequest(text, post));
-    },
-
-    userSearchReq: (payload, sendSong) => {
-      dispatch(userSearchRequest(payload, sendSong));
-    },
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
   };
 };

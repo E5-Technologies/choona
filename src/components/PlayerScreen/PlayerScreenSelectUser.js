@@ -122,7 +122,10 @@ function PlayerScreenSelectUser(props) {
           title2: props.route.params.item.artist_name,
           users: usersToSendSong,
           details: props.route.params.item,
-          registerType: props.registerType,
+          registerType:
+            props.route.params.item.original_reg_type ??
+            props.route.params.item.register_type ??
+            props.registerType,
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,

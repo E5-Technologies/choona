@@ -50,7 +50,6 @@ import {
 } from '../../action/UserAction';
 import { saveSongRequest } from '../../action/SongAction';
 import { deletePostReq } from '../../action/PostAction';
-import { createChatTokenRequest } from '../../action/MessageAction';
 import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -863,10 +862,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
   };
 };

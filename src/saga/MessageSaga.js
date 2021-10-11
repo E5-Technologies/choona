@@ -140,10 +140,6 @@ export function* sendChatMessageAction(action) {
         accesstoken: items.token,
       },
     );
-
-    console.log(
-      'updateMessageResponse: ' + JSON.stringify(updateMessageResponse),
-    );
   } catch (error) {
     console.log('error123' + error);
   }
@@ -292,21 +288,6 @@ export function* updateMessageCommentAction(action) {
     if (error) {
       yield put({ type: UPDATE_MESSEAGE_COMMENTS_FAILURE, error: error });
     } else {
-      // let updateMessageResponse = yield call(
-      //   postApi,
-      //   'chat/sendPush',
-      //   {
-      //     receiverId: action.payload.receiverId,
-      //     song_name: action.payload.songTitle,
-      //     artist_name: action.payload.artist,
-      //   },
-      //   Header,
-      // );
-
-      // console.log(
-      //   'updateMessageResponse: ' + JSON.stringify(updateMessageResponse),
-      // );
-
       yield put({
         type: UPDATE_MESSEAGE_COMMENTS_SUCCESS,
         data: 'Message Edited successfully',

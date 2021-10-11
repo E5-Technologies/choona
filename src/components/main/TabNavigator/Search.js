@@ -38,9 +38,6 @@ import {
   GET_USER_FROM_HOME_REQUEST,
   GET_USER_FROM_HOME_SUCCESS,
   GET_USER_FROM_HOME_FAILURE,
-  CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST,
-  CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS,
-  CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE,
 } from '../../../action/TypeConstants';
 import {
   userSearchRequest,
@@ -58,7 +55,6 @@ import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import { getUsersFromHome } from '../../../action/UserAction';
-import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
 import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
@@ -67,7 +63,6 @@ let status;
 let postStatus;
 let top50Status;
 let userstatus;
-let messageStatus;
 
 function Search(props) {
   const [usersSearch, setUsersSearch] = useState(true);
@@ -91,11 +86,7 @@ function Search(props) {
 
   const [typingTimeout, setTypingTimeout] = useState(0);
   // SEND SONG VARIABLES
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
   const [totalReact, setTotalReact] = useState([]);
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
 
   let changePlayer = false;
@@ -104,18 +95,6 @@ function Search(props) {
   var bottomSheetRef;
 
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
-
-  useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
-      setUserSearchData([]);
-      sesUsersToSEndSong([]);
-      setUserSeach('');
-    });
-
-    return () => {
-      unsuscribe();
-    };
-  }, []);
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
@@ -233,38 +212,6 @@ function Search(props) {
 
       case GET_USER_FROM_HOME_FAILURE:
         userstatus = props.userstatus;
-        break;
-    }
-  }
-
-  if (messageStatus === '' || props.messageStatus !== messageStatus) {
-    switch (props.messageStatus) {
-      case CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST:
-        messageStatus = props.messageStatus;
-        break;
-
-      case CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS:
-        messageStatus = props.messageStatus;
-        // console.log('search page');
-        setUserSearchData([]);
-        sesUsersToSEndSong([]);
-        setUserSeach('');
-        props.navigation.navigate('SendSongInMessageFinal', {
-          image: props.searchPostData[positionInArray].song_image,
-          title: props.searchPostData[positionInArray].song_name,
-          title2: props.searchPostData[positionInArray].artist_name,
-          users: usersToSEndSong,
-          details: props.searchPostData[positionInArray],
-          registerType: props.registerType,
-          fromAddAnotherSong: false,
-          index: 0,
-          fromHome: true,
-        });
-        break;
-
-      case CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE:
-        messageStatus = props.messageStatus;
-        toast('Error', 'Something Went Wong, Please Try Again');
         break;
     }
   }
@@ -1154,10 +1101,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenFromSearchRequest(payload));
     },
   };
 };

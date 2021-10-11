@@ -201,7 +201,11 @@ function SendSongInMessageFinal(props) {
         original_reg_type: type
           ? props.route.params.details.hasOwnProperty('social_type')
             ? props.route.params.details.social_type
-            : props.route.params.details.original_reg_type
+            : props.route.params.details.hasOwnProperty('social_type')
+              ? props.route.params.details.original_reg_type
+              : props.route.params.details.hasOwnProperty('register_type')
+                ? props.route.params.details.register_type
+                : props.registerType
           : props.registerType,
 
         read: false,
@@ -219,11 +223,7 @@ function SendSongInMessageFinal(props) {
     };
 
     props.sendChatMessageRequest(chatPayload);
-
-    //props.navigation.goBack();
   }
-
-  console.log(2);
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>

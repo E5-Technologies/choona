@@ -6,9 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Keyboard,
   Linking,
-  FlatList,
   TextInput,
   Image,
 } from 'react-native';
@@ -42,7 +40,6 @@ import {
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import axios from 'axios';
@@ -64,11 +61,9 @@ function InsideaMessage(props) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
-  const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-  const [typingTimeout, setTypingTimeout] = useState(0);
 
   var bottomSheetRef;
 
@@ -88,23 +83,6 @@ function InsideaMessage(props) {
     };
   }, []);
 
-  // if (status === "" || props.status !== status) {
-  //     switch (props.status) {
-  //         case CHAT_LOAD_REQUEST:
-  //             status = props.status
-  //             break;
-
-  //         case CHAT_LOAD_SUCCESS:
-  //             status = props.status;
-  //             setChatData(props.chatData)
-  //             break;
-
-  //         case CHAT_LOAD_FAILURE:
-  //             status = props.status
-  //             toast("Oops", "Something Went Wrong, Please Try Again")
-  //             break;
-  //     }
-  // };
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case CREATE_CHAT_TOKEN_REQUEST:
@@ -152,17 +130,6 @@ function InsideaMessage(props) {
         userStatus = props.userStatus;
         break;
     }
-  }
-
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
   }
 
   function renderItem(data) {
@@ -340,146 +307,6 @@ function InsideaMessage(props) {
           />
         )}
       </View>
-    );
-  }
-
-  // function filterArray(keyword) {
-
-  //     let data = _.filter(props.chatData, (item) => {
-  //         return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-  //     });
-
-  //     setChatData(data);
-
-  // };
-
-  // RENDER USER SEARCH FLATLIST DATA
-  function renderAddUsersToMessageItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          marginTop: normalise(10),
-          width: '87%',
-          alignSelf: 'center',
-        }}
-        onPress={() => {
-          if (usersToSEndSong.length > 0) {
-            // let idArray = [];
-
-            // usersToSEndSong.map((item, index) => {
-
-            //     idArray.push(item._id)
-
-            // });
-            // if (idArray.includes(data.item._id)) {
-            //     // console.log('Already Exists');
-            // }
-            // else {
-            //     let array = [...usersToSEndSong]
-            //     array.push(data.item)
-            //     sesUsersToSEndSong(array);
-            // };
-
-            toast('Error', 'You can select one user at a time');
-          } else {
-            let array = [...usersToSEndSong];
-            array.push(data.item);
-            sesUsersToSEndSong(array);
-          }
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            borderColor: Colors.activityBorderColor,
-            borderBottomWidth: normalise(0.5),
-            paddingBottom: normalise(10),
-          }}>
-          <Image
-            source={
-              data.item.profile_image
-                ? {
-                  uri:
-                    constants.profile_picture_base_url +
-                    data.item.profile_image,
-                }
-                : ImagePath.userPlaceholder
-            }
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-          />
-          <View style={{ marginStart: normalise(10) }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.full_name}
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-                textTransform: 'lowercase',
-              }}>
-              {data.item.username}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  // RENDER ADD TO FLATLIST DATA
-  function renderUsersToSendSongItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          height: normalise(30),
-          paddingHorizontal: normalise(18),
-          marginStart: normalise(20),
-          marginTop: normalise(5),
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-          marginEnd:
-            data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
-        }}>
-        <Text
-          style={{
-            color: Colors.black,
-            fontWeight: 'bold',
-            textTransform: 'lowercase',
-          }}>
-          {data.item.username}
-        </Text>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: -4,
-            height: 25,
-            width: 25,
-            borderRadius: 12,
-          }}
-          onPress={() => {
-            let popArray = [...usersToSEndSong];
-            popArray.splice(data.index, 1);
-            sesUsersToSEndSong(popArray);
-          }}>
-          <Image
-            source={ImagePath.crossIcon}
-            style={{
-              marginTop: normalise(-1.5),
-              marginStart: normalise(8.5),
-              height: 25,
-              width: 25,
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
     );
   }
 

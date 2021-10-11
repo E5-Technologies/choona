@@ -14,7 +14,6 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Linking,
-  Alert,
   Keyboard,
   BackHandler,
 } from 'react-native';
@@ -60,7 +59,6 @@ import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
 import axios from 'axios';
-import { createChatTokenRequest } from '../../action/MessageAction';
 import { getUsersFromHome } from '../../action/UserAction';
 import MoreModal from '../Posts/MoreModal';
 
@@ -69,7 +67,6 @@ let RbSheetRef;
 let status;
 let songStatus;
 let playerStatus;
-let messageStatus;
 
 function Player(props) {
   // PLAYER
@@ -481,96 +478,6 @@ function Player(props) {
       });
     }, 1000);
   };
-
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
-
-  function msToTime(duration) {
-    var milliseconds = parseInt((duration % 1000) / 100),
-      seconds = Math.floor((duration / 1000) % 60),
-      minutes = Math.floor((duration / (1000 * 60)) % 60),
-      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-
-    return minutes + ':' + seconds;
-  }
-
-  //PlayInSpotify
-
-  const playInSpotify = () => {
-    if (firstTimePlay) {
-      if (originalUri !== undefined) {
-        Linking.canOpenURL(originalUri)
-          .then(supported => {
-            if (supported) {
-              Linking.openURL(originalUri)
-                .then(() => {
-                  //   console.log('success');
-                })
-                .catch(() => {
-                  //   console.log('failed');
-                });
-            }
-          })
-          .catch(err => {
-            // console.log('not supported');
-          });
-      } else {
-        // console.log('No Link Present, Old posts');
-      }
-    } else {
-      if (playVisible) {
-        props.playerResumeRequest();
-      } else {
-        props.playerPauseRequest();
-      }
-
-      //spotifyPremiumAlert();
-    }
-  };
-
-  function spotifyPremiumAlert() {
-    Alert.alert(
-      'Opps!',
-      'You need premuim subscription of Spotify for this action',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            Linking.canOpenURL('https://www.spotify.com/premium/').then(
-              supported => {
-                if (supported) {
-                  Linking.openURL('https://www.spotify.com/premium/')
-                    .then(() => {
-                      //   console.log('success');
-                    })
-                    .catch(() => {
-                      //   console.log('failed');
-                    });
-                }
-              },
-            ),
-        },
-      ],
-      { cancelable: false },
-    );
-  }
 
   //OPEN IN APPLE / SPOTIFY
   const openInAppleORSpotify = () => {
@@ -1642,10 +1549,6 @@ const mapDispatchToProps = dispatch => {
 
     dummyRequest: () => {
       dispatch(dummyRequest());
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
   };
 };
