@@ -91,18 +91,21 @@ const App = () => {
     // });
 
     function _handleAppStateChange() {
-      if (AppState.currentState.match(/inactive|background/)) {
-        let formdata = new FormData();
-        formdata.append('badge_count', 0);
-        isInternetConnected()
-          .then(() => {
-            dispatch(editProfileRequest(formdata));
-          })
-          .catch(err => {
-            toast('Oops', 'Please Connect To Internet');
-          });
-      } else if (AppState.currentState === 'active') {
-        getChatListRequest, dispatch(getChatListRequest());
+      // if (AppState.currentState.match(/inactive|background/)) {
+      //   let formdata = new FormData();
+      //   formdata.append('badge_count', 0);
+      //   isInternetConnected()
+      //     .then(() => {
+      //       dispatch(editProfileRequest(formdata));
+      //     })
+      //     .catch(err => {
+      //       toast('Oops', 'Please Connect To Internet');
+      //     });
+      //   console.log('test');
+      // } else
+      if (AppState.currentState === 'active') {
+        getChatListRequest;
+        dispatch(getChatListRequest());
         dispatch(getProfileRequest());
         console.log('zxcv', 'App is in active Mode.');
       }
@@ -120,7 +123,7 @@ const App = () => {
     OneSignal.setLogLevel(6, 0);
     OneSignal.setRequiresUserPrivacyConsent(false);
     OneSignal.promptForPushNotificationsWithUserResponse(response => {
-      // console.log('Prompt response:', response);
+      console.log('Prompt response:', response);
     });
   }, []);
 

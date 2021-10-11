@@ -114,18 +114,21 @@ function EditProfile(props) {
       })
       .catch(err => {
         alert(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 
   //IMAGE PICKER FROM CAMERA
   const pickImagewithCamera = () => {
     ImagePicker.openCamera({
-      cropping: true,
       width: 500,
       height: 500,
+      cropping: true,
+      cropperCircleOverlay: true,
+      sortOrder: 'none',
+      compressImageQuality: 1,
+      compressVideoPreset: 'MediumQuality',
       includeExif: true,
-      mediaType: 'photo',
     })
       .then(image => {
         setPicture(true);
@@ -134,7 +137,7 @@ function EditProfile(props) {
       })
       .catch(err => {
         alert(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 
@@ -261,7 +264,7 @@ function EditProfile(props) {
                   width: normalise(120),
                   borderRadius: normalise(60),
                 }}
-                resizeMode="cover"
+                resizeMode="contain"
               />
             ) : (
               <Image
