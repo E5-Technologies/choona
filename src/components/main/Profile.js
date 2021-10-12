@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -77,43 +77,45 @@ function Profile(props) {
     setNonEmpty(true);
   };
 
+  const getProfilePosts = useCallback(async () => {
+    const response = await axios.get(`${postsUrl}?page=${1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+    });
+    setIsLoading(false);
+    if (response) {
+      setProfilePosts(response.data.data);
+      response.data.data.length === 0
+        ? (totalCount = totalCount)
+        : (totalCount = response.data.postCount);
+      profilePosts.length === 0 ? setNonEmpty(true) : null;
+    }
+  }, [profilePosts.length, token]);
+
   useEffect(() => {
     isInternetConnected()
       .then(async () => {
         getProfileReq();
-
-        const response = await axios.get(`${postsUrl}?page=${1}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'x-access-token': token,
-          },
-        });
-        setIsLoading(false);
-
-        console.log(response.data);
-        response.data.data.length === 0
-          ? (totalCount = totalCount)
-          : (totalCount = response.data.postCount);
-        profilePosts.length === 0
-          ? (setProfilePosts(response.data.data), setNonEmpty(true))
-          : null;
+        getProfilePosts();
       })
       .catch(() => {
         // toast('Error', 'Please Connect To Internet');
       });
-  }, [getProfileReq, profilePosts.length, token]);
+  }, [getProfileReq, getProfilePosts, profilePosts.length, token]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case USER_PROFILE_REQUEST:
         status = props.status;
+        getProfilePosts();
         break;
 
       case USER_PROFILE_SUCCESS:
         status = props.status;
         if (activity) {
-          // console.log('get index');
           getIndex();
         }
         break;
