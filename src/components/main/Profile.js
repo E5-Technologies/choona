@@ -10,6 +10,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  Linking,
   Dimensions,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -195,9 +196,23 @@ function Profile(props) {
           <View style={styles.modalView}>
             <TouchableOpacity
               onPress={() => {
+                Linking.openURL('mailto:contact@choona.co');
+              }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                Email support with a bug/feature
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 setModalVisible(!modalVisible);
                 setModalPrivacy(true);
-              }}>
+              }}
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
