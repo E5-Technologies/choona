@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   FlatList,
-  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -21,7 +21,11 @@ import _ from 'lodash';
 import Colors from '../../../assests/Colors';
 import constants from '../../../utils/helpers/constants';
 import normaliseNew from '../../../utils/helpers/DimensNew';
-import normalise from '../../../utils/helpers/Dimens';
+import {
+  USER_PROFILE_REQUEST,
+  USER_PROFILE_SUCCESS,
+  USER_PROFILE_FAILURE,
+} from '../../../action/TypeConstants';
 
 import { useFocusEffect } from '@react-navigation/native';
 import StatusBar from '../../../utils/MyStatusBar';
@@ -46,12 +50,16 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
+let status = '';
+
 function Notification(props) {
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [emptyVisible, setEmpty] = useState(undefined);
   const getActivities = async pageId => {
-    notifications.length === 0 ? setIsLoading(true) : setIsLoading(false);
+    setIsLoading(true);
     const response = await axios.get(`${activityUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -60,8 +68,6 @@ function Notification(props) {
       },
     });
 
-    setIsLoading(false);
-
     return await response.data;
   };
 
@@ -69,9 +75,32 @@ function Notification(props) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [onScrolled, setOnScrolled] = useState(false);
 
+  useEffect(() => {
+    if (isLoading) {
+      let formdata = new FormData();
+      formdata.append('badge_count', 0);
+      formdata.append('isActivity', false);
+
+      isInternetConnected()
+        .then(() => {
+          dispatch(editProfileRequest(formdata));
+        })
+        .catch(err => {
+          toast('Oops', 'Please Connect To Internet');
+        });
+    }
+  }, [dispatch, isLoading]);
+
+  useEffect(() => {
+    if (props.status === 'EDIT_PROFILE_SUCCESS') {
+      props.getProfileReq();
+    }
+  }, [props.status, props.getProfileReq]);
+
   const key = `${activityUrl}?page=${pageId}`;
   const { mutate } = useSWR(key, () => getActivities(pageId), {
     onSuccess: data => {
+      setIsLoading(false);
       if (data.data.length === 0) {
         setEmpty(true);
       } else {
@@ -87,7 +116,6 @@ function Notification(props) {
   });
 
   const onReached = async () => {
-    console.log('start');
     setOnScrolled(true);
     const response = await axios.get(`${activityUrl}?page=${pageId + 1}`, {
       headers: {
@@ -96,8 +124,7 @@ function Notification(props) {
         'x-access-token': props.header.token,
       },
     });
-    console.log('pageId' + pageId);
-    console.log('response' + response.data.data.length);
+
     if (response.data.data.length === 0) {
       setOnScrolled(false);
     } else {
@@ -105,8 +132,6 @@ function Notification(props) {
     }
 
     previous = [...previous, ...response.data.data];
-    // setOnScrolled(true)
-    // alert("res"+JSON.stringify(response.data.data))
   };
 
   const isCloseToBottom = ({
@@ -127,45 +152,8 @@ function Notification(props) {
       setNotifications([]);
       setPageId(1);
       mutate();
-
-      AppState.addEventListener('change', updateProfile);
-      const unsuscribe = props.navigation.addListener('focus', () => {
-        isInternetConnected()
-          .then(() => {
-            // alert("focus");
-            updateProfile();
-            // setNotifications([]);
-            // setPageId(1);
-            // mutate();
-          })
-          .catch(() => {
-            toast('Error', 'Please Connect To Internet');
-          });
-      });
-      AppState.removeEventListener('change', updateProfile);
-      return () => {
-        unsuscribe();
-      };
     }, []),
   );
-
-  const updateProfile = () => {
-    let formdata = new FormData();
-
-    formdata.append('isActivity', false);
-
-    isInternetConnected()
-      .then(() => {
-        props.editProfileReq(formdata);
-        setTimeout(() => {
-          props.getProfileReq();
-        }, 1000);
-      })
-      .catch(err => {
-        console.log(err);
-        toast('Oops', 'Please Connect To Internet');
-      });
-  };
 
   let previous = [];
   let today = [];
@@ -229,6 +217,23 @@ function Notification(props) {
       }
     });
   };
+
+  if (status === '' || props.status !== status) {
+    switch (props.status) {
+      case USER_PROFILE_REQUEST:
+        status = props.status;
+        break;
+
+      case USER_PROFILE_SUCCESS:
+        status = props.status;
+        break;
+
+      case USER_PROFILE_FAILURE:
+        status = props.status;
+        toast('Oops', 'Something Went Wrong, Please Try Again');
+        break;
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -391,6 +396,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     header: state.TokenReducer,
+    status: state.UserReducer.status,
   };
 };
 

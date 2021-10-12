@@ -235,6 +235,7 @@ function Home(props) {
         findPlayingSong(props.postData);
         setHomeReq(false);
         setRefresing(false);
+        props.getProfileReq();
         break;
 
       case HOME_PAGE_FAILURE:
