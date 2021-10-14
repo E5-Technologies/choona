@@ -26,6 +26,9 @@ import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
   USER_PROFILE_FAILURE,
+  DELETE_POST_REQUEST,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_FAILURE,
 } from '../../action/TypeConstants';
 import {
   getProfileRequest,
@@ -33,7 +36,6 @@ import {
   getCountryCodeRequest,
 } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
 import axios from 'axios';
@@ -45,6 +47,7 @@ import EmptyComponent from '../Empty/EmptyComponent';
 import HeaderStyles from '../../styles/header';
 
 let status = '';
+let postStatus = '';
 let totalCount = '0';
 
 const postsUrl = constants.BASE_URL + '/user/posts';
@@ -92,26 +95,46 @@ function Profile(props) {
       response.data.data.length === 0
         ? (totalCount = totalCount)
         : (totalCount = response.data.postCount);
-      profilePosts.length === 0 ? setNonEmpty(true) : null;
+      // profilePosts.length === 0 ? setNonEmpty(true) : null;
     }
-  }, [profilePosts.length, token]);
+  }, [token]);
 
   useEffect(() => {
     isInternetConnected()
       .then(async () => {
         getProfileReq();
-        getProfilePosts();
       })
       .catch(() => {
         // toast('Error', 'Please Connect To Internet');
       });
-  }, [getProfileReq, getProfilePosts, profilePosts.length, token]);
+  }, [getProfileReq]);
+
+  if (postStatus === '' || props.postStatus !== postStatus) {
+    switch (props.postStatus) {
+      case DELETE_POST_REQUEST:
+        postStatus = props.postStatus;
+        break;
+
+      case DELETE_POST_SUCCESS:
+        postStatus = props.postStatus;
+        getProfilePosts();
+        break;
+
+      case DELETE_POST_FAILURE:
+        postStatus = props.postStatus;
+        toast('Oops', 'Something Went Wrong, Please Try Again');
+        break;
+    }
+  }
+
+  useEffect(() => {
+    getProfilePosts();
+  }, [getProfilePosts]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case USER_PROFILE_REQUEST:
         status = props.status;
-        getProfilePosts();
         break;
 
       case USER_PROFILE_SUCCESS:
@@ -167,10 +190,7 @@ function Profile(props) {
             uri:
               props.userProfileResp?.register_type === 'spotify'
                 ? data.item.song_image
-                : data.item.song_image.replace(
-                  '100x100bb.jpg',
-                  '500x500bb.jpg',
-                ),
+                : data.item.song_image,
           }}
           style={{
             width: Math.floor(Dimensions.get('window').width / 2.1),
@@ -188,8 +208,7 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'overFullScreen'}
-        onRequestClose={() => { }}>
+        presentationStyle={'overFullScreen'}>
         <ImageBackground
           source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>
@@ -240,7 +259,6 @@ function Profile(props) {
             <TouchableOpacity
               style={{ marginTop: normalise(18) }}
               onPress={() => {
-                // console.log('tandcs');
                 setModalVisible(!modalVisible);
                 setModaltandcs(true);
               }}>
@@ -480,7 +498,9 @@ function Profile(props) {
             }}
             showsVerticalScrollIndicator={false}
             numColumns={2}
-            onEndReached={() => onEndReached()}
+            onEndReached={() => {
+              onEndReached();
+            }}
             onEndReachedThreshold={1}
           />
         )}
@@ -495,6 +515,7 @@ function Profile(props) {
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
+    postStatus: state.PostReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     countryCode: state.UserReducer.countryCodeOject,
     header: state.TokenReducer,
