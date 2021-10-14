@@ -4,6 +4,7 @@ import {
   View,
   Text,
   AppState,
+  Image,
   TouchableOpacity,
   Modal,
   Platform,
@@ -11,6 +12,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   FlatList,
+  Pressable,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -92,6 +94,7 @@ let postStatus = '';
 function Home(props) {
   let newpost = [];
   newpost = props.postData;
+  const token = props.header.token;
   const [appState, setAppState] = useState(AppState.currentState);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -112,6 +115,21 @@ function Home(props) {
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
   const [isShown, setIsShown] = useState(true);
+
+  const [firstTimeModalShow, setFirstTimeModalShow] = useState(false);
+  const [andyProfile, setAndyProfile] = useState(false);
+  const [followButtonPressed, setFollowButtonPressed] = useState(false);
+
+  useEffect(() => {
+    async function getModalData() {
+      const isFirstOpen = await AsyncStorage.getItem('IS_FIRST_OPEN');
+      if (!isFirstOpen || isFirstOpen !== 'true') {
+        setFirstTimeModalShow(true);
+      }
+    }
+
+    getModalData();
+  }, []);
 
   var bottomSheetRef;
   let changePlayer = false;
@@ -135,6 +153,25 @@ function Home(props) {
   const flatlistRef = React.useRef(null);
 
   useScrollToTop(flatlistRef);
+
+  useEffect(() => {
+    isInternetConnected().then(async () => {
+      const response = await axios.get(
+        `${constants.BASE_URL}/user/profile/60efd72851da7dee96c570ad`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token,
+          },
+        },
+      );
+
+      if (response.data.data) {
+        setAndyProfile(response.data.data);
+      }
+    });
+  }, [token]);
 
   useEffect(() => {
     setHomeReq(true);
@@ -954,6 +991,202 @@ function Home(props) {
             //  props.navigation.navigate('BlankScreen');
           }}
         />
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={firstTimeModalShow}
+          presentationStyle="overFullScreen">
+          <LinearGradient
+            colors={['rgba(159, 0, 255, 0.8)', 'rgba(3, 150, 91, 0.8)']}
+            locations={[0, 0.5, 1]}
+            useAngle={true}
+            angle={315}
+            angleCenter={{ x: -4, y: 1 }}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: normalise(12),
+            }}>
+            <View
+              style={{
+                backgroundColor: '#121317',
+                borderRadius: normalise(8),
+                boxShadow: '0px -8px 40px rgba(0, 0, 0, 0.4)',
+                padding: normalise(16),
+                width: '100%',
+              }}>
+              <View
+                style={{
+                  alignItems: 'flex-start',
+                  borderBottomColor: '#25262A',
+                  borderBottomWidth: normalise(1),
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Bold',
+                    fontSize: normalise(14),
+                    marginBottom: normalise(12),
+                  }}>
+                  Welcome to Choona’s Beta
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    setFirstTimeModalShow(false);
+                    AsyncStorage.setItem('IS_FIRST_OPEN_SEVEN', 'true');
+                  }}>
+                  <Image
+                    source={ImagePath.modalClose}
+                    style={{
+                      height: normalise(24),
+                      right: normalise(-4),
+                      top: normalise(-4),
+                      width: normalise(24),
+                    }}
+                  />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  borderBottomColor: '#25262A',
+                  borderBottomWidth: normalise(1),
+                  paddingTop: normalise(12),
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Firstly, thank you so much for joining our public beta.
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Choona is made by a tiny team and is currently bootstrapped;
+                  so please help us, to help you. We have created this platform
+                  for music lovers, like yourself, to share their music.
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  We have released Choona to a wider audience, in order to get
+                  some feedback from people like you. It won’t be perfect yet,
+                  but please reach out with any bugs or feature requests to
+                  contact@choona.co{' '}
+                  <Text
+                    style={{
+                      color: '#979797',
+                    }}>
+                    (this is also in the setting menu should you need it going
+                    forward)
+                  </Text>
+                  .
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Choona is better with friends; so please share it. Also, check
+                  your phonebook to see if any of your friends are already on
+                  here. Failing that, you can follow our founder below to see
+                  his{' '}
+                  <Text
+                    style={{
+                      textDecorationLine: 'line-through',
+                      textDecorationStyle: 'solid',
+                    }}>
+                    awful
+                  </Text>{' '}
+                  taste in music.
+                </Text>
+              </View>
+              <View
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: normalise(12),
+                }}>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                  <Image
+                    source={{
+                      uri:
+                        constants.profile_picture_base_url +
+                        andyProfile.profile_image,
+                    }}
+                    style={{
+                      borderRadius: normalise(16),
+                      height: normalise(32),
+                      marginRight: normalise(8),
+                      width: normalise(32),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'ProximaNova-SemiBold',
+                        fontSize: normalise(12),
+                      }}>
+                      {andyProfile.full_name}
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'ProximaNova-Regular',
+                        fontSize: normalise(10),
+                        opacity: 0.5,
+                      }}>
+                      Founder
+                    </Text>
+                  </View>
+                </View>
+                {!andyProfile.isFollowing && (
+                  <Pressable
+                    onPress={() => {
+                      props.followUnfollowReq({ follower_id: andyProfile._id });
+                      setFollowButtonPressed(true);
+                    }}
+                    disabled={followButtonPressed}
+                    style={{
+                      alignItems: 'center',
+                      backgroundColor: followButtonPressed ? '#25262a' : '#fff',
+                      borderRadius: normalise(16),
+                      height: normalise(30),
+                      justifyContent: 'center',
+                      width: normalise(100),
+                    }}>
+                    <Text
+                      style={{
+                        color: followButtonPressed ? '#fff' : '#25262a',
+                        fontFamily: 'ProximaNova-Bold',
+                        fontSize: normalise(10),
+                        textTransform: 'uppercase',
+                      }}>
+                      {followButtonPressed ? 'Following' : 'Follow Me'}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </View>
+          </LinearGradient>
+        </Modal>
 
         {!isShown && (
           <CompleteProfileBlock
@@ -1200,6 +1433,7 @@ const mapStateToProps = state => {
     currentPage: state.UserReducer.currentPage,
     SuccessToken: state.TokenReducer.token,
     loadData: state.UserReducer.loadData,
+    header: state.TokenReducer,
   };
 };
 

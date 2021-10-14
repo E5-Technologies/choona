@@ -30,6 +30,7 @@ const ImagePath = {
   iconmenu: require('../assests/images/icon-menu.png'),
   playicon: require('../assests/images/playicon.png'),
   reactionicon: require('../assests/images/reactionicon.png'),
+  modalClose: require('../assests/images/modal-close.png'),
   commenticon: require('../assests/images/Icon-comment.png'),
   pauseicon: require('../assests/images/pauseicon.png'),
   settings: require('./images/settings.png'),
