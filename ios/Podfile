@@ -15,7 +15,6 @@ target 'Choona' do
   )
 
 
-  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
 
   target 'ChoonaDev' do
     inherit! :complete

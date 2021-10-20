@@ -215,7 +215,7 @@ function Profile(props) {
           <View style={styles.modalView}>
             <TouchableOpacity
               onPress={() => {
-                Linking.openURL('mailto:contact@choona.co');
+                Linking.openURL('mailto:contact@choona.com');
               }}>
               <Text
                 style={{
@@ -365,7 +365,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.co/privacy' }} />
+          <WebView source={{ uri: 'https://www.choona.com/privacy' }} />
         </View>
       </Modal>
     );
@@ -395,7 +395,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.co/terms' }} />
+          <WebView source={{ uri: 'https://www.choona.com/terms' }} />
         </View>
       </Modal>
     );

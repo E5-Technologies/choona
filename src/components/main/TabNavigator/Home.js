@@ -1036,7 +1036,7 @@ function Home(props) {
                 <Pressable
                   onPress={() => {
                     setFirstTimeModalShow(false);
-                    AsyncStorage.setItem('IS_FIRST_OPEN_SEVEN', 'true');
+                    AsyncStorage.setItem('IS_FIRST_OPEN', 'true');
                   }}>
                   <Image
                     source={ImagePath.modalClose}
@@ -1085,7 +1085,7 @@ function Home(props) {
                   We have released Choona to a wider audience, in order to get
                   some feedback from people like you. It won’t be perfect yet,
                   but please reach out with any bugs or feature requests to
-                  contact@choona.co{' '}
+                  contact@choona.com{' '}
                   <Text
                     style={{
                       color: '#979797',
