@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
 
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import StatusBar from '../../../utils/MyStatusBar';
@@ -65,8 +67,8 @@ let top50Status;
 let userstatus;
 
 function Search(props) {
-  const [usersSearch, setUsersSearch] = useState(true);
-  const [genreSearch, setGenreSearch] = useState(false);
+  const [usersSearch, setUsersSearch] = useState(false);
+  const [genreSearch, setGenreSearch] = useState(true);
   const [songSearch, setSongSearch] = useState(false);
 
   const [usersSearchText, setUsersSearchText] = useState('');
@@ -93,6 +95,10 @@ function Search(props) {
   let sendSong = false;
   let flag = true;
   var bottomSheetRef;
+
+  useEffect(() => {
+    props.getTop50SongReq();
+  }, [props.getTop50SongReq]);
 
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -727,39 +733,6 @@ function Search(props) {
               height: normalise(40),
               alignItems: 'center',
               justifyContent: 'center',
-            }}
-            onPress={() => {
-              setUsersSearch(true);
-              setGenreSearch(false);
-              setSongSearch(false);
-            }}>
-            <Text
-              style={{
-                color: usersSearch ? Colors.white : Colors.grey_text,
-                fontFamily: 'ProximaNova-Bold',
-                fontSize: normalise(11),
-                textTransform: 'uppercase',
-              }}>
-              Users
-            </Text>
-            {usersSearch ? (
-              <Image
-                source={ImagePath.gradient_border_horizontal}
-                style={{
-                  width: '100%',
-                  height: normalise(3),
-                  position: 'absolute',
-                  bottom: 0,
-                }}
-              />
-            ) : null}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: '33%',
-              height: normalise(40),
-              alignItems: 'center',
-              justifyContent: 'center',
               borderLeftWidth: normalise(1),
               borderLeftColor: Colors.darkerblack,
               borderRightWidth: normalise(1),
@@ -781,6 +754,39 @@ function Search(props) {
               Top Songs
             </Text>
             {genreSearch ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={{
+                  width: '100%',
+                  height: normalise(3),
+                  position: 'absolute',
+                  bottom: 0,
+                }}
+              />
+            ) : null}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: '33%',
+              height: normalise(40),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              setUsersSearch(true);
+              setGenreSearch(false);
+              setSongSearch(false);
+            }}>
+            <Text
+              style={{
+                color: usersSearch ? Colors.white : Colors.grey_text,
+                fontFamily: 'ProximaNova-Bold',
+                fontSize: normalise(11),
+                textTransform: 'uppercase',
+              }}>
+              Users
+            </Text>
+            {usersSearch ? (
               <Image
                 source={ImagePath.gradient_border_horizontal}
                 style={{
@@ -1013,13 +1019,35 @@ function Search(props) {
             // title={'No songs have been posted today'}
             />
           ) : (
-            <FlatList
-              data={top50}
-              renderItem={renderGenreData}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              showsVerticalScrollIndicator={false}
-            />
+            <>
+              <FlatList
+                data={top50}
+                renderItem={renderGenreData}
+                keyExtractor={(item, index) => index.toString()}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+              />
+              {/* <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                <BannerAd
+                  unitId={TestIds.BANNER}
+                  // unitId={Platform.OS === 'android' ? 'ca-app-pub-2232736176622960/2335890938' : 'ca-app-pub-2232736176622960/3492936227'}
+                  size={BannerAdSize.BANNER}
+                  requestOptions={{
+                    requestNonPersonalizedAdsOnly: true,
+                  }}
+                  onAdLoaded={() => {
+                    console.log('Advert loaded');
+                  }}
+                  onAdFailedToLoad={error => {
+                    console.error('Advert failed to load: ', error);
+                  }}
+                />
+              </View> */}
+            </>
           )
         ) : null}
 

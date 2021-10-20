@@ -27,6 +27,8 @@ import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -119,6 +121,12 @@ function Home(props) {
   const [firstTimeModalShow, setFirstTimeModalShow] = useState(false);
   const [andyProfile, setAndyProfile] = useState(false);
   const [followButtonPressed, setFollowButtonPressed] = useState(false);
+
+  // const [posts, setPosts] = useState([]);
+
+  // useEffect(() => {
+  //   setPosts(props.postData);
+  // }, [props.postData]);
 
   useEffect(() => {
     async function getModalData() {
@@ -642,98 +650,124 @@ function Home(props) {
 
   function renderItem(data) {
     return (
-      <HomeItemList
-        image={data.item.song_image}
-        play={
-          _.isEmpty(postArray)
-            ? false
-            : props.postData.length === postArray.length
-              ? postArray[data.index].playing
-              : false
-        }
-        picture={data.item.userDetails.profile_image}
-        name={data.item.userDetails.username}
-        comment_count={data.item.comment_count ? data.item.comment_count : 0}
-        reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
-        reactions={{
-          fire_count: data.item.fire_count,
-          love_count: data.item.love_count,
-          dancer_count: data.item.dancer_count,
-          man_dancing_count: data.item.man_dancing_count,
-          face_count: data.item.face_count,
-          thumbsup_count: data.item.thumbsup_count,
-        }}
-        navi={props}
-        content={data.item.post_content}
-        time={data.item.createdAt}
-        title={data.item.song_name}
-        singer={data.item.artist_name}
-        songUri={data.item.song_uri}
-        modalVisible={modal1Visible}
-        postType={data.item.social_type === 'spotify'}
-        onReactionPress={reaction => {
-          if (!homeReq) {
-            hitreact(reaction, data.index),
-              sendReaction(data.item._id, reaction);
+      <>
+        <HomeItemList
+          image={data.item.song_image}
+          play={
+            _.isEmpty(postArray)
+              ? false
+              : props.postData.length === postArray.length
+                ? postArray[data.index].playing
+                : false
           }
-        }}
-        onPressImage={() => {
-          if (!homeReq) {
-            if (props.userProfileResp._id === data.item.user_id) {
-              props.navigation.navigate('Profile', { fromAct: false });
-            } else {
-              props.navigation.navigate('OthersProfile', {
-                id: data.item.user_id,
+          picture={data.item.userDetails.profile_image}
+          name={data.item.userDetails.username}
+          comment_count={data.item.comment_count ? data.item.comment_count : 0}
+          reaction_count={
+            data.item.reaction_count ? data.item.reaction_count : 0
+          }
+          reactions={{
+            fire_count: data.item.fire_count,
+            love_count: data.item.love_count,
+            dancer_count: data.item.dancer_count,
+            man_dancing_count: data.item.man_dancing_count,
+            face_count: data.item.face_count,
+            thumbsup_count: data.item.thumbsup_count,
+          }}
+          navi={props}
+          content={data.item.post_content}
+          time={data.item.createdAt}
+          title={data.item.song_name}
+          singer={data.item.artist_name}
+          songUri={data.item.song_uri}
+          modalVisible={modal1Visible}
+          postType={data.item.social_type === 'spotify'}
+          onReactionPress={reaction => {
+            if (!homeReq) {
+              hitreact(reaction, data.index),
+                sendReaction(data.item._id, reaction);
+            }
+          }}
+          onPressImage={() => {
+            if (!homeReq) {
+              if (props.userProfileResp._id === data.item.user_id) {
+                props.navigation.navigate('Profile', { fromAct: false });
+              } else {
+                props.navigation.navigate('OthersProfile', {
+                  id: data.item.user_id,
+                });
+              }
+            }
+          }}
+          onAddReaction={() => {
+            hitreact1(modal1Visible);
+          }}
+          onPressMusicbox={() => {
+            if (!homeReq) {
+              playSong(data);
+              setVisibleMiniPlayer(true);
+            }
+          }}
+          onPressReactionbox={() => {
+            if (!homeReq) {
+              props.navigation.navigate('HomeItemReactions', {
+                reactionCount: data.item.reaction_count
+                  ? data.item.reaction_count
+                  : 0,
+                post_id: data.item._id,
+                onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
               });
             }
+          }}
+          onPressCommentbox={() => {
+            if (!homeReq) {
+              props.navigation.navigate('HomeItemComments', {
+                index: data.index,
+                comment: data.item.comment,
+                image: data.item.song_image,
+                username: data.item.userDetails.username,
+                userComment: data.item.post_content,
+                time: data.item.createdAt,
+                id: data.item._id,
+                onSelect: (ID, comment) => _onSelectBack(ID, comment),
+              });
+            }
+          }}
+          onPressSecondImage={() => {
+            if (!homeReq) {
+              setPositionInArray(data.index);
+              setModalVisible(true);
+            }
+          }}
+          marginBottom={
+            data.index === props.postData.length - 1 ? normalise(60) : 0
           }
-        }}
-        onAddReaction={() => {
-          hitreact1(modal1Visible);
-        }}
-        onPressMusicbox={() => {
-          if (!homeReq) {
-            playSong(data);
-            setVisibleMiniPlayer(true);
-          }
-        }}
-        onPressReactionbox={() => {
-          if (!homeReq) {
-            props.navigation.navigate('HomeItemReactions', {
-              reactionCount: data.item.reaction_count
-                ? data.item.reaction_count
-                : 0,
-              post_id: data.item._id,
-              onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
-            });
-          }
-        }}
-        onPressCommentbox={() => {
-          if (!homeReq) {
-            props.navigation.navigate('HomeItemComments', {
-              index: data.index,
-              comment: data.item.comment,
-              image: data.item.song_image,
-              username: data.item.userDetails.username,
-              userComment: data.item.post_content,
-              time: data.item.createdAt,
-              id: data.item._id,
-              onSelect: (ID, comment) => _onSelectBack(ID, comment),
-            });
-          }
-        }}
-        onPressSecondImage={() => {
-          if (!homeReq) {
-            setPositionInArray(data.index);
-            setModalVisible(true);
-          }
-        }}
-        marginBottom={
-          data.index === props.postData.length - 1 ? normalise(60) : 0
-        }
-      // playingSongRef={props.playingSongRef}
-      />
-      // </TouchableOpacity>
+        // playingSongRef={props.playingSongRef}
+        />
+        {/* {data.index % 4 === 0 && data.index !== 0 && (
+          <View
+            style={{
+              marginVertical: normalise(24),
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}>
+            <BannerAd
+              unitId={TestIds.BANNER}
+              // unitId={Platform.OS === 'android' ? 'ca-app-pub-2232736176622960/7588217615' : 'ca-app-pub-2232736176622960/4761005615'}
+              size={BannerAdSize.MEDIUM_RECTANGLE}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+              onAdLoaded={() => {
+                console.log('Advert loaded');
+              }}
+              onAdFailedToLoad={error => {
+                console.error('Advert failed to load: ', error);
+              }}
+            />
+          </View>
+        )} */}
+      </>
     );
   }
 
