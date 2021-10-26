@@ -143,7 +143,7 @@ function OthersProfile(props) {
             width: Math.floor(Dimensions.get('window').width / 2.1),
             height: Math.floor(Dimensions.get('window').width / 2.1),
           }}
-          resizeMode="contain"
+          resizeMode="cover"
         />
       </TouchableOpacity>
     );
