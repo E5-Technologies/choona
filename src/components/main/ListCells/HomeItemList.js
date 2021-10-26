@@ -120,7 +120,7 @@ function HomeItemList(props) {
           aspectRatio: 1,
           width: '100%',
         }}
-        resizeMode="cover"
+        resizeMode="contain"
       />
       <HomeListItemFooter
         commentCount={props.comment_count}

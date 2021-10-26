@@ -81,7 +81,7 @@ function CommentList(props) {
               : ImagePath.userPlaceholder
           }
           style={styles.commentAvatar}
-          resizeMode="cover"
+          resizeMode="contain"
         />
       </TouchableOpacity>
       <View style={styles.commentInfoContainer}>

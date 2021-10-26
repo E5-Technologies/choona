@@ -16,11 +16,13 @@ const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
               uri: constants.profile_picture_base_url + profile.profile_image,
             }}
             style={styles.profileAvatar}
+            resizeMode="contain"
           />
         ) : (
           <Image
             source={ImagePath.userPlaceholder}
             style={styles.emptyAvatar}
+            resizeMode="contain"
           />
         )}
       </View>
@@ -40,9 +42,9 @@ const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
               user
                 ? navigation.push('Following', { type: 'user', id: '' })
                 : navigation.push('Following', {
-                    type: 'public',
-                    id: profile._id,
-                  });
+                  type: 'public',
+                  id: profile._id,
+                });
             }}>
             <Text style={styles.profileHeaderDetailsLink}>
               <Text style={styles.profileHeaderDetailsLinkSub}>
@@ -56,9 +58,9 @@ const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
               user
                 ? navigation.push('Followers', { type: 'user', id: '' })
                 : navigation.push('Followers', {
-                    type: 'public',
-                    id: profile._id,
-                  });
+                  type: 'public',
+                  id: profile._id,
+                });
             }}>
             <Text style={styles.profileHeaderDetailsLink}>
               <Text style={styles.profileHeaderDetailsLinkSub}>

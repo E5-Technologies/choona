@@ -5,16 +5,12 @@ platform :ios, '11.0'
 
 target 'Choona' do
   config = use_native_modules!
-
-  permissions_path = '../node_modules/react-native-permissions/ios'
   
   use_react_native!(
     :path => config[:reactNativePath],
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
   )
-
-
 
   target 'ChoonaDev' do
     inherit! :complete
@@ -52,5 +48,10 @@ target 'Choona' do
     # We need to make one crude patch to RCT-Folly - set `__IPHONE_10_0` to our iOS target + 1
     # https://github.com/facebook/flipper/issues/834 - 84 comments and still going...
     `sed -i -e  $'s/__IPHONE_10_0/__IPHONE_12_0/' Pods/RCT-Folly/folly/portability/Time.h`
+
+    permissions_path = '../node_modules/react-native-permissions/ios'
+
+    pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+    pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   end
 end

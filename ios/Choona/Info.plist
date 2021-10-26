@@ -62,6 +62,8 @@
 	<string>This app would like to access your camera roll to let you set profile pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app would like to access your camera roll to let you set profile pictures</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-2232736176622960~3432128994</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>ProximaNova-Regular.otf</string>

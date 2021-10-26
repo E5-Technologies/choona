@@ -808,7 +808,7 @@ function Player(props) {
                       width: normalise(24),
                       borderRadius: normalise(24),
                     }}
-                    resizeMode="cover"
+                    resizeMode="contain"
                   />
 
                   <View
@@ -902,7 +902,7 @@ function Player(props) {
 
                   // borderRadius: normalise(15),
                 }}
-                resizeMode="cover"
+                resizeMode="contain"
               />
             </TouchableOpacity>
 
@@ -957,6 +957,7 @@ function Player(props) {
                 <Image
                   source={playVisible ? ImagePath.play : ImagePath.pause}
                   style={{ height: normalise(24), width: normalise(24) }}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
             </View>

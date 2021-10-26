@@ -21,6 +21,7 @@ const CompleteProfileBlock = ({ navigation, setIsShown }) => {
       <Image
         source={ImagePath.chevron}
         style={styles.completeProfileBlockChevron}
+        resizeMode="contain"
       />
       <LinearGradient
         colors={['#09784D', '#297283', '#9F00FF']}

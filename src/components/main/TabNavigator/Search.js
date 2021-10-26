@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
 
-import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -762,6 +762,7 @@ function Search(props) {
                   position: 'absolute',
                   bottom: 0,
                 }}
+                resizeMode="contain"
               />
             ) : null}
           </TouchableOpacity>
@@ -795,6 +796,7 @@ function Search(props) {
                   position: 'absolute',
                   bottom: 0,
                 }}
+                resizeMode="contain"
               />
             ) : null}
           </TouchableOpacity>
@@ -828,6 +830,7 @@ function Search(props) {
                   position: 'absolute',
                   bottom: 0,
                 }}
+                resizeMode="contain"
               />
             ) : null}
           </TouchableOpacity>

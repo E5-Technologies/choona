@@ -52,7 +52,7 @@ function InsideMessegeHeader(props) {
                 height: normalise(25),
                 width: normalise(25),
               }}
-              resizeMode="cover"
+              resizeMode="contain"
             />
             <Image
               source={{ uri: props.imagesecond }}
@@ -64,7 +64,7 @@ function InsideMessegeHeader(props) {
                 marginLeft: normalise(-5),
                 borderRadius: normalise(70),
               }}
-              resizeMode="cover"
+              resizeMode="contain"
             />
             <Text style={HeaderStyles.messageText}>{props.title}</Text>
           </TouchableOpacity>

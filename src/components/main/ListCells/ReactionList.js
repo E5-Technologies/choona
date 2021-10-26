@@ -46,7 +46,7 @@ function ReactionList(props) {
               width: normalise(30),
               borderRadius: normalise(15),
             }}
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </TouchableOpacity>
         <View style={{ marginLeft: normalise(10) }}>

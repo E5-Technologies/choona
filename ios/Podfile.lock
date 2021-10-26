@@ -477,7 +477,7 @@ PODS:
     - React-Core
     - React-RCTImage
     - RSKImageCropper
-  - RNPermissions (3.0.5):
+  - RNPermissions (3.1.0):
     - React-Core
   - RNReanimated (1.13.3):
     - React-Core
@@ -527,6 +527,8 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.75.1)
   - FlipperKit/SKIOSNetworkPlugin (= 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
+  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -629,6 +631,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  Permission-Camera:
+    :path: "../node_modules/react-native-permissions/ios/Camera"
+  Permission-PhotoLibrary:
+    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -809,7 +815,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 1823217d31e942531cc3f51fb5367dcbc69c1e10
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: cf129d17e042ce3e96fb9ada967c28f21f977c82
-  RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
+  RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNSentry: 49abc89b0190b4c8afe0fa5d065f98e36cb53233
@@ -820,6 +826,6 @@ SPEC CHECKSUMS:
   Yoga: aa0cb45287ebe1004c02a13f279c55a95f1572f4
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: c03d0b559cf744dbd05c532fdd7dd6c5ffeba4ec
+PODFILE CHECKSUM: 69d5f4b385c41af7c9da1a59d96b84d9980f5299
 
 COCOAPODS: 1.11.2

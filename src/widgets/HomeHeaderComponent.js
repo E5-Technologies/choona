@@ -70,7 +70,7 @@ function HomeHeaderComponent(props) {
                 borderRadius: normalise(60),
                 // marginTop: normalise(-11),
               }}
-              resizeMode="cover"
+              resizeMode="contain"
             />
           </TouchableOpacity>
         </View>

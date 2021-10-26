@@ -279,6 +279,7 @@ function AddSong(props) {
                 <Image
                   source={ImagePath.searchicongrey}
                   style={{ height: normalise(35), width: normalise(35) }}
+                  resizeMode="contain"
                 />
                 <Text
                   style={{

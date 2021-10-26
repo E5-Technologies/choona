@@ -247,6 +247,7 @@ function HomeItemComments(props) {
                     position: 'absolute',
                     alignSelf: 'center',
                   }}
+                  resizeMode="contain"
                 />
                 <Image
                   source={{
@@ -256,7 +257,7 @@ function HomeItemComments(props) {
                     ),
                   }}
                   style={styles.commentHeaderAvatar}
-                  resizeMode="cover"
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
 
@@ -329,7 +330,7 @@ function HomeItemComments(props) {
                         }
                         : ImagePath.userPlaceholder
                     }
-                    resizeMode="cover"
+                    resizeMode="contain"
                     style={{
                       height: Dimensions.get('window').width / 12,
                       width: Dimensions.get('window').width / 12,

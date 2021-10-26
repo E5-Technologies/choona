@@ -269,6 +269,7 @@ function SavedSongListItem(props) {
                 height: normalise(25),
                 width: normalise(25),
               }}
+              resizeMode="contain"
             />
           </TouchableOpacity>
         ) : props.change2 ? (
@@ -286,6 +287,7 @@ function SavedSongListItem(props) {
                   height: normalise(25),
                   width: normalise(25),
                 }}
+                resizeMode="contain"
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -303,6 +305,7 @@ function SavedSongListItem(props) {
                   height: normalise(25),
                   width: normalise(25),
                 }}
+                resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
@@ -322,6 +325,7 @@ function SavedSongListItem(props) {
                     height: normalise(23),
                     width: normalise(23),
                   }}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
             )}

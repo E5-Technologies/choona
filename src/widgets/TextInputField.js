@@ -43,8 +43,8 @@ function TextInputField(props) {
           borderColor: !props.userNameAvailable
             ? Colors.red
             : focused
-            ? Colors.white
-            : Colors.fadeblack,
+              ? Colors.white
+              : Colors.fadeblack,
           color: Colors.fadeblack,
         }}
         keyboardAppearance="dark"
@@ -80,6 +80,7 @@ function TextInputField(props) {
             top: normalize(35),
             right: normalize(10),
           }}
+          resizeMode="contain"
         />
       ) : null}
     </View>

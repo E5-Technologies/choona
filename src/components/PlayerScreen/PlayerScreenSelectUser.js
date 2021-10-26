@@ -178,6 +178,7 @@ function PlayerScreenSelectUser(props) {
                 width: 35,
                 borderRadius: 2 * normalise(13.5),
               }}
+              resizeMode="contain"
             />
             <View style={{ marginStart: normalise(10) }}>
               <Text
@@ -206,6 +207,7 @@ function PlayerScreenSelectUser(props) {
                 height: normalise(32),
                 width: normalise(32),
               }}
+              resizeMode="contain"
             />
           </View>
         </View>

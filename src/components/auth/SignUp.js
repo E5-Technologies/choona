@@ -305,7 +305,7 @@ function Login(props) {
                   width: normalise(120),
                   borderRadius: normalise(60),
                 }}
-                resizeMode="cover"
+                resizeMode="contain"
               />
             ) : (
               <TouchableOpacity
@@ -319,6 +319,7 @@ function Login(props) {
                     width: normalise(40),
                     borderRadius: normalise(20),
                   }}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
             )}

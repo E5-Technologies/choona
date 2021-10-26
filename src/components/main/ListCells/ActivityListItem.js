@@ -38,7 +38,7 @@ function ActivityListItem(props) {
                   : ImagePath.userPlaceholder
               }
               style={styles.detailsAvatar}
-              resizeMode="cover"
+              resizeMode="contain"
             />
           </TouchableOpacity>
           <TouchableOpacity
