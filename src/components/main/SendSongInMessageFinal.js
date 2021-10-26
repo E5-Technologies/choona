@@ -124,6 +124,7 @@ function SendSongInMessageFinal(props) {
                 : ImagePath.userPlaceholder
             }
             style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+            resizeMode="contain"
           />
           <View style={{ marginStart: normalise(10) }}>
             <Text
