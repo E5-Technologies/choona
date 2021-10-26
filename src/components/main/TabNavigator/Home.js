@@ -5,14 +5,13 @@ import {
   Text,
   AppState,
   Image,
-  TouchableOpacity,
   Modal,
   Platform,
   Linking,
-  ActivityIndicator,
   RefreshControl,
   FlatList,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -27,7 +26,9 @@ import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
-import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+import { useInfiniteQuery } from 'react-query';
+
+// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import {
   USER_PROFILE_REQUEST,
@@ -76,7 +77,6 @@ import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
 import Contacts from 'react-native-contacts';
-// import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
 import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
@@ -94,10 +94,7 @@ let songStatus = '';
 let postStatus = '';
 
 function Home(props) {
-  let newpost = [];
-  newpost = props.postData;
   const token = props.header.token;
-  const [appState, setAppState] = useState(AppState.currentState);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -107,13 +104,9 @@ function Home(props) {
 
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
-  const [homeReq, setHomeReq] = useState(false);
   const [postArray, setPostArray] = useState([]);
   const [timeoutVar, setTimeoutVar] = useState(0);
-  const [onScrolled, setOnScrolled] = useState(false);
-  const [offset, setOffset] = useState(1);
-  const [refresing, setRefresing] = useState(false);
-  const [data, setData] = useState(props.postData);
+  const [refreshing, setRefreshing] = useState(false);
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
   const [isShown, setIsShown] = useState(true);
@@ -122,11 +115,67 @@ function Home(props) {
   const [andyProfile, setAndyProfile] = useState(false);
   const [followButtonPressed, setFollowButtonPressed] = useState(false);
 
-  // const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const postsUrl = constants.BASE_URL + '/post/list?page=';
 
-  // useEffect(() => {
-  //   setPosts(props.postData);
-  // }, [props.postData]);
+  const {
+    data: newPosts,
+    isFetching,
+    fetchNextPage,
+    isFetchingNextPage,
+    isRefetching,
+    refetch,
+  } = useInfiniteQuery(
+    'homePosts',
+    async ({ pageParam = 1 }) => {
+      const res = await axios
+        .get(postsUrl + pageParam, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token,
+          },
+        })
+        .catch(error => console.log(error));
+
+      console.log({ res });
+      return res.data;
+    },
+    {
+      getPreviousPageParam: pageParam => pageParam.page - 1,
+      getNextPageParam: pageParam => pageParam.page + 1,
+    },
+  );
+
+  useEffect(() => {
+    if (props.status === 'REACTION_ON_POST_SUCCESS') {
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+    }
+
+    if (props.status === 'USER_FOLLOW_UNFOLLOW_SUCCESS') {
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+    }
+
+    if (props.status === 'DELETE_POST_SUCCESS') {
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+    }
+  }, [props.status, refetch]);
+
+  useEffect(() => {
+    if (newPosts) {
+      var merged = [].concat.apply(
+        [],
+        newPosts.pages.map(page => page.data),
+      );
+      setPosts(merged);
+    }
+  }, [newPosts]);
 
   useEffect(() => {
     async function getModalData() {
@@ -139,24 +188,29 @@ function Home(props) {
     getModalData();
   }, []);
 
-  var bottomSheetRef;
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(2000).then(() => setRefreshing(false));
+  }, [refetch]);
+
   let changePlayer = false;
 
   var handleAppStateChange = state => {
-    // console.log('state_Change:' + state);
-
     if (state !== 'active') {
       if (global.playerReference !== null) {
         if (global.playerReference?.isPlaying()) {
           global.playerReference.pause();
 
-          findPlayingSong(props.postData);
+          findPlayingSong(posts);
         }
       }
     }
   };
-
-  // loadMore()
 
   const flatlistRef = React.useRef(null);
 
@@ -182,27 +236,17 @@ function Home(props) {
   }, [token]);
 
   useEffect(() => {
-    setHomeReq(true);
-    setOffset(1);
-    props.homePage(1);
-    // console.log("useeffectprops"+props.postData)
     AppState.addEventListener('change', handleAppStateChange);
     updateToken(props.SuccessToken);
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
-          // console.log('home use Effect');
-          setOnScrolled(false);
           props.getProfileReq();
-          if (!homeReq) {
-            props.dummyRequest();
-          }
-          // if (ref.current !== null) {
-          //   ref.current.scrollToIndex({ animated: true, index: 0 })
+          // if (!isFetching) {
+          // props.dummyRequest();
           // }
         })
-        .catch(err => {
-          // console.log(err);
+        .catch(_err => {
           toast('Error', 'Please Connect To Internet');
         });
     });
@@ -225,8 +269,9 @@ function Home(props) {
   }, [props.registerType]);
 
   const loadMore = async () => {
+    console.log('loadmore');
     setLoadMoreVisible(false);
-    // setHomeReq(true);
+    refetch();
     props.loadMoreData();
     flatlistRef.current.scrollToIndex({
       animated: true,
@@ -258,7 +303,7 @@ function Home(props) {
         status = props.status;
         props.homePage(1);
         if (props.loadData.length !== 0) {
-          const intersection = props.postData.filter(item1 =>
+          const intersection = posts.filter(item1 =>
             props.loadData.some(item2 => item1._id === item2._id),
           );
           if (intersection.length <= 0) {
@@ -276,23 +321,17 @@ function Home(props) {
 
       case HOME_PAGE_SUCCESS:
         status = props.status;
-        setPostArray(props.postData);
-        findPlayingSong(props.postData);
-        setHomeReq(false);
-        setRefresing(false);
+        findPlayingSong(posts);
         props.getProfileReq();
         break;
 
       case HOME_PAGE_FAILURE:
         status = props.status;
-        setHomeReq(false);
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
 
       case REACTION_ON_POST_SUCCESS:
         status = props.status;
-        setOffset(1);
-        props.homePage(1);
         break;
 
       case USER_FOLLOW_UNFOLLOW_REQUEST:
@@ -301,7 +340,6 @@ function Home(props) {
 
       case USER_FOLLOW_UNFOLLOW_SUCCESS:
         status = props.status;
-        props.homePage(1);
         setPositionInArray(0);
         break;
 
@@ -316,7 +354,7 @@ function Home(props) {
 
       case GET_USER_FROM_HOME_SUCCESS:
         status = props.status;
-        setUserSearchData(props.userSearchFromHome);
+        // setUserSearchData(props.userSearchFromHome);
         break;
 
       case GET_USER_FROM_HOME_FAILURE:
@@ -329,7 +367,7 @@ function Home(props) {
 
       case DUMMY_ACTION_SUCCESS:
         status = props.status;
-        findPlayingSong(props.postData);
+        findPlayingSong(posts);
         break;
     }
   }
@@ -359,13 +397,11 @@ function Home(props) {
   if (postStatus === '' || props.postStatus !== postStatus) {
     switch (props.postStatus) {
       case DELETE_POST_REQUEST:
-        setHomeReq(true);
         postStatus = props.postStatus;
         break;
 
       case DELETE_POST_SUCCESS:
         postStatus = props.postStatus;
-        props.homePage(1);
         setPositionInArray(0);
         break;
 
@@ -377,23 +413,17 @@ function Home(props) {
   }
 
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
-  let val = 0;
 
   function hitreact(x, rindex) {
-    // console.log('this' + JSON.stringify(props.postData[rindex]));
-    if (!_.isEmpty(props.postData[rindex].reaction)) {
-      // console.log('here');
-
-      const present = props.postData[rindex].reaction.some(
+    if (!_.isEmpty(posts[rindex].reaction)) {
+      const present = posts[rindex].reaction.some(
         obj =>
           obj.user_id.includes(props.userProfileResp._id) &&
           obj.text.includes(x),
       );
 
       if (present) {
-        // console.log('nooo');
       } else {
-        // console.log('2');
         setVisible(true);
         setModalReact(x);
         setTimeout(() => {
@@ -401,7 +431,6 @@ function Home(props) {
         }, 2000);
       }
     } else {
-      // console.log('3');
       setVisible(true);
       setModalReact(x);
       setTimeout(() => {
@@ -410,16 +439,12 @@ function Home(props) {
     }
   }
 
-  function hitreact1(modal1Visible) {
+  function hitreact1() {
     if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
     }
-  }
-
-  function modal() {
-    return (val = 1);
   }
 
   function sendReaction(id, reaction) {
@@ -453,12 +478,11 @@ function Home(props) {
   const getContacts = () => {
     Contacts.getAll((err, contacts) => {
       if (err) {
-        // console.log(err);
       } else {
         let contactsArray = contacts;
         let finalArray = [];
         setContactsLoading(false);
-        //// console.log(JSON.stringify(contacts));
+
         contactsArray.map((item, index) => {
           item.phoneNumbers.map((item, index) => {
             let number = item.number.replace(/[- )(]/g, '');
@@ -487,7 +511,6 @@ function Home(props) {
           });
         });
 
-        // console.log(finalArray);
         props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
@@ -495,12 +518,8 @@ function Home(props) {
 
   const playSong = data => {
     if (props.playingSongRef === '') {
-      // console.log('first time');
-
       MusicPlayer(data.item.song_uri, true)
         .then(track => {
-          // console.log('Loaded');
-
           let saveSongResObj = {};
           (saveSongResObj.uri = data.item.song_uri),
             (saveSongResObj.song_name = data.item.song_name),
@@ -526,41 +545,32 @@ function Home(props) {
           props.saveSongRefReq(saveSongResObj);
           props.dummyRequest();
         })
-        .catch(err => {
-          // console.log('MusicPlayer Error', err);
-        });
+        .catch(err => { });
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === data.item.song_uri) {
-          // console.log('Alreday Playing');
-
           if (global.playerReference.isPlaying()) {
             global.playerReference.pause();
 
             setTimeout(() => {
-              findPlayingSong(props.postData);
+              findPlayingSong(posts);
             }, 500);
           } else {
             global.playerReference.play(success => {
               if (success) {
-                // console.log('PlayBack End');
               } else {
-                // console.log('NOOOOOOOO');
               }
             });
 
             setTimeout(() => {
-              findPlayingSong(props.postData);
+              findPlayingSong(posts);
             }, 500);
           }
         } else {
-          // console.log('reset');
           global.playerReference.release();
           global.playerReference = null;
           MusicPlayer(data.item.song_uri, true)
             .then(track => {
-              // console.log('Loaded');
-
               let saveSongResObj = {};
               (saveSongResObj.uri = data.item.song_uri),
                 (saveSongResObj.song_name = data.item.song_name),
@@ -587,16 +597,11 @@ function Home(props) {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => {
-              // console.log('MusicPlayer Error', err);
-            });
+            .catch(err => { });
         }
       } else {
-        // console.log('reset2');
         MusicPlayer(data.item.song_uri, true)
           .then(track => {
-            // console.log('Loaded');
-
             let saveSongResObj = {};
             (saveSongResObj.uri = data.item.song_uri),
               (saveSongResObj.song_name = data.item.song_name),
@@ -623,27 +628,23 @@ function Home(props) {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => {
-            // console.log('MusicPlayer Error', err);
-          });
+          .catch(err => { });
       }
     }
   };
 
   function _onSelectBack(ID, comment) {
-    // console.log("aaa"+JSON.stringify(props.postData))
-    props.postData.map((item, index) => {
-      // console.log("items",item._id)
+    posts.map((item, index) => {
       if (item._id === ID) {
-        props.postData[index].comment_count = comment;
+        posts[index].comment_count = comment;
       }
     });
   }
 
   function _onReaction(ID, reaction) {
-    props.postData.map((item, index) => {
+    posts.map((item, index) => {
       if (item._id === ID) {
-        props.postData[index].reaction_count = reaction;
+        posts[index].reaction_count = reaction;
       }
     });
   }
@@ -656,7 +657,7 @@ function Home(props) {
           play={
             _.isEmpty(postArray)
               ? false
-              : props.postData.length === postArray.length
+              : posts.length === postArray.length
                 ? postArray[data.index].playing
                 : false
           }
@@ -683,13 +684,13 @@ function Home(props) {
           modalVisible={modal1Visible}
           postType={data.item.social_type === 'spotify'}
           onReactionPress={reaction => {
-            if (!homeReq) {
-              hitreact(reaction, data.index),
-                sendReaction(data.item._id, reaction);
+            if (!isFetching) {
+              hitreact(reaction, data.index);
+              sendReaction(data.item._id, reaction);
             }
           }}
           onPressImage={() => {
-            if (!homeReq) {
+            if (!isFetching) {
               if (props.userProfileResp._id === data.item.user_id) {
                 props.navigation.navigate('Profile', { fromAct: false });
               } else {
@@ -703,13 +704,13 @@ function Home(props) {
             hitreact1(modal1Visible);
           }}
           onPressMusicbox={() => {
-            if (!homeReq) {
+            if (!isFetching) {
               playSong(data);
               setVisibleMiniPlayer(true);
             }
           }}
           onPressReactionbox={() => {
-            if (!homeReq) {
+            if (!isFetching) {
               props.navigation.navigate('HomeItemReactions', {
                 reactionCount: data.item.reaction_count
                   ? data.item.reaction_count
@@ -720,7 +721,7 @@ function Home(props) {
             }
           }}
           onPressCommentbox={() => {
-            if (!homeReq) {
+            if (!isFetching) {
               props.navigation.navigate('HomeItemComments', {
                 index: data.index,
                 comment: data.item.comment,
@@ -734,14 +735,12 @@ function Home(props) {
             }
           }}
           onPressSecondImage={() => {
-            if (!homeReq) {
+            if (!isFetching) {
               setPositionInArray(data.index);
               setModalVisible(true);
             }
           }}
-          marginBottom={
-            data.index === props.postData.length - 1 ? normalise(60) : 0
-          }
+          marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
         // playingSongRef={props.playingSongRef}
         />
         {/* {data.index % 4 === 0 && data.index !== 0 && (
@@ -789,6 +788,66 @@ function Home(props) {
     }
   }
 
+  // GET PLAYER PLAYING STATE FOR PAUSE/PLAY ICON IN FEED
+  function getPlayerState() {
+    let isPlaying = null;
+    if (
+      global.playerReference !== null &&
+      global.playerReference !== undefined
+    ) {
+      isPlaying = global.playerReference.isPlaying();
+    }
+    return isPlaying;
+  }
+
+  // FIND THE PLAYING SONG AND ADD THE PAUSE/PLAY ICON TO FEED
+  function findPlayingSong(postData) {
+    const res = getPlayerState();
+
+    // IF PLAYING
+    if (res === true && !props.playingSongRef.changePlayer) {
+      const myindex = postData.findIndex(
+        obj => obj.song_uri === props.playingSongRef.uri,
+      );
+      let array = [...postData];
+      let i;
+      for (i = 0; i < array.length; i++) {
+        if (i === myindex) {
+          array[i].playing = true;
+          let duration = global.playerReference.getDuration();
+          global.playerReference.getCurrentTime(seconds => {
+            let timeout = (duration - seconds) * 1000;
+
+            clearTimeout(timeoutVar);
+            setTimeoutFunc(timeout);
+          });
+        } else {
+          array[i].playing = false;
+        }
+      }
+      setPostArray(array);
+    }
+    // NOT PLAYING
+    else {
+      let array = [...postData];
+      let i;
+      for (i = 0; i < array.length; i++) {
+        array[i].playing = false;
+      }
+      //  setVisibleMiniPlayer(false)
+      setPostArray(array);
+    }
+  }
+
+  //SET TIMEOUT FOR PAUSE/PLAY ICON
+  function setTimeoutFunc(timeout) {
+    setTimeoutVar(
+      setTimeout(() => {
+        findPlayingSong(postArray);
+      }, timeout),
+    );
+  }
+
   // GET ISRC CODE
   const callApi = async () => {
     if (props.registerType === 'spotify') {
@@ -820,7 +879,6 @@ function Home(props) {
   const openInAppleORSpotify = async () => {
     try {
       const res = await callApi();
-      // console.log(res);
 
       if (res.status === 200) {
         if (
@@ -831,44 +889,28 @@ function Home(props) {
           )
         ) {
           if (props.userProfileResp.register_type === 'spotify') {
-            // console.log('success - spotify');
-            // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
               .then(supported => {
                 if (supported) {
                   Linking.openURL(
                     res.data.tracks.items[0].external_urls.spotify,
                   )
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
+                    .then(() => { })
+                    .catch(() => { });
                 }
               })
-              .catch(() => {
-                // console.log('not supported');
-              });
+              .catch(() => { });
             setBool(false);
           } else {
-            // console.log('success - apple');
-            // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
               .then(supported => {
                 if (supported) {
                   Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
+                    .then(() => { })
+                    .catch(() => { });
                 }
               })
-              .catch(() => {
-                // console.log('not supported');
-              });
+              .catch(() => { });
             setBool(false);
           }
         } else {
@@ -881,90 +923,18 @@ function Home(props) {
       }
     } catch (error) {
       setBool(false);
-      // console.log(error);
     }
-  };
-
-  // GET PLAYER PLAYING STATE FOR PAUSE/PLAY ICON IN FEED
-  function getPlayerState() {
-    let isPlaying = null;
-    if (
-      global.playerReference !== null &&
-      global.playerReference !== undefined
-    ) {
-      isPlaying = global.playerReference.isPlaying();
-    }
-    return isPlaying;
-  }
-
-  // FIND THE PLAYING SONG AND ADD THE PAUSE/PLAY ICON TO FEED
-  function findPlayingSong(postData) {
-    const res = getPlayerState();
-
-    // IF PLAYING
-    if (res === true && !props.playingSongRef.changePlayer) {
-      const myindex = postData.findIndex(
-        obj => obj.song_uri === props.playingSongRef.uri,
-      );
-      let array = [...postData];
-
-      for (i = 0; i < array.length; i++) {
-        if (i === myindex) {
-          array[i].playing = true;
-          let duration = global.playerReference.getDuration();
-          global.playerReference.getCurrentTime(seconds => {
-            let timeout = (duration - seconds) * 1000;
-            // console.log('timeout' + timeout);
-            clearTimeout(timeoutVar);
-            setTimeoutFunc(timeout);
-          });
-        } else {
-          array[i].playing = false;
-        }
-      }
-      setPostArray(array);
-      // console.log(array);
-    }
-    // NOT PLAYING
-    else {
-      // console.log('player not playing or playing song is not in feed');
-
-      let array = [...postData];
-
-      for (i = 0; i < array.length; i++) {
-        array[i].playing = false;
-      }
-      //  setVisibleMiniPlayer(false)
-      setPostArray(array);
-      // console.log(array);
-    }
-  }
-
-  //SET TIMEOUT FOR PAUSE/PLAY ICON
-  function setTimeoutFunc(timeout) {
-    setTimeoutVar(
-      setTimeout(() => {
-        // console.log('now');
-        findPlayingSong(postArray);
-      }, timeout),
-    );
-  }
-
-  //PULL TO REFRESH
-  const onRefresh = () => {
-    setRefresing(true);
-    setOffset(1);
-    props.homePage(1);
   };
 
   function onfinish() {
     //  alert("onfinish")
     // console.log("lod"+JSON.stringify(props.postData))
-
-    if (props.postData.length !== 0) {
+    console.log('onFinish');
+    if (posts.length !== 0) {
       // console.log("timestamtp"+props.postData[0].createdAt)
-      let loadData = { offset: 1, create: props.postData[0].createdAt };
+      let loadData = { offset: 1, create: posts[0].createdAt };
       props.loadMorePost(loadData);
+      console.log(0);
     } else {
       console.log('empty');
     }
@@ -977,14 +947,10 @@ function Home(props) {
         flex: 1,
         backgroundColor: Colors.black,
       }}>
-      {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
-
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
         <Timer onFinish={() => onfinish()} />
-
-        <Loader visible={homeReq} />
+        <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
         <HomeHeaderComponent
@@ -1229,7 +1195,7 @@ function Home(props) {
           />
         )}
 
-        {_.isEmpty(props.postData) ? (
+        {_.isEmpty(posts) ? (
           <EmptyComponent
             buttonPress={() => {
               setContactsLoading(true);
@@ -1245,52 +1211,16 @@ function Home(props) {
         ) : (
           <View style={{ flex: 1 }}>
             <FlatList
-              // style={{marginTop: normalise(10)}}
-              data={props.postData}
+              data={posts}
               renderItem={renderItem}
-              windowSize={150}
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item._id}
               ref={flatlistRef}
-              initialScrollIndex={0}
-              extraData={postArray}
-              onEndReached={() => {
-                console.log('onend reached' + onScrolled);
-
-                if (onScrolled) {
-                  setOffset(offset + 1);
-                  props.homePage(offset + 1);
-                  setOnScrolled(false);
-                }
-              }}
+              onEndReached={() => fetchNextPage()}
               onEndReachedThreshold={2}
-              initialNumToRender={10}
-              onMomentumScrollBegin={() => {
-                setOnScrolled(true);
-              }}
-              ListFooterComponent={
-                props.status === HOME_PAGE_REQUEST ? (
-                  <ActivityIndicator
-                    size={'large'}
-                    style={{
-                      alignSelf: 'center',
-                      marginBottom: normalise(50),
-                      marginTop: normalise(-40),
-                    }}
-                  />
-                ) : null
-              }
-              getItemLayout={(data, index) => ({
-                length: 250,
-                offset: normalise(385) * index,
-                index,
-              })}
-              onScrollToIndexFailed={val => {
-                // console.log(val);
-              }}
               refreshControl={
                 <RefreshControl
-                  refreshing={refresing}
+                  refreshing={refreshing}
                   onRefresh={onRefresh}
                   colors={[Colors.black]}
                   progressBackgroundColor={Colors.white}
@@ -1327,18 +1257,7 @@ function Home(props) {
               </TouchableOpacity>
             ) : null}
 
-            {/* {console.log('props.statj' + props.status)} */}
-            {(props.status === HOME_PAGE_SUCCESS ||
-              props.status === USER_PROFILE_SUCCESS ||
-              props.status === COUNTRY_CODE_SUCCESS ||
-              props.status === OTHERS_PROFILE_SUCCESS ||
-              props.status === EDIT_PROFILE_SUCCESS ||
-              props.status === DUMMY_ACTION_SUCCESS ||
-              props.status === LOAD_MORE_SUCCESS ||
-              props.status === LOAD_MORE_REQUEST ||
-              props.status === HOME_PAGE_REQUEST ||
-              props.status === DUMMY_ACTION_REQUEST) &&
-              visibleminiPlayer === true ? (
+            {visibleminiPlayer === true ? (
               <MusicPlayerBar
                 onPress={() => {
                   props.navigation.navigate('Player', {
@@ -1363,7 +1282,7 @@ function Home(props) {
                 }}
                 onPressPlayOrPause={() => {
                   setTimeout(() => {
-                    findPlayingSong(props.postData);
+                    findPlayingSong(posts);
                   }, 500);
                 }}
               />
@@ -1397,12 +1316,11 @@ function Home(props) {
             {modalVisible && (
               <MoreModal
                 setBool={setBool}
-                bottomSheetRef={bottomSheetRef}
                 index={positionInArray}
                 setIndex={setPositionInArray}
                 navigation={props.navigation}
                 openInAppleORSpotify={openInAppleORSpotify}
-                postData={props.postData}
+                postData={posts}
                 show={modalVisible}
                 setShow={setModalVisible}
               />
@@ -1435,11 +1353,11 @@ function Home(props) {
               category={Categories.history}
               showHistory={true}
               onEmojiSelected={emoji => {
-                setVisible(true),
-                  setModalReact(emoji),
-                  setTimeout(() => {
-                    setVisible(false);
-                  }, 2000);
+                setVisible(true);
+                setModalReact(emoji);
+                setTimeout(() => {
+                  setVisible(false);
+                }, 2000);
               }}
             />
           </View>
@@ -1450,7 +1368,6 @@ function Home(props) {
 }
 
 const mapStateToProps = state => {
-  //  console.log("psotdata"+ JSON.stringify(state.UserReducer))
   return {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
