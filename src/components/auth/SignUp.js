@@ -350,6 +350,7 @@ function Login(props) {
                   alignSelf: 'center',
                   fontFamily: 'ProximaNova-Bold',
                   textDecorationLine: 'underline',
+                  marginBottom: normalise(36),
                 }}>
                 UPLOAD PROFILE PIC
               </Text>
