@@ -229,9 +229,9 @@ function Player(props) {
       case COMMENT_ON_POST_SUCCESS:
         status = props.status;
         setCommentText('');
-        if (!_.isEmpty(props.commentResp.comment)) {
-          let data =
-            props.commentResp.comment[props.commentResp.comment.length - 1];
+        console.log(props.commentResp);
+        if (!_.isEmpty(props.commentResp.text)) {
+          let data = props.commentResp.text[props.commentResp.text.length - 1];
           data.profile_image = props.userProfileResp.profile_image;
           commentData.push(data);
           setArrayLength(
