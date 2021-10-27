@@ -733,8 +733,6 @@ function Search(props) {
               height: normalise(40),
               alignItems: 'center',
               justifyContent: 'center',
-              borderLeftWidth: normalise(1),
-              borderLeftColor: Colors.darkerblack,
               borderRightWidth: normalise(1),
               borderRightColor: Colors.darkerblack,
             }}
@@ -806,6 +804,8 @@ function Search(props) {
               height: normalise(40),
               alignItems: 'center',
               justifyContent: 'center',
+              borderLeftWidth: normalise(1),
+              borderLeftColor: Colors.darkerblack,
             }}
             onPress={() => {
               setUsersSearch(false);
