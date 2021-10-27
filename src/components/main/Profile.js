@@ -469,6 +469,7 @@ function Profile(props) {
             user={true}
           />
         )}
+        {console.log({ profilePosts }, { nonempty })}
         {isLoading ? (
           <View>
             <ActivityIndicator
@@ -477,7 +478,7 @@ function Profile(props) {
               style={{ marginTop: normalise(25) }}
             />
           </View>
-        ) : _.isEmpty(profilePosts) && nonempty ? (
+        ) : _.isEmpty(profilePosts) && !nonempty ? (
           <EmptyComponent
             buttonPress={() =>
               props.navigation.replace('bottomTab', { screen: 'Add' })
