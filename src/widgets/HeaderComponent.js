@@ -17,6 +17,9 @@ function HeaderComponent(props) {
     if (props.onPressThirdItem) {
       setOnDisable(true);
       props.onPressThirdItem();
+      setTimeout(() => {
+        setOnDisable(false);
+      }, 1000);
     }
   }
 
