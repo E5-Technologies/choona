@@ -44,6 +44,12 @@ function SendSongInMessageFinal(props) {
   const [typingTimeout, setTypingTimeout] = useState(0);
 
   useEffect(() => {
+    if (props.status === 'SEND_CHAT_MESSAGE_SUCCESS') {
+      toast('Error', 'Message sent successfully.');
+    }
+  }, [props.status]);
+
+  useEffect(() => {
     if (
       props.registerType === 'spotify' &&
       props.route.params.details?.preview_url === null
@@ -89,8 +95,6 @@ function SendSongInMessageFinal(props) {
 
       case SEND_CHAT_MESSAGE_SUCCESS:
         status = props.status;
-        toast('Error', 'Message sent successfully.');
-
         break;
 
       case SEND_CHAT_MESSAGE_FAILURE:
