@@ -131,7 +131,8 @@ function Contact(props) {
           });
         }}
         onPress={() => {
-          setIndex(data.index), setModalVisible(true);
+          setIndex(data.index);
+          setModalVisible(true);
         }}
       />
     );
@@ -269,7 +270,7 @@ function Contact(props) {
           thirditemtext={true}
           texttwo={''}
         />
-        {allSaveSong.length !== 0 && (
+        {/* {allSaveSong.length !== 0 && (
           <View
             style={{
               width: '92%',
@@ -294,8 +295,8 @@ function Contact(props) {
               placeholder={'Search'}
               placeholderTextColor={Colors.darkgrey}
               onChangeText={text => {
-                setSearch(text), filterArray(text);
-                //  props.getSavedSongs(text);
+                setSearch(text);
+                filterArray(text);
               }}
             />
             <Image
@@ -311,8 +312,8 @@ function Contact(props) {
             {search === '' ? null : (
               <TouchableOpacity
                 onPress={() => {
-                  setSearch(''), setAllSaveSong(props.savedSong);
-                  // props.getSavedSongs('');
+                  setSearch('');
+                  setAllSaveSong(props.savedSong);
                 }}
                 style={{
                   backgroundColor: Colors.black,
@@ -337,7 +338,7 @@ function Contact(props) {
               </TouchableOpacity>
             )}
           </View>
-        )}
+        )} */}
         {allSaveSong.length !== 0 ? (
           <SwipeListView
             data={allSaveSong}
