@@ -138,7 +138,6 @@ function Home(props) {
         })
         .catch(error => console.log(error));
 
-      console.log({ res });
       return res.data;
     },
     {
@@ -160,12 +159,12 @@ function Home(props) {
       }, 1000);
     }
 
-    if (props.status === 'DELETE_POST_SUCCESS') {
+    if (props.postStatus === 'DELETE_POST_SUCCESS') {
       setTimeout(() => {
         refetch();
       }, 1000);
     }
-  }, [props.status, refetch]);
+  }, [props.postStatus, props.status, refetch]);
 
   useEffect(() => {
     if (newPosts) {
@@ -927,14 +926,9 @@ function Home(props) {
   };
 
   function onfinish() {
-    //  alert("onfinish")
-    // console.log("lod"+JSON.stringify(props.postData))
-    console.log('onFinish');
     if (posts.length !== 0) {
-      // console.log("timestamtp"+props.postData[0].createdAt)
       let loadData = { offset: 1, create: posts[0].createdAt };
       props.loadMorePost(loadData);
-      console.log(0);
     } else {
       console.log('empty');
     }

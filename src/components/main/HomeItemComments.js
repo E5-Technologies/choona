@@ -229,7 +229,7 @@ function HomeItemComments(props) {
     _text = _text.slice(index);
   }
   parts.push(_text);
-  console.log('parts' + parts);
+  // console.log('parts' + parts);
   //highlight hashtags
   parts = parts.map(text => {
     if (/^@/.test(text)) {
