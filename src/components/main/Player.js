@@ -16,6 +16,7 @@ import {
   Linking,
   Keyboard,
   BackHandler,
+  Pressable,
 } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import normalise from '../../utils/helpers/Dimens';
@@ -794,23 +795,38 @@ function Player(props) {
               }}>
               {changePlayer ? null : (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image
-                    source={
-                      profilePic
-                        ? {
-                          uri:
-                            constants.profile_picture_base_url + profilePic,
-                        }
-                        : ImagePath.userPlaceholder
-                    }
-                    style={{
-                      height: normalise(24),
-                      width: normalise(24),
-                      borderRadius: normalise(24),
-                    }}
-                    resizeMode="contain"
-                  />
-
+                  <Pressable
+                    onPress={() => {
+                      if (
+                        props.userProfileResp._id ===
+                        props.route.params.details.userDetails._id
+                      ) {
+                        props.navigation.navigate('Profile', {
+                          fromAct: false,
+                        });
+                      } else {
+                        props.navigation.navigate('OthersProfile', {
+                          id: props.route.params.details.userDetails._id,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={
+                        profilePic
+                          ? {
+                            uri:
+                              constants.profile_picture_base_url + profilePic,
+                          }
+                          : ImagePath.userPlaceholder
+                      }
+                      style={{
+                        height: normalise(24),
+                        width: normalise(24),
+                        borderRadius: normalise(24),
+                      }}
+                      resizeMode="contain"
+                    />
+                  </Pressable>
                   <View
                     style={{
                       flexDirection: 'column',
@@ -827,18 +843,33 @@ function Player(props) {
                       {' '}
                       POSTED BY{' '}
                     </Text>
-
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        fontSize: normalise(11),
-                        fontFamily: 'ProximaNova-Semibold',
-                        textTransform: 'lowercase',
-                      }}
-                      numberOfLines={1}>
-                      {' '}
-                      {username}{' '}
-                    </Text>
+                    <Pressable
+                      onPress={() => {
+                        if (
+                          props.userProfileResp._id ===
+                          props.route.params.details.userDetails._id
+                        ) {
+                          props.navigation.navigate('Profile', {
+                            fromAct: false,
+                          });
+                        } else {
+                          props.navigation.navigate('OthersProfile', {
+                            id: props.route.params.details.userDetails._id,
+                          });
+                        }
+                      }}>
+                      <Text
+                        style={{
+                          color: Colors.white,
+                          fontSize: normalise(11),
+                          fontFamily: 'ProximaNova-Semibold',
+                          textTransform: 'lowercase',
+                        }}
+                        numberOfLines={1}>
+                        {' '}
+                        {username}{' '}
+                      </Text>
+                    </Pressable>
                   </View>
                 </View>
               )}
