@@ -139,6 +139,7 @@ const MoreModal = ({
       setBool(true);
       isInternetConnected()
         .then(() => {
+          setBool(false);
           openInAppleORSpotify();
         })
         .catch(() => {
