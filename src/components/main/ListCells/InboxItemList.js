@@ -21,10 +21,10 @@ function InboxListItem(props) {
   return (
     <TouchableOpacity
       style={{
-        alignSelf: 'center',
+        // alignSelf: 'center',
         marginTop: normalise(10),
         marginBottom: normalise(10),
-        paddingHorizontal: normalise(12),
+        marginHorizontal: normalise(16),
       }}
       onPress={() => {
         onPress();
@@ -34,8 +34,9 @@ function InboxListItem(props) {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          // backgroundColor: 'blue',
         }}>
-        <View style={{ flexDirection: 'row', width: '80%' }}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
             source={
               props.image.endsWith('thumb/')
@@ -78,19 +79,19 @@ function InboxListItem(props) {
               {props.description}
             </Text>
           </View>
-          {!props.read && (
-            <View
-              style={{
-                height: normalise(10),
-                width: normalise(10),
-                borderRadius: normalise(5),
-                alignSelf: 'center',
-                backgroundColor: Colors.red,
-              }}
-            />
-          )}
         </View>
-        <TouchableOpacity
+        {!props.read && (
+          <View
+            style={{
+              height: normalise(10),
+              width: normalise(10),
+              borderRadius: normalise(5),
+              alignSelf: 'center',
+              backgroundColor: Colors.red,
+            }}
+          />
+        )}
+        {/* <TouchableOpacity
           style={{
             height: normalise(25),
             width: normalise(45),
@@ -109,7 +110,7 @@ function InboxListItem(props) {
             style={{ height: normalise(15), width: normalise(15) }}
             resizeMode="contain"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </TouchableOpacity>
   );

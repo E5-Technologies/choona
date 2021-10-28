@@ -250,38 +250,40 @@ const MoreModal = ({
           )}
           {/* Copy Link to Post */}
           {/* Unfollow/Delete Post Action */}
-          {page !== 'savedSongs' && page !== 'player' && (
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                if (page === 'insideMessage') {
-                  deletePostAction();
-                } else {
-                  setShow(!show);
-                  userProfileResp._id !== postData[index].user_id // USER - FOLLOW/UNFOLLOW
-                    ? followUnfollowAction()
-                    : delPostReq(postData[index]._id);
-                  //  DELETE POST
-                }
-              }}>
-              <Image
-                source={ImagePath ? ImagePath.more_unfollow : null}
-                style={styles.modalButtonIcon}
-                resizeMode="contain"
-              />
-              <Text style={styles.modalButtonText}>
-                {page === 'insideMessage'
-                  ? 'Delete Song'
-                  : !_.isEmpty(userProfileResp)
-                    ? userProfileResp._id === postData[index]?.user_id
-                      ? 'Delete Post'
-                      : isFollowing
-                        ? `Unfollow ${postData[index]?.userDetails.username}`
-                        : `Follow ${postData[index]?.userDetails.username}`
-                    : ''}
-              </Text>
-            </TouchableOpacity>
-          )}
+          {page !== 'savedSongs' &&
+            page !== 'player' &&
+            page !== 'insideMessage' && (
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  if (page === 'insideMessage') {
+                    deletePostAction();
+                  } else {
+                    setShow(!show);
+                    userProfileResp._id !== postData[index].user_id // USER - FOLLOW/UNFOLLOW
+                      ? followUnfollowAction()
+                      : delPostReq(postData[index]._id);
+                    //  DELETE POST
+                  }
+                }}>
+                <Image
+                  source={ImagePath ? ImagePath.more_unfollow : null}
+                  style={styles.modalButtonIcon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.modalButtonText}>
+                  {page === 'insideMessage'
+                    ? 'Delete Song'
+                    : !_.isEmpty(userProfileResp)
+                      ? userProfileResp._id === postData[index]?.user_id
+                        ? 'Delete Post'
+                        : isFollowing
+                          ? `Unfollow ${postData[index]?.userDetails.username}`
+                          : `Follow ${postData[index]?.userDetails.username}`
+                      : ''}
+                </Text>
+              </TouchableOpacity>
+            )}
           {/* Unfollow/Delete Post Action */}
           {/* Open on Platform Action */}
           <TouchableOpacity
