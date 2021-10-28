@@ -81,9 +81,9 @@ function InboxListItem(props) {
           {!props.read && (
             <View
               style={{
-                height: normalise(12),
-                width: normalise(12),
-                borderRadius: normalise(6),
+                height: normalise(10),
+                width: normalise(10),
+                borderRadius: normalise(5),
                 alignSelf: 'center',
                 backgroundColor: Colors.red,
               }}

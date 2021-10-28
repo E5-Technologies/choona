@@ -242,9 +242,10 @@ function SavedSongListItem(props) {
             {props.comments ? (
               <Text
                 style={{
-                  color: Colors.grey,
+                  color: props.read === false ? Colors.white : Colors.grey,
                   fontSize: normalise(10),
                   fontFamily: 'ProximaNovaAW07-Medium',
+                  marginTop: normalise(2),
                 }}
                 numberOfLines={1}>
                 {' '}
@@ -253,7 +254,16 @@ function SavedSongListItem(props) {
             ) : null}
           </View>
         </View>
-
+        {props.read === false && (
+          <View
+            style={{
+              height: normalise(10),
+              width: normalise(10),
+              borderRadius: normalise(6),
+              backgroundColor: '#E24F4F',
+            }}
+          />
+        )}
         {props.change ? (
           <TouchableOpacity
             style={{
@@ -345,25 +355,6 @@ function SavedSongListItem(props) {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={{
-                height: normalise(25),
-                width: normalise(45),
-                borderRadius: normalise(5),
-                alignSelf: 'center',
-                backgroundColor: Colors.fadeblack,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                onPress();
-              }}>
-              <Image
-                source={ImagePath.threedots}
-                style={{ height: normalise(15), width: normalise(15) }}
-                resizeMode="contain"
-              />
-            </TouchableOpacity> */}
           </View>
         )}
       </View>
