@@ -254,16 +254,19 @@ function SavedSongListItem(props) {
             ) : null}
           </View>
         </View>
-        {props.read === false && (
-          <View
-            style={{
-              height: normalise(10),
-              width: normalise(10),
-              borderRadius: normalise(6),
-              backgroundColor: '#E24F4F',
-            }}
-          />
-        )}
+        {console.log(props)}
+        {props.read === false &&
+          props.page === 'insideamessage' &&
+          props.receiver_id === props.user_id && (
+            <View
+              style={{
+                height: normalise(10),
+                width: normalise(10),
+                borderRadius: normalise(6),
+                backgroundColor: '#E24F4F',
+              }}
+            />
+          )}
         {props.change ? (
           <TouchableOpacity
             style={{

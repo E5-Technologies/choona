@@ -145,6 +145,7 @@ function InsideaMessage(props) {
             props.userProfileResp._id,
           ) ? null : (
             <SavedSongsListItem
+              page={'insideamessage'}
               playIcon={false}
               image={data.item.image}
               title={data.item.song_name}
@@ -219,6 +220,7 @@ function InsideaMessage(props) {
           )
         ) : (
           <SavedSongsListItem
+            page={'insideamessage'}
             playIcon={false}
             receiver_id={data.item.receiver_id}
             user_id={props.userProfileResp._id}
