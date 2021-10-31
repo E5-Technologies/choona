@@ -184,7 +184,7 @@ function Login(props) {
         name:
           imageDetails.filename === undefined || imageDetails.filename === null
             ? 'xyz.jpg'
-            : imageDetails.filename,
+            : imageDetails.filename.replace(/HEIC/g, 'jpg'),
         type: imageDetails.mime,
         uri:
           Platform.OS === 'android'

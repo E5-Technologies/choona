@@ -164,7 +164,7 @@ function EditProfile(props) {
             imageDetails.filename === undefined ||
               imageDetails.filename === null
               ? 'xyz.jpg'
-              : imageDetails.filename,
+              : imageDetails.filename.replace(/HEIC/g, 'jpg'),
           type: imageDetails.mime,
           uri: profilePic,
         };
