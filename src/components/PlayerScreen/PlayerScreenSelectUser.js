@@ -129,6 +129,7 @@ function PlayerScreenSelectUser(props) {
           fromAddAnotherSong: false,
           index: 0,
           fromHome: true,
+          goBack: 3,
           fromPlayer:
             props.route.params.page === 'player'
               ? true

@@ -251,7 +251,7 @@ function SendSongInMessageFinal(props) {
               props.navigation.goBack();
             } else {
               // console.log('not from player');
-              props.navigation.pop(2);
+              props.navigation.pop(props.route.params.goBack ?? 2);
             }
           }}
         />

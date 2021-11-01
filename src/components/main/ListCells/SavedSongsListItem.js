@@ -254,7 +254,6 @@ function SavedSongListItem(props) {
             ) : null}
           </View>
         </View>
-        {console.log(props)}
         {props.read === false &&
           props.page === 'insideamessage' &&
           props.receiver_id === props.user_id && (

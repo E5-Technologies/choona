@@ -115,6 +115,7 @@ function AddAnotherSong(props) {
               fromAddAnotherSong: fromOthersProfile ? false : true,
               index: indexOfArray,
               fromHome: false,
+              goBack: 1,
             }
             : {
               image:
@@ -138,6 +139,7 @@ function AddAnotherSong(props) {
               fromAddAnotherSong: fromOthersProfile ? false : true,
               index: indexOfArray,
               fromHome: false,
+              goBack: 1,
             },
         );
         break;
