@@ -45,16 +45,16 @@ function AddAnotherSong(props) {
   const [index, setIndex] = useState([]);
   const [indexOfArray, setIndexOfArray] = useState(props.route.params.index);
   const [fromOthersProfile, setFromOthersProfile] = useState(
-    props.route.params.othersProfile
+    props.route.params.othersProfile,
   );
   const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
-    props.registerType
+    props.registerType,
   );
 
   let post = false;
 
   useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', (payload) => {
+    const unsuscribe = props.navigation.addListener('focus', payload => {
       setResult([]);
     });
 
@@ -99,7 +99,7 @@ function AddAnotherSong(props) {
                   ? result[index].album.images[0].url
                   : result[index].attributes.artwork.url.replace(
                     '{w}x{h}',
-                    '600x600'
+                    '600x600',
                   ),
               title:
                 props.registerType === 'spotify'
@@ -122,7 +122,7 @@ function AddAnotherSong(props) {
                   ? recentlyPlayed[index].album.images[0].url
                   : recentlyPlayed[index].attributes.artwork.url.replace(
                     '{w}x{h}',
-                    '600x600'
+                    '600x600',
                   ),
               title:
                 props.registerType === 'spotify'
@@ -138,7 +138,7 @@ function AddAnotherSong(props) {
               fromAddAnotherSong: fromOthersProfile ? false : true,
               index: indexOfArray,
               fromHome: false,
-            }
+            },
         );
         break;
 
@@ -151,7 +151,7 @@ function AddAnotherSong(props) {
 
   function sendMessagesToUsers() {
     var userIds = [];
-    usersToSend.map((users) => {
+    usersToSend.map(users => {
       userIds.push(users._id);
     });
     props.createChatTokenRequest(userIds);
@@ -194,7 +194,7 @@ function AddAnotherSong(props) {
           data.index === props.searchResponse.length - 1 ? normalise(20) : 0
         }
         change2={true}
-        image2={ImagePath.addicon}
+        image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => {
           setIndex(data.index);
           sendMessagesToUsers();
@@ -214,7 +214,7 @@ function AddAnotherSong(props) {
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
                   '{w}x{h}',
-                  '300x300'
+                  '300x300',
                 ),
             username: '',
             profile_pic: '',
@@ -275,7 +275,7 @@ function AddAnotherSong(props) {
             keyboardAppearance={'dark'}
             placeholder={'Search'}
             placeholderTextColor={Colors.darkgrey}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setSearch(text);
               if (text.length >= 1) {
                 isInternetConnected()
@@ -313,15 +313,13 @@ function AddAnotherSong(props) {
                 right: 0,
                 bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
                 marginRight: normalise(10),
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(10),
                   fontWeight: 'bold',
-                }}
-              >
+                }}>
                 CLEAR
               </Text>
             </TouchableOpacity>
@@ -362,7 +360,7 @@ function AddAnotherSong(props) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     status: state.PostReducer.status,
     error: state.PostReducer.error,
@@ -374,13 +372,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     searchSongReq: (text, post) => {
       dispatch(seachSongsForPostRequest(text, post));
     },
 
-    createChatTokenRequest: (payload) => {
+    createChatTokenRequest: payload => {
       dispatch(createChatTokenRequest(payload));
     },
   };
