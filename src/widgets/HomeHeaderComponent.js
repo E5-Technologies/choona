@@ -67,7 +67,7 @@ function HomeHeaderComponent(props) {
                 height: normalise(26),
                 width: normalise(26),
                 // borderRadius: props.borderRadius,
-                borderRadius: normalise(60),
+                borderRadius: normalise(26),
                 // marginTop: normalise(-11),
               }}
               resizeMode="contain"

@@ -92,19 +92,8 @@ function HomeItemComments(props) {
       .catch(err => {
         toast('Error', err);
       });
-    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
     BackHandler.addEventListener('hardwareBackPress', _onBackHandlerPress);
-
-    return () => {
-      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
-    };
-    //  BackHandler.removeEventListener("hardwareBackPress", _onBackHandlerPress);
   }, [props.header.token, props.route.params.id]);
-
-  const _keyboardDidShow = () => setEmoji(true);
-  const _keyboardDidHide = () => setEmoji(false);
 
   function renderItem(data) {
     return (
