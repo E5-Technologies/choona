@@ -263,14 +263,12 @@ function HomeItemComments(props) {
           _onBackPress();
         }}
       />
-      <ScrollView keyboardShouldPersistTaps="always">
-        <SafeAreaView>
-          <Loader visible={commentsLoading} />
-
-          <View style={styles.commentHeader}>
-            <View style={styles.commentHeaderDetails}>
-              <TouchableOpacity style={styles.commentHeaderAvatarButton}>
-                {/* <Image
+      <SafeAreaView style={{ flex: 1 }}>
+        <Loader visible={commentsLoading} />
+        <View style={styles.commentHeader}>
+          <View style={styles.commentHeaderDetails}>
+            <TouchableOpacity style={styles.commentHeaderAvatarButton}>
+              {/* <Image
                 source={ImagePath.play}
                 style={{
                   height: normalise(20),
@@ -279,43 +277,41 @@ function HomeItemComments(props) {
                   alignSelf: 'center',
                 }}
               /> */}
-                <Image
-                  source={image ? { uri: image } : null}
-                  style={styles.commentHeaderAvatar}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-              <View style={styles.commentHeaderInfoContainer}>
-                <View style={styles.commentHeaderInfoTop}>
-                  <Text style={styles.commentHeaderInfoUsername}>
-                    {username}
-                  </Text>
+              <Image
+                source={image ? { uri: image } : null}
+                style={styles.commentHeaderAvatar}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <View style={styles.commentHeaderInfoContainer}>
+              <View style={styles.commentHeaderInfoTop}>
+                <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
 
-                  <Text style={styles.commentHeaderInfoTime}>
-                    {moment(time).from()}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={styles.commentHeaderInfoComment}>
-                    {userComment}
-                  </Text>
-                </View>
+                <Text style={styles.commentHeaderInfoTime}>
+                  {moment(time).from()}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.commentHeaderInfoComment}>
+                  {userComment}
+                </Text>
               </View>
             </View>
           </View>
-          <SwipeListView
-            data={comments}
-            keyboardShouldPersistTaps="always"
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            disableRightSwipe={true}
-            rightOpenValue={-75}
-          />
-        </SafeAreaView>
-      </ScrollView>
+        </View>
+        <SwipeListView
+          style={{ flex: 1 }}
+          data={comments}
+          keyboardShouldPersistTaps="always"
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => {
+            index.toString();
+          }}
+          disableRightSwipe={true}
+          rightOpenValue={-75}
+        />
+      </SafeAreaView>
       {showmention ? (
         <View
           style={{
@@ -426,7 +422,7 @@ function HomeItemComments(props) {
             },
           ]}
           multiline
-          maxHeight={100}
+          // maxHeight={100}
           autoFocus={true}
           keyboardAppearance="dark"
           onContentSizeChange={e =>
@@ -435,6 +431,7 @@ function HomeItemComments(props) {
           placeholder={'Add a comment...'}
           placeholderTextColor={Colors.white}
           onFocus={() => setEmoji(true)}
+          scrollEnabled={false}
           onChangeText={text => {
             let indexvalue = text.lastIndexOf('@');
             let newString = text.substr(text.lastIndexOf('@'));

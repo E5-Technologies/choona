@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
 
-// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -1030,14 +1030,17 @@ function Search(props) {
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
               />
-              {/* <View
+              <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'center',
                 }}>
                 <BannerAd
-                  unitId={TestIds.BANNER}
-                  // unitId={Platform.OS === 'android' ? 'ca-app-pub-2232736176622960/2335890938' : 'ca-app-pub-2232736176622960/3492936227'}
+                  unitId={
+                    Platform.OS === 'android'
+                      ? 'ca-app-pub-2232736176622960/2335890938'
+                      : 'ca-app-pub-2232736176622960/3492936227'
+                  }
                   size={BannerAdSize.BANNER}
                   requestOptions={{
                     requestNonPersonalizedAdsOnly: true,
@@ -1049,7 +1052,7 @@ function Search(props) {
                     console.error('Advert failed to load: ', error);
                   }}
                 />
-              </View> */}
+              </View>
             </>
           )
         ) : null}

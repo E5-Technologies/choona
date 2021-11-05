@@ -271,7 +271,7 @@ function AddSong(props) {
               marginBottom: normalise(10),
             }}
             keyboardAppearance="dark"
-            // value={search}
+            scrollEnabled={false}
             multiline={true}
             placeholder={'Add a caption...'}
             placeholderTextColor={Colors.darkgrey}

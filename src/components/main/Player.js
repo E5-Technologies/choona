@@ -17,6 +17,7 @@ import {
   Keyboard,
   BackHandler,
   Pressable,
+  Platform,
 } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import normalise from '../../utils/helpers/Dimens';
@@ -525,254 +526,6 @@ function Player(props) {
     }
   };
 
-  // RENDER FLATLIST DATA
-  function renderFlatlistData(data) {
-    return (
-      <CommentList
-        width={'100%'}
-        image={constants.profile_picture_base_url + data.item.profile_image}
-        name={data.item.username}
-        comment={data.item.text}
-        time={moment(data.item.createdAt).from()}
-        marginBottom={data.index === commentData.length - 1 ? normalise(10) : 0}
-        onPressImage={() => {
-          if (props.userProfileResp._id === data.item.user_id) {
-            if (RbSheetRef) {
-              RbSheetRef.close();
-            }
-            props.navigation.navigate('Profile', { fromAct: false });
-          } else {
-            if (RbSheetRef) {
-              RbSheetRef.close();
-            }
-            props.navigation.navigate('OthersProfile', {
-              id: data.item.user_id,
-            });
-          }
-        }}
-      />
-    );
-  }
-
-  const updateSize = height => {
-    setHeight(height);
-  };
-
-  function _onPressSheet() {
-    // alert("post click")
-
-    Keyboard.dismiss();
-    setCommentText('');
-    let commentObject = {
-      post_id: id,
-      text: commentText,
-    };
-    let updateMessagPayload = {};
-
-    if (comingFromMessage) {
-      let tempData = [...commentData];
-      tempData.push({
-        profile_image: props.userProfileResp.profile_image,
-        text: commentText,
-        username: props.userProfileResp.username,
-        createdAt: moment().toString(),
-        user_id: props.userProfileResp._id,
-      });
-      setArrayLength(`${tempData.length} ${tempData.length > 1 ? '' : ''}`);
-      setCommentData(tempData);
-      setCommentText('');
-
-      updateMessagPayload = {
-        ChatId: key,
-        chatToken: chatToken,
-        message: tempData,
-        receiverId: receiverId,
-        senderId: senderId,
-        songTitle: songTitle,
-        artist: artist,
-      };
-    }
-    isInternetConnected()
-      .then(() => {
-        comingFromMessage
-          ? props.updateMessageCommentRequest(updateMessagPayload)
-          : props.commentOnPost(commentObject);
-      })
-      .catch(() => {
-        toast('Error', 'Please Connect To Internet');
-      });
-  }
-
-  // BOTTOM SHEET FUNC
-  const RbSheet = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            RbSheetRef = ref;
-          }
-        }}
-        animationType={'slide'}
-        closeOnDragDown={false}
-        closeOnPressMask={true}
-        nestedScrollEnabled={true}
-        customStyles={{
-          container: {
-            minHeight: Dimensions.get('window').height,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-            backgroundColor: 'transparent',
-          },
-        }}>
-        <ImageBackground
-          source={ImagePath.page_gradient}
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end',
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              if (RbSheetRef) {
-                RbSheetRef.close();
-              }
-            }}
-            style={{
-              flex: 1,
-              backgroundColor: 'transparent',
-            }}
-          />
-          <View
-            style={{
-              height: Dimensions.get('window').height / 2.2,
-              backgroundColor: 'black',
-              borderTopEndRadius: normalise(8),
-              borderTopStartRadius: normalise(8),
-            }}>
-            <View style={{ width: '95%', flex: 1, alignSelf: 'center' }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginTop: normalise(15),
-                  borderBottomWidth: 0.5,
-                  borderColor: Colors.grey,
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (RbSheetRef) {
-                      RbSheetRef.close();
-                    }
-                  }}>
-                  <Image
-                    source={ImagePath.donw_arrow_solid}
-                    style={{
-                      height: normalise(10),
-                      width: normalise(10),
-                      marginBottom: normalise(10),
-                    }}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    if (RbSheetRef) {
-                      RbSheetRef.close();
-                    }
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: normalise(12),
-                      color: Colors.white,
-                      fontFamily: 'ProximaNova-Bold',
-                      marginBottom: normalise(10),
-                    }}>
-                    {arrayLength}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (RbSheetRef) {
-                      RbSheetRef.close();
-                    }
-                  }}>
-                  <Image
-                    source={ImagePath.donw_arrow_solid}
-                    style={{
-                      height: normalise(10),
-                      width: normalise(10),
-                      marginBottom: normalise(10),
-                    }}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                style={{ height: '40%' }}
-                data={commentData}
-                renderItem={renderFlatlistData}
-                keyExtractor={(item, index) => {
-                  index.toString();
-                }}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(15),
-                marginBottom: normalise(5),
-                position: 'absolute',
-                bottom: 0,
-              }}>
-              <TextInput
-                style={styles.rbsheetInput}
-                multiline={true}
-                blurOnSubmit={true}
-                onSubmitEditing={() => {
-                  Keyboard.dismiss();
-                }}
-                keyboardAppearance="dark"
-                autofocus={true}
-                onContentSizeChange={e =>
-                  updateSize(e.nativeEvent.contentSize.height)
-                }
-                placeholder={'Add a comment...'}
-                value={commentText}
-                placeholderTextColor={Colors.white}
-                onChangeText={text => {
-                  setCommentText(text);
-                }}
-              />
-              {commentText.length > 1 ? (
-                <TouchableOpacity
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingHorizontal: '3%',
-                  }}
-                  onPress={() => _onPressSheet()}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(10),
-                      fontWeight: 'bold',
-                    }}>
-                    POST
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
-            </View>
-          </View>
-          <KeyboardSpacer />
-        </ImageBackground>
-      </RBSheet>
-    );
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
@@ -1114,45 +867,51 @@ function Player(props) {
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
-                  {props.route.params.showPlaylist === false ? null : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (props.userProfileResp.register_type === 'spotify') {
-                          props.navigation.navigate('AddToPlayListScreen', {
-                            originalUri: originalUri,
-                            registerType: registerType,
-                            isrc: isrc,
-                          });
-                        }
-                        // toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        else {
-                          props.navigation.navigate('AddToPlayListScreen', {
-                            isrc: isrc,
-                          });
-                        }
-                      }}
-                      style={{
-                        flexDirection: 'row',
-                        height: normalise(40),
-                        // width: normalise(160),
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        // marginTop: normalise(10),
-                        // backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(10),
-                      }}>
-                      <Image
-                        source={ImagePath.add_white}
-                        style={{
-                          height: normalise(20),
-                          width: normalise(20),
-                          borderRadius: normalise(18),
-                          opacity: 0.8,
+                  {registerType === 'spotify' ? (
+                    props.route.params.showPlaylist === false ? null : (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (
+                            props.userProfileResp.register_type === 'spotify'
+                          ) {
+                            props.navigation.navigate('AddToPlayListScreen', {
+                              originalUri: originalUri,
+                              registerType: registerType,
+                              isrc: isrc,
+                            });
+                          }
+                          // toast("Oops", "Only, Spotify users can add to their playlist now.")
+                          else {
+                            props.navigation.navigate('AddToPlayListScreen', {
+                              isrc: isrc,
+                            });
+                          }
                         }}
-                        resizeMode="contain"
-                      />
-                    </TouchableOpacity>
+                        style={{
+                          flexDirection: 'row',
+                          height: normalise(40),
+                          // width: normalise(160),
+                          alignSelf: 'center',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          // marginTop: normalise(10),
+                          // backgroundColor: Colors.fadeblack,
+                          borderRadius: normalise(10),
+                        }}>
+                        <Image
+                          source={ImagePath.add_white}
+                          style={{
+                            height: normalise(20),
+                            width: normalise(20),
+                            borderRadius: normalise(18),
+                            opacity: 0.8,
+                          }}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                    )
+                  ) : (
+                    <></>
                   )}
 
                   <TouchableOpacity
@@ -1322,47 +1081,53 @@ function Player(props) {
                     />
                   </TouchableOpacity>
 
-                  {props.route.params.showPlaylist === false ? null : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (props.userProfileResp.register_type === 'spotify') {
-                          props.navigation.navigate('AddToPlayListScreen', {
-                            originalUri: originalUri,
-                            registerType: registerType,
-                            isrc: isrc,
-                          });
-                        }
-                        // toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        else {
-                          props.navigation.navigate('AddToPlayListScreen', {
-                            isrc: isrc,
-                          });
-                        }
-                      }}
-                      style={{
-                        marginRight: normalise(15),
-
-                        flexDirection: 'row',
-                        height: normalise(40),
-                        // width: normalise(160),
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        // marginTop: normalise(10),
-                        // backgroundColor: Colors.fadeblack,
-                        borderRadius: normalise(10),
-                      }}>
-                      <Image
-                        source={ImagePath.add_white}
-                        style={{
-                          height: normalise(18),
-                          width: normalise(18),
-                          borderRadius: normalise(18),
-                          opacity: 0.8,
+                  {registerType === 'spotify' ? (
+                    props.route.params.showPlaylist === false ? null : (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (
+                            props.userProfileResp.register_type === 'spotify'
+                          ) {
+                            props.navigation.navigate('AddToPlayListScreen', {
+                              originalUri: originalUri,
+                              registerType: registerType,
+                              isrc: isrc,
+                            });
+                          }
+                          // toast("Oops", "Only, Spotify users can add to their playlist now.")
+                          else {
+                            props.navigation.navigate('AddToPlayListScreen', {
+                              isrc: isrc,
+                            });
+                          }
                         }}
-                        resizeMode="contain"
-                      />
-                    </TouchableOpacity>
+                        style={{
+                          marginRight: normalise(15),
+
+                          flexDirection: 'row',
+                          height: normalise(40),
+                          // width: normalise(160),
+                          alignSelf: 'center',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          // marginTop: normalise(10),
+                          // backgroundColor: Colors.fadeblack,
+                          borderRadius: normalise(10),
+                        }}>
+                        <Image
+                          source={ImagePath.add_white}
+                          style={{
+                            height: normalise(18),
+                            width: normalise(18),
+                            borderRadius: normalise(18),
+                            opacity: 0.8,
+                          }}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                    )
+                  ) : (
+                    <></>
                   )}
                   <TouchableOpacity
                     style={{
@@ -1478,7 +1243,7 @@ function Player(props) {
                 />
               </TouchableOpacity>
             </View>
-            {RbSheet()}
+            {/* {RbSheet()} */}
             {modalVisible && (
               <MoreModal
                 setBool={setBool}

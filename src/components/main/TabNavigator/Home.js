@@ -28,7 +28,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { useInfiniteQuery } from 'react-query';
 
-// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import {
   USER_PROFILE_REQUEST,
@@ -268,7 +268,6 @@ function Home(props) {
   }, [props.registerType]);
 
   const loadMore = async () => {
-    console.log('loadmore');
     setLoadMoreVisible(false);
     refetch();
     props.loadMoreData();
@@ -742,7 +741,7 @@ function Home(props) {
           marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
         // playingSongRef={props.playingSongRef}
         />
-        {/* {data.index % 4 === 0 && data.index !== 0 && (
+        {data.index % 4 === 0 && data.index !== 0 && (
           <View
             style={{
               marginVertical: normalise(24),
@@ -750,8 +749,11 @@ function Home(props) {
               justifyContent: 'center',
             }}>
             <BannerAd
-              unitId={TestIds.BANNER}
-              // unitId={Platform.OS === 'android' ? 'ca-app-pub-2232736176622960/7588217615' : 'ca-app-pub-2232736176622960/4761005615'}
+              unitId={
+                Platform.OS === 'android'
+                  ? 'ca-app-pub-2232736176622960/5949774256'
+                  : 'ca-app-pub-2232736176622960/6141345945'
+              }
               size={BannerAdSize.MEDIUM_RECTANGLE}
               requestOptions={{
                 requestNonPersonalizedAdsOnly: true,
@@ -764,7 +766,7 @@ function Home(props) {
               }}
             />
           </View>
-        )} */}
+        )}
       </>
     );
   }
@@ -943,7 +945,12 @@ function Home(props) {
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
-        <Timer onFinish={() => onfinish()} />
+        <Timer
+          onFinish={() => {
+            onfinish();
+            refetch();
+          }}
+        />
         <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
