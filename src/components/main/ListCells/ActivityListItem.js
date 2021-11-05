@@ -32,7 +32,7 @@ function ActivityListItem(props) {
             <Image
               source={
                 props.image
-                  ? props.image === ''
+                  ? props.image === 'https://api.choona.co/uploads/user/thumb/'
                     ? ImagePath.userPlaceholder
                     : { uri: props.image }
                   : ImagePath.userPlaceholder
