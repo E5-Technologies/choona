@@ -377,13 +377,13 @@ function HomeItemComments(props) {
             {
               flex: 1,
               //   flexWrap:'wrap',
-              height: textinputHeight,
+              // height: textinputHeight,
             },
           ]}
           // value={commentText}
           multiline
           autoFocus={true}
-          maxHeight={100}
+          // maxHeight={100}
           keyboardAppearance="dark"
           // onSelectionChange={ event => {
           //   const selections = event.nativeEvent.selection;
@@ -392,6 +392,7 @@ function HomeItemComments(props) {
           // } }
 
           // selection={Selection}
+          scrollEnabled={false}
           selectionColor="blue"
           onContentSizeChange={e =>
             updateSize(e.nativeEvent.contentSize.height)
@@ -568,12 +569,12 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normaliseNew(14),
-    height: normaliseNew(48),
+    // height: normaliseNew(48),
     paddingBottom: normaliseNew(12),
     paddingEnd: normaliseNew(44),
     paddingStart: normaliseNew(16),
     paddingTop: normaliseNew(14),
-    maxHeight: normaliseNew(100),
+    // maxHeight: normaliseNew(100),
   },
   commentFooterPostButtonText: {
     color: Colors.white,
