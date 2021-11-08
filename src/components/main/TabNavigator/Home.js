@@ -187,6 +187,14 @@ function Home(props) {
     getModalData();
   }, []);
 
+  React.useEffect(() => {
+    const subscribe = props.navigation.addListener('focus', () => {
+      refetch();
+    });
+
+    return subscribe;
+  }, [props.navigation, refetch]);
+
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -948,7 +956,6 @@ function Home(props) {
         <Timer
           onFinish={() => {
             onfinish();
-            refetch();
           }}
         />
         <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
