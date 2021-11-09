@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
+  Keyboard,
   Text,
   TouchableOpacity,
   FlatList,
@@ -163,6 +164,28 @@ function Inbox(props) {
     );
   }
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -250,17 +273,19 @@ function Inbox(props) {
           </View>
         )}
         {_.isEmpty(props.chatList) && nonEmpty ? (
-          <EmptyComponent
-            buttonPress={() => {
-              props.navigation.navigate('AddSongsInMessage');
-            }}
-            buttonText={'Send a song to someone'}
-            image={ImagePath ? ImagePath.emptyInbox : null}
-            text={
-              'You haven’t started sending music to people, click the button below to send your first song.'
-            }
-            title={'Your Inbox is empty'}
-          />
+          !isKeyboardVisible && (
+            <EmptyComponent
+              buttonPress={() => {
+                props.navigation.navigate('AddSongsInMessage');
+              }}
+              buttonText={'Send a song to someone'}
+              image={ImagePath ? ImagePath.emptyInbox : null}
+              text={
+                'You haven’t started sending music to people, click the button below to send your first song.'
+              }
+              title={'Your Inbox is empty'}
+            />
+          )
         ) : (
           <FlatList
             data={mesageList}

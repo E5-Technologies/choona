@@ -233,6 +233,28 @@ function Following(props) {
     );
   }
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.black }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -318,25 +340,27 @@ function Following(props) {
           )}
         </View>
         {_.isEmpty(props.followingData) ? (
-          <>
-            <EmptyComponent
-              text={
-                "Choona is a lonely place when you aren't following anyone. See if you already have friends by connecting below."
-              }
-              title={"You don't follow anyone"}
-            />
-            <View style={{ flex: 1 }}>
-              <FlatList
-                data={top5followingList}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => {
-                  index.toString();
-                }}
-                renderItem={rendertop5FollowersItem}
-                ItemSeparatorComponent={Seperator}
+          !isKeyboardVisible && (
+            <>
+              <EmptyComponent
+                text={
+                  "Choona is a lonely place when you aren't following anyone. See if you already have friends by connecting below."
+                }
+                title={"You don't follow anyone"}
               />
-            </View>
-          </>
+              <View style={{ flex: 1 }}>
+                <FlatList
+                  data={top5followingList}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={(item, index) => {
+                    index.toString();
+                  }}
+                  renderItem={rendertop5FollowersItem}
+                  ItemSeparatorComponent={Seperator}
+                />
+              </View>
+            </>
+          )
         ) : (
           <FlatList
             data={props.followingData}
