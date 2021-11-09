@@ -25,14 +25,10 @@ function MusicPlayerBar(props) {
     setTimeout(() => {
       setBool(false);
     }, 1000);
-  }, [play]);
+  });
 
   function getPlatingState() {
-    setInterval(() => {
-      const ref =
-        global.playerReference !== null && global.playerReference !== undefined
-          ? global.playerReference
-          : null;
+    setTimeout(() => {
       if (ref !== null && ref !== undefined) {
         const isPlaying = ref.isPlaying();
 
@@ -42,11 +38,7 @@ function MusicPlayerBar(props) {
   }
 
   function getPlayingPosition() {
-    setInterval(() => {
-      const ref =
-        global.playerReference !== null && global.playerReference !== undefined
-          ? global.playerReference
-          : null;
+    setTimeout(() => {
       if (ref !== null && ref !== undefined) {
         ref.getCurrentTime(seconds => {
           setTime(seconds);

@@ -131,9 +131,13 @@ const MoreModal = ({
             .then(() => {
               setBool(false);
             })
-            .catch(() => { });
+            .catch(err => {
+              console.log(err);
+            });
         })
-        .catch(_err => { });
+        .catch(err => {
+          console.log(err);
+        });
     } else {
       setShow(false);
       setBool(true);

@@ -5,29 +5,23 @@ import {
   ScrollView,
   View,
   Text,
-  Slider,
   TouchableOpacity,
-  FlatList,
   Image,
-  ImageBackground,
-  TextInput,
   KeyboardAvoidingView,
-  Dimensions,
   Linking,
-  Keyboard,
   BackHandler,
   Pressable,
-  Platform,
 } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
+import Slider from '@react-native-community/slider';
+
 import normalise from '../../utils/helpers/Dimens';
 import normaliseNew from '../../utils/helpers/DimensNew';
 
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import CommentList from '../main/ListCells/CommentList';
+
 import StatusBar from '../../utils/MyStatusBar';
-import RBSheet from 'react-native-raw-bottom-sheet';
+
 import { commentOnPostReq, dummyRequest } from '../../action/UserAction';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
@@ -36,7 +30,7 @@ import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
-import moment from 'moment';
+
 import {
   COMMENT_ON_POST_REQUEST,
   COMMENT_ON_POST_SUCCESS,
@@ -64,8 +58,6 @@ import axios from 'axios';
 import { getUsersFromHome } from '../../action/UserAction';
 import MoreModal from '../Posts/MoreModal';
 
-let RbSheetRef;
-
 let status;
 let songStatus;
 let playerStatus;
@@ -90,12 +82,8 @@ function Player(props) {
 
   const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
   const [playerDuration, setplayerDuration] = useState(0);
-  const [curentTimeForSlider, setCurentTimeForSlider] = useState(0);
-  const [totalTimeForSlider, setTotalTimeForSlider] = useState(0);
 
   const [hasSongLoaded, setHasSongLoaded] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState(0);
-  const [textinputHeight, setHeight] = useState(50);
   const [disabled, setDisabled] = useState(false);
 
   const [reactions, setSReactions] = useState(
@@ -141,8 +129,6 @@ function Player(props) {
   // console.log("commentData: " + JSON.stringify(commentData));
   let track;
   var bottomSheetRef;
-  //Prithviraj's variables.
-  const [firstTimePlay, setFirstTimePlay] = useState(true);
 
   function handleBackButtonClick() {
     console.log('hello');
@@ -1187,14 +1173,18 @@ function Player(props) {
                   if (props.userProfileResp.register_type === 'spotify') {
                     if (props.userProfileResp.register_type === registerType) {
                       Linking.canOpenURL(originalUri)
-                        .then(supported => {
-                          if (supported) {
-                            Linking.openURL(originalUri)
-                              .then(() => { })
-                              .catch(err => { });
-                          }
+                        .then(() => {
+                          Linking.openURL(originalUri)
+                            .then(() => {
+                              setBool(false);
+                            })
+                            .catch(err => {
+                              console.log(err);
+                            });
                         })
-                        .catch(err => { });
+                        .catch(err => {
+                          console.log(err);
+                        });
                     } else {
                       isInternetConnected()
                         .then(() => {
@@ -1209,14 +1199,18 @@ function Player(props) {
                   else {
                     if (props.userProfileResp.register_type === registerType) {
                       Linking.canOpenURL(originalUri)
-                        .then(supported => {
-                          if (supported) {
-                            Linking.openURL(originalUri)
-                              .then(() => { })
-                              .catch(err => { });
-                          }
+                        .then(() => {
+                          Linking.openURL(originalUri)
+                            .then(() => {
+                              setBool(false);
+                            })
+                            .catch(err => {
+                              console.log(err);
+                            });
                         })
-                        .catch(err => { });
+                        .catch(err => {
+                          console.log(err);
+                        });
                     } else {
                       isInternetConnected()
                         .then(() => {
