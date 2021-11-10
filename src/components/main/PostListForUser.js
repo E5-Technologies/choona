@@ -551,18 +551,14 @@ function PostListForUser(props) {
             // console.log('success - spotify');
             // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(
-                    res.data.tracks.items[0].external_urls.spotify,
-                  )
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
+              .then(() => {
+                Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
               })
               .catch(() => {
                 // console.log('not supported');
@@ -572,16 +568,14 @@ function PostListForUser(props) {
             // console.log('success - apple');
             // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
+              .then(() => {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
               })
               .catch(() => {
                 // console.log('not supported');

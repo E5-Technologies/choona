@@ -863,7 +863,7 @@ function Home(props) {
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${props.postData[positionInArray].isrc_code}&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${posts[positionInArray].isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -874,7 +874,7 @@ function Home(props) {
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.postData[positionInArray].isrc_code}`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${posts[positionInArray].isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,
@@ -899,25 +899,30 @@ function Home(props) {
         ) {
           if (props.userProfileResp.register_type === 'spotify') {
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(
-                    res.data.tracks.items[0].external_urls.spotify,
-                  )
-                    .then(() => { })
-                    .catch(() => { });
-                }
+              .then(() => {
+                Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                  .then(() => {
+                    setBool(false);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
-              .catch(() => { });
+              .catch(err => {
+                console.log(err);
+              });
             setBool(false);
           } else {
+            console.log(2);
             Linking.canOpenURL(res.data.data[0].attributes.url)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => { })
-                    .catch(() => { });
-                }
+              .then(() => {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    setBool(false);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
               .catch(() => { });
             setBool(false);
@@ -931,6 +936,7 @@ function Home(props) {
         toast('Oops', 'Something Went Wrong');
       }
     } catch (error) {
+      console.log({ error });
       setBool(false);
     }
   };

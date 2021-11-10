@@ -474,16 +474,14 @@ function Player(props) {
         // console.log('success - spotify');
         // console.log(props.isrcResp[0].external_urls.spotify);
         Linking.canOpenURL(props.isrcResp[0].external_urls.spotify)
-          .then(supported => {
-            if (supported) {
-              Linking.openURL(props.isrcResp[0].external_urls.spotify)
-                .then(() => {
-                  //   console.log('success');
-                })
-                .catch(() => {
-                  //   console.log('error');
-                });
-            }
+          .then(() => {
+            Linking.openURL(props.isrcResp[0].external_urls.spotify)
+              .then(() => {
+                setBool(false);
+              })
+              .catch(err => {
+                console.log(err);
+              });
           })
           .catch(() => {
             // console.log('not supported');
@@ -492,16 +490,14 @@ function Player(props) {
         // console.log('success - apple');
         // console.log(props.isrcResp[0].attributes.url);
         Linking.canOpenURL(props.isrcResp[0].attributes.url)
-          .then(supported => {
-            if (supported) {
-              Linking.openURL(props.isrcResp[0].attributes.url)
-                .then(() => {
-                  //   console.log('success');
-                })
-                .catch(() => {
-                  //   console.log('error');
-                });
-            }
+          .then(() => {
+            Linking.openURL(props.isrcResp[0].attributes.url)
+              .then(() => {
+                setBool(false);
+              })
+              .catch(err => {
+                console.log(err);
+              });
           })
           .catch(() => {
             // console.log('not supported');
