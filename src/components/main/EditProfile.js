@@ -145,14 +145,17 @@ function EditProfile(props) {
     if (username === '') {
       alert('Please enter your username');
     }
+    if (username.includes(' ')) {
+      alert('Username cannot include spaces');
+    }
     if (!userNameAvailable) {
       alert('Please enter a valid username');
     } else if (fullname === '') {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
       alert('Please enter your phone number');
-    } else if (location === '') {
-      alert('Please enter your location');
+      // } else if (location === '') {
+      //   alert('Please enter your location');
     } else if (profilePic === '') {
       alert('Please upload your profile picture');
     } else {

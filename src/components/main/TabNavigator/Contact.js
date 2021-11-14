@@ -44,7 +44,7 @@ import MoreModal from '../../Posts/MoreModal';
 
 let status;
 
-function Contact(props) {
+const Contact = props => {
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [index, setIndex] = useState(0);
@@ -338,9 +338,9 @@ function Contact(props) {
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={Seperator}
-            keyExtractor={(item, index, rowData) => {
-              index.toString();
-            }}
+            // keyExtractor={(item, index, rowData) => {
+            //   index.toString();
+            // }}
             disableRightSwipe={true}
             rightOpenValue={-75}
           />
@@ -370,7 +370,7 @@ function Contact(props) {
       )}
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

@@ -68,7 +68,7 @@ let postStatus;
 let top50Status;
 let userstatus;
 
-function Search(props) {
+const Search = props => {
   const [usersSearch, setUsersSearch] = useState(false);
   const [genreSearch, setGenreSearch] = useState(true);
   const [songSearch, setSongSearch] = useState(false);
@@ -1080,7 +1080,7 @@ function Search(props) {
                       requestNonPersonalizedAdsOnly: true,
                     }}
                     onAdLoaded={() => {
-                      console.log('Advert loaded');
+                      // console.log('Advert loaded');
                     }}
                     onAdFailedToLoad={error => {
                       console.error('Advert failed to load: ', error);
@@ -1119,7 +1119,7 @@ function Search(props) {
       </KeyboardAvoidingView>
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

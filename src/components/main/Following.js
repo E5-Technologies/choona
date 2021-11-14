@@ -45,7 +45,7 @@ import EmptyComponent from '../Empty/EmptyComponent';
 
 let status;
 
-function Following(props) {
+const Following = props => {
   const [type, setType] = useState(props.route.params.type);
   const [id, setId] = useState(props.route.params.id);
   // const [following, setFollowing] = useState("")
@@ -352,9 +352,7 @@ function Following(props) {
                 <FlatList
                   data={top5followingList}
                   showsVerticalScrollIndicator={false}
-                  keyExtractor={(item, index) => {
-                    index.toString();
-                  }}
+                  keyExtractor={item => item._id}
                   renderItem={rendertop5FollowersItem}
                   ItemSeparatorComponent={Seperator}
                 />
@@ -365,9 +363,7 @@ function Following(props) {
           <FlatList
             data={props.followingData}
             showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
+            keyExtractor={item => item._id}
             renderItem={renderFollowersItem}
             ItemSeparatorComponent={Seperator}
           />
@@ -376,7 +372,7 @@ function Following(props) {
       {/* </TouchableWithoutFeedback> */}
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

@@ -52,7 +52,7 @@ const wait = timeout => {
 
 let status = '';
 
-function Notification(props) {
+const Notification = props => {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -348,7 +348,7 @@ function Notification(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.black },

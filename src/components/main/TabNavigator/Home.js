@@ -93,7 +93,7 @@ let status = '';
 let songStatus = '';
 let postStatus = '';
 
-function Home(props) {
+const Home = props => {
   const token = props.header.token;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -767,7 +767,7 @@ function Home(props) {
                 requestNonPersonalizedAdsOnly: true,
               }}
               onAdLoaded={() => {
-                console.log('Advert loaded');
+                // console.log('Advert loaded');
               }}
               onAdFailedToLoad={error => {
                 console.error('Advert failed to load: ', error);
@@ -1379,7 +1379,7 @@ function Home(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

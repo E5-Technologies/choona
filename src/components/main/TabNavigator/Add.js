@@ -37,7 +37,7 @@ import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
 
 let status;
 
-function AddSong(props) {
+const AddSong = props => {
   const inputRef = React.useRef(null);
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
@@ -343,7 +343,7 @@ function AddSong(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   containerView: { flex: 1, backgroundColor: Colors.black },

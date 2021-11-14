@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -42,7 +42,8 @@ let status;
 // let changePlayer = true;
 let totalCount = '0';
 
-function OthersProfile(props) {
+const OthersProfile = props => {
+  console.log({ othersProfile: props.othersProfileresp });
   const othersProfileReq = props.othersProfileReq;
   const token = props.header.token;
 
@@ -66,31 +67,37 @@ function OthersProfile(props) {
     setProfilePosts([...profilePosts, ...response.data.data]);
   };
 
+  console.log(props, props.status);
+  const getProfilePosts = useCallback(async () => {
+    const response = await axios.get(`${postsUrl}?page=${1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+    });
+    setIsLoading(false);
+    console.log(response);
+    if (response) {
+      console.log({ totalCount: response.data.postCount });
+      setProfilePosts(response.data.data);
+      totalCount = response.data.postCount;
+    }
+  }, [postsUrl, token]);
+
+  useEffect(() => {
+    getProfilePosts();
+  }, [getProfilePosts]);
+
   useEffect(() => {
     isInternetConnected()
       .then(async () => {
         othersProfileReq(id);
-
-        const response = await axios.get(`${postsUrl}?page=${1}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'x-access-token': token,
-          },
-        });
-        setIsLoading(false);
-
-        response.data.data.length === 0
-          ? (totalCount = totalCount)
-          : (totalCount = response.data.postCount);
-        profilePosts.length === 0
-          ? setProfilePosts([...profilePosts, ...response.data.data])
-          : null;
       })
       .catch(() => {
         toast('Error', 'Please Connect to Internet');
       });
-  }, [id, othersProfileReq, postsUrl, token]);
+  }, [id, othersProfileReq]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -155,7 +162,7 @@ function OthersProfile(props) {
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
-          imageone={ImagePath ? ImagePath.backicon : null}
+          imageone={ImagePath.backicon}
           title={props.othersProfileresp.full_name}
           thirditemtext={true}
           texttwo={''}
@@ -167,7 +174,7 @@ function OthersProfile(props) {
         <ProfileHeader
           navigation={props.navigation}
           profile={props.othersProfileresp}
-          totalCount={totalCount}
+          totalCount={totalCount ?? 0}
         />
         <ProfileHeaderButtons
           followReq={props.followReq}
@@ -214,7 +221,7 @@ function OthersProfile(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

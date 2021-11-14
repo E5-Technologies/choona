@@ -234,7 +234,7 @@ function PlayerScreenSelectUser(props) {
         <Loader visible={bool} />
         <HeaderComponent
           firstitemtext={false}
-          imageone={ImagePath ? ImagePath.backicon : ''}
+          imageone={ImagePath.backicon}
           title={'SELECT USER TO SEND TO'}
           onPressFirstItem={() => {
             props.navigation.goBack();

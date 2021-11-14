@@ -52,7 +52,8 @@ let totalCount = '0';
 
 const postsUrl = constants.BASE_URL + '/user/posts';
 
-function Profile(props) {
+const Profile = props => {
+  console.log({ profile: props.userProfileResp });
   const getProfileReq = props.getProfileReq;
   const token = props.header.token;
 
@@ -95,9 +96,12 @@ function Profile(props) {
       response.data.data.length === 0
         ? (totalCount = totalCount)
         : (totalCount = response.data.postCount);
-      // profilePosts.length === 0 ? setNonEmpty(true) : null;
     }
   }, [token]);
+
+  useEffect(() => {
+    getProfilePosts();
+  }, [getProfilePosts]);
 
   useEffect(() => {
     isInternetConnected()
@@ -126,10 +130,6 @@ function Profile(props) {
         break;
     }
   }
-
-  useEffect(() => {
-    getProfilePosts();
-  }, [getProfilePosts]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -469,7 +469,6 @@ function Profile(props) {
             user={true}
           />
         )}
-        {console.log({ profilePosts }, { nonempty })}
         {isLoading ? (
           <View>
             <ActivityIndicator
@@ -494,9 +493,7 @@ function Profile(props) {
           <FlatList
             data={profilePosts}
             renderItem={renderProfileData}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
+            keyExtractor={item => item._id}
             showsVerticalScrollIndicator={false}
             numColumns={2}
             onEndReached={() => {
@@ -511,7 +508,7 @@ function Profile(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

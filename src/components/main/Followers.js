@@ -38,7 +38,7 @@ import { connect } from 'react-redux';
 
 let status;
 
-function Followers(props) {
+const Followers = props => {
   const [type, setType] = useState(props.route.params.type);
   const [id, setId] = useState(props.route.params.id);
   const [search, setSearch] = useState('');
@@ -246,9 +246,7 @@ function Followers(props) {
         <FlatList
           data={props.followerData}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => {
-            index.toString();
-          }}
+          keyExtractor={item => item._id}
           renderItem={renderFollowersItem}
           ItemSeparatorComponent={Seperator}
         />
@@ -256,7 +254,7 @@ function Followers(props) {
       {/* </TouchableWithoutFeedback> */}
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

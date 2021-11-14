@@ -83,7 +83,7 @@ export default HeaderComponent;
 HeaderComponent.propTypes = {
   firstitemtext: PropTypes.bool,
   thirditemtext: PropTypes.bool,
-  imageone: PropTypes.string,
+  imageone: PropTypes.number,
   imagetwo: PropTypes.string,
   textone: PropTypes.string,
   texttwo: PropTypes.string,
@@ -99,7 +99,7 @@ HeaderComponent.propTypes = {
 HeaderComponent.defaultProps = {
   firstitemtext: true,
   thirditemtext: true,
-  imageone: '',
+  imageone: null,
   imagetwo: '',
   textone: '',
   texttwo: '',

@@ -176,7 +176,7 @@ ActivityListItem.propTypes = {
   type: PropTypes.bool,
   follow: PropTypes.bool,
   marginBottom: PropTypes.number,
-  onPressImage: PropTypes.bool,
+  onPressImage: PropTypes.any,
   marginTop: PropTypes.number,
   TouchableOpacityDisabled: PropTypes.bool,
 };

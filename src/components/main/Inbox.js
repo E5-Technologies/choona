@@ -194,7 +194,7 @@ function Inbox(props) {
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
-          imageone={ImagePath ? ImagePath.backicon : null}
+          imageone={ImagePath.backicon}
           title={'INBOX'}
           thirditemtext={false}
           imagetwo={ImagePath ? ImagePath.newmessage : null}

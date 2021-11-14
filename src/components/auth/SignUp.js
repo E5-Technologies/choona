@@ -167,6 +167,9 @@ function Login(props) {
     if (username === '') {
       alert('Please enter your username');
     }
+    if (username.includes(' ')) {
+      alert('Username cannot include spaces');
+    }
     if (!userNameAvailable) {
       alert('Please enter a valid username');
     } else if (fullname === '') {
