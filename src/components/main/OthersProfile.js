@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -84,6 +85,11 @@ const OthersProfile = props => {
   useEffect(() => {
     getProfilePosts();
   }, [getProfilePosts]);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    othersProfileReq(id);
+  }, [getProfilePosts, id, isFocused, othersProfileReq]);
 
   useEffect(() => {
     isInternetConnected()
