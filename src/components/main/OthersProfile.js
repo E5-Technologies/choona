@@ -43,7 +43,6 @@ let status;
 let totalCount = '0';
 
 const OthersProfile = props => {
-  console.log({ othersProfile: props.othersProfileresp });
   const othersProfileReq = props.othersProfileReq;
   const token = props.header.token;
 
@@ -67,7 +66,6 @@ const OthersProfile = props => {
     setProfilePosts([...profilePosts, ...response.data.data]);
   };
 
-  console.log(props, props.status);
   const getProfilePosts = useCallback(async () => {
     const response = await axios.get(`${postsUrl}?page=${1}`, {
       headers: {
@@ -77,11 +75,11 @@ const OthersProfile = props => {
       },
     });
     setIsLoading(false);
-    console.log(response);
     if (response) {
-      console.log({ totalCount: response.data.postCount });
       setProfilePosts(response.data.data);
-      totalCount = response.data.postCount;
+      response.data.data.length === 0
+        ? (totalCount = totalCount)
+        : (totalCount = response.data.postCount);
     }
   }, [postsUrl, token]);
 
@@ -174,7 +172,7 @@ const OthersProfile = props => {
         <ProfileHeader
           navigation={props.navigation}
           profile={props.othersProfileresp}
-          totalCount={totalCount ?? 0}
+          totalCount={totalCount}
         />
         <ProfileHeaderButtons
           followReq={props.followReq}

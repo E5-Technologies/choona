@@ -53,7 +53,6 @@ let totalCount = '0';
 const postsUrl = constants.BASE_URL + '/user/posts';
 
 const Profile = props => {
-  console.log({ profile: props.userProfileResp });
   const getProfileReq = props.getProfileReq;
   const token = props.header.token;
 
