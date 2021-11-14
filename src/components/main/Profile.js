@@ -48,7 +48,6 @@ import HeaderStyles from '../../styles/header';
 
 let status = '';
 let postStatus = '';
-let totalCount = '0';
 
 const postsUrl = constants.BASE_URL + '/user/posts';
 
@@ -66,6 +65,7 @@ const Profile = props => {
   const [pageId, setPageId] = useState(1);
 
   const [profilePosts, setProfilePosts] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const onEndReached = async () => {
     setPageId(pageId + 1);
@@ -89,12 +89,10 @@ const Profile = props => {
         'x-access-token': token,
       },
     });
-    setIsLoading(false);
     if (response) {
+      setIsLoading(false);
       setProfilePosts(response.data.data);
-      response.data.data.length === 0
-        ? (totalCount = totalCount)
-        : (totalCount = response.data.postCount);
+      setTotalCount(response.data?.postCount ?? 0);
     }
   }, [token]);
 
@@ -410,7 +408,7 @@ const Profile = props => {
             <TouchableOpacity
               style={{ marginRight: normalise(10) }}
               onPress={() => {
-                totalCount = 0;
+                setTotalCount(0);
                 props.navigation.goBack();
               }}>
               <Image

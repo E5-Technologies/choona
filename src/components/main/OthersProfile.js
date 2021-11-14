@@ -40,7 +40,6 @@ import EmptyComponent from '../Empty/EmptyComponent';
 
 let status;
 // let changePlayer = true;
-let totalCount = '0';
 
 const OthersProfile = props => {
   const othersProfileReq = props.othersProfileReq;
@@ -51,6 +50,7 @@ const OthersProfile = props => {
   const [pageId, setPageId] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [profilePosts, setProfilePosts] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const postsUrl = constants.BASE_URL + `/user/posts/${id}`;
 
   const onEndReached = async () => {
@@ -74,12 +74,10 @@ const OthersProfile = props => {
         'x-access-token': token,
       },
     });
-    setIsLoading(false);
     if (response) {
+      setIsLoading(false);
       setProfilePosts(response.data.data);
-      response.data.data.length === 0
-        ? (totalCount = totalCount)
-        : (totalCount = response.data.postCount);
+      setTotalCount(response.data?.postCount ?? 0);
     }
   }, [postsUrl, token]);
 
@@ -165,7 +163,7 @@ const OthersProfile = props => {
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
-            totalCount = 0;
+            setTotalCount(0);
             props.navigation.goBack();
           }}
         />
