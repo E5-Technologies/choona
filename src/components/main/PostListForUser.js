@@ -487,7 +487,7 @@ function PostListForUser(props) {
           });
         }}
         onPressCommentbox={() => {
-          props.navigation.navigate('HomeItemComments', {
+          props.navigation.push('HomeItemComments', {
             index: data.index,
             comment: data.item.comment,
             image: data.item.song_image,
