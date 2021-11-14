@@ -105,7 +105,7 @@ TextInputField.propTypes = {
   tick_visible: PropTypes.bool,
   isNumber: PropTypes.bool,
   userNameAvailable: PropTypes.bool,
-  width: PropTypes.bool,
+  width: PropTypes.string,
 };
 
 TextInputField.defaultProps = {

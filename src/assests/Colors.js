@@ -5,7 +5,7 @@ const Colors = {
   white: '#ffffff',
   grey: '#767779',
   darkgrey: '#959698',
-  blue: '##449C8C',
+  blue: '#449C8C',
   red: '#e24f4f',
   facebookblue: '#3e63ab',
   grey_text: '#979797',

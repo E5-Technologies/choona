@@ -30,10 +30,10 @@ import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import Picker from '../../utils/helpers/Picker';
+import CountryPicker from 'react-native-country-picker-modal';
 let status = '';
 
-function Login(props) {
+const Login = props => {
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case USER_SIGNUP_REQUEST:
@@ -57,12 +57,6 @@ function Login(props) {
 
       setDeviceToken(userId);
     })();
-
-    isInternetConnected()
-      .then(() => { })
-      .catch(() => {
-        toast('Check your Internet');
-      });
   }, []);
 
   // const dispatch = useDispatch()
@@ -95,8 +89,18 @@ function Login(props) {
 
   const [userNameAvailable, setUserNameAvailable] = useState(true);
 
-  const [codePick, setCodePick] = useState(null);
   const [deviceToken, setDeviceToken] = useState('');
+
+  const [visible, setVisible] = useState(false);
+
+  const [countryCode, setCountryCode] = useState();
+  const [country, setCountry] = useState();
+
+  const onSelect = country => {
+    setCountryCode(country.cca2);
+    setCountry(country);
+    setLocation(country.name);
+  };
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
@@ -176,11 +180,9 @@ function Login(props) {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
       alert('Please enter your phone number');
-    }
-    // else if (location === "") {
-    //     alert("Please enter your location")
-    // }
-    else if (profilePic === '') {
+    } else if (location === '') {
+      alert('Please enter your location');
+    } else if (profilePic === '') {
       alert('Please upload your profile picture');
     } else {
       let profileImage = {
@@ -366,10 +368,11 @@ function Login(props) {
             tick_req={true}
             value={username}
             userNameAvailable={userNameAvailable}
-            tick_visible={username}
+            tick_visible={username ? true : false}
             autocorrect={false}
             onChangeText={text => {
-              setUsername(text), check(text);
+              setUsername(text);
+              check(text);
             }}
           />
 
@@ -383,7 +386,55 @@ function Login(props) {
               setFullname(text);
             }}
           />
-
+          <Text
+            style={{
+              fontSize: normalise(10),
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              textTransform: 'uppercase',
+            }}>
+            Location
+          </Text>
+          <CountryPicker
+            containerButtonStyle={{
+              backgroundColor: '#ffffff',
+              width: '100%',
+              height: normalise(44),
+              borderRadius: normalise(6),
+              borderWidth: normalise(0.5),
+              marginTop: normalise(10),
+              padding: normalise(5),
+              paddingTop: country ? normalise(6) : normalise(13),
+              paddingLeft: normalise(16),
+              marginBottom: normalise(16),
+            }}
+            placeholder={
+              <Text
+                style={{
+                  fontFamily: 'ProximaNova-Semibold',
+                  marginTop: normalise(15),
+                }}>
+                {location ?? 'Select country'}
+              </Text>
+            }
+            {...{
+              allowFontScaling: true,
+              countryCode: countryCode,
+              withFilter: true,
+              withFlag: true,
+              withCountryNameButton: true,
+              withEmoji: true,
+              withModal: true,
+              withFlagButton: true,
+              onSelect,
+              preferredCountries: ['GB', 'US'],
+              modalProps: {
+                visible,
+              },
+              onClose: () => setVisible(false),
+              onOpen: () => setVisible(true),
+            }}
+          />
           <TextInputField
             text={'PHONE NUMBER'}
             placeholder={'Enter Phone number'}
@@ -443,7 +494,7 @@ function Login(props) {
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -29,10 +29,10 @@ import {
 import { getProfileRequest, editProfileRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
-import Picker from '../../utils/helpers/Picker';
+import CountryPicker from 'react-native-country-picker-modal';
 let status = '';
 
-function EditProfile(props) {
+const EditProfile = props => {
   const [username, setUsername] = useState(props.userProfileResp.username);
   const [fullname, setFullname] = useState(props.userProfileResp.full_name);
   const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp.phone);
@@ -45,8 +45,16 @@ function EditProfile(props) {
   );
   const [imageDetails, setImageDetails] = useState('');
   const [userNameAvailable, setUserNameAvailable] = useState(true);
-  const [codePick, setCodePick] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
+
+  const [countryCode, setCountryCode] = useState();
+  const [country, setCountry] = useState();
+
+  const onSelect = country => {
+    setCountryCode(country.cca2);
+    setCountry(country);
+    setLocation(country.name);
+  };
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -154,8 +162,8 @@ function EditProfile(props) {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
       alert('Please enter your phone number');
-      // } else if (location === '') {
-      //   alert('Please enter your location');
+    } else if (location === '') {
+      alert('Please enter your location');
     } else if (profilePic === '') {
       alert('Please upload your profile picture');
     } else {
@@ -281,7 +289,6 @@ function EditProfile(props) {
               />
             )}
           </View>
-
           <TouchableOpacity
             style={{ marginTop: normalise(10) }}
             onPress={() => {
@@ -299,7 +306,6 @@ function EditProfile(props) {
               CHANGE PROFILE PIC
             </Text>
           </TouchableOpacity>
-
           <View
             style={{
               width: '90%',
@@ -313,12 +319,12 @@ function EditProfile(props) {
               tick_req={true}
               value={username}
               userNameAvailable={userNameAvailable}
-              tick_visible={username}
+              tick_visible={username ? true : false}
               onChangeText={text => {
-                setUsername(text), check(text);
+                setUsername(text);
+                check(text);
               }}
             />
-
             <TextInputField
               text={'FULL NAME'}
               placeholder={'Enter Name'}
@@ -332,7 +338,55 @@ function EditProfile(props) {
               }
               marginTop={normalise(20)}
             />
-
+            <Text
+              style={{
+                fontSize: normalise(10),
+                color: Colors.white,
+                fontFamily: 'ProximaNova-SemiBold',
+                textTransform: 'uppercase',
+              }}>
+              Location
+            </Text>
+            <CountryPicker
+              containerButtonStyle={{
+                backgroundColor: '#ffffff',
+                width: '100%',
+                height: normalise(44),
+                borderRadius: normalise(6),
+                borderWidth: normalise(0.5),
+                marginTop: normalise(10),
+                padding: normalise(5),
+                paddingTop: country ? normalise(6) : normalise(13),
+                paddingLeft: normalise(16),
+                marginBottom: normalise(16),
+              }}
+              placeholder={
+                <Text
+                  style={{
+                    fontFamily: 'ProximaNova-Semibold',
+                    marginTop: normalise(15),
+                  }}>
+                  {location ?? 'Select country'}
+                </Text>
+              }
+              {...{
+                allowFontScaling: true,
+                countryCode: countryCode,
+                withFilter: true,
+                withFlag: true,
+                withCountryNameButton: true,
+                withEmoji: true,
+                withModal: true,
+                withFlagButton: true,
+                onSelect,
+                preferredCountries: ['GB', 'US'],
+                modalProps: {
+                  visible,
+                },
+                onClose: () => setVisible(false),
+                onOpen: () => setVisible(true),
+              }}
+            />
             <TextInputField
               text={'PHONE NUMBER'}
               placeholder={'Enter Phone number'}
@@ -348,7 +402,7 @@ function EditProfile(props) {
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
