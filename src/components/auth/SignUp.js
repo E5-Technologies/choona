@@ -170,12 +170,10 @@ const Login = props => {
   const register = () => {
     if (username === '') {
       alert('Please enter your username');
-    }
-    if (username.includes(' ')) {
-      alert('Username cannot include spaces');
-    }
-    if (!userNameAvailable) {
+    } else if (!userNameAvailable) {
       alert('Please enter a valid username');
+    } else if (username.includes(' ')) {
+      alert('Username cannot include spaces');
     } else if (fullname === '') {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
