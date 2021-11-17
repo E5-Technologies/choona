@@ -7,6 +7,7 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Hyperlink from 'react-native-hyperlink';
+import Avatar from '../../Avatar';
 
 function CommentList(props) {
   const onPressImage = () => {
@@ -72,16 +73,10 @@ function CommentList(props) {
         onPress={() => {
           onPressImage();
         }}>
-        <Image
-          source={
-            props.image
-              ? props.image === ''
-                ? ImagePath.userPlaceholder
-                : { uri: props.image }
-              : ImagePath.userPlaceholder
-          }
-          style={styles.commentAvatar}
-          resizeMode="contain"
+        <Avatar
+          image={props.image !== '' ? props.image : null}
+          height={22}
+          width={22}
         />
       </TouchableOpacity>
       <View style={styles.commentInfoContainer}>

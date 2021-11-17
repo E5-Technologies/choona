@@ -40,6 +40,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
+import Avatar from '../Avatar';
 
 let status;
 let messageStatus;
@@ -164,22 +165,14 @@ function PlayerScreenSelectUser(props) {
             justifyContent: 'space-between',
           }}>
           <View style={{ flexDirection: 'row' }}>
-            <Image
-              source={
+            <Avatar
+              image={
                 data.item.profile_image
-                  ? {
-                    uri:
-                      constants.profile_picture_base_url +
-                      data.item.profile_image,
-                  }
-                  : ImagePath.userPlaceholder
+                  ? constants.profile_picture_base_url + data.item.profile_image
+                  : null
               }
-              style={{
-                height: 35,
-                width: 35,
-                borderRadius: 2 * normalise(13.5),
-              }}
-              resizeMode="contain"
+              height={28}
+              width={28}
             />
             <View style={{ marginStart: normalise(10) }}>
               <Text

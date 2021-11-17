@@ -30,6 +30,7 @@ import { getProfileRequest, editProfileRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
 import CountryPicker from 'react-native-country-picker-modal';
+import Avatar from '../Avatar';
 let status = '';
 
 const EditProfile = props => {
@@ -265,27 +266,7 @@ const EditProfile = props => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            {profilePic ? (
-              <Image
-                source={{ uri: profilePic }}
-                style={{
-                  height: normalise(120),
-                  width: normalise(120),
-                  borderRadius: normalise(60),
-                }}
-                resizeMode="contain"
-              />
-            ) : (
-              <Image
-                source={ImagePath.userPlaceholder}
-                style={{
-                  height: normalise(70),
-                  width: normalise(70),
-                  borderRadius: normalise(60),
-                }}
-                resizeMode="contain"
-              />
-            )}
+            <Avatar image={profilePic} height={120} width={120} />
           </View>
           <TouchableOpacity
             style={{ marginTop: normalise(10) }}

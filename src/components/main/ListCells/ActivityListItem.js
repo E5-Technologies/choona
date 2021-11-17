@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
+import Avatar from '../../Avatar';
 
 function ActivityListItem(props) {
   const [follow, setFollow] = useState(props.follow);
@@ -28,17 +29,16 @@ function ActivityListItem(props) {
           <TouchableOpacity
             onPress={() => {
               onPressImage();
-            }}>
-            <Image
-              source={
-                props.image
-                  ? props.image === 'https://api.choona.co/uploads/user/thumb/'
-                    ? ImagePath.userPlaceholder
-                    : { uri: props.image }
-                  : ImagePath.userPlaceholder
+            }}
+            style={{ marginRight: normaliseNew(8) }}>
+            <Avatar
+              image={
+                props.image !== 'https://api.choona.co/uploads/user/thumb/'
+                  ? props.image
+                  : null
               }
-              style={styles.detailsAvatar}
-              resizeMode="contain"
+              height={26}
+              width={26}
             />
           </TouchableOpacity>
           <TouchableOpacity

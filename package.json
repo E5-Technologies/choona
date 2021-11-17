@@ -10,7 +10,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "postinstall": "npx jetify && npx pod-install",
+    "postinstall": "npx jetify && arch -x86_64 npx pod-install",
     "clean": "react-native-clean-project",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest ios"
   },

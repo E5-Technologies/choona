@@ -4,6 +4,7 @@ import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import PropTypes from 'prop-types';
+import Avatar from '../../Avatar';
 
 function InboxListItem(props) {
   const onPress = () => {
@@ -37,18 +38,10 @@ function InboxListItem(props) {
           // backgroundColor: 'blue',
         }}>
         <View style={{ flexDirection: 'row' }}>
-          <Image
-            source={
-              props.image.endsWith('thumb/')
-                ? ImagePath.userPlaceholder
-                : { uri: props.image }
-            }
-            style={{
-              height: normalise(30),
-              width: normalise(30),
-              borderRadius: 2 * normalise(60),
-            }}
-            resizeMode="contain"
+          <Avatar
+            image={!props.image.endsWith('thumb/') ? props.image : null}
+            height={30}
+            width={30}
           />
           <View
             style={{

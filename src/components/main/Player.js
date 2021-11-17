@@ -57,6 +57,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { getUsersFromHome } from '../../action/UserAction';
 import MoreModal from '../Posts/MoreModal';
+import Avatar from '../Avatar';
 
 let status;
 let songStatus;
@@ -545,21 +546,14 @@ function Player(props) {
                         });
                       }
                     }}>
-                    <Image
-                      source={
+                    <Avatar
+                      image={
                         profilePic
-                          ? {
-                            uri:
-                              constants.profile_picture_base_url + profilePic,
-                          }
-                          : ImagePath.userPlaceholder
+                          ? constants.profile_picture_base_url + profilePic
+                          : null
                       }
-                      style={{
-                        height: normalise(24),
-                        width: normalise(24),
-                        borderRadius: normalise(24),
-                      }}
-                      resizeMode="contain"
+                      height={24}
+                      width={24}
                     />
                   </Pressable>
                   <View

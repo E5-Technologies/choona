@@ -5,26 +5,21 @@ import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
+import Avatar from '../Avatar';
 
 const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
   return (
     <View style={styles.profileHeaderContainer}>
       <View style={styles.avatarBackground}>
-        {profile.profile_image ? (
-          <Image
-            source={{
-              uri: constants.profile_picture_base_url + profile.profile_image,
-            }}
-            style={styles.profileAvatar}
-            resizeMode="contain"
-          />
-        ) : (
-          <Image
-            source={ImagePath.userPlaceholder}
-            style={styles.emptyAvatar}
-            resizeMode="contain"
-          />
-        )}
+        <Avatar
+          image={
+            profile.profile_image
+              ? constants.profile_picture_base_url + profile.profile_image
+              : null
+          }
+          height={64}
+          width={64}
+        />
       </View>
       <View style={styles.profileHeaderDetailsContainer}>
         <Text style={styles.profileHeaderDetailsName}>

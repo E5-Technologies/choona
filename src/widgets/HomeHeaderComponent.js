@@ -4,6 +4,7 @@ import normalise from '../utils/helpers/Dimens';
 import ImagePath from '../assests/ImagePath';
 import PropTypes from 'prop-types';
 
+import Avatar from '../components/Avatar';
 import HeaderStyles from '../styles/header';
 
 function HomeHeaderComponent(props) {
@@ -55,23 +56,7 @@ function HomeHeaderComponent(props) {
             onPress={() => {
               onPressFirstItem();
             }}>
-            <Image
-              source={
-                props && props.imageone
-                  ? { uri: props.imageone }
-                  : ImagePath.userPlaceholder
-              }
-              style={{
-                // height: props.imageoneheight,
-                // width: props.imageonewidth,
-                height: normalise(26),
-                width: normalise(26),
-                // borderRadius: props.borderRadius,
-                borderRadius: normalise(26),
-                // marginTop: normalise(-11),
-              }}
-              resizeMode="contain"
-            />
+            <Avatar image={props.imageone} height={22} width={22} />
           </TouchableOpacity>
         </View>
       )}

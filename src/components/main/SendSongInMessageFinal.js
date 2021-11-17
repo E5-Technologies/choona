@@ -26,6 +26,7 @@ import {
 } from '../../action/TypeConstants';
 import axios from 'axios';
 import ImagePath from '../../assests/ImagePath';
+import Avatar from '../Avatar';
 
 let status;
 
@@ -117,18 +118,14 @@ function SendSongInMessageFinal(props) {
         }}
         onPress={() => { }}>
         <View style={{ flexDirection: 'row' }}>
-          <Image
-            source={
+          <Avatar
+            image={
               data.item.profile_image
-                ? {
-                  uri:
-                    constants.profile_picture_base_url +
-                    data.item.profile_image,
-                }
-                : ImagePath.userPlaceholder
+                ? constants.profile_picture_base_url + data.item.profile_image
+                : null
             }
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-            resizeMode="contain"
+            height={28}
+            width={28}
           />
           <View style={{ marginStart: normalise(10) }}>
             <Text
