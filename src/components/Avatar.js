@@ -8,7 +8,7 @@ const Avatar = ({ image, height, width }) => {
   return (
     <View
       style={{
-        borderRadius: normalise(height),
+        borderRadius: normalise(height / 2),
         height: normalise(height),
         overflow: 'hidden',
         width: normalise(width),

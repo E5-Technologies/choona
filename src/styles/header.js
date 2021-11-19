@@ -4,11 +4,6 @@ import Colors from '../assests/Colors';
 import normalise from '../utils/helpers/Dimens';
 
 const HeaderStyles = StyleSheet.create({
-  backIcon: {
-    height: normalise(16),
-    marginTop: normalise(-8),
-    width: normalise(16),
-  },
   headerContainer: {
     alignItems: 'center',
     alignSelf: 'center',
@@ -23,7 +18,6 @@ const HeaderStyles = StyleSheet.create({
     position: 'relative',
     width: '100%',
   },
-
   headerContainerComments: {
     alignItems: 'center',
     alignSelf: 'center',
@@ -56,10 +50,6 @@ const HeaderStyles = StyleSheet.create({
   },
   leftItem: {
     left: normalise(16),
-    position: 'absolute',
-  },
-  leftItemInner: {
-    left: normalise(0),
     position: 'absolute',
   },
   logo: {
