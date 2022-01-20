@@ -33,6 +33,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		184EB12F27999DCB00713C92 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184EB12E27999DCB00713C92 /* File.swift */; };
+		184EB13027999DCB00713C92 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184EB12E27999DCB00713C92 /* File.swift */; };
 		1875149C2637BC5A0063B993 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		192E78D02511126700E9B916 /* AppleMusicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CE2511126600E9B916 /* AppleMusicManager.swift */; };
 		192E78D12511126700E9B916 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78CF2511126700E9B916 /* AuthorizationManager.swift */; };
@@ -93,6 +95,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Choona/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Choona/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Choona/main.m; sourceTree = "<group>"; };
+		184EB12E27999DCB00713C92 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		1880F307265678CD00B66F62 /* libPermission-MediaLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-MediaLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1880F309265678DC00B66F62 /* libPermission-Camera.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPermission-Camera.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		192E78CE2511126600E9B916 /* AppleMusicManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleMusicManager.swift; sourceTree = "<group>"; };
@@ -197,6 +200,7 @@
 				19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */,
 				19E8385224FF9E6E009D7A39 /* Choona-Bridging-Header.h */,
 				19E8385524FF9ED1009D7A39 /* AppleUserToken.m */,
+				184EB12E27999DCB00713C92 /* File.swift */,
 			);
 			name = Choona;
 			sourceTree = "<group>";
@@ -344,7 +348,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 6DGAY84NFN;
+						DevelopmentTeam = D7N9CPQ75A;
 						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 					};
@@ -491,8 +495,8 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Choona/Pods-Choona-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignal/OneSignal.framework/OneSignal",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignal.framework/OneSignal",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -533,8 +537,8 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Choona-ChoonaDev/Pods-Choona-ChoonaDev-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignal/OneSignal.framework/OneSignal",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignal.framework/OneSignal",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -631,6 +635,7 @@
 				0EE0D1DA2698464C00B5CFA4 /* SharedClass.swift in Sources */,
 				0EE0D1DB2698464C00B5CFA4 /* AppleMusicManager.swift in Sources */,
 				0EE0D1DC2698464C00B5CFA4 /* AppleUserToken.swift in Sources */,
+				184EB13027999DCB00713C92 /* File.swift in Sources */,
 				0EE0D1DD2698464C00B5CFA4 /* main.m in Sources */,
 				0EE0D1DE2698464C00B5CFA4 /* AuthorizationManager.swift in Sources */,
 			);
@@ -645,6 +650,7 @@
 				192E78D3251112E300E9B916 /* SharedClass.swift in Sources */,
 				192E78D02511126700E9B916 /* AppleMusicManager.swift in Sources */,
 				19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */,
+				184EB12F27999DCB00713C92 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				192E78D12511126700E9B916 /* AuthorizationManager.swift in Sources */,
 			);
@@ -733,8 +739,9 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 66;
-				DEVELOPMENT_TEAM = 6DGAY84NFN;
+				DEVELOPMENT_TEAM = D7N9CPQ75A;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
@@ -748,7 +755,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona;
+				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona1;
 				PRODUCT_NAME = Choona;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";
@@ -770,7 +777,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 66;
-				DEVELOPMENT_TEAM = 6DGAY84NFN;
+				DEVELOPMENT_TEAM = D7N9CPQ75A;
 				INFOPLIST_FILE = Choona/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -781,7 +788,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona;
+				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona1;
 				PRODUCT_NAME = Choona;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";

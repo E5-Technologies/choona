@@ -91,6 +91,8 @@ const ImagePath = {
   emptySaveSong: require('./images/emptySaveSong.png'),
   emptyPost: require('./images/emptyPost.png'),
   userPlaceholder: require('./images/userPlaceholder.png'),
+  newSplashIcon: require('./images/Group7.png'),
+
 };
 
 export default ImagePath;

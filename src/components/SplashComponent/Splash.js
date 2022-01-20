@@ -108,6 +108,20 @@ export default function Splash(props) {
           }}
           resizeMode="cover"
         />
+
+
+        <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center',position:'absolute' }}>
+          <Image
+            source={ImagePath ? ImagePath.newSplashIcon : null}
+            style={{
+              height: 51,
+              width: 237.53,
+            }}
+            resizeMode="cover"
+          />
+
+        </View>
+
       </View>
       {/* <Text
         style={{
