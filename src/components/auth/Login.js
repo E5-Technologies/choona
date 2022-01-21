@@ -76,7 +76,7 @@ function SignUp(props) {
         }
       })
       .catch(error => {
-        console.log(error);
+        console.log("error",error);
       });
   }
 

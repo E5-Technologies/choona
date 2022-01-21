@@ -92,6 +92,7 @@ const ImagePath = {
   emptyPost: require('./images/emptyPost.png'),
   userPlaceholder: require('./images/userPlaceholder.png'),
   newSplashIcon: require('./images/Group7.png'),
+  newHeaderLogo: require('./images/header_logo.png'),
 
 };
 

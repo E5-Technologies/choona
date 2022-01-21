@@ -58,6 +58,8 @@ export const getSpotifyToken = async () => {
   try {
     const value = await AsyncStorage.getItem(constants.SPOTIFY);
 
+    console.log("Value",value)
+
     let accessToken = JSON.parse(value).accessToken;
     let accessTokenExpirationDate = JSON.parse(value).accessTokenExpirationDate;
     let refreshToken = JSON.parse(value).refreshToken;

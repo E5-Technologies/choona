@@ -68,14 +68,14 @@ function HomeHeaderComponent(props) {
           }}>
           <Image
             style={HeaderStyles.logo}
-            source={ImagePath ? ImagePath.home_icon_choona : null}
+            source={ImagePath ? ImagePath.newHeaderLogo : null}
             resizeMode={'contain'}
           />
         </TouchableOpacity>
       ) : (
         <Image
           style={HeaderStyles.logo}
-          source={ImagePath ? ImagePath.home_icon_choona : null}
+          source={ImagePath ? ImagePath.newHeaderLogo : null}
           resizeMode={'contain'}
         />
       )}
