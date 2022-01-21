@@ -909,7 +909,7 @@ function Contact(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />

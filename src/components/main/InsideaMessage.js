@@ -787,7 +787,7 @@ function InsideaMessage(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
 
       <StatusBar backgroundColor={Colors.darkerblack} />

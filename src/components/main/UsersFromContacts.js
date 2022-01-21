@@ -142,7 +142,7 @@ function UsersFromContacts(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_USERS_FROM_CONTACTS_REQUEST} />

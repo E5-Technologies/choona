@@ -70,6 +70,7 @@ export const getSpotifyToken = async () => {
     } else {
       const result = await refresh(config, { refreshToken: refreshToken });
 
+
       await AsyncStorage.setItem(
         constants.SPOTIFY,
         JSON.stringify({

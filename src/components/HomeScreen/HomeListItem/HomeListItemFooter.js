@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   listItemFooterContainer: {
     marginTop: normalise(10),
     paddingHorizontal: normalise(12),
+    backgroundColor:Colors.darkerblack
   },
   listItemFooterTop: {
     alignItems: 'center',

@@ -1250,7 +1250,7 @@ function Search(props) {
 
   //VIEW
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
@@ -1277,7 +1277,7 @@ function Search(props) {
           />
           <View
             style={{
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.darkerblack,
               flexDirection: 'row',
               justifyContent: 'space-between',
               height: normalise(40),
@@ -1401,16 +1401,15 @@ function Search(props) {
                   borderRadius: normalise(8),
                   marginTop: normalise(16),
                   padding: normalise(10),
-                  // color: Colors.white,
-
-                  backgroundColor: Colors.white,
+                  color: Colors.white,
+                  backgroundColor: Colors.newInputTextBg,
                   paddingLeft: normalise(30),
                 }}
                 keyboardAppearance="dark"
                 autoCorrect={false}
                 value={usersSearch ? usersSearchText : songSearchText}
                 placeholder={usersSearch ? 'Search Users' : 'Search Songs'}
-                placeholderTextColor={Colors.darkgrey}
+                placeholderTextColor={Colors.newPlaceholderColor}
                 onChangeText={text => {
                   search(text);
                   usersSearch
@@ -1445,7 +1444,7 @@ function Search(props) {
                     paddingTop: 4,
                     paddingBottom: 4,
                     borderRadius: 5,
-                    backgroundColor: Colors.fordGray,
+                    backgroundColor: Colors.darkerblack,
                     position: 'absolute',
                     right: 0,
                     bottom:

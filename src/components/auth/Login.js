@@ -57,10 +57,12 @@ function SignUp(props) {
   // }, []);
 
   function spotifyLogin() {
-    console.log(1);
     loginWithSpotify()
       .then(value => {
-        console.log(2, !_.isEmpty(value));
+
+        console.log( "VAlue",value)
+
+        // console.log(2, !_.isEmpty(value));
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 

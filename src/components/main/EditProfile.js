@@ -241,7 +241,7 @@ function EditProfile(props) {
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -263,7 +263,7 @@ function EditProfile(props) {
               height: normalise(120),
               width: normalise(120),
               borderRadius: normalise(60),
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.darkerblack,
               alignSelf: 'center',
               marginTop: normalise(40),
               justifyContent: 'center',

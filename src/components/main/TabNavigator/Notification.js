@@ -369,7 +369,7 @@ function Notification(props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.black },
+  container: { flex: 1, backgroundColor: Colors.darkerblack },
   emptyWrapper: { flex: 1, alignItems: 'center' },
   emptyContainer: {
     flex: 1,

@@ -211,7 +211,7 @@ function AddAnotherSong(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
@@ -241,7 +241,7 @@ function AddAnotherSong(props) {
                 height: normalise(35),
 
                 width: '100%',
-                backgroundColor: Colors.fadeblack,
+                backgroundColor: Colors.newInputTextBg,
                 borderRadius: normalise(8),
                 marginTop: normalise(20),
                 padding: normalise(10),
@@ -251,7 +251,7 @@ function AddAnotherSong(props) {
               value={search}
               keyboardAppearance={'dark'}
               placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
+              placeholderTextColor={Colors.newPlaceholderColor}
               onChangeText={text => {
                 setSearch(text);
                 if (text.length >= 1) {

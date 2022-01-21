@@ -171,7 +171,7 @@ function AddSong(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar />
 
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
@@ -198,8 +198,8 @@ function AddSong(props) {
               style={{
                 height: normalise(35),
                 width: '100%',
-                // backgroundColor: Colors.fadeblack,
-                backgroundColor: Colors.white,
+                color: Colors.white,
+                backgroundColor: Colors.newInputTextBg,
                 borderRadius: normalise(8),
                 marginTop: normalise(16),
                 padding: normalise(10),
@@ -211,7 +211,7 @@ function AddSong(props) {
               ref={inputRef}
               returnKeyType={'done'}
               keyboardAppearance={'dark'}
-              placeholderTextColor={Colors.darkgrey}
+              placeholderTextColor={Colors.newPlaceholderColor}
               onSubmitEditing={() => {
                 inputRef.current.blur();
                 Keyboard.dismiss();
@@ -247,7 +247,7 @@ function AddSong(props) {
                   setSearch(''), setData([]);
                 }}
                 style={{
-                  backgroundColor: Colors.fordGray,
+                  backgroundColor: Colors.darkerblack,
                   padding: 8,
                   paddingTop: 4,
                   paddingBottom: 4,

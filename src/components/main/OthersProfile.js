@@ -244,5 +244,5 @@ const mapDispatchToProps = dispatch => {
 export default connect(mapStateToProps, mapDispatchToProps)(OthersProfile);
 
 const styles = StyleSheet.create({
-  othersProfileContainer: { flex: 1, backgroundColor: Colors.black },
+  othersProfileContainer: { flex: 1, backgroundColor: Colors.darkerblack },
 });

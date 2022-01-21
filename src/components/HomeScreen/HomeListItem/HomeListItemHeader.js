@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: normalise(12),
     paddingVertical: normalise(12),
+    backgroundColor:Colors.darkerblack
   },
   listItemHeaderSongDetails: {
     alignItems: 'center',

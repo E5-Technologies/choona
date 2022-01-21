@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios --scheme \"ChoonaDev\" --configuration Debug",
     "ios:prod": "react-native run-ios --scheme \"Choona\" --configuration Debug",
+    
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",

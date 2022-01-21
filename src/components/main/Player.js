@@ -1543,7 +1543,7 @@ function Player(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <StatusBar />
 

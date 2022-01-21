@@ -1256,7 +1256,7 @@ function Home(props) {
     <View
       style={{
         flex: 1,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.darkerblack,
       }}>
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
 
