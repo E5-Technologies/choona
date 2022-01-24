@@ -955,9 +955,9 @@ const Home = props => {
     <View
       style={{
         flex: 1,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.newDarkBlack,
       }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
         <Timer
           onFinish={() => {

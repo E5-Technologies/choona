@@ -164,10 +164,10 @@ const Followers = props => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
       <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
       <Loader visible={bool} />
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();

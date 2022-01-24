@@ -228,11 +228,11 @@ function AddSong(props) {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
       <Loader visible={props.status === CREATE_POST_REQUEST} />
       <Loader visible={bool} />
 
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
 
       {/* <TouchableWithoutFeedback
         onPress={() => {
@@ -348,7 +348,7 @@ function AddSong(props) {
               style={{
                 flexDirection: 'row',
                 marginTop: normalise(5),
-                backgroundColor: Colors.darkerblack,
+                backgroundColor: Colors.newDarkBlack,
                 height: normalise(65),
                 width: '100%',
                 borderRadius: normalise(6),

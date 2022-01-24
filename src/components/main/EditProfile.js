@@ -232,13 +232,13 @@ const EditProfile = props => {
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
+      style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}
       behavior="height">
       <StatusBar />
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}

@@ -451,8 +451,8 @@ function GenreSongClicked(props) {
       </SafeAreaView>
     </View>
   ) : (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
 
       <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />
       <Loader visible={bool} />

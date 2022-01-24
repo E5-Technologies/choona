@@ -303,14 +303,14 @@ function HomeItemReaction(props) {
   console.log(props);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
       <Loader visible={reactionsLoading} />
       <StatusBar />
       {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
         }}> */}
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
         <HeaderComponentComments
           firstitemtext={false}
           imageone={ImagePath.backicon}

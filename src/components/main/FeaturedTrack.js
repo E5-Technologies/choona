@@ -273,8 +273,8 @@ function FeaturedTrack(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       <Loader visible={props.status === FEATURED_SONG_SEARCH_REQUEST} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
@@ -299,7 +299,7 @@ function FeaturedTrack(props) {
             style={{
               height: normalise(35),
               width: '100%',
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.darkgrey,
               borderRadius: normalise(8),
               marginTop: normalise(16),
               padding: normalise(10),
@@ -334,7 +334,7 @@ function FeaturedTrack(props) {
                 setSearch(''), setData([]);
               }}
               style={{
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.newDarkBlack,
                 padding: 6,
                 paddingTop: 4,
                 paddingBottom: 4,

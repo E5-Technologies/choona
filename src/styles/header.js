@@ -7,7 +7,7 @@ const HeaderStyles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: Colors.darkerblack,
+    backgroundColor: Colors.newDarkBlack,
     borderBottomColor: Colors.fadeblack,
     borderBottomWidth: normalise(1),
     flexDirection: 'row',
@@ -21,7 +21,7 @@ const HeaderStyles = StyleSheet.create({
   headerContainerComments: {
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: Colors.darkerblack,
+    backgroundColor: Colors.newDarkBlack,
     borderBottomColor: Colors.fadeblack,
     borderBottomWidth: normalise(1),
     flexDirection: 'row',
@@ -50,6 +50,8 @@ const HeaderStyles = StyleSheet.create({
   },
   leftItem: {
     left: normalise(16),
+    width: 24,
+    height: 24,
     position: 'absolute',
   },
   logo: {
@@ -81,6 +83,11 @@ const HeaderStyles = StyleSheet.create({
     top: 0,
     right: -5,
   },
+  backIcon: {
+    height: normalise(15),
+    width: normalise(15),
+    resizeMode: "contain"
+  }
 });
 
 export default HeaderStyles;

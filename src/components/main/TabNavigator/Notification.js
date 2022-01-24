@@ -351,7 +351,7 @@ const Notification = props => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.black },
+  container: { flex: 1, backgroundColor: Colors.newDarkBlack },
   emptyWrapper: { flex: 1, alignItems: 'center' },
   emptyContainer: {
     flex: 1,
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: normaliseNew(40),
     alignItems: 'center',
-    backgroundColor: Colors.darkerblack,
+    backgroundColor: Colors.newDarkBlack,
   },
   activityHeaderText: {
     color: Colors.white,

@@ -342,7 +342,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 6DGAY84NFN;
+						DevelopmentTeam = D7N9CPQ75A;
 						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 					};
@@ -748,7 +748,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 105;
-				DEVELOPMENT_TEAM = 6DGAY84NFN;
+				DEVELOPMENT_TEAM = D7N9CPQ75A;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -767,7 +767,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona;
+				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona1;
 				PRODUCT_NAME = Choona;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";
@@ -789,7 +789,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 105;
-				DEVELOPMENT_TEAM = 6DGAY84NFN;
+				DEVELOPMENT_TEAM = D7N9CPQ75A;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Choona/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -805,7 +805,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona;
+				PRODUCT_BUNDLE_IDENTIFIER = com.choonaco.choona1;
 				PRODUCT_NAME = Choona;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Choona-Bridging-Header.h";

@@ -251,8 +251,8 @@ const Contact = props => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
       <Loader visible={bool} />
       <SafeAreaView style={{ flex: 1 }}>

@@ -149,12 +149,12 @@ function UserPostSongList(props) {
 
   return (
     <Fragment>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
 
       <View
         style={{
           flexDirection: 'row',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.newDarkBlack,
           paddingTop: normalise(10),
         }}>
         <TouchableOpacity

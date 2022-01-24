@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: normaliseNew(40),
     alignItems: 'center',
-    backgroundColor: Colors.darkerblack,
+    backgroundColor: Colors.newDarkBlack,
     justifyContent: 'space-between',
   },
   text: {

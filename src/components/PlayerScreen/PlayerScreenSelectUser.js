@@ -217,8 +217,8 @@ function PlayerScreenSelectUser(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -240,19 +240,19 @@ function PlayerScreenSelectUser(props) {
             height: normalise(35),
             marginTop: normalise(20),
             borderRadius: normalise(8),
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.newDarkBlack,
           }}>
           <TextInput
             style={{
               height: normalise(35),
               width: '85%',
               padding: normalise(10),
-              // color: Colors.white,
+              color: Colors.white,
               paddingLeft: normalise(30),
             }}
             value={userSearch}
             placeholder={'Select User to Message'}
-            placeholderTextColor={Colors.grey_text}
+            placeholderTextColor={Colors.darkgrey}
             onChangeText={text => {
               setUserSearch(text);
               searchUser(text);
@@ -274,7 +274,7 @@ function PlayerScreenSelectUser(props) {
                 setUserSearch('');
               }}
               style={{
-                backgroundColor: Colors.fordGray,
+                backgroundColor: Colors.newDarkBlack,
                 padding: 8,
                 paddingTop: 4,
                 paddingBottom: 4,

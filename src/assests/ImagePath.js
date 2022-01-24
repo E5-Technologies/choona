@@ -63,7 +63,7 @@ const ImagePath = {
   more_copy: require('./images/more_copy.png'),
   more_copy_web: require('./images/moreCopyWeb.png'),
   more_unfollow: require('./images/more_unfollow.png'),
-  home_icon_choona: require('./images/home_icon_choona.png'),
+  home_icon_choona: require('./images/header_logo.png'),
   gradient_border_horizontal: require('./images/gradient_border_horizontal.png'),
   music_icon: require('./images/music_icon.png'),
   headerShadow: require('./images/headerShadow.png'),
@@ -96,6 +96,8 @@ const ImagePath = {
   userPlaceholder: require('./images/userPlaceholder.png'),
   chevron: require('./images/chevron.png'),
   sendIcon: require('./images/send-icon.png'),
+ 
+  
 };
 
 export default ImagePath;

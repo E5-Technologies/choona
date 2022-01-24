@@ -597,8 +597,8 @@ function PostListForUser(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       <Loader visible={bool} />
       <HeaderComponent
         firstitemtext={false}

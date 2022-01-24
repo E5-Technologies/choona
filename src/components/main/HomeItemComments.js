@@ -682,10 +682,10 @@ function HomeItemComments(props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.darkerblack },
+  container: { flex: 1, backgroundColor: Colors.newDarkBlack },
   safeContainer: { flex: 1 },
   commentHeader: {
-    backgroundColor: Colors.darkerblack,
+    backgroundColor: Colors.newDarkBlack,
     paddingLeft: normaliseNew(16),
     paddingRight: normaliseNew(16),
     paddingTop: normaliseNew(12),

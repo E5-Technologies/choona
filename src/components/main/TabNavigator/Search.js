@@ -723,8 +723,8 @@ const Search = props => {
 
   //VIEW
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
 
@@ -749,7 +749,7 @@ const Search = props => {
           />
           <View
             style={{
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.newDarkBlack,
               flexDirection: 'row',
               justifyContent: 'space-between',
               height: normalise(40),
@@ -876,9 +876,9 @@ const Search = props => {
                   borderRadius: normalise(8),
                   marginTop: normalise(16),
                   padding: normalise(10),
-                  // color: Colors.white,
+                  color: Colors.white,
                   marginHorizontal: normalise(12),
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.newInputBg,
                   paddingLeft: normalise(30),
                 }}
                 keyboardAppearance="dark"
@@ -921,7 +921,7 @@ const Search = props => {
                     paddingTop: 4,
                     paddingBottom: 4,
                     borderRadius: 5,
-                    backgroundColor: Colors.fordGray,
+                    backgroundColor: Colors.newDarkBlack,
                     position: 'absolute',
                     right: 12,
                     bottom:

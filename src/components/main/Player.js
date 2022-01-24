@@ -510,7 +510,7 @@ function Player(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <StatusBar />
 
@@ -606,10 +606,34 @@ function Player(props) {
               <View
                 style={{
                   height: normalise(40),
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.newDarkBlack,
                   justifyContent: 'center',
                   flexDirection: 'row',
                 }}>
+
+
+                {changePlayer ? null : (
+                  <TouchableOpacity
+                    style={{
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      marginLeft: normalise(16),
+                    }}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}>
+                    <Image
+                      source={ImagePath.threedots}
+                      style={{
+                        transform: [{ rotate: '90deg' }],
+                        width: normalise(14),
+                      }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                )}
+
+
                 <TouchableOpacity
                   style={{
                     height: normalise(25),
@@ -751,31 +775,8 @@ function Player(props) {
                     flexDirection: 'row',
                     //  borderWidth:1,
                     justifyContent: 'space-between',
-                    flex: 0.8,
+                    flex: 1,
                   }}>
-                  <TouchableOpacity
-                    style={{
-                      height: normalise(40),
-                      // width: normalise(42),
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      // backgroundColor: Colors.fadeblack,
-                      borderRadius: normalise(5),
-                    }}
-                    onPress={() => {
-                      props.navigation.navigate('HomeItemReactions', {
-                        reactions: reactions,
-                        post_id: id,
-                        onSelectReaction: (ID, reaction) =>
-                          _onReaction(ID, reaction),
-                      });
-                    }}>
-                    <Image
-                      source={ImagePath.reactionShow}
-                      style={{ height: normalise(20), width: normalise(20) }}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
 
                   <TouchableOpacity
                     style={{
@@ -843,6 +844,8 @@ function Player(props) {
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
+
+
                   {registerType === 'spotify' ? (
                     props.route.params.showPlaylist === false ? null : (
                       <TouchableOpacity
@@ -890,6 +893,35 @@ function Player(props) {
                     <></>
                   )}
 
+
+                  <TouchableOpacity
+                    style={{
+                      height: normalise(40),
+                      // width: normalise(42),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      // backgroundColor: Colors.fadeblack,
+                      borderRadius: normalise(5),
+                    }}
+                    onPress={() => {
+                      props.navigation.navigate('HomeItemReactions', {
+                        reactions: reactions,
+                        post_id: id,
+                        onSelectReaction: (ID, reaction) =>
+                          _onReaction(ID, reaction),
+                      });
+                    }}>
+                    <Image
+                      source={ImagePath.reactionShow}
+                      style={{ height: normalise(20), width: normalise(20) }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+
+
+
+      
+              
                   <TouchableOpacity
                     style={{
                       flexDirection: 'row',
@@ -928,26 +960,7 @@ function Player(props) {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                {changePlayer ? null : (
-                  <TouchableOpacity
-                    style={{
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      marginLeft: normalise(16),
-                    }}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                    }}>
-                    <Image
-                      source={ImagePath.threedots}
-                      style={{
-                        transform: [{ rotate: '90deg' }],
-                        width: normalise(14),
-                      }}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
-                )}
+
 
                 {comingFromMessage ? (
                   <TouchableOpacity
@@ -1228,6 +1241,7 @@ function Player(props) {
               </TouchableOpacity>
             </View>
             {/* {RbSheet()} */}
+
             {modalVisible && (
               <MoreModal
                 setBool={setBool}
@@ -1257,6 +1271,8 @@ function Player(props) {
                 setShow={setModalVisible}
               />
             )}
+
+
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>

@@ -192,8 +192,8 @@ function AddSongsInMessage(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent

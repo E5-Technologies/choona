@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.darkerblack },
   safeContainer: { flex: 1 },
   commentHeader: {
-    backgroundColor: Colors.darkerblack,
+    backgroundColor: Colors.newDarkBlack,
     paddingLeft: normaliseNew(16),
     paddingRight: normaliseNew(16),
     paddingTop: normaliseNew(12),

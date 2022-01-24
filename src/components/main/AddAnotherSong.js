@@ -244,8 +244,8 @@ function AddAnotherSong(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+    <View style={{ flex: 1, backgroundColor: Colors.newDarkBlack }}>
+      <StatusBar backgroundColor={Colors.newDarkBlack} />
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
@@ -266,7 +266,7 @@ function AddAnotherSong(props) {
             style={{
               height: normalise(35),
               width: '100%',
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.newInputBg,
               borderRadius: normalise(8),
               marginTop: normalise(20),
               padding: normalise(10),
@@ -306,7 +306,7 @@ function AddAnotherSong(props) {
                 setSearch(''), setResult([]);
               }}
               style={{
-                backgroundColor: Colors.darkerblack,
+                backgroundColor: Colors.newDarkBlack,
                 padding: 6,
                 paddingTop: 4,
                 paddingBottom: 4,
