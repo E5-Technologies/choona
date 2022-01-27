@@ -458,14 +458,14 @@ const Home = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-          ? 'B'
-          : reaction === react[2]
-            ? 'C'
-            : reaction === react[3]
-              ? 'D'
-              : reaction === react[4]
-                ? 'E'
-                : 'F';
+        ? 'B'
+        : reaction === react[2]
+        ? 'C'
+        : reaction === react[3]
+        ? 'D'
+        : reaction === react[4]
+        ? 'E'
+        : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -551,7 +551,7 @@ const Home = props => {
           props.saveSongRefReq(saveSongResObj);
           props.dummyRequest();
         })
-        .catch(err => { });
+        .catch(err => {});
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === data.item.song_uri) {
@@ -603,7 +603,7 @@ const Home = props => {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => { });
+            .catch(err => {});
         }
       } else {
         MusicPlayer(data.item.song_uri, true)
@@ -634,7 +634,7 @@ const Home = props => {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => { });
+          .catch(err => {});
       }
     }
   };
@@ -664,8 +664,8 @@ const Home = props => {
             _.isEmpty(postArray)
               ? false
               : posts.length === postArray.length
-                ? postArray[data.index].playing
-                : false
+              ? postArray[data.index].playing
+              : false
           }
           picture={data.item.userDetails.profile_image}
           name={data.item.userDetails.username}
@@ -747,9 +747,10 @@ const Home = props => {
             }
           }}
           marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
-        // playingSongRef={props.playingSongRef}
+          // playingSongRef={props.playingSongRef}
         />
-        {data.index % 4 === 0 && data.index !== 0 && (
+        {(data.index === 1 ||
+          (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
           <View
             style={{
               marginVertical: normalise(24),
@@ -924,7 +925,7 @@ const Home = props => {
                     console.log(err);
                   });
               })
-              .catch(() => { });
+              .catch(() => {});
             setBool(false);
           }
         } else {
@@ -974,9 +975,9 @@ const Home = props => {
             _.isEmpty(props.userProfileResp)
               ? ''
               : props.userProfileResp.profile_image
-                ? constants.profile_picture_base_url +
+              ? constants.profile_picture_base_url +
                 props.userProfileResp.profile_image
-                : null
+              : null
           }
           staticFirstImage={false}
           imageoneheight={normalise(26)}
