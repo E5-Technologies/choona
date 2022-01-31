@@ -50,6 +50,7 @@
     "react-native-linear-gradient": "^2.5.6",
     "react-native-onesignal": "^4.3.1",
     "react-native-permissions": "^3.1.0",
+    "react-native-radial-gradient": "^1.0.9",
     "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",

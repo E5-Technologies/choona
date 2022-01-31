@@ -174,6 +174,7 @@ const AddSong = props => {
           title={'ADD SONG'}
           thirditemtext={true}
           texttwo={''}
+          hideBorderBottom={true}
         />
         <View
           style={{
@@ -185,15 +186,16 @@ const AddSong = props => {
               height: normalise(35),
               width: '100%',
               // backgroundColor: Colors.fadeblack,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(8),
               marginTop: normalise(16),
               padding: normalise(10),
+              color: Colors.white,
               // fontSize:normalise(15),
               paddingLeft: normalise(30),
             }}
             value={search}
-            placeholder={'Search a new song'}
+            placeholder={'Search Spotify for a Song'}
             ref={inputRef}
             returnKeyType={'done'}
             keyboardAppearance={'dark'}
@@ -224,18 +226,19 @@ const AddSong = props => {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />
-          {search === '' ? null : (
+          {search === '' || search === null ? null : (
             <TouchableOpacity
               onPress={() => {
                 setSearch('');
                 setData([]);
               }}
               style={{
-                backgroundColor: Colors.fordGray,
-                padding: 8,
+                backgroundColor: Colors.darkerblack,
+                padding: 10,
                 paddingTop: 4,
                 paddingBottom: 4,
                 position: 'absolute',
@@ -346,7 +349,7 @@ const AddSong = props => {
 };
 
 const styles = StyleSheet.create({
-  containerView: { flex: 1, backgroundColor: Colors.black },
+  containerView: { flex: 1, backgroundColor: Colors.darkerblack },
   safeAreaContainer: { flex: 1 },
 });
 

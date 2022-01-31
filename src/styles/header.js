@@ -44,9 +44,9 @@ const HeaderStyles = StyleSheet.create({
   },
   headerText: {
     color: Colors.white,
-    fontFamily: 'ProximaNova-Bold',
+    fontFamily: 'Kallisto',
     fontSize: normalise(15),
-    textTransform: 'capitalize',
+    // textTransform: 'capitalize',
   },
   leftItem: {
     left: normalise(16),
@@ -58,7 +58,7 @@ const HeaderStyles = StyleSheet.create({
   messageAvatars: {
     flexDirection: 'row',
     left: normalise(26),
-    marginTop: normalise(-12),
+    // marginTop: normalise(-12),
   },
   messageText: {
     color: Colors.white,

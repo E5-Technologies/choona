@@ -435,7 +435,7 @@ const Search = props => {
     return (
       <TouchableOpacity
         style={{
-          margin: normalise(4),
+        //   margin: normalise(4),
         }}
         onPress={() => {
           props.navigation.navigate('GenreSongClicked', {
@@ -448,8 +448,8 @@ const Search = props => {
             uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
           }}
           style={{
-            width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').width / 2.1),
+            width: Math.floor(Dimensions.get('window').width / 2),
+            height: Math.floor(Dimensions.get('window').width / 2),
           }}
           resizeMode="cover"
         />
@@ -723,7 +723,7 @@ const Search = props => {
 
   //VIEW
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
@@ -746,13 +746,16 @@ const Search = props => {
             title={'EXPLORE'}
             thirditemtext={true}
             texttwo={''}
+            hideBorderBottom={true}
           />
           <View
             style={{
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.darkerblack,
               flexDirection: 'row',
               justifyContent: 'space-between',
               height: normalise(40),
+              borderBottomColor: Colors.fadeblack,
+              borderBottomWidth: 1,
             }}>
             <TouchableOpacity
               style={{
@@ -772,8 +775,8 @@ const Search = props => {
               <Text
                 style={{
                   color: genreSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
+                  fontFamily: 'Kallisto',
+                  fontSize: normalise(10),
                   textTransform: 'uppercase',
                 }}>
                 Top Songs
@@ -806,8 +809,8 @@ const Search = props => {
               <Text
                 style={{
                   color: usersSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
+                  fontFamily: 'Kallisto',
+                  fontSize: normalise(10),
                   textTransform: 'uppercase',
                 }}>
                 Users
@@ -842,8 +845,8 @@ const Search = props => {
               <Text
                 style={{
                   color: songSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
+                  fontFamily: 'Kallisto',
+                  fontSize: normalise(10),
                   textTransform: 'uppercase',
                 }}>
                 Songs
@@ -867,6 +870,8 @@ const Search = props => {
               style={{
                 width: '100%',
                 alignSelf: 'center',
+                marginTop: normalise(16),
+                marginBottom: normalise(16),
               }}>
               <TextInput
                 style={{
@@ -874,12 +879,11 @@ const Search = props => {
                   // width: '92%',
                   // backgroundColor: Colors.fadeblack,
                   borderRadius: normalise(8),
-                  marginTop: normalise(16),
                   padding: normalise(10),
-                  // color: Colors.white,
+                  color: Colors.white,
                   marginHorizontal: normalise(12),
-                  backgroundColor: Colors.white,
-                  paddingLeft: normalise(30),
+                  backgroundColor: Colors.fadeblack,
+                  paddingLeft: normalise(35),
                 }}
                 keyboardAppearance="dark"
                 autoCorrect={false}
@@ -896,11 +900,13 @@ const Search = props => {
               <Image
                 source={ImagePath.searchicongrey}
                 style={{
+                  position: 'absolute',
                   height: normalise(15),
                   width: normalise(15),
-                  bottom: normalise(25),
-                  paddingLeft: normalise(30),
+                  bottom: normalise(10),
+                  paddingLeft: normalise(35),
                   marginHorizontal: normalise(12),
+                  transform: [{ scaleX: -1 }],
                 }}
                 resizeMode="contain"
               />
@@ -917,15 +923,15 @@ const Search = props => {
                   }}
                   style={{
                     // backgroundColor: Colors.black,
-                    padding: 6,
+                    padding: 10,
                     paddingTop: 4,
                     paddingBottom: 4,
                     borderRadius: 5,
-                    backgroundColor: Colors.fordGray,
+                    backgroundColor: Colors.darkerblack,
                     position: 'absolute',
                     right: 12,
                     bottom:
-                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                      Platform.OS === 'ios' ? normalise(8) : normalise(8),
                     marginRight: normalise(10),
                   }}>
                   <Text
@@ -960,7 +966,7 @@ const Search = props => {
               )
             ) : (
               <View>
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     marginHorizontal: normalise(12),
@@ -977,7 +983,7 @@ const Search = props => {
                     {' '}
                     RESULTS ({songData.length})
                   </Text>
-                </View>
+                </View> */}
                 <FlatList
                   style={{
                     height: Dimensions.get('window').height - 295,
@@ -1005,7 +1011,7 @@ const Search = props => {
               )
             ) : (
               <View>
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     marginHorizontal: normalise(12),
@@ -1022,7 +1028,7 @@ const Search = props => {
                     {' '}
                     RESULTS ({searchPostData.length})
                   </Text>
-                </View>
+                </View> */}
 
                 <FlatList
                   style={{ height: '70%' }}

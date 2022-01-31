@@ -192,14 +192,14 @@ function AddSongsInMessage(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={'SELECT SONG TO SEND'}
+          title={'CHOOSE SONG TO SEND'}
           thirditemtext={true}
           imagetwo={ImagePath.newmessage}
           imagetwoheight={25}
@@ -207,6 +207,7 @@ function AddSongsInMessage(props) {
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}
+          hideBorderBottom={true}
         />
         {/* Search Bar */}
         <View style={{ paddingHorizontal: normalise(12) }}>
@@ -215,11 +216,12 @@ function AddSongsInMessage(props) {
             style={{
               height: normalise(35),
               width: '100%',
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(8),
               marginTop: normalise(20),
               padding: normalise(10),
               paddingLeft: normalise(30),
+              color: Colors.white,
             }}
             value={search}
             keyboardAppearance={'dark'}
@@ -245,6 +247,7 @@ function AddSongsInMessage(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />
@@ -254,7 +257,7 @@ function AddSongsInMessage(props) {
                 setSearch(''), setResult([]);
               }}
               style={{
-                backgroundColor: Colors.fordGray,
+                backgroundColor: Colors.darkerblack,
                 padding: 6,
                 paddingTop: 4,
                 paddingBottom: 4,

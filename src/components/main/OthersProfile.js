@@ -132,11 +132,11 @@ const OthersProfile = props => {
           });
         }}
         style={{
-          margin: normalise(4),
+          margin: 0,
           marginBottom:
             data.index === profilePosts.length - 1
               ? normalise(30)
-              : normalise(4),
+              : normalise(0),
         }}>
         <Image
           source={{
@@ -149,8 +149,8 @@ const OthersProfile = props => {
                 ),
           }}
           style={{
-            width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').width / 2.1),
+            width: Math.floor(Dimensions.get('window').width / 2),
+            height: Math.floor(Dimensions.get('window').width / 2),
           }}
           resizeMode="cover"
         />
@@ -172,6 +172,7 @@ const OthersProfile = props => {
             setTotalCount(0);
             props.navigation.goBack();
           }}
+          hideBorderBottom={true}
         />
         <ProfileHeader
           navigation={props.navigation}
@@ -251,5 +252,5 @@ const mapDispatchToProps = dispatch => {
 export default connect(mapStateToProps, mapDispatchToProps)(OthersProfile);
 
 const styles = StyleSheet.create({
-  othersProfileContainer: { flex: 1, backgroundColor: Colors.black },
+  othersProfileContainer: { flex: 1, backgroundColor: Colors.darkerblack },
 });

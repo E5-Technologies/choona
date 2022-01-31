@@ -164,7 +164,7 @@ const Followers = props => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
       <Loader visible={bool} />
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -176,7 +176,7 @@ const Followers = props => {
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={`FOLLOWERS (${props.followerData.length})`}
+          title={`${props.followerData.length} FOLLOWERS`}
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
@@ -193,10 +193,10 @@ const Followers = props => {
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(6),
               padding: normalise(10),
-              color: Colors.black,
+              color: Colors.white,
               paddingLeft: normalise(30),
             }}
             value={search}
@@ -213,6 +213,7 @@ const Followers = props => {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />

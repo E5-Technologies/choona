@@ -985,7 +985,7 @@ const Home = props => {
           borderRadius={normalise(30)}
           title={'CHOONA'}
           thirditemtext={false}
-          imagetwo={ImagePath.inbox}
+          imagetwo={ImagePath.boxicon}
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
@@ -1002,7 +1002,7 @@ const Home = props => {
             props.navigation.navigate('Profile', { fromAct: false });
           }}
           onPressThirdItem={() => {
-            props.navigation.navigate('Inbox');
+            props.navigation.navigate('Contact');
             //  props.navigation.navigate('BlankScreen');
           }}
         />
@@ -1265,7 +1265,12 @@ const Home = props => {
                     paddingVertical: '2.7%',
                     paddingHorizontal: '4.3%',
                   }}>
-                  <Text style={{ color: 'white', fontSize: normalise(10) }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: normalise(10),
+                      fontFamily: 'Kallisto',
+                    }}>
                     Load Newer Posts
                   </Text>
                 </LinearGradient>

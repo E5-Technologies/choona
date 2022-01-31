@@ -176,11 +176,11 @@ const Profile = props => {
           });
         }}
         style={{
-          margin: normalise(4),
+          margin: 0,
           marginBottom:
             data.index === profilePosts.length - 1
               ? normalise(30)
-              : normalise(4),
+              : normalise(0),
         }}>
         <Image
           source={{
@@ -190,8 +190,8 @@ const Profile = props => {
                 : data.item.song_image,
           }}
           style={{
-            width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').width / 2.1),
+            width: Math.floor(Dimensions.get('window').width / 2),
+            height: Math.floor(Dimensions.get('window').width / 2),
           }}
           resizeMode="cover"
         />
@@ -399,7 +399,7 @@ const Profile = props => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
       <SafeAreaView style={{ flex: 1 }}>

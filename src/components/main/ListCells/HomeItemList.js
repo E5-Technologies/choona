@@ -94,10 +94,8 @@ function HomeItemList(props) {
   return (
     <View
       style={{
+          backgroundColor: Colors.darkerblack,
         alignSelf: 'center',
-        borderBottomColor: Colors.activityBorderColor,
-        borderBottomWidth: normalise(0.5),
-        marginBottom: normalise(8),
         paddingBottom: normalise(16),
       }}>
       <HomeListItemHeader

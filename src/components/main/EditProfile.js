@@ -172,7 +172,7 @@ const EditProfile = props => {
         let uploadPicture = {
           name:
             imageDetails.filename === undefined ||
-              imageDetails.filename === null
+            imageDetails.filename === null
               ? 'xyz.jpg'
               : imageDetails.filename.replace(/HEIC/g, 'jpg'),
           type: imageDetails.mime,
@@ -238,20 +238,20 @@ const EditProfile = props => {
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
           title={'EDIT PROFILE'}
           thirditemtext={true}
-          texttwo={'SAVE'}
+          //   texttwo={'SAVE'}
           onPressFirstItem={() => {
             props.getProfileReq();
             props.navigation.goBack();
           }}
-          onPressThirdItem={() => {
-            updateProfile();
-          }}
+          //   onPressThirdItem={() => {
+          //     updateProfile();
+          //   }}
         />
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -269,11 +269,11 @@ const EditProfile = props => {
             <Avatar image={profilePic} height={120} width={120} />
           </View>
           <TouchableOpacity
-            style={{ marginTop: normalise(10) }}
+            style={{ marginTop: normalise(10), marginBottom: normalise(20) }}
             onPress={() => {
               showPickerOptions();
             }}>
-            <Text
+            {/* <Text
               style={{
                 color: Colors.white,
                 fontSize: normalise(12),
@@ -283,7 +283,7 @@ const EditProfile = props => {
                 marginBottom: normalise(36),
               }}>
               CHANGE PROFILE PIC
-            </Text>
+            </Text> */}
           </TouchableOpacity>
           <View
             style={{
@@ -292,7 +292,8 @@ const EditProfile = props => {
             }}>
             <TextInputField
               text={'CHOOSE USERNAME'}
-              backgroundColor={'#fff'}
+              backgroundColor={Colors.fadeblack}
+              style={{ backgroundColor: Colors.fadeblack }}
               autocorrect={false}
               placeholder={'Enter Username'}
               tick_req={true}
@@ -320,7 +321,7 @@ const EditProfile = props => {
             <Text
               style={{
                 fontSize: normalise(10),
-                color: Colors.white,
+                color: Colors.meta,
                 fontFamily: 'ProximaNova-SemiBold',
                 textTransform: 'uppercase',
               }}>
@@ -328,7 +329,7 @@ const EditProfile = props => {
             </Text>
             <CountryPicker
               containerButtonStyle={{
-                backgroundColor: '#ffffff',
+                backgroundColor: Colors.fadeblack,
                 width: '100%',
                 height: normalise(44),
                 borderRadius: normalise(6),
@@ -344,6 +345,7 @@ const EditProfile = props => {
                   style={{
                     fontFamily: 'ProximaNova-Semibold',
                     marginTop: normalise(15),
+                    color: Colors.meta,
                   }}>
                   {location ?? 'Select country'}
                 </Text>
@@ -376,8 +378,53 @@ const EditProfile = props => {
                 setPhoneNumber(text);
               }}
             />
+            <Text
+              style={{
+                marginLeft: '5%',
+                width: '90%',
+                color: Colors.meta,
+                textAlign: 'center',
+                fontSize: normalise(10),
+                fontFamily: 'ProximaNova-Regular',
+                marginBottom: normalise(12),
+              }}>
+              We only ask for your Location and Phone No. so we can help you
+              find people you already know on Choona, we never pass your
+              information on.
+            </Text>
           </View>
         </ScrollView>
+        <TouchableOpacity
+          style={{
+            marginBottom: normalise(10),
+            marginTop: normalise(10),
+            height: normalise(44),
+            width: '90%',
+            alignSelf: 'center',
+            borderRadius: normalise(25),
+            backgroundColor: Colors.white,
+            borderWidth: normalise(0.5),
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.5,
+            shadowRadius: 9,
+            elevation: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderColor: Colors.white,
+          }}
+          onPress={updateProfile}>
+          <Text
+            style={{
+              marginLeft: normalise(10),
+              color: Colors.darkerblack,
+              fontSize: normalise(14),
+              fontFamily: 'ProximaNova-Bold',
+            }}>
+            UPDATE PROFILE
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

@@ -217,7 +217,7 @@ function PlayerScreenSelectUser(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       {/* <TouchableWithoutFeedback
         onPress={() => {
@@ -228,7 +228,7 @@ function PlayerScreenSelectUser(props) {
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={'SELECT USER TO SEND TO'}
+          title={'SELECT USER TO MESSAGE'}
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}
@@ -240,14 +240,14 @@ function PlayerScreenSelectUser(props) {
             height: normalise(35),
             marginTop: normalise(20),
             borderRadius: normalise(8),
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.fadeblack,
           }}>
           <TextInput
             style={{
               height: normalise(35),
               width: '85%',
               padding: normalise(10),
-              // color: Colors.white,
+              color: Colors.white,
               paddingLeft: normalise(30),
             }}
             value={userSearch}
@@ -265,16 +265,17 @@ function PlayerScreenSelectUser(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />
-          {userSearch === '' ? null : (
+          {userSearch === '' || userSearch === null ? null : (
             <TouchableOpacity
               onPress={() => {
                 setUserSearch('');
               }}
               style={{
-                backgroundColor: Colors.fordGray,
+                backgroundColor: Colors.darkerblack,
                 padding: 8,
                 paddingTop: 4,
                 paddingBottom: 4,

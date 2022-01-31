@@ -228,7 +228,7 @@ function AddSong(props) {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={props.status === CREATE_POST_REQUEST} />
       <Loader visible={bool} />
 
@@ -348,7 +348,7 @@ function AddSong(props) {
               style={{
                 flexDirection: 'row',
                 marginTop: normalise(5),
-                backgroundColor: Colors.darkerblack,
+                backgroundColor: Colors.fadeblack,
                 height: normalise(65),
                 width: '100%',
                 borderRadius: normalise(6),

@@ -82,7 +82,11 @@ function ActivityListItem(props) {
             <TouchableOpacity
               style={[
                 styles.followButton,
-                { backgroundColor: follow ? Colors.white : Colors.fadeblack },
+                { backgroundColor: follow ? Colors.white : 'transparent' },
+                !follow && {
+                  borderWidth: 1,
+                  borderColor: Colors.fadeblack,
+                },
               ]}
               onPress={() => {
                 onPress();
@@ -163,7 +167,7 @@ const styles = StyleSheet.create({
   },
   followButtonText: {
     color: Colors.black,
-    fontFamily: 'ProximaNova-Bold',
+    fontFamily: 'Kallisto',
     fontSize: normaliseNew(10),
   },
 });

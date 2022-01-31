@@ -1,7 +1,7 @@
 const Colors = {
   black: '#1a1b1f',
-  fadeblack: '#25262a',
-  darkerblack: '#121317',
+  fadeblack: '#2F333A',
+  darkerblack: '#020202',
   white: '#ffffff',
   grey: '#767779',
   darkgrey: '#959698',
@@ -12,6 +12,7 @@ const Colors = {
   activityBorderColor: '#25262A',
   emoji_board: '#EAEAEC',
   fordGray: '#979797',
+  meta: '#ABB1BB',
 };
 
 export default Colors;

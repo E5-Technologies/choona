@@ -16,7 +16,11 @@ function InsideMessegeHeader(props) {
   }
 
   return (
-    <View style={HeaderStyles.headerContainer}>
+    <View
+      style={[
+        HeaderStyles.headerContainer,
+        { justifyContent: 'flex-start', alignItems: 'center' },
+      ]}>
       {props.firstitemtext ? (
         <TouchableOpacity
           style={HeaderStyles.leftItem}
@@ -26,15 +30,15 @@ function InsideMessegeHeader(props) {
           <Text style={HeaderStyles.headerItemText}>{props.textone}</Text>
         </TouchableOpacity>
       ) : (
-        <View style={HeaderStyles.leftItem}>
+        <>
           <TouchableOpacity
-            style={HeaderStyles.leftItemInner}
+            style={{ left: normalise(16) }}
             onPress={() => {
               onPressFirstItem();
             }}>
             <Image
               source={ImagePath.backicon}
-              style={HeaderStyles.backIcon}
+              style={HeaderStyles.headerIcon}
               resizeMode="contain"
             />
           </TouchableOpacity>
@@ -68,7 +72,7 @@ function InsideMessegeHeader(props) {
             />
             <Text style={HeaderStyles.messageText}>{props.title}</Text>
           </TouchableOpacity>
-        </View>
+        </>
       )}
     </View>
   );

@@ -127,8 +127,12 @@ export default HomeListItemFooter;
 
 const styles = StyleSheet.create({
   listItemFooterContainer: {
-    marginTop: normalise(10),
+    paddingTop: normalise(10),
     paddingHorizontal: normalise(12),
+    backgroundColor: Colors.darkerblack,
+    borderBottomColor: Colors.activityBorderColor,
+    borderBottomWidth: normalise(0.5),
+    paddingBottom: normalise(16),
   },
   listItemFooterTop: {
     alignItems: 'center',
