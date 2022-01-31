@@ -249,10 +249,12 @@ const Login = props => {
       });
   };
 
+  console.log(picture);
+
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: Colors.black }}
+      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
       behavior="height">
       <StatusBar backgroundColor={Colors.darkerblack} />
 
@@ -283,7 +285,7 @@ const Login = props => {
               style={{
                 color: Colors.white,
                 fontSize: normalise(15),
-                fontFamily: 'ProximaNova-Black',
+                fontFamily: 'Kallisto',
               }}>
               CREATE PROFILE
             </Text>
@@ -294,6 +296,7 @@ const Login = props => {
               height: normalise(120),
               width: normalise(120),
               borderRadius: normalise(60),
+              marginBottom: normalise(30),
               backgroundColor: Colors.fadeblack,
               alignSelf: 'center',
               marginTop: normalise(32),
@@ -316,10 +319,10 @@ const Login = props => {
                   showPickerOptions();
                 }}>
                 <Image
-                  source={ImagePath ? ImagePath.add_white : null}
+                  source={ImagePath ? ImagePath.userPlaceholder : null}
                   style={{
-                    height: normalise(40),
-                    width: normalise(40),
+                    height: normalise(70),
+                    width: normalise(70),
                     borderRadius: normalise(20),
                   }}
                   resizeMode="contain"
@@ -327,38 +330,6 @@ const Login = props => {
               </TouchableOpacity>
             )}
           </View>
-
-          <TouchableOpacity
-            style={{ marginTop: normalise(10) }}
-            onPress={() => {
-              showPickerOptions();
-            }}>
-            {picture ? (
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                  textDecorationLine: 'underline',
-                  marginBottom: normalise(36),
-                }}>
-                CHANGE PROFILE PIC
-              </Text>
-            ) : (
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                  textDecorationLine: 'underline',
-                  marginBottom: normalise(36),
-                }}>
-                UPLOAD PROFILE PIC
-              </Text>
-            )}
-          </TouchableOpacity>
 
           <TextInputField
             text={'CHOOSE USERNAME'}
@@ -395,7 +366,7 @@ const Login = props => {
           </Text>
           <CountryPicker
             containerButtonStyle={{
-              backgroundColor: '#ffffff',
+              backgroundColor: Colors.fadeblack,
               width: '100%',
               height: normalise(44),
               borderRadius: normalise(6),
@@ -410,6 +381,8 @@ const Login = props => {
               <Text
                 style={{
                   fontFamily: 'ProximaNova-Semibold',
+                  fontSize: normalise(14),
+                  color: Colors.meta,
                   marginTop: normalise(15),
                 }}>
                 {location ?? 'Select country'}
@@ -444,14 +417,29 @@ const Login = props => {
             }}
           />
 
+          <Text
+            style={{
+              marginLeft: '5%',
+              width: '90%',
+              color: Colors.meta,
+              textAlign: 'center',
+              fontSize: normalise(10),
+              fontFamily: 'ProximaNova-Regular',
+              marginBottom: normalise(12),
+            }}>
+            We only ask for your Location and Phone No. so we can help you find
+            people you already know on Choona, we never pass your information
+            on.
+          </Text>
+
           {props.route.params.loginType === 'Spotify' ? (
             <View
               style={{
                 marginTop: normalise(30),
                 height: normalise(45),
                 borderRadius: normalise(10),
-                borderWidth: normalise(1),
-                borderColor: Colors.activityBorderColor,
+                // borderWidth: normalise(1),
+                // borderColor: Colors.activityBorderColor,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
