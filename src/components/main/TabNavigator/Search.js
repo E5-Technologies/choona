@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
+import { useIsFocused } from '@react-navigation/native';
 
 import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
@@ -98,9 +99,14 @@ const Search = props => {
   let flag = true;
   var bottomSheetRef;
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    props.getTop50SongReq();
-  }, [props.getTop50SongReq]);
+    if (isFocused) {
+      console.log('HERE');
+      props.getTop50SongReq();
+    }
+  }, [props.getTop50SongReq, isFocused]);
 
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -434,9 +440,11 @@ const Search = props => {
   function renderGenreData(data) {
     return (
       <TouchableOpacity
-        style={{
-        //   margin: normalise(4),
-        }}
+        style={
+          {
+            //   margin: normalise(4),
+          }
+        }
         onPress={() => {
           props.navigation.navigate('GenreSongClicked', {
             data: data.item._id,
@@ -464,14 +472,14 @@ const Search = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-          ? 'B'
-          : reaction === react[2]
-            ? 'C'
-            : reaction === react[3]
-              ? 'D'
-              : reaction === react[4]
-                ? 'E'
-                : 'F';
+        ? 'B'
+        : reaction === react[2]
+        ? 'C'
+        : reaction === react[3]
+        ? 'D'
+        : reaction === react[4]
+        ? 'E'
+        : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -911,15 +919,15 @@ const Search = props => {
                 resizeMode="contain"
               />
               {(usersSearch && usersSearchText) ||
-                (songSearch && songSearchText) ? (
+              (songSearch && songSearchText) ? (
                 <TouchableOpacity
                   onPress={() => {
                     clearSearch();
                     usersSearch
                       ? setUsersSearchText('')
                       : genreSearch
-                        ? setGenreSearchText('')
-                        : setSongSearchText('');
+                      ? setGenreSearchText('')
+                      : setSongSearchText('');
                   }}
                   style={{
                     // backgroundColor: Colors.black,
@@ -930,8 +938,7 @@ const Search = props => {
                     backgroundColor: Colors.darkerblack,
                     position: 'absolute',
                     right: 12,
-                    bottom:
-                      Platform.OS === 'ios' ? normalise(8) : normalise(8),
+                    bottom: Platform.OS === 'ios' ? normalise(8) : normalise(8),
                     marginRight: normalise(10),
                   }}>
                   <Text
@@ -1058,7 +1065,7 @@ const Search = props => {
                 <EmptyComponent
                   image={ImagePath.emptyPost}
                   text={'No songs have been posted today.'}
-                // title={'No songs have been posted today'}
+                  // title={'No songs have been posted today'}
                 />
               )
             ) : (
