@@ -4,11 +4,6 @@ import Colors from '../assests/Colors';
 import normalise from '../utils/helpers/Dimens';
 
 const HeaderStyles = StyleSheet.create({
-  backIcon: {
-    height: normalise(16),
-    marginTop: normalise(-8),
-    width: normalise(16),
-  },
   headerContainer: {
     alignItems: 'center',
     alignSelf: 'center',
@@ -23,7 +18,6 @@ const HeaderStyles = StyleSheet.create({
     position: 'relative',
     width: '100%',
   },
-
   headerContainerComments: {
     alignItems: 'center',
     alignSelf: 'center',
@@ -50,15 +44,12 @@ const HeaderStyles = StyleSheet.create({
   },
   headerText: {
     color: Colors.white,
-    fontFamily: 'ProximaNova-Bold',
+    fontFamily: 'Kallisto',
     fontSize: normalise(15),
+    // textTransform: 'capitalize',
   },
   leftItem: {
     left: normalise(16),
-    position: 'absolute',
-  },
-  leftItemInner: {
-    left: normalise(0),
     position: 'absolute',
   },
   logo: {
@@ -67,7 +58,7 @@ const HeaderStyles = StyleSheet.create({
   messageAvatars: {
     flexDirection: 'row',
     left: normalise(26),
-    marginTop: normalise(-12),
+    // marginTop: normalise(-12),
   },
   messageText: {
     color: Colors.white,

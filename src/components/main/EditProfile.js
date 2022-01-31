@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,42 +26,35 @@ import {
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
-import {
-  getProfileRequest,
-  editProfileRequest,
-  getCountryCodeRequest,
-} from '../../action/UserAction';
+import { getProfileRequest, editProfileRequest } from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
-import Picker from '../../utils/helpers/Picker';
+import CountryPicker from 'react-native-country-picker-modal';
+import Avatar from '../Avatar';
 let status = '';
 
-function EditProfile(props) {
+const EditProfile = props => {
   const [username, setUsername] = useState(props.userProfileResp.username);
   const [fullname, setFullname] = useState(props.userProfileResp.full_name);
   const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp.phone);
   const [location, setLocation] = useState(props.userProfileResp.location);
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState(
-    constants.profile_picture_base_url + props.userProfileResp.profile_image,
+    props.userProfileResp.profile_image
+      ? constants.profile_picture_base_url + props.userProfileResp.profile_image
+      : null,
   );
   const [imageDetails, setImageDetails] = useState('');
   const [userNameAvailable, setUserNameAvailable] = useState(true);
-  const [codePick, setCodePick] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    getCountry();
-  }, []);
+  const [countryCode, setCountryCode] = useState();
+  const [country, setCountry] = useState();
 
-  const getCountry = () => {
-    props.countryObject.map((item, index) => {
-      if (item.name === location) {
-        setCodePick(item.flag + item.dial_code);
-        // console.log(item.flag + item.dial_code);
-        setLoading(false);
-      }
-    });
+  const onSelect = country => {
+    setCountryCode(country.cca2);
+    setCountry(country);
+    setLocation(country.name);
   };
 
   if (status === '' || props.status !== status) {
@@ -130,18 +123,21 @@ function EditProfile(props) {
       })
       .catch(err => {
         alert(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 
   //IMAGE PICKER FROM CAMERA
   const pickImagewithCamera = () => {
     ImagePicker.openCamera({
-      cropping: true,
       width: 500,
       height: 500,
+      cropping: true,
+      cropperCircleOverlay: true,
+      sortOrder: 'none',
+      compressImageQuality: 1,
+      compressVideoPreset: 'MediumQuality',
       includeExif: true,
-      mediaType: 'photo',
     })
       .then(image => {
         setPicture(true);
@@ -150,16 +146,17 @@ function EditProfile(props) {
       })
       .catch(err => {
         alert(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 
   const updateProfile = () => {
     if (username === '') {
       alert('Please enter your username');
-    }
-    if (!userNameAvailable) {
+    } else if (!userNameAvailable) {
       alert('Please enter a valid username');
+    } else if (username.includes(' ')) {
+      alert('Username cannot include spaces');
     } else if (fullname === '') {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
@@ -177,7 +174,7 @@ function EditProfile(props) {
             imageDetails.filename === undefined ||
             imageDetails.filename === null
               ? 'xyz.jpg'
-              : imageDetails.filename,
+              : imageDetails.filename.replace(/HEIC/g, 'jpg'),
           type: imageDetails.mime,
           uri: profilePic,
         };
@@ -241,20 +238,20 @@ function EditProfile(props) {
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
           title={'EDIT PROFILE'}
           thirditemtext={true}
-          texttwo={'SAVE'}
+          //   texttwo={'SAVE'}
           onPressFirstItem={() => {
             props.getProfileReq();
             props.navigation.goBack();
           }}
-          onPressThirdItem={() => {
-            updateProfile();
-          }}
+          //   onPressThirdItem={() => {
+          //     updateProfile();
+          //   }}
         />
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -265,65 +262,54 @@ function EditProfile(props) {
               borderRadius: normalise(60),
               backgroundColor: Colors.fadeblack,
               alignSelf: 'center',
-              marginTop: normalise(40),
+              marginTop: normalise(32),
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Image
-              source={{ uri: profilePic }}
-              style={{
-                height: normalise(120),
-                width: normalise(120),
-                borderRadius: normalise(60),
-              }}
-              resizeMode="contain"
-            />
+            <Avatar image={profilePic} height={120} width={120} />
           </View>
-
           <TouchableOpacity
-            style={{ marginTop: normalise(10) }}
+            style={{ marginTop: normalise(10), marginBottom: normalise(20) }}
             onPress={() => {
               showPickerOptions();
             }}>
-            <Text
+            {/* <Text
               style={{
                 color: Colors.white,
                 fontSize: normalise(12),
                 alignSelf: 'center',
                 fontWeight: 'bold',
                 textDecorationLine: 'underline',
+                marginBottom: normalise(36),
               }}>
               CHANGE PROFILE PIC
-            </Text>
+            </Text> */}
           </TouchableOpacity>
-
           <View
             style={{
               width: '90%',
               alignSelf: 'center',
-              marginBottom: normalise(30),
             }}>
             <TextInputField
               text={'CHOOSE USERNAME'}
+              backgroundColor={Colors.fadeblack}
+              style={{ backgroundColor: Colors.fadeblack }}
               autocorrect={false}
               placeholder={'Enter Username'}
-              placeholderTextColor={Colors.grey}
-              marginTop={normalise(30)}
               tick_req={true}
               value={username}
               userNameAvailable={userNameAvailable}
-              tick_visible={username}
+              tick_visible={username ? true : false}
               onChangeText={text => {
-                setUsername(text), check(text);
+                setUsername(text);
+                check(text);
               }}
             />
-
             <TextInputField
               text={'FULL NAME'}
               placeholder={'Enter Name'}
               maxLength={25}
               value={fullname}
-              placeholderTextColor={Colors.grey}
               onChangeText={text => {
                 setFullname(text);
               }}
@@ -332,74 +318,123 @@ function EditProfile(props) {
               }
               marginTop={normalise(20)}
             />
-
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              {loading ? null : (
-                <View>
-                  <Picker
-                    textColor={Colors.white}
-                    textSize={normalise(9)}
-                    emptySelectText="Select"
-                    editable={true}
-                    data={props.countryCodeRequest}
-                    selectedValue={
-                      codePick === '' ? props.countryCodeRequest[0] : codePick
-                    }
-                    onPickerItemSelected={(selectedvalue, index) => {
-                      //// console.log(index)
-                      setLocation(props.countryObject[index].name);
-                      // // console.log(props.countryObject[index].name)
-                      setCodePick(selectedvalue);
-                    }}
-                  />
-                </View>
-              )}
-
-              <TextInputField
-                placeholder={'Enter Phone number'}
-                placeholderTextColor={Colors.grey}
-                maxLength={15}
-                width={normalise(200)}
-                isNumber={true}
-                value={phoneNumber}
-                onChangeText={text => {
-                  setPhoneNumber(text);
-                }}
-              />
-
-              <Text
-                style={{
-                  position: 'absolute',
-                  fontSize: normalise(12),
-                  top: 20,
-                  color: Colors.white,
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                PHONE NUMBER
-              </Text>
-            </View>
-
-            {/* <TextInputField text={"ENTER LOCATION"}
-                            placeholder={"Type Location"}
-                            value={location}
-                            placeholderTextColor={Colors.grey}
-                            onChangeText={(text) => { setLocation(text) }}
-                            borderColor={location === "" ? Colors.grey : Colors.white} /> */}
+            <Text
+              style={{
+                fontSize: normalise(10),
+                color: Colors.meta,
+                fontFamily: 'ProximaNova-SemiBold',
+                textTransform: 'uppercase',
+              }}>
+              Location
+            </Text>
+            <CountryPicker
+              containerButtonStyle={{
+                backgroundColor: Colors.fadeblack,
+                width: '100%',
+                height: normalise(44),
+                borderRadius: normalise(6),
+                borderWidth: normalise(0.5),
+                marginTop: normalise(10),
+                padding: normalise(5),
+                paddingTop: country ? normalise(6) : normalise(13),
+                paddingLeft: normalise(16),
+                marginBottom: normalise(16),
+              }}
+              placeholder={
+                <Text
+                  style={{
+                    fontFamily: 'ProximaNova-Semibold',
+                    marginTop: normalise(15),
+                    color: Colors.meta,
+                  }}>
+                  {location ?? 'Select country'}
+                </Text>
+              }
+              {...{
+                allowFontScaling: true,
+                countryCode: countryCode,
+                withFilter: true,
+                withFlag: true,
+                withCountryNameButton: true,
+                withEmoji: true,
+                withModal: true,
+                withFlagButton: true,
+                onSelect,
+                preferredCountries: ['GB', 'US'],
+                modalProps: {
+                  visible,
+                },
+                onClose: () => setVisible(false),
+                onOpen: () => setVisible(true),
+              }}
+            />
+            <TextInputField
+              text={'PHONE NUMBER'}
+              placeholder={'Enter Phone number'}
+              maxLength={15}
+              isNumber={true}
+              value={phoneNumber}
+              onChangeText={text => {
+                setPhoneNumber(text);
+              }}
+            />
+            <Text
+              style={{
+                marginLeft: '5%',
+                width: '90%',
+                color: Colors.meta,
+                textAlign: 'center',
+                fontSize: normalise(10),
+                fontFamily: 'ProximaNova-Regular',
+                marginBottom: normalise(12),
+              }}>
+              We only ask for your Location and Phone No. so we can help you
+              find people you already know on Choona, we never pass your
+              information on.
+            </Text>
           </View>
         </ScrollView>
+        <TouchableOpacity
+          style={{
+            marginBottom: normalise(10),
+            marginTop: normalise(10),
+            height: normalise(44),
+            width: '90%',
+            alignSelf: 'center',
+            borderRadius: normalise(25),
+            backgroundColor: Colors.white,
+            borderWidth: normalise(0.5),
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.5,
+            shadowRadius: 9,
+            elevation: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderColor: Colors.white,
+          }}
+          onPress={updateProfile}>
+          <Text
+            style={{
+              marginLeft: normalise(10),
+              color: Colors.darkerblack,
+              fontSize: normalise(14),
+              fontFamily: 'ProximaNova-Bold',
+            }}>
+            UPDATE PROFILE
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     error: state.UserReducer.error,
-    countryCodeRequest: state.UserReducer.countryCodeRequest,
-    countryObject: state.UserReducer.countryCodeOject,
   };
 };
 
@@ -410,9 +445,6 @@ const mapDispatchToProps = dispatch => {
     },
     editProfileReq: payload => {
       dispatch(editProfileRequest(payload));
-    },
-    countrycodeRequest: () => {
-      dispatch(getCountryCodeRequest());
     },
   };
 };

@@ -7,9 +7,7 @@ import {
   FlatList,
   Image,
   TextInput,
-  Keyboard,
   Platform,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -34,6 +32,9 @@ import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
+import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
+
 let status;
 let messageStatus;
 
@@ -45,6 +46,9 @@ function AddAnotherSong(props) {
   const [indexOfArray, setIndexOfArray] = useState(props.route.params.index);
   const [fromOthersProfile, setFromOthersProfile] = useState(
     props.route.params.othersProfile,
+  );
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+    props.registerType,
   );
 
   let post = false;
@@ -86,29 +90,58 @@ function AddAnotherSong(props) {
       case CREATE_CHAT_TOKEN_SUCCESS:
         messageStatus = props.messageStatus;
 
-        props.navigation.replace('SendSongInMessageFinal', {
-          image:
-            props.registerType === 'spotify'
-              ? result[index].album.images[0].url
-              : result[index].attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '600x600',
-                ),
-          title:
-            props.registerType === 'spotify'
-              ? result[index].name
-              : result[index].attributes.name,
-          title2:
-            props.registerType === 'spotify'
-              ? singerList(result[index].artists)
-              : result[index].attributes.artistName,
-          users: usersToSend,
-          details: result[index],
-          registerType: props.registerType,
-          fromAddAnotherSong: fromOthersProfile ? false : true,
-          index: indexOfArray,
-          fromHome: false,
-        });
+        props.navigation.replace(
+          'SendSongInMessageFinal',
+          result.length > 0
+            ? {
+              image:
+                props.registerType === 'spotify'
+                  ? result[index].album.images[0].url
+                  : result[index].attributes.artwork.url.replace(
+                    '{w}x{h}',
+                    '600x600',
+                  ),
+              title:
+                props.registerType === 'spotify'
+                  ? result[index].name
+                  : result[index].attributes.name,
+              title2:
+                props.registerType === 'spotify'
+                  ? singerList(result[index].artists)
+                  : result[index].attributes.artistName,
+              users: usersToSend,
+              details: result[index],
+              registerType: props.registerType,
+              fromAddAnotherSong: fromOthersProfile ? false : true,
+              index: indexOfArray,
+              fromHome: false,
+              goBack: 1,
+            }
+            : {
+              image:
+                props.registerType === 'spotify'
+                  ? recentlyPlayed[index].album.images[0].url
+                  : recentlyPlayed[index].attributes.artwork.url.replace(
+                    '{w}x{h}',
+                    '600x600',
+                  ),
+              title:
+                props.registerType === 'spotify'
+                  ? recentlyPlayed[index].name
+                  : recentlyPlayed[index].attributes.name,
+              title2:
+                props.registerType === 'spotify'
+                  ? singerList(recentlyPlayed[index].artists)
+                  : recentlyPlayed[index].attributes.artistName,
+              users: usersToSend,
+              details: recentlyPlayed[index],
+              registerType: props.registerType,
+              fromAddAnotherSong: fromOthersProfile ? false : true,
+              index: indexOfArray,
+              fromHome: false,
+              goBack: 1,
+            },
+        );
         break;
 
       case CREATE_CHAT_TOKEN_FAILURE:
@@ -162,8 +195,8 @@ function AddAnotherSong(props) {
         marginBottom={
           data.index === props.searchResponse.length - 1 ? normalise(20) : 0
         }
-        change={true}
-        image2={ImagePath.addicon}
+        change2={true}
+        image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => {
           setIndex(data.index);
           sendMessagesToUsers();
@@ -182,9 +215,9 @@ function AddAnotherSong(props) {
               props.registerType === 'spotify'
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '300x300',
-                  ),
+                  '{w}x{h}',
+                  '300x300',
+                ),
             username: '',
             profile_pic: '',
             originalUri:
@@ -211,168 +244,120 @@ function AddAnotherSong(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
-
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath.backicon}
-            title={'CHOOSE SONG TO SEND'}
-            thirditemtext={true}
-            imagetwo={ImagePath.newmessage}
-            imagetwoheight={25}
-            imagetwowidth={25}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={'CHOOSE SONG TO SEND'}
+          thirditemtext={true}
+          imagetwo={ImagePath.newmessage}
+          imagetwoheight={25}
+          imagetwowidth={25}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
+        <View style={{ width: '92%', alignSelf: 'center' }}>
+          <TextInput
+            autoCorrect={false}
+            style={{
+              height: normalise(35),
+              width: '100%',
+              backgroundColor: Colors.fadeblack,
+              borderRadius: normalise(8),
+              marginTop: normalise(20),
+              padding: normalise(10),
+              color: Colors.white,
+              paddingLeft: normalise(30),
+            }}
+            value={search}
+            keyboardAppearance={'dark'}
+            placeholder={'Search'}
+            placeholderTextColor={Colors.darkgrey}
+            onChangeText={text => {
+              setSearch(text);
+              if (text.length >= 1) {
+                isInternetConnected()
+                  .then(() => {
+                    props.searchSongReq(text, post);
+                  })
+                  .catch(() => {
+                    toast('Error', 'Please Connect To Internet');
+                  });
+              }
             }}
           />
-
-          <View style={{ width: '92%', alignSelf: 'center' }}>
-            <TextInput
-              autoCorrect={false}
-              style={{
-                height: normalise(35),
-
-                width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(30),
+          <Image
+            source={ImagePath.searchicongrey}
+            style={{
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+            }}
+            resizeMode="contain"
+          />
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch(''), setResult([]);
               }}
-              value={search}
-              keyboardAppearance={'dark'}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text);
-                if (text.length >= 1) {
-                  isInternetConnected()
-                    .then(() => {
-                      props.searchSongReq(text, post);
-                    })
-                    .catch(() => {
-                      toast('Error', 'Please Connect To Internet');
-                    });
-                }
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
               style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), setResult([]);
-                }}
-                style={{
-                  backgroundColor: Colors.darkerblack,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {_.isEmpty(result) ? null : (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '90%',
-                alignSelf: 'center',
-                marginTop: normalise(5),
+                backgroundColor: Colors.darkerblack,
+                padding: 6,
+                paddingTop: 4,
+                paddingBottom: 4,
+                borderRadius: 2,
+                position: 'absolute',
+                right: 0,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
               }}>
-              <Image
-                source={
-                  props.registerType === 'spotify'
-                    ? ImagePath.spotifyicon
-                    : ImagePath.applemusic
-                }
-                style={{ height: normalise(20), width: normalise(20) }}
-              />
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: normalise(12),
-                  marginLeft: normalise(10),
+                  fontSize: normalise(10),
                   fontWeight: 'bold',
                 }}>
-                {' '}
-                RESULTS ({result.length})
+                CLEAR
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
-
-          {_.isEmpty(result) ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={ImagePath.searchicongrey}
-                style={{ height: normalise(25), width: normalise(25) }}
-              />
-
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(15),
-                  fontFamily: 'ProximaNovaAW07-Medium',
-                  marginTop: normalise(20),
-                  width: '60%',
-                  textAlign: 'center',
-                }}>
-                Search for the song you want to share{' '}
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              style={{ marginTop: normalise(10) }}
-              data={result}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-            />
-          )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+        </View>
+        {_.isEmpty(result) ? (
+          <RecentlyPlayedHeader registerType={props.registerType} />
+        ) : (
+          <View />
+        )}
+        {_.isEmpty(result) ? (
+          <FlatList
+            data={recentlyPlayed}
+            onRefresh={() => refetch()}
+            refreshing={loading}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            ItemSeparatorComponent={Seperator}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <FlatList
+            style={{ marginTop: normalise(10) }}
+            data={result}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

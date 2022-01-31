@@ -41,19 +41,30 @@ function HeaderComponentComments(props) {
           <Text style={HeaderStyles.headerItemText}>{props.textone}</Text>
         </TouchableOpacity>
       ) : (
-        <View style={HeaderStyles.leftItem}>
-          <TouchableOpacity
-            style={HeaderStyles.leftItemInner}
-            onPress={() => {
-              onPressFirstItem();
-            }}>
-            <Image
-              source={props.imageone}
-              style={HeaderStyles.backIcon}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
+        // <View style={HeaderStyles.leftItem}>
+        //   <TouchableOpacity
+        //     style={HeaderStyles.leftItemInner}
+        //     onPress={() => {
+        //       onPressFirstItem();
+        //     }}>
+        //     <Image
+        //       source={props.imageone}
+        //       style={HeaderStyles.backIcon}
+        //       resizeMode="contain"
+        //     />
+        //   </TouchableOpacity>
+        // </View>
+        <TouchableOpacity
+          style={HeaderStyles.leftItem}
+          onPress={() => {
+            onPressFirstItem();
+          }}>
+          <Image
+            source={props.imageone}
+            style={HeaderStyles.headerIcon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
       )}
       {/* Middle */}
       <Text style={HeaderStyles.headerText}>{props.title}</Text>

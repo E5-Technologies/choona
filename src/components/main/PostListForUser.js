@@ -3,18 +3,13 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   FlatList,
   Image,
-  TextInput,
-  Clipboard,
   Linking,
   Modal,
-  ImageBackground,
   Platform,
 } from 'react-native';
 import Loader from '../../widgets/AuthLoader';
-import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
@@ -42,12 +37,6 @@ import {
   DELETE_POST_REQUEST,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAILURE,
-  GET_USER_FROM_HOME_REQUEST,
-  GET_USER_FROM_HOME_SUCCESS,
-  GET_USER_FROM_HOME_FAILURE,
-  CREATE_CHAT_TOKEN_REQUEST,
-  CREATE_CHAT_TOKEN_SUCCESS,
-  CREATE_CHAT_TOKEN_FAILURE,
   DUMMY_ACTION_SUCCESS,
 } from '../../action/TypeConstants';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
@@ -61,20 +50,17 @@ import {
 } from '../../action/UserAction';
 import { saveSongRequest } from '../../action/SongAction';
 import { deletePostReq } from '../../action/PostAction';
-import { createChatTokenRequest } from '../../action/MessageAction';
 import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
 
-import constants from '../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
-import RBSheet from 'react-native-raw-bottom-sheet';
+import MoreModal from '../Posts/MoreModal';
 
 let status = '';
 let songStatus = '';
 let postStatus = '';
-let messageStatus;
 
 function PostListForUser(props) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -84,11 +70,6 @@ function PostListForUser(props) {
   const [positionInArray, setPositionInArray] = useState(0);
 
   const [bool, setBool] = useState(false);
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-
   const [totalReact, setTotalReact] = useState([]);
   const [posts, setPosts] = useState(props.route.params.posts);
 
@@ -170,19 +151,6 @@ function PostListForUser(props) {
         status = props.status;
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
-
-      case GET_USER_FROM_HOME_REQUEST:
-        status = props.status;
-        break;
-
-      case GET_USER_FROM_HOME_SUCCESS:
-        status = props.status;
-        setUserSearchData(props.userSearchFromHome);
-        break;
-
-      case GET_USER_FROM_HOME_FAILURE:
-        status = props.status;
-        break;
     }
   }
 
@@ -227,40 +195,7 @@ function PostListForUser(props) {
     }
   }
 
-  if (messageStatus === '' || props.messageStatus !== messageStatus) {
-    switch (props.messageStatus) {
-      case CREATE_CHAT_TOKEN_REQUEST:
-        messageStatus = props.messageStatus;
-        break;
-
-      case CREATE_CHAT_TOKEN_SUCCESS:
-        messageStatus = props.messageStatus;
-        // console.log('profile page');
-        setUserSearchData([]);
-        sesUsersToSEndSong([]);
-        setUserSeach('');
-        props.navigation.navigate('SendSongInMessageFinal', {
-          image: posts[positionInArray].song_image,
-          title: posts[positionInArray].song_name,
-          title2: posts[positionInArray].artist_name,
-          users: usersToSEndSong,
-          details: posts[positionInArray],
-          registerType: props.registerType,
-          fromAddAnotherSong: false,
-          index: 0,
-          fromHome: true,
-        });
-        break;
-
-      case CREATE_CHAT_TOKEN_FAILURE:
-        messageStatus = props.messageStatus;
-        toast('Error', 'Something Went Wong, Please Try Again');
-        break;
-    }
-  }
-
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
-  let val = 0;
 
   function hitreact(x, rindex) {
     // alert("reaction"+(JSON.stringify(posts[rindex])))
@@ -299,24 +234,20 @@ function PostListForUser(props) {
     }
   }
 
-  function modal() {
-    return (val = 1);
-  }
-
   function sendReaction(id, reaction) {
     //  alert("resat"+reaction)
     const myReaction =
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -479,18 +410,6 @@ function PostListForUser(props) {
       }
 
       if (index === newarray.length - 1) {
-        setPosts([...newarray]);
-        let array = [];
-        // newarray.map((item,index)=>{
-        //   let newObject = {"id":item._id,'react':[item.fire_count,item.love_count,item.dancer_count,item.man_dancing_count,item.face_count,item.thumbsup_count]}
-
-        //   array.push(newObject)
-        //   if(index===posts.length-1){
-        //     setTotalReact(array)
-        //     // console.log("newarrr"+ JSON.stringify(newarray))
-        //   }
-
-        // })
       }
     });
   }
@@ -568,7 +487,7 @@ function PostListForUser(props) {
           });
         }}
         onPressCommentbox={() => {
-          props.navigation.navigate('HomeItemComments', {
+          props.navigation.push('HomeItemComments', {
             index: data.index,
             comment: data.item.comment,
             image: data.item.song_image,
@@ -588,332 +507,6 @@ function PostListForUser(props) {
       // </TouchableOpacity>
     );
   }
-
-  // RENDER USER SEARCH FLATLIST DATA
-  function renderAddUsersToMessageItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          marginTop: normalise(10),
-          width: '89%',
-          alignSelf: 'center',
-        }}
-        onPress={() => {
-          if (usersToSEndSong.length > 0) {
-            // let idArray = [];
-
-            // usersToSEndSong.map((item, index) => {
-
-            //     idArray.push(item._id)
-
-            // });
-            // if (idArray.includes(data.item._id)) {
-            //     // console.log('Already Exists');
-            // }
-            // else {
-            //     let array = [...usersToSEndSong]
-            //     array.push(data.item)
-            //     sesUsersToSEndSong(array);
-            // };
-
-            toast('Error', 'You can select one user at a time');
-          } else {
-            let array = [...usersToSEndSong];
-            array.push(data.item);
-            sesUsersToSEndSong(array);
-          }
-        }}>
-        <View style={{ flexDirection: 'row' }}>
-          <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 2 * normalise(13.5),
-            }}
-          />
-          <View
-            style={{
-              // flexDirection: 'row',
-              marginLeft: '5%',
-              paddingBottom: '5%',
-            }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.full_name}
-            </Text>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.username}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  // RENDER ADD TO FLATLIST DATA
-  function renderUsersToSendSongItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          height: normalise(30),
-          paddingHorizontal: normalise(18),
-          marginStart: normalise(20),
-          marginTop: normalise(5),
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-          marginEnd:
-            data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
-        }}>
-        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
-          {data.item.username}
-        </Text>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: -4,
-            height: 25,
-            width: 25,
-            borderRadius: 12,
-          }}
-          onPress={() => {
-            let popArray = [...usersToSEndSong];
-            popArray.splice(data.index, 1);
-            sesUsersToSEndSong(popArray);
-          }}>
-          <Image
-            source={ImagePath.crossIcon}
-            style={{
-              marginTop: normalise(-1.5),
-              marginStart: normalise(8.5),
-              height: 25,
-              width: 25,
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    );
-  }
-
-  const searchUser = text => {
-    if (text.length >= 1) {
-      props.getusersFromHome({ keyword: text });
-    }
-  };
-
-  function sendMessagesToUsers() {
-    var userIds = [];
-    usersToSEndSong.map(users => {
-      userIds.push(users._id);
-    });
-    props.createChatTokenRequest(userIds);
-  }
-
-  // BOTTOM SHEET FOR SELECTING USERS
-  const renderAddToUsers = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            bottomSheetRef = ref;
-          }
-        }}
-        closeOnDragDown={true}
-        closeOnPressMask={true}
-        onClose={() => {
-          //sesUsersToSEndSong([])
-        }}
-        nestedScrollEnabled={true}
-        keyboardAvoidingViewEnabled={true}
-        height={normalise(500)}
-        duration={250}
-        customStyles={{
-          container: {
-            backgroundColor: Colors.black,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-          },
-          // wrapper: {
-          //     backgroundColor: 'rgba(87,97,145,0.5)'
-
-          // },
-          draggableIcon: {
-            backgroundColor: Colors.grey,
-            width: normalise(70),
-            height: normalise(3),
-          },
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '75%',
-                justifyContent: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  fontWeight: 'bold',
-                  marginTop: normalise(10),
-                  textAlign: 'right',
-                }}>
-                SELECT USER TO SEND TO
-              </Text>
-
-              {userClicked ? (
-                <Text
-                  style={{
-                    color: Colors.white,
-                    marginTop: normalise(10),
-                    fontSize: normalise(14),
-                    fontWeight: 'bold',
-                  }}>
-                  {' '}
-                  (1)
-                </Text>
-              ) : null}
-            </View>
-
-            {usersToSEndSong.length > 0 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  bottomSheetRef.close();
-                  sendMessagesToUsers();
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(10),
-                    marginEnd: normalise(15),
-                  }}>
-                  {'NEXT'}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <View
-            style={{
-              width: '90%',
-              alignSelf: 'center',
-              height: normalise(35),
-              marginTop: normalise(20),
-              borderRadius: normalise(8),
-              backgroundColor: Colors.white,
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '85%',
-                padding: normalise(10),
-                // color: Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              value={userSeach}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSeach(text);
-                searchUser(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {userSeach === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserSeach('');
-                  setUserSearchData([]);
-                }}
-                style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 8,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  position: 'absolute',
-                  right: 0,
-                  borderRadius: 5,
-                  bottom: Platform.OS === 'ios' ? normalise(8) : normalise(7),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {usersToSEndSong.length > 0 ? ( // ADD TO ARRAY FLATLIST
-            <FlatList
-              style={{
-                marginTop: normalise(10),
-                maxHeight: normalise(50),
-              }}
-              horizontal={true}
-              data={usersToSEndSong}
-              renderItem={renderUsersToSendSongItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsHorizontalScrollIndicator={false}
-            />
-          ) : null}
-
-          <FlatList // USER SEARCH FLATLIST
-            style={{
-              height: '65%',
-              marginTop: usersToSEndSong.length > 0 ? 0 : normalise(5),
-            }}
-            data={userSearchData}
-            renderItem={renderAddUsersToMessageItem}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={Seperator}
-          />
-        </View>
-      </RBSheet>
-    );
-  };
-
-  // console.log(posts[positionInArray]);
 
   const callApi = async () => {
     if (props.registerType === 'spotify') {
@@ -958,18 +551,14 @@ function PostListForUser(props) {
             // console.log('success - spotify');
             // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(
-                    res.data.tracks.items[0].external_urls.spotify,
-                  )
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
+              .then(() => {
+                Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
               })
               .catch(() => {
                 // console.log('not supported');
@@ -979,16 +568,14 @@ function PostListForUser(props) {
             // console.log('success - apple');
             // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
+              .then(() => {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
               })
               .catch(() => {
                 // console.log('not supported');
@@ -1069,8 +656,6 @@ function PostListForUser(props) {
             ref={ref}
           />
 
-          {renderAddToUsers()}
-
           {props.status === DUMMY_ACTION_SUCCESS ? (
             <MusicPlayerBar
               onPress={() => {
@@ -1103,7 +688,7 @@ function PostListForUser(props) {
           ) : null}
 
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={visible}
             onRequestClose={() => {
@@ -1127,285 +712,19 @@ function PostListForUser(props) {
             </View>
           </Modal>
 
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            presentationStyle={'overFullScreen'}
-            onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
-            }}>
-            <ImageBackground
-              source={ImagePath.page_gradient}
-              style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    let saveSongObject = {
-                      song_uri: posts[positionInArray].song_uri,
-                      song_name: posts[positionInArray].song_name,
-                      song_image: posts[positionInArray].song_image,
-                      artist_name: posts[positionInArray].artist_name,
-                      album_name: posts[positionInArray].album_name,
-                      post_id: posts[positionInArray]._id,
-                    };
-
-                    props.saveSongReq(saveSongObject);
-                    setModalVisible(!modalVisible);
-                  }}>
-                  <Image
-                    source={ImagePath.boxicon}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Save Song
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    if (bottomSheetRef) {
-                      setModalVisible(false);
-                      bottomSheetRef.open();
-                    }
-                  }}>
-                  <Image
-                    source={ImagePath.sendicon}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(13),
-                      marginLeft: normalise(15),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Send Song
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    Clipboard.setString(
-                      posts[positionInArray].original_song_uri,
-                    );
-                    setModalVisible(!modalVisible);
-
-                    setTimeout(() => {
-                      toast('Success', 'Song copied to clipboard.');
-                    }, 1000);
-                  }}
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}>
-                  <Image
-                    source={ImagePath.more_copy}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Copy Link
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-
-                    props.userProfileResp._id !== posts[positionInArray].user_id // USER - FOLLOW/UNFOLLOW
-                      ? props.followUnfollowReq({
-                          follower_id: posts[positionInArray].userDetails._id,
-                        }) // USER - FOLLOW/UNFOLLOW
-                      : props.deletePostReq(posts[positionInArray]._id); //  DELETE POST
-                  }}>
-                  <Image
-                    source={ImagePath.more_unfollow}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    {props.userProfileResp._id ===
-                    posts[positionInArray].user_id
-                      ? 'Delete Post'
-                      : `Unfollow ${posts[positionInArray].userDetails.username}`}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    if (
-                      posts[positionInArray].userDetails.register_type ===
-                      props.registerType
-                    ) {
-                      // console.log('same reg type');
-                      setModalVisible(false);
-
-                      Linking.canOpenURL(
-                        posts[positionInArray].original_song_uri,
-                      )
-                        .then(() => {
-                          Linking.openURL(
-                            posts[positionInArray].original_song_uri,
-                          )
-                            .then(() => {
-                              // console.log('success');
-                              // setBool(false);
-                            })
-                            .catch(() => {
-                              // console.log('error');
-                            });
-                        })
-                        .catch(err => {
-                          console.log(err);
-                        });
-                    } else {
-                      // console.log('diffirent reg type');
-                      // setModalVisible(false)
-                      console.log(1);
-                      openInAppleORSpotify();
-                    }
-                  }}>
-                  <Image
-                    source={
-                      props.userProfileResp.register_type === 'spotify'
-                        ? ImagePath.spotifyicon
-                        : ImagePath.applemusic
-                    }
-                    style={{
-                      height: normalise(18),
-                      width: normalise(18),
-                      borderRadius: normalise(9),
-                    }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    {props.userProfileResp.register_type === 'spotify'
-                      ? 'Open on Spotify'
-                      : 'Open on Apple'}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    if (props.userProfileResp.register_type === 'spotify') {
-                      props.navigation.navigate('AddToPlayListScreen', {
-                        originalUri: posts[positionInArray].original_song_uri,
-                        registerType: posts[positionInArray].social_type,
-                        isrc: posts[positionInArray].isrc_code,
-                      });
-                      // setTimeout(()=>{
-                      //     toast("Oops", "Only, Spotify users can add to their playlist now.")
-                      // }, 1000)
-                    } else {
-                      props.navigation.navigate('AddToPlayListScreen', {
-                        isrc: posts[positionInArray].isrc_code,
-                      });
-                    }
-                  }}>
-                  <Image
-                    source={ImagePath.addicon}
-                    style={{
-                      height: normalise(18),
-                      width: normalise(18),
-                      borderRadius: normalise(9),
-                    }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Add to Playlist
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setPositionInArray(0);
-                  }}
-                  style={{
-                    // marginStart: normalise(20),
-                    // marginEnd: normalise(20),
-                    marginTop: normalise(24),
-                    marginBottom: normalise(20),
-                    height: normalise(40),
-                    // width: '95%',
-                    backgroundColor: Colors.fadeblack,
-                    opacity: 10,
-                    borderRadius: 6,
-                    // padding: 35,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: normalise(12),
-                      fontFamily: 'ProximaNova-Bold',
-                      color: Colors.white,
-                    }}>
-                    CANCEL
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
-          </Modal>
+          {modalVisible && (
+            <MoreModal
+              setBool={setBool}
+              bottomSheetRef={bottomSheetRef}
+              index={positionInArray}
+              setIndex={setPositionInArray}
+              navigation={props.navigation}
+              openInAppleORSpotify={openInAppleORSpotify}
+              postData={posts}
+              show={modalVisible}
+              setShow={setModalVisible}
+            />
+          )}
         </View>
       )}
 
@@ -1537,10 +856,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
   };
 };

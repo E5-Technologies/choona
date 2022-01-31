@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
   View,
   Text,
   Image,
   Platform,
-  Clipboard,
-  Keyboard,
-  TouchableWithoutFeedback,
+  Dimensions,
   TextInput,
-  ImageBackground,
   TouchableOpacity,
+  Keyboard,
   Modal,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
+import { useIsFocused } from '@react-navigation/native';
+
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -42,9 +43,6 @@ import {
   GET_USER_FROM_HOME_REQUEST,
   GET_USER_FROM_HOME_SUCCESS,
   GET_USER_FROM_HOME_FAILURE,
-  CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST,
-  CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS,
-  CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE,
 } from '../../../action/TypeConstants';
 import {
   userSearchRequest,
@@ -62,20 +60,18 @@ import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import { getUsersFromHome } from '../../../action/UserAction';
-import { createChatTokenFromSearchRequest } from '../../../action/MessageAction';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
+import MoreModal from '../../Posts/MoreModal';
 
 let status;
 let postStatus;
 let top50Status;
 let userstatus;
-let messageStatus;
 
-function Search(props) {
-  const [usersSearch, setUsersSearch] = useState(true);
-  const [genreSearch, setGenreSearch] = useState(false);
+const Search = props => {
+  const [usersSearch, setUsersSearch] = useState(false);
+  const [genreSearch, setGenreSearch] = useState(true);
   const [songSearch, setSongSearch] = useState(false);
 
   const [usersSearchText, setUsersSearchText] = useState('');
@@ -95,11 +91,7 @@ function Search(props) {
 
   const [typingTimeout, setTypingTimeout] = useState(0);
   // SEND SONG VARIABLES
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
   const [totalReact, setTotalReact] = useState([]);
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
 
   let changePlayer = false;
@@ -107,19 +99,15 @@ function Search(props) {
   let flag = true;
   var bottomSheetRef;
 
-  const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
-      setUserSearchData([]);
-      sesUsersToSEndSong([]);
-      setUserSeach('');
-    });
+    if (isFocused) {
+      props.getTop50SongReq();
+    }
+  }, [props.getTop50SongReq, isFocused]);
 
-    return () => {
-      unsuscribe();
-    };
-  }, []);
+  const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
@@ -207,7 +195,11 @@ function Search(props) {
 
       case TOP_50_SONGS_SUCCESS:
         top50Status = props.top50SongsStatus;
-        setTop50(props.top50SongsResponse);
+        setTop50(
+          props.top50SongsResponse
+            .sort((a, b) => (a.date < b.date ? 1 : -1))
+            .sort((a, b) => (a.count < b.count ? 1 : -1)),
+        );
 
         break;
 
@@ -219,7 +211,7 @@ function Search(props) {
   }
 
   if (userstatus === '' || props.userstatus !== userstatus) {
-    console.log('status' + props.userstatus);
+    // console.log('status' + props.userstatus);
     switch (props.userstatus) {
       case GET_USER_FROM_HOME_REQUEST:
         userstatus = props.userstatus;
@@ -233,38 +225,6 @@ function Search(props) {
 
       case GET_USER_FROM_HOME_FAILURE:
         userstatus = props.userstatus;
-        break;
-    }
-  }
-
-  if (messageStatus === '' || props.messageStatus !== messageStatus) {
-    switch (props.messageStatus) {
-      case CREATE_CHAT_TOKEN_FROM_SEARCH_REQUEST:
-        messageStatus = props.messageStatus;
-        break;
-
-      case CREATE_CHAT_TOKEN_FROM_SEARCH_SUCCESS:
-        messageStatus = props.messageStatus;
-        // console.log('search page');
-        setUserSearchData([]);
-        sesUsersToSEndSong([]);
-        setUserSeach('');
-        props.navigation.navigate('SendSongInMessageFinal', {
-          image: props.searchPostData[positionInArray].song_image,
-          title: props.searchPostData[positionInArray].song_name,
-          title2: props.searchPostData[positionInArray].artist_name,
-          users: usersToSEndSong,
-          details: props.searchPostData[positionInArray],
-          registerType: props.registerType,
-          fromAddAnotherSong: false,
-          index: 0,
-          fromHome: true,
-        });
-        break;
-
-      case CREATE_CHAT_TOKEN_FROM_SEARCH_FAILURE:
-        messageStatus = props.messageStatus;
-        toast('Error', 'Something Went Wong, Please Try Again');
         break;
     }
   }
@@ -479,9 +439,11 @@ function Search(props) {
   function renderGenreData(data) {
     return (
       <TouchableOpacity
-        style={{
-          margin: normalise(4),
-        }}
+        style={
+          {
+            //   margin: normalise(4),
+          }
+        }
         onPress={() => {
           props.navigation.navigate('GenreSongClicked', {
             data: data.item._id,
@@ -493,10 +455,10 @@ function Search(props) {
             uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
           }}
           style={{
-            height: normalise(150),
-            width: normalise(150),
+            width: Math.floor(Dimensions.get('window').width / 2),
+            height: Math.floor(Dimensions.get('window').width / 2),
           }}
-          resizeMode="contain"
+          resizeMode="cover"
         />
       </TouchableOpacity>
     );
@@ -523,8 +485,6 @@ function Search(props) {
       text: reaction,
       text_match: myReaction,
     };
-
-    console.log('totalReact' + totalReact);
 
     searchPostData.map((item, index) => {
       if (id === item._id) {
@@ -661,185 +621,6 @@ function Search(props) {
     }
   }
 
-  //MODAL MORE PRESSED
-  const MorePressed = () => {
-    return (
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        presentationStyle={'overFullScreen'}
-        onRequestClose={() => {
-          //Alert.alert("Modal has been closed.");
-        }}>
-        <ImageBackground
-          source={ImagePath.page_gradient}
-          style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-          <View style={styles.modalView}>
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                let saveSongObject = {
-                  song_uri: props.searchPostData[positionInArray].song_uri,
-                  song_name: props.searchPostData[positionInArray].song_name,
-                  song_image: props.searchPostData[positionInArray].song_image,
-                  artist_name:
-                    props.searchPostData[positionInArray].artist_name,
-                  album_name: props.searchPostData[positionInArray].album_name,
-                  post_id: props.searchPostData[positionInArray]._id,
-                  isrc_code: props.searchPostData[positionInArray].isrc_code,
-                  original_song_uri:
-                    props.searchPostData[positionInArray].original_song_uri,
-                  original_reg_type:
-                    props.searchPostData[positionInArray].userDetails
-                      .register_type,
-                };
-
-                props.saveSongReq(saveSongObject);
-                setModalVisible(!modalVisible);
-              }}>
-              <Image
-                source={ImagePath.boxicon}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Save Song
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                if (bottomSheetRef) {
-                  setModalVisible(false);
-                  bottomSheetRef.open();
-                }
-              }}>
-              <Image
-                source={ImagePath.sendicon}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(13),
-                  marginLeft: normalise(15),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Send Song
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                marginTop: normalise(18),
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                Clipboard.setString(
-                  props.searchPostData[positionInArray].song_uri,
-                );
-                setModalVisible(!modalVisible);
-
-                setTimeout(() => {
-                  toast('Success', 'Song copied to clipboard.');
-                }, 1000);
-              }}>
-              <Image
-                source={ImagePath.more_copy}
-                style={{ height: normalise(18), width: normalise(18) }}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  color: Colors.white,
-                  marginLeft: normalise(15),
-                  fontSize: normalise(13),
-                  fontFamily: 'ProximaNova-Semibold',
-                }}>
-                Copy Link
-              </Text>
-            </TouchableOpacity>
-
-            {/* <TouchableOpacity  style={{
-                flexDirection: 'row',
-                marginTop: normalise(10),
-                alignItems: 'center',
-              }}
-                            onPress={() => {
-                                setModalVisible(!modalVisible)
-                                setSearchPostData([]);
-
-                                props.userProfileResp._id !== props.searchPostData[positionInArray].user_id ?                      // USER - FOLLOW/UNFOLLOW
-                                    props.followReq({ follower_id: props.searchPostData[positionInArray].userDetails._id })    // USER - FOLLOW/UNFOLLOW
-                                    : props.deletePostReq(props.searchPostData[positionInArray]._id)
-
-                                    setPositionInArray(0);
-                            }}>
-
-                            <Image source={ImagePath.more_unfollow} style={{ height: normalise(18), width: normalise(18), }}
-                                resizeMode='contain' />
-
-                            <Text style={{
-                                color: Colors.white, marginLeft: normalise(15),
-                                fontSize: normalise(13),
-                                fontFamily: 'ProximaNova-Semibold',
-                            }}>{! _.isEmpty(props.searchPostData) ? props.userProfileResp._id === props.searchPostData[positionInArray].user_id ? "Delete Post" :
-                                `Unfollow ${props.searchPostData[positionInArray].userDetails.username}` : null}</Text>
-
-                        </TouchableOpacity> */}
-
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(!modalVisible);
-                setPositionInArray(0);
-              }}
-              style={{
-                // marginStart: normalise(20),
-                // marginEnd: normalise(20),
-                marginTop: normalise(24),
-                marginBottom: normalise(20),
-                height: normalise(40),
-                // width: '95%',
-                backgroundColor: Colors.fadeblack,
-                opacity: 10,
-                borderRadius: 6,
-                // padding: 35,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: normalise(12),
-                  fontFamily: 'ProximaNova-Bold',
-                  color: Colors.white,
-                }}>
-                CANCEL
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ImageBackground>
-      </Modal>
-    );
-  };
-  //END OF MODAL MORE PRESSED
-
   // SEARCH AND CLEAR FUNCTIONS
   const search = text => {
     if (usersSearch) {
@@ -853,7 +634,7 @@ function Search(props) {
           });
       }
     } else if (songSearch) {
-      if (text.length >= 1) {
+      if (text.length >= 0) {
         isInternetConnected()
           .then(() => {
             props.searchPost(text, flag);
@@ -880,329 +661,6 @@ function Search(props) {
     } else {
       setTop50(props.top50SongsResponse);
     }
-  };
-
-  const searchUser = text => {
-    if (text.length >= 1) {
-      props.getusersFromHome({ keyword: text });
-    }
-  };
-
-  function sendMessagesToUsers() {
-    var userIds = [];
-    usersToSEndSong.map(users => {
-      userIds.push(users._id);
-    });
-    props.createChatTokenRequest(userIds);
-  }
-
-  // RENDER USER SEARCH FLATLIST DATA
-  function renderAddUsersToMessageItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          marginTop: normalise(10),
-          width: '87%',
-          alignSelf: 'center',
-        }}
-        onPress={() => {
-          if (usersToSEndSong.length > 0) {
-            // let idArray = [];
-
-            // usersToSEndSong.map((item, index) => {
-
-            //     idArray.push(item._id)
-
-            // });
-            // if (idArray.includes(data.item._id)) {
-            //     // console.log('Already Exists');
-            // }
-            // else {
-            //     let array = [...usersToSEndSong]
-            //     array.push(data.item)
-            //     sesUsersToSEndSong(array);
-            // };
-
-            toast('Error', 'You can select one user at a time');
-          } else {
-            let array = [...usersToSEndSong];
-            array.push(data.item);
-            sesUsersToSEndSong(array);
-          }
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            borderColor: Colors.activityBorderColor,
-            borderBottomWidth: normalise(0.5),
-            paddingBottom: normalise(10),
-          }}>
-          <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-          />
-          <View style={{ marginStart: normalise(10) }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.full_name}
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.username}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  // RENDER ADD TO FLATLIST DATA
-  function renderUsersToSendSongItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          height: normalise(30),
-          paddingHorizontal: normalise(18),
-          marginStart: normalise(20),
-          marginTop: normalise(5),
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-          marginEnd:
-            data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
-        }}>
-        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
-          {data.item.username}
-        </Text>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: -4,
-            height: 25,
-            width: 25,
-            borderRadius: 12,
-          }}
-          onPress={() => {
-            let popArray = [...usersToSEndSong];
-            popArray.splice(data.index, 1);
-            sesUsersToSEndSong(popArray);
-          }}>
-          <Image
-            source={ImagePath.crossIcon}
-            style={{
-              marginTop: normalise(-1.5),
-              marginStart: normalise(8.5),
-              height: 25,
-              width: 25,
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    );
-  }
-
-  // BOTTOM SHEET FOR SELECTING USERS
-  const renderAddToUsers = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            bottomSheetRef = ref;
-          }
-        }}
-        closeOnDragDown={true}
-        closeOnPressMask={true}
-        onClose={() => {
-          //sesUsersToSEndSong([])
-        }}
-        nestedScrollEnabled={true}
-        keyboardAvoidingViewEnabled={true}
-        height={normalise(500)}
-        duration={250}
-        customStyles={{
-          container: {
-            backgroundColor: Colors.black,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-          },
-          // wrapper: {
-          //     backgroundColor: 'rgba(87,97,145,0.5)'
-
-          // },
-          draggableIcon: {
-            backgroundColor: Colors.grey,
-            width: normalise(70),
-            height: normalise(3),
-          },
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '75%',
-                justifyContent: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  fontWeight: 'bold',
-                  marginTop: normalise(10),
-                  textAlign: 'right',
-                }}>
-                SELECT USER TO SEND TO
-              </Text>
-
-              {userClicked ? (
-                <Text
-                  style={{
-                    color: Colors.white,
-                    marginTop: normalise(10),
-                    fontSize: normalise(14),
-                    fontWeight: 'bold',
-                  }}>
-                  {' '}
-                  (1)
-                </Text>
-              ) : null}
-            </View>
-
-            {usersToSEndSong.length > 0 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  bottomSheetRef.close();
-                  sendMessagesToUsers();
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(10),
-                    marginEnd: normalise(15),
-                  }}>
-                  {'NEXT'}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <View
-            style={{
-              width: '90%',
-              alignSelf: 'center',
-              height: normalise(35),
-              marginTop: normalise(20),
-              borderRadius: normalise(8),
-              backgroundColor: Colors.fadeblack,
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '85%',
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              value={userSeach}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSeach(text);
-                searchUser(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {userSeach === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserSeach('');
-                  setUserSearchData([]);
-                }}
-                style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {usersToSEndSong.length > 0 ? ( // ADD TO ARRAY FLATLIST
-            <FlatList
-              style={{
-                marginTop: normalise(10),
-                maxHeight: normalise(50),
-              }}
-              horizontal={true}
-              data={usersToSEndSong}
-              renderItem={renderUsersToSendSongItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsHorizontalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-            />
-          ) : null}
-
-          <FlatList // USER SEARCH FLATLIST
-            style={{
-              height: '65%',
-              marginTop: usersToSEndSong.length > 0 ? 0 : normalise(5),
-            }}
-            data={userSearchData}
-            renderItem={renderAddUsersToMessageItem}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={Seperator}
-          />
-        </View>
-      </RBSheet>
-    );
   };
 
   const getContacts = () => {
@@ -1248,9 +706,31 @@ function Search(props) {
     });
   };
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   //VIEW
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
@@ -1263,10 +743,9 @@ function Search(props) {
 
       <Loader visible={bool} />
 
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}>
         <SafeAreaView style={{ flex: 1 }}>
           <HeaderComponent
             firstitemtext={true}
@@ -1274,14 +753,54 @@ function Search(props) {
             title={'EXPLORE'}
             thirditemtext={true}
             texttwo={''}
+            hideBorderBottom={true}
           />
           <View
             style={{
-              backgroundColor: Colors.fadeblack,
+              backgroundColor: Colors.darkerblack,
               flexDirection: 'row',
               justifyContent: 'space-between',
               height: normalise(40),
+              borderBottomColor: Colors.fadeblack,
+              borderBottomWidth: 1,
             }}>
+            <TouchableOpacity
+              style={{
+                width: '33%',
+                height: normalise(40),
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRightWidth: normalise(1),
+                borderRightColor: Colors.darkerblack,
+              }}
+              onPress={() => {
+                props.getTop50SongReq();
+                setUsersSearch(false);
+                setGenreSearch(true);
+                setSongSearch(false);
+              }}>
+              <Text
+                style={{
+                  color: genreSearch ? Colors.white : Colors.grey_text,
+                  fontFamily: 'Kallisto',
+                  fontSize: normalise(10),
+                  textTransform: 'uppercase',
+                }}>
+                Top Songs
+              </Text>
+              {genreSearch ? (
+                <Image
+                  source={ImagePath.gradient_border_horizontal}
+                  style={{
+                    width: '100%',
+                    height: normalise(3),
+                    position: 'absolute',
+                    bottom: 0,
+                  }}
+                  resizeMode="contain"
+                />
+              ) : null}
+            </TouchableOpacity>
             <TouchableOpacity
               style={{
                 width: '33%',
@@ -1297,8 +816,8 @@ function Search(props) {
               <Text
                 style={{
                   color: usersSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
+                  fontFamily: 'Kallisto',
+                  fontSize: normalise(10),
                   textTransform: 'uppercase',
                 }}>
                 Users
@@ -1312,44 +831,7 @@ function Search(props) {
                     position: 'absolute',
                     bottom: 0,
                   }}
-                />
-              ) : null}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: '34%',
-                height: normalise(40),
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderLeftWidth: normalise(1),
-                borderLeftColor: Colors.darkerblack,
-                borderRightWidth: normalise(1),
-                borderRightColor: Colors.darkerblack,
-              }}
-              onPress={() => {
-                props.getTop50SongReq();
-                setUsersSearch(false);
-                setGenreSearch(true);
-                setSongSearch(false);
-              }}>
-              <Text
-                style={{
-                  color: genreSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
-                  textTransform: 'uppercase',
-                }}>
-                Top Songs
-              </Text>
-              {genreSearch ? (
-                <Image
-                  source={ImagePath.gradient_border_horizontal}
-                  style={{
-                    width: '100%',
-                    height: normalise(3),
-                    position: 'absolute',
-                    bottom: 0,
-                  }}
+                  resizeMode="contain"
                 />
               ) : null}
             </TouchableOpacity>
@@ -1359,6 +841,8 @@ function Search(props) {
                 height: normalise(40),
                 alignItems: 'center',
                 justifyContent: 'center',
+                borderLeftWidth: normalise(1),
+                borderLeftColor: Colors.darkerblack,
               }}
               onPress={() => {
                 setUsersSearch(false);
@@ -1368,8 +852,8 @@ function Search(props) {
               <Text
                 style={{
                   color: songSearch ? Colors.white : Colors.grey_text,
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(11),
+                  fontFamily: 'Kallisto',
+                  fontSize: normalise(10),
                   textTransform: 'uppercase',
                 }}>
                 Songs
@@ -1383,6 +867,7 @@ function Search(props) {
                     position: 'absolute',
                     bottom: 0,
                   }}
+                  resizeMode="contain"
                 />
               ) : null}
             </TouchableOpacity>
@@ -1390,21 +875,22 @@ function Search(props) {
           {usersSearch || songSearch ? (
             <View
               style={{
-                width: '92%',
+                width: '100%',
                 alignSelf: 'center',
+                marginTop: normalise(16),
+                marginBottom: normalise(16),
               }}>
               <TextInput
                 style={{
                   height: normalise(35),
-                  width: '100%',
+                  // width: '92%',
                   // backgroundColor: Colors.fadeblack,
                   borderRadius: normalise(8),
-                  marginTop: normalise(16),
                   padding: normalise(10),
-                  // color: Colors.white,
-
-                  backgroundColor: Colors.white,
-                  paddingLeft: normalise(30),
+                  color: Colors.white,
+                  marginHorizontal: normalise(12),
+                  backgroundColor: Colors.fadeblack,
+                  paddingLeft: normalise(35),
                 }}
                 keyboardAppearance="dark"
                 autoCorrect={false}
@@ -1421,10 +907,13 @@ function Search(props) {
               <Image
                 source={ImagePath.searchicongrey}
                 style={{
+                  position: 'absolute',
                   height: normalise(15),
                   width: normalise(15),
-                  bottom: normalise(25),
-                  paddingLeft: normalise(30),
+                  bottom: normalise(10),
+                  paddingLeft: normalise(35),
+                  marginHorizontal: normalise(12),
+                  transform: [{ scaleX: -1 }],
                 }}
                 resizeMode="contain"
               />
@@ -1441,15 +930,14 @@ function Search(props) {
                   }}
                   style={{
                     // backgroundColor: Colors.black,
-                    padding: 6,
+                    padding: 10,
                     paddingTop: 4,
                     paddingBottom: 4,
                     borderRadius: 5,
-                    backgroundColor: Colors.fordGray,
+                    backgroundColor: Colors.darkerblack,
                     position: 'absolute',
-                    right: 0,
-                    bottom:
-                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                    right: 12,
+                    bottom: Platform.OS === 'ios' ? normalise(8) : normalise(8),
                     marginRight: normalise(10),
                   }}>
                   <Text
@@ -1467,28 +955,28 @@ function Search(props) {
             <View />
           )}
           {usersSearch ? ( //USERS VIEW
-            _.isEmpty(songData) ? (
-              <EmptyComponent
-                buttonPress={() => {
-                  setContactsLoading(true);
-                  getContacts();
-                }}
-                buttonText={'Search Phonebook'}
-                image={ImagePath.emptyUser}
-                text={
-                  'Search above to find users you want to follow by either their username or just typing their name.'
-                }
-                title={'Search Users to Follow'}
-              />
+            songData.length === 0 ? (
+              !isKeyboardVisible && (
+                <EmptyComponent
+                  buttonPress={() => {
+                    setContactsLoading(true);
+                    getContacts();
+                  }}
+                  buttonText={'Search Phonebook'}
+                  image={ImagePath.emptyUser}
+                  text={
+                    'Search above to find users you want to follow by either their username or just typing their name.'
+                  }
+                  title={'Search Users to Follow'}
+                />
+              )
             ) : (
               <View>
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
-                    width: '92%',
-                    alignSelf: 'center',
-                    marginTop: normalise(5),
+                    marginHorizontal: normalise(12),
+                    paddingBottom: normalise(8),
                     justifyContent: 'flex-start',
                   }}>
                   <Text
@@ -1501,10 +989,11 @@ function Search(props) {
                     {' '}
                     RESULTS ({songData.length})
                   </Text>
-                </View>
-
+                </View> */}
                 <FlatList
-                  style={{ height: '70%' }}
+                  style={{
+                    height: Dimensions.get('window').height - 295,
+                  }}
                   data={songData}
                   renderItem={renderUserData}
                   keyExtractor={(item, index) => index.toString()}
@@ -1516,23 +1005,23 @@ function Search(props) {
           ) : null}
 
           {songSearch ? ( //SONG VIEW
-            _.isEmpty(searchPostData) ? (
-              <EmptyComponent
-                image={ImagePath.emptySong}
-                text={
-                  'Search for a song or artist you love to find which other Choona users are posting them as well.'
-                }
-                title={'Explore posts containing a song'}
-              />
+            searchPostData.length === 0 ? (
+              !isKeyboardVisible && (
+                <EmptyComponent
+                  image={ImagePath.emptySong}
+                  text={
+                    'Search for a song or artist you love to find which other Choona users are posting them as well.'
+                  }
+                  title={'Explore posts containing a song'}
+                />
+              )
             ) : (
               <View>
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
-                    width: '92%',
-                    alignSelf: 'center',
-                    marginTop: normalise(5),
+                    marginHorizontal: normalise(12),
+                    paddingBottom: normalise(8),
                     justifyContent: 'flex-start',
                   }}>
                   <Text
@@ -1545,7 +1034,7 @@ function Search(props) {
                     {' '}
                     RESULTS ({searchPostData.length})
                   </Text>
-                </View>
+                </View> */}
 
                 <FlatList
                   style={{ height: '70%' }}
@@ -1554,33 +1043,63 @@ function Search(props) {
                   keyExtractor={(item, index) => index.toString()}
                   showsVerticalScrollIndicator={false}
                 />
-
-                {MorePressed()}
-                {renderAddToUsers()}
+                {modalVisible && (
+                  <MoreModal
+                    setBool={setBool}
+                    bottomSheetRef={bottomSheetRef}
+                    index={positionInArray}
+                    setIndex={setPositionInArray}
+                    navigation={props.navigation}
+                    postData={props.searchPostData}
+                    show={modalVisible}
+                    setShow={setModalVisible}
+                  />
+                )}
               </View>
             )
           ) : null}
-
           {genreSearch ? ( //Top Songs VIEW
-            _.isEmpty(!top50) ? (
-              <EmptyComponent
-                image={ImagePath.emptyPost}
-                text={'No songs have been posted today.'}
-                // title={'No songs have been posted today'}
-              />
+            top50.length === 0 ? (
+              !isKeyboardVisible && (
+                <EmptyComponent
+                  image={ImagePath.emptyPost}
+                  text={'No songs have been posted today.'}
+                  // title={'No songs have been posted today'}
+                />
+              )
             ) : (
-              <FlatList
-                style={{
-                  alignSelf: 'center',
-                  width: '100%',
-                  padding: normalise(2),
-                }}
-                data={top50}
-                renderItem={renderGenreData}
-                keyExtractor={(item, index) => index.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-              />
+              <>
+                <FlatList
+                  data={top50}
+                  renderItem={renderGenreData}
+                  keyExtractor={(item, index) => index.toString()}
+                  numColumns={2}
+                  showsVerticalScrollIndicator={false}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}>
+                  <BannerAd
+                    unitId={
+                      Platform.OS === 'android'
+                        ? 'ca-app-pub-2232736176622960/2335890938'
+                        : 'ca-app-pub-2232736176622960/3492936227'
+                    }
+                    size={BannerAdSize.BANNER}
+                    requestOptions={{
+                      requestNonPersonalizedAdsOnly: true,
+                    }}
+                    onAdLoaded={() => {
+                      // console.log('Advert loaded');
+                    }}
+                    onAdFailedToLoad={error => {
+                      console.error('Advert failed to load: ', error);
+                    }}
+                  />
+                </View>
+              </>
             )
           ) : null}
 
@@ -1609,48 +1128,10 @@ function Search(props) {
             </View>
           </Modal>
         </SafeAreaView>
-      </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  modalView: {
-    // marginBottom: normalise(10),
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
-    backgroundColor: Colors.darkerblack,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    // margin: 20,
-    padding: 20,
-    paddingTop: normalise(24),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-  },
-});
+};
 
 const mapStateToProps = state => {
   return {
@@ -1701,10 +1182,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenFromSearchRequest(payload));
     },
   };
 };

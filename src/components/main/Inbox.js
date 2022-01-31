@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
+  Keyboard,
   Text,
   TouchableOpacity,
   FlatList,
-  Keyboard,
   Image,
   Platform,
   TextInput,
   Alert,
-  TouchableWithoutFeedback,
 } from 'react-native';
 
 import Seperator from './ListCells/Seperator';
@@ -22,8 +21,6 @@ import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
 import { connect } from 'react-redux';
-
-const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
 
 import {
   GET_CHAT_LIST_REQUEST,
@@ -50,8 +47,6 @@ function Inbox(props) {
   const [search, setSearch] = useState('');
   const [mesageList, setMessageList] = useState('');
   const [bool, setBool] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState(0);
-  const [newarr, setnewarr] = [];
   const [nonEmpty, setNonEmpty] = useState(false);
 
   useEffect(() => {
@@ -111,10 +106,6 @@ function Inbox(props) {
   }
 
   function sortArray(value) {
-    // const sortedMessages = [];
-    // .concat(value)
-    // .sort((a, b) => (new Date(a.time) < new Date(b.time) ? 1 : -1));
-
     setMessageList(value);
     setNonEmpty(true);
   }
@@ -127,7 +118,6 @@ function Inbox(props) {
       );
     });
 
-    // console.log(data);
     setMessageList([]);
     setNonEmpty(false);
     setBool(true);
@@ -152,9 +142,6 @@ function Inbox(props) {
         onPress={() =>
           props.navigation.navigate('InsideaMessage', { index: data.index })
         }
-        marginBottom={
-          data.index === props.chatList.length - 1 ? normalise(20) : 0
-        }
         onPressImage={() => {
           props.navigation.navigate('OthersProfile', { id: data.item.user_id });
         }}
@@ -177,115 +164,112 @@ function Inbox(props) {
     );
   }
 
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
     );
-  }
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
       <Loader visible={bool} />
-
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath ? ImagePath.backicon : null}
-            title={'INBOX'}
-            thirditemtext={false}
-            imagetwo={ImagePath ? ImagePath.newmessage : null}
-            imagetwoheight={25}
-            imagetwowidth={25}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
-            }}
-            onPressThirdItem={() => {
-              props.navigation.navigate('AddSongsInMessage');
-            }}
-          />
-
-          {_.isEmpty(props.chatList) ? null : (
-            <View
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={''}
+          title={'INBOX'}
+          thirditemtext={false}
+          imagetwo={ImagePath ? ImagePath.newmessage : null}
+          imagetwoheight={25}
+          imagetwowidth={25}
+          onPressThirdItem={() => {
+            props.navigation.navigate('AddSongsInMessage');
+          }}
+        />
+        {_.isEmpty(props.chatList) ? null : (
+          <View
+            style={{
+              width: '92%',
+              alignSelf: 'center',
+            }}>
+            <TextInput
+              autoCorrect={false}
+              keyboardAppearance={'dark'}
               style={{
-                width: '92%',
-                alignSelf: 'center',
-              }}>
-              <TextInput
-                autoCorrect={false}
-                keyboardAppearance={'dark'}
+                height: normalise(35),
+                width: '100%',
+                backgroundColor: Colors.fadeblack,
+                borderRadius: normalise(8),
+                marginTop: normalise(16),
+                padding: normalise(10),
+                color: Colors.white,
+                paddingLeft: normalise(30),
+                paddingRight: normalise(50),
+              }}
+              value={search}
+              placeholder={'Search'}
+              placeholderTextColor={Colors.darkgrey}
+              onChangeText={text => {
+                setSearch(text), filterArray(text);
+              }}
+            />
+            <Image
+              source={ImagePath ? ImagePath.searchicongrey : null}
+              style={{
+                height: normalise(15),
+                width: normalise(15),
+                bottom: normalise(25),
+                paddingLeft: normalise(30),
+              }}
+              resizeMode="contain"
+            />
+            {search === '' ? null : (
+              <TouchableOpacity
+                onPress={() => {
+                  setSearch(''), filterArray('');
+                }}
                 style={{
-                  height: normalise(35),
-                  width: '100%',
-                  backgroundColor: Colors.white,
-                  borderRadius: normalise(8),
-                  marginTop: normalise(16),
-                  padding: normalise(10),
-                  // color: Colors.white,
-                  paddingLeft: normalise(30),
-                  paddingRight: normalise(50),
-                }}
-                value={search}
-                placeholder={'Search'}
-                placeholderTextColor={Colors.darkgrey}
-                onChangeText={text => {
-                  setSearch(text), filterArray(text);
-                }}
-              />
-
-              <Image
-                source={ImagePath ? ImagePath.searchicongrey : null}
-                style={{
-                  height: normalise(15),
-                  width: normalise(15),
-                  bottom: normalise(25),
-                  paddingLeft: normalise(30),
-                }}
-                resizeMode="contain"
-              />
-
-              {search === '' ? null : (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearch(''), filterArray('');
-                  }}
+                  backgroundColor: Colors.darkerblack,
+                  padding: 6,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 5,
+                  position: 'absolute',
+                  right: 0,
+                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                  marginRight: normalise(10),
+                }}>
+                <Text
                   style={{
-                    backgroundColor: Colors.fordGray,
-                    padding: 6,
-                    paddingTop: 4,
-                    paddingBottom: 4,
-                    borderRadius: 5,
-                    position: 'absolute',
-                    right: 0,
-                    bottom:
-                      Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                    marginRight: normalise(10),
+                    color: Colors.white,
+                    fontSize: normalise(10),
+                    fontWeight: 'bold',
                   }}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(10),
-                      fontWeight: 'bold',
-                    }}>
-                    CLEAR
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-
-          {_.isEmpty(props.chatList) && nonEmpty ? (
+                  CLEAR
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+        {_.isEmpty(props.chatList) && nonEmpty ? (
+          !isKeyboardVisible && (
             <EmptyComponent
               buttonPress={() => {
                 props.navigation.navigate('AddSongsInMessage');
@@ -297,19 +281,19 @@ function Inbox(props) {
               }
               title={'Your Inbox is empty'}
             />
-          ) : (
-            <FlatList
-              data={mesageList}
-              renderItem={renderInboxItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-            />
-          )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+          )
+        ) : (
+          <FlatList
+            data={mesageList}
+            renderItem={renderInboxItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
+          />
+        )}
+      </SafeAreaView>
     </View>
   );
 }

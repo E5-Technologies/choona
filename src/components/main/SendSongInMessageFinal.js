@@ -25,6 +25,8 @@ import {
   SEND_CHAT_MESSAGE_FAILURE,
 } from '../../action/TypeConstants';
 import axios from 'axios';
+import ImagePath from '../../assests/ImagePath';
+import Avatar from '../Avatar';
 
 let status;
 
@@ -43,9 +45,15 @@ function SendSongInMessageFinal(props) {
   const [typingTimeout, setTypingTimeout] = useState(0);
 
   useEffect(() => {
+    if (props.status === 'SEND_CHAT_MESSAGE_SUCCESS') {
+      toast('Error', 'Message sent successfully.');
+    }
+  }, [props.status]);
+
+  useEffect(() => {
     if (
       props.registerType === 'spotify' &&
-      props.route.params.details.preview_url === null
+      props.route.params.details?.preview_url === null
     ) {
       const getSpotifyApi = async () => {
         try {
@@ -69,8 +77,7 @@ function SendSongInMessageFinal(props) {
   // GET SPOTIFY SONG URL
   const callApi = async () => {
     return await axios.get(
-      `${
-        constants.BASE_URL
+      `${constants.BASE_URL
       }/${`song/spotify/${props.route.params.details.id}`}`,
       {
         headers: {
@@ -84,19 +91,15 @@ function SendSongInMessageFinal(props) {
   if (status === '' || status !== props.status) {
     switch (props.status) {
       case SEND_CHAT_MESSAGE_REQUEST:
-        // console.log('HERE SEND');
         status = props.status;
         break;
 
       case SEND_CHAT_MESSAGE_SUCCESS:
         status = props.status;
-        // console.log('HERE SEND');
-
         break;
 
       case SEND_CHAT_MESSAGE_FAILURE:
         status = props.status;
-        // console.log('HERE FAIL');
         toast('Error', 'Something Went Wong, Please Try Again');
         break;
     }
@@ -113,19 +116,22 @@ function SendSongInMessageFinal(props) {
           width: '87%',
           alignSelf: 'center',
         }}
-        onPress={() => {}}>
+        onPress={() => { }}>
         <View style={{ flexDirection: 'row' }}>
-          <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
+          <Avatar
+            image={
+              data.item.profile_image
+                ? constants.profile_picture_base_url + data.item.profile_image
+                : null
+            }
+            height={28}
+            width={28}
           />
           <View style={{ marginStart: normalise(10) }}>
             <Text
               style={{
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: normalise(12),
                 fontFamily: 'ProximaNova-Semibold',
               }}>
               {data.item.full_name}
@@ -133,9 +139,10 @@ function SendSongInMessageFinal(props) {
 
             <Text
               style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
+                color: Colors.grey_text,
+                fontSize: normalise(10),
+                fontFamily: 'ProximaNova-Regular',
+                textTransform: 'lowercase',
               }}>
               {data.item.username}
             </Text>
@@ -168,35 +175,39 @@ function SendSongInMessageFinal(props) {
         album_name: type
           ? props.route.params.details.album_name
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.album.name
-          : props.route.params.details.attributes.albumName,
+            ? props.route.params.details.album.name
+            : props.route.params.details.attributes.albumName,
 
         image: imgsource,
 
         song_uri: type
           ? props.route.params.details.song_uri
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.preview_url === null
-            ? spotifyUrl
-            : props.route.params.details.preview_url
-          : props.route.params.details.attributes.previews[0].url,
+            ? props.route.params.details.preview_url === null
+              ? spotifyUrl
+              : props.route.params.details.preview_url
+            : props.route.params.details.attributes.previews[0].url,
 
         original_song_uri: type
           ? props.route.params.details.original_song_uri
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.external_urls.spotify
-          : props.route.params.details.attributes.url,
+            ? props.route.params.details.external_urls.spotify
+            : props.route.params.details.attributes.url,
 
         isrc_code: type
           ? props.route.params.details.isrc_code
           : props.route.params.registerType === 'spotify'
-          ? props.route.params.details.external_ids.isrc
-          : props.route.params.details.attributes.isrc,
+            ? props.route.params.details.external_ids.isrc
+            : props.route.params.details.attributes.isrc,
 
         original_reg_type: type
           ? props.route.params.details.hasOwnProperty('social_type')
             ? props.route.params.details.social_type
-            : props.route.params.details.original_reg_type
+            : props.route.params.details.hasOwnProperty('social_type')
+              ? props.route.params.details.original_reg_type
+              : props.route.params.details.hasOwnProperty('register_type')
+                ? props.route.params.details.register_type
+                : props.registerType
           : props.registerType,
 
         read: false,
@@ -214,59 +225,37 @@ function SendSongInMessageFinal(props) {
     };
 
     props.sendChatMessageRequest(chatPayload);
-    toast('Error', 'Message sent successfully.');
-    //props.navigation.goBack();
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={'CANCEL'}
-          title={'SEND SONG'}
+          title={'ADD COMMENT'}
           thirditemtext={true}
           texttwo={'SEND'}
           onPressFirstItem={() => {
-            // if (fromAddAnotherSong) {
-            //     props.navigation.replace('InsideaMessage', { index: index })
-            // } else {
-            //     props.navigation.goBack();
-            // }
-            if (props.route.params.fromPlayer) {
-              props.navigation.goBack();
-            } else {
-              props.navigation.pop(2);
-            }
+            props.navigation.goBack();
           }}
           onPressThirdItem={() => {
-            // if (search.trim() !== "") {
             sendMessage();
-            // if (fromAddAnotherSong) {
-            //     props.navigation.replace('InsideaMessage', { index: index })
-            // } else {
-            //     props.navigation.goBack();
-            // }
-
             if (props.route.params.fromPlayer === true) {
               // console.log('from player');
               props.navigation.goBack();
             } else {
               // console.log('not from player');
-              props.navigation.pop(2);
+              props.navigation.pop(props.route.params.goBack ?? 2);
             }
-
-            // } else {
-            //     toast("Error", "Please type in a message to send");
-            // }
           }}
         />
 
         <View
           style={{
-            marginTop: normalise(20),
+            marginTop: normalise(10),
             width: '92%',
             alignSelf: 'center',
           }}>
@@ -290,7 +279,7 @@ function SendSongInMessageFinal(props) {
           <View
             style={{
               marginTop: normalise(5),
-              backgroundColor: Colors.darkerblack,
+              backgroundColor: Colors.fadeblack,
               height: normalise(65),
               width: '100%',
               borderRadius: normalise(8),
@@ -352,10 +341,11 @@ function SendSongInMessageFinal(props) {
         <Text
           style={{
             color: Colors.white,
+            fontFamily: 'ProximaNova-Regular',
             margin: normalise(15),
             marginBottom: normalise(5),
           }}>
-          Sending song to:
+          Sending to:
         </Text>
 
         <FlatList // USER SEARCH FLATLIST

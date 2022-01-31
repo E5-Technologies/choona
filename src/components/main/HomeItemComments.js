@@ -50,6 +50,8 @@ import CommentList from '../main/ListCells/CommentList';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
+import HeaderComponent from '../../widgets/HeaderComponent';
+import MyStatusBar from '../../utils/MyStatusBar';
 
 let status;
 
@@ -92,19 +94,8 @@ function HomeItemComments(props) {
       .catch(err => {
         toast('Error', err);
       });
-    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
     BackHandler.addEventListener('hardwareBackPress', _onBackHandlerPress);
-
-    return () => {
-      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
-    };
-    //  BackHandler.removeEventListener("hardwareBackPress", _onBackHandlerPress);
   }, [props.header.token, props.route.params.id]);
-
-  const _keyboardDidShow = () => setEmoji(true);
-  const _keyboardDidHide = () => setEmoji(false);
 
   function renderItem(data) {
     return (
@@ -229,7 +220,7 @@ function HomeItemComments(props) {
     _text = _text.slice(index);
   }
   parts.push(_text);
-  console.log('parts' + parts);
+  // console.log('parts' + parts);
   //highlight hashtags
   parts = parts.map(text => {
     if (/^@/.test(text)) {
@@ -245,8 +236,26 @@ function HomeItemComments(props) {
 
   return (
     <View style={styles.container} keyboardShouldPersistTaps="always">
-      <StatusBar />
-      <HeaderComponentComments
+      <MyStatusBar />
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={
+            comments.length > 0
+              ? comments.length === 1
+                ? '1 COMMENT'
+                : `${comments.length} COMMENTS`
+              : 'COMMENTS'
+          }
+          thirditemtext={false}
+          //   marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
+          onPressFirstItem={() => {
+            // props.navigation.goBack();
+            _onBackPress();
+          }}
+        />
+        {/* <HeaderComponentComments
         firstitemtext={false}
         imageone={ImagePath.backicon}
         title={
@@ -262,15 +271,12 @@ function HomeItemComments(props) {
           // props.navigation.goBack();
           _onBackPress();
         }}
-      />
-      <ScrollView keyboardShouldPersistTaps="always">
-        <SafeAreaView>
-          <Loader visible={commentsLoading} />
-
-          <View style={styles.commentHeader}>
-            <View style={styles.commentHeaderDetails}>
-              <TouchableOpacity style={styles.commentHeaderAvatarButton}>
-                {/* <Image
+      /> */}
+        <Loader visible={commentsLoading} />
+        <View style={styles.commentHeader}>
+          <View style={styles.commentHeaderDetails}>
+            <TouchableOpacity style={styles.commentHeaderAvatarButton}>
+              {/* <Image
                 source={ImagePath.play}
                 style={{
                   height: normalise(20),
@@ -279,279 +285,281 @@ function HomeItemComments(props) {
                   alignSelf: 'center',
                 }}
               /> */}
-                <Image
-                  source={image ? { uri: image } : null}
-                  style={styles.commentHeaderAvatar}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-              <View style={styles.commentHeaderInfoContainer}>
-                <View style={styles.commentHeaderInfoTop}>
-                  <Text style={styles.commentHeaderInfoUsername}>
-                    {username}
-                  </Text>
+              <Image
+                source={image ? { uri: image } : null}
+                style={styles.commentHeaderAvatar}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <View style={styles.commentHeaderInfoContainer}>
+              <View style={styles.commentHeaderInfoTop}>
+                <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
 
-                  <Text style={styles.commentHeaderInfoTime}>
-                    {moment(time).from()}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={styles.commentHeaderInfoComment}>
-                    {userComment}
-                  </Text>
-                </View>
+                <Text style={styles.commentHeaderInfoTime}>
+                  {moment(time).from()}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.commentHeaderInfoComment}>
+                  {userComment}
+                </Text>
               </View>
             </View>
           </View>
-          <SwipeListView
-            data={comments}
-            keyboardShouldPersistTaps="always"
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            disableRightSwipe={true}
-            rightOpenValue={-75}
-          />
-        </SafeAreaView>
-      </ScrollView>
-      {showmention ? (
-        <View
-          style={{
-            backgroundColor: 'black',
-            borderTopRightRadius: 10,
-            borderTopLeftRadius: 10,
-            marginRight: '20%',
-            //  minHeight:Dimensions.get('window').height/7,
-            //  maxHeight:Dimensions.get("window").height/4.2,
-            height:
-              followingList.length + followerList.length === 2 ||
-              followingList.length + followerList.length === 1
-                ? Dimensions.get('window').height / 5
-                : followingList.length + followerList.length === 3
-                ? Dimensions.get('window').height / 3.5
-                : Dimensions.get('window').height / 3,
-            //  bottom: Dimensions.get("window").width/7,
-            width: Dimensions.get('window').width / 1.25,
-          }}>
-          <FlatList
-            data={followerList.concat(followingList).filter(function (o) {
-              return this[o.username] ? false : (this[o.username] = true);
-            }, {})}
-            style={{ marginBottom: '0%' }}
-            keyboardShouldPersistTaps="always"
-            renderItem={({ item, index }) => {
-              return (
-                <TouchableOpacity
-                  style={{ flexDirection: 'row', paddingTop: '3%' }}
-                  onPress={() => {
-                    setSelection({
-                      start: commentText.lastIndexOf('@'),
-                      end: Selection.end,
-                    });
-                    let newString = commentText.substr(
-                      0,
-                      commentText.lastIndexOf('@') + 1,
-                    );
-                    setCommentText(newString + item.username + ' ');
-                    setShowMention(false);
-                    tagFriend.push(item.username);
-                  }}>
-                  <Image
-                    source={
-                      item
-                        ? {
-                            uri:
-                              constants.profile_picture_base_url +
-                              item.profile_image,
-                          }
-                        : null
-                    }
-                    resizeMode="contain"
-                    style={{
-                      height: Dimensions.get('window').width / 12,
-                      width: Dimensions.get('window').width / 12,
-                      borderRadius: Dimensions.get('window').width,
-                      marginLeft: '5%',
-                      marginRight: '4%',
-                      // marginBottom:'3%'
-                    }}
-                  />
-                  <View
-                    style={{
-                      flex: 1,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: '#25262A',
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={{ fontSize: 14, color: 'white' }}>
-                      {item.full_name}
-                    </Text>
-
-                    <Text
-                      style={{
-                        fontSize: 11,
-                        color: 'grey',
-                        marginBottom: '5%',
-                      }}>
-                      @{item.username}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
         </View>
-      ) : null}
-      <View
-        style={[
-          styles.commentFooterContainer,
-          {
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#000000',
-          },
-        ]}>
-        <TextInput
-          style={[
-            styles.commentFooterInput,
-            {
-              flex: 1,
-              //flexWrap:'wrap',
-              //alignItems:'center'
-            },
-          ]}
-          multiline
-          maxHeight={100}
-          autoFocus={true}
-          keyboardAppearance="dark"
-          onContentSizeChange={e =>
-            updateSize(e.nativeEvent.contentSize.height)
-          }
-          placeholder={'Add a comment...'}
-          placeholderTextColor={Colors.white}
-          onFocus={() => setEmoji(true)}
-          onChangeText={text => {
-            let indexvalue = text.lastIndexOf('@');
-            let newString = text.substr(text.lastIndexOf('@'));
+        <SwipeListView
+          style={{ flex: 1 }}
+          data={comments}
+          keyboardShouldPersistTaps="always"
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => {
+            index.toString();
+          }}
+          disableRightSwipe={true}
+          rightOpenValue={-75}
+        />
+        {showmention ? (
+          <View
+            style={{
+              backgroundColor: 'black',
+              borderTopRightRadius: 10,
+              borderTopLeftRadius: 10,
+              marginRight: '20%',
+              //  minHeight:Dimensions.get('window').height/7,
+              //  maxHeight:Dimensions.get("window").height/4.2,
+              height:
+                followingList.length + followerList.length === 2 ||
+                followingList.length + followerList.length === 1
+                  ? Dimensions.get('window').height / 5
+                  : followingList.length + followerList.length === 3
+                  ? Dimensions.get('window').height / 3.5
+                  : Dimensions.get('window').height / 3,
+              //  bottom: Dimensions.get("window").width/7,
+              width: Dimensions.get('window').width / 1.25,
+            }}>
+            <FlatList
+              data={followerList.concat(followingList).filter(function (o) {
+                return this[o.username] ? false : (this[o.username] = true);
+              }, {})}
+              style={{ marginBottom: '0%' }}
+              keyboardShouldPersistTaps="always"
+              renderItem={({ item, index }) => {
+                return (
+                  <TouchableOpacity
+                    style={{ flexDirection: 'row', paddingTop: '3%' }}
+                    onPress={() => {
+                      setSelection({
+                        start: commentText.lastIndexOf('@'),
+                        end: Selection.end,
+                      });
+                      let newString = commentText.substr(
+                        0,
+                        commentText.lastIndexOf('@') + 1,
+                      );
+                      setCommentText(newString + item.username + ' ');
+                      setShowMention(false);
+                      tagFriend.push(item.username);
+                    }}>
+                    <Image
+                      source={
+                        item
+                          ? item.profile_image
+                            ? {
+                                uri:
+                                  constants.profile_picture_base_url +
+                                  item.profile_image,
+                              }
+                            : ImagePath.userPlaceholder
+                          : null
+                      }
+                      resizeMode="contain"
+                      style={{
+                        height: Dimensions.get('window').width / 12,
+                        width: Dimensions.get('window').width / 12,
+                        borderRadius: Dimensions.get('window').width,
+                        marginLeft: '5%',
+                        marginRight: '4%',
+                        // marginBottom:'3%'
+                      }}
+                    />
+                    <View
+                      style={{
+                        flex: 1,
+                        borderBottomWidth: 0.5,
+                        borderBottomColor: '#25262A',
+                        justifyContent: 'center',
+                      }}>
+                      <Text style={{ fontSize: 14, color: 'white' }}>
+                        {item.full_name}
+                      </Text>
 
-            if (indexvalue !== -1) {
-              if (newString.length === 1) {
-                if (
-                  commentText.substr(indexvalue - 1) === ' ' ||
-                  commentText.substr(indexvalue - 1) === ''
-                ) {
-                  setFollowingList([...props.followingData]);
-                  setFollower([...props.followerData]);
-                  props.followingData.length === 0
-                    ? setShowMention(false)
-                    : setShowMention(true);
+                      <Text
+                        style={{
+                          fontSize: 11,
+                          color: 'grey',
+                          marginBottom: '5%',
+                          textTransform: 'lowercase',
+                        }}>
+                        @{item.username}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        ) : null}
+        <View
+          style={[
+            styles.commentFooterContainer,
+            {
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: '#000000',
+            },
+          ]}>
+          <TextInput
+            style={[
+              styles.commentFooterInput,
+              {
+                flex: 1,
+                //flexWrap:'wrap',
+                //alignItems:'center'
+              },
+            ]}
+            multiline
+            // maxHeight={100}
+            autoFocus={true}
+            keyboardAppearance="dark"
+            onContentSizeChange={e =>
+              updateSize(e.nativeEvent.contentSize.height)
+            }
+            placeholder={'Add a comment...'}
+            placeholderTextColor={Colors.white}
+            onFocus={() => setEmoji(true)}
+            scrollEnabled={false}
+            onChangeText={text => {
+              let indexvalue = text.lastIndexOf('@');
+              let newString = text.substr(text.lastIndexOf('@'));
+
+              if (indexvalue !== -1) {
+                if (newString.length === 1) {
+                  if (
+                    commentText.substr(indexvalue - 1) === ' ' ||
+                    commentText.substr(indexvalue - 1) === ''
+                  ) {
+                    setFollowingList([...props.followingData]);
+                    setFollower([...props.followerData]);
+                    props.followingData.length === 0
+                      ? setShowMention(false)
+                      : setShowMention(true);
+                  } else {
+                    setShowMention(false);
+                  }
                 } else {
-                  setShowMention(false);
+                  let newSubString = newString.substr(1, newString.length - 1);
+                  let newArray = [];
+                  let newFollowArray = [];
+                  if (props.followingData.length !== 0) {
+                    props.followingData.map((item, index) => {
+                      //  console.log("mapItem"+item.full_name)
+                      if (item.username.includes(newSubString)) {
+                        newArray.push(item);
+                      }
+                      if (index === props.followingData.length - 1) {
+                        if (props.followerData.length !== 0) {
+                          props.followerData.map((items, indexs) => {
+                            if (items.username.includes(newSubString)) {
+                              newFollowArray.push(items);
+                            }
+                            if (indexs === props.followerData.length - 1) {
+                              newFollowArray.length === 0
+                                ? setShowMention(false)
+                                : (setFollowingList(newArray),
+                                  setFollower(newFollowArray),
+                                  setShowMention(true));
+                            }
+                          });
+                        } else {
+                          setFollowingList(newArray), setShowMention(true);
+                        }
+                      }
+                    });
+                  } else {
+                    props.followerData.map((items, indexs) => {
+                      if (items.username.includes(newSubString)) {
+                        newFollowArray.push(items);
+                      }
+                      if (indexs === props.followerData.length - 1) {
+                        newArray.length === 0
+                          ? setShowMention(false)
+                          : (setFollower(newFollowArray), setShowMention(true));
+                      }
+                    });
+                  }
                 }
               } else {
-                let newSubString = newString.substr(1, newString.length - 1);
-                let newArray = [];
-                let newFollowArray = [];
-                if (props.followingData.length !== 0) {
-                  props.followingData.map((item, index) => {
-                    //  console.log("mapItem"+item.full_name)
-                    if (item.username.includes(newSubString)) {
-                      newArray.push(item);
-                    }
-                    if (index === props.followingData.length - 1) {
-                      if (props.followerData.length !== 0) {
-                        props.followerData.map((items, indexs) => {
-                          if (items.username.includes(newSubString)) {
-                            newFollowArray.push(items);
-                          }
-                          if (indexs === props.followerData.length - 1) {
-                            newFollowArray.length === 0
-                              ? setShowMention(false)
-                              : (setFollowingList(newArray),
-                                setFollower(newFollowArray),
-                                setShowMention(true));
-                          }
-                        });
-                      } else {
-                        setFollowingList(newArray), setShowMention(true);
-                      }
-                    }
-                  });
-                } else {
-                  props.followerData.map((items, indexs) => {
-                    if (items.username.includes(newSubString)) {
-                      newFollowArray.push(items);
-                    }
-                    if (indexs === props.followerData.length - 1) {
-                      newArray.length === 0
-                        ? setShowMention(false)
-                        : (setFollower(newFollowArray), setShowMention(true));
-                    }
-                  });
-                }
+                setShowMention(false);
               }
-            } else {
-              setShowMention(false);
-            }
-            setCommentText(text);
-          }}>
-          {parts}
-        </TextInput>
-        {commentText !== '' ? (
-          <TouchableOpacity
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: '3%',
-            }}
-            onPress={async () => {
-              setCommentsLoading(true);
-              let tapUser = [];
-              await props.followingData.map((item, index) => {
-                if (commentText.search(item.username) !== -1) {
-                  tagFriend.map(items => {
-                    if (items === item.username) {
-                      tapUser.push(item.username);
-                    }
-                  });
-                }
-                if (index === props.followingData.length - 1) {
-                  setTagFriend([]);
-                }
-              });
-
-              // Keyboard.dismiss();
-              let commentObject = {
-                post_id: id,
-                text: commentText,
-                tag: tapUser,
-              };
-              // console.log("ffff"+ JSON.stringify(commentObject))
-              isInternetConnected()
-                .then(() => {
-                  props.commentOnPost(commentObject);
-                  setCommentText('');
-                  setCommentsLoading(false);
-                  Keyboard.dismiss();
-                })
-                .catch(() => {
-                  setCommentsLoading(false);
-                  toast('Error', 'Please Connect To Internet');
-                });
+              setCommentText(text);
             }}>
-            <Text
+            {parts}
+          </TextInput>
+          {commentText !== '' ? (
+            <TouchableOpacity
               style={{
-                color: Colors.white,
-                fontFamily: 'ProximaNova-Bold',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: '3%',
+              }}
+              onPress={async () => {
+                setCommentsLoading(true);
+                let tapUser = [];
+                await props.followingData.map((item, index) => {
+                  if (commentText.search(item.username) !== -1) {
+                    tagFriend.map(items => {
+                      if (items === item.username) {
+                        tapUser.push(item.username);
+                      }
+                    });
+                  }
+                  if (index === props.followingData.length - 1) {
+                    setTagFriend([]);
+                  }
+                });
+
+                // Keyboard.dismiss();
+                let commentObject = {
+                  post_id: id,
+                  text: commentText,
+                  tag: tapUser,
+                };
+                // console.log("ffff"+ JSON.stringify(commentObject))
+                isInternetConnected()
+                  .then(() => {
+                    props.commentOnPost(commentObject);
+                    setCommentText('');
+                    setCommentsLoading(false);
+                    Keyboard.dismiss();
+                  })
+                  .catch(() => {
+                    setCommentsLoading(false);
+                    toast('Error', 'Please Connect To Internet');
+                  });
               }}>
-              POST
-            </Text>
-          </TouchableOpacity>
-        ) : null}
-      </View>
-      {Platform.OS === 'ios' && <KeyboardSpacer />}
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontFamily: 'ProximaNova-Bold',
+                }}>
+                POST
+              </Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        {Platform.OS === 'ios' && <KeyboardSpacer />}
+      </SafeAreaView>
     </View>
   );
 
@@ -731,6 +739,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: normaliseNew(13),
     fontFamily: 'ProximaNova-Semibold',
+    textTransform: 'lowercase',
   },
   commentHeaderInfoTime: {
     color: Colors.grey_text,

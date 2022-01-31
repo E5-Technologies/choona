@@ -8,6 +8,7 @@ import ImagePath from '../../../assests/ImagePath';
 import normalise from '../../../utils/helpers/Dimens';
 
 import HomeListItemReactions from './HomeListItemReactions';
+import Avatar from '../../../components/Avatar';
 
 const HomeListItemFooter = ({
   commentCount,
@@ -35,17 +36,12 @@ const HomeListItemFooter = ({
           <TouchableOpacity
             onPress={() => {
               onPressImage();
-            }}>
-            <Image
-              source={
-                ImagePath
-                  ? userAvatar === ''
-                    ? ImagePath.dp1
-                    : { uri: constants.profile_picture_base_url + userAvatar }
-                  : null
-              }
-              style={styles.listItemFooterAvatar}
-              resizeMode="contain"
+            }}
+            style={styles.listItemFooterAvatar}>
+            <Avatar
+              image={constants.profile_picture_base_url + userAvatar}
+              height={26}
+              width={26}
             />
           </TouchableOpacity>
           <View>
@@ -131,8 +127,12 @@ export default HomeListItemFooter;
 
 const styles = StyleSheet.create({
   listItemFooterContainer: {
-    marginTop: normalise(10),
+    paddingTop: normalise(10),
     paddingHorizontal: normalise(12),
+    backgroundColor: Colors.darkerblack,
+    borderBottomColor: Colors.activityBorderColor,
+    borderBottomWidth: normalise(0.5),
+    paddingBottom: normalise(16),
   },
   listItemFooterTop: {
     alignItems: 'center',
@@ -145,15 +145,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   listItemFooterAvatar: {
-    borderRadius: normalise(42),
-    height: normalise(22),
     marginRight: normalise(6),
-    width: normalise(22),
   },
   listItemFooterName: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: 14,
+    textTransform: 'lowercase',
     top: normalise(-2),
   },
   listItemFooterDate: {

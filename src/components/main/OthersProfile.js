@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import HeaderComponent from '../../widgets/HeaderComponent';
@@ -40,9 +41,8 @@ import EmptyComponent from '../Empty/EmptyComponent';
 
 let status;
 // let changePlayer = true;
-let totalCount = '0';
 
-function OthersProfile(props) {
+const OthersProfile = props => {
   const othersProfileReq = props.othersProfileReq;
   const token = props.header.token;
 
@@ -51,6 +51,7 @@ function OthersProfile(props) {
   const [pageId, setPageId] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [profilePosts, setProfilePosts] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const postsUrl = constants.BASE_URL + `/user/posts/${id}`;
 
   const onEndReached = async () => {
@@ -66,31 +67,39 @@ function OthersProfile(props) {
     setProfilePosts([...profilePosts, ...response.data.data]);
   };
 
+  const getProfilePosts = useCallback(async () => {
+    const response = await axios.get(`${postsUrl}?page=${1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+    });
+    if (response) {
+      setIsLoading(false);
+      setProfilePosts(response.data.data);
+      setTotalCount(response.data?.postCount ?? 0);
+    }
+  }, [postsUrl, token]);
+
+  useEffect(() => {
+    getProfilePosts();
+  }, [getProfilePosts]);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    othersProfileReq(id);
+  }, [getProfilePosts, id, isFocused, othersProfileReq]);
+
   useEffect(() => {
     isInternetConnected()
       .then(async () => {
         othersProfileReq(id);
-
-        const response = await axios.get(`${postsUrl}?page=${1}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'x-access-token': token,
-          },
-        });
-        setIsLoading(false);
-
-        response.data.data.length === 0
-          ? (totalCount = totalCount)
-          : (totalCount = response.data.postCount);
-        profilePosts.length === 0
-          ? setProfilePosts([...profilePosts, ...response.data.data])
-          : null;
       })
       .catch(() => {
         toast('Error', 'Please Connect to Internet');
       });
-  }, [id, othersProfileReq, postsUrl, token]);
+  }, [id, othersProfileReq]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -123,11 +132,11 @@ function OthersProfile(props) {
           });
         }}
         style={{
-          margin: normalise(4),
+          margin: 0,
           marginBottom:
             data.index === profilePosts.length - 1
               ? normalise(30)
-              : normalise(4),
+              : normalise(0),
         }}>
         <Image
           source={{
@@ -135,13 +144,13 @@ function OthersProfile(props) {
               props.othersProfileresp.register_type === 'spotify'
                 ? data.item.song_image
                 : data.item.song_image.replace(
-                    '100x100bb.jpg',
-                    '500x500bb.jpg',
-                  ),
+                  '100x100bb.jpg',
+                  '500x500bb.jpg',
+                ),
           }}
           style={{
-            width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').height * 0.22),
+            width: Math.floor(Dimensions.get('window').width / 2),
+            height: Math.floor(Dimensions.get('window').width / 2),
           }}
           resizeMode="cover"
         />
@@ -155,14 +164,15 @@ function OthersProfile(props) {
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
-          imageone={ImagePath ? ImagePath.backicon : null}
+          imageone={ImagePath.backicon}
           title={props.othersProfileresp.full_name}
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
-            totalCount = 0;
+            setTotalCount(0);
             props.navigation.goBack();
           }}
+          hideBorderBottom={true}
         />
         <ProfileHeader
           navigation={props.navigation}
@@ -192,16 +202,14 @@ function OthersProfile(props) {
         ) : _.isEmpty(profilePosts) ? (
           <EmptyComponent
             image={ImagePath ? ImagePath.emptyPost : null}
-            text={`${
-              props.othersProfileresp.username
+            text={`${props.othersProfileresp.username
                 ? props.othersProfileresp.username
                 : 'User'
-            } has not posted any songs yet`}
-            title={`${
-              props.othersProfileresp.username
+              } has not posted any songs yet`}
+            title={`${props.othersProfileresp.username
                 ? props.othersProfileresp.username
                 : 'User'
-            }'s Profile is empty`}
+              }'s Profile is empty`}
           />
         ) : (
           <FlatList
@@ -216,7 +224,7 @@ function OthersProfile(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
@@ -244,5 +252,5 @@ const mapDispatchToProps = dispatch => {
 export default connect(mapStateToProps, mapDispatchToProps)(OthersProfile);
 
 const styles = StyleSheet.create({
-  othersProfileContainer: { flex: 1, backgroundColor: Colors.black },
+  othersProfileContainer: { flex: 1, backgroundColor: Colors.darkerblack },
 });

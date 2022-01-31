@@ -77,6 +77,7 @@ function HomeItemList(props) {
       return (
         <Text
           key={text}
+          style={{ color: '#3DB2EB' }}
           onPress={() => {
             props.navi.navigation.navigate('OthersProfile', {
               id: text.substr(1, text.length - 1),
@@ -93,10 +94,8 @@ function HomeItemList(props) {
   return (
     <View
       style={{
+          backgroundColor: Colors.darkerblack,
         alignSelf: 'center',
-        borderBottomColor: Colors.activityBorderColor,
-        borderBottomWidth: normalise(0.5),
-        marginBottom: normalise(8),
         paddingBottom: normalise(16),
       }}>
       <HomeListItemHeader
@@ -107,25 +106,20 @@ function HomeItemList(props) {
         songUri={props.songUri}
         title={props.title}
       />
-      <TouchableOpacity
-        onPress={() => {
-          onPressMusicbox();
-        }}>
-        <Image
-          source={
-            ImagePath
-              ? props.image === ''
-                ? ImagePath.profiletrack1
-                : { uri: props.image }
-              : null
-          }
-          style={{
-            aspectRatio: 1,
-            width: '100%',
-          }}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
+      <Image
+        source={
+          ImagePath
+            ? props.image === ''
+              ? ImagePath.profiletrack1
+              : { uri: props.image }
+            : null
+        }
+        style={{
+          aspectRatio: 1,
+          width: '100%',
+        }}
+        resizeMode="cover"
+      />
       <HomeListItemFooter
         commentCount={props.comment_count}
         numberOfLines={numberOfLines}

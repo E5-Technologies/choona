@@ -21,7 +21,6 @@ import {
 } from '../../action/UserAction';
 import { deletePostReq } from '../../action/PostAction';
 import { saveSongRequest } from '../../action/SongAction';
-import { createChatTokenRequest } from '../../action/MessageAction';
 
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -246,10 +245,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
   };
 };

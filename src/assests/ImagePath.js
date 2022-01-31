@@ -30,6 +30,7 @@ const ImagePath = {
   iconmenu: require('../assests/images/icon-menu.png'),
   playicon: require('../assests/images/playicon.png'),
   reactionicon: require('../assests/images/reactionicon.png'),
+  modalClose: require('../assests/images/modal-close.png'),
   commenticon: require('../assests/images/Icon-comment.png'),
   pauseicon: require('../assests/images/pauseicon.png'),
   settings: require('./images/settings.png'),
@@ -38,6 +39,7 @@ const ImagePath = {
   splashLogo: require('./images/splashLogo.png'),
   spotifyButtonLogo: require('./images/spotifyLogo.png'),
   appleButtonLogo: require('./images/appleMusicLogo.png'),
+  appleSmallLogo: require('./images/appleSmallLogo.png'),
   profiletrack1: require('./images/profiletrack1.png'),
   profiletrack2: require('./images/profiletrack2.png'),
   profiletrack3: require('./images/profiletrack3.png'),
@@ -59,8 +61,9 @@ const ImagePath = {
   green_tick: require('./images/green_tick.png'),
   page_gradient: require('./images/page_gradient.png'),
   more_copy: require('./images/more_copy.png'),
+  more_copy_web: require('./images/moreCopyWeb.png'),
   more_unfollow: require('./images/more_unfollow.png'),
-  home_icon_choona: require('./images/home_icon_choona.png'),
+  home_icon_choona: require('./images/choona-home-redesign.png'),
   gradient_border_horizontal: require('./images/gradient_border_horizontal.png'),
   music_icon: require('./images/music_icon.png'),
   headerShadow: require('./images/headerShadow.png'),
@@ -91,6 +94,10 @@ const ImagePath = {
   emptySaveSong: require('./images/emptySaveSong.png'),
   emptyPost: require('./images/emptyPost.png'),
   userPlaceholder: require('./images/userPlaceholder.png'),
+  chevron: require('./images/chevron.png'),
+  sendIcon: require('./images/send-icon.png'),
+  exploreinactive: require('./images/explore_compass_grey.png'),
+  exploreactive: require('./images/explore_compass_white.png'),
 };
 
 export default ImagePath;

@@ -19,7 +19,6 @@ import {
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import RBSheet from 'react-native-raw-bottom-sheet';
 
 import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
@@ -42,9 +41,9 @@ import { commentOnPostReq, followingListReq } from '../../action/UserAction';
 import CommentList from '../main/ListCells/CommentList';
 
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
+import MyStatusBar from '../../utils/MyStatusBar';
 
 let status;
-let RbSheetRef;
 
 let comment_count = 0;
 let DataBack = [];
@@ -55,7 +54,6 @@ function HomeItemComments(props) {
   const [followingList, setFollowingList] = useState(props.followingData);
 
   const [showmention, setShowMention] = useState(false);
-  const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentText, setCommentText] = useState('');
   const [id] = useState(props.route.params.id);
   const [Selection, setSelection] = useState({ start: -1, end: -1 });
@@ -63,7 +61,6 @@ function HomeItemComments(props) {
   //   const [time] = useState(props.route.params.time);
   //   const [username] = useState(props.route.params.username);
   //   const [userComment] = useState(props.route.params.userComment);
-  const [totalcount, setTotalCount] = useState(0);
   const [textinputHeight, setHeight] = useState(normalise(20));
   useEffect(() => {
     //       console.log("id"+props.route.params.id)
@@ -169,62 +166,14 @@ function HomeItemComments(props) {
   const _onBackHandlerPress = () => {
     console.log('count' + JSON.stringify(DataBack).length);
     let data = DataBack;
-    let Comment = comment_count;
     const { navigation, route } = props;
     route.params.onSelect(data, data.length);
     navigation.goBack();
     return true;
   };
 
-  const RbSheet = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            RbSheetRef = ref;
-          }
-        }}
-        animationType={'slide'}
-        closeOnDragDown={false}
-        closeOnPressMask={true}
-        nestedScrollEnabled={true}
-        customStyles={{
-          container: {
-            minHeight: Dimensions.get('window').height / 2.2,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-            backgroundColor: 'transparent',
-          },
-        }}>
-        {/* > height: Dimensions.get('window').height / 2.2, backgroundColor:
-        'black', borderTopEndRadius: normalise(8), borderTopStartRadius:
-        normalise(8), }}> */}
-        <View style={{ width: '95%', flex: 1, alignSelf: 'center' }}>
-          {/* <FlatList
-            style={{height:'40%'}}
-            data={commentData}
-            renderItem={renderFlatlistData}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            keyboardShouldPersistTaps='always'
-            showsVerticalScrollIndicator={false}
-          /> */}
-        </View>
-      </RBSheet>
-    );
-  };
-
   const updateSize = height => {
     setHeight(height);
-  };
-
-  const onSelectionChange = ({ nativeEvent: { selection, text } }) => {
-    console.log('change selection to', selection, 'for value');
-
-    // );
-    // console.log("selectestext"+text);
-    // this.setState({ selection });
   };
 
   let delimiter = /\s+/;
@@ -266,7 +215,7 @@ function HomeItemComments(props) {
 
   return (
     <View style={styles.container}>
-      <StatusBar />
+      <MyStatusBar />
 
       <HeaderComponentComments
         firstitemtext={false}
@@ -299,6 +248,7 @@ function HomeItemComments(props) {
                     position: 'absolute',
                     alignSelf: 'center',
                   }}
+                  resizeMode="contain"
                 />
                 <Image
                   source={{
@@ -372,10 +322,15 @@ function HomeItemComments(props) {
                     setShowMention(false);
                   }}>
                   <Image
-                    source={{
-                      uri:
-                        constants.profile_picture_base_url + item.profile_image,
-                    }}
+                    source={
+                      item.profile_image
+                        ? {
+                          uri:
+                            constants.profile_picture_base_url +
+                            item.profile_image,
+                        }
+                        : ImagePath.userPlaceholder
+                    }
                     resizeMode="contain"
                     style={{
                       height: Dimensions.get('window').width / 12,
@@ -423,13 +378,13 @@ function HomeItemComments(props) {
             {
               flex: 1,
               //   flexWrap:'wrap',
-              height: textinputHeight,
+              // height: textinputHeight,
             },
           ]}
           // value={commentText}
           multiline
           autoFocus={true}
-          maxHeight={100}
+          // maxHeight={100}
           keyboardAppearance="dark"
           // onSelectionChange={ event => {
           //   const selections = event.nativeEvent.selection;
@@ -438,6 +393,7 @@ function HomeItemComments(props) {
           // } }
 
           // selection={Selection}
+          scrollEnabled={false}
           selectionColor="blue"
           onContentSizeChange={e =>
             updateSize(e.nativeEvent.contentSize.height)
@@ -585,6 +541,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: normaliseNew(13),
     fontFamily: 'ProximaNova-Semibold',
+    textTransform: 'lowercase',
   },
   commentHeaderInfoTime: {
     color: Colors.grey_text,
@@ -613,12 +570,12 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normaliseNew(14),
-    height: normaliseNew(48),
+    // height: normaliseNew(48),
     paddingBottom: normaliseNew(12),
     paddingEnd: normaliseNew(44),
     paddingStart: normaliseNew(16),
     paddingTop: normaliseNew(14),
-    maxHeight: normaliseNew(100),
+    // maxHeight: normaliseNew(100),
   },
   commentFooterPostButtonText: {
     color: Colors.white,

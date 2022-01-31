@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,34 +6,29 @@ import {
   TouchableOpacity,
   Platform,
   PickerIOS,
-  Picker,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import PropTypes from 'prop-types';
 import Colors from '../../assests/Colors';
 import normalize from '../../utils/helpers/Dimens';
 
-function NewPicker(props) {
+const NewPicker = props => {
   const [showDropdown, manageShowDropdown] = useState(false);
   const [itemIndex, setItemIndex] = useState(0);
+  const [text, setText] = useState(undefined);
+  const [selValue, setSelValue] = useState(undefined);
 
-  const [text, setText] = useState(
-    props.selectedValue === '' ? props.emptySelectText : getSelectedValue(),
-  );
-  const [selValue, setSelValue] = useState(props.selectedValue);
-
-  function getSelectedValue() {
-    for (i === 0; i < props.data.length; i++) {
-      if (props.valueParam !== '') {
-        if (props.data[i][props.valueParam] === props.selectedValue) {
-          return props.data[i][props.itemParam];
-        }
-      } else {
-        return props.selectedValue;
-      }
+  // selecting the selected value
+  useEffect(() => {
+    if (props.selectedValue === null) {
+      setText(props.emptySelectText);
+    } else {
+      setText(props.selectedValue);
+      setSelValue(props.selectedValue);
     }
-    return '';
-  }
+  }, [props.emptySelectText, props.selectedValue]);
 
+  // show dropdrown with codes
   function toggleShowDropdown() {
     if (showDropdown) {
       manageShowDropdown(false);
@@ -42,13 +37,14 @@ function NewPicker(props) {
     }
   }
 
-  function onSelectItem(item, itemIndex) {
+  //
+  function onSelectItem(item, index) {
     if (props.itemParam === '') {
       setText(item);
     } else {
       setText(
         props.data.length > 0
-          ? props.data[itemIndex][props.itemParam]
+          ? props.data[index][props.itemParam]
           : props.emptySelectText,
       );
     }
@@ -130,16 +126,12 @@ function NewPicker(props) {
                 //     props.onPickerItemSelected(props.data[itemIndex]);
                 // }
               }}>
-              {props.data.map((item, itemIndex) => {
+              {props.data.map((item, index) => {
                 return (
                   <Picker.Item
-                    key={itemIndex.toString()}
-                    label={
-                      props.itemParam !== '' ? item[props.itemParam] : item
-                    }
-                    value={
-                      props.valueParam !== '' ? item[props.valueParam] : item
-                    }
+                    key={index.toString()}
+                    label={`${item.flag} ${item.dial_code}`}
+                    value={item.name}
                   />
                 );
               })}
@@ -189,7 +181,7 @@ function NewPicker(props) {
               textAlign: props.textAlign,
               fontFamily: 'ProximaNova-Semibold',
             }}>
-            {text}
+            {text?.flag} {text?.dial_code}
           </Text>
         </TouchableOpacity>
       ) : (
@@ -224,7 +216,7 @@ function NewPicker(props) {
       {renderIOSPicker()}
     </View>
   );
-}
+};
 
 export default NewPicker;
 

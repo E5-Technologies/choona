@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
+import Avatar from '../../Avatar';
 
 function ActivityListItem(props) {
   const [follow, setFollow] = useState(props.follow);
@@ -28,11 +29,16 @@ function ActivityListItem(props) {
           <TouchableOpacity
             onPress={() => {
               onPressImage();
-            }}>
-            <Image
-              source={props.image === '' ? ImagePath.dp : { uri: props.image }}
-              style={styles.detailsAvatar}
-              resizeMode="cover"
+            }}
+            style={{ marginRight: normaliseNew(8) }}>
+            <Avatar
+              image={
+                props.image !== 'https://api.choona.co/uploads/user/thumb/'
+                  ? props.image
+                  : null
+              }
+              height={26}
+              width={26}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -52,6 +58,12 @@ function ActivityListItem(props) {
                   <Text style={styles.detailsTextBold}>{props.user} </Text>
                   reacted {props.reaction} on your post
                 </>
+              ) : props.comment &&
+                props.comment.includes('mentioned you in comment') ? (
+                <>
+                  <Text style={styles.detailsTextBold}>{props.user} </Text>
+                  mentioned you in a post
+                </>
               ) : props.comment ? (
                 <>
                   <Text style={styles.detailsTextBold}>{props.user} </Text>
@@ -70,7 +82,11 @@ function ActivityListItem(props) {
             <TouchableOpacity
               style={[
                 styles.followButton,
-                { backgroundColor: follow ? Colors.white : Colors.fadeblack },
+                { backgroundColor: follow ? Colors.white : 'transparent' },
+                !follow && {
+                  borderWidth: 1,
+                  borderColor: Colors.fadeblack,
+                },
               ]}
               onPress={() => {
                 onPress();
@@ -151,7 +167,7 @@ const styles = StyleSheet.create({
   },
   followButtonText: {
     color: Colors.black,
-    fontFamily: 'ProximaNova-Bold',
+    fontFamily: 'Kallisto',
     fontSize: normaliseNew(10),
   },
 });
@@ -164,7 +180,7 @@ ActivityListItem.propTypes = {
   type: PropTypes.bool,
   follow: PropTypes.bool,
   marginBottom: PropTypes.number,
-  onPressImage: PropTypes.bool,
+  onPressImage: PropTypes.any,
   marginTop: PropTypes.number,
   TouchableOpacityDisabled: PropTypes.bool,
 };

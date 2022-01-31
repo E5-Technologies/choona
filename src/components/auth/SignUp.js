@@ -24,19 +24,16 @@ import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAILURE,
-  COUNTRY_CODE_REQUEST,
-  COUNTRY_CODE_SUCCESS,
-  COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
-import { signupRequest, getCountryCodeRequest } from '../../action/UserAction';
+import { signupRequest } from '../../action/UserAction';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import Picker from '../../utils/helpers/Picker';
+import CountryPicker from 'react-native-country-picker-modal';
 let status = '';
 
-function Login(props) {
+const Login = props => {
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case USER_SIGNUP_REQUEST:
@@ -51,20 +48,6 @@ function Login(props) {
         status = props.status;
         toast('Oops', props.error.message);
         break;
-
-      case COUNTRY_CODE_REQUEST:
-        status = props.status;
-        break;
-
-      case COUNTRY_CODE_SUCCESS:
-        status = props.status;
-        //// console.log("COUNTRY", props.countryObject)
-        //setLocation(props.countryObject[0].name)
-        break;
-
-      case COUNTRY_CODE_FAILURE:
-        status = props.status;
-        break;
     }
   }
 
@@ -74,26 +57,21 @@ function Login(props) {
 
       setDeviceToken(userId);
     })();
-
-    isInternetConnected()
-      .then(() => {
-        props.countrycodeRequest();
-      })
-      .catch(() => {
-        toast('Check your Internet');
-      });
   }, []);
 
   // const dispatch = useDispatch()
-
-  // const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
-  //     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(
+    props.route.params.loginType === 'Spotify'
+      ? props.route.params.userDetails.id
+      : props.route.params.userDetails.fullName.givenName,
+  );
 
   const [fullname, setFullname] = useState(
-    props.route.params.loginType === 'Spotify'
-      ? ''
-      : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`,
+    props.route.params.loginType === 'Apple'
+      ? props.route.params.userDetails?.fullName?.givenName
+        ? `${props.route.params.userDetails?.fullName?.givenName} ${props.route.params.userDetails?.fullName?.familyName}`
+        : null
+      : props.route.params.userDetails?.display_name,
   );
 
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -101,7 +79,6 @@ function Login(props) {
   const [imageDetails, setImageDetails] = useState({});
 
   const [location, setLocation] = useState('United Kingdom');
-  console.log(location);
 
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState('');
@@ -112,12 +89,18 @@ function Login(props) {
 
   const [userNameAvailable, setUserNameAvailable] = useState(true);
 
-  const [codePick, setCodePick] = useState('');
   const [deviceToken, setDeviceToken] = useState('');
 
-  // console.log('Location', location);
+  const [visible, setVisible] = useState(false);
 
-  //// console.log('DETAILS' + JSON.stringify(userDetails))
+  const [countryCode, setCountryCode] = useState();
+  const [country, setCountry] = useState();
+
+  const onSelect = country => {
+    setCountryCode(country.cca2);
+    setCountry(country);
+    setLocation(country.name);
+  };
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
@@ -187,25 +170,24 @@ function Login(props) {
   const register = () => {
     if (username === '') {
       alert('Please enter your username');
-    }
-    if (!userNameAvailable) {
+    } else if (!userNameAvailable) {
       alert('Please enter a valid username');
+    } else if (username.includes(' ')) {
+      alert('Username cannot include spaces');
     } else if (fullname === '') {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
       alert('Please enter your phone number');
-    }
-    // else if (location === "") {
-    //     alert("Please enter your location")
-    // }
-    else if (profilePic === '') {
+    } else if (location === '') {
+      alert('Please enter your location');
+    } else if (profilePic === '') {
       alert('Please upload your profile picture');
     } else {
       let profileImage = {
         name:
           imageDetails.filename === undefined || imageDetails.filename === null
             ? 'xyz.jpg'
-            : imageDetails.filename,
+            : imageDetails.filename.replace(/HEIC/g, 'jpg'),
         type: imageDetails.mime,
         uri:
           Platform.OS === 'android'
@@ -314,7 +296,7 @@ function Login(props) {
               borderRadius: normalise(60),
               backgroundColor: Colors.fadeblack,
               alignSelf: 'center',
-              marginTop: normalise(40),
+              marginTop: normalise(32),
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -324,7 +306,7 @@ function Login(props) {
                 style={{
                   height: normalise(120),
                   width: normalise(120),
-                  borderRadius: normalise(55),
+                  borderRadius: normalise(60),
                 }}
                 resizeMode="contain"
               />
@@ -340,6 +322,7 @@ function Login(props) {
                     width: normalise(40),
                     borderRadius: normalise(20),
                   }}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
             )}
@@ -358,6 +341,7 @@ function Login(props) {
                   alignSelf: 'center',
                   fontFamily: 'ProximaNova-Bold',
                   textDecorationLine: 'underline',
+                  marginBottom: normalise(36),
                 }}>
                 CHANGE PROFILE PIC
               </Text>
@@ -369,6 +353,7 @@ function Login(props) {
                   alignSelf: 'center',
                   fontFamily: 'ProximaNova-Bold',
                   textDecorationLine: 'underline',
+                  marginBottom: normalise(36),
                 }}>
                 UPLOAD PROFILE PIC
               </Text>
@@ -378,83 +363,86 @@ function Login(props) {
           <TextInputField
             text={'CHOOSE USERNAME'}
             placeholder={'Enter Username'}
-            placeholderTextColor={Colors.grey}
-            marginTop={normalise(30)}
             tick_req={true}
             value={username}
             userNameAvailable={userNameAvailable}
-            tick_visible={username}
+            tick_visible={username ? true : false}
             autocorrect={false}
             onChangeText={text => {
-              setUsername(text), check(text);
+              setUsername(text);
+              check(text);
             }}
           />
 
           <TextInputField
             text={'FULL NAME'}
             placeholder={'Enter Name'}
-            placeholderTextColor={Colors.grey}
             maxLength={25}
             value={fullname}
+            autoCapitalize
             onChangeText={text => {
               setFullname(text);
             }}
           />
-          {/* {console.log(props.countryCodeRequest, props.countryObject)} */}
-
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Picker
-                textColor={Colors.white}
-                textSize={normalise(9)}
-                emptySelectText="Select"
-                editable={true}
-                data={props.countryCodeRequest}
-                selectedValue={
-                  codePick === '' ? props.countryCodeRequest[0] : codePick
-                }
-                onPickerItemSelected={(selectedvalue, index) => {
-                  var result = props.countryObject.find(obj => {
-                    // console.log({ obj }, { selectedvalue });
-                    return obj.dial_code === selectedvalue.substring(4);
-                  });
-                  setLocation(result.name);
-                  setCodePick(selectedvalue);
-                }}
-                //uniqueKey={"areaCode"}
-              />
-            </View>
-
-            <TextInputField
-              placeholder={'Enter Phone number'}
-              placeholderTextColor={Colors.grey}
-              width={normalise(200)}
-              maxLength={15}
-              isNumber={true}
-              value={phoneNumber}
-              onChangeText={text => {
-                setPhoneNumber(text);
-              }}
-            />
-
-            <Text
-              style={{
-                position: 'absolute',
-                fontSize: normalise(12),
-                top: 20,
-                color: Colors.white,
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              PHONE NUMBER
-            </Text>
-          </View>
-
-          {/* <TextInputField text={"ENTER LOCATION"}
-                        placeholder={"Type Location"}
-                        placeholderTextColor={Colors.grey}
-                        value={location}
-                        onChangeText={(text) => { setLocation(text) }} /> */}
+          <Text
+            style={{
+              fontSize: normalise(10),
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              textTransform: 'uppercase',
+            }}>
+            Location
+          </Text>
+          <CountryPicker
+            containerButtonStyle={{
+              backgroundColor: '#ffffff',
+              width: '100%',
+              height: normalise(44),
+              borderRadius: normalise(6),
+              borderWidth: normalise(0.5),
+              marginTop: normalise(10),
+              padding: normalise(5),
+              paddingTop: country ? normalise(6) : normalise(13),
+              paddingLeft: normalise(16),
+              marginBottom: normalise(16),
+            }}
+            placeholder={
+              <Text
+                style={{
+                  fontFamily: 'ProximaNova-Semibold',
+                  marginTop: normalise(15),
+                }}>
+                {location ?? 'Select country'}
+              </Text>
+            }
+            {...{
+              allowFontScaling: true,
+              countryCode: countryCode,
+              withFilter: true,
+              withFlag: true,
+              withCountryNameButton: true,
+              withEmoji: true,
+              withModal: true,
+              withFlagButton: true,
+              onSelect,
+              preferredCountries: ['GB', 'US'],
+              modalProps: {
+                visible,
+              },
+              onClose: () => setVisible(false),
+              onOpen: () => setVisible(true),
+            }}
+          />
+          <TextInputField
+            text={'PHONE NUMBER'}
+            placeholder={'Enter Phone number'}
+            maxLength={15}
+            isNumber={true}
+            value={phoneNumber}
+            onChangeText={text => {
+              setPhoneNumber(text);
+            }}
+          />
 
           {props.route.params.loginType === 'Spotify' ? (
             <View
@@ -504,15 +492,13 @@ function Login(props) {
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
     signupResponse: state.UserReducer.signupResponse,
     error: state.UserReducer.error,
-    countryCodeRequest: state.UserReducer.countryCodeRequest,
-    countryObject: state.UserReducer.countryCodeOject,
   };
 };
 
@@ -520,9 +506,6 @@ const mapDispatchToProps = dispatch => {
   return {
     signUpRequest: payload => {
       dispatch(signupRequest(payload));
-    },
-    countrycodeRequest: () => {
-      dispatch(getCountryCodeRequest());
     },
   };
 };

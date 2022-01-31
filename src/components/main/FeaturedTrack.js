@@ -29,6 +29,7 @@ import {
   EDIT_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
 import {
+  getProfileRequest,
   featuredSongSearchReq,
   editProfileRequest,
 } from '../../action/UserAction';
@@ -37,12 +38,17 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 
+import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
+
 let status;
 
 function FeaturedTrack(props) {
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
-  const [spotifyUrl, setSpotifyUrl] = useState('');
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+    props.registerType,
+  );
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
@@ -66,6 +72,7 @@ function FeaturedTrack(props) {
 
       case EDIT_PROFILE_SUCCESS:
         status = props.status;
+        props.getProfileReq();
         props.navigation.goBack();
         break;
 
@@ -218,7 +225,7 @@ function FeaturedTrack(props) {
         marginBottom={
           data.index === props.featuredTrackResp.length - 1 ? normalise(20) : 0
         }
-        change={true}
+        change2={true}
         image2={ImagePath.addicon}
         onPressSecondImage={() => {
           setFeaturedSong(data.item);
@@ -237,9 +244,9 @@ function FeaturedTrack(props) {
               props.registerType === 'spotify'
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '600x600',
-                  ),
+                  '{w}x{h}',
+                  '600x600',
+                ),
             username: '',
             profile_pic: '',
             originalUri:
@@ -266,162 +273,118 @@ function FeaturedTrack(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <Loader visible={props.status === FEATURED_SONG_SEARCH_REQUEST} />
-
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath.backicon}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+          textone={''}
+          title={'PICK FEATURED TRACK'}
+          thirditemtext={true}
+          texttwo={''}
+        />
+        <View
+          style={{
+            width: '92%',
+            alignSelf: 'center',
+          }}>
+          <TextInput
+            autoCorrect={false}
+            keyboardAppearance={'dark'}
+            style={{
+              height: normalise(35),
+              width: '100%',
+              backgroundColor: Colors.fadeblack,
+              borderRadius: normalise(8),
+              marginTop: normalise(16),
+              padding: normalise(10),
+              color: Colors.white,
+              paddingLeft: normalise(30),
             }}
-            textone={''}
-            title={'PICK FEATURED TRACK'}
-            thirditemtext={true}
-            texttwo={''}
+            value={search}
+            placeholder={'Search'}
+            placeholderTextColor={Colors.darkgrey}
+            onChangeText={text => {
+              if (text.length >= 1) {
+                props.featuredSongSearchReq(text);
+              }
+              setSearch(text);
+            }}
           />
 
-          <View
+          <Image
+            source={ImagePath.searchicongrey}
             style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+            }}
+            resizeMode="contain"
+          />
 
-                width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(30),
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch(''), setData([]);
               }}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                if (text.length >= 1) {
-                  props.featuredSongSearchReq(text);
-                }
-                setSearch(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
               style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), setData([]);
-                }}
-                style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {_.isEmpty(data) ? null : (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '90%',
-                alignSelf: 'center',
-                marginTop: normalise(5),
+                backgroundColor: Colors.black,
+                padding: 6,
+                paddingTop: 4,
+                paddingBottom: 4,
+                borderRadius: 2,
+                position: 'absolute',
+                right: 0,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
               }}>
-              <Image
-                source={
-                  props.registerType === 'spotify'
-                    ? ImagePath.spotifyicon
-                    : ImagePath.applemusic
-                }
-                style={{ height: normalise(20), width: normalise(20) }}
-              />
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: normalise(12),
-                  marginLeft: normalise(10),
+                  fontSize: normalise(10),
                   fontWeight: 'bold',
-                }}>{` RESULTS (${props.featuredTrackResp.length})`}</Text>
-            </View>
-          )}
-
-          {_.isEmpty(data) ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={ImagePath.searchicongrey}
-                style={{ height: normalise(35), width: normalise(35) }}
-              />
-
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(15),
-                  fontWeight: 'bold',
-                  marginTop: normalise(20),
-                  width: '60%',
-                  textAlign: 'center',
                 }}>
-                Search for the song you want to share above.
+                CLEAR
               </Text>
-            </View>
-          ) : (
-            <FlatList
-              style={{ marginTop: normalise(10) }}
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-            />
+            </TouchableOpacity>
           )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+        </View>
+        {_.isEmpty(data) ? (
+          <RecentlyPlayedHeader registerType={props.registerType} />
+        ) : (
+          <View />
+        )}
+        {_.isEmpty(data) ? (
+          <FlatList
+            data={recentlyPlayed}
+            onRefresh={() => refetch()}
+            refreshing={loading}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            ItemSeparatorComponent={Seperator}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }
@@ -436,10 +399,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    getProfileReq: () => {
+      dispatch(getProfileRequest());
+    },
     featuredSongSearchReq: text => {
       dispatch(featuredSongSearchReq(text));
     },
-
     editProfileReq: payload => {
       dispatch(editProfileRequest(payload));
     },

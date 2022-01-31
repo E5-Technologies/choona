@@ -4,35 +4,42 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android:build": "ENVFILE=.env.production cd android && ./gradlew assembleRelease",
     "ios": "react-native run-ios --scheme \"ChoonaDev\" --configuration Debug",
     "ios:prod": "react-native run-ios --scheme \"Choona\" --configuration Debug",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "postinstall": "npx jetify && npx pod-install",
+    "postinstall": "npx jetify && arch -x86_64 npx pod-install",
     "clean": "react-native-clean-project",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest ios"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^1.0.0",
     "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/masked-view": "^0.1.9",
     "@react-native-community/netinfo": "^5.7.1",
-    "@react-native-firebase/app": "^8.4.7",
-    "@react-native-firebase/database": "^7.4.1",
-    "@react-native-firebase/messaging": "^7.6.1",
+    "@react-native-community/slider": "^4.1.11",
+    "@react-native-firebase/admob": "^11.5.0",
+    "@react-native-firebase/app": "^10.0.0",
+    "@react-native-firebase/database": "^10.0.0",
+    "@react-native-firebase/messaging": "^10.0.0",
+    "@react-native-picker/picker": "^2.2.0",
     "@react-navigation/bottom-tabs": "^5.2.7",
     "@react-navigation/native": "^5.1.6",
     "@react-navigation/stack": "^5.2.11",
+    "@sentry/react-native": "^3.1.1",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "react": "17.0.1",
-    "react-native": "0.64.2",
-    "react-native-app-auth": "^5.1.2",
+    "react": "17.0.2",
+    "react-native": "^0.65.1",
+    "react-native-app-auth": "^6.4.0",
+    "react-native-bootsplash": "^3.2.4",
     "react-native-config": "^1.4.2",
     "react-native-contacts": "^5.2.5",
+    "react-native-country-picker-modal": "^2.0.0",
     "react-native-device-info": "^8.1.3",
     "react-native-emoji-selector": "^0.1.8",
     "react-native-gesture-handler": "^1.6.1",
@@ -41,8 +48,9 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-linear-gradient": "^2.5.6",
-    "react-native-onesignal": "^4.0.4",
-    "react-native-permissions": "^3.0.4",
+    "react-native-onesignal": "^4.3.1",
+    "react-native-permissions": "^3.1.0",
+    "react-native-radial-gradient": "^1.0.9",
     "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
@@ -52,29 +60,36 @@
     "react-native-status-bar-size": "^0.3.3",
     "react-native-swipe-list-view": "^2.5.0",
     "react-native-version-info": "^1.1.0",
-    "react-native-webview": "^11.3.2",
+    "react-native-webview": "^11.6.5",
+    "react-query": "^3.27.0",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.3",
     "swr": "^0.4.2",
-    "use-http": "^1.0.16"
+    "use-http": "^1.0.16",
+    "use-state-with-callback": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
-    "@react-native-community/eslint-config": "^2.0.0",
+    "@react-native-community/eslint-config": "^3.0.1",
     "babel-jest": "^26.6.3",
-    "eslint": "7.14.0",
+    "eslint": "^7.32.0",
     "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.64.0",
-    "react-test-renderer": "17.0.1"
+    "metro-react-native-babel-preset": "^0.66.0",
+    "react-native-codegen": "^0.0.7",
+    "react-test-renderer": "17.0.2"
   },
   "jest": {
     "preset": "react-native"
   },
   "resolutions": {
     "babel-core": "7.0.0-bridge.0"
-  }
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "coverage/"
+  ]
 }

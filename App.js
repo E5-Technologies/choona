@@ -8,6 +8,7 @@ import {
   Dimensions,
   AppState,
 } from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
 
 import { NavigationContainer } from '@react-navigation/native';
 import {
@@ -63,6 +64,13 @@ import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
 import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
+import PlayerScreenSelectUser from './src/components/PlayerScreen/PlayerScreenSelectUser';
+
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://4659328257154e70ba3792dc4eddede2@o1022308.ingest.sentry.io/5988459',
+});
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -83,18 +91,21 @@ const App = () => {
     // });
 
     function _handleAppStateChange() {
-      if (AppState.currentState.match(/inactive|background/)) {
-        let formdata = new FormData();
-        formdata.append('badge_count', 0);
-        isInternetConnected()
-          .then(() => {
-            dispatch(editProfileRequest(formdata));
-          })
-          .catch(err => {
-            toast('Oops', 'Please Connect To Internet');
-          });
-      } else if (AppState.currentState === 'active') {
-        getChatListRequest, dispatch(getChatListRequest());
+      // if (AppState.currentState.match(/inactive|background/)) {
+      //   let formdata = new FormData();
+      //   formdata.append('badge_count', 0);
+      //   isInternetConnected()
+      //     .then(() => {
+      //       dispatch(editProfileRequest(formdata));
+      //     })
+      //     .catch(err => {
+      //       toast('Oops', 'Please Connect To Internet');
+      //     });
+      //   console.log('test');
+      // } else
+      if (AppState.currentState === 'active') {
+        getChatListRequest;
+        dispatch(getChatListRequest());
         dispatch(getProfileRequest());
         console.log('zxcv', 'App is in active Mode.');
       }
@@ -112,7 +123,7 @@ const App = () => {
     OneSignal.setLogLevel(6, 0);
     OneSignal.setRequiresUserPrivacyConsent(false);
     OneSignal.promptForPushNotificationsWithUserResponse(response => {
-      // console.log('Prompt response:', response);
+      console.log('Prompt response:', response);
     });
   }, []);
 
@@ -182,6 +193,7 @@ const App = () => {
               tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
+                    opacity: focused ? 1 : 0.5,
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
@@ -191,13 +203,7 @@ const App = () => {
                     height: normalise(20),
                     width: normalise(20),
                   }}
-                  source={
-                    ImagePath
-                      ? focused
-                        ? ImagePath.searchactive
-                        : ImagePath.searchinactive
-                      : null
-                  }
+                  source={ImagePath ? ImagePath.exploreactive : null}
                   resizeMode="contain"
                 />
               ),
@@ -265,7 +271,10 @@ const App = () => {
                         style={{
                           position: 'absolute',
                           right: normalise(-2),
-                          top: normalise(-2),
+                          top:
+                            Platform.OS === 'android'
+                              ? normalise(8)
+                              : normalise(-2),
                           backgroundColor: Colors.red,
                           borderRadius: normalize(8),
                           height: 10,
@@ -283,12 +292,13 @@ const App = () => {
           />
 
           <Tab.Screen
-            name="Contact"
-            component={Contact}
+            name="Inbox"
+            component={Inbox}
             options={{
               tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
+                    opacity: focused ? 1 : 0.6,
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
@@ -298,13 +308,7 @@ const App = () => {
                     height: normalise(22),
                     width: normalise(22),
                   }}
-                  source={
-                    ImagePath
-                      ? focused
-                        ? ImagePath.boxactive
-                        : ImagePath.boxinactive
-                      : null
-                  }
+                  source={ImagePath ? ImagePath.inbox : null}
                   resizeMode="contain"
                 />
               ),
@@ -320,7 +324,7 @@ const App = () => {
     return <Splash />;
   } else {
     return (
-      <NavigationContainer>
+      <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
         {TokenReducer.token === null ? (
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
@@ -337,7 +341,8 @@ const App = () => {
             <Stack.Screen name="Following" component={Following} />
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
-            <Stack.Screen name="Inbox" component={Inbox} />
+            <Stack.Screen name="Contact" component={Contact} />
+            {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
             <Stack.Screen
               name="Player"
               component={Player}
@@ -380,6 +385,10 @@ const App = () => {
               component={AddToPlayListScreen}
             />
             <Stack.Screen name="SingleSongClick" component={SingleSongClick} />
+            <Stack.Screen
+              name="PlayerScreenSelectUser"
+              component={PlayerScreenSelectUser}
+            />
             <Stack.Screen name="PlayerComment" component={PlayerComment} />
           </Stack.Navigator>
         )}

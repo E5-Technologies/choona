@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   FlatList,
-  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -21,7 +21,11 @@ import _ from 'lodash';
 import Colors from '../../../assests/Colors';
 import constants from '../../../utils/helpers/constants';
 import normaliseNew from '../../../utils/helpers/DimensNew';
-import normalise from '../../../utils/helpers/Dimens';
+import {
+  USER_PROFILE_REQUEST,
+  USER_PROFILE_SUCCESS,
+  USER_PROFILE_FAILURE,
+} from '../../../action/TypeConstants';
 
 import { useFocusEffect } from '@react-navigation/native';
 import StatusBar from '../../../utils/MyStatusBar';
@@ -38,20 +42,24 @@ import {
 } from '../../../action/UserAction';
 import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
+import Loader from '../../../widgets/AuthLoader';
 
-var isLoading = true;
 const activityUrl = constants.BASE_URL + '/activity/list';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-function Notification(props) {
-  const [isloadings, setIsLoading] = useState(true);
+let status = '';
+
+const Notification = props => {
+  const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
-  const [empityVisible, setEmptyVisible] = useState([]);
+  const [emptyVisible, setEmpty] = useState(undefined);
   const getActivities = async pageId => {
-    notifications.length === 0 ? setIsLoading(true) : setIsLoading(false);
+    setIsLoading(true);
     const response = await axios.get(`${activityUrl}?page=${pageId}`, {
       headers: {
         Accept: 'application/json',
@@ -60,9 +68,6 @@ function Notification(props) {
       },
     });
 
-    isLoading = false;
-    setIsLoading(false);
-
     return await response.data;
   };
 
@@ -70,22 +75,47 @@ function Notification(props) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [onScrolled, setOnScrolled] = useState(false);
 
+  useEffect(() => {
+    if (isLoading) {
+      let formdata = new FormData();
+      formdata.append('badge_count', 0);
+      formdata.append('isActivity', false);
+
+      isInternetConnected()
+        .then(() => {
+          dispatch(editProfileRequest(formdata));
+        })
+        .catch(err => {
+          toast('Oops', 'Please Connect To Internet');
+        });
+    }
+  }, [dispatch, isLoading]);
+
+  useEffect(() => {
+    if (props.status === 'EDIT_PROFILE_SUCCESS') {
+      props.getProfileReq();
+    }
+  }, [props.status, props.getProfileReq]);
+
   const key = `${activityUrl}?page=${pageId}`;
   const { mutate } = useSWR(key, () => getActivities(pageId), {
     onSuccess: data => {
+      setIsLoading(false);
+      if (data.data.length === 0) {
+        setEmpty(true);
+      } else {
+        setEmpty(false);
+      }
       if (pageId === 1) {
         setNotifications(data.data);
-        setEmptyVisible(data.data);
       } else {
         const newArray = [...notifications, ...data.data];
         setNotifications(newArray);
-        setEmptyVisible(newArray);
       }
     },
   });
 
   const onReached = async () => {
-    console.log('start');
     setOnScrolled(true);
     const response = await axios.get(`${activityUrl}?page=${pageId + 1}`, {
       headers: {
@@ -94,8 +124,7 @@ function Notification(props) {
         'x-access-token': props.header.token,
       },
     });
-    console.log('pageId' + pageId);
-    console.log('response' + response.data.data.length);
+
     if (response.data.data.length === 0) {
       setOnScrolled(false);
     } else {
@@ -103,8 +132,6 @@ function Notification(props) {
     }
 
     previous = [...previous, ...response.data.data];
-    // setOnScrolled(true)
-    // alert("res"+JSON.stringify(response.data.data))
   };
 
   const isCloseToBottom = ({
@@ -125,45 +152,8 @@ function Notification(props) {
       setNotifications([]);
       setPageId(1);
       mutate();
-
-      AppState.addEventListener('change', updateProfile());
-      const unsuscribe = props.navigation.addListener('focus', () => {
-        isInternetConnected()
-          .then(() => {
-            // alert("focus");
-            updateProfile();
-            // setNotifications([]);
-            // setPageId(1);
-            // mutate();
-          })
-          .catch(() => {
-            toast('Error', 'Please Connect To Internet');
-          });
-      });
-      AppState.removeEventListener('change', updateProfile());
-      return () => {
-        unsuscribe();
-      };
     }, []),
   );
-
-  const updateProfile = () => {
-    let formdata = new FormData();
-
-    formdata.append('isActivity', false);
-
-    isInternetConnected()
-      .then(() => {
-        props.editProfileReq(formdata);
-        setTimeout(() => {
-          props.getProfileReq();
-        }, 1000);
-      })
-      .catch(err => {
-        console.log(err);
-        toast('Oops', 'Please Connect To Internet');
-      });
-  };
 
   let previous = [];
   let today = [];
@@ -228,13 +218,43 @@ function Notification(props) {
     });
   };
 
+  if (status === '' || props.status !== status) {
+    switch (props.status) {
+      case USER_PROFILE_REQUEST:
+        status = props.status;
+        break;
+
+      case USER_PROFILE_SUCCESS:
+        status = props.status;
+        break;
+
+      case USER_PROFILE_FAILURE:
+        status = props.status;
+        toast('Oops', 'Something Went Wrong, Please Try Again');
+        break;
+    }
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar />
-
+      <Loader visible={isLoading} />
       <SafeAreaView style={styles.activityContainer}>
         <HeaderComponent title={'ACTIVITY'} />
-        {notifications.length !== 0 ? (
+        {emptyVisible ? (
+          <EmptyComponent
+            buttonPress={() => {
+              setIsLoading(true);
+              getContacts();
+            }}
+            buttonText={'Search Phonebook'}
+            image={ImagePath ? ImagePath.emptyNotify : null}
+            text={
+              'You haven’t recieved any notifications yet. Choona is more fun with more people, search your phonebook below.'
+            }
+            title={'No Notifcations Yet...'}
+          />
+        ) : (
           <ScrollView
             onScroll={({ nativeEvent }) => {
               if (isCloseToBottom(nativeEvent)) {
@@ -254,128 +274,88 @@ function Notification(props) {
                 }}
               />
             }>
-            {_.isEmpty(today) ? null : (
-              <View style={styles.activityHeader}>
-                <Text style={styles.activityHeaderText}>TODAY</Text>
-              </View>
+            {today.length !== 0 && (
+              <>
+                <View style={styles.activityHeader}>
+                  <Text style={styles.activityHeaderText}>TODAY</Text>
+                </View>
+                <FlatList
+                  data={today}
+                  scrollEnabled
+                  renderItem={({ item }) =>
+                    item.post_id !== null ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          props.navigation.navigate('SingleSongClick', {
+                            data: item.post_id,
+                          });
+                        }}>
+                        <ActivitySingle item={item} props={props} />
+                      </TouchableOpacity>
+                    ) : (
+                      <ActivitySingle item={item} props={props} />
+                    )
+                  }
+                  keyExtractor={index => {
+                    index.toString();
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  ItemSeparatorComponent={Seperator}
+                />
+              </>
             )}
-
-            <FlatList
-              data={today}
-              scrollEnabled
-              renderItem={({ item }) =>
-                item.post_id !== null ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      props.navigation.navigate('SingleSongClick', {
-                        data: item.post_id,
-                      });
-                    }}>
-                    <ActivitySingle item={item} props={props} />
-                  </TouchableOpacity>
-                ) : (
-                  <ActivitySingle item={item} props={props} />
-                )
-              }
-              keyExtractor={index => {
-                index.toString();
-              }}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={Seperator}
-            />
-            {_.isEmpty(previous) ? null : (
-              <View style={styles.activityHeader}>
-                <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
-              </View>
+            {previous.length !== 0 && (
+              <>
+                <View style={styles.activityHeader}>
+                  <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
+                </View>
+                <FlatList
+                  data={previous}
+                  renderItem={({ item }) =>
+                    item.post_id !== null ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          props.navigation.navigate('SingleSongClick', {
+                            data: item.post_id,
+                          });
+                        }}>
+                        <ActivitySingle item={item} props={props} />
+                      </TouchableOpacity>
+                    ) : (
+                      <ActivitySingle item={item} props={props} />
+                    )
+                  }
+                  keyExtractor={index => {
+                    index.toString();
+                  }}
+                  ItemSeparatorComponent={Seperator}
+                  ListFooterComponent={
+                    onScrolled === true && notifications.length > 0 ? (
+                      <ActivityIndicator
+                        size={'small'}
+                        color="white"
+                        style={{
+                          alignSelf: 'center',
+                        }}
+                      />
+                    ) : null
+                  }
+                />
+              </>
             )}
-
-            <FlatList
-              data={previous}
-              renderItem={({ item }) =>
-                item.post_id !== null ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      props.navigation.navigate('SingleSongClick', {
-                        data: item.post_id,
-                      });
-                    }}>
-                    <ActivitySingle item={item} props={props} />
-                  </TouchableOpacity>
-                ) : (
-                  <ActivitySingle item={item} props={props} />
-                )
-              }
-              keyExtractor={index => {
-                index.toString();
-              }}
-              ItemSeparatorComponent={Seperator}
-              // onEndReached={()=>
-              //   // setPageId(pageId + 1);
-              //   //  alert('pageId')
-              //    onReached()
-              // }
-              // onEndReachedThreshold={2}
-              //  initialNumToRender={7}
-              // onMomentumScrollBegin={() => {
-              //   setOnScrolled(true);
-              // }}
-              // ListEmptyComponent={()=>{
-              //   return(
-              //   <View style={{flex:1,alignItems:'center',justifyContent:'center',marginTop:'80%'}}>
-              //     <Text style={{color:'white',fontSize:20}}>No Activity</Text>
-              //   </View>
-              //   )
-              // }}
-              ListFooterComponent={
-                onScrolled === true && notifications.length > 0 ? (
-                  <ActivityIndicator
-                    size={'small'}
-                    color="white"
-                    style={{
-                      alignSelf: 'center',
-                      // marginBottom: normalise(50),
-                      // marginTop: normalise(-40),
-                    }}
-                  />
-                ) : null
-              }
-            />
           </ScrollView>
-        ) : empityVisible.length === 1 ? (
-          <EmptyComponent
-            buttonPress={() => {
-              setIsLoading(true);
-              getContacts();
-            }}
-            buttonText={'Search Phonebook'}
-            image={ImagePath ? ImagePath.emptyNotify : null}
-            text={
-              'You haven’t recieved any notifications yet. Choona is more fun with more people, search your phonebook below.'
-            }
-            title={'No Notifcations Yet...'}
-          />
-        ) : (
-          <View>
-            <ActivityIndicator
-              color="#ffffff"
-              size="large"
-              style={{ marginTop: 4 * normaliseNew(90) }}
-            />
-          </View>
         )}
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.black },
+  container: { flex: 1, backgroundColor: Colors.darkerblack },
   emptyWrapper: { flex: 1, alignItems: 'center' },
   emptyContainer: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'center',
-    // maxWidth: normaliseNew(260),
   },
   emptyContainerText: {
     color: Colors.white,
@@ -416,6 +396,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     header: state.TokenReducer,
+    status: state.UserReducer.status,
   };
 };
 

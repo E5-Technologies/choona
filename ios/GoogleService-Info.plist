@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>257140745990-b00tir0rv6cd3gmb934cqql5e6i6eagv.apps.googleusercontent.com</string>
+	<string>1080689694728-m1s5ia49npo6j4c1snd5e6js0h2mgcjo.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.257140745990-b00tir0rv6cd3gmb934cqql5e6i6eagv</string>
+	<string>com.googleusercontent.apps.1080689694728-m1s5ia49npo6j4c1snd5e6js0h2mgcjo</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDTjMcpsLByuiKnOcTzE22iQZzvvHYwTjc</string>
+	<string>AIzaSyABuYfKgo4xH6DXBZwDXwhidbTR2U4PhLY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>257140745990</string>
+	<string>1080689694728</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.choonaco.choona</string>
 	<key>PROJECT_ID</key>
-	<string>choona-8db54</string>
+	<string>choona-d6be7</string>
 	<key>STORAGE_BUCKET</key>
-	<string>choona-8db54.appspot.com</string>
+	<string>choona-d6be7.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:257140745990:ios:7e09bb71b928c0d7a32087</string>
+	<string>1:1080689694728:ios:5fe2d9b51773b1909319bd</string>
 	<key>DATABASE_URL</key>
-	<string>https://choona-8db54.firebaseio.com</string>
+	<string>https://choona-d6be7-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>

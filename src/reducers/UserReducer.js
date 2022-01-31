@@ -303,7 +303,7 @@ const UserReducer = (state = initialState, action) => {
       }
 
     case LOAD_MORE_SUCCESS:
-      console.log('loadmoresuccess' + JSON.stringify(action));
+      // console.log('loadmoresuccess' + JSON.stringify(action));
       //  alert("newarra"+array)
 
       return {
