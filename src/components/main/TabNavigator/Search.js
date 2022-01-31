@@ -103,7 +103,6 @@ const Search = props => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log('HERE');
       props.getTop50SongReq();
     }
   }, [props.getTop50SongReq, isFocused]);
