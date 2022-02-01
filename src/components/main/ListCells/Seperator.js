@@ -10,8 +10,6 @@ const Seperator = () => {
       style={{
         height: normalise(0.5),
         backgroundColor: Colors.activityBorderColor,
-        marginLeft: normalise(16),
-        marginRight: normalise(16),
       }}
     />
   );

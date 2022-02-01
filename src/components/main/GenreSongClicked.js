@@ -433,7 +433,7 @@ function GenreSongClicked(props) {
 
   return isLoading ? (
     <View
-      style={{ flex: 1, backgroundColor: Colors.black, paddingTop: '6.7%' }}>
+      style={{ flex: 1, backgroundColor: Colors.darkerblack, paddingTop: '6.7%' }}>
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -451,7 +451,7 @@ function GenreSongClicked(props) {
       </SafeAreaView>
     </View>
   ) : (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_POST_FROM_TOP_50_REQUEST} />

@@ -550,9 +550,9 @@ function InsideaMessage(props) {
           <Text
             style={{
               marginLeft: normalise(10),
-              color: Colors.gray,
+              color: Colors.darkerblack,
               fontSize: normalise(14),
-              fontFamily: 'ProximaNova-Bold',
+              fontFamily: 'Kallisto',
             }}>
             SEND ANOTHER SONG
           </Text>
