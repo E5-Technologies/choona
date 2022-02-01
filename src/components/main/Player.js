@@ -11,6 +11,7 @@ import {
   Linking,
   BackHandler,
   Pressable,
+  Platform
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 
@@ -752,7 +753,7 @@ function Player(props) {
               <View
                 style={{
                   width: '100%',
-                  paddingHorizontal: normalise(16) - 15,
+                  paddingHorizontal: Platform.OS === "ios" ? normalise(16) : normalise(16) - 15,
                 }}>
                 <Slider
                   style={{

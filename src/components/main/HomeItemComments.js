@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import {
-  SafeAreaView,
   View,
   Text,
   StatusBar,
@@ -18,6 +17,7 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
 import Colors from '../../assests/Colors';
@@ -410,13 +410,15 @@ function HomeItemComments(props) {
             />
           </View>
         ) : null}
-        <View
+
+      </SafeAreaView>
+      <View
           style={[
             styles.commentFooterContainer,
             {
               flexDirection: 'row',
               alignItems: 'center',
-              backgroundColor: '#000000',
+              backgroundColor: Colors.darkerblack,
             },
           ]}>
           <TextInput
@@ -558,8 +560,7 @@ function HomeItemComments(props) {
             </TouchableOpacity>
           ) : null}
         </View>
-        {Platform.OS === 'ios' && <KeyboardSpacer />}
-      </SafeAreaView>
+      {Platform.OS === 'ios' && <KeyboardSpacer />}
     </View>
   );
 

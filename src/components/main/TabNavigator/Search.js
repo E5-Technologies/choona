@@ -1037,7 +1037,6 @@ const Search = props => {
                 </View> */}
 
                 <FlatList
-                  style={{ height: '70%' }}
                   data={searchPostData}
                   renderItem={renderSongData}
                   keyExtractor={(item, index) => index.toString()}
