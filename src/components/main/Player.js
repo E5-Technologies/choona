@@ -513,7 +513,7 @@ function Player(props) {
   return (
     <View style={{ flex: 1 }}>
       <LinearGradient
-        colors={['#278c53', '#283140', '#670aa3']}
+        colors={['#0E402C', '#101119', '#360455']}
         style={{ flex: 1 }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}>
@@ -749,21 +749,29 @@ function Player(props) {
                   />
                 </TouchableOpacity>
               </View>
-              <Slider
+              <View
                 style={{
-                  width: '97%',
-                  height: 40,
-                  alignSelf: 'center',
-                  marginTop: normalise(5),
-                }}
-                minimumValue={0}
-                maximumValue={30}
-                step={1}
-                thumbTintColor="#99000000"
-                value={playerCurrentTime}
-                minimumTrackTintColor="#FFFFFF"
-                maximumTrackTintColor="#000000"
-              />
+                  width: '100%',
+                  paddingHorizontal: normalise(16) - 15,
+                }}>
+                <Slider
+                  style={{
+                    width: '100%',
+                    marginHorizontal: 20,
+                    height: 40,
+                    alignSelf: 'center',
+                    marginTop: normalise(5),
+                  }}
+                  minimumValue={0}
+                  maximumValue={30}
+                  step={1}
+                  thumbTintColor="#99000000"
+                  value={playerCurrentTime}
+                  minimumTrackTintColor="#FFFFFF"
+                  maximumTrackTintColor="#000000"
+                />
+              </View>
+
               {changePlayer ? null : (
                 <View
                   style={{

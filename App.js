@@ -398,7 +398,7 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  appStyle: { flex: 1, backgroundColor: Colors.black },
+  appStyle: { flex: 1, backgroundColor: Colors.darkerblack },
 });
 
 export default App;

@@ -249,7 +249,11 @@ function SignUp(props) {
 
   return (
     <View
-      style={{ flex: 1, backgroundColor: Colors.black, position: 'relative' }}>
+      style={{
+        flex: 1,
+        backgroundColor: Colors.darkerblack,
+        position: 'relative',
+      }}>
       {Platform.OS === 'android' ? (
         <MyStatusBar />
       ) : (

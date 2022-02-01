@@ -330,7 +330,7 @@ function HomeItemReaction(props) {
             _onBackPress();
           }}
         />
-        <View style={{ flex: 1, backgroundColor: Colors.black }}>
+        <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
           <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
               autoCorrect={false}
@@ -372,7 +372,7 @@ function HomeItemReaction(props) {
                   getFilteredData('');
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.darkerblack,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

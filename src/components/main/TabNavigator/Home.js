@@ -956,7 +956,7 @@ const Home = props => {
     <View
       style={{
         flex: 1,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.darkerblack,
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>

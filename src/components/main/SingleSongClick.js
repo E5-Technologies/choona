@@ -598,7 +598,7 @@ function SingleSongClick(props) {
 
   return isLoading ? (
     <View
-      style={{ flex: 1, backgroundColor: Colors.black, paddingTop: '6.7%' }}>
+      style={{ flex: 1, backgroundColor: Colors.darkerblack, paddingTop: '6.7%' }}>
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -616,7 +616,7 @@ function SingleSongClick(props) {
       </SafeAreaView>
     </View>
   ) : (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       {/* <Loader visible={bool} />  */}
