@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import {
+  SafeAreaView,
   View,
   Text,
   StatusBar,
@@ -17,7 +18,7 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import moment from 'moment';
 import Colors from '../../assests/Colors';
