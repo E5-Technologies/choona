@@ -228,14 +228,14 @@ function SendSongInMessageFinal(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={'CANCEL'}
-          title={'SEND SONG'}
+          title={'ADD COMMENT'}
           thirditemtext={true}
           texttwo={'SEND'}
           onPressFirstItem={() => {
@@ -255,7 +255,7 @@ function SendSongInMessageFinal(props) {
 
         <View
           style={{
-            marginTop: normalise(20),
+            marginTop: normalise(10),
             width: '92%',
             alignSelf: 'center',
           }}>
@@ -279,7 +279,7 @@ function SendSongInMessageFinal(props) {
           <View
             style={{
               marginTop: normalise(5),
-              backgroundColor: Colors.darkerblack,
+              backgroundColor: Colors.fadeblack,
               height: normalise(65),
               width: '100%',
               borderRadius: normalise(8),

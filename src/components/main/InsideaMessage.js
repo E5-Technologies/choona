@@ -150,6 +150,7 @@ function InsideaMessage(props) {
               image={data.item.image}
               title={data.item.song_name}
               singer={data.item.artist_name}
+              hideThreeDots={true}
               comments={data.item.message[data.item.message.length - 1].text}
               onPress={() => {
                 setModalVisible(true);
@@ -228,6 +229,7 @@ function InsideaMessage(props) {
             image={data.item.image}
             title={data.item.song_name}
             singer={data.item.artist_name}
+            hideThreeDots={true}
             comments={data.item.message[data.item.message.length - 1].text}
             onPress={() => {
               setModalVisible(true), setPositionInArray(data.index);
@@ -399,7 +401,7 @@ function InsideaMessage(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
 
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -438,11 +440,11 @@ function InsideaMessage(props) {
             style={{
               height: normalise(35),
               width: '100%',
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(8),
               marginTop: normalise(20),
               padding: normalise(10),
-              // color: Colors.white,
+              color: Colors.white,
               paddingLeft: normalise(30),
               paddingRight: normalise(50),
             }}
@@ -461,6 +463,7 @@ function InsideaMessage(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />
@@ -471,7 +474,7 @@ function InsideaMessage(props) {
                 setSearch(''), props.searchMessageRequest('');
               }}
               style={{
-                backgroundColor: Colors.fordGray,
+                backgroundColor: Colors.darkerblack,
                 padding: 6,
                 paddingTop: 4,
                 paddingBottom: 4,
@@ -547,9 +550,9 @@ function InsideaMessage(props) {
           <Text
             style={{
               marginLeft: normalise(10),
-              color: Colors.gray,
+              color: Colors.darkerblack,
               fontSize: normalise(14),
-              fontFamily: 'ProximaNova-Bold',
+              fontFamily: 'Kallisto',
             }}>
             SEND ANOTHER SONG
           </Text>

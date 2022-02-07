@@ -256,7 +256,7 @@ const Following = props => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
@@ -270,7 +270,7 @@ const Following = props => {
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={`FOLLOWING (${props.followingData.length})`}
+          title={`${props.followingData.length} FOLLOWING`}
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
@@ -287,10 +287,10 @@ const Following = props => {
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(6),
               padding: normalise(10),
-              color: Colors.black,
+              color: Colors.white,
               paddingLeft: normalise(30),
             }}
             value={search}
@@ -308,6 +308,7 @@ const Following = props => {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />

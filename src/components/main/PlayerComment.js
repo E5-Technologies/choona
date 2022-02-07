@@ -41,6 +41,7 @@ import { commentOnPostReq, followingListReq } from '../../action/UserAction';
 import CommentList from '../main/ListCells/CommentList';
 
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
+import MyStatusBar from '../../utils/MyStatusBar';
 
 let status;
 
@@ -214,7 +215,7 @@ function HomeItemComments(props) {
 
   return (
     <View style={styles.container}>
-      <StatusBar />
+      <MyStatusBar />
 
       <HeaderComponentComments
         firstitemtext={false}

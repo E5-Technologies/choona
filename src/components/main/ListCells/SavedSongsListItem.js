@@ -230,7 +230,7 @@ function SavedSongListItem(props) {
 
             <Text
               style={{
-                color: Colors.grey,
+                color: Colors.meta,
                 fontSize: normalise(11),
                 fontFamily: 'ProximaNova-Regular',
               }}
@@ -294,7 +294,7 @@ function SavedSongListItem(props) {
                 onPressImage();
               }}>
               <Image
-                source={ImagePath.playOutline}
+                source={ImagePath.play}
                 style={{
                   height: normalise(25),
                   width: normalise(25),
@@ -332,7 +332,7 @@ function SavedSongListItem(props) {
                   onPressImage();
                 }}>
                 <Image
-                  source={ImagePath.playOutline}
+                  source={ImagePath.play}
                   style={{
                     height: normalise(23),
                     width: normalise(23),
@@ -341,22 +341,24 @@ function SavedSongListItem(props) {
                 />
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                marginLeft: normalise(16),
-              }}
-              onPress={() => onPress()}>
-              <Image
+            {props.hideThreeDots ? null : (
+              <TouchableOpacity
                 style={{
-                  transform: [{ rotate: '90deg' }],
-                  width: normalise(14),
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  marginLeft: normalise(16),
                 }}
-                source={ImagePath.threedots}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+                onPress={() => onPress()}>
+                <Image
+                  style={{
+                    transform: [{ rotate: '90deg' }],
+                    width: normalise(14),
+                  }}
+                  source={ImagePath.threedots}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -384,6 +386,8 @@ SavedSongListItem.propTypes = {
   comments: PropTypes.bool,
   marginRight: PropTypes.number,
   onPressItem: PropTypes.func,
+
+  hideThreeDots: PropTypes.bool,
 };
 
 SavedSongListItem.defaultProps = {
@@ -404,4 +408,5 @@ SavedSongListItem.defaultProps = {
   marginRight: normalise(30),
   onPressItem: null,
   playIcon: true,
+  hideThreeDots: false,
 };

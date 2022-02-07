@@ -48,6 +48,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
 		8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */; };
+		BC08C7DE86FD4A69927C2324 /* Kallisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6920D4309E44485EB58C3CF1 /* Kallisto.ttf */; };
 		C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */; };
 		C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */; };
 		F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */; };
@@ -107,6 +108,7 @@
 		48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Semibold.ttf"; path = "../assets/fonts/ProximaNova-Semibold.ttf"; sourceTree = "<group>"; };
 		628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Bold.otf"; path = "../assets/fonts/ProximaNovaA-Bold.otf"; sourceTree = "<group>"; };
 		64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Bold.otf"; path = "../assets/fonts/ProximaNova-Bold.otf"; sourceTree = "<group>"; };
+		6920D4309E44485EB58C3CF1 /* Kallisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Kallisto.ttf; path = ../assets/fonts/Kallisto.ttf; sourceTree = "<group>"; };
 		704F16DB59FDB339190DA93C /* Pods-Choona-ChoonaDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaDev.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaDev/Pods-Choona-ChoonaDev.release.xcconfig"; sourceTree = "<group>"; };
 		7BEEABF30005927E51926C63 /* Pods-Choona-ChoonaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Choona/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 				EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */,
 				48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */,
 				9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */,
+				6920D4309E44485EB58C3CF1 /* Kallisto.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -407,6 +410,7 @@
 				61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */,
 				3F3FBEB07A244ECB99712498 /* ProximaNova-Semibold.ttf in Resources */,
 				265AC87D4B064B55AE11B766 /* ProximaNovaAW07-Medium.ttf in Resources */,
+				BC08C7DE86FD4A69927C2324 /* Kallisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -747,7 +751,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 105;
+				CURRENT_PROJECT_VERSION = 106;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -761,7 +765,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -788,7 +792,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 105;
+				CURRENT_PROJECT_VERSION = 106;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Choona/Info.plist;
@@ -798,7 +802,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -847,7 +851,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -908,7 +912,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

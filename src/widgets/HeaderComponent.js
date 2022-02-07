@@ -24,7 +24,11 @@ function HeaderComponent(props) {
   }
 
   return (
-    <View style={HeaderStyles.headerContainer}>
+    <View
+      style={[
+        HeaderStyles.headerContainer,
+        props.hideBorderBottom && { borderBottomWidth: 0 },
+      ]}>
       {/* Left */}
       {props.firstitemtext ? (
         <TouchableOpacity
@@ -92,6 +96,7 @@ HeaderComponent.propTypes = {
   imageonewidth: PropTypes.number,
   imagetwoheight: PropTypes.number,
   imagetwowidth: PropTypes.number,
+  hideBorderBottom: PropTypes.bool,
 };
 
 HeaderComponent.defaultProps = {
@@ -110,4 +115,5 @@ HeaderComponent.defaultProps = {
   imagesecondwidth: normalise(30),
   imagetwoheight: normalise(15),
   imagetwowidth: normalise(15),
+  hideBorderBottom: false,
 };

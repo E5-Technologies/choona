@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalise(12),
     paddingVertical: normalise(12),
     position: 'relative',
+    backgroundColor: Colors.darkerblack,
   },
   listItemHeaderSongDetails: {
     alignItems: 'center',
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   listItemHeaderSongText: {
     alignItems: 'flex-start',
     flexDirection: 'column',
-    marginStart: normalise(5),
+    marginLeft: normalise(10),
     maxWidth: normalise(240),
     width: '100%',
   },

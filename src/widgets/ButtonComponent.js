@@ -4,6 +4,7 @@ import { Text, TouchableOpacity } from 'react-native';
 
 import normalize from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function ButtonComponent(props) {
   const onPress = () => {
@@ -15,31 +16,37 @@ export default function ButtonComponent(props) {
   return (
     <TouchableOpacity
       activeOpacity={props.activeOpacity}
-      style={{
-        marginTop: props.marginTop,
-        width: props.width,
-        marginBottom: props.marginBottom,
-        backgroundColor: props.buttonColor,
-        borderRadius: props.borderRadius,
-        height: props.height,
-        borderWidth: normalize(props.buttonBorderWidth),
-        borderColor: props.buttonBorderColor,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
       onPress={() => {
         onPress();
       }}>
-      <Text
+      <LinearGradient
+        useAngle={true}
+        angle={315}
+        angleCenter={{ x: 0.5, y: 0.5 }}
+        colors={['#9F00FF', '#03965B']}
         style={{
-          color: props.textcolor,
-          textAlign: 'center',
-          fontFamily: 'ProximaNova-Bold',
-          fontSize: props.fontSize,
+          marginTop: props.marginTop,
+          width: props.width,
+          marginBottom: props.marginBottom,
+          backgroundColor: props.buttonColor,
+          borderRadius: props.borderRadius,
+          height: props.height,
+          borderWidth: normalize(props.buttonBorderWidth),
+          borderColor: props.buttonBorderColor,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
-        {props.title}
-      </Text>
+        <Text
+          style={{
+            color: props.textcolor,
+            textAlign: 'center',
+            fontFamily: 'ProximaNova-Bold',
+            fontSize: props.fontSize,
+          }}>
+          {props.title}
+        </Text>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }

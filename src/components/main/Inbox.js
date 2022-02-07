@@ -187,22 +187,18 @@ function Inbox(props) {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
       <Loader visible={bool} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
-          firstitemtext={false}
-          imageone={ImagePath.backicon}
+          firstitemtext={''}
           title={'INBOX'}
           thirditemtext={false}
           imagetwo={ImagePath ? ImagePath.newmessage : null}
           imagetwoheight={25}
           imagetwowidth={25}
-          onPressFirstItem={() => {
-            props.navigation.goBack();
-          }}
           onPressThirdItem={() => {
             props.navigation.navigate('AddSongsInMessage');
           }}
@@ -219,11 +215,11 @@ function Inbox(props) {
               style={{
                 height: normalise(35),
                 width: '100%',
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.fadeblack,
                 borderRadius: normalise(8),
                 marginTop: normalise(16),
                 padding: normalise(10),
-                // color: Colors.white,
+                color: Colors.white,
                 paddingLeft: normalise(30),
                 paddingRight: normalise(50),
               }}
@@ -250,7 +246,7 @@ function Inbox(props) {
                   setSearch(''), filterArray('');
                 }}
                 style={{
-                  backgroundColor: Colors.fordGray,
+                  backgroundColor: Colors.darkerblack,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,

@@ -251,17 +251,20 @@ const Contact = props => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
       <Loader visible={bool} />
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
-          firstitemtext={true}
-          textone={''}
           title={'SAVED SONGS'}
           thirditemtext={true}
           texttwo={''}
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
         />
         {/* {allSaveSong.length !== 0 && (
           <View

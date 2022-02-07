@@ -168,8 +168,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
@@ -193,22 +193,17 @@ const App = () => {
               tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
+                    opacity: focused ? 1 : 0.5,
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
-                  source={
-                    ImagePath
-                      ? focused
-                        ? ImagePath.searchactive
-                        : ImagePath.searchinactive
-                      : null
-                  }
+                  source={ImagePath ? ImagePath.exploreactive : null}
                   resizeMode="contain"
                 />
               ),
@@ -226,8 +221,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(40),
                     width: normalise(40),
                   }}
@@ -256,8 +251,8 @@ const App = () => {
                         Platform.OS === 'android'
                           ? normalise(10)
                           : Dimensions.get('window').height > 736
-                            ? normalise(0)
-                            : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                       height: normalise(20),
                       width: normalise(20),
                     }}
@@ -297,28 +292,23 @@ const App = () => {
           />
 
           <Tab.Screen
-            name="Contact"
-            component={Contact}
+            name="Inbox"
+            component={Inbox}
             options={{
               tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
+                    opacity: focused ? 1 : 0.6,
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(22),
                     width: normalise(22),
                   }}
-                  source={
-                    ImagePath
-                      ? focused
-                        ? ImagePath.boxactive
-                        : ImagePath.boxinactive
-                      : null
-                  }
+                  source={ImagePath ? ImagePath.inbox : null}
                   resizeMode="contain"
                 />
               ),
@@ -351,7 +341,8 @@ const App = () => {
             <Stack.Screen name="Following" component={Following} />
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
-            <Stack.Screen name="Inbox" component={Inbox} />
+            <Stack.Screen name="Contact" component={Contact} />
+            {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
             <Stack.Screen
               name="Player"
               component={Player}
@@ -407,7 +398,7 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  appStyle: { flex: 1, backgroundColor: Colors.black },
+  appStyle: { flex: 1, backgroundColor: Colors.darkerblack },
 });
 
 export default App;
