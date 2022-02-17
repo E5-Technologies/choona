@@ -31,7 +31,6 @@ const HomeListItemFooter = ({
 }) => {
   const [actualNumLines, setActualNumLines] = useState(0);
   const onTextLayout = useCallback(e => {
-    console.log(e.nativeEvent.lines.length);
     if (actualNumLines == 0) {
       setActualNumLines(e.nativeEvent.lines.length);
     }
