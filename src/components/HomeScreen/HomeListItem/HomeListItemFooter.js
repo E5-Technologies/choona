@@ -29,11 +29,13 @@ const HomeListItemFooter = ({
   userName,
   viewMore,
 }) => {
-  const [showShowMore, setShowShowMore] = useState(false);
-
+  const [actualNumLines, setActualNumLines] = useState(0);
   const onTextLayout = useCallback(e => {
-    setShowShowMore(e.nativeEvent.lines.length > 3);
-  }, []);
+    console.log(e.nativeEvent.lines.length);
+    if (actualNumLines == 0) {
+      setActualNumLines(e.nativeEvent.lines.length);
+    }
+  }, [actualNumLines]);
 
   return (
     <View style={styles.listItemFooterContainer}>
@@ -102,7 +104,7 @@ const HomeListItemFooter = ({
       <View>
         {postText.length > 0 ? (
           <Text
-            numberOfLines={numberOfLines}
+            numberOfLines={actualNumLines == 0 ? null : viewMore ? actualNumLines : 3}
             style={styles.listItemFooterText}
             onTextLayout={onTextLayout}>
             {parts}
@@ -110,7 +112,7 @@ const HomeListItemFooter = ({
         ) : (
           <View />
         )}
-        {showShowMore ? (
+        {actualNumLines > 3 ? (
           <TouchableOpacity
             onPress={() => {
               !viewMore ? setNumberOfLines(10) : setNumberOfLines(3),

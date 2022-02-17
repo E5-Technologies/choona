@@ -472,15 +472,15 @@ PODS:
     - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNImageCropPicker (0.28.0):
+  - RNImageCropPicker (0.37.2):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.28.0)
-    - RSKImageCropper
-  - RNImageCropPicker/QBImagePickerController (0.28.0):
+    - RNImageCropPicker/QBImagePickerController (= 0.37.2)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.37.2):
     - React-Core
     - React-RCTImage
-    - RSKImageCropper
+    - TOCropViewController
   - RNPermissions (3.2.0):
     - React-Core
   - RNReanimated (1.13.3):
@@ -495,13 +495,13 @@ PODS:
     - RNSound/Core (= 0.11.2)
   - RNSound/Core (0.11.2):
     - React-Core
-  - RSKImageCropper (3.0.2)
   - Sentry (7.9.0):
     - Sentry/Core (= 7.9.0)
   - Sentry/Core (7.9.0)
   - SRSRadialGradient (1.0.9):
     - React
   - Toast (4.0.0)
+  - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -624,9 +624,9 @@ SPEC REPOS:
     - OpenSSL-Universal
     - PersonalizedAdConsent
     - PromisesObjC
-    - RSKImageCropper
     - Sentry
     - Toast
+    - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -831,16 +831,16 @@ SPEC CHECKSUMS:
   RNFBDatabase: 21ebccd262d7ab77db2b5c7fe4c6528c6ec259c3
   RNFBMessaging: 1823217d31e942531cc3f51fb5367dcbc69c1e10
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNImageCropPicker: cf129d17e042ce3e96fb9ada967c28f21f977c82
+  RNImageCropPicker: 448d3c6e923fde3466b49caf3c2457c2a0ba02dd
   RNPermissions: f7ebe52db07c00901127966ca080b4ec6a6ceb0a
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNSentry: 0aa1567f66c20390f3834637fc4f73380dcd0774
   RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
-  RSKImageCropper: 1ac71e9a82e3f41eea3eedfff8eacb0d3821c9ec
   Sentry: 2f7e91f247cfb05b05bd01e0b5d0692557a7687b
   SRSRadialGradient: 49ba49a7a8f257c3fe785c250867b07185d1d01e
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: e6db7a0be0e80eeb70c04663605e4f6a050ab013
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
