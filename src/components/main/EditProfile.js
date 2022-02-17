@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Image,
+  Pressable,
   Alert,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
@@ -122,8 +122,10 @@ const EditProfile = props => {
         setProfilePic(image.path);
       })
       .catch(err => {
-        alert(err);
-        console.log(err);
+        if (err.code !== 'E_PICKER_CANCELLED') {
+          alert(err);
+        }
+        console.log(JSON.stringify(err));
       });
   };
 
@@ -255,7 +257,8 @@ const EditProfile = props => {
         />
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View
+          <Pressable
+            onPress={showPickerOptions}
             style={{
               height: normalise(120),
               width: normalise(120),
@@ -267,7 +270,7 @@ const EditProfile = props => {
               alignItems: 'center',
             }}>
             <Avatar image={profilePic} height={120} width={120} />
-          </View>
+          </Pressable>
           <TouchableOpacity
             style={{ marginTop: normalise(10), marginBottom: normalise(20) }}
             onPress={() => {
@@ -420,7 +423,7 @@ const EditProfile = props => {
               marginLeft: normalise(10),
               color: Colors.darkerblack,
               fontSize: normalise(14),
-              fontFamily: 'ProximaNova-Bold',
+              fontFamily: 'Kallisto',
             }}>
             UPDATE PROFILE
           </Text>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
 
@@ -29,6 +29,12 @@ const HomeListItemFooter = ({
   userName,
   viewMore,
 }) => {
+  const [showShowMore, setShowShowMore] = useState(false);
+
+  const onTextLayout = useCallback(e => {
+    setShowShowMore(e.nativeEvent.lines.length > 3);
+  }, []);
+
   return (
     <View style={styles.listItemFooterContainer}>
       <View style={styles.listItemFooterTop}>
@@ -95,13 +101,16 @@ const HomeListItemFooter = ({
       </View>
       <View>
         {postText.length > 0 ? (
-          <Text numberOfLines={numberOfLines} style={styles.listItemFooterText}>
+          <Text
+            numberOfLines={numberOfLines}
+            style={styles.listItemFooterText}
+            onTextLayout={onTextLayout}>
             {parts}
           </Text>
         ) : (
           <View />
         )}
-        {postText.length > 180 ? (
+        {showShowMore ? (
           <TouchableOpacity
             onPress={() => {
               !viewMore ? setNumberOfLines(10) : setNumberOfLines(3),

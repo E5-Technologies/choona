@@ -780,23 +780,23 @@ const Home = props => {
     );
   }
 
-  function findIsNotRead() {
-    let hasUnseenMessage = false;
-    var arr = props.chatList;
+  //   function findIsNotRead() {
+  //     let hasUnseenMessage = false;
+  //     var arr = props.chatList;
 
-    if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
-      for (var i = 0; i < arr.length; i++) {
-        if (props.userProfileResp._id === arr[i].receiver_id) {
-          hasUnseenMessage = !arr[i].read;
-          if (hasUnseenMessage) {
-            break;
-          }
-        }
-      }
+  //     if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
+  //       for (var i = 0; i < arr.length; i++) {
+  //         if (props.userProfileResp._id === arr[i].receiver_id) {
+  //           hasUnseenMessage = !arr[i].read;
+  //           if (hasUnseenMessage) {
+  //             break;
+  //           }
+  //         }
+  //       }
 
-      return hasUnseenMessage;
-    }
-  }
+  //       return hasUnseenMessage;
+  //     }
+  //   }
 
   // GET PLAYER PLAYING STATE FOR PAUSE/PLAY ICON IN FEED
   function getPlayerState() {
@@ -989,7 +989,7 @@ const Home = props => {
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
-          notRead={findIsNotRead()}
+          notRead={false}
           onIconPress={true}
           pressLogo={() => {
             flatlistRef.current.scrollToIndex({
