@@ -344,29 +344,6 @@ const AddSong = props => {
             showsVerticalScrollIndicator={false}
           />
         )}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <BannerAd
-            unitId={
-              Platform.OS === 'android'
-                ? 'ca-app-pub-2232736176622960/2335890938'
-                : 'ca-app-pub-2232736176622960/3492936227'
-            }
-            size={BannerAdSize.BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-            onAdLoaded={() => {
-              // console.log('Advert loaded');
-            }}
-            onAdFailedToLoad={error => {
-              console.error('Advert failed to load: ', error);
-            }}
-          />
-        </View>
       </SafeAreaView>
     </View>
   );
