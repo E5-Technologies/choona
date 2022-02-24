@@ -43,8 +43,9 @@ function HomeItemList(props) {
 
   const onReactionPress = reaction => {
     if (props.onReactionPress) {
-      props.onReactionPress(reaction);
+      return props.onReactionPress(reaction);
     }
+    return false;
   };
 
   let delimiter = /\s+/;
@@ -129,6 +130,7 @@ function HomeItemList(props) {
         onPressReactionbox={onPressReactionbox}
         onReactionPress={onReactionPress}
         parts={parts}
+        myReactions={props.myReactions}
         postText={props.content}
         postTime={props.time}
         reactionCount={props.reaction_count}
@@ -165,6 +167,7 @@ HomeItemList.propTypes = {
   modalVisible: PropTypes.bool,
   play: PropTypes.bool,
   postType: PropTypes.bool,
+  myReactions: PropTypes.object,
 };
 
 HomeItemList.defaultProps = {
@@ -180,4 +183,5 @@ HomeItemList.defaultProps = {
   modalVisible: false,
   postType: true,
   play: false,
+  myReactions: {},
 };

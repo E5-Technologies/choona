@@ -50,6 +50,7 @@ export const loginWithSpotify = async () => {
     }
     return {};
   } catch (error) {
+      console.log(error);
     return {};
   }
 };

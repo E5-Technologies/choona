@@ -88,6 +88,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
 import MoreModal from '../../Posts/MoreModal';
+import Reactions from '../../Reactions/Reactions';
 
 let status = '';
 let songStatus = '';
@@ -148,9 +149,9 @@ const Home = props => {
 
   useEffect(() => {
     if (props.status === 'REACTION_ON_POST_SUCCESS') {
-      setTimeout(() => {
-        refetch();
-      }, 1000);
+      //   setTimeout(() => {
+      refetch();
+      //   }, 1000);
     }
 
     if (props.status === 'USER_FOLLOW_UNFOLLOW_SUCCESS') {
@@ -445,6 +446,50 @@ const Home = props => {
     }
   }
 
+  /** REACTION - ADDITION */
+  const [pendingReacts, setPendingReacts] = useState({});
+  const addPendingReactTimer = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: true,
+      };
+    });
+    wait(5000).then(() => {
+      removePendingReact(reactId, postId);
+    });
+  };
+
+  const removePendingReact = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: false,
+      };
+    });
+  };
+
+  const getPendingReactKey = (reactId, postId) => {
+    return `${reactId}##${postId}`;
+  };
+
+  function hitReact(reactId, postId) {
+    let reactionObject = {
+      post_id: postId,
+      text: Reactions[reactId].oldText,
+      text_match: Reactions[reactId].map,
+    };
+    isInternetConnected()
+      .then(() => {
+        addPendingReactTimer(reactId, postId);
+        props.reactionOnPostRequest(reactionObject);
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
+  }
+  /** ------------ */
+
   function hitreact1() {
     if (modal1Visible === true) {
       setModal1Visible(false);
@@ -656,6 +701,32 @@ const Home = props => {
   }
 
   function renderItem(data) {
+    /** REACTION - ADDITION */
+    const reactionMap = {
+      thumbsUp: data.item.fireReactionIds
+        ? data.item.fireReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      fire: data.item.loveReactionIds
+        ? data.item.loveReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      heart: data.item.dancerReactionIds
+        ? data.item.dancerReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      disco: data.item.manDancingReactionIds
+        ? data.item.manDancingReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+      throwback: data.item.faceReactionIds
+        ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      thumbsDown: data.item.thumbsUpReactionIds
+        ? data.item.thumbsUpReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+    };
+
     return (
       <>
         <HomeItemList
@@ -681,6 +752,7 @@ const Home = props => {
             face_count: data.item.face_count,
             thumbsup_count: data.item.thumbsup_count,
           }}
+          myReactions={reactionMap}
           navi={props}
           content={data.item.post_content}
           time={data.item.createdAt}
@@ -690,10 +762,14 @@ const Home = props => {
           modalVisible={modal1Visible}
           postType={data.item.social_type === 'spotify'}
           onReactionPress={reaction => {
-            if (!isFetching) {
-              hitreact(reaction, data.index);
-              sendReaction(data.item._id, reaction);
+            if (
+              !pendingReacts[getPendingReactKey(reaction, data.item._id)] &&
+              !isFetching
+            ) {
+              hitReact(reaction, data.item._id);
+              return true;
             }
+            return false;
           }}
           onPressImage={() => {
             if (!isFetching) {

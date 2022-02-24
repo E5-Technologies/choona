@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
-
+import ReactionsReverse from '../../Reactions/ReactionsReverse';
+import Reactions from '../../Reactions/Reactions';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
@@ -42,7 +43,7 @@ function ActivityListItem(props) {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ flex: 1 }}
+            style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
             disabled={props.TouchableOpacityDisabled}
             onPress={() => {
               onPressImage();
@@ -56,7 +57,7 @@ function ActivityListItem(props) {
               ) : props.reaction ? (
                 <>
                   <Text style={styles.detailsTextBold}>{props.user} </Text>
-                  reacted {props.reaction} on your post
+                  reacted on your post
                 </>
               ) : props.comment &&
                 props.comment.includes('mentioned you in comment') ? (
@@ -75,6 +76,13 @@ function ActivityListItem(props) {
                 ''
               )}
             </Text>
+            {props.reaction &&
+            ReactionsReverse[props.reaction] &&
+            Reactions[ReactionsReverse[props.reaction]].icon ? (
+              <View style={{ width: 20, height: 20 }}>
+                {Reactions[ReactionsReverse[props.reaction]].icon}
+              </View>
+            ) : null}
           </TouchableOpacity>
         </View>
         {props.type ? (
@@ -152,6 +160,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     fontSize: normaliseNew(12),
     lineHeight: normaliseNew(15),
+    flex: 1,
     textAlign: 'left',
   },
   detailsTextBold: {

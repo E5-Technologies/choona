@@ -9,6 +9,8 @@ import normalise from '../../../utils/helpers/Dimens';
 
 import HomeListItemReactions from './HomeListItemReactions';
 import Avatar from '../../../components/Avatar';
+import { ReactionButtonThumbsUp } from '../../Reactions/Buttons/Buttons';
+import ReactionButtonBar from '../../Reactions/ButtonBar/ButtonBar';
 
 const HomeListItemFooter = ({
   commentCount,
@@ -28,13 +30,17 @@ const HomeListItemFooter = ({
   userAvatar,
   userName,
   viewMore,
+  myReactions,
 }) => {
   const [actualNumLines, setActualNumLines] = useState(0);
-  const onTextLayout = useCallback(e => {
-    if (actualNumLines == 0) {
-      setActualNumLines(e.nativeEvent.lines.length);
-    }
-  }, [actualNumLines]);
+  const onTextLayout = useCallback(
+    e => {
+      if (actualNumLines == 0) {
+        setActualNumLines(e.nativeEvent.lines.length);
+      }
+    },
+    [actualNumLines],
+  );
 
   return (
     <View style={styles.listItemFooterContainer}>
@@ -103,7 +109,9 @@ const HomeListItemFooter = ({
       <View>
         {postText.length > 0 ? (
           <Text
-            numberOfLines={actualNumLines == 0 ? null : viewMore ? actualNumLines : 3}
+            numberOfLines={
+              actualNumLines == 0 ? null : viewMore ? actualNumLines : 3
+            }
             style={styles.listItemFooterText}
             onTextLayout={onTextLayout}>
             {parts}
@@ -124,9 +132,13 @@ const HomeListItemFooter = ({
         ) : null}
       </View>
       <View style={styles.listItemFooterReactions}>
-        <HomeListItemReactions
+        {/* <HomeListItemReactions
           onReactionPress={onReactionPress}
           reactions={reactions}
+        /> */}
+        <ReactionButtonBar
+          myReactions={myReactions}
+          onReactPressed={onReactionPress}
         />
       </View>
     </View>

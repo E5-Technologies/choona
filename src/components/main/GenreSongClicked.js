@@ -42,6 +42,7 @@ import MoreModal from '../Posts/MoreModal';
 import { API_HOST } from '../../config';
 
 import axios from 'axios';
+import Reactions from '../Reactions/Reactions';
 let status;
 let userStatus;
 
@@ -128,14 +129,14 @@ function GenreSongClicked(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-          ? 'B'
-          : reaction === react[2]
-            ? 'C'
-            : reaction === react[3]
-              ? 'D'
-              : reaction === react[4]
-                ? 'E'
-                : 'F';
+        ? 'B'
+        : reaction === react[2]
+        ? 'C'
+        : reaction === react[3]
+        ? 'D'
+        : reaction === react[4]
+        ? 'E'
+        : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -335,10 +336,92 @@ function GenreSongClicked(props) {
     }
   };
 
+  /** REACTION - ADDITION */
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const [pendingReacts, setPendingReacts] = useState({});
+  const addPendingReactTimer = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: true,
+      };
+    });
+    wait(5000).then(() => {
+      removePendingReact(reactId, postId);
+    });
+  };
+
+  const removePendingReact = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: false,
+      };
+    });
+  };
+
+  const getPendingReactKey = (reactId, postId) => {
+    return `${reactId}##${postId}`;
+  };
+
+  function hitReact(reactId, postId) {
+    let reactionObject = {
+      post_id: postId,
+      text: Reactions[reactId].oldText,
+      text_match: Reactions[reactId].map,
+    };
+    isInternetConnected()
+      .then(() => {
+        addPendingReactTimer(reactId, postId);
+        props.reactionOnPostRequest(reactionObject);
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
+  }
+  /** ------------ */
+
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
+    /** REACTION - ADDITION */
+    const reactionMap = {
+      thumbsUp: data.item.fireReactionIds
+        ? data.item.fireReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      fire: data.item.loveReactionIds
+        ? data.item.loveReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      heart: data.item.dancerReactionIds
+        ? data.item.dancerReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      disco: data.item.manDancingReactionIds
+        ? data.item.manDancingReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+      throwback: data.item.faceReactionIds
+        ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      thumbsDown: data.item.thumbsUpReactionIds
+        ? data.item.thumbsUpReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+    };
+
     return (
       <HomeItemList
+        onReactionPress={reaction => {
+          if (!pendingReacts[getPendingReactKey(reaction, data.item._id)]) {
+            hitReact(reaction, data.item._id);
+            return true;
+          }
+          return false;
+        }}
+        myReactions={reactionMap}
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
@@ -360,9 +443,6 @@ function GenreSongClicked(props) {
         songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
-        onReactionPress={reaction => {
-          hitreact(reaction, data.index), sendReaction(data.item._id, reaction);
-        }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             props.navigation.navigate('Profile', { fromAct: false });
@@ -433,7 +513,11 @@ function GenreSongClicked(props) {
 
   return isLoading ? (
     <View
-      style={{ flex: 1, backgroundColor: Colors.darkerblack, paddingTop: '6.7%' }}>
+      style={{
+        flex: 1,
+        backgroundColor: Colors.darkerblack,
+        paddingTop: '6.7%',
+      }}>
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}

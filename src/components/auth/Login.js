@@ -62,6 +62,7 @@ function SignUp(props) {
   function spotifyLogin() {
     loginWithSpotify()
       .then(value => {
+          console.log("HERE", value);
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 

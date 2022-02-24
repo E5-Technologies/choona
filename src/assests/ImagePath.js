@@ -98,6 +98,12 @@ const ImagePath = {
   sendIcon: require('./images/send-icon.png'),
   exploreinactive: require('./images/explore_compass_grey.png'),
   exploreactive: require('./images/explore_compass_white.png'),
+  reactThumbsUp: require('./images/react_thumbs_up.png'),
+  reactThumbsDown: require('./images/react_thumbs_down.png'),
+  reactThrowback: require('./images/react_throwback.png'),
+  reactHeart: require('./images/react_heart.png'),
+  reactFire: require('./images/react_fire.png'),
+  reactDisco: require('./images/react_disco.png'),
 };
 
 export default ImagePath;
