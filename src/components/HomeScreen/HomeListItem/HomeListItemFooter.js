@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     width: normalise(14),
   },
   listItemFooterReactions: {
+    flexDirection: 'row',
     marginTop: normalise(12),
   },
 });
