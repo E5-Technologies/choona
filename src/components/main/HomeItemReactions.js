@@ -53,7 +53,6 @@ function HomeItemReaction(props) {
     fetchReactionsOnPost(props.route.params.post_id, props.header.token)
       .then(res => {
         setReactionsLoading(false);
-        console.log('data' + JSON.stringify(res));
         if (res) {
           setReactionList(editArray(res));
           reaction_count = res.length;
@@ -102,7 +101,6 @@ function HomeItemReaction(props) {
         data: reactionMap[key],
       };
     });
-    console.log(JSON.stringify(array, null, 4));
     // console.log(JSON.stringify(sortedList, null, 4));
 
     return sortedList;
@@ -315,13 +313,10 @@ function HomeItemReaction(props) {
             item.toString();
           }}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={Seperator}
         />
       </View>
     );
   }
-
-  console.log(props);
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
