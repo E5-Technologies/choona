@@ -146,7 +146,6 @@ function SingleSongClick(props) {
   }
 
   if (status === '' || status !== props.status) {
-    console.log('status' + props.status);
     switch (props.status) {
       case GET_POST_FROM_TOP_50_REQUEST:
         status = props.status;
@@ -183,7 +182,6 @@ function SingleSongClick(props) {
       text: reaction,
       text_match: myReaction,
     };
-    console.log('totalReactaa' + totalReact);
     updateData.map((item, index) => {
       if (id === item._id) {
         if (myReaction === 'A') {
@@ -803,7 +801,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  console.log('mapdispath');
   return {
     searchPost: (text, flag) => {
       dispatch(searchPostReq(text, flag));

@@ -15,10 +15,6 @@ const ReactionsProvider = ({ reactionOnPostRequest, children }) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
 
-  useEffect(() => {
-    console.log(JSON.stringify(pendingReacts, null, 4));
-  }, [pendingReacts]);
-
   const resetQueue = key => {
     setPendingReacts(old => {
       return {
@@ -51,8 +47,6 @@ const ReactionsProvider = ({ reactionOnPostRequest, children }) => {
     const key = getPendingReactKey(reactId, postId);
     const currentQueueValue = pendingReactsRef.current[key];
 
-    console.log('TRYING', currentQueueValue);
-
     if (!currentQueueValue) {
       sendReactRequest(reactId, postId);
     } else {
@@ -63,8 +57,6 @@ const ReactionsProvider = ({ reactionOnPostRequest, children }) => {
   const handleRemainingStateChanges = (reactId, postId) => {
     const key = getPendingReactKey(reactId, postId);
     const currentQueueValue = pendingReactsRef.current[key];
-
-    console.log('TRYING - AGAIN', currentQueueValue);
 
     if (currentQueueValue && currentQueueValue % 2 === 0) {
       sendReactRequest(reactId, postId);
@@ -87,7 +79,6 @@ const ReactionsProvider = ({ reactionOnPostRequest, children }) => {
   };
 
   const sendReactRequest = (reactId, postId) => {
-    console.log('SENDING REQUEST');
     const key = getPendingReactKey(reactId, postId);
     let reactionObject = {
       post_id: postId,
