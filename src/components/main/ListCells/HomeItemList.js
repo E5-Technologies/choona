@@ -41,13 +41,6 @@ function HomeItemList(props) {
     }
   };
 
-  const onReactionPress = reaction => {
-    if (props.onReactionPress) {
-      return props.onReactionPress(reaction);
-    }
-    return false;
-  };
-
   let delimiter = /\s+/;
 
   //split string
@@ -128,9 +121,10 @@ function HomeItemList(props) {
         onPressImage={onPressImage}
         onPressMenu={onPressSecondImage}
         onPressReactionbox={onPressReactionbox}
-        onReactionPress={onReactionPress}
+        onReactionPress={props.onReactionPress}
         parts={parts}
         myReactions={props.myReactions}
+        myReactionsPending={props.myReactionsPending}
         postText={props.content}
         postTime={props.time}
         reactionCount={props.reaction_count}
@@ -140,6 +134,7 @@ function HomeItemList(props) {
         userAvatar={props.picture}
         userName={props.name}
         viewMore={viewMore}
+        relatedId={props.id}
       />
     </View>
   );
@@ -148,6 +143,7 @@ function HomeItemList(props) {
 export default HomeItemList;
 
 HomeItemList.propTypes = {
+  id: PropTypes.string,
   image: PropTypes.string,
   title: PropTypes.string,
   onPress: PropTypes.func,
@@ -168,6 +164,7 @@ HomeItemList.propTypes = {
   play: PropTypes.bool,
   postType: PropTypes.bool,
   myReactions: PropTypes.object,
+  myReactionsPending: PropTypes.object,
 };
 
 HomeItemList.defaultProps = {

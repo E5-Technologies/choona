@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -43,6 +43,7 @@ import { API_HOST } from '../../config';
 
 import axios from 'axios';
 import Reactions from '../Reactions/Reactions';
+import { ReactionsContext } from '../Reactions/UseReactions/ReactionsContext';
 let status;
 let userStatus;
 
@@ -61,6 +62,8 @@ function GenreSongClicked(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [updateList, setUpdateList] = useState([]);
   // const [totalReact,setTotalReact] = useState([])
+
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
 
   let flag = false;
   let changePlayer = false;
@@ -412,15 +415,20 @@ function GenreSongClicked(props) {
         : false,
     };
 
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', data.item._id),
+      fire: isPending('fire', data.item._id),
+      heart: isPending('heart', data.item._id),
+      disco: isPending('disco', data.item._id),
+      throwback: isPending('throwback', data.item._id),
+      thumbsDown: isPending('thumbsDown', data.item._id),
+    };
+
     return (
       <HomeItemList
-        onReactionPress={reaction => {
-          if (!pendingReacts[getPendingReactKey(reaction, data.item._id)]) {
-            hitReact(reaction, data.item._id);
-            return true;
-          }
-          return false;
-        }}
+        id={data.item._id}
+        onReactionPress={newHitReact}
+        myReactionsPending={reactionPendingMap}
         myReactions={reactionMap}
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}

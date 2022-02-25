@@ -31,6 +31,8 @@ const HomeListItemFooter = ({
   userName,
   viewMore,
   myReactions,
+  myReactionsPending,
+  relatedId
 }) => {
   const [actualNumLines, setActualNumLines] = useState(0);
   const onTextLayout = useCallback(
@@ -139,6 +141,8 @@ const HomeListItemFooter = ({
         <ReactionButtonBar
           myReactions={myReactions}
           onReactPressed={onReactionPress}
+          myReactionsPending={myReactionsPending}
+          relatedId={relatedId}
         />
       </View>
     </View>

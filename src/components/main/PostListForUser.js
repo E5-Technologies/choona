@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -58,6 +58,7 @@ import axios from 'axios';
 import { useScrollToTop } from '@react-navigation/native';
 import MoreModal from '../Posts/MoreModal';
 import Reactions from '../Reactions/Reactions';
+import { ReactionsContext } from '../Reactions/UseReactions/ReactionsContext';
 
 let status = '';
 let songStatus = '';
@@ -445,6 +446,8 @@ function PostListForUser(props) {
     return `${reactId}##${postId}`;
   };
 
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+
   function hitReact(reactId, postId) {
     let reactionObject = {
       post_id: postId,
@@ -489,15 +492,20 @@ function PostListForUser(props) {
         : false,
     };
 
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', true),
+      fire: isPending('fire', true),
+      heart: isPending('heart', true),
+      disco: isPending('disco', true),
+      throwback: isPending('throwback', true),
+      thumbsDown: isPending('thumbsDown', true),
+    };
+
     return (
       <HomeItemList
-        onReactionPress={reaction => {
-          if (!pendingReacts[getPendingReactKey(reaction, data.item._id)]) {
-            hitReact(reaction, data.item._id);
-            return true;
-          }
-          return false;
-        }}
+        id={data.item._id}
+        onReactionPress={newHitReact}
+        myReactionsPending={reactionPendingMap}
         myReactions={reactionMap}
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}

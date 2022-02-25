@@ -21,6 +21,7 @@ export default StyleSheet.create({
     height: '100%',
   },
   fadingContainer: {
+      opacity: 1,
     width: '100%',
     height: '100%',
   },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   SafeAreaView,
   View,
@@ -89,6 +89,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
 import MoreModal from '../../Posts/MoreModal';
 import Reactions from '../../Reactions/Reactions';
+import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 
 let status = '';
 let songStatus = '';
@@ -118,6 +119,8 @@ const Home = props => {
 
   const [posts, setPosts] = useState([]);
   const postsUrl = constants.BASE_URL + '/post/list?page=';
+
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
 
   const {
     data: newPosts,
@@ -727,10 +730,20 @@ const Home = props => {
         : false,
     };
 
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', data.item._id),
+      fire: isPending('fire', data.item._id),
+      heart: isPending('heart', data.item._id),
+      disco: isPending('disco', data.item._id),
+      throwback: isPending('throwback', data.item._id),
+      thumbsDown: isPending('thumbsDown', data.item._id),
+    };
+
     return (
       <>
         <HomeItemList
           image={data.item.song_image}
+          id={data.item._id}
           play={
             _.isEmpty(postArray)
               ? false
@@ -753,6 +766,7 @@ const Home = props => {
             thumbsup_count: data.item.thumbsup_count,
           }}
           myReactions={reactionMap}
+          myReactionsPending={reactionPendingMap}
           navi={props}
           content={data.item.post_content}
           time={data.item.createdAt}
@@ -761,16 +775,7 @@ const Home = props => {
           songUri={data.item.song_uri}
           modalVisible={modal1Visible}
           postType={data.item.social_type === 'spotify'}
-          onReactionPress={reaction => {
-            if (
-              !pendingReacts[getPendingReactKey(reaction, data.item._id)] &&
-              !isFetching
-            ) {
-              hitReact(reaction, data.item._id);
-              return true;
-            }
-            return false;
-          }}
+          onReactionPress={newHitReact}
           onPressImage={() => {
             if (!isFetching) {
               if (props.userProfileResp._id === data.item.user_id) {

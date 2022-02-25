@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -64,6 +64,7 @@ import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
 import Reactions from '../../Reactions/Reactions';
+import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 
 let status;
 let postStatus;
@@ -373,6 +374,8 @@ const Search = props => {
     return `${reactId}##${postId}`;
   };
 
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+
   function hitReact(reactId, postId) {
     let reactionObject = {
       post_id: postId,
@@ -416,15 +419,21 @@ const Search = props => {
           )
         : false,
     };
+
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', data.item._id),
+      fire: isPending('fire', data.item._id),
+      heart: isPending('heart', data.item._id),
+      disco: isPending('disco', data.item._id),
+      throwback: isPending('throwback', data.item._id),
+      thumbsDown: isPending('thumbsDown', data.item._id),
+    };
+
     return (
       <HomeItemList
-        onReactionPress={reaction => {
-          if (!pendingReacts[getPendingReactKey(reaction, data.item._id)]) {
-            hitReact(reaction, data.item._id);
-            return true;
-          }
-          return false;
-        }}
+        id={data.item._id}
+        onReactionPress={newHitReact}
+        myReactionsPending={reactionPendingMap}
         myReactions={reactionMap}
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
