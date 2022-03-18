@@ -5,6 +5,9 @@ import ImagePath from '../assests/ImagePath';
 import normalise from '../utils/helpers/Dimens';
 
 const Avatar = ({ image, height, width }) => {
+  const noImage =
+    image === 'https://api.choona.co/uploads/user/thumb/' || image === null;
+
   return (
     <View
       style={{
@@ -14,7 +17,7 @@ const Avatar = ({ image, height, width }) => {
         width: normalise(width),
       }}>
       <Image
-        source={image ? { uri: image } : ImagePath.userPlaceholder}
+        source={!noImage ? { uri: image } : ImagePath.userPlaceholder}
         style={{
           height: normalise(height),
           width: normalise(width),
