@@ -11,6 +11,7 @@ import {
   Keyboard,
   Modal,
   KeyboardAvoidingView,
+  Linking,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
 import { useIsFocused } from '@react-navigation/native';
@@ -63,6 +64,9 @@ import { getUsersFromHome } from '../../../action/UserAction';
 import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
+import axios from 'axios';
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 
 let status;
 let postStatus;
@@ -471,14 +475,14 @@ const Search = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -728,6 +732,97 @@ const Search = props => {
     };
   }, []);
 
+  const callApi = async () => {
+    console.log(props);
+    if (props.registerType === 'spotify') {
+      console.log(0);
+      const spotifyToken = await getSpotifyToken();
+
+      return await axios.get(
+        `https://api.spotify.com/v1/search?q=isrc:${searchPostData[positionInArray].isrc_code}&type=track`,
+        {
+          headers: {
+            Authorization: spotifyToken,
+          },
+        },
+      );
+    } else {
+      console.log(1);
+      const AppleToken = await getAppleDevToken();
+
+      return await axios.get(
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${searchPostData[positionInArray].isrc_code}`,
+        {
+          headers: {
+            Authorization: AppleToken,
+          },
+        },
+      );
+    }
+  };
+
+  const openInAppleORSpotify = async () => {
+    try {
+      const res = await callApi();
+
+      if (res.status === 200) {
+        if (
+          !_.isEmpty(
+            props.registerType === 'spotify'
+              ? res.data.tracks.items
+              : res.data.data,
+          )
+        ) {
+          if (props.userProfileResp.register_type === 'spotify') {
+            // console.log({ res });
+            // console.log('success - spotify');
+            // console.log(res.data.tracks.items[0].external_urls.spotify);
+            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+              .then(() => {
+                Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
+              })
+              .catch(() => {
+                // console.log('not supported');
+              });
+            setBool(false);
+          } else {
+            // console.log('success - apple');
+            // console.log(res.data.data[0].attributes.url);
+            Linking.canOpenURL(res.data.data[0].attributes.url)
+              .then(() => {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
+              })
+              .catch(() => {
+                // console.log('not supported');
+              });
+            setBool(false);
+          }
+        } else {
+          setBool(false);
+          toast('', 'No Song Found');
+        }
+      } else {
+        setBool(false);
+        toast('Oops', 'Something Went Wrong');
+      }
+    } catch (error) {
+      setBool(false);
+      console.log(error);
+    }
+  };
+
   //VIEW
   return (
     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
@@ -918,15 +1013,15 @@ const Search = props => {
                 resizeMode="contain"
               />
               {(usersSearch && usersSearchText) ||
-              (songSearch && songSearchText) ? (
+                (songSearch && songSearchText) ? (
                 <TouchableOpacity
                   onPress={() => {
                     clearSearch();
                     usersSearch
                       ? setUsersSearchText('')
                       : genreSearch
-                      ? setGenreSearchText('')
-                      : setSongSearchText('');
+                        ? setGenreSearchText('')
+                        : setSongSearchText('');
                   }}
                   style={{
                     // backgroundColor: Colors.black,
@@ -1046,6 +1141,7 @@ const Search = props => {
                   <MoreModal
                     setBool={setBool}
                     bottomSheetRef={bottomSheetRef}
+                    openInAppleORSpotify={openInAppleORSpotify}
                     index={positionInArray}
                     setIndex={setPositionInArray}
                     navigation={props.navigation}
@@ -1063,7 +1159,7 @@ const Search = props => {
                 <EmptyComponent
                   image={ImagePath.emptyPost}
                   text={'No songs have been posted today.'}
-                  // title={'No songs have been posted today'}
+                // title={'No songs have been posted today'}
                 />
               )
             ) : (
@@ -1146,6 +1242,7 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     userstatus: state.UserReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
+    registerType: state.TokenReducer.registerType,
   };
 };
 
