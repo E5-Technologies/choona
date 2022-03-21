@@ -820,13 +820,13 @@ const Search = props => {
   }, []);
 
   const callApi = async () => {
-    console.log(props);
+    const isrc_code = searchPostData[positionInArray].isrc_code;
+
     if (props.registerType === 'spotify') {
-      console.log(0);
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${searchPostData[positionInArray].isrc_code}&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -834,11 +834,10 @@ const Search = props => {
         },
       );
     } else {
-      console.log(1);
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${searchPostData[positionInArray].isrc_code}`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,

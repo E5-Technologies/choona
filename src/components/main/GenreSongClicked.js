@@ -132,14 +132,14 @@ function GenreSongClicked(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -255,7 +255,7 @@ function GenreSongClicked(props) {
       const spotifyToken = await getSpotifyToken();
 
       return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${props.postData[positionInArray].isrc_code}&type=track`,
+        `https://api.spotify.com/v1/search?q=isrc:${commentList[0].isrc_code}&type=track`,
         {
           headers: {
             Authorization: spotifyToken,
@@ -266,7 +266,7 @@ function GenreSongClicked(props) {
       const AppleToken = await getAppleDevToken();
 
       return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.postData[positionInArray].isrc_code}`,
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${commentList[0].isrc_code}`,
         {
           headers: {
             Authorization: AppleToken,
@@ -280,7 +280,7 @@ function GenreSongClicked(props) {
   const openInAppleORSpotify = async () => {
     try {
       const res = await callApi();
-      // console.log(res);
+      console.log(res);
 
       if (res.status === 200) {
         if (
@@ -335,7 +335,7 @@ function GenreSongClicked(props) {
       }
     } catch (error) {
       setBool(false);
-      // console.log(error);
+      console.log(error);
     }
   };
 
@@ -402,16 +402,16 @@ function GenreSongClicked(props) {
         : false,
       disco: data.item.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
       throwback: data.item.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
       thumbsDown: data.item.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
     };
 
