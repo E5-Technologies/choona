@@ -62,7 +62,7 @@ const HeaderStyles = StyleSheet.create({
   },
   messageText: {
     color: Colors.white,
-    fontFamily: 'ProximaNova-Bold',
+    fontFamily: 'Kallisto',
     fontSize: normalise(15),
     marginStart: normalise(10),
     marginTop: normalise(4),

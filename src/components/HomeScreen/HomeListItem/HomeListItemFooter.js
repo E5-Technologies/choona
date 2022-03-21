@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
 
@@ -9,6 +9,8 @@ import normalise from '../../../utils/helpers/Dimens';
 
 import HomeListItemReactions from './HomeListItemReactions';
 import Avatar from '../../../components/Avatar';
+import { ReactionButtonThumbsUp } from '../../Reactions/Buttons/Buttons';
+import ReactionButtonBar from '../../Reactions/ButtonBar/ButtonBar';
 
 const HomeListItemFooter = ({
   commentCount,
@@ -28,7 +30,20 @@ const HomeListItemFooter = ({
   userAvatar,
   userName,
   viewMore,
+  myReactions,
+  myReactionsPending,
+  relatedId
 }) => {
+  const [actualNumLines, setActualNumLines] = useState(0);
+  const onTextLayout = useCallback(
+    e => {
+      if (actualNumLines == 0) {
+        setActualNumLines(e.nativeEvent.lines.length);
+      }
+    },
+    [actualNumLines],
+  );
+
   return (
     <View style={styles.listItemFooterContainer}>
       <View style={styles.listItemFooterTop}>
@@ -95,13 +110,18 @@ const HomeListItemFooter = ({
       </View>
       <View>
         {postText.length > 0 ? (
-          <Text numberOfLines={numberOfLines} style={styles.listItemFooterText}>
+          <Text
+            numberOfLines={
+              actualNumLines == 0 ? null : viewMore ? actualNumLines : 3
+            }
+            style={styles.listItemFooterText}
+            onTextLayout={onTextLayout}>
             {parts}
           </Text>
         ) : (
           <View />
         )}
-        {postText.length > 180 ? (
+        {actualNumLines > 3 ? (
           <TouchableOpacity
             onPress={() => {
               !viewMore ? setNumberOfLines(10) : setNumberOfLines(3),
@@ -114,9 +134,15 @@ const HomeListItemFooter = ({
         ) : null}
       </View>
       <View style={styles.listItemFooterReactions}>
-        <HomeListItemReactions
+        {/* <HomeListItemReactions
           onReactionPress={onReactionPress}
           reactions={reactions}
+        /> */}
+        <ReactionButtonBar
+          myReactions={myReactions}
+          onReactPressed={onReactionPress}
+          myReactionsPending={myReactionsPending}
+          relatedId={relatedId}
         />
       </View>
     </View>
@@ -198,6 +224,7 @@ const styles = StyleSheet.create({
     width: normalise(14),
   },
   listItemFooterReactions: {
+    flexDirection: 'row',
     marginTop: normalise(12),
   },
 });

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -143,6 +143,27 @@ const App = () => {
 
   const BottomTab = () => {
     const UserReducer = useSelector(state => state.UserReducer);
+    const MessageReducer = useSelector(state => state.MessageReducer);
+
+    const [showMessageDot, setShowMessageDot] = useState(false);
+
+    useEffect(() => {
+      let hasUnseenMessage = false;
+      var arr = MessageReducer.chatList;
+
+      if (!_.isEmpty(arr) && !_.isEmpty(UserReducer.userProfileResp)) {
+        for (var i = 0; i < arr.length; i++) {
+          if (UserReducer.userProfileResp._id === arr[i].receiver_id) {
+            hasUnseenMessage = !arr[i].read;
+            if (hasUnseenMessage) {
+              break;
+            }
+          }
+        }
+
+        setShowMessageDot(hasUnseenMessage);
+      }
+    }, [MessageReducer.chatList, UserReducer.userProfileResp]);
 
     return (
       <View style={styles.appStyle}>
@@ -296,21 +317,41 @@ const App = () => {
             component={Inbox}
             options={{
               tabBarIcon: ({ focused }) => (
-                <Image
-                  style={{
-                    opacity: focused ? 1 : 0.6,
-                    marginTop:
-                      Platform.OS === 'android'
-                        ? normalise(10)
-                        : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
-                    height: normalise(22),
-                    width: normalise(22),
-                  }}
-                  source={ImagePath ? ImagePath.inbox : null}
-                  resizeMode="contain"
-                />
+                <View>
+                  <Image
+                    style={{
+                      opacity: focused ? 1 : 0.6,
+                      marginTop:
+                        Platform.OS === 'android'
+                          ? normalise(10)
+                          : Dimensions.get('window').height > 736
+                          ? normalise(0)
+                          : normalise(10),
+                      height: normalise(22),
+                      width: normalise(22),
+                    }}
+                    source={ImagePath ? ImagePath.inbox : null}
+                    resizeMode="contain"
+                  />
+                  {showMessageDot ? (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        right: normalise(-2),
+                        top:
+                          Platform.OS === 'android'
+                            ? normalise(8)
+                            : normalise(-2),
+                        backgroundColor: Colors.red,
+                        borderRadius: normalize(8),
+                        height: 10,
+                        width: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    />
+                  ) : null}
+                </View>
               ),
               tabBarLabel: '',
             }}

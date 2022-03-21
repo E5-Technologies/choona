@@ -42,6 +42,7 @@ import CommentList from '../main/ListCells/CommentList';
 
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 import MyStatusBar from '../../utils/MyStatusBar';
+import HeaderComponent from '../../widgets/HeaderComponent';
 
 let status;
 
@@ -216,27 +217,26 @@ function HomeItemComments(props) {
   return (
     <View style={styles.container}>
       <MyStatusBar />
-
-      <HeaderComponentComments
-        firstitemtext={false}
-        imageone={ImagePath.backicon}
-        title={
-          comments.length > 0
-            ? comments.length === 1
-              ? '1 COMMENT'
-              : `${comments.length} COMMENTS`
-            : 'COMMENTS'
-        }
-        thirditemtext={false}
-        marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
-        onPressFirstItem={() => {
-          // props.navigation.goBack();
-          _onBackPress();
-        }}
-      />
-      {/* <ScrollView> */}
-      <ScrollView>
-        <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={
+            comments.length > 0
+              ? comments.length === 1
+                ? '1 COMMENT'
+                : `${comments.length} COMMENTS`
+              : 'COMMENTS'
+          }
+          thirditemtext={false}
+          marginTop={Platform.OS === 'android' ? normalise(30) : normalise(0)}
+          onPressFirstItem={() => {
+            // props.navigation.goBack();
+            _onBackPress();
+          }}
+        />
+        {/* <ScrollView> */}
+        <ScrollView>
           <View style={styles.commentHeader}>
             <View style={styles.commentHeaderDetails}>
               <TouchableOpacity style={styles.commentHeaderAvatarButton}>
@@ -291,78 +291,79 @@ function HomeItemComments(props) {
             disableRightSwipe={true}
             rightOpenValue={-75}
           />
-        </SafeAreaView>
-      </ScrollView>
-      {showmention ? (
-        <View
-          style={{
-            backgroundColor: 'black',
-            borderTopRightRadius: 10,
-            borderTopLeftRadius: 10,
-            marginRight: '20%',
-            minHeight: Dimensions.get('window').height / 7,
-            maxHeight: Dimensions.get('window').height / 4.2,
-          }}>
-          <FlatList
-            data={followingList}
-            keyboardShouldPersistTaps="always"
-            renderItem={({ item, index }) => {
-              return (
-                <TouchableOpacity
-                  style={{ flexDirection: 'row', paddingTop: '3%' }}
-                  onPress={() => {
-                    alert(JSON.stringify(Selection));
-                    let lastIndex = commentText.lastIndexOf('@');
-                    // setSelection({start:lastIndex,end:lastIndex+item.full_name.length})
-                    let newString = commentText.substr(
-                      0,
-                      commentText.lastIndexOf('@') + 1,
-                    );
-                    setCommentText(newString + item.full_name);
-                    setShowMention(false);
-                  }}>
-                  <Image
-                    source={
-                      item.profile_image
-                        ? {
-                          uri:
-                            constants.profile_picture_base_url +
-                            item.profile_image,
-                        }
-                        : ImagePath.userPlaceholder
-                    }
-                    resizeMode="contain"
-                    style={{
-                      height: Dimensions.get('window').width / 12,
-                      width: Dimensions.get('window').width / 12,
-                      borderRadius: Dimensions.get('window').width,
-                      marginLeft: '5%',
-                      marginRight: '4%',
-                      marginBottom: '3%',
-                    }}
-                  />
-                  <View
-                    style={{
-                      flex: 1,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: '#25262A',
-                      justifyContent: 'center',
+        </ScrollView>
+        {showmention ? (
+          <View
+            style={{
+              backgroundColor: 'black',
+              borderTopRightRadius: 10,
+              borderTopLeftRadius: 10,
+              marginRight: '20%',
+              minHeight: Dimensions.get('window').height / 7,
+              maxHeight: Dimensions.get('window').height / 4.2,
+            }}>
+            <FlatList
+              data={followingList}
+              keyboardShouldPersistTaps="always"
+              renderItem={({ item, index }) => {
+                return (
+                  <TouchableOpacity
+                    style={{ flexDirection: 'row', paddingTop: '3%' }}
+                    onPress={() => {
+                      alert(JSON.stringify(Selection));
+                      let lastIndex = commentText.lastIndexOf('@');
+                      // setSelection({start:lastIndex,end:lastIndex+item.full_name.length})
+                      let newString = commentText.substr(
+                        0,
+                        commentText.lastIndexOf('@') + 1,
+                      );
+                      setCommentText(newString + item.full_name);
+                      setShowMention(false);
                     }}>
-                    <Text
+                    <Image
+                      source={
+                        item.profile_image
+                          ? {
+                              uri:
+                                constants.profile_picture_base_url +
+                                item.profile_image,
+                            }
+                          : ImagePath.userPlaceholder
+                      }
+                      resizeMode="contain"
                       style={{
-                        fontSize: 16,
-                        color: 'white',
-                        marginBottom: '5%',
+                        height: Dimensions.get('window').width / 12,
+                        width: Dimensions.get('window').width / 12,
+                        borderRadius: Dimensions.get('window').width,
+                        marginLeft: '5%',
+                        marginRight: '4%',
+                        marginBottom: '3%',
+                      }}
+                    />
+                    <View
+                      style={{
+                        flex: 1,
+                        borderBottomWidth: 0.5,
+                        borderBottomColor: '#25262A',
+                        justifyContent: 'center',
                       }}>
-                      {item.full_name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
-      ) : null}
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: 'white',
+                          marginBottom: '5%',
+                        }}>
+                        {item.full_name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        ) : null}
+      </SafeAreaView>
+
       <View
         style={[
           styles.commentFooterContainer,

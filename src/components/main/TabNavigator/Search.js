@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -67,6 +67,8 @@ import MoreModal from '../../Posts/MoreModal';
 import axios from 'axios';
 import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
+import Reactions from '../../Reactions/Reactions';
+import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 
 let status;
 let postStatus;
@@ -345,9 +347,98 @@ const Search = props => {
     });
   }
 
+  /** REACTION - ADDITION */
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const [pendingReacts, setPendingReacts] = useState({});
+  const addPendingReactTimer = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: true,
+      };
+    });
+    wait(5000).then(() => {
+      removePendingReact(reactId, postId);
+    });
+  };
+
+  const removePendingReact = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: false,
+      };
+    });
+  };
+
+  const getPendingReactKey = (reactId, postId) => {
+    return `${reactId}##${postId}`;
+  };
+
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+
+  function hitReact(reactId, postId) {
+    let reactionObject = {
+      post_id: postId,
+      text: Reactions[reactId].oldText,
+      text_match: Reactions[reactId].map,
+    };
+    isInternetConnected()
+      .then(() => {
+        addPendingReactTimer(reactId, postId);
+        props.reactionOnPostRequest(reactionObject);
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
+  }
+  /** ------------ */
+
   function renderSongData(data) {
+    /** REACTION - ADDITION */
+    const reactionMap = {
+      thumbsUp: data.item.fireReactionIds
+        ? data.item.fireReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      fire: data.item.loveReactionIds
+        ? data.item.loveReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      heart: data.item.dancerReactionIds
+        ? data.item.dancerReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      disco: data.item.manDancingReactionIds
+        ? data.item.manDancingReactionIds.includes(
+          `${props.userProfileResp?._id}`,
+        )
+        : false,
+      throwback: data.item.faceReactionIds
+        ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      thumbsDown: data.item.thumbsUpReactionIds
+        ? data.item.thumbsUpReactionIds.includes(
+          `${props.userProfileResp?._id}`,
+        )
+        : false,
+    };
+
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', data.item._id),
+      fire: isPending('fire', data.item._id),
+      heart: isPending('heart', data.item._id),
+      disco: isPending('disco', data.item._id),
+      throwback: isPending('throwback', data.item._id),
+      thumbsDown: isPending('thumbsDown', data.item._id),
+    };
+
     return (
       <HomeItemList
+        id={data.item._id}
+        onReactionPress={newHitReact}
+        myReactionsPending={reactionPendingMap}
+        myReactions={reactionMap}
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
@@ -368,10 +459,6 @@ const Search = props => {
         songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
-        onReactionPress={reaction => {
-          hitreact(reaction, data.index);
-          sendReaction(data.item._id, reaction);
-        }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             props.navigation.navigate('Profile', { fromAct: false });

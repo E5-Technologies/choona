@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Dimensions,
+  Platform,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -36,6 +37,7 @@ import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import ImagePath from '../../assests/ImagePath';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
 
@@ -256,6 +258,7 @@ function AddSong(props) {
           style={{
             marginTop: normalise(20),
             marginHorizontal: normalise(16),
+            flex: 1,
             // width: '95%',
             // alignSelf: 'center',
           }}>
@@ -489,6 +492,29 @@ function AddSong(props) {
               </View>
             ) : null}
           </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
+          <BannerAd
+            unitId={
+              Platform.OS === 'android'
+                ? 'ca-app-pub-2232736176622960/2335890938'
+                : 'ca-app-pub-2232736176622960/3492936227'
+            }
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+            onAdLoaded={() => {
+              // console.log('Advert loaded');
+            }}
+            onAdFailedToLoad={error => {
+              console.error('Advert failed to load: ', error);
+            }}
+          />
         </View>
       </SafeAreaView>
       {/* </TouchableWithoutFeedback> */}

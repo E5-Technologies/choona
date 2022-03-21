@@ -34,6 +34,7 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
 import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
 
@@ -106,9 +107,9 @@ const AddSong = props => {
               props.registerType === 'spotify'
                 ? item.item.album.images[0].url
                 : item.item.attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '600x600',
-                ),
+                    '{w}x{h}',
+                    '600x600',
+                  ),
             title:
               props.registerType === 'spotify'
                 ? item.item.name
@@ -135,9 +136,9 @@ const AddSong = props => {
               props.registerType === 'spotify'
                 ? item.item.album.images[0].url
                 : item.item.attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '300x300',
-                ),
+                    '{w}x{h}',
+                    '300x300',
+                  ),
             username: '',
             profile_pic: '',
             originalUri:

@@ -6,8 +6,10 @@ import { Provider } from 'react-redux';
 import store from './src/utils/Store';
 // import { NativeModules } from 'react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import ReactionsProvider from './src/components/Reactions/UseReactions/ReactionsProvider';
 
 const queryClient = new QueryClient();
+console.warn = console.error = () => {};
 
 // if (__DEV__) {
 //   NativeModules.DevSettings.setIsDebuggingRemotely(true);
@@ -19,7 +21,9 @@ const Choona = () => {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <ReactionsProvider>
+          <App />
+        </ReactionsProvider>
       </QueryClientProvider>
     </Provider>
   );

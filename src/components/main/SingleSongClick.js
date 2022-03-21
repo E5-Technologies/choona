@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -47,6 +47,8 @@ import { API_HOST } from '../../config';
 
 import axios from 'axios';
 import MoreModal from '../Posts/MoreModal';
+import Reactions from '../Reactions/Reactions';
+import { ReactionsContext } from '../Reactions/UseReactions/ReactionsContext';
 let status;
 let userStatus;
 
@@ -144,7 +146,6 @@ function SingleSongClick(props) {
   }
 
   if (status === '' || status !== props.status) {
-    console.log('status' + props.status);
     switch (props.status) {
       case GET_POST_FROM_TOP_50_REQUEST:
         status = props.status;
@@ -167,21 +168,20 @@ function SingleSongClick(props) {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-          ? 'B'
-          : reaction === react[2]
-            ? 'C'
-            : reaction === react[3]
-              ? 'D'
-              : reaction === react[4]
-                ? 'E'
-                : 'F';
+        ? 'B'
+        : reaction === react[2]
+        ? 'C'
+        : reaction === react[3]
+        ? 'D'
+        : reaction === react[4]
+        ? 'E'
+        : 'F';
 
     let reactionObject = {
       post_id: id,
       text: reaction,
       text_match: myReaction,
     };
-    console.log('totalReactaa' + totalReact);
     updateData.map((item, index) => {
       if (id === item._id) {
         if (myReaction === 'A') {
@@ -501,10 +501,99 @@ function SingleSongClick(props) {
     }
   };
 
+  /** REACTION - ADDITION */
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const [pendingReacts, setPendingReacts] = useState({});
+  const addPendingReactTimer = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: true,
+      };
+    });
+    wait(5000).then(() => {
+      removePendingReact(reactId, postId);
+    });
+  };
+
+  const removePendingReact = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: false,
+      };
+    });
+  };
+
+  const getPendingReactKey = (reactId, postId) => {
+    return `${reactId}##${postId}`;
+  };
+
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+
+  function hitReact(reactId, postId) {
+    let reactionObject = {
+      post_id: postId,
+      text: Reactions[reactId].oldText,
+      text_match: Reactions[reactId].map,
+    };
+    isInternetConnected()
+      .then(() => {
+        addPendingReactTimer(reactId, postId);
+        props.reactionOnPostRequest(reactionObject);
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
+  }
+  /** ------------ */
+
   // FLATLIST RENDER FUNCTION
   function renderGenreData(data) {
+    /** REACTION - ADDITION */
+    const reactionMap = {
+      thumbsUp: data.item.fireReactionIds
+        ? data.item.fireReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      fire: data.item.loveReactionIds
+        ? data.item.loveReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      heart: data.item.dancerReactionIds
+        ? data.item.dancerReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      disco: data.item.manDancingReactionIds
+        ? data.item.manDancingReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+      throwback: data.item.faceReactionIds
+        ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      thumbsDown: data.item.thumbsUpReactionIds
+        ? data.item.thumbsUpReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+    };
+
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', true),
+      fire: isPending('fire', true),
+      heart: isPending('heart', true),
+      disco: isPending('disco', true),
+      throwback: isPending('throwback', true),
+      thumbsDown: isPending('thumbsDown', true),
+    };
+
     return (
       <HomeItemList
+        id={data.item._id}
+        onReactionPress={newHitReact}
+        myReactionsPending={reactionPendingMap}
+        myReactions={reactionMap}
         image={data.item.song_image}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
@@ -526,10 +615,6 @@ function SingleSongClick(props) {
         singer={data.item.artist_name}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
-        onReactionPress={reaction => {
-          hitreact(reaction, data.index);
-          sendReaction(data.item._id, reaction);
-        }}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             props.navigation.navigate('Profile', { fromAct: false });
@@ -598,7 +683,11 @@ function SingleSongClick(props) {
 
   return isLoading ? (
     <View
-      style={{ flex: 1, backgroundColor: Colors.darkerblack, paddingTop: '6.7%' }}>
+      style={{
+        flex: 1,
+        backgroundColor: Colors.darkerblack,
+        paddingTop: '6.7%',
+      }}>
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={false}
@@ -712,7 +801,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  console.log('mapdispath');
   return {
     searchPost: (text, flag) => {
       dispatch(searchPostReq(text, flag));
