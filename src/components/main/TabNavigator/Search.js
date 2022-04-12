@@ -16,7 +16,7 @@ import {
 import Seperator from '../ListCells/Seperator';
 import { useIsFocused } from '@react-navigation/native';
 
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+// import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
@@ -1257,7 +1257,7 @@ const Search = props => {
                   numColumns={2}
                   showsVerticalScrollIndicator={false}
                 />
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
@@ -1279,7 +1279,7 @@ const Search = props => {
                       console.error('Advert failed to load: ', error);
                     }}
                   />
-                </View>
+                </View> */}
               </>
             )
           ) : null}
