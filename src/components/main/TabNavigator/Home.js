@@ -28,7 +28,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { useInfiniteQuery } from 'react-query';
 
-import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import {
   USER_PROFILE_REQUEST,
@@ -827,10 +827,10 @@ const Home = props => {
               setModalVisible(true);
             }
           }}
-          marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+          // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
           // playingSongRef={props.playingSongRef}
         />
-        {(data.index === 1 ||
+        {/* {(data.index === 1 ||
           (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
           <View
             style={{
@@ -856,7 +856,7 @@ const Home = props => {
               }}
             />
           </View>
-        )}
+        )} */}
       </>
     );
   }

@@ -39,6 +39,7 @@ import Contact from './src/components/main/TabNavigator/Contact';
 import HomeItemList from './src/components/main/ListCells/HomeItemList';
 import Profile from './src/components/main/Profile';
 import EditProfile from './src/components/main/EditProfile';
+import BlockList from './src/components/main/BlockList';
 import Followers from './src/components/main/Followers';
 import Following from './src/components/main/Following';
 import HomeItemComments from './src/components/main/HomeItemComments';
@@ -84,7 +85,7 @@ const App = () => {
     setTimeout(() => {
       dispatch(getTokenRequest());
     }, 3000);
-
+    
     // const unsuscribe = firebase().onMessage(async () => {
     //   dispatch(getChatListRequest());
     //   dispatch(getProfileRequest());
@@ -377,6 +378,7 @@ const App = () => {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="bottomTab" component={BottomTab} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="BlockList" component={BlockList} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="Followers" component={Followers} />
             <Stack.Screen name="Following" component={Following} />

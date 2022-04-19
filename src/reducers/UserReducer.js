@@ -13,6 +13,15 @@ import {
   EDIT_PROFILE_FAILURE,
   USER_SEARCH_REQUEST,
   USER_SEARCH_SUCCESS,
+  USER_BLOCK_REQUEST,
+  USER_BLOCK_SUCCESS,
+  USER_BLOCK_FAILURE,
+  USER_UNBLOCK_REQUEST,
+  USER_UNBLOCK_SUCCESS,
+  USER_UNBLOCK_FAILURE,
+  USER_BLOCKLIST_REQUEST,
+  USER_BLOCKLIST_SUCCESS,
+  USER_BLOCKLIST_FAILURE,
   USER_FOLLOW_UNFOLLOW_REQUEST,
   USER_FOLLOW_UNFOLLOW_SUCCESS,
   USER_FOLLOW_UNFOLLOW_FAILURE,
@@ -212,6 +221,61 @@ const UserReducer = (state = initialState, action) => {
         error: action.error,
       };
 
+    case USER_BLOCK_REQUEST:
+      return {
+        ...state,
+        status: action.type
+      };      
+    case USER_BLOCK_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        Isblock: action.data,
+      };
+      case USER_BLOCK_FAILURE:
+        return {
+          ...state,
+          status: action.type,
+          error: action.error,
+        };   
+        
+        case USER_UNBLOCK_REQUEST:
+      return {
+        ...state,
+        status: action.type
+      };      
+    case USER_UNBLOCK_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        Isblock: action.data,
+      };
+      case USER_UNBLOCK_FAILURE:
+        return {
+          ...state,
+          status: action.type,
+          error: action.error,
+        }; 
+
+        case USER_BLOCKLIST_REQUEST:
+      return {
+        ...state,
+        status: action.type
+      };      
+    case USER_BLOCKLIST_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        blockedList: action.data,
+      };
+      case USER_BLOCKLIST_FAILURE:
+        return {
+          ...state,
+          status: action.type,
+          error: action.error,
+        }; 
+        
+        
     case USER_FOLLOW_UNFOLLOW_REQUEST:
       return {
         ...state,

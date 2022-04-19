@@ -7,6 +7,9 @@ import {
   watcheditProfileAction,
   watchuserSearchAction,
   watchuserFollowOrUnfollowAction,
+  watchuserBlockAction,
+  watchuserBlockListAction,
+  watchuserUnBlockAction,
   watchothersProfileAction,
   watchhomePageAction,
   watchcommentOnPostAction,
@@ -23,7 +26,7 @@ import {
   watchDummyAction,
   watchFollowerSearch,
   watchFollowingSearch,
-  watchLoadMoreAction,
+  watchLoadMoreAction
 } from './UserSaga';
 
 import {
@@ -75,6 +78,9 @@ function* RootSaga() {
     watcheditProfileAction(),
     watchuserSearchAction(),
     watchuserFollowOrUnfollowAction(),
+    watchuserBlockAction(),
+    watchuserBlockListAction(),
+    watchuserUnBlockAction(),
     watchSearchSongsForPostRequest(),
     watchCreatePostRequest(),
     watchothersProfileAction(),

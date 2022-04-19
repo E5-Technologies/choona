@@ -34,7 +34,7 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
 import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+// import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
 

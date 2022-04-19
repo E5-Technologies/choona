@@ -37,7 +37,7 @@ import axios from 'axios';
 import constants from '../../utils/helpers/constants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import ImagePath from '../../assests/ImagePath';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+// import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
 
@@ -493,7 +493,7 @@ function AddSong(props) {
             ) : null}
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
@@ -515,7 +515,7 @@ function AddSong(props) {
               console.error('Advert failed to load: ', error);
             }}
           />
-        </View>
+        </View> */}
       </SafeAreaView>
       {/* </TouchableWithoutFeedback> */}
     </View>

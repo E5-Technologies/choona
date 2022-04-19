@@ -5,6 +5,9 @@ import {
   EDIT_PROFILE_REQUEST,
   USER_SEARCH_REQUEST,
   USER_FOLLOW_UNFOLLOW_REQUEST,
+  USER_BLOCK_REQUEST,
+  USER_UNBLOCK_REQUEST,
+  USER_BLOCKLIST_REQUEST,
   OTHERS_PROFILE_REQUEST,
   HOME_PAGE_REQUEST,
   LOAD_MORE_REQUEST,
@@ -52,6 +55,21 @@ export const userSearchRequest = (payload, sendSong) => ({
 
 export const userFollowUnfollowRequest = payload => ({
   type: USER_FOLLOW_UNFOLLOW_REQUEST,
+  payload,
+});
+
+export const userBlockRequest = payload => ({
+  type: USER_BLOCK_REQUEST,
+  payload,
+});
+
+export const userUnBlockRequest = payload => ({
+  type: USER_UNBLOCK_REQUEST,
+  payload,
+});
+
+export const userBlockListRequest = payload => ({
+  type: USER_BLOCKLIST_REQUEST,
   payload,
 });
 

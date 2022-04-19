@@ -44,6 +44,7 @@
 		27A9F5DB450BC7D7E12DC0EA /* libPods-Choona.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B1204B6419B10F2DBD2851E /* libPods-Choona.a */; };
 		328F818FF77F4813887EC302 /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */; };
 		3F3FBEB07A244ECB99712498 /* ProximaNova-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */; };
+		5BED799828082E8B00C0B542 /* Kallisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6920D4309E44485EB58C3CF1 /* Kallisto.ttf */; };
 		61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
@@ -389,6 +390,7 @@
 				0EE0D1ED2698464C00B5CFA4 /* ProximaNovaT-Thin.otf in Resources */,
 				0EE0D1EE2698464C00B5CFA4 /* ProximaNova-Semibold.ttf in Resources */,
 				0EE0D1EF2698464C00B5CFA4 /* ProximaNovaAW07-Medium.ttf in Resources */,
+				5BED799828082E8B00C0B542 /* Kallisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -851,7 +853,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -912,7 +914,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

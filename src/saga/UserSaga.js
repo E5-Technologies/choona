@@ -17,6 +17,15 @@ import {
   USER_SEARCH_REQUEST,
   USER_SEARCH_SUCCESS,
   USER_SEARCH_FAILURE,
+  USER_BLOCK_REQUEST,
+  USER_BLOCK_SUCCESS,
+  USER_BLOCK_FAILURE,
+  USER_UNBLOCK_REQUEST,
+  USER_UNBLOCK_SUCCESS,
+  USER_UNBLOCK_FAILURE,
+  USER_BLOCKLIST_REQUEST,
+  USER_BLOCKLIST_SUCCESS,
+  USER_BLOCKLIST_FAILURE,
   USER_FOLLOW_UNFOLLOW_REQUEST,
   USER_FOLLOW_UNFOLLOW_SUCCESS,
   USER_FOLLOW_UNFOLLOW_FAILURE,
@@ -235,6 +244,73 @@ export function* userFollowOrUnfollowAction(action) {
     yield put({ type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error });
   }
 }
+
+export function* userBlockAction(action) {
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/blockuser',
+      action.payload,
+      Header,
+    );
+    yield put({ type:USER_BLOCK_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type:USER_BLOCK_FAILURE, error: error });
+  }
+}
+
+export function* userUnBlockAction(action) {
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/unblockuser',
+      action.payload,
+      Header,
+    );
+    yield put({ type: USER_UNBLOCK_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: USER_UNBLOCK_FAILURE, error: error });
+  }
+}
+
+export function* userBlockListAction(action) {
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/getblockedusers',
+      action.payload,
+      Header,
+    );
+    yield put({ type: USER_BLOCKLIST_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: USER_BLOCKLIST_FAILURE, error: error });
+  }
+}
+
 
 export function* othersProfileAction(action) {
   try {
@@ -635,6 +711,18 @@ export function* watchuserSearchAction() {
 
 export function* watchuserFollowOrUnfollowAction() {
   yield takeLatest(USER_FOLLOW_UNFOLLOW_REQUEST, userFollowOrUnfollowAction);
+}
+
+export function* watchuserBlockAction() {
+  yield takeLatest(USER_BLOCK_REQUEST, userBlockAction);
+}
+
+export function* watchuserUnBlockAction() {
+  yield takeLatest(USER_UNBLOCK_REQUEST, userUnBlockAction);
+}
+
+export function* watchuserBlockListAction() {
+  yield takeLatest(USER_BLOCKLIST_REQUEST, userBlockListAction);
 }
 
 export function* watchothersProfileAction() {

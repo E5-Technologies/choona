@@ -210,10 +210,28 @@ const Profile = props => {
           source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>
           <View style={styles.modalView}>
+          <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                props.navigation.push('BlockList', {
+                  type: 'user',
+                  id: '',
+                });
+              }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                See Blocked User
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL('mailto:contact@choona.com');
-              }}>
+              }}
+              style={{marginTop: normalise(18)}}>
               <Text
                 style={{
                   color: Colors.white,
