@@ -5,7 +5,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Dimensions
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -92,7 +93,7 @@ const BlockList = props => {
 
 
 
-  function renderFollowersItem(data) {
+  function renderBlockedUsersItem(data) {
    
       return (
         <View style={styles.container}>
@@ -112,8 +113,8 @@ const BlockList = props => {
                   ? constants.profile_picture_base_url + data.item.profile_image
                   : null
               }
-              height={40}
-              width={40}
+              height={26}
+              width={26}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -132,10 +133,10 @@ const BlockList = props => {
               )}
             </Text>
           </TouchableOpacity>
-          <View style={styles.profileHeaderButtonsContainer}>
+          {/* <View > */}
           <TouchableOpacity
               style={[
-                styles.profileHeaderButtonsButton,
+                styles.unBlockButton,
                 { backgroundColor: Colors.red},
               ]}
               onPress={() => {
@@ -143,7 +144,7 @@ const BlockList = props => {
               }}>
             <Text
               style={[
-                styles.profileHeaderButtonsButtonText,
+                styles.unBlockButtonText,
                 {
                   color:Colors.white,
                 },
@@ -151,7 +152,7 @@ const BlockList = props => {
               {"Unblock"}
             </Text>
           </TouchableOpacity>
-        </View> 
+        {/* </View>  */}
         </View>
       </View>
     </View>
@@ -196,7 +197,7 @@ const BlockList = props => {
             data={props.blockedList}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item._id}
-            renderItem={renderFollowersItem}
+            renderItem={renderBlockedUsersItem}
             ItemSeparatorComponent={Seperator}
           />
         )}
@@ -233,29 +234,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(BlockList);
 
 
     const styles = StyleSheet.create({
-      othersProfileContainer: { flex: 1, backgroundColor: Colors.darkerblack },
-      profileHeaderButtonsContainer: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginTop: normalise(12),
-        paddingHorizontal: normalise(12),
-      },
-      profileHeaderButtonsButton: {
-        alignItems: 'center',
-        backgroundColor: Colors.white,
-        borderRadius: normaliseNew(16),
-        height: normaliseNew(32),
-        justifyContent: 'center',
-        width: normaliseNew(90),
-        alignItems: 'center'
-      },
-      profileHeaderButtonsButtonText: {
-        color: Colors.darkerblack,
-        fontFamily: 'ProximaNova-SemiBold',
-        fontSize: normalise(10),
-        fontWeight: '700',
-        textTransform: 'uppercase',
-      },
       container: {
         flex: 1,
         marginHorizontal: normaliseNew(16),
@@ -276,15 +254,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(BlockList);
       detailsText: {
         color: Colors.white,
         flexWrap: 'wrap',
-        fontSize: normaliseNew(15),
+        fontSize: normaliseNew(12),
         lineHeight: normaliseNew(15),
         flex: 1,
-        textAlign: 'left',
+        textAlign: 'left'
       },
       detailsTextBold: {
         fontFamily: 'ProximaNova-Bold',
       },
-      followButton: {
+      unBlockButton: {
         alignItems: 'center',
         backgroundColor: Colors.white,
         borderRadius: normaliseNew(16),
@@ -292,7 +270,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(BlockList);
         justifyContent: 'center',
         width: normaliseNew(90),
       },
-      followButtonText: {
+      unBlockButtonText: {
         color: Colors.black,
         fontFamily: 'Kallisto',
         fontSize: normaliseNew(10),
