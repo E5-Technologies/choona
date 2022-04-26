@@ -8,6 +8,7 @@ import {
   USER_BLOCK_REQUEST,
   USER_UNBLOCK_REQUEST,
   USER_BLOCKLIST_REQUEST,
+  REPORT_REQUEST,
   OTHERS_PROFILE_REQUEST,
   HOME_PAGE_REQUEST,
   LOAD_MORE_REQUEST,
@@ -70,6 +71,11 @@ export const userUnBlockRequest = payload => ({
 
 export const userBlockListRequest = payload => ({
   type: USER_BLOCKLIST_REQUEST,
+  payload,
+});
+
+export const ReportRequest = payload => ({
+  type: REPORT_REQUEST,
   payload,
 });
 

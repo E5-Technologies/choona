@@ -21,12 +21,16 @@ import {
   OTHERS_PROFILE_REQUEST,
   OTHERS_PROFILE_SUCCESS,
   OTHERS_PROFILE_FAILURE,
+  REPORT_REQUEST,
+  REPORT_SUCCESS,
+  REPORT_FAILURE
 } from '../../action/TypeConstants';
 import {
   othersProfileRequest,
   userFollowUnfollowRequest,
   userBlockRequest,
-  userUnBlockRequest
+  userUnBlockRequest,
+  ReportRequest
   // getCountryCodeRequest,
 } from '../../action/UserAction';
 import constants from '../../utils/helpers/constants';
@@ -34,7 +38,7 @@ import { connect } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import _ from 'lodash';
-
+import ReportModal from '../Posts/ReportModal'
 import axios from 'axios';
 
 import ProfileHeader from '../Profile/ProfileHeader';
@@ -56,6 +60,7 @@ const OthersProfile = props => {
   const [isBlocked, setIsBlocked] = useState(false);
   const [pageId, setPageId] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [profilePosts, setProfilePosts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -124,6 +129,20 @@ const OthersProfile = props => {
         status = props.status;
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
+
+      case REPORT_REQUEST:
+          status = props.status;
+          break;
+  
+      case REPORT_SUCCESS:
+          status = props.status;
+          setReportModal(true);
+          break;
+  
+      case REPORT_FAILURE:
+          status = props.status;
+          toast('Oops', 'Something Went Wrong, Please Try Again');
+          break;
     }
   }
 
@@ -162,8 +181,31 @@ const OthersProfile = props => {
                 }}>
                 {isBlocked ? "Unblock User" :  "Block User" }
               </Text>
+                  
               </View>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={{ marginTop: normalise(18) }}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                props.Report({title:"unusual activity of user.",description:`${props.othersProfileresp.full_name ? props.othersProfileresp.full_name : ""} was reported because of inappropriate activities. Please kindly pay attention.`})
+              }}>
+              <View style={styles.modalContentView}>
+                <Image
+                source={ImagePath.alert}
+                style={{width:normalise(23),height:normalise(23),marginRight:10}}
+                resizeMode="contain"
+              />
+             <Text 
+                style={{
+                  color:Colors.white,
+                  fontSize: normalise(14)
+                }}>
+                Report User
+              </Text>
+              </View>
+            </TouchableOpacity>
+            
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(!modalVisible);
@@ -338,6 +380,7 @@ const OthersProfile = props => {
         }
         {renderModal()}
       </SafeAreaView>
+          <ReportModal reportModal={reportModal} setReportModal={setReportModal} contentType="User" />
     </View>
   );
 };
@@ -364,6 +407,9 @@ const mapDispatchToProps = dispatch => {
     },
     unBlockReq:payload =>{
       dispatch(userUnBlockRequest(payload));
+    },
+    Report:payload =>{
+      dispatch(ReportRequest(payload));
     }
     // getCountryCode: () => {
     //   dispatch(getCountryCodeRequest());

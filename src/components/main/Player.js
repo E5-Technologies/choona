@@ -60,6 +60,7 @@ import { getUsersFromHome } from '../../action/UserAction';
 import MoreModal from '../Posts/MoreModal';
 import Avatar from '../Avatar';
 import LinearGradient from 'react-native-linear-gradient';
+import ReportModal from '../Posts/ReportModal';
 
 let status;
 let songStatus;
@@ -82,6 +83,7 @@ function Player(props) {
   const [details, setDetails] = useState(props.route.params.details);
   const [receiverId, setReceiverId] = useState(props.route.params.receiver_id);
   const [senderId, setSenderId] = useState(props.route.params.sender_id);
+  const [reportModal, setReportModal] = useState(false);
 
   const [playerCurrentTime, setPlayerCurrentTime] = useState(0);
   const [playerDuration, setplayerDuration] = useState(0);
@@ -1268,8 +1270,10 @@ function Player(props) {
                   ]}
                   show={modalVisible}
                   setShow={setModalVisible}
+                  setReportModal={setReportModal}
                 />
               )}
+              <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>

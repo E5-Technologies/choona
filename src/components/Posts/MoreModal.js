@@ -19,6 +19,7 @@ import { saveSongRequest, unsaveSongRequest } from '../../action/SongAction';
 import {
   othersProfileRequest,
   userFollowUnfollowRequest,
+  ReportRequest
 } from '../../action/UserAction';
 
 import Colors from '../../assests/Colors';
@@ -50,9 +51,11 @@ const MoreModal = ({
   setShow,
   type,
   unsaveSongReq,
+  Report,
   userProfileResp,
   othersProfileresp,
   othersProfileReq,
+  setReportModal
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
@@ -341,7 +344,28 @@ const MoreModal = ({
             />
             <Text style={styles.modalButtonText}>Add to Playlist</Text>
           </TouchableOpacity>
-          {/* Add to Playlist Action */}
+                    
+          { /* Report POST */ }
+          {page !== 'savedSongs' &&
+            page !== 'insideMessage' && (
+          <TouchableOpacity
+              onPress={() => {
+                Report({title:"violent Post",description:`This post is reported as inappropriate ${constants.website_url + '/s/' + postData[index]._id}`})
+                if(setReportModal){
+                  setReportModal(true)
+                }
+                setShow(!show);
+              }}
+              style={styles.modalButton}>
+              <Image
+                source={ImagePath ? ImagePath.alert : null}
+                style={styles.modalButtonIcon}
+                resizeMode="contain"
+              />
+              <Text style={styles.modalButtonText}>Report Post</Text>
+            </TouchableOpacity> )}
+
+          
           {/* Cancel Button */}
           <TouchableOpacity
             onPress={() => {
@@ -389,6 +413,9 @@ const mapDispatchToProps = dispatch => {
     },
     unsaveSongReq: id => {
       dispatch(unsaveSongRequest(id));
+    },
+    Report: payload => {
+      dispatch(ReportRequest(payload));
     },
   };
 };

@@ -19,17 +19,6 @@
 		0EE0D1E32698464C00B5CFA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0B128C732486631C007D7886 /* GoogleService-Info.plist */; };
 		0EE0D1E42698464C00B5CFA4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		0EE0D1E52698464C00B5CFA4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		0EE0D1E62698464C00B5CFA4 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */; };
-		0EE0D1E72698464C00B5CFA4 /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */; };
-		0EE0D1E82698464C00B5CFA4 /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */; };
-		0EE0D1E92698464C00B5CFA4 /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */; };
-		0EE0D1EA2698464C00B5CFA4 /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */; };
-		0EE0D1EB2698464C00B5CFA4 /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
-		0EE0D1EC2698464C00B5CFA4 /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */; };
-		0EE0D1ED2698464C00B5CFA4 /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */; };
-		0EE0D1EE2698464C00B5CFA4 /* ProximaNova-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */; };
-		0EE0D1EF2698464C00B5CFA4 /* ProximaNovaAW07-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */; };
-		0FC1110311B440AB87A2B550 /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -39,20 +28,31 @@
 		192E78D3251112E300E9B916 /* SharedClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192E78D2251112E300E9B916 /* SharedClass.swift */; };
 		19E8385424FF9E6E009D7A39 /* AppleUserToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */; };
 		19E8385624FF9ED1009D7A39 /* AppleUserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E8385524FF9ED1009D7A39 /* AppleUserToken.m */; };
-		265AC87D4B064B55AE11B766 /* ProximaNovaAW07-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */; };
 		26C77C152EEC1A9B05DF5FEC /* libPods-Choona-ChoonaDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05D19A6E5A6D4CFF5F344A26 /* libPods-Choona-ChoonaDev.a */; };
 		27A9F5DB450BC7D7E12DC0EA /* libPods-Choona.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B1204B6419B10F2DBD2851E /* libPods-Choona.a */; };
-		328F818FF77F4813887EC302 /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */; };
-		3F3FBEB07A244ECB99712498 /* ProximaNova-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */; };
-		5BED799828082E8B00C0B542 /* Kallisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6920D4309E44485EB58C3CF1 /* Kallisto.ttf */; };
-		61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */; };
+		5BAD3A202810360F00C652FF /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A152810360E00C652FF /* ProximaNova-Regular.otf */; };
+		5BAD3A212810360F00C652FF /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A152810360E00C652FF /* ProximaNova-Regular.otf */; };
+		5BAD3A222810360F00C652FF /* ProximaNova-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A162810360E00C652FF /* ProximaNova-Semibold.ttf */; };
+		5BAD3A232810360F00C652FF /* ProximaNova-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A162810360E00C652FF /* ProximaNova-Semibold.ttf */; };
+		5BAD3A242810360F00C652FF /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A172810360E00C652FF /* ProximaNovaA-Light.otf */; };
+		5BAD3A252810360F00C652FF /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A172810360E00C652FF /* ProximaNovaA-Light.otf */; };
+		5BAD3A262810360F00C652FF /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A182810360E00C652FF /* ProximaNovaA-Bold.otf */; };
+		5BAD3A272810360F00C652FF /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A182810360E00C652FF /* ProximaNovaA-Bold.otf */; };
+		5BAD3A282810360F00C652FF /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A192810360E00C652FF /* ProximaNova-Extrabld.otf */; };
+		5BAD3A292810360F00C652FF /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A192810360E00C652FF /* ProximaNova-Extrabld.otf */; };
+		5BAD3A2A2810360F00C652FF /* ProximaNovaAW07-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1A2810360E00C652FF /* ProximaNovaAW07-Medium.ttf */; };
+		5BAD3A2B2810360F00C652FF /* ProximaNovaAW07-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1A2810360E00C652FF /* ProximaNovaAW07-Medium.ttf */; };
+		5BAD3A2C2810360F00C652FF /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1B2810360E00C652FF /* ProximaNovaA-Thin.otf */; };
+		5BAD3A2D2810360F00C652FF /* ProximaNovaA-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1B2810360E00C652FF /* ProximaNovaA-Thin.otf */; };
+		5BAD3A2E2810360F00C652FF /* Kallisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1C2810360E00C652FF /* Kallisto.ttf */; };
+		5BAD3A2F2810360F00C652FF /* Kallisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1C2810360E00C652FF /* Kallisto.ttf */; };
+		5BAD3A302810360F00C652FF /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1D2810360E00C652FF /* ProximaNova-Black.otf */; };
+		5BAD3A312810360F00C652FF /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1D2810360E00C652FF /* ProximaNova-Black.otf */; };
+		5BAD3A322810360F00C652FF /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1E2810360E00C652FF /* ProximaNova-Bold.otf */; };
+		5BAD3A332810360F00C652FF /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1E2810360E00C652FF /* ProximaNova-Bold.otf */; };
+		5BAD3A342810360F00C652FF /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1F2810360F00C652FF /* ProximaNovaT-Thin.otf */; };
+		5BAD3A352810360F00C652FF /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5BAD3A1F2810360F00C652FF /* ProximaNovaT-Thin.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */; };
-		8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */; };
-		BC08C7DE86FD4A69927C2324 /* Kallisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6920D4309E44485EB58C3CF1 /* Kallisto.ttf */; };
-		C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */; };
-		C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */; };
-		F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -104,27 +104,27 @@
 		19E8385324FF9E6E009D7A39 /* AppleUserToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleUserToken.swift; sourceTree = "<group>"; };
 		19E8385524FF9ED1009D7A39 /* AppleUserToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppleUserToken.m; sourceTree = "<group>"; };
 		1C133D7A18628B8F2DEE4167 /* Pods-Choona-ChoonaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.debug.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.debug.xcconfig"; sourceTree = "<group>"; };
-		1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Light.otf"; path = "../assets/fonts/ProximaNovaA-Light.otf"; sourceTree = "<group>"; };
 		41A4AD70B8437CA36086273B /* libPods-Choona-ChoonaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona-ChoonaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Semibold.ttf"; path = "../assets/fonts/ProximaNova-Semibold.ttf"; sourceTree = "<group>"; };
-		628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Bold.otf"; path = "../assets/fonts/ProximaNovaA-Bold.otf"; sourceTree = "<group>"; };
-		64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Bold.otf"; path = "../assets/fonts/ProximaNova-Bold.otf"; sourceTree = "<group>"; };
-		6920D4309E44485EB58C3CF1 /* Kallisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Kallisto.ttf; path = ../assets/fonts/Kallisto.ttf; sourceTree = "<group>"; };
+		5BAD3A152810360E00C652FF /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		5BAD3A162810360E00C652FF /* ProximaNova-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Semibold.ttf"; sourceTree = "<group>"; };
+		5BAD3A172810360E00C652FF /* ProximaNovaA-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaA-Light.otf"; sourceTree = "<group>"; };
+		5BAD3A182810360E00C652FF /* ProximaNovaA-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaA-Bold.otf"; sourceTree = "<group>"; };
+		5BAD3A192810360E00C652FF /* ProximaNova-Extrabld.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Extrabld.otf"; sourceTree = "<group>"; };
+		5BAD3A1A2810360E00C652FF /* ProximaNovaAW07-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaAW07-Medium.ttf"; sourceTree = "<group>"; };
+		5BAD3A1B2810360E00C652FF /* ProximaNovaA-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaA-Thin.otf"; sourceTree = "<group>"; };
+		5BAD3A1C2810360E00C652FF /* Kallisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Kallisto.ttf; sourceTree = "<group>"; };
+		5BAD3A1D2810360E00C652FF /* ProximaNova-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Black.otf"; sourceTree = "<group>"; };
+		5BAD3A1E2810360E00C652FF /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Bold.otf"; sourceTree = "<group>"; };
+		5BAD3A1F2810360F00C652FF /* ProximaNovaT-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaT-Thin.otf"; sourceTree = "<group>"; };
 		704F16DB59FDB339190DA93C /* Pods-Choona-ChoonaDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaDev.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaDev/Pods-Choona-ChoonaDev.release.xcconfig"; sourceTree = "<group>"; };
 		7BEEABF30005927E51926C63 /* Pods-Choona-ChoonaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaTests.release.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaTests/Pods-Choona-ChoonaTests.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Choona/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91EC2BC704911FEA9A13D087 /* Pods-Choona-ChoonaDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona-ChoonaDev.debug.xcconfig"; path = "Target Support Files/Pods-Choona-ChoonaDev/Pods-Choona-ChoonaDev.debug.xcconfig"; sourceTree = "<group>"; };
 		9B1204B6419B10F2DBD2851E /* libPods-Choona.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Choona.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaAW07-Medium.ttf"; path = "../assets/fonts/ProximaNovaAW07-Medium.ttf"; sourceTree = "<group>"; };
-		BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaA-Thin.otf"; path = "../assets/fonts/ProximaNovaA-Thin.otf"; sourceTree = "<group>"; };
-		DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Regular.otf"; path = "../assets/fonts/ProximaNova-Regular.otf"; sourceTree = "<group>"; };
 		E4391E5A2453DA380EDFE1D9 /* Pods-Choona.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.release.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.release.xcconfig"; sourceTree = "<group>"; };
-		EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNovaT-Thin.otf"; path = "../assets/fonts/ProximaNovaT-Thin.otf"; sourceTree = "<group>"; };
 		ED02CD66FA743D074F84A38C /* Pods-Choona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Choona.debug.xcconfig"; path = "Target Support Files/Pods-Choona/Pods-Choona.debug.xcconfig"; sourceTree = "<group>"; };
-		ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Black.otf"; path = "../assets/fonts/ProximaNova-Black.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Extrabld.otf"; path = "../assets/fonts/ProximaNova-Extrabld.otf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,17 +219,17 @@
 		7FAA34B6666743988984D1E1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DD09EF3E13F540698A15110D /* ProximaNova-Regular.otf */,
-				FFD580FD7CEC42A6ABD95D43 /* ProximaNova-Extrabld.otf */,
-				ED1D398081034151A8E4B337 /* ProximaNova-Black.otf */,
-				64AE8EF14506453B9099353B /* ProximaNova-Bold.otf */,
-				628CEDDC21104980A599F720 /* ProximaNovaA-Bold.otf */,
-				1C5C13CF579A417FB285FE0F /* ProximaNovaA-Light.otf */,
-				BAD8EF8CEE61415489FB31F0 /* ProximaNovaA-Thin.otf */,
-				EC732AAFF8764571B6A21137 /* ProximaNovaT-Thin.otf */,
-				48CC3609695E4680A18057DC /* ProximaNova-Semibold.ttf */,
-				9D97F4CA5DA744A2865E7944 /* ProximaNovaAW07-Medium.ttf */,
-				6920D4309E44485EB58C3CF1 /* Kallisto.ttf */,
+				5BAD3A1C2810360E00C652FF /* Kallisto.ttf */,
+				5BAD3A1D2810360E00C652FF /* ProximaNova-Black.otf */,
+				5BAD3A1E2810360E00C652FF /* ProximaNova-Bold.otf */,
+				5BAD3A192810360E00C652FF /* ProximaNova-Extrabld.otf */,
+				5BAD3A152810360E00C652FF /* ProximaNova-Regular.otf */,
+				5BAD3A162810360E00C652FF /* ProximaNova-Semibold.ttf */,
+				5BAD3A182810360E00C652FF /* ProximaNovaA-Bold.otf */,
+				5BAD3A172810360E00C652FF /* ProximaNovaA-Light.otf */,
+				5BAD3A1B2810360E00C652FF /* ProximaNovaA-Thin.otf */,
+				5BAD3A1A2810360E00C652FF /* ProximaNovaAW07-Medium.ttf */,
+				5BAD3A1F2810360F00C652FF /* ProximaNovaT-Thin.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -376,21 +376,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BAD3A212810360F00C652FF /* ProximaNova-Regular.otf in Resources */,
+				5BAD3A2B2810360F00C652FF /* ProximaNovaAW07-Medium.ttf in Resources */,
 				0EE0D1E22698464C00B5CFA4 /* main.jsbundle in Resources */,
+				5BAD3A332810360F00C652FF /* ProximaNova-Bold.otf in Resources */,
 				0EE0D1E32698464C00B5CFA4 /* GoogleService-Info.plist in Resources */,
+				5BAD3A252810360F00C652FF /* ProximaNovaA-Light.otf in Resources */,
 				0EE0D1E42698464C00B5CFA4 /* Images.xcassets in Resources */,
+				5BAD3A312810360F00C652FF /* ProximaNova-Black.otf in Resources */,
 				0EE0D1E52698464C00B5CFA4 /* LaunchScreen.storyboard in Resources */,
-				0EE0D1E62698464C00B5CFA4 /* ProximaNova-Regular.otf in Resources */,
-				0EE0D1E72698464C00B5CFA4 /* ProximaNova-Extrabld.otf in Resources */,
-				0EE0D1E82698464C00B5CFA4 /* ProximaNova-Black.otf in Resources */,
-				0EE0D1E92698464C00B5CFA4 /* ProximaNova-Bold.otf in Resources */,
-				0EE0D1EA2698464C00B5CFA4 /* ProximaNovaA-Bold.otf in Resources */,
-				0EE0D1EB2698464C00B5CFA4 /* ProximaNovaA-Light.otf in Resources */,
-				0EE0D1EC2698464C00B5CFA4 /* ProximaNovaA-Thin.otf in Resources */,
-				0EE0D1ED2698464C00B5CFA4 /* ProximaNovaT-Thin.otf in Resources */,
-				0EE0D1EE2698464C00B5CFA4 /* ProximaNova-Semibold.ttf in Resources */,
-				0EE0D1EF2698464C00B5CFA4 /* ProximaNovaAW07-Medium.ttf in Resources */,
-				5BED799828082E8B00C0B542 /* Kallisto.ttf in Resources */,
+				5BAD3A352810360F00C652FF /* ProximaNovaT-Thin.otf in Resources */,
+				5BAD3A232810360F00C652FF /* ProximaNova-Semibold.ttf in Resources */,
+				5BAD3A2F2810360F00C652FF /* Kallisto.ttf in Resources */,
+				5BAD3A292810360F00C652FF /* ProximaNova-Extrabld.otf in Resources */,
+				5BAD3A272810360F00C652FF /* ProximaNovaA-Bold.otf in Resources */,
+				5BAD3A2D2810360F00C652FF /* ProximaNovaA-Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,21 +398,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BAD3A202810360F00C652FF /* ProximaNova-Regular.otf in Resources */,
+				5BAD3A2A2810360F00C652FF /* ProximaNovaAW07-Medium.ttf in Resources */,
 				1875149C2637BC5A0063B993 /* main.jsbundle in Resources */,
+				5BAD3A322810360F00C652FF /* ProximaNova-Bold.otf in Resources */,
 				0B128C742486631C007D7886 /* GoogleService-Info.plist in Resources */,
+				5BAD3A242810360F00C652FF /* ProximaNovaA-Light.otf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				5BAD3A302810360F00C652FF /* ProximaNova-Black.otf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				8E47F092315C414EB9544971 /* ProximaNova-Regular.otf in Resources */,
-				0FC1110311B440AB87A2B550 /* ProximaNova-Extrabld.otf in Resources */,
-				C87EC975C87D47CFA49A164F /* ProximaNova-Black.otf in Resources */,
-				C40E207407994872838A7EDC /* ProximaNova-Bold.otf in Resources */,
-				F5037C64D13A4E0D9A0B5C48 /* ProximaNovaA-Bold.otf in Resources */,
-				8404D5D9125A47E5A568022B /* ProximaNovaA-Light.otf in Resources */,
-				328F818FF77F4813887EC302 /* ProximaNovaA-Thin.otf in Resources */,
-				61BFBBC9BF86484098D503CE /* ProximaNovaT-Thin.otf in Resources */,
-				3F3FBEB07A244ECB99712498 /* ProximaNova-Semibold.ttf in Resources */,
-				265AC87D4B064B55AE11B766 /* ProximaNovaAW07-Medium.ttf in Resources */,
-				BC08C7DE86FD4A69927C2324 /* Kallisto.ttf in Resources */,
+				5BAD3A342810360F00C652FF /* ProximaNovaT-Thin.otf in Resources */,
+				5BAD3A222810360F00C652FF /* ProximaNova-Semibold.ttf in Resources */,
+				5BAD3A2E2810360F00C652FF /* Kallisto.ttf in Resources */,
+				5BAD3A282810360F00C652FF /* ProximaNova-Extrabld.otf in Resources */,
+				5BAD3A262810360F00C652FF /* ProximaNovaA-Bold.otf in Resources */,
+				5BAD3A2C2810360F00C652FF /* ProximaNovaA-Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,7 +675,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -716,7 +716,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Choona copy-Info.plist";
@@ -753,7 +753,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 113;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -767,7 +767,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -794,7 +794,7 @@
 				CODE_SIGN_ENTITLEMENTS = Choona/Choona.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 113;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6DGAY84NFN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Choona/Info.plist;
@@ -804,7 +804,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 1.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

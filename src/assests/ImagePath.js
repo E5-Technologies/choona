@@ -1,5 +1,6 @@
 const ImagePath = {
   addicon: require('../assests/images/iconadd.png'),
+  alert: require('../assests/images/fi_alert-circle.png'),  
   backicon: require('../assests/images/back_icon.png'),
   spotifyicon: require('../assests/images/SpotifyIcon.png'),
   albumsPic: require('../assests/images/Albums.png'),

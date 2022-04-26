@@ -88,6 +88,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
 import MoreModal from '../../Posts/MoreModal';
+import ReportModal from '../../Posts/ReportModal';
 import Reactions from '../../Reactions/Reactions';
 import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 
@@ -117,6 +118,7 @@ const Home = props => {
   const [andyProfile, setAndyProfile] = useState(false);
   const [followButtonPressed, setFollowButtonPressed] = useState(false);
 
+  const [reportModal, setReportModal] = useState(false);
   const [posts, setPosts] = useState([]);
   const postsUrl = constants.BASE_URL + '/post/list?page=';
 
@@ -1127,7 +1129,7 @@ const Home = props => {
                     fontSize: normalise(14),
                     marginBottom: normalise(12),
                   }}>
-                  Welcome to Choona’s Beta
+                  Welcome to Choona
                 </Text>
                 <Pressable
                   onPress={() => {
@@ -1158,7 +1160,7 @@ const Home = props => {
                     fontSize: normalise(11),
                     marginBottom: normalise(16),
                   }}>
-                  Firstly, thank you so much for joining our public beta.
+                  Firstly, thank you so much for joining Choona!
                 </Text>
                 <Text
                   style={{
@@ -1424,8 +1426,10 @@ const Home = props => {
                 postData={posts}
                 show={modalVisible}
                 setShow={setModalVisible}
+                setReportModal={setReportModal}
               />
             )}
+            <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
           </View>
         )}
         {modal1Visible === true ? (

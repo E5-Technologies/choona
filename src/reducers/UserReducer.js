@@ -19,6 +19,9 @@ import {
   USER_UNBLOCK_REQUEST,
   USER_UNBLOCK_SUCCESS,
   USER_UNBLOCK_FAILURE,
+  REPORT_SUCCESS,
+  REPORT_REQUEST,
+  REPORT_FAILURE,
   USER_BLOCKLIST_REQUEST,
   USER_BLOCKLIST_SUCCESS,
   USER_BLOCKLIST_FAILURE,
@@ -224,58 +227,74 @@ const UserReducer = (state = initialState, action) => {
     case USER_BLOCK_REQUEST:
       return {
         ...state,
-        status: action.type
-      };      
+        status: action.type,
+      };
     case USER_BLOCK_SUCCESS:
       return {
         ...state,
         status: action.type,
         Isblock: action.data,
       };
-      case USER_BLOCK_FAILURE:
-        return {
-          ...state,
-          status: action.type,
-          error: action.error,
-        };   
-        
-        case USER_UNBLOCK_REQUEST:
+    case USER_BLOCK_FAILURE:
       return {
         ...state,
-        status: action.type
-      };      
+        status: action.type,
+        error: action.error,
+      };
+
+    case USER_UNBLOCK_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+      };
     case USER_UNBLOCK_SUCCESS:
       return {
         ...state,
         status: action.type,
         Isblock: action.data,
       };
-      case USER_UNBLOCK_FAILURE:
-        return {
-          ...state,
-          status: action.type,
-          error: action.error,
-        }; 
-
-        case USER_BLOCKLIST_REQUEST:
+    case USER_UNBLOCK_FAILURE:
       return {
         ...state,
-        status: action.type
-      };      
+        status: action.type,
+        error: action.error,
+      };
+
+    case USER_BLOCKLIST_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+      };
     case USER_BLOCKLIST_SUCCESS:
       return {
         ...state,
         status: action.type,
         blockedList: action.data,
       };
-      case USER_BLOCKLIST_FAILURE:
-        return {
-          ...state,
-          status: action.type,
-          error: action.error,
-        }; 
-        
-        
+    case USER_BLOCKLIST_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        error: action.error,
+      };
+
+    case REPORT_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+      };
+    case REPORT_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+      };
+    case REPORT_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        error: action.error,
+      };
+
     case USER_FOLLOW_UNFOLLOW_REQUEST:
       return {
         ...state,

@@ -23,6 +23,9 @@ import {
   USER_UNBLOCK_REQUEST,
   USER_UNBLOCK_SUCCESS,
   USER_UNBLOCK_FAILURE,
+  REPORT_REQUEST,
+  REPORT_SUCCESS,
+  REPORT_FAILURE,
   USER_BLOCKLIST_REQUEST,
   USER_BLOCKLIST_SUCCESS,
   USER_BLOCKLIST_FAILURE,
@@ -311,6 +314,27 @@ export function* userBlockListAction(action) {
   }
 }
 
+export function* Report(action) {
+  try {
+    const items = yield select(getItems);
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/report',
+      action.payload,
+      Header,
+    );
+    
+    yield put({ type: REPORT_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: REPORT_FAILURE, error: error });
+  }
+}
 
 export function* othersProfileAction(action) {
   try {
@@ -723,6 +747,10 @@ export function* watchuserUnBlockAction() {
 
 export function* watchuserBlockListAction() {
   yield takeLatest(USER_BLOCKLIST_REQUEST, userBlockListAction);
+}
+
+export function* watchReportAction() {
+  yield takeLatest(REPORT_REQUEST, Report);
 }
 
 export function* watchothersProfileAction() {

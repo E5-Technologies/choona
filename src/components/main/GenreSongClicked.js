@@ -38,6 +38,7 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import _ from 'lodash';
 
 import MoreModal from '../Posts/MoreModal';
+import ReportModal from '../Posts/ReportModal';
 
 import { API_HOST } from '../../config';
 
@@ -61,6 +62,7 @@ function GenreSongClicked(props) {
   const [bool, setBool] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [updateList, setUpdateList] = useState([]);
+  const [reportModal, setReportModal] = useState(false);
   // const [totalReact,setTotalReact] = useState([])
 
   const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
@@ -596,9 +598,11 @@ function GenreSongClicked(props) {
             postData={props.getPostFromTop50}
             show={modalVisible}
             setShow={setModalVisible}
+            setReportModal={setReportModal}
           />
         )}
 
+        <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
         <Modal
           animationType="fade"
           transparent={true}

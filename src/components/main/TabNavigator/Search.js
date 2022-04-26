@@ -69,6 +69,7 @@ import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import Reactions from '../../Reactions/Reactions';
 import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
+import ReportModal from '../../Posts/ReportModal';
 
 let status;
 let postStatus;
@@ -94,6 +95,7 @@ const Search = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
+  const [reportModal, setReportModal] = useState(false);
 
   const [typingTimeout, setTypingTimeout] = useState(0);
   // SEND SONG VARIABLES
@@ -1234,8 +1236,10 @@ const Search = props => {
                     postData={props.searchPostData}
                     show={modalVisible}
                     setShow={setModalVisible}
+                    setReportModal={setReportModal}
                   />
                 )}
+                <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
               </View>
             )
           ) : null}
