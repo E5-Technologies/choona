@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import ReactionsReverse from '../../Reactions/ReactionsReverse';
-import Reactions from '../../Reactions/Reactions';
+import ReactionsComponent from '../../Reactions/ReactionsComponent';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
@@ -11,9 +11,9 @@ import Avatar from '../../Avatar';
 function ActivityListItem(props) {
   const [follow, setFollow] = useState(props.follow);
 
-  const onPress = () => {
+  const onPress = (value='') => {
     if (props.onPress) {
-      props.onPress();
+      props.onPress(value);
     }
   };
 
@@ -77,10 +77,9 @@ function ActivityListItem(props) {
               )}
             </Text>
             {props.reaction &&
-            ReactionsReverse[props.reaction] &&
-            Reactions[ReactionsReverse[props.reaction]].icon ? (
+            ReactionsReverse[props.reaction]  ? (
               <View style={{ width: 20, height: 20 }}>
-                {Reactions[ReactionsReverse[props.reaction]].icon}
+                <ReactionsComponent value={ReactionsReverse[props.reaction]} onClick={()=> onPress('reaction')} />
               </View>
             ) : null}
           </TouchableOpacity>

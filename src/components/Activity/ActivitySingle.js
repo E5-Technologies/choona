@@ -5,6 +5,8 @@ import constants from '../../utils/helpers/constants';
 
 import ActivityListItem from '../main/ListCells/ActivityListItem';
 
+
+
 function ActivitySingle({ item, props }) {
   if (item.activity_type === 'following') {
     return (
@@ -40,14 +42,25 @@ function ActivitySingle({ item, props }) {
             following: item.isFollowing,
           });
         }}
-        onPress={() => {
+        onPress={(type="") => {
           // props.navigation.navigate('Profile', {
           //   postId: item.post_id,
           //   fromAct: true,
-          props.navigation.navigate('SingleSongClick', {
-            data: item.post_id,
-            ptID: 1,
+          if(type == "reaction"){
+            const _onReaction=(ID, reaction)=>{}
+            props.navigation.navigate('HomeItemReactions', {
+              reactions: item.reaction,
+              post_id: item.post_id,
+              onSelectReaction: (ID, reaction) =>
+              _onReaction(ID, reaction),
           });
+          }else{
+            props.navigation.navigate('SingleSongClick', {
+              data: item.post_id,
+              ptID: 1,
+            });
+          }
+          
           // });
         }}
       />

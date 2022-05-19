@@ -256,7 +256,7 @@ const Notification = props => {
           />
         ) : (
           <ScrollView
-            onScroll={({ nativeEvent }) => {
+            onMomentumScrollEnd={({ nativeEvent }) => {
               if (isCloseToBottom(nativeEvent)) {
                 onReached();
               }

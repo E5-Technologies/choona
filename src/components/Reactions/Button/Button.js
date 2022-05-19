@@ -63,7 +63,9 @@ const ReactionButton = React.memo(
             // fadeIn();
             setActive(true);
           }
-          onClick();
+          if(typeof onClick !== "onClick" && typeof onClick === "function"){
+            onClick();
+          }
         }}
         style={({ pressed }) => [
           styles.pressable,

@@ -34,7 +34,7 @@ import normaliseNew from '../../utils/helpers/DimensNew';
 import { fetchReactionsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 import ReactionsReverseMap from '../Reactions/ReactionsReverse';
-import Reactions from '../Reactions/Reactions';
+import ReactionsComponent from '../Reactions/ReactionsComponent';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 let reaction_count = 0;
@@ -296,7 +296,7 @@ function HomeItemReaction(props) {
               height: normalise(26),
               marginHorizontal: normaliseNew(16),
             }}>
-            {Reactions[data.item.header].icon}
+            <ReactionsComponent value={data.item.header} />
           </View>
         </View>
         {

@@ -372,21 +372,21 @@ function GenreSongClicked(props) {
     return `${reactId}##${postId}`;
   };
 
-  function hitReact(reactId, postId) {
-    let reactionObject = {
-      post_id: postId,
-      text: Reactions[reactId].oldText,
-      text_match: Reactions[reactId].map,
-    };
-    isInternetConnected()
-      .then(() => {
-        addPendingReactTimer(reactId, postId);
-        props.reactionOnPostRequest(reactionObject);
-      })
-      .catch(() => {
-        toast('Error', 'Please Connect To Internet');
-      });
-  }
+  // function hitReact(reactId, postId) {
+  //   let reactionObject = {
+  //     post_id: postId,
+  //     text: Reactions[reactId].oldText,
+  //     text_match: Reactions[reactId].map,
+  //   };
+  //   isInternetConnected()
+  //     .then(() => {
+  //       addPendingReactTimer(reactId, postId);
+  //       props.reactionOnPostRequest(reactionObject);
+  //     })
+  //     .catch(() => {
+  //       toast('Error', 'Please Connect To Internet');
+  //     });
+  // }
   /** ------------ */
 
   // FLATLIST RENDER FUNCTION
