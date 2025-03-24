@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services' 
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -72,6 +74,11 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+project.ext.envConfigFiles = [
+        debug: ".env",
+        release: ".env",
+]
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -84,6 +91,13 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+        manifestPlaceholders = [
+        //    appAuthRedirectScheme: 'io.identityserver.demo'
+           appAuthRedirectScheme: 'com.choona'
+
+    ]
+    resValue "string", "build_config_package", "com.choona"
     }
     signingConfigs {
         debug {
@@ -105,11 +119,19 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g" // Increase heap size if necessary
+        preDexLibraries = false // Optional: might help in some cases
+    }
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+    implementation ("com.android.support:multidex:2.0.1")
+     implementation project(':react-native-config')
+
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
