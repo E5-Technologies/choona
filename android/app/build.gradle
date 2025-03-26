@@ -2,6 +2,13 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services' 
+
+
+// project.ext.envConfigFiles = [
+//         debug: ".env",
+//         release: ".env",
+// ]
+
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
@@ -74,10 +81,6 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-project.ext.envConfigFiles = [
-        debug: ".env",
-        release: ".env",
-]
 
 android {
     ndkVersion rootProject.ext.ndkVersion
