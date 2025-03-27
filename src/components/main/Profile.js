@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -10,6 +10,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  Linking,
   Dimensions,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -20,11 +21,14 @@ import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
 import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
-// import { WebView } from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
   USER_PROFILE_FAILURE,
+  DELETE_POST_REQUEST,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_FAILURE,
 } from '../../action/TypeConstants';
 import {
   getProfileRequest,
@@ -32,7 +36,6 @@ import {
   getCountryCodeRequest,
 } from '../../action/UserAction';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
 import axios from 'axios';
@@ -44,11 +47,11 @@ import EmptyComponent from '../Empty/EmptyComponent';
 import HeaderStyles from '../../styles/header';
 
 let status = '';
-let totalCount = '0';
+let postStatus = '';
 
 const postsUrl = constants.BASE_URL + '/user/posts';
 
-function Profile(props) {
+const Profile = props => {
   const getProfileReq = props.getProfileReq;
   const token = props.header.token;
 
@@ -62,6 +65,7 @@ function Profile(props) {
   const [pageId, setPageId] = useState(1);
 
   const [profilePosts, setProfilePosts] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const onEndReached = async () => {
     setPageId(pageId + 1);
@@ -77,31 +81,52 @@ function Profile(props) {
     setNonEmpty(true);
   };
 
+  const getProfilePosts = useCallback(async () => {
+    const response = await axios.get(`${postsUrl}?page=${1}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+    });
+    if (response) {
+      setIsLoading(false);
+      setProfilePosts(response.data.data);
+      setTotalCount(response.data?.postCount ?? 0);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    getProfilePosts();
+  }, [getProfilePosts]);
+
   useEffect(() => {
     isInternetConnected()
       .then(async () => {
         getProfileReq();
-
-        const response = await axios.get(`${postsUrl}?page=${1}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'x-access-token': token,
-          },
-        });
-        setIsLoading(false);
-
-        response.data.data.length === 0
-          ? (totalCount = totalCount)
-          : (totalCount = response.data.data.length);
-        profilePosts.length === 0
-          ? (setProfilePosts(response.data.data), setNonEmpty(true))
-          : null;
       })
       .catch(() => {
-        toast('Error', 'Please Connect To Internet');
+        // toast('Error', 'Please Connect To Internet');
       });
-  }, []);
+  }, [getProfileReq]);
+
+  if (postStatus === '' || props.postStatus !== postStatus) {
+    switch (props.postStatus) {
+      case DELETE_POST_REQUEST:
+        postStatus = props.postStatus;
+        break;
+
+      case DELETE_POST_SUCCESS:
+        postStatus = props.postStatus;
+        getProfilePosts();
+        break;
+
+      case DELETE_POST_FAILURE:
+        postStatus = props.postStatus;
+        toast('Oops', 'Something Went Wrong, Please Try Again');
+        break;
+    }
+  }
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -112,7 +137,6 @@ function Profile(props) {
       case USER_PROFILE_SUCCESS:
         status = props.status;
         if (activity) {
-          // console.log('get index');
           getIndex();
         }
         break;
@@ -146,31 +170,28 @@ function Profile(props) {
       <TouchableOpacity
         onPress={() => {
           props.navigation.navigate('PostListForUser', {
-            profile_name: props.userProfileResp.full_name,
+            profile_name: props.userProfileResp?.full_name,
             posts: array,
             index: '0',
           });
         }}
         style={{
-          margin: normalise(4),
+          margin: 0,
           marginBottom:
             data.index === profilePosts.length - 1
               ? normalise(30)
-              : normalise(4),
+              : normalise(0),
         }}>
         <Image
           source={{
             uri:
-              props.userProfileResp.register_type === 'spotify'
+              props.userProfileResp?.register_type === 'spotify'
                 ? data.item.song_image
-                : data.item.song_image.replace(
-                    '100x100bb.jpg',
-                    '500x500bb.jpg',
-                  ),
+                : data.item.song_image,
           }}
           style={{
-            width: Math.floor(Dimensions.get('window').width / 2.1),
-            height: Math.floor(Dimensions.get('window').height * 0.22),
+            width: Math.floor(Dimensions.get('window').width / 2),
+            height: Math.floor(Dimensions.get('window').width / 2),
           }}
           resizeMode="cover"
         />
@@ -184,16 +205,48 @@ function Profile(props) {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        presentationStyle={'overFullScreen'}
-        onRequestClose={() => {}}>
+        presentationStyle={'overFullScreen'}>
         <ImageBackground
           source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>
           <View style={styles.modalView}>
+          <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                props.navigation.push('BlockList', {
+                  type: 'user',
+                  id: '',
+                });
+              }}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                See Blocked User
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
+                Linking.openURL('mailto:contact@choona.com');
+              }}
+              style={{marginTop: normalise(18)}}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                Email support with a bug/feature
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
                 setModalPrivacy(true);
-              }}>
+              }}
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -203,8 +256,12 @@ function Profile(props) {
                 Privacy Policy
               </Text>
             </TouchableOpacity>
-
-            <TouchableOpacity style={{ marginTop: normalise(18) }}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                setModaltandcs(true);
+              }}
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -214,10 +271,10 @@ function Profile(props) {
                 Terms of Usage
               </Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{ marginTop: normalise(18) }}
               onPress={() => {
+                setModalVisible(!modalVisible);
                 setModaltandcs(true);
               }}>
               <Text
@@ -226,10 +283,9 @@ function Profile(props) {
                   fontSize: normalise(13),
                   fontFamily: 'ProximaNova-Semibold',
                 }}>
-                Terms & Conditions
+                Terms &amp; Conditions
               </Text>
             </TouchableOpacity>
-
             {/* <TouchableOpacity
                             style={{ marginTop: normalise(18) }}>
                             <Text style={{
@@ -304,16 +360,16 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent={false}
         visible={modalPrivacy}
-        presentationStyle={'overFullScreen'}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           setModalPrivacy(false);
         }}>
         <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
-          <View style={{ marginTop: '5%' }}>
+          <View style={{ marginTop: '10%' }}>
             <TouchableOpacity
-              style={{ marginLeft: normalise(10) }}
+              style={{ marginLeft: normalise(15), top: normalise(-15) }}
               onPress={() => {
                 setModalPrivacy(false);
               }}>
@@ -324,10 +380,7 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView
-            source={{ uri: 'https://www.choona.co/privacy' }}
-            // style={{ marginTop: 20 }}
-          />
+          <WebView source={{ uri: 'https://www.choona.com/privacy' }} />
         </View>
       </Modal>
     );
@@ -337,16 +390,16 @@ function Profile(props) {
     return (
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent={false}
         visible={modaltandcs}
-        presentationStyle={'overFullScreen'}
+        presentationStyle={'pageSheet'}
         onRequestClose={() => {
           setModaltandcs(false);
         }}>
         <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
-          <View style={{ marginTop: '5%' }}>
+          <View style={{ marginTop: '10%' }}>
             <TouchableOpacity
-              style={{ marginLeft: normalise(10) }}
+              style={{ marginLeft: normalise(15), top: normalise(-15) }}
               onPress={() => {
                 setModaltandcs(false);
               }}>
@@ -357,17 +410,14 @@ function Profile(props) {
               />
             </TouchableOpacity>
           </View>
-          <WebView
-            source={{ uri: 'https://www.choona.co/tandcs' }}
-            // style={{ marginTop: 20 }}
-          />
+          <WebView source={{ uri: 'https://www.choona.com/terms' }} />
         </View>
       </Modal>
     );
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
       <SafeAreaView style={{ flex: 1 }}>
@@ -376,7 +426,7 @@ function Profile(props) {
             <TouchableOpacity
               style={{ marginRight: normalise(10) }}
               onPress={() => {
-                totalCount = 0;
+                setTotalCount(0);
                 props.navigation.goBack();
               }}>
               <Image
@@ -387,7 +437,7 @@ function Profile(props) {
             </TouchableOpacity>
           </View>
           <Text style={HeaderStyles.headerText}>
-            {props.userProfileResp.full_name}
+            {props.userProfileResp?.full_name}
           </Text>
           <View
             style={[
@@ -419,17 +469,21 @@ function Profile(props) {
             </TouchableOpacity>
           </View>
         </View>
-        <ProfileHeader
-          navigation={props.navigation}
-          profile={props.userProfileResp}
-          totalCount={totalCount}
-          user={true}
-        />
-        <ProfileHeaderFeatured
-          navigation={props.navigation}
-          profile={props.userProfileResp}
-          user={true}
-        />
+        {props.userProfileResp && (
+          <ProfileHeader
+            navigation={props.navigation}
+            profile={props.userProfileResp}
+            totalCount={totalCount}
+            user={true}
+          />
+        )}
+        {props.userProfileResp && (
+          <ProfileHeaderFeatured
+            navigation={props.navigation}
+            profile={props.userProfileResp}
+            user={true}
+          />
+        )}
         {isLoading ? (
           <View>
             <ActivityIndicator
@@ -438,7 +492,7 @@ function Profile(props) {
               style={{ marginTop: normalise(25) }}
             />
           </View>
-        ) : _.isEmpty(profilePosts) && nonempty ? (
+        ) : _.isEmpty(profilePosts) && !nonempty ? (
           <EmptyComponent
             buttonPress={() =>
               props.navigation.replace('bottomTab', { screen: 'Add' })
@@ -454,12 +508,12 @@ function Profile(props) {
           <FlatList
             data={profilePosts}
             renderItem={renderProfileData}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
+            keyExtractor={item => item._id}
             showsVerticalScrollIndicator={false}
             numColumns={2}
-            onEndReached={() => onEndReached()}
+            onEndReached={() => {
+              onEndReached();
+            }}
             onEndReachedThreshold={1}
           />
         )}
@@ -469,11 +523,12 @@ function Profile(props) {
       </SafeAreaView>
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
+    postStatus: state.PostReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
     countryCode: state.UserReducer.countryCodeOject,
     header: state.TokenReducer,

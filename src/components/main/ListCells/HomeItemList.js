@@ -41,12 +41,6 @@ function HomeItemList(props) {
     }
   };
 
-  const onReactionPress = reaction => {
-    if (props.onReactionPress) {
-      props.onReactionPress(reaction);
-    }
-  };
-
   let delimiter = /\s+/;
 
   //split string
@@ -77,6 +71,7 @@ function HomeItemList(props) {
       return (
         <Text
           key={text}
+          style={{ color: '#3DB2EB' }}
           onPress={() => {
             props.navi.navigation.navigate('OthersProfile', {
               id: text.substr(1, text.length - 1),
@@ -93,10 +88,8 @@ function HomeItemList(props) {
   return (
     <View
       style={{
+          backgroundColor: Colors.darkerblack,
         alignSelf: 'center',
-        borderBottomColor: Colors.activityBorderColor,
-        borderBottomWidth: normalise(0.5),
-        marginBottom: normalise(8),
         paddingBottom: normalise(16),
       }}>
       <HomeListItemHeader
@@ -107,25 +100,20 @@ function HomeItemList(props) {
         songUri={props.songUri}
         title={props.title}
       />
-      <TouchableOpacity
-        onPress={() => {
-          onPressMusicbox();
-        }}>
-        <Image
-          source={
-            ImagePath
-              ? props.image === ''
-                ? ImagePath.profiletrack1
-                : { uri: props.image }
-              : null
-          }
-          style={{
-            aspectRatio: 1,
-            width: '100%',
-          }}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
+      <Image
+        source={
+          ImagePath
+            ? props.image === ''
+              ? ImagePath.profiletrack1
+              : { uri: props.image }
+            : null
+        }
+        style={{
+          aspectRatio: 1,
+          width: '100%',
+        }}
+        resizeMode="cover"
+      />
       <HomeListItemFooter
         commentCount={props.comment_count}
         numberOfLines={numberOfLines}
@@ -133,8 +121,10 @@ function HomeItemList(props) {
         onPressImage={onPressImage}
         onPressMenu={onPressSecondImage}
         onPressReactionbox={onPressReactionbox}
-        onReactionPress={onReactionPress}
+        onReactionPress={props.onReactionPress}
         parts={parts}
+        myReactions={props.myReactions}
+        myReactionsPending={props.myReactionsPending}
         postText={props.content}
         postTime={props.time}
         reactionCount={props.reaction_count}
@@ -144,6 +134,7 @@ function HomeItemList(props) {
         userAvatar={props.picture}
         userName={props.name}
         viewMore={viewMore}
+        relatedId={props.id}
       />
     </View>
   );
@@ -152,6 +143,7 @@ function HomeItemList(props) {
 export default HomeItemList;
 
 HomeItemList.propTypes = {
+  id: PropTypes.string,
   image: PropTypes.string,
   title: PropTypes.string,
   onPress: PropTypes.func,
@@ -171,6 +163,8 @@ HomeItemList.propTypes = {
   modalVisible: PropTypes.bool,
   play: PropTypes.bool,
   postType: PropTypes.bool,
+  myReactions: PropTypes.object,
+  myReactionsPending: PropTypes.object,
 };
 
 HomeItemList.defaultProps = {
@@ -186,4 +180,5 @@ HomeItemList.defaultProps = {
   modalVisible: false,
   postType: true,
   play: false,
+  myReactions: {},
 };

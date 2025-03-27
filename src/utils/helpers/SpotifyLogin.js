@@ -3,14 +3,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { authorize, refresh } from 'react-native-app-auth';
 import { getSpotifyApi } from './ApiRequest';
 import moment from 'moment';
-import { songMessageReadRequest } from '../../action/MessageAction';
-
 
 const config = {
   clientId: constants.spotify_client_id,
   clientSecret: constants.spotify_client_secret,
-  // clientId: "6858d6fea7c54e7d94d57146f3d8812a",
-  // clientSecret: "2502d00edc2d4c618d843fae71ee1753",
   redirectUrl: constants.spotify_redirect_uri,
   scopes: [
     'user-read-email',
@@ -26,16 +22,10 @@ const config = {
     tokenEndpoint: constants.spotify_token_uri,
   },
 };
-console.log(config)
-// console.log(constants, 'its onctstnt')
-
-
 
 export const loginWithSpotify = async () => {
   try {
     const result = await authorize(config);
-    // console.log(result, 'its result')
-    // return
     await AsyncStorage.setItem(
       constants.SPOTIFY,
       JSON.stringify({
@@ -53,14 +43,13 @@ export const loginWithSpotify = async () => {
       constants.spotify_profile_uri,
       header,
     );
-    console.log(spotifyUserResponse, 'its spotify hit')
 
     if (spotifyUserResponse.status === 200) {
       return spotifyUserResponse.data;
     }
     return {};
   } catch (error) {
-    console.log(JSON.stringify(error), 'this is error')
+      console.log(error);
     return {};
   }
 };

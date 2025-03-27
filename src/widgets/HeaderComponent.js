@@ -17,11 +17,18 @@ function HeaderComponent(props) {
     if (props.onPressThirdItem) {
       setOnDisable(true);
       props.onPressThirdItem();
+      setTimeout(() => {
+        setOnDisable(false);
+      }, 1000);
     }
   }
 
   return (
-    <View style={HeaderStyles.headerContainer}>
+    <View
+      style={[
+        HeaderStyles.headerContainer,
+        props.hideBorderBottom && { borderBottomWidth: 0 },
+      ]}>
       {/* Left */}
       {props.firstitemtext ? (
         <TouchableOpacity
@@ -32,19 +39,17 @@ function HeaderComponent(props) {
           <Text style={HeaderStyles.headerItemText}>{props.textone}</Text>
         </TouchableOpacity>
       ) : (
-        <View style={HeaderStyles.leftItem}>
-          <TouchableOpacity
-            style={HeaderStyles.leftItemInner}
-            onPress={() => {
-              onPressFirstItem();
-            }}>
-            <Image
-              source={props.imageone}
-              style={HeaderStyles.backIcon}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={HeaderStyles.leftItem}
+          onPress={() => {
+            onPressFirstItem();
+          }}>
+          <Image
+            source={props.imageone}
+            style={HeaderStyles.headerIcon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
       )}
       {/* Middle */}
       <Text style={HeaderStyles.headerText}>{props.title}</Text>
@@ -80,7 +85,7 @@ export default HeaderComponent;
 HeaderComponent.propTypes = {
   firstitemtext: PropTypes.bool,
   thirditemtext: PropTypes.bool,
-  imageone: PropTypes.string,
+  imageone: PropTypes.number,
   imagetwo: PropTypes.string,
   textone: PropTypes.string,
   texttwo: PropTypes.string,
@@ -91,12 +96,13 @@ HeaderComponent.propTypes = {
   imageonewidth: PropTypes.number,
   imagetwoheight: PropTypes.number,
   imagetwowidth: PropTypes.number,
+  hideBorderBottom: PropTypes.bool,
 };
 
 HeaderComponent.defaultProps = {
   firstitemtext: true,
   thirditemtext: true,
-  imageone: '',
+  imageone: null,
   imagetwo: '',
   textone: '',
   texttwo: '',
@@ -109,4 +115,5 @@ HeaderComponent.defaultProps = {
   imagesecondwidth: normalise(30),
   imagetwoheight: normalise(15),
   imagetwowidth: normalise(15),
+  hideBorderBottom: false,
 };

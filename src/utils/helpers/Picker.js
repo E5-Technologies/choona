@@ -1,32 +1,34 @@
-import React, {useState} from 'react';
-import {View, Text, Modal, TouchableOpacity, Platform} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  Platform,
+  PickerIOS,
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import PropTypes from 'prop-types';
 import Colors from '../../assests/Colors';
 import normalize from '../../utils/helpers/Dimens';
 
-function NewPicker(props) {
+const NewPicker = props => {
   const [showDropdown, manageShowDropdown] = useState(false);
   const [itemIndex, setItemIndex] = useState(0);
+  const [text, setText] = useState(undefined);
+  const [selValue, setSelValue] = useState(undefined);
 
-  const [text, setText] = useState(
-    props.selectedValue === '' ? props.emptySelectText : getSelectedValue(),
-  );
-  const [selValue, setSelValue] = useState(props.selectedValue);
-
-  function getSelectedValue() {
-    for (let i = 0; i < props.data.length; i++) {
-      if (props.valueParam !== '') {
-        if (props.data[i][props.valueParam] === props.selectedValue) {
-          return props.data[i][props.itemParam];
-        }
-      } else {
-        return props.selectedValue;
-      }
+  // selecting the selected value
+  useEffect(() => {
+    if (props.selectedValue === null) {
+      setText(props.emptySelectText);
+    } else {
+      setText(props.selectedValue);
+      setSelValue(props.selectedValue);
     }
-    return '';
-  }
+  }, [props.emptySelectText, props.selectedValue]);
 
+  // show dropdrown with codes
   function toggleShowDropdown() {
     if (showDropdown) {
       manageShowDropdown(false);
@@ -35,13 +37,14 @@ function NewPicker(props) {
     }
   }
 
-  function onSelectItem(item, itemIndex) {
+  //
+  function onSelectItem(item, index) {
     if (props.itemParam === '') {
       setText(item);
     } else {
       setText(
         props.data.length > 0
-          ? props.data[itemIndex][props.itemParam]
+          ? props.data[index][props.itemParam]
           : props.emptySelectText,
       );
     }
@@ -73,7 +76,7 @@ function NewPicker(props) {
   function renderIOSPicker() {
     return (
       <Modal animationType="fade" transparent={true} visible={showDropdown}>
-        <View style={{flex: 1, backgroundColor: 'transparent'}}>
+        <View style={{ flex: 1, backgroundColor: 'transparent' }}>
           <View
             style={{
               width: '100%',
@@ -91,25 +94,25 @@ function NewPicker(props) {
               }}>
               <TouchableOpacity
                 onPress={() => manageShowDropdown(false)}
-                style={{padding: normalize(10)}}>
-                <Text style={{fontSize: normalize(12), color: Colors.blue}}>
+                style={{ padding: normalize(10) }}>
+                <Text style={{ fontSize: normalize(12), color: Colors.blue }}>
                   CANCEL
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={{padding: normalize(10)}}
+                style={{ padding: normalize(10) }}
                 onPress={() => {
                   // console.log('JJJ');
                   onDone();
                 }}>
-                <Text style={{fontSize: normalize(12), color: Colors.blue}}>
+                <Text style={{ fontSize: normalize(12), color: Colors.blue }}>
                   DONE
                 </Text>
               </TouchableOpacity>
             </View>
 
-            <Picker
+            <PickerIOS
               selectedValue={selValue}
               style={{
                 marginTop: normalize(-8),
@@ -123,20 +126,16 @@ function NewPicker(props) {
                 //     props.onPickerItemSelected(props.data[itemIndex]);
                 // }
               }}>
-              {props.data.map((item, itemIndex) => {
+              {props.data.map((item, index) => {
                 return (
                   <Picker.Item
-                    key={itemIndex.toString()}
-                    label={
-                      props.itemParam !== '' ? item[props.itemParam] : item
-                    }
-                    value={
-                      props.valueParam !== '' ? item[props.valueParam] : item
-                    }
+                    key={index.toString()}
+                    label={`${item.flag} ${item.dial_code}`}
+                    value={item.name}
                   />
                 );
               })}
-            </Picker>
+            </PickerIOS>
           </View>
         </View>
       </Modal>
@@ -154,7 +153,7 @@ function NewPicker(props) {
         marginTop: Platform.OS === 'android' ? normalize(43.5) : normalize(37),
       }}>
       {props.placeholder !== '' ? (
-        <Text style={{fontSize: normalize(12), marginBottom: normalize(5)}}>
+        <Text style={{ fontSize: normalize(12), marginBottom: normalize(5) }}>
           {props.placeholder}
         </Text>
       ) : null}
@@ -182,7 +181,7 @@ function NewPicker(props) {
               textAlign: props.textAlign,
               fontFamily: 'ProximaNova-Semibold',
             }}>
-            {text}
+            {text?.flag} {text?.dial_code}
           </Text>
         </TouchableOpacity>
       ) : (
@@ -217,7 +216,7 @@ function NewPicker(props) {
       {renderIOSPicker()}
     </View>
   );
-}
+};
 
 export default NewPicker;
 

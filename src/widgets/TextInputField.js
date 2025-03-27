@@ -17,13 +17,12 @@ function TextInputField(props) {
   return (
     <View
       style={{
-        marginTop: normalize(props.marginTop),
-        marginBottom: normalize(props.marginBottom),
+        marginBottom: normalize(16),
       }}>
       <Text
         style={{
           fontSize: normalize(10),
-          color: Colors.white,
+          color: Colors.meta,
           fontFamily: 'ProximaNova-SemiBold',
         }}>
         {props.text}
@@ -34,19 +33,19 @@ function TextInputField(props) {
           width: props.width,
           marginTop: normalize(10),
           fontFamily: 'ProximaNova-Semibold',
-          fontSize: normalize(12),
+          fontSize: normalize(14),
           backgroundColor: Colors.fadeblack,
-          height: normalize(45),
-          borderRadius: normalize(5),
+          height: normalize(44),
+          borderRadius: normalize(6),
           borderWidth: normalize(0.5),
           padding: normalize(5),
           paddingLeft: normalize(16),
           borderColor: !props.userNameAvailable
             ? Colors.red
             : focused
-            ? Colors.white
-            : Colors.fadeblack,
-          color: Colors.white,
+              ? Colors.white
+              : Colors.fadeblack,
+          color: Colors.meta,
         }}
         keyboardAppearance="dark"
         onFocus={() => {
@@ -59,7 +58,7 @@ function TextInputField(props) {
         keyboardType={props.isNumber ? 'phone-pad' : 'default'}
         autoCapitalize={props.autoCapitalize}
         value={props.value}
-        placeholderTextColor={props.placeholderTextColor}
+        placeholderTextColor={Colors.meta}
         secureTextEntry={props.isPassword}
         onChangeText={text => {
           onChangeText(text);
@@ -81,6 +80,7 @@ function TextInputField(props) {
             top: normalize(35),
             right: normalize(10),
           }}
+          resizeMode="contain"
         />
       ) : null}
     </View>
@@ -105,7 +105,7 @@ TextInputField.propTypes = {
   tick_visible: PropTypes.bool,
   isNumber: PropTypes.bool,
   userNameAvailable: PropTypes.bool,
-  width: PropTypes.bool,
+  width: PropTypes.string,
 };
 
 TextInputField.defaultProps = {

@@ -38,7 +38,7 @@ import { connect } from 'react-redux';
 
 let status;
 
-function Followers(props) {
+const Followers = props => {
   const [type, setType] = useState(props.route.params.type);
   const [id, setId] = useState(props.route.params.id);
   const [search, setSearch] = useState('');
@@ -164,7 +164,7 @@ function Followers(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={props.status === FOLLOWER_LIST_REQUEST} />
       <Loader visible={bool} />
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -176,7 +176,7 @@ function Followers(props) {
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={`FOLLOWERS (${props.followerData.length})`}
+          title={`${props.followerData.length} FOLLOWERS`}
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
@@ -193,10 +193,10 @@ function Followers(props) {
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(6),
               padding: normalise(10),
-              color: Colors.black,
+              color: Colors.white,
               paddingLeft: normalise(30),
             }}
             value={search}
@@ -213,6 +213,7 @@ function Followers(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />
@@ -246,9 +247,7 @@ function Followers(props) {
         <FlatList
           data={props.followerData}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => {
-            index.toString();
-          }}
+          keyExtractor={item => item._id}
           renderItem={renderFollowersItem}
           ItemSeparatorComponent={Seperator}
         />
@@ -256,7 +255,7 @@ function Followers(props) {
       {/* </TouchableWithoutFeedback> */}
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

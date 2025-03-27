@@ -62,6 +62,7 @@ function UsersFromContacts(props) {
         break;
 
       case GET_USERS_FROM_CONTACTS_SUCCESS:
+        console.log(props.usersFromContacts, 'user from contatct')
         setUsersList(props.usersFromContacts);
         status = props.status;
         break;
@@ -142,126 +143,126 @@ function UsersFromContacts(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === GET_USERS_FROM_CONTACTS_REQUEST} />
       <Loader visible={bool} />
 
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <HeaderComponent
-            firstitemtext={false}
-            imageone={ImagePath.backicon}
-            title={'USERS'}
-            thirditemtext={true}
-            texttwo={''}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
+        }}> */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={'USERS'}
+          thirditemtext={true}
+          texttwo={''}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
+
+        <View
+          style={{
+            width: '92%',
+            alignSelf: 'center',
+          }}>
+          <TextInput
+            autoCorrect={false}
+            keyboardAppearance={'dark'}
+            style={{
+              height: normalise(35),
+              width: '100%',
+              backgroundColor: Colors.fadeblack,
+              borderRadius: normalise(8),
+              marginTop: normalise(20),
+              padding: normalise(10),
+              color: Colors.white,
+              paddingLeft: normalise(30),
+            }}
+            value={search}
+            placeholder={'Search'}
+            placeholderTextColor={Colors.darkgrey}
+            onChangeText={text => {
+              setSearch(text);
+              filterArray(text);
             }}
           />
 
-          <View
+          <Image
+            source={ImagePath.searchicongrey}
             style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.fadeblack,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                color: Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text);
-                filterArray(text);
-              }}
-            />
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+            }}
+            resizeMode="contain"
+          />
 
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch('');
+                filterArray('');
               }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch('');
-                  filterArray('');
-                }}
-                style={{
-                  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {_.isEmpty(usersList) ? (
-            <View
               style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
+                backgroundColor: Colors.black,
+                padding: 6,
+                paddingTop: 4,
+                paddingBottom: 4,
+                borderRadius: 2,
+                position: 'absolute',
+                right: 0,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
               }}>
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: normalise(12),
-                  marginLeft: normalise(10),
-                  fontFamily: 'ProximaNova-Semibold',
+                  fontSize: normalise(10),
                   fontWeight: 'bold',
                 }}>
-                NO USERS FOUND
+                CLEAR
               </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={usersList}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              renderItem={renderUserItem}
-              ItemSeparatorComponent={Seperator}
-            />
+            </TouchableOpacity>
           )}
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+        </View>
+
+        {_.isEmpty(usersList) ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                color: Colors.white,
+                fontSize: normalise(12),
+                marginLeft: normalise(10),
+                fontFamily: 'ProximaNova-Semibold',
+                fontWeight: 'bold',
+              }}>
+              NO USERS FOUND
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={usersList}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            renderItem={renderUserItem}
+            ItemSeparatorComponent={Seperator}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

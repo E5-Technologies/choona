@@ -7,6 +7,7 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Hyperlink from 'react-native-hyperlink';
+import Avatar from '../../Avatar';
 
 function CommentList(props) {
   const onPressImage = () => {
@@ -72,10 +73,10 @@ function CommentList(props) {
         onPress={() => {
           onPressImage();
         }}>
-        <Image
-          source={props.image === '' ? ImagePath.dp1 : { uri: props.image }}
-          style={styles.commentAvatar}
-          resizeMode="cover"
+        <Avatar
+          image={props.image !== '' ? props.image : null}
+          height={22}
+          width={22}
         />
       </TouchableOpacity>
       <View style={styles.commentInfoContainer}>
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: normaliseNew(13),
+    textTransform: 'lowercase',
   },
   commentTime: {
     color: Colors.grey_text,

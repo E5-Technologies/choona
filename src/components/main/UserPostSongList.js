@@ -21,7 +21,6 @@ import {
 } from '../../action/UserAction';
 import { deletePostReq } from '../../action/PostAction';
 import { saveSongRequest } from '../../action/SongAction';
-import { createChatTokenRequest } from '../../action/MessageAction';
 
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -155,7 +154,7 @@ function UserPostSongList(props) {
       <View
         style={{
           flexDirection: 'row',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.darkerblack,
           paddingTop: normalise(10),
         }}>
         <TouchableOpacity
@@ -186,7 +185,7 @@ function UserPostSongList(props) {
         style={{
           flex: 1,
           alignItems: 'center',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.darkerblack,
         }}>
         <FlatList
           data={postData}
@@ -246,10 +245,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
   };
 };

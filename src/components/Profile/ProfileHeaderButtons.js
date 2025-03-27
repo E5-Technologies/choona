@@ -12,14 +12,39 @@ import normalise from '../../utils/helpers/Dimens';
 
 const ProfileHeaderButtons = ({
   followReq,
+  unBlockReq,
   id,
   isFollowing,
+  isBlocked,
   navigation,
   othersProfileresp,
   setIsFollowing,
+  setIsBlocked,
 }) => {
   return (
+    <View>
+    {isBlocked ?
     <View style={styles.profileHeaderButtonsContainer}>
+    <TouchableOpacity
+        style={[
+          styles.profileHeaderButtonsButton,
+          { backgroundColor: Colors.red},
+        ]}
+        onPress={() => {
+          setIsBlocked(!isBlocked);
+          unBlockReq({targetId: othersProfileresp._id})
+        }}>
+        <Text
+          style={[
+            styles.profileHeaderButtonsButtonText,
+            {
+              color:Colors.white,
+            },
+          ]}>
+          {"Unblock"}
+        </Text>
+      </TouchableOpacity>
+    </View> :<View style={styles.profileHeaderButtonsContainer}>
       <TouchableOpacity
         style={styles.profileHeaderButtonsButton}
         onPress={() => {
@@ -57,6 +82,7 @@ const ProfileHeaderButtons = ({
           {isFollowing ? 'Following' : 'Follow'}
         </Text>
       </TouchableOpacity>
+    </View>}
     </View>
   );
 };

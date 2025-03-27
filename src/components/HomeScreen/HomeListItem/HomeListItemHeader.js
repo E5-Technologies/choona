@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Colors from '../../../assests/Colors';
@@ -13,6 +13,8 @@ const HomeListItemHeader = ({
   songUri,
   title,
 }) => {
+  const [disabled, setDisabled] = useState(false);
+
   return (
     <View style={styles.listItemHeaderContainer}>
       <View style={styles.listItemHeaderSongDetails}>
@@ -37,12 +39,21 @@ const HomeListItemHeader = ({
         </View>
       </View>
       {songUri && (
-        <TouchableOpacity onPress={() => onPressMusicbox()}>
+        <TouchableOpacity
+          disabled={disabled}
+          onPress={() => {
+            setDisabled(true);
+            onPressMusicbox();
+            setTimeout(() => {
+              setDisabled(false);
+            }, 1000);
+          }}
+          style={styles.listItemHeaderPlayButton}>
           <Image
             source={
               ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
             }
-            style={styles.listItemHeaderPlayButton}
+            style={styles.listItemHeaderPlay}
             resizeMode="contain"
           />
         </TouchableOpacity>
@@ -60,6 +71,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: normalise(12),
     paddingVertical: normalise(12),
+    position: 'relative',
+    backgroundColor: Colors.darkerblack,
   },
   listItemHeaderSongDetails: {
     alignItems: 'center',
@@ -73,7 +86,7 @@ const styles = StyleSheet.create({
   listItemHeaderSongText: {
     alignItems: 'flex-start',
     flexDirection: 'column',
-    marginStart: normalise(5),
+    marginLeft: normalise(10),
     maxWidth: normalise(240),
     width: '100%',
   },
@@ -87,5 +100,14 @@ const styles = StyleSheet.create({
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(9),
   },
-  listItemHeaderPlayButton: { height: normalise(24), width: normalise(24) },
+  listItemHeaderPlayButton: {
+    height: normalise(36),
+    paddingLeft: normalise(6),
+    paddingTop: normalise(6),
+    position: 'absolute',
+    right: normalise(6),
+    top: normalise(6),
+    width: normalise(36),
+  },
+  listItemHeaderPlay: { height: normalise(24), width: normalise(24) },
 });

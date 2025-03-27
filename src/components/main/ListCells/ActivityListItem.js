@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
-
+import ReactionsReverse from '../../Reactions/ReactionsReverse';
+import ReactionsComponent from '../../Reactions/ReactionsComponent';
 import ImagePath from '../../../assests/ImagePath';
 import normaliseNew from '../../../utils/helpers/DimensNew';
 import Colors from '../../../assests/Colors';
+import Avatar from '../../Avatar';
 
 function ActivityListItem(props) {
   const [follow, setFollow] = useState(props.follow);
 
-  const onPress = () => {
+  const onPress = (value='') => {
     if (props.onPress) {
-      props.onPress();
+      props.onPress(value);
     }
   };
 
@@ -28,15 +30,20 @@ function ActivityListItem(props) {
           <TouchableOpacity
             onPress={() => {
               onPressImage();
-            }}>
-            <Image
-              source={props.image === '' ? ImagePath.dp : { uri: props.image }}
-              style={styles.detailsAvatar}
-              resizeMode="cover"
+            }}
+            style={{ marginRight: normaliseNew(8) }}>
+            <Avatar
+              image={
+                props.image !== 'https://api.choona.co/uploads/user/thumb/'
+                  ? props.image
+                  : null
+              }
+              height={26}
+              width={26}
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ flex: 1 }}
+            style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
             disabled={props.TouchableOpacityDisabled}
             onPress={() => {
               onPressImage();
@@ -50,7 +57,13 @@ function ActivityListItem(props) {
               ) : props.reaction ? (
                 <>
                   <Text style={styles.detailsTextBold}>{props.user} </Text>
-                  reacted {props.reaction} on your post
+                  reacted on your post
+                </>
+              ) : props.comment &&
+                props.comment.includes('mentioned you in comment') ? (
+                <>
+                  <Text style={styles.detailsTextBold}>{props.user} </Text>
+                  mentioned you in a post
                 </>
               ) : props.comment ? (
                 <>
@@ -63,6 +76,12 @@ function ActivityListItem(props) {
                 ''
               )}
             </Text>
+            {props.reaction &&
+            ReactionsReverse[props.reaction]  ? (
+              <View style={{ width: 20, height: 20 }}>
+                <ReactionsComponent value={ReactionsReverse[props.reaction]} onClick={()=> onPress('reaction')} />
+              </View>
+            ) : null}
           </TouchableOpacity>
         </View>
         {props.type ? (
@@ -70,7 +89,11 @@ function ActivityListItem(props) {
             <TouchableOpacity
               style={[
                 styles.followButton,
-                { backgroundColor: follow ? Colors.white : Colors.fadeblack },
+                { backgroundColor: follow ? Colors.white : 'transparent' },
+                !follow && {
+                  borderWidth: 1,
+                  borderColor: Colors.fadeblack,
+                },
               ]}
               onPress={() => {
                 onPress();
@@ -136,6 +159,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     fontSize: normaliseNew(12),
     lineHeight: normaliseNew(15),
+    flex: 1,
     textAlign: 'left',
   },
   detailsTextBold: {
@@ -151,7 +175,7 @@ const styles = StyleSheet.create({
   },
   followButtonText: {
     color: Colors.black,
-    fontFamily: 'ProximaNova-Bold',
+    fontFamily: 'Kallisto',
     fontSize: normaliseNew(10),
   },
 });
@@ -164,7 +188,7 @@ ActivityListItem.propTypes = {
   type: PropTypes.bool,
   follow: PropTypes.bool,
   marginBottom: PropTypes.number,
-  onPressImage: PropTypes.bool,
+  onPressImage: PropTypes.any,
   marginTop: PropTypes.number,
   TouchableOpacityDisabled: PropTypes.bool,
 };

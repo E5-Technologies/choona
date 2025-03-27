@@ -5,16 +5,10 @@ import {
   Platform,
   View,
   Text,
-  ImageBackground,
   TouchableOpacity,
-  Modal,
-  Clipboard,
-  Keyboard,
   Linking,
-  FlatList,
   TextInput,
   Image,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -46,19 +40,19 @@ import {
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
 import axios from 'axios';
-import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status = '';
 let userStatus = '';
 import database from '@react-native-firebase/database';
+import MoreModal from '../Posts/MoreModal';
 
 const FIREBASE_REF_MESSAGES = database().ref('chatMessages');
 
 function InsideaMessage(props) {
+  // console.log(props);
   const [index, setIndex] = useState(props.route.params.index);
   const [chatData, setChatData] = useState([]);
 
@@ -67,11 +61,9 @@ function InsideaMessage(props) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
-  const [userClicked, setUserClicked] = useState(false);
   const [userSeach, setUserSeach] = useState('');
   const [userSearchData, setUserSearchData] = useState([]);
   const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
-  const [typingTimeout, setTypingTimeout] = useState(0);
 
   var bottomSheetRef;
 
@@ -91,23 +83,6 @@ function InsideaMessage(props) {
     };
   }, []);
 
-  // if (status === "" || props.status !== status) {
-  //     switch (props.status) {
-  //         case CHAT_LOAD_REQUEST:
-  //             status = props.status
-  //             break;
-
-  //         case CHAT_LOAD_SUCCESS:
-  //             status = props.status;
-  //             setChatData(props.chatData)
-  //             break;
-
-  //         case CHAT_LOAD_FAILURE:
-  //             status = props.status
-  //             toast("Oops", "Something Went Wrong, Please Try Again")
-  //             break;
-  //     }
-  // };
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case CREATE_CHAT_TOKEN_REQUEST:
@@ -157,17 +132,6 @@ function InsideaMessage(props) {
     }
   }
 
-  function hideKeyboard() {
-    if (typingTimeout) {
-      clearInterval(typingTimeout);
-    }
-    setTypingTimeout(
-      setTimeout(() => {
-        Keyboard.dismiss();
-      }, 1500),
-    );
-  }
-
   function renderItem(data) {
     // console.log(JSON.stringify(data.item.userDeletedArr));
     if (data.item === null) {
@@ -181,33 +145,18 @@ function InsideaMessage(props) {
             props.userProfileResp._id,
           ) ? null : (
             <SavedSongsListItem
+              page={'insideamessage'}
               playIcon={false}
               image={data.item.image}
               title={data.item.song_name}
               singer={data.item.artist_name}
+              hideThreeDots={true}
               comments={data.item.message[data.item.message.length - 1].text}
               onPress={() => {
                 setModalVisible(true);
                 setPositionInArray(data.index);
               }}
               onPressItem={() => {
-                if (props.userProfileResp._id === data.item.receiver_id) {
-                  console.log('inside condition');
-
-                  const listener = FIREBASE_REF_MESSAGES.child(
-                    action.payload.chatToken,
-                  )
-                    .child(props.chatList[index].chat_token)
-                    .update(
-                      {
-                        read: true,
-                      },
-                      error => {
-                        emiter({ error: error || null });
-                      },
-                    );
-                }
-
                 props.navigation.navigate('Player', {
                   username: props.chatList[index].username,
                   time: props.chatList[index].time,
@@ -272,6 +221,7 @@ function InsideaMessage(props) {
           )
         ) : (
           <SavedSongsListItem
+            page={'insideamessage'}
             playIcon={false}
             receiver_id={data.item.receiver_id}
             user_id={props.userProfileResp._id}
@@ -279,6 +229,7 @@ function InsideaMessage(props) {
             image={data.item.image}
             title={data.item.song_name}
             singer={data.item.artist_name}
+            hideThreeDots={true}
             comments={data.item.message[data.item.message.length - 1].text}
             onPress={() => {
               setModalVisible(true), setPositionInArray(data.index);
@@ -363,337 +314,6 @@ function InsideaMessage(props) {
     );
   }
 
-  // function filterArray(keyword) {
-
-  //     let data = _.filter(props.chatData, (item) => {
-  //         return item.song_name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-  //     });
-
-  //     setChatData(data);
-
-  // };
-
-  // RENDER USER SEARCH FLATLIST DATA
-  function renderAddUsersToMessageItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          marginTop: normalise(10),
-          width: '87%',
-          alignSelf: 'center',
-        }}
-        onPress={() => {
-          if (usersToSEndSong.length > 0) {
-            // let idArray = [];
-
-            // usersToSEndSong.map((item, index) => {
-
-            //     idArray.push(item._id)
-
-            // });
-            // if (idArray.includes(data.item._id)) {
-            //     // console.log('Already Exists');
-            // }
-            // else {
-            //     let array = [...usersToSEndSong]
-            //     array.push(data.item)
-            //     sesUsersToSEndSong(array);
-            // };
-
-            toast('Error', 'You can select one user at a time');
-          } else {
-            let array = [...usersToSEndSong];
-            array.push(data.item);
-            sesUsersToSEndSong(array);
-          }
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            borderColor: Colors.activityBorderColor,
-            borderBottomWidth: normalise(0.5),
-            paddingBottom: normalise(10),
-          }}>
-          <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-          />
-          <View style={{ marginStart: normalise(10) }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.full_name}
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.username}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  // RENDER ADD TO FLATLIST DATA
-  function renderUsersToSendSongItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          height: normalise(30),
-          paddingHorizontal: normalise(18),
-          marginStart: normalise(20),
-          marginTop: normalise(5),
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-          marginEnd:
-            data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
-        }}>
-        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
-          {data.item.username}
-        </Text>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: -4,
-            height: 25,
-            width: 25,
-            borderRadius: 12,
-          }}
-          onPress={() => {
-            let popArray = [...usersToSEndSong];
-            popArray.splice(data.index, 1);
-            sesUsersToSEndSong(popArray);
-          }}>
-          <Image
-            source={ImagePath.crossIcon}
-            style={{
-              marginTop: normalise(-1.5),
-              marginStart: normalise(8.5),
-              height: 25,
-              width: 25,
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    );
-  }
-
-  const searchUser = text => {
-    if (text.length >= 1) {
-      props.getusersFromHome({ keyword: text });
-    }
-  };
-
-  function sendMessagesToUsers() {
-    var userIds = [];
-    usersToSEndSong.map(users => {
-      userIds.push(users._id);
-    });
-    props.createChatTokenRequest(userIds);
-  }
-
-  // BOTTOM SHEET FOR SELECTING USERS
-  const renderAddToUsers = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            bottomSheetRef = ref;
-          }
-        }}
-        closeOnDragDown={true}
-        closeOnPressMask={true}
-        onClose={() => {
-          //sesUsersToSEndSong([])
-        }}
-        nestedScrollEnabled={true}
-        keyboardAvoidingViewEnabled={true}
-        height={normalise(500)}
-        duration={250}
-        customStyles={{
-          container: {
-            backgroundColor: Colors.black,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-          },
-          // wrapper: {
-          //     backgroundColor: 'rgba(87,97,145,0.5)'
-
-          // },
-          draggableIcon: {
-            backgroundColor: Colors.grey,
-            width: normalise(70),
-            height: normalise(3),
-          },
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '75%',
-                justifyContent: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  fontWeight: 'bold',
-                  marginTop: normalise(10),
-                  textAlign: 'right',
-                }}>
-                SELECT USER TO SEND TO
-              </Text>
-
-              {userClicked ? (
-                <Text
-                  style={{
-                    color: Colors.white,
-                    marginTop: normalise(10),
-                    fontSize: normalise(14),
-                    fontWeight: 'bold',
-                  }}>
-                  {' '}
-                  (1)
-                </Text>
-              ) : null}
-            </View>
-
-            {usersToSEndSong.length > 0 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(10),
-                    marginEnd: normalise(15),
-                  }}>
-                  {'NEXT'}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <View
-            style={{
-              width: '90%',
-              alignSelf: 'center',
-              height: normalise(35),
-              marginTop: normalise(20),
-              borderRadius: normalise(8),
-              backgroundColor: Colors.white,
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '85%',
-                padding: normalise(10),
-                // color: Colors.white,
-                // backgroundColor:Colors.white,
-                paddingLeft: normalise(30),
-              }}
-              value={userSeach}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSeach(text), searchUser(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {userSeach === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
-                }}
-                style={{
-                  //  backgroundColor: Colors.black,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 5,
-                  alignSelf: 'center',
-                  backgroundColor: Colors.fordGray,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {usersToSEndSong.length > 0 ? ( // ADD TO ARRAY FLATLIST
-            <FlatList
-              style={{
-                marginTop: normalise(10),
-                maxHeight: normalise(50),
-              }}
-              horizontal={true}
-              data={usersToSEndSong}
-              renderItem={renderUsersToSendSongItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsHorizontalScrollIndicator={false}
-            />
-          ) : null}
-
-          <FlatList // USER SEARCH FLATLIST
-            style={{
-              height: '65%',
-              marginTop: usersToSEndSong.length > 0 ? 0 : normalise(5),
-            }}
-            data={userSearchData}
-            renderItem={renderAddUsersToMessageItem}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      </RBSheet>
-    );
-  };
-
   // GET ISRC CODE
   const callApi = async () => {
     if (props.registerType === 'spotify') {
@@ -739,18 +359,14 @@ function InsideaMessage(props) {
             // console.log('success - spotify');
             // console.log(res.data.tracks.items[0].external_urls.spotify);
             Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(
-                    res.data.tracks.items[0].external_urls.spotify,
-                  )
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
+              .then(() => {
+                Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
               })
               .catch(() => {
                 // console.log('not supported');
@@ -760,16 +376,14 @@ function InsideaMessage(props) {
             // console.log('success - apple');
             // console.log(res.data.data[0].attributes.url);
             Linking.canOpenURL(res.data.data[0].attributes.url)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
+              .then(() => {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    // console.log('success');
+                  })
+                  .catch(() => {
+                    // console.log('error');
+                  });
               })
               .catch(() => {
                 // console.log('not supported');
@@ -787,475 +401,180 @@ function InsideaMessage(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
 
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <TouchableWithoutFeedback
+      {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-        }}>
-        <SafeAreaView style={{ flex: 1 }}>
-          {renderAddToUsers()}
-
-          <InsideMessegeHeader
-            firstitemtext={false}
-            imageone={
-              constants.profile_picture_base_url +
-              props.userProfileResp.profile_image
-            }
-            imagesecond={
-              constants.profile_picture_base_url +
-              props.chatList[index].profile_image
-            }
-            title={props.chatList[index].username}
-            thirditemtext={false}
-            // imagetwo={ImagePath.newmessage}
-            imagetwoheight={25}
-            imagetwowidth={25}
-            onPressFirstItem={() => {
-              props.navigation.goBack();
+        }}> */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <InsideMessegeHeader
+          firstitemtext={false}
+          imageone={
+            constants.profile_picture_base_url +
+            props.userProfileResp.profile_image
+          }
+          imagesecond={
+            constants.profile_picture_base_url +
+            props.chatList[index].profile_image
+          }
+          title={props.chatList[index].username}
+          thirditemtext={false}
+          imagetwoheight={25}
+          imagetwowidth={25}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
+        <View
+          style={{
+            width: '92%',
+            alignSelf: 'center',
+          }}>
+          <TextInput
+            autoCorrect={false}
+            keyboardAppearance={'dark'}
+            style={{
+              height: normalise(35),
+              width: '100%',
+              backgroundColor: Colors.fadeblack,
+              borderRadius: normalise(8),
+              marginTop: normalise(20),
+              padding: normalise(10),
+              color: Colors.white,
+              paddingLeft: normalise(30),
+              paddingRight: normalise(50),
+            }}
+            value={search}
+            placeholder={'Search'}
+            placeholderTextColor={Colors.darkgrey}
+            onChangeText={text => {
+              setSearch(text), props.searchMessageRequest(text);
             }}
           />
 
-          <View
+          <Image
+            source={ImagePath.searchicongrey}
             style={{
-              width: '92%',
-              alignSelf: 'center',
-            }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '100%',
-                backgroundColor: Colors.white,
-                borderRadius: normalise(8),
-                marginTop: normalise(20),
-                padding: normalise(10),
-                // color: Colors.white,
-                paddingLeft: normalise(30),
-                paddingRight: normalise(50),
-              }}
-              value={search}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.darkgrey}
-              onChangeText={text => {
-                setSearch(text), props.searchMessageRequest(text);
-              }}
-            />
-
-            <Image
-              source={ImagePath.searchicongrey}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {search === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(''), props.searchMessageRequest('');
-                }}
-                style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 5,
-
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          <SwipeListView
-            data={props.searchedChatData}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
+              height: normalise(15),
+              width: normalise(15),
+              bottom: normalise(25),
+              paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
-            disableRightSwipe={true}
-            rightOpenValue={-75}
-            ItemSeparatorComponent={Seperator}
+            resizeMode="contain"
           />
 
-          <TouchableOpacity
-            style={{
-              marginBottom: normalise(30),
-              marginTop: normalise(10),
-              height: normalise(50),
-              width: '80%',
-              alignSelf: 'center',
-              borderRadius: normalise(25),
-              backgroundColor: Colors.white,
-              borderWidth: normalise(0.5),
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.5,
-              shadowRadius: 9,
-              elevation: 11,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderColor: Colors.white,
-            }}
-            onPress={() => {
-              props.navigation.replace('AddAnotherSong', {
-                users: [
-                  {
-                    _id:
-                      props.searchedChatData[0].receiver_id ===
-                      props.userProfileResp._id
-                        ? props.searchedChatData[0].sender_id
-                        : props.searchedChatData[0].receiver_id,
-                    username: props.chatList[index].username,
-                    full_name: props.chatList[index].full_name,
-                    profile_image: props.chatList[index].profile_image,
-                  },
-                ],
-                index: index,
-                othersProfile: false,
-              });
-            }}>
-            <Text
+          {search === '' ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch(''), props.searchMessageRequest('');
+              }}
               style={{
-                marginLeft: normalise(10),
-                color: Colors.gray,
-                fontSize: normalise(14),
-                fontFamily: 'ProximaNova-Bold',
+                backgroundColor: Colors.darkerblack,
+                padding: 6,
+                paddingTop: 4,
+                paddingBottom: 4,
+                borderRadius: 5,
+
+                position: 'absolute',
+                right: 0,
+                bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+                marginRight: normalise(10),
               }}>
-              ADD ANOTHER SONG
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(10),
+                  fontWeight: 'bold',
+                }}>
+                CLEAR
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            presentationStyle={'overFullScreen'}
-            onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
+        <SwipeListView
+          data={props.searchedChatData}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => {
+            index.toString();
+          }}
+          disableRightSwipe={true}
+          rightOpenValue={-75}
+          ItemSeparatorComponent={Seperator}
+        />
+
+        <TouchableOpacity
+          style={{
+            marginBottom: normalise(10),
+            marginTop: normalise(10),
+            height: normalise(44),
+            width: '90%',
+            alignSelf: 'center',
+            borderRadius: normalise(25),
+            backgroundColor: Colors.white,
+            borderWidth: normalise(0.5),
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.5,
+            shadowRadius: 9,
+            elevation: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderColor: Colors.white,
+          }}
+          onPress={() => {
+            props.navigation.replace('AddAnotherSong', {
+              users: [
+                {
+                  _id:
+                    props.searchedChatData[0].receiver_id ===
+                      props.userProfileResp._id
+                      ? props.searchedChatData[0].sender_id
+                      : props.searchedChatData[0].receiver_id,
+                  username: props.chatList[index].username,
+                  full_name: props.chatList[index].full_name,
+                  profile_image: props.chatList[index].profile_image,
+                },
+              ],
+              index: index,
+              othersProfile: false,
+            });
+          }}>
+          <Text
+            style={{
+              marginLeft: normalise(10),
+              color: Colors.darkerblack,
+              fontSize: normalise(14),
+              fontFamily: 'Kallisto',
             }}>
-            <ImageBackground
-              source={ImagePath.page_gradient}
-              style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    let saveSongObject = {
-                      song_uri:
-                        props.searchedChatData[positionInArray].song_uri,
-                      song_name:
-                        props.searchedChatData[positionInArray].song_name,
-                      song_image: props.searchedChatData[positionInArray].image,
-                      artist_name:
-                        props.searchedChatData[positionInArray].artist_name,
-                      album_name:
-                        props.searchedChatData[positionInArray].album_name,
-                      chat_id: props.searchedChatData[positionInArray].key,
-                      type: 'chat',
-                      isrc_code:
-                        props.searchedChatData[positionInArray].isrc_code,
-                      original_song_uri:
-                        props.searchedChatData[positionInArray]
-                          .original_song_uri,
-                      original_reg_type:
-                        props.searchedChatData[positionInArray]
-                          .original_reg_type,
-                    };
-
-                    props.saveSongReq(saveSongObject);
-                    setModalVisible(!modalVisible);
-                  }}>
-                  <Image
-                    source={ImagePath.boxicon}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Save Song
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible), bottomSheetRef.open();
-                  }}>
-                  <Image
-                    source={ImagePath.sendicon}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: normalise(13),
-                      marginLeft: normalise(15),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Send Song to another user
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    Clipboard.setString(
-                      props.searchedChatData[positionInArray].original_song_uri,
-                    );
-                    setModalVisible(!modalVisible);
-                    setPositionInArray(0);
-                    setTimeout(() => {
-                      toast('Success', 'Song copied to clipboard.');
-                    }, 1000);
-                  }}
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-
-                    alignItems: 'center',
-                  }}>
-                  <Image
-                    source={ImagePath.more_copy}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Copy Link
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    if (props.chatData.length > 1) {
-                      let deleteMessagPayload = {
-                        ChatId: props.searchedChatData[positionInArray].key,
-                        chatToken: props.chatList[index].chat_token,
-                      };
-                      props.deleteMessageRequest(deleteMessagPayload);
-                      setModalVisible(!modalVisible);
-                      setPositionInArray(0);
-                    } else {
-                      setModalVisible(!modalVisible);
-                      setTimeout(() => {
-                        toast(
-                          '',
-                          'Last Message of a converstaion cannot be deleted',
-                        );
-                      }, 1000);
-                    }
-                  }}>
-                  <Image
-                    source={ImagePath.more_unfollow}
-                    style={{ height: normalise(18), width: normalise(18) }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Delete Song
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    if (
-                      props.searchedChatData[positionInArray]
-                        .original_reg_type === props.registerType
-                    ) {
-                      // console.log('same reg type');
-                      setModalVisible(false);
-                      Linking.canOpenURL(
-                        props.searchedChatData[positionInArray]
-                          .original_song_uri,
-                      )
-                        .then(() => {
-                          Linking.openURL(
-                            props.searchedChatData[positionInArray]
-                              .original_song_uri,
-                          )
-                            .then(() => {
-                              // console.log('success');
-                            })
-                            .catch(() => {
-                              // console.log('error');
-                            });
-                        })
-                        .catch(err => {
-                          // console.log('unsupported');
-                        });
-                    } else {
-                      // console.log('diffirent reg type');
-                      setModalVisible(false);
-                      isInternetConnected()
-                        .then(() => {
-                          openInAppleORSpotify();
-                        })
-                        .catch(() => {
-                          toast('', 'Please Connect To Internet');
-                        });
-                    }
-                  }}>
-                  <Image
-                    source={
-                      props.userProfileResp.register_type === 'spotify'
-                        ? ImagePath.spotifyicon
-                        : ImagePath.applemusic
-                    }
-                    style={{
-                      height: normalise(18),
-                      width: normalise(18),
-                      borderRadius: normalise(9),
-                    }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    {props.userProfileResp.register_type === 'spotify'
-                      ? 'Open on Spotify'
-                      : 'Open on Apple'}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: normalise(18),
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    if (props.userProfileResp.register_type === 'spotify') {
-                      props.navigation.navigate('AddToPlayListScreen', {
-                        originalUri:
-                          props.searchedChatData[positionInArray]
-                            .original_song_uri,
-                        registerType:
-                          props.searchedChatData[positionInArray]
-                            .original_reg_type,
-                        isrc: props.searchedChatData[positionInArray].isrc_code,
-                      });
-                    }
-                    // setTimeout(() => {
-                    //     toast("Oops", "Only, Spotify users can add to their playlist now.")
-                    // }, 1000)
-                    else {
-                      props.navigation.navigate('AddToPlayListScreen', {
-                        isrc: props.searchedChatData[positionInArray].isrc_code,
-                      });
-                    }
-                  }}>
-                  <Image
-                    source={ImagePath.addicon}
-                    style={{
-                      height: normalise(18),
-                      width: normalise(18),
-                      borderRadius: normalise(9),
-                    }}
-                    resizeMode="contain"
-                  />
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      marginLeft: normalise(15),
-                      fontSize: normalise(13),
-                      fontFamily: 'ProximaNova-Semibold',
-                    }}>
-                    Add to Playlist
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setPositionInArray(0);
-                  }}
-                  style={{
-                    // marginStart: normalise(20),
-                    // marginEnd: normalise(20),
-                    marginTop: normalise(24),
-                    marginBottom: normalise(20),
-                    height: normalise(40),
-                    // width: '95%',
-                    backgroundColor: Colors.fadeblack,
-                    opacity: 10,
-                    borderRadius: 6,
-                    // padding: 35,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: normalise(12),
-                      fontFamily: 'ProximaNova-Bold',
-                      color: Colors.white,
-                    }}>
-                    CANCEL
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
-          </Modal>
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+            SEND ANOTHER SONG
+          </Text>
+        </TouchableOpacity>
+        {modalVisible && (
+          <MoreModal
+            setBool={setBool}
+            bottomSheetRef={bottomSheetRef}
+            chatData={props.chatData}
+            chatList={props.chatList}
+            index={positionInArray}
+            setIndex={setPositionInArray}
+            navigation={props.navigation}
+            page={'insideMessage'}
+            openInAppleORSpotify={openInAppleORSpotify}
+            postData={props.searchedChatData}
+            show={modalVisible}
+            setShow={setModalVisible}
+          />
+        )}
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 }

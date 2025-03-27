@@ -162,7 +162,7 @@ function SavedSongListItem(props) {
     }
   };
 
-  console.log(props.receiver_id + ',' + props.read + ',' + props.user_id);
+  // console.log(props.receiver_id + ',' + props.read + ',' + props.user_id);
 
   return (
     <TouchableOpacity
@@ -230,7 +230,7 @@ function SavedSongListItem(props) {
 
             <Text
               style={{
-                color: Colors.grey,
+                color: Colors.meta,
                 fontSize: normalise(11),
                 fontFamily: 'ProximaNova-Regular',
               }}
@@ -242,9 +242,10 @@ function SavedSongListItem(props) {
             {props.comments ? (
               <Text
                 style={{
-                  color: Colors.grey,
+                  color: props.read === false ? Colors.white : Colors.grey,
                   fontSize: normalise(10),
                   fontFamily: 'ProximaNovaAW07-Medium',
+                  marginTop: normalise(2),
                 }}
                 numberOfLines={1}>
                 {' '}
@@ -253,7 +254,18 @@ function SavedSongListItem(props) {
             ) : null}
           </View>
         </View>
-
+        {props.read === false &&
+          props.page === 'insideamessage' &&
+          props.receiver_id === props.user_id && (
+            <View
+              style={{
+                height: normalise(10),
+                width: normalise(10),
+                borderRadius: normalise(6),
+                backgroundColor: '#E24F4F',
+              }}
+            />
+          )}
         {props.change ? (
           <TouchableOpacity
             style={{
@@ -269,6 +281,7 @@ function SavedSongListItem(props) {
                 height: normalise(25),
                 width: normalise(25),
               }}
+              resizeMode="contain"
             />
           </TouchableOpacity>
         ) : props.change2 ? (
@@ -281,11 +294,12 @@ function SavedSongListItem(props) {
                 onPressImage();
               }}>
               <Image
-                source={ImagePath.playOutline}
+                source={ImagePath.play}
                 style={{
                   height: normalise(25),
                   width: normalise(25),
                 }}
+                resizeMode="contain"
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -303,6 +317,7 @@ function SavedSongListItem(props) {
                   height: normalise(25),
                   width: normalise(25),
                 }}
+                resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
@@ -317,49 +332,33 @@ function SavedSongListItem(props) {
                   onPressImage();
                 }}>
                 <Image
-                  source={ImagePath.playOutline}
+                  source={ImagePath.play}
                   style={{
                     height: normalise(23),
                     width: normalise(23),
                   }}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                marginLeft: normalise(16),
-              }}
-              onPress={() => onPress()}>
-              <Image
+            {props.hideThreeDots ? null : (
+              <TouchableOpacity
                 style={{
-                  transform: [{ rotate: '90deg' }],
-                  width: normalise(14),
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  marginLeft: normalise(16),
                 }}
-                source={ImagePath.threedots}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={{
-                height: normalise(25),
-                width: normalise(45),
-                borderRadius: normalise(5),
-                alignSelf: 'center',
-                backgroundColor: Colors.fadeblack,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                onPress();
-              }}>
-              <Image
-                source={ImagePath.threedots}
-                style={{ height: normalise(15), width: normalise(15) }}
-                resizeMode="contain"
-              />
-            </TouchableOpacity> */}
+                onPress={() => onPress()}>
+                <Image
+                  style={{
+                    transform: [{ rotate: '90deg' }],
+                    width: normalise(14),
+                  }}
+                  source={ImagePath.threedots}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -387,6 +386,8 @@ SavedSongListItem.propTypes = {
   comments: PropTypes.bool,
   marginRight: PropTypes.number,
   onPressItem: PropTypes.func,
+
+  hideThreeDots: PropTypes.bool,
 };
 
 SavedSongListItem.defaultProps = {
@@ -407,4 +408,5 @@ SavedSongListItem.defaultProps = {
   marginRight: normalise(30),
   onPressItem: null,
   playIcon: true,
+  hideThreeDots: false,
 };

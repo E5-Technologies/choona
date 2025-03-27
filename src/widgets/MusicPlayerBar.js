@@ -12,6 +12,7 @@ function MusicPlayerBar(props) {
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   const ref =
     global.playerReference !== null && global.playerReference !== undefined
@@ -24,14 +25,10 @@ function MusicPlayerBar(props) {
     setTimeout(() => {
       setBool(false);
     }, 1000);
-  }, [play]);
+  });
 
   function getPlatingState() {
-    setInterval(() => {
-      const ref =
-        global.playerReference !== null && global.playerReference !== undefined
-          ? global.playerReference
-          : null;
+    setTimeout(() => {
       if (ref !== null && ref !== undefined) {
         const isPlaying = ref.isPlaying();
 
@@ -41,11 +38,7 @@ function MusicPlayerBar(props) {
   }
 
   function getPlayingPosition() {
-    setInterval(() => {
-      const ref =
-        global.playerReference !== null && global.playerReference !== undefined
-          ? global.playerReference
-          : null;
+    setTimeout(() => {
       if (ref !== null && ref !== undefined) {
         ref.getCurrentTime(seconds => {
           setTime(seconds);
@@ -159,14 +152,29 @@ function MusicPlayerBar(props) {
             </View>
           </View>
           <TouchableOpacity
+            disabled={disabled}
             onPress={() => {
-              playOrPause(), onPressPlayOrPause();
+              setDisabled(true);
+              playOrPause();
+              onPressPlayOrPause();
+              setTimeout(() => {
+                setDisabled(false);
+              }, 1000);
+            }}
+            style={{
+              height: normalise(44),
+              paddingLeft: normalise(10),
+              paddingTop: normalise(10),
+              position: 'absolute',
+              right: normalise(0),
+              top: normalise(0),
+              width: normalise(44),
             }}>
             <Image
               source={
                 ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
               }
-              style={{ height: normalise(25), width: normalise(25) }}
+              style={{ height: normalise(24), width: normalise(24) }}
               resizeMode={'contain'}
             />
           </TouchableOpacity>

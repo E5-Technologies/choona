@@ -1,7 +1,8 @@
 //import liraries
 import React from 'react';
-import {View, StatusBar, Platform} from 'react-native';
+import { View, StatusBar, Platform } from 'react-native';
 import propTypes from 'prop-types';
+// import StatusBarSizeIOS from 'react-native-status-bar-size';
 import Colors from '../assests/Colors';
 
 const MyStatusBar = ({
@@ -14,10 +15,17 @@ const MyStatusBar = ({
   <View
     style={[
       {
-        height: StatusBar.currentHeight,
+        // height:
+        //   Platform.OS === 'ios'
+        //     ? StatusBarSizeIOS.currentHeight
+        //     : StatusBar.currentHeight,
+        height:
+          Platform.OS === 'ios'
+            ? 70
+            : StatusBar.currentHeight,
       },
-      {backgroundColor},
-      {opacity},
+      { backgroundColor },
+      { opacity },
     ]}>
     <StatusBar
       translucent

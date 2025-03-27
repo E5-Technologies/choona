@@ -4,17 +4,12 @@ import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import PropTypes from 'prop-types';
+import Avatar from '../../Avatar';
 
 function InboxListItem(props) {
   const onPress = () => {
     if (props.onPress) {
       props.onPress();
-    }
-  };
-
-  const onPressImage = () => {
-    if (props.onPressImage) {
-      props.onPressImage();
     }
   };
 
@@ -27,11 +22,10 @@ function InboxListItem(props) {
   return (
     <TouchableOpacity
       style={{
-        width: '90%',
-        height: normalise(45),
-        alignSelf: 'center',
+        // alignSelf: 'center',
         marginTop: normalise(10),
         marginBottom: normalise(10),
+        marginHorizontal: normalise(16),
       }}
       onPress={() => {
         onPress();
@@ -41,23 +35,14 @@ function InboxListItem(props) {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          // backgroundColor: 'blue',
         }}>
-        <View style={{ flexDirection: 'row', width: '80%' }}>
-          {/* <TouchableOpacity
-            onPress={() => {
-              onPressImage();
-            }}> */}
-          <Image
-            source={{ uri: props.image }}
-            style={{
-              height: normalise(30),
-              width: normalise(30),
-              borderRadius: 2 * normalise(60),
-            }}
-            resizeMode="contain"
+        <View style={{ flexDirection: 'row' }}>
+          <Avatar
+            image={!props.image.endsWith('thumb/') ? props.image : null}
+            height={30}
+            width={30}
           />
-          {/* </TouchableOpacity> */}
-
           <View
             style={{
               flexDirection: 'column',
@@ -67,10 +52,6 @@ function InboxListItem(props) {
               marginHorizontal: normalise(10),
               justifyContent: 'flex-start',
             }}>
-            {/* <TouchableOpacity
-              onPress={() => {
-                onPressImage();
-              }}> */}
             <Text
               style={{
                 color: Colors.white,
@@ -80,8 +61,6 @@ function InboxListItem(props) {
               numberOfLines={1}>
               {props.title}
             </Text>
-            {/* </TouchableOpacity> */}
-
             <Text
               style={{
                 marginTop: normalise(2),
@@ -93,19 +72,19 @@ function InboxListItem(props) {
               {props.description}
             </Text>
           </View>
-          {!props.read && (
-            <View
-              style={{
-                height: normalise(12),
-                width: normalise(12),
-                borderRadius: normalise(6),
-                alignSelf: 'center',
-                backgroundColor: Colors.red,
-              }}
-            />
-          )}
         </View>
-        <TouchableOpacity
+        {!props.read && (
+          <View
+            style={{
+              height: normalise(10),
+              width: normalise(10),
+              borderRadius: normalise(5),
+              alignSelf: 'center',
+              backgroundColor: Colors.red,
+            }}
+          />
+        )}
+        {/* <TouchableOpacity
           style={{
             height: normalise(25),
             width: normalise(45),
@@ -124,7 +103,7 @@ function InboxListItem(props) {
             style={{ height: normalise(15), width: normalise(15) }}
             resizeMode="contain"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </TouchableOpacity>
   );

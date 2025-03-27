@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   KeyboardAvoidingView,
@@ -18,25 +18,22 @@ import Button from '../../widgets/ButtonComponent';
 import ImagePicker from 'react-native-image-crop-picker';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import StatusBar from '../../utils/MyStatusBar';
-import {OneSignal} from 'react-native-onesignal';
+import OneSignal from 'react-native-onesignal';
 
 import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAILURE,
-  COUNTRY_CODE_REQUEST,
-  COUNTRY_CODE_SUCCESS,
-  COUNTRY_CODE_FAILURE,
 } from '../../action/TypeConstants';
-import {signupRequest, getCountryCodeRequest} from '../../action/UserAction';
-import {connect} from 'react-redux';
+import { signupRequest } from '../../action/UserAction';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import Picker from '../../utils/helpers/Picker';
+import CountryPicker from 'react-native-country-picker-modal';
 let status = '';
 
-function Login(props) {
+const Login = props => {
   if (status === '' || props.status !== status) {
     switch (props.status) {
       case USER_SIGNUP_REQUEST:
@@ -51,50 +48,30 @@ function Login(props) {
         status = props.status;
         toast('Oops', props.error.message);
         break;
-
-      case COUNTRY_CODE_REQUEST:
-        status = props.status;
-        break;
-
-      case COUNTRY_CODE_SUCCESS:
-        status = props.status;
-        //// console.log("COUNTRY", props.countryObject)
-        //setLocation(props.countryObject[0].name)
-        break;
-
-      case COUNTRY_CODE_FAILURE:
-        status = props.status;
-        break;
     }
   }
 
   useEffect(() => {
     (async () => {
-      // const { userId } = await OneSignal.getDeviceState();
-      const id = OneSignal.User.pushSubscription.getPushSubscriptionId();
+      const { userId } = await OneSignal.getDeviceState();
 
-      setDeviceToken(id);
+      setDeviceToken(userId);
     })();
-
-    isInternetConnected()
-      .then(() => {
-        props.countrycodeRequest();
-      })
-      .catch(() => {
-        toast('Check your Internet');
-      });
   }, []);
 
   // const dispatch = useDispatch()
-
-  // const [username, setUsername] = useState(props.route.params.loginType === 'Spotify' ?
-  //     props.route.params.userDetails.display_name : props.route.params.userDetails.fullName.givenName);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(
+    props.route.params.loginType === 'Spotify'
+      ? props.route.params.userDetails.id
+      : props.route.params.userDetails.fullName.givenName,
+  );
 
   const [fullname, setFullname] = useState(
-    props.route.params.loginType === 'Spotify'
-      ? ''
-      : `${props.route.params.userDetails.fullName.givenName} ${props.route.params.userDetails.fullName.familyName}`,
+    props.route.params.loginType === 'Apple'
+      ? props.route.params.userDetails?.fullName?.givenName
+        ? `${props.route.params.userDetails?.fullName?.givenName} ${props.route.params.userDetails?.fullName?.familyName}`
+        : null
+      : props.route.params.userDetails?.display_name,
   );
 
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -102,7 +79,6 @@ function Login(props) {
   const [imageDetails, setImageDetails] = useState({});
 
   const [location, setLocation] = useState('United Kingdom');
-  console.log(location);
 
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState('');
@@ -113,12 +89,18 @@ function Login(props) {
 
   const [userNameAvailable, setUserNameAvailable] = useState(true);
 
-  const [codePick, setCodePick] = useState('');
   const [deviceToken, setDeviceToken] = useState('');
 
-  // console.log('Location', location);
+  const [visible, setVisible] = useState(false);
 
-  //// console.log('DETAILS' + JSON.stringify(userDetails))
+  const [countryCode, setCountryCode] = useState();
+  const [country, setCountry] = useState();
+
+  const onSelect = country => {
+    setCountryCode(country.cca2);
+    setCountry(country);
+    setLocation(country.name);
+  };
 
   // IMAGE PICKER OPTIONS
   const showPickerOptions = () => {
@@ -139,7 +121,7 @@ function Login(props) {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -162,7 +144,7 @@ function Login(props) {
         setProfilePic(image.path);
       })
       .catch(err => {
-        console.log(err, 'image picker');
+        // console.log(err);
       });
   };
 
@@ -188,25 +170,24 @@ function Login(props) {
   const register = () => {
     if (username === '') {
       alert('Please enter your username');
-    }
-    if (!userNameAvailable) {
+    } else if (!userNameAvailable) {
       alert('Please enter a valid username');
+    } else if (username.includes(' ')) {
+      alert('Username cannot include spaces');
     } else if (fullname === '') {
       alert('Please enter your name');
     } else if (phoneNumber === '') {
       alert('Please enter your phone number');
-    }
-    // else if (location === "") {
-    //     alert("Please enter your location")
-    // }
-    else if (profilePic === '') {
+    } else if (location === '') {
+      alert('Please enter your location');
+    } else if (profilePic === '') {
       alert('Please upload your profile picture');
     } else {
       let profileImage = {
         name:
           imageDetails.filename === undefined || imageDetails.filename === null
             ? 'xyz.jpg'
-            : imageDetails.filename,
+            : imageDetails.filename.replace(/HEIC/g, 'jpg'),
         type: imageDetails.mime,
         uri:
           Platform.OS === 'android'
@@ -252,7 +233,7 @@ function Login(props) {
     await axios
       .post(
         constants.BASE_URL + '/user/available',
-        {username: username},
+        { username: username },
         {
           headers: {
             Accept: 'application/json',
@@ -260,37 +241,26 @@ function Login(props) {
           },
         },
       )
-      .then(res => { 
-        console.log(res.data.status,'avialale')
+      .then(res => {
         setUserNameAvailable(res.data.status === 200);
       })
       .catch(err => {
-        console.log(err, 'not avialale')
-
         setUserNameAvailable(false);
       });
   };
 
+  console.log(picture);
 
-  function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  }
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: Colors.black}}
+      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
       behavior="height">
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center'}}>
+      <SafeAreaView style={{ flex: 1, width: '90%', alignSelf: 'center' }}>
         <ScrollView
-          style={{height: '90%'}}
+          style={{ height: '90%' }}
           showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -300,13 +270,13 @@ function Login(props) {
               marginTop: normalise(25),
             }}>
             <TouchableOpacity
-              style={{left: normalise(-2), position: 'absolute'}}
+              style={{ left: normalise(-2), position: 'absolute' }}
               onPress={() => {
                 props.navigation.goBack();
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -315,7 +285,7 @@ function Login(props) {
               style={{
                 color: Colors.white,
                 fontSize: normalise(15),
-                fontFamily: 'ProximaNova-Black',
+                fontFamily: 'Kallisto',
               }}>
               CREATE PROFILE
             </Text>
@@ -326,19 +296,20 @@ function Login(props) {
               height: normalise(120),
               width: normalise(120),
               borderRadius: normalise(60),
+              marginBottom: normalise(30),
               backgroundColor: Colors.fadeblack,
               alignSelf: 'center',
-              marginTop: normalise(40),
+              marginTop: normalise(32),
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             {picture ? (
               <Image
-                source={profilePic ? {uri: profilePic} : null}
+                source={profilePic ? { uri: profilePic } : null}
                 style={{
                   height: normalise(120),
                   width: normalise(120),
-                  borderRadius: normalise(55),
+                  borderRadius: normalise(60),
                 }}
                 resizeMode="contain"
               />
@@ -348,126 +319,118 @@ function Login(props) {
                   showPickerOptions();
                 }}>
                 <Image
-                  source={ImagePath ? ImagePath.add_white : null}
+                  source={ImagePath ? ImagePath.userPlaceholder : null}
                   style={{
-                    height: normalise(40),
-                    width: normalise(40),
+                    height: normalise(70),
+                    width: normalise(70),
                     borderRadius: normalise(20),
                   }}
+                  resizeMode="contain"
                 />
               </TouchableOpacity>
             )}
           </View>
 
-          <TouchableOpacity
-            style={{marginTop: normalise(10)}}
-            onPress={() => {
-              showPickerOptions();
-            }}>
-            {picture ? (
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                  textDecorationLine: 'underline',
-                }}>
-                CHANGE PROFILE PIC
-              </Text>
-            ) : (
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  alignSelf: 'center',
-                  fontFamily: 'ProximaNova-Bold',
-                  textDecorationLine: 'underline',
-                }}>
-                UPLOAD PROFILE PIC
-              </Text>
-            )}
-          </TouchableOpacity>
-
           <TextInputField
             text={'CHOOSE USERNAME'}
             placeholder={'Enter Username'}
-            placeholderTextColor={Colors.grey}
-            marginTop={normalise(30)}
             tick_req={true}
             value={username}
             userNameAvailable={userNameAvailable}
-            tick_visible={username}
+            tick_visible={username ? true : false}
             autocorrect={false}
             onChangeText={text => {
-              setUsername(text), debounce(check(text), 200);
+              setUsername(text);
+              check(text);
             }}
           />
 
           <TextInputField
             text={'FULL NAME'}
             placeholder={'Enter Name'}
-            placeholderTextColor={Colors.grey}
             maxLength={25}
             value={fullname}
+            autoCapitalize
             onChangeText={text => {
               setFullname(text);
             }}
           />
-          {console.log(props.countryCodeRequest, props.countryObject)}
+          <Text
+            style={{
+              fontSize: normalise(10),
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              textTransform: 'uppercase',
+            }}>
+            Location
+          </Text>
+          <CountryPicker
+            containerButtonStyle={{
+              backgroundColor: Colors.fadeblack,
+              width: '100%',
+              height: normalise(44),
+              borderRadius: normalise(6),
+              borderWidth: normalise(0.5),
+              marginTop: normalise(10),
+              padding: normalise(5),
+              paddingTop: country ? normalise(6) : normalise(13),
+              paddingLeft: normalise(16),
+              marginBottom: normalise(16),
+            }}
+            placeholder={
+              <Text
+                style={{
+                  fontFamily: 'ProximaNova-Semibold',
+                  fontSize: normalise(14),
+                  color: Colors.meta,
+                  marginTop: normalise(15),
+                }}>
+                {location ?? 'Select country'}
+              </Text>
+            }
+            {...{
+              allowFontScaling: true,
+              countryCode: countryCode,
+              withFilter: true,
+              withFlag: true,
+              withCountryNameButton: true,
+              withEmoji: true,
+              withModal: true,
+              withFlagButton: true,
+              onSelect,
+              preferredCountries: ['GB', 'US'],
+              modalProps: {
+                visible,
+              },
+              onClose: () => setVisible(false),
+              onOpen: () => setVisible(true),
+            }}
+          />
+          <TextInputField
+            text={'PHONE NUMBER'}
+            placeholder={'Enter Phone number'}
+            maxLength={15}
+            isNumber={true}
+            value={phoneNumber}
+            onChangeText={text => {
+              setPhoneNumber(text);
+            }}
+          />
 
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View>
-              <Picker
-                textColor={Colors.white}
-                textSize={normalise(9)}
-                emptySelectText="Select"
-                editable={true}
-                data={props.countryCodeRequest}
-                selectedValue={
-                  codePick === '' ? props.countryCodeRequest[0] : codePick
-                }
-                onPickerItemSelected={(selectedvalue, index) => {
-                  var result = props.countryObject.find(obj => {
-                    // console.log({ obj }, { selectedvalue });
-                    return obj.dial_code === selectedvalue.substring(4);
-                  });
-                  setLocation(result.name);
-                  setCodePick(selectedvalue);
-                }}
-                //uniqueKey={"areaCode"}
-              />
-            </View>
-
-            <TextInputField
-              placeholder={'Enter Phone number'}
-              placeholderTextColor={Colors.grey}
-              width={normalise(200)}
-              maxLength={15}
-              isNumber={true}
-              value={phoneNumber}
-              onChangeText={text => {
-                setPhoneNumber(text);
-              }}
-            />
-
-            <Text
-              style={{
-                position: 'absolute',
-                fontSize: normalise(12),
-                top: 20,
-                color: Colors.white,
-                fontFamily: 'ProximaNova-Bold',
-              }}>
-              PHONE NUMBER
-            </Text>
-          </View>
-
-          {/* <TextInputField text={"ENTER LOCATION"}
-                        placeholder={"Type Location"}
-                        placeholderTextColor={Colors.grey}
-                        value={location}
-                        onChangeText={(text) => { setLocation(text) }} /> */}
+          <Text
+            style={{
+              marginLeft: '5%',
+              width: '90%',
+              color: Colors.meta,
+              textAlign: 'center',
+              fontSize: normalise(10),
+              fontFamily: 'ProximaNova-Regular',
+              marginBottom: normalise(12),
+            }}>
+            We only ask for your Location and Phone No. so we can help you find
+            people you already know on Choona, we never pass your information
+            on.
+          </Text>
 
           {props.route.params.loginType === 'Spotify' ? (
             <View
@@ -475,8 +438,8 @@ function Login(props) {
                 marginTop: normalise(30),
                 height: normalise(45),
                 borderRadius: normalise(10),
-                borderWidth: normalise(1),
-                borderColor: Colors.activityBorderColor,
+                // borderWidth: normalise(1),
+                // borderColor: Colors.activityBorderColor,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -517,15 +480,13 @@ function Login(props) {
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
     signupResponse: state.UserReducer.signupResponse,
     error: state.UserReducer.error,
-    countryCodeRequest: state.UserReducer.countryCodeRequest,
-    countryObject: state.UserReducer.countryCodeOject,
   };
 };
 
@@ -533,9 +494,6 @@ const mapDispatchToProps = dispatch => {
   return {
     signUpRequest: payload => {
       dispatch(signupRequest(payload));
-    },
-    countrycodeRequest: () => {
-      dispatch(getCountryCodeRequest());
     },
   };
 };

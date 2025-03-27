@@ -30,6 +30,7 @@ const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
               <Image
                 source={ImagePath.add_white}
                 style={styles.profileHeaderFeaturedSongButton}
+                resizeMode="contain"
               />
             </TouchableOpacity>
             <View
@@ -74,10 +75,12 @@ const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
                 uri: JSON.parse(profile.feature_song)[0].song_pic,
               }}
               style={styles.profileHeaderFeaturedSong}
+              resizeMode="contain"
             />
             <Image
               source={ImagePath.play}
               style={styles.profileHeaderFeaturedSongButton}
+              resizeMode="contain"
             />
           </TouchableOpacity>
           <View
@@ -113,6 +116,7 @@ const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
                   height: normalise(40),
                   width: normalise(40),
                 }}
+                resizeMode="contain"
               />
             </TouchableOpacity>
           )}

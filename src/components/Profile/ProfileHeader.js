@@ -5,24 +5,21 @@ import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
+import Avatar from '../Avatar';
 
-const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
+const ProfileHeader = ({ navigation, profile, totalCount, user,isBlocked }) => {
   return (
     <View style={styles.profileHeaderContainer}>
       <View style={styles.avatarBackground}>
-        {profile.profile_image ? (
-          <Image
-            source={{
-              uri: constants.profile_picture_base_url + profile.profile_image,
-            }}
-            style={styles.profileAvatar}
-          />
-        ) : (
-          <Image
-            source={ImagePath.userPlaceholder}
-            style={styles.emptyAvatar}
-          />
-        )}
+        <Avatar
+          image={
+            profile.profile_image
+              ? constants.profile_picture_base_url + profile.profile_image
+              : null
+          }
+          height={64}
+          width={64}
+        />
       </View>
       <View style={styles.profileHeaderDetailsContainer}>
         <Text style={styles.profileHeaderDetailsName}>
@@ -37,32 +34,36 @@ const ProfileHeader = ({ navigation, profile, totalCount, user }) => {
         <View style={styles.profileHeaderDetailsLinkContainer}>
           <TouchableOpacity
             onPress={() => {
-              user
+              if(!isBlocked){
+                user
                 ? navigation.push('Following', { type: 'user', id: '' })
                 : navigation.push('Following', {
-                    type: 'public',
-                    id: profile._id,
-                  });
+                  type: 'public',
+                  id: profile._id,
+                });
+              }
             }}>
             <Text style={styles.profileHeaderDetailsLink}>
               <Text style={styles.profileHeaderDetailsLinkSub}>
-                {profile.following ? profile.following : 0}
+                {profile.following && !isBlocked ? profile.following : 0}
               </Text>{' '}
               Following
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
+              if(!isBlocked){
               user
                 ? navigation.push('Followers', { type: 'user', id: '' })
                 : navigation.push('Followers', {
-                    type: 'public',
-                    id: profile._id,
-                  });
+                  type: 'public',
+                  id: profile._id,
+                });
+              }
             }}>
             <Text style={styles.profileHeaderDetailsLink}>
               <Text style={styles.profileHeaderDetailsLinkSub}>
-                {profile.follower ? profile.follower : 0}
+                {profile.follower && !isBlocked ? profile.follower : 0}
               </Text>{' '}
               Followers
             </Text>
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     fontSize: normalise(12),
     fontFamily: 'ProximaNova-Regular',
     marginBottom: normalise(2),
+    textTransform: 'lowercase',
   },
   profileHeaderDetailsSubText: {
     color: Colors.darkgrey,

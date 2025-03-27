@@ -45,7 +45,7 @@ import EmptyComponent from '../Empty/EmptyComponent';
 
 let status;
 
-function Following(props) {
+const Following = props => {
   const [type, setType] = useState(props.route.params.type);
   const [id, setId] = useState(props.route.params.id);
   // const [following, setFollowing] = useState("")
@@ -233,8 +233,30 @@ function Following(props) {
     );
   }
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.black }}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === FOLLOWING_LIST_REQUEST} />
@@ -248,7 +270,7 @@ function Following(props) {
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
-          title={`FOLLOWING (${props.followingData.length})`}
+          title={`${props.followingData.length} FOLLOWING`}
           thirditemtext={true}
           texttwo={''}
           onPressFirstItem={() => {
@@ -265,10 +287,10 @@ function Following(props) {
             keyboardAppearance={'dark'}
             style={{
               height: normalise(35),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.fadeblack,
               borderRadius: normalise(6),
               padding: normalise(10),
-              color: Colors.black,
+              color: Colors.white,
               paddingLeft: normalise(30),
             }}
             value={search}
@@ -286,6 +308,7 @@ function Following(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
+              transform: [{ scaleX: -1 }],
             }}
             resizeMode="contain"
           />
@@ -318,32 +341,30 @@ function Following(props) {
           )}
         </View>
         {_.isEmpty(props.followingData) ? (
-          <>
-            <EmptyComponent
-              text={
-                "Choona is a lonely place when you aren't following anyone. See if you already have friends by connecting below."
-              }
-              title={"You don't follow anyone"}
-            />
-            <View style={{ flex: 1 }}>
-              <FlatList
-                data={top5followingList}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => {
-                  index.toString();
-                }}
-                renderItem={rendertop5FollowersItem}
-                ItemSeparatorComponent={Seperator}
+          !isKeyboardVisible && (
+            <>
+              <EmptyComponent
+                text={
+                  "Choona is a lonely place when you aren't following anyone. See if you already have friends by connecting below."
+                }
+                title={"You don't follow anyone"}
               />
-            </View>
-          </>
+              <View style={{ flex: 1 }}>
+                <FlatList
+                  data={top5followingList}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={item => item._id}
+                  renderItem={rendertop5FollowersItem}
+                  ItemSeparatorComponent={Seperator}
+                />
+              </View>
+            </>
+          )
         ) : (
           <FlatList
             data={props.followingData}
             showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
+            keyExtractor={item => item._id}
             renderItem={renderFollowersItem}
             ItemSeparatorComponent={Seperator}
           />
@@ -352,7 +373,7 @@ function Following(props) {
       {/* </TouchableWithoutFeedback> */}
     </View>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {

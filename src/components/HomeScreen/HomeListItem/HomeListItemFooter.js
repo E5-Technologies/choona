@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
 
@@ -8,6 +8,9 @@ import ImagePath from '../../../assests/ImagePath';
 import normalise from '../../../utils/helpers/Dimens';
 
 import HomeListItemReactions from './HomeListItemReactions';
+import Avatar from '../../../components/Avatar';
+import { ReactionButtonThumbsUp } from '../../Reactions/Buttons/Buttons';
+import ReactionButtonBar from '../../Reactions/ButtonBar/ButtonBar';
 
 const HomeListItemFooter = ({
   commentCount,
@@ -27,7 +30,20 @@ const HomeListItemFooter = ({
   userAvatar,
   userName,
   viewMore,
+  myReactions,
+  myReactionsPending,
+  relatedId
 }) => {
+  const [actualNumLines, setActualNumLines] = useState(0);
+  const onTextLayout = useCallback(
+    e => {
+      if (actualNumLines == 0) {
+        setActualNumLines(e.nativeEvent.lines.length);
+      }
+    },
+    [actualNumLines],
+  );
+
   return (
     <View style={styles.listItemFooterContainer}>
       <View style={styles.listItemFooterTop}>
@@ -35,17 +51,12 @@ const HomeListItemFooter = ({
           <TouchableOpacity
             onPress={() => {
               onPressImage();
-            }}>
-            <Image
-              source={
-                ImagePath
-                  ? userAvatar === ''
-                    ? ImagePath.dp1
-                    : { uri: constants.profile_picture_base_url + userAvatar }
-                  : null
-              }
-              style={styles.listItemFooterAvatar}
-              resizeMode="contain"
+            }}
+            style={styles.listItemFooterAvatar}>
+            <Avatar
+              image={constants.profile_picture_base_url + userAvatar}
+              height={26}
+              width={26}
             />
           </TouchableOpacity>
           <View>
@@ -99,13 +110,18 @@ const HomeListItemFooter = ({
       </View>
       <View>
         {postText.length > 0 ? (
-          <Text numberOfLines={numberOfLines} style={styles.listItemFooterText}>
+          <Text
+            numberOfLines={
+              actualNumLines == 0 ? null : viewMore ? actualNumLines : 3
+            }
+            style={styles.listItemFooterText}
+            onTextLayout={onTextLayout}>
             {parts}
           </Text>
         ) : (
           <View />
         )}
-        {postText.length > 180 ? (
+        {actualNumLines > 3 ? (
           <TouchableOpacity
             onPress={() => {
               !viewMore ? setNumberOfLines(10) : setNumberOfLines(3),
@@ -118,9 +134,15 @@ const HomeListItemFooter = ({
         ) : null}
       </View>
       <View style={styles.listItemFooterReactions}>
-        <HomeListItemReactions
+        {/* <HomeListItemReactions
           onReactionPress={onReactionPress}
           reactions={reactions}
+        /> */}
+        <ReactionButtonBar
+          myReactions={myReactions}
+          onReactPressed={onReactionPress}
+          myReactionsPending={myReactionsPending}
+          relatedId={relatedId}
         />
       </View>
     </View>
@@ -131,8 +153,12 @@ export default HomeListItemFooter;
 
 const styles = StyleSheet.create({
   listItemFooterContainer: {
-    marginTop: normalise(10),
+    paddingTop: normalise(10),
     paddingHorizontal: normalise(12),
+    backgroundColor: Colors.darkerblack,
+    borderBottomColor: Colors.activityBorderColor,
+    borderBottomWidth: normalise(0.5),
+    paddingBottom: normalise(16),
   },
   listItemFooterTop: {
     alignItems: 'center',
@@ -145,15 +171,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   listItemFooterAvatar: {
-    borderRadius: normalise(42),
-    height: normalise(22),
     marginRight: normalise(6),
-    width: normalise(22),
   },
   listItemFooterName: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: 14,
+    textTransform: 'lowercase',
     top: normalise(-2),
   },
   listItemFooterDate: {
@@ -200,6 +224,7 @@ const styles = StyleSheet.create({
     width: normalise(14),
   },
   listItemFooterReactions: {
+    flexDirection: 'row',
     marginTop: normalise(12),
   },
 });

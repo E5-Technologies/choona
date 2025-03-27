@@ -1,5 +1,5 @@
-// import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   AppState,
 } from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
 
 import { NavigationContainer } from '@react-navigation/native';
 import {
@@ -38,6 +39,7 @@ import Contact from './src/components/main/TabNavigator/Contact';
 import HomeItemList from './src/components/main/ListCells/HomeItemList';
 import Profile from './src/components/main/Profile';
 import EditProfile from './src/components/main/EditProfile';
+import BlockList from './src/components/main/BlockList';
 import Followers from './src/components/main/Followers';
 import Following from './src/components/main/Following';
 import HomeItemComments from './src/components/main/HomeItemComments';
@@ -59,12 +61,17 @@ import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
 import { editProfileRequest } from './src/action/UserAction';
 import _ from 'lodash';
-import { LogLevel, OneSignal } from 'react-native-onesignal';
+import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
 import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
-import firebase from '@react-native-firebase/app';
-import firebaseConfig from './src/utils/firebase/firebaseConfig'
+import PlayerScreenSelectUser from './src/components/PlayerScreen/PlayerScreenSelectUser';
+
+// import * as Sentry from '@sentry/react-native';
+
+// Sentry.init({
+//   dsn: 'https://4659328257154e70ba3792dc4eddede2@o1022308.ingest.sentry.io/5988459',
+// });
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,79 +85,53 @@ const App = () => {
     setTimeout(() => {
       dispatch(getTokenRequest());
     }, 3000);
-
+    
     // const unsuscribe = firebase().onMessage(async () => {
     //   dispatch(getChatListRequest());
     //   dispatch(getProfileRequest());
     // });
 
     function _handleAppStateChange() {
-      if (AppState.currentState.match(/inactive|background/)) {
-        let formdata = new FormData();
-        formdata.append('badge_count', 0);
-        isInternetConnected()
-          .then(() => {
-            dispatch(editProfileRequest(formdata));
-          })
-          .catch(err => {
-            toast('Oops', 'Please Connect To Internet');
-          });
-      } else if (AppState.currentState === 'active') {
-        getChatListRequest, dispatch(getChatListRequest());
+      // if (AppState.currentState.match(/inactive|background/)) {
+      //   let formdata = new FormData();
+      //   formdata.append('badge_count', 0);
+      //   isInternetConnected()
+      //     .then(() => {
+      //       dispatch(editProfileRequest(formdata));
+      //     })
+      //     .catch(err => {
+      //       toast('Oops', 'Please Connect To Internet');
+      //     });
+      //   console.log('test');
+      // } else
+      if (AppState.currentState === 'active') {
+        getChatListRequest;
+        dispatch(getChatListRequest());
         dispatch(getProfileRequest());
         console.log('zxcv', 'App is in active Mode.');
       }
     }
-    const subscription = AppState.addEventListener(
-      'change',
-      _handleAppStateChange,
-    );
-
+    AppState.addEventListener('change', _handleAppStateChange);
     return () => {
-      subscription.remove();
+      AppState.removeEventListener('change', _handleAppStateChange);
       // unsuscribe();
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    /* O N E S I G N A L   S E T U P */
-
-    // Remove this method to stop OneSignal Debugging
-    OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-
-    // OneSignal Initialization
-    OneSignal.initialize('095694b1-0a59-42ec-bd9c-d60a09bd60a9');
-
-    // requestPermission will show the native iOS or Android notification permission prompt.
-    // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-    OneSignal.Notifications.requestPermission(true);
-
-    // listening for notification clicks
-    // OneSignal.Notifications.addEventListener('click', (event) => {
-    //   console.log('OneSignal: notification clicked:', event);
-    // });
-
-    // OneSignal.setAppId('095694b1-0a59-42ec-bd9c-d60a09bd60a9');
-    // OneSignal.setLogLevel(6, 0);
-    // OneSignal.setRequiresUserPrivacyConsent(false);
-    // OneSignal.promptForPushNotificationsWithUserResponse(response => {
-    //   // console.log('Prompt response:', response);
-    // });
-  }, []);
-
-  useEffect(() => {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig); // Initialize Firebase
-    } else {
-      firebase.app(); // Use the default app if already initialized
-    }
-  }, [])
+  // useEffect(() => {
+  //   /* O N E S I G N A L   S E T U P */
+  //   OneSignal.setAppId('095694b1-0a59-42ec-bd9c-d60a09bd60a9');
+  //   OneSignal.setLogLevel(6, 0);
+  //   OneSignal.setRequiresUserPrivacyConsent(false);
+  //   OneSignal.promptForPushNotificationsWithUserResponse(response => {
+  //     console.log('Prompt response:', response);
+  //   });
+  // }, []);
 
   useEffect(() => {
     (async () => {
-      // const {userId} = await OneSignal.getDeviceState();
-      const id = OneSignal.User.pushSubscription.getPushSubscriptionId();
-      AsyncStorage.setItem('deviceToken', id);
+      const { userId } = await OneSignal.getDeviceState();
+      AsyncStorage.setItem('deviceToken', userId);
     })();
   });
 
@@ -163,149 +144,212 @@ const App = () => {
 
   const BottomTab = () => {
     const UserReducer = useSelector(state => state.UserReducer);
+    const MessageReducer = useSelector(state => state.MessageReducer);
+
+    const [showMessageDot, setShowMessageDot] = useState(false);
+
+    useEffect(() => {
+      let hasUnseenMessage = false;
+      var arr = MessageReducer.chatList;
+
+      if (!_.isEmpty(arr) && !_.isEmpty(UserReducer.userProfileResp)) {
+        for (var i = 0; i < arr.length; i++) {
+          if (UserReducer.userProfileResp._id === arr[i].receiver_id) {
+            hasUnseenMessage = !arr[i].read;
+            if (hasUnseenMessage) {
+              break;
+            }
+          }
+        }
+
+        setShowMessageDot(hasUnseenMessage);
+      }
+    }, [MessageReducer.chatList, UserReducer.userProfileResp]);
 
     return (
-      // <View style={styles.appStyle}>
-      <Tab.Navigator
-        initialRouteName={'Home'}
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {
-            paddingBottom: 0, // Remove padding at the bottom
-            borderTopWidth: 0, // Remove the top border line
-            elevation: 0, // Remove the shadow (Android)
-            shadowOpacity: 0, // Remove the shadow (iOS)
-          },
-        }}
-        tabBarOptions={{
-          activeBackgroundColor: Colors.darkerblack,
-          inactiveBackgroundColor: Colors.darkerblack,
-          safeAreaInsets: { bottom: 0 },
-          style: {
-            height: Platform.OS === 'android' ? normalise(45) : normalise(68),
-            borderTopColor: Colors.fadeblack,
-          },
-        }}>
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
-                  height: normalise(20),
-                  width: normalise(20),
-                }}
-                source={
-                  ImagePath
-                    ? focused
-                      ? ImagePath.homeactive
-                      : ImagePath.homeinactive
-                    : null
-                }
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-        <Tab.Screen
-          name="Search"
-          component={Search}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
-                  height: normalise(20),
-                  width: normalise(20),
-                }}
-                source={
-                  ImagePath
-                    ? focused
-                      ? ImagePath.searchactive
-                      : ImagePath.searchinactive
-                    : null
-                }
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-        <Tab.Screen
-          name="Add"
-          component={AddSong}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
-                  height: normalise(40),
-                  width: normalise(40),
-                }}
-                source={
-                  ImagePath
-                    ? focused
-                      ? ImagePath.addButton
-                      : ImagePath.addButton
-                    : null
-                }
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-        <Tab.Screen
-          name="Notification"
-          component={Notification}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View>
+      <View style={styles.appStyle}>
+        <Tab.Navigator
+          initialRouteName={'Home'}
+          tabBarOptions={{
+            headerShown: false,
+            activeBackgroundColor: Colors.darkerblack,
+            inactiveBackgroundColor: Colors.darkerblack,
+            safeAreaInsets: { bottom: 0 },
+            style: {
+              height: Platform.OS === 'android' ? normalise(45) : normalise(68),
+              borderTopColor: Colors.fadeblack,
+            },
+          }}>
+          <Tab.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
                   source={
                     ImagePath
                       ? focused
-                        ? ImagePath.notificationactive
-                        : ImagePath.notificationinactive
+                        ? ImagePath.homeactive
+                        : ImagePath.homeinactive
                       : null
                   }
                   resizeMode="contain"
                 />
-                {!_.isEmpty(UserReducer.userProfileResp) ? (
-                  UserReducer.userProfileResp.isActivity ? (
+              ),
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
+            name="Search"
+            component={Search}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  style={{
+                    opacity: focused ? 1 : 0.5,
+                    marginTop:
+                      Platform.OS === 'android'
+                        ? normalise(10)
+                        : Dimensions.get('window').height > 736
+                        ? normalise(0)
+                        : normalise(10),
+                    height: normalise(20),
+                    width: normalise(20),
+                  }}
+                  source={ImagePath ? ImagePath.exploreactive : null}
+                  resizeMode="contain"
+                />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
+            name="Add"
+            component={AddSong}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  style={{
+                    marginTop:
+                      Platform.OS === 'android'
+                        ? normalise(10)
+                        : Dimensions.get('window').height > 736
+                        ? normalise(0)
+                        : normalise(10),
+                    height: normalise(40),
+                    width: normalise(40),
+                  }}
+                  source={
+                    ImagePath
+                      ? focused
+                        ? ImagePath.addButton
+                        : ImagePath.addButton
+                      : null
+                  }
+                  resizeMode="contain"
+                />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+          <Tab.Screen
+          
+            name="Notification"
+            component={Notification}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <View>
+                  <Image
+                    style={{
+                      marginTop:
+                        Platform.OS === 'android'
+                          ? normalise(10)
+                          : Dimensions.get('window').height > 736
+                          ? normalise(0)
+                          : normalise(10),
+                      height: normalise(20),
+                      width: normalise(20),
+                    }}
+                    source={
+                      ImagePath
+                        ? focused
+                          ? ImagePath.notificationactive
+                          : ImagePath.notificationinactive
+                        : null
+                    }
+                    resizeMode="contain"
+                  />
+                  {!_.isEmpty(UserReducer.userProfileResp) ? (
+                    UserReducer.userProfileResp.isActivity ? (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          right: normalise(-2),
+                          top:
+                            Platform.OS === 'android'
+                              ? normalise(8)
+                              : normalise(-2),
+                          backgroundColor: Colors.red,
+                          borderRadius: normalize(8),
+                          height: 10,
+                          width: 10,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      />
+                    ) : null
+                  ) : null}
+                </View>
+              ),
+              tabBarLabel: '',
+            }}
+          />
+
+          <Tab.Screen
+            name="Inbox"
+            component={Inbox}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <View>
+                  <Image
+                    style={{
+                      opacity: focused ? 1 : 0.6,
+                      marginTop:
+                        Platform.OS === 'android'
+                          ? normalise(10)
+                          : Dimensions.get('window').height > 736
+                          ? normalise(0)
+                          : normalise(10),
+                      height: normalise(22),
+                      width: normalise(22),
+                    }}
+                    source={ImagePath ? ImagePath.inbox : null}
+                    resizeMode="contain"
+                  />
+                  {showMessageDot ? (
                     <View
                       style={{
                         position: 'absolute',
                         right: normalise(-2),
-                        top: normalise(-2),
+                        top:
+                          Platform.OS === 'android'
+                            ? normalise(8)
+                            : normalise(-2),
                         backgroundColor: Colors.red,
                         borderRadius: normalize(8),
                         height: 10,
@@ -314,45 +358,14 @@ const App = () => {
                         alignItems: 'center',
                       }}
                     />
-                  ) : null
-                ) : null}
-              </View>
-            ),
-            tabBarLabel: '',
-          }}
-        />
-
-        <Tab.Screen
-          name="Contact"
-          component={Contact}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={{
-                  marginTop:
-                    Platform.OS === 'android'
-                      ? normalise(10)
-                      : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
-                  height: normalise(22),
-                  width: normalise(22),
-                }}
-                source={
-                  ImagePath
-                    ? focused
-                      ? ImagePath.boxactive
-                      : ImagePath.boxinactive
-                    : null
-                }
-                resizeMode="contain"
-              />
-            ),
-            tabBarLabel: '',
-          }}
-        />
-      </Tab.Navigator>
-      // </View>
+                  ) : null}
+                </View>
+              ),
+              tabBarLabel: '',
+            }}
+          />
+        </Tab.Navigator>
+      </View>
     );
   };
 
@@ -360,7 +373,7 @@ const App = () => {
     return <Splash />;
   } else {
     return (
-      <NavigationContainer>
+      <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
         {TokenReducer.token === null ? (
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
@@ -372,12 +385,14 @@ const App = () => {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="bottomTab" component={BottomTab} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="BlockList" component={BlockList} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="Followers" component={Followers} />
             <Stack.Screen name="Following" component={Following} />
             <Stack.Screen name="OthersProfile" component={OthersProfile} />
             <Stack.Screen name="CreatePost" component={CreatePost} />
-            <Stack.Screen name="Inbox" component={Inbox} />
+            <Stack.Screen name="Contact" component={Contact} />
+            {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
             <Stack.Screen
               name="Player"
               component={Player}
@@ -420,6 +435,10 @@ const App = () => {
               component={AddToPlayListScreen}
             />
             <Stack.Screen name="SingleSongClick" component={SingleSongClick} />
+            <Stack.Screen
+              name="PlayerScreenSelectUser"
+              component={PlayerScreenSelectUser}
+            />
             <Stack.Screen name="PlayerComment" component={PlayerComment} />
           </Stack.Navigator>
         )}
@@ -429,7 +448,7 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  appStyle: { flex: 1, backgroundColor: Colors.black },
+  appStyle: { flex: 1, backgroundColor: Colors.darkerblack },
 });
 
 export default App;

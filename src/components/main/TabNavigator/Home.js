@@ -1,24 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
   View,
   Text,
-  TextInput,
   AppState,
-  ImageBackground,
-  TouchableOpacity,
   Image,
   Modal,
   Platform,
-  Clipboard,
   Linking,
-  ActivityIndicator,
   RefreshControl,
   FlatList,
+  Pressable,
+  TouchableOpacity,
 } from 'react-native';
 
-import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -30,6 +25,10 @@ import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
+
+import { useInfiniteQuery } from 'react-query';
+
+// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import {
   USER_PROFILE_REQUEST,
@@ -51,9 +50,6 @@ import {
   GET_USER_FROM_HOME_REQUEST,
   GET_USER_FROM_HOME_SUCCESS,
   GET_USER_FROM_HOME_FAILURE,
-  CREATE_CHAT_TOKEN_REQUEST,
-  CREATE_CHAT_TOKEN_SUCCESS,
-  CREATE_CHAT_TOKEN_FAILURE,
   COUNTRY_CODE_SUCCESS,
   OTHERS_PROFILE_SUCCESS,
   EDIT_PROFILE_SUCCESS,
@@ -74,16 +70,13 @@ import {
 } from '../../../action/UserAction';
 import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
 import { deletePostReq } from '../../../action/PostAction';
-import { createChatTokenRequest } from '../../../action/MessageAction';
 import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
 import { useScrollToTop } from '@react-navigation/native';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import Contacts from 'react-native-contacts';
-// import {getDeviceToken} from '../../../utils/helpers/FirebaseToken'
 import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
@@ -91,16 +84,20 @@ import MusicPlayer from '../../../widgets/MusicPlayer';
 import Timer from '../Timer';
 import EmptyComponent from '../../Empty/EmptyComponent';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
+import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
+import MoreModal from '../../Posts/MoreModal';
+import ReportModal from '../../Posts/ReportModal';
+import Reactions from '../../Reactions/Reactions';
+import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
+
 let status = '';
 let songStatus = '';
 let postStatus = '';
-let messageStatus;
 
-function Home(props) {
-  let timerValue = 30;
-  let newpost = [];
-  newpost = props.postData;
-  const [appState, setAppState] = useState(AppState.currentState);
+const Home = props => {
+  const token = props.header.token;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -108,70 +105,161 @@ function Home(props) {
   const [modal1Visible, setModal1Visible] = useState(false);
   const [positionInArray, setPositionInArray] = useState(0);
 
-  const [userClicked, setUserClicked] = useState(false);
-  const [userSeach, setUserSeach] = useState('');
-  const [userSearchData, setUserSearchData] = useState([]);
-  const [usersToSEndSong, sesUsersToSEndSong] = useState([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
-  const [homeReq, setHomeReq] = useState(false);
   const [postArray, setPostArray] = useState([]);
   const [timeoutVar, setTimeoutVar] = useState(0);
-  const [onScrolled, setOnScrolled] = useState(false);
-  const [offset, setOffset] = useState(1);
-  const [refresing, setRefresing] = useState(false);
-  const [data, setData] = useState(props.postData);
+  const [refreshing, setRefreshing] = useState(false);
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
+  const [isShown, setIsShown] = useState(true);
 
-  var bottomSheetRef;
+  const [firstTimeModalShow, setFirstTimeModalShow] = useState(false);
+  const [andyProfile, setAndyProfile] = useState(false);
+  const [followButtonPressed, setFollowButtonPressed] = useState(false);
+
+  const [reportModal, setReportModal] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const postsUrl = constants.BASE_URL + '/post/list?page=';
+
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+
+  const {
+    data: newPosts,
+    isFetching,
+    fetchNextPage,
+    isFetchingNextPage,
+    isRefetching,
+    refetch,
+  } = useInfiniteQuery(
+    'homePosts',
+    async ({ pageParam = 1 }) => {
+      const res = await axios
+        .get(postsUrl + pageParam, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token,
+          },
+        })
+        .catch(error => console.log(error));
+
+      return res.data;
+    },
+    {
+      getPreviousPageParam: pageParam => pageParam.page - 1,
+      getNextPageParam: pageParam => pageParam.page + 1,
+    },
+  );
+
+  useEffect(() => {
+    if (props.status === 'REACTION_ON_POST_SUCCESS') {
+      //   setTimeout(() => {
+      refetch();
+      //   }, 1000);
+    }
+
+    if (props.status === 'USER_FOLLOW_UNFOLLOW_SUCCESS') {
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+    }
+
+    if (props.postStatus === 'DELETE_POST_SUCCESS') {
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+    }
+  }, [props.postStatus, props.status, refetch]);
+
+  useEffect(() => {
+    if (newPosts) {
+      var merged = [].concat.apply(
+        [],
+        newPosts.pages.map(page => page.data),
+      );
+      setPosts(merged);
+    }
+  }, [newPosts]);
+
+  useEffect(() => {
+    async function getModalData() {
+      const isFirstOpen = await AsyncStorage.getItem('IS_FIRST_OPEN');
+      if (!isFirstOpen || isFirstOpen !== 'true') {
+        setFirstTimeModalShow(true);
+      }
+    }
+
+    getModalData();
+  }, []);
+
+  React.useEffect(() => {
+    const subscribe = props.navigation.addListener('focus', () => {
+      refetch();
+    });
+
+    return subscribe;
+  }, [props.navigation, refetch]);
+
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(2000).then(() => setRefreshing(false));
+  }, [refetch]);
+
   let changePlayer = false;
 
   var handleAppStateChange = state => {
-    // console.log('state_Change:' + state);
-
     if (state !== 'active') {
       if (global.playerReference !== null) {
         if (global.playerReference?.isPlaying()) {
           global.playerReference.pause();
 
-          findPlayingSong(props.postData);
+          findPlayingSong(posts);
         }
       }
     }
   };
-
-  // loadMore()
 
   const flatlistRef = React.useRef(null);
 
   useScrollToTop(flatlistRef);
 
   useEffect(() => {
-    setHomeReq(true);
-    setOffset(1);
-    props.homePage(1);
-    // console.log("useeffectprops"+props.postData)
+    isInternetConnected().then(async () => {
+      const response = await axios.get(
+        `${constants.BASE_URL}/user/profile/60efd72851da7dee96c570ad`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token,
+          },
+        },
+      );
+
+      if (response.data.data) {
+        setAndyProfile(response.data.data);
+      }
+    });
+  }, [token]);
+
+  useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
     updateToken(props.SuccessToken);
     const unsuscribe = props.navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
-          // console.log('home use Effect');
-          setOnScrolled(false);
           props.getProfileReq();
-          setUserSearchData([]);
-          sesUsersToSEndSong([]);
-          setUserSeach('');
-          if (!homeReq) {
-            props.dummyRequest();
-          }
-          // if (ref.current !== null) {
-          //   ref.current.scrollToIndex({ animated: true, index: 0 })
+          // if (!isFetching) {
+          // props.dummyRequest();
           // }
         })
-        .catch(err => {
-          // console.log(err);
+        .catch(_err => {
           toast('Error', 'Please Connect To Internet');
         });
     });
@@ -181,9 +269,21 @@ function Home(props) {
     };
   }, []);
 
+  useEffect(() => {
+    if (props.registerType === 'apple') {
+      AsyncStorage.getItem('isShown').then(value => {
+        if (value === null) {
+          // Whatever you want to do just once.
+          AsyncStorage.setItem('isShown', 'false');
+          setIsShown(false);
+        }
+      });
+    }
+  }, [props.registerType]);
+
   const loadMore = async () => {
     setLoadMoreVisible(false);
-    // setHomeReq(true);
+    refetch();
     props.loadMoreData();
     flatlistRef.current.scrollToIndex({
       animated: true,
@@ -215,7 +315,7 @@ function Home(props) {
         status = props.status;
         props.homePage(1);
         if (props.loadData.length !== 0) {
-          const intersection = props.postData.filter(item1 =>
+          const intersection = posts.filter(item1 =>
             props.loadData.some(item2 => item1._id === item2._id),
           );
           if (intersection.length <= 0) {
@@ -233,22 +333,17 @@ function Home(props) {
 
       case HOME_PAGE_SUCCESS:
         status = props.status;
-        setPostArray(props.postData);
-        findPlayingSong(props.postData);
-        setHomeReq(false);
-        setRefresing(false);
+        findPlayingSong(posts);
+        props.getProfileReq();
         break;
 
       case HOME_PAGE_FAILURE:
         status = props.status;
-        setHomeReq(false);
         toast('Oops', 'Something Went Wrong, Please Try Again');
         break;
 
       case REACTION_ON_POST_SUCCESS:
         status = props.status;
-        setOffset(1);
-        props.homePage(1);
         break;
 
       case USER_FOLLOW_UNFOLLOW_REQUEST:
@@ -257,7 +352,6 @@ function Home(props) {
 
       case USER_FOLLOW_UNFOLLOW_SUCCESS:
         status = props.status;
-        props.homePage(1);
         setPositionInArray(0);
         break;
 
@@ -272,7 +366,7 @@ function Home(props) {
 
       case GET_USER_FROM_HOME_SUCCESS:
         status = props.status;
-        setUserSearchData(props.userSearchFromHome);
+        // setUserSearchData(props.userSearchFromHome);
         break;
 
       case GET_USER_FROM_HOME_FAILURE:
@@ -285,7 +379,7 @@ function Home(props) {
 
       case DUMMY_ACTION_SUCCESS:
         status = props.status;
-        findPlayingSong(props.postData);
+        findPlayingSong(posts);
         break;
     }
   }
@@ -315,13 +409,11 @@ function Home(props) {
   if (postStatus === '' || props.postStatus !== postStatus) {
     switch (props.postStatus) {
       case DELETE_POST_REQUEST:
-        setHomeReq(true);
         postStatus = props.postStatus;
         break;
 
       case DELETE_POST_SUCCESS:
         postStatus = props.postStatus;
-        props.homePage(1);
         setPositionInArray(0);
         break;
 
@@ -332,58 +424,18 @@ function Home(props) {
     }
   }
 
-  if (messageStatus === '' || props.messageStatus !== messageStatus) {
-    switch (props.messageStatus) {
-      case CREATE_CHAT_TOKEN_REQUEST:
-        messageStatus = props.messageStatus;
-        break;
-
-      case CREATE_CHAT_TOKEN_SUCCESS:
-        messageStatus = props.messageStatus;
-        // console.log('home page');
-        setUserSearchData([]);
-        sesUsersToSEndSong([]);
-        setUserSeach('');
-        if (!_.isEmpty(props.postData)) {
-          props.navigation.navigate('SendSongInMessageFinal', {
-            image: props.postData[positionInArray].song_image,
-            title: props.postData[positionInArray].song_name,
-            title2: props.postData[positionInArray].artist_name,
-            users: usersToSEndSong,
-            details: props.postData[positionInArray],
-            registerType: props.registerType,
-            fromAddAnotherSong: false,
-            index: 0,
-            fromHome: true,
-          });
-        }
-        break;
-
-      case CREATE_CHAT_TOKEN_FAILURE:
-        messageStatus = props.messageStatus;
-        toast('Error', 'Something Went Wong, Please Try Again');
-        break;
-    }
-  }
-
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
-  let val = 0;
 
   function hitreact(x, rindex) {
-    // console.log('this' + JSON.stringify(props.postData[rindex]));
-    if (!_.isEmpty(props.postData[rindex].reaction)) {
-      // console.log('here');
-
-      const present = props.postData[rindex].reaction.some(
+    if (!_.isEmpty(posts[rindex].reaction)) {
+      const present = posts[rindex].reaction.some(
         obj =>
           obj.user_id.includes(props.userProfileResp._id) &&
           obj.text.includes(x),
       );
 
       if (present) {
-        // console.log('nooo');
       } else {
-        // console.log('2');
         setVisible(true);
         setModalReact(x);
         setTimeout(() => {
@@ -391,7 +443,6 @@ function Home(props) {
         }, 2000);
       }
     } else {
-      // console.log('3');
       setVisible(true);
       setModalReact(x);
       setTimeout(() => {
@@ -400,16 +451,56 @@ function Home(props) {
     }
   }
 
-  function hitreact1(modal1Visible) {
+  /** REACTION - ADDITION */
+  const [pendingReacts, setPendingReacts] = useState({});
+  const addPendingReactTimer = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: true,
+      };
+    });
+    wait(5000).then(() => {
+      removePendingReact(reactId, postId);
+    });
+  };
+
+  const removePendingReact = (reactId, postId) => {
+    setPendingReacts(old => {
+      return {
+        ...old,
+        [`${getPendingReactKey(reactId, postId)}`]: false,
+      };
+    });
+  };
+
+  const getPendingReactKey = (reactId, postId) => {
+    return `${reactId}##${postId}`;
+  };
+
+  // function hitReact(reactId, postId) {
+  //   let reactionObject = {
+  //     post_id: postId,
+  //     text: Reactions[reactId].oldText,
+  //     text_match: Reactions[reactId].map,
+  //   };
+  //   isInternetConnected()
+  //     .then(() => {
+  //       addPendingReactTimer(reactId, postId);
+  //       props.reactionOnPostRequest(reactionObject);
+  //     })
+  //     .catch(() => {
+  //       toast('Error', 'Please Connect To Internet');
+  //     });
+  // }
+  /** ------------ */
+
+  function hitreact1() {
     if (modal1Visible === true) {
       setModal1Visible(false);
     } else {
       setModal1Visible(true);
     }
-  }
-
-  function modal() {
-    return (val = 1);
   }
 
   function sendReaction(id, reaction) {
@@ -443,12 +534,10 @@ function Home(props) {
   const getContacts = () => {
     Contacts.getAll((err, contacts) => {
       if (err) {
-        // console.log(err);
       } else {
         let contactsArray = contacts;
         let finalArray = [];
         setContactsLoading(false);
-        //// console.log(JSON.stringify(contacts));
         contactsArray.map((item, index) => {
           item.phoneNumbers.map((item, index) => {
             let number = item.number.replace(/[- )(]/g, '');
@@ -477,7 +566,6 @@ function Home(props) {
           });
         });
 
-        // console.log(finalArray);
         props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
@@ -485,12 +573,8 @@ function Home(props) {
 
   const playSong = data => {
     if (props.playingSongRef === '') {
-      // console.log('first time');
-
       MusicPlayer(data.item.song_uri, true)
         .then(track => {
-          // console.log('Loaded');
-
           let saveSongResObj = {};
           (saveSongResObj.uri = data.item.song_uri),
             (saveSongResObj.song_name = data.item.song_name),
@@ -516,41 +600,32 @@ function Home(props) {
           props.saveSongRefReq(saveSongResObj);
           props.dummyRequest();
         })
-        .catch(err => {
-          // console.log('MusicPlayer Error', err);
-        });
+        .catch(err => {});
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === data.item.song_uri) {
-          // console.log('Alreday Playing');
-
           if (global.playerReference.isPlaying()) {
             global.playerReference.pause();
 
             setTimeout(() => {
-              findPlayingSong(props.postData);
+              findPlayingSong(posts);
             }, 500);
           } else {
             global.playerReference.play(success => {
               if (success) {
-                // console.log('PlayBack End');
               } else {
-                // console.log('NOOOOOOOO');
               }
             });
 
             setTimeout(() => {
-              findPlayingSong(props.postData);
+              findPlayingSong(posts);
             }, 500);
           }
         } else {
-          // console.log('reset');
           global.playerReference.release();
           global.playerReference = null;
           MusicPlayer(data.item.song_uri, true)
             .then(track => {
-              // console.log('Loaded');
-
               let saveSongResObj = {};
               (saveSongResObj.uri = data.item.song_uri),
                 (saveSongResObj.song_name = data.item.song_name),
@@ -577,16 +652,11 @@ function Home(props) {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => {
-              // console.log('MusicPlayer Error', err);
-            });
+            .catch(err => {});
         }
       } else {
-        // console.log('reset2');
         MusicPlayer(data.item.song_uri, true)
           .then(track => {
-            // console.log('Loaded');
-
             let saveSongResObj = {};
             (saveSongResObj.uri = data.item.song_uri),
               (saveSongResObj.song_name = data.item.song_name),
@@ -613,558 +683,202 @@ function Home(props) {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => {
-            // console.log('MusicPlayer Error', err);
-          });
+          .catch(err => {});
       }
     }
   };
 
   function _onSelectBack(ID, comment) {
-    // console.log("aaa"+JSON.stringify(props.postData))
-    props.postData.map((item, index) => {
-      // console.log("items",item._id)
+    posts.map((item, index) => {
       if (item._id === ID) {
-        props.postData[index].comment_count = comment;
+        posts[index].comment_count = comment;
       }
     });
   }
 
   function _onReaction(ID, reaction) {
-    props.postData.map((item, index) => {
+    posts.map((item, index) => {
       if (item._id === ID) {
-        props.postData[index].reaction_count = reaction;
+        posts[index].reaction_count = reaction;
       }
     });
   }
 
   function renderItem(data) {
+    /** REACTION - ADDITION */
+    const reactionMap = {
+      thumbsUp: data.item.fireReactionIds
+        ? data.item.fireReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      fire: data.item.loveReactionIds
+        ? data.item.loveReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      heart: data.item.dancerReactionIds
+        ? data.item.dancerReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      disco: data.item.manDancingReactionIds
+        ? data.item.manDancingReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+      throwback: data.item.faceReactionIds
+        ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
+        : false,
+      thumbsDown: data.item.thumbsUpReactionIds
+        ? data.item.thumbsUpReactionIds.includes(
+            `${props.userProfileResp?._id}`,
+          )
+        : false,
+    };
+
+    const reactionPendingMap = {
+      thumbsUp: isPending('thumbsUp', data.item._id),
+      fire: isPending('fire', data.item._id),
+      heart: isPending('heart', data.item._id),
+      disco: isPending('disco', data.item._id),
+      throwback: isPending('throwback', data.item._id),
+      thumbsDown: isPending('thumbsDown', data.item._id),
+    };
+
     return (
-      <HomeItemList
-        image={data.item.song_image}
-        play={
-          _.isEmpty(postArray)
-            ? false
-            : props.postData.length === postArray.length
-            ? postArray[data.index].playing
-            : false
-        }
-        picture={data.item.userDetails.profile_image}
-        name={data.item.userDetails.username}
-        comment_count={data.item.comment_count ? data.item.comment_count : 0}
-        reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
-        reactions={{
-          fire_count: data.item.fire_count,
-          love_count: data.item.love_count,
-          dancer_count: data.item.dancer_count,
-          man_dancing_count: data.item.man_dancing_count,
-          face_count: data.item.face_count,
-          thumbsup_count: data.item.thumbsup_count,
-        }}
-        navi={props}
-        content={data.item.post_content}
-        time={data.item.createdAt}
-        title={data.item.song_name}
-        singer={data.item.artist_name}
-        songUri={data.item.song_uri}
-        modalVisible={modal1Visible}
-        postType={data.item.social_type === 'spotify'}
-        onReactionPress={reaction => {
-          if (!homeReq) {
-            hitreact(reaction, data.index),
-              sendReaction(data.item._id, reaction);
+      <>
+        <HomeItemList
+          image={data.item.song_image}
+          id={data.item._id}
+          play={
+            _.isEmpty(postArray)
+              ? false
+              : posts.length === postArray.length
+              ? postArray[data.index].playing
+              : false
           }
-        }}
-        onPressImage={() => {
-          if (!homeReq) {
-            if (props.userProfileResp._id === data.item.user_id) {
-              props.navigation.navigate('Profile', { fromAct: false });
-            } else {
-              props.navigation.navigate('OthersProfile', {
-                id: data.item.user_id,
+          picture={data.item.userDetails.profile_image}
+          name={data.item.userDetails.username}
+          comment_count={data.item.comment_count ? data.item.comment_count : 0}
+          reaction_count={
+            data.item.reaction_count ? data.item.reaction_count : 0
+          }
+          reactions={{
+            fire_count: data.item.fire_count,
+            love_count: data.item.love_count,
+            dancer_count: data.item.dancer_count,
+            man_dancing_count: data.item.man_dancing_count,
+            face_count: data.item.face_count,
+            thumbsup_count: data.item.thumbsup_count,
+          }}
+          myReactions={reactionMap}
+          myReactionsPending={reactionPendingMap}
+          navi={props}
+          content={data.item.post_content}
+          time={data.item.createdAt}
+          title={data.item.song_name}
+          singer={data.item.artist_name}
+          songUri={data.item.song_uri}
+          modalVisible={modal1Visible}
+          postType={data.item.social_type === 'spotify'}
+          onReactionPress={newHitReact}
+          onPressImage={() => {
+            if (!isFetching) {
+              if (props.userProfileResp._id === data.item.user_id) {
+                props.navigation.navigate('Profile', { fromAct: false });
+              } else {
+                props.navigation.navigate('OthersProfile', {
+                  id: data.item.user_id,
+                });
+              }
+            }
+          }}
+          onAddReaction={() => {
+            hitreact1(modal1Visible);
+          }}
+          onPressMusicbox={() => {
+            if (!isFetching) {
+              playSong(data);
+              setVisibleMiniPlayer(true);
+            }
+          }}
+          onPressReactionbox={() => {
+            if (!isFetching) {
+              props.navigation.navigate('HomeItemReactions', {
+                reactionCount: data.item.reaction_count
+                  ? data.item.reaction_count
+                  : 0,
+                post_id: data.item._id,
+                onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
               });
             }
-          }
-        }}
-        onAddReaction={() => {
-          hitreact1(modal1Visible);
-        }}
-        onPressMusicbox={() => {
-          if (!homeReq) {
-            playSong(data);
-            setVisibleMiniPlayer(true);
-          }
-        }}
-        onPressReactionbox={() => {
-          if (!homeReq) {
-            props.navigation.navigate('HomeItemReactions', {
-              reactionCount: data.item.reaction_count
-                ? data.item.reaction_count
-                : 0,
-              post_id: data.item._id,
-              onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
-            });
-          }
-        }}
-        onPressCommentbox={() => {
-          if (!homeReq) {
-            props.navigation.navigate('HomeItemComments', {
-              index: data.index,
-              comment: data.item.comment,
-              image: data.item.song_image,
-              username: data.item.userDetails.username,
-              userComment: data.item.post_content,
-              time: data.item.createdAt,
-              id: data.item._id,
-              onSelect: (ID, comment) => _onSelectBack(ID, comment),
-            });
-          }
-        }}
-        onPressSecondImage={() => {
-          if (!homeReq) {
-            setPositionInArray(data.index);
-            setModalVisible(true);
-          }
-        }}
-        marginBottom={
-          data.index === props.postData.length - 1 ? normalise(60) : 0
-        }
-        // playingSongRef={props.playingSongRef}
-      />
-      // </TouchableOpacity>
-    );
-  }
-
-  function findIsNotRead() {
-    let hasUnseenMessage = false;
-    var arr = props.chatList;
-
-    if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
-      for (var i = 0; i < arr.length; i++) {
-        if (props.userProfileResp._id === arr[i].receiver_id) {
-          hasUnseenMessage = !arr[i].read;
-          if (hasUnseenMessage) {
-            break;
-          }
-        }
-      }
-
-      return hasUnseenMessage;
-    }
-  }
-
-  // RENDER USER SEARCH FLATLIST DATA
-  function renderAddUsersToMessageItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          marginTop: normalise(10),
-          width: '87%',
-          alignSelf: 'center',
-        }}
-        onPress={() => {
-          if (usersToSEndSong.length > 0) {
-            // let idArray = [];
-
-            // usersToSEndSong.map((item, index) => {
-
-            //   idArray.push(item._id)
-
-            // });
-            // if (idArray.includes(data.item._id)) {
-            //   // console.log('Already Exists');
-            // }
-            // else {
-            //   let array = [...usersToSEndSong]
-            //   array.push(data.item)
-            //   sesUsersToSEndSong(array);
-            // };
-
-            toast('Error', 'You can select one user at a time');
-          } else {
-            let array = [...usersToSEndSong];
-            array.push(data.item);
-            sesUsersToSEndSong(array);
-          }
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingBottom: normalise(10),
-          }}>
-          {/* <Image
-            source={{
-              uri: constants.profile_picture_base_url + data.item.profile_image,
-            }}
-            style={{ height: 35, width: 35, borderRadius: normalise(13.5) }}
-          /> */}
-          <View style={{ marginStart: normalise(10) }}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.full_name}
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: 14,
-                fontFamily: 'ProximaNova-Semibold',
-              }}>
-              {data.item.username}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  // RENDER ADD TO FLATLIST DATA
-  function renderUsersToSendSongItem(data) {
-    return (
-      <TouchableOpacity
-        style={{
-          height: normalise(30),
-          paddingHorizontal: normalise(18),
-          marginStart: normalise(20),
-          marginTop: normalise(5),
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-          marginEnd:
-            data.index === usersToSEndSong.length - 1 ? normalise(20) : 0,
-        }}>
-        <Text style={{ color: Colors.black, fontWeight: 'bold' }}>
-          {data.item.username}
-        </Text>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: -4,
-            height: 25,
-            width: 25,
-            borderRadius: 12,
           }}
-          onPress={() => {
-            let popArray = [...usersToSEndSong];
-            popArray.splice(data.index, 1);
-            sesUsersToSEndSong(popArray);
-          }}>
-          <Image
-            source={ImagePath ? ImagePath.crossIcon : null}
-            style={{
-              marginTop: normalise(-1.5),
-              marginStart: normalise(8.5),
-              height: 25,
-              width: 25,
-            }}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    );
-  }
-
-  const searchUser = text => {
-    if (text.length >= 1) {
-      props.getusersFromHome({ keyword: text });
-    }
-  };
-
-  function sendMessagesToUsers() {
-    var userIds = [];
-    usersToSEndSong.map(users => {
-      userIds.push(users._id);
-    });
-    props.createChatTokenRequest(userIds);
-  }
-
-  // BOTTOM SHEET FOR SELECTING USERS
-  const renderAddToUsers = () => {
-    return (
-      <RBSheet
-        ref={ref => {
-          if (ref) {
-            bottomSheetRef = ref;
-          }
-        }}
-        closeOnDragDown={true}
-        closeOnPressMask={true}
-        onClose={() => {
-          //sesUsersToSEndSong([])
-        }}
-        nestedScrollEnabled={true}
-        keyboardAvoidingViewEnabled={true}
-        height={normalise(500)}
-        duration={250}
-        customStyles={{
-          container: {
-            backgroundColor: Colors.black,
-            borderTopEndRadius: normalise(8),
-            borderTopStartRadius: normalise(8),
-          },
-          // wrapper: {
-          //     backgroundColor: 'rgba(87,97,145,0.5)'
-
-          // },
-          draggableIcon: {
-            backgroundColor: Colors.grey,
-            width: normalise(70),
-            height: normalise(3),
-          },
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '75%',
-                justifyContent: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(14),
-                  fontWeight: 'bold',
-                  marginTop: normalise(10),
-                  textAlign: 'right',
-                }}>
-                SELECT USER TO SEND TO
-              </Text>
-              {userClicked ? (
-                <Text
-                  style={{
-                    color: Colors.white,
-                    marginTop: normalise(10),
-                    fontSize: normalise(14),
-                    fontWeight: 'bold',
-                  }}>
-                  {' '}
-                  (1)
-                </Text>
-              ) : null}
-            </View>
-
-            {usersToSEndSong.length > 0 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  bottomSheetRef.close(), sendMessagesToUsers();
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(10),
-                    marginEnd: normalise(15),
-                  }}>
-                  {'NEXT'}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
+          onPressCommentbox={() => {
+            if (!isFetching) {
+              props.navigation.navigate('HomeItemComments', {
+                index: data.index,
+                comment: data.item.comment,
+                image: data.item.song_image,
+                username: data.item.userDetails.username,
+                userComment: data.item.post_content,
+                time: data.item.createdAt,
+                id: data.item._id,
+                onSelect: (ID, comment) => _onSelectBack(ID, comment),
+              });
+            }
+          }}
+          onPressSecondImage={() => {
+            if (!isFetching) {
+              setPositionInArray(data.index);
+              setModalVisible(true);
+            }
+          }}
+          // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+          // playingSongRef={props.playingSongRef}
+        />
+        {/* {(data.index === 1 ||
+          (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
           <View
             style={{
-              width: '90%',
-              alignSelf: 'center',
-              height: normalise(35),
-              marginTop: normalise(20),
-              borderRadius: normalise(8),
-              backgroundColor: Colors.white,
+              marginVertical: normalise(24),
+              flexDirection: 'row',
+              justifyContent: 'center',
             }}>
-            <TextInput
-              autoCorrect={false}
-              keyboardAppearance={'dark'}
-              style={{
-                height: normalise(35),
-                width: '85%',
-                padding: normalise(10),
-                // color: Colors.white,
-                paddingLeft: normalise(30),
+            <BannerAd
+              unitId={
+                Platform.OS === 'android'
+                  ? 'ca-app-pub-2232736176622960/5949774256'
+                  : 'ca-app-pub-2232736176622960/6141345945'
+              }
+              size={BannerAdSize.MEDIUM_RECTANGLE}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
               }}
-              value={userSeach}
-              placeholder={'Search'}
-              placeholderTextColor={Colors.grey_text}
-              onChangeText={text => {
-                setUserSeach(text), searchUser(text);
+              onAdLoaded={() => {
+                // console.log('Advert loaded');
+              }}
+              onAdFailedToLoad={error => {
+                console.error('Advert failed to load: ', error);
               }}
             />
-
-            <Image
-              source={ImagePath ? ImagePath.searchicongrey : null}
-              style={{
-                height: normalise(15),
-                width: normalise(15),
-                bottom: normalise(25),
-                paddingLeft: normalise(30),
-              }}
-              resizeMode="contain"
-            />
-
-            {userSeach === '' ? null : (
-              <TouchableOpacity
-                onPress={() => {
-                  setUserSeach(''), setUserSearchData([]);
-                }}
-                style={{
-                  backgroundColor: Colors.fordGray,
-                  padding: 6,
-                  paddingTop: 4,
-                  paddingBottom: 4,
-                  borderRadius: 2,
-                  position: 'absolute',
-                  right: 0,
-                  bottom: Platform.OS === 'ios' ? normalise(9) : normalise(8),
-                  marginRight: normalise(10),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(10),
-                    fontWeight: 'bold',
-                  }}>
-                  CLEAR
-                </Text>
-              </TouchableOpacity>
-            )}
           </View>
-
-          {usersToSEndSong.length > 0 ? ( // ADD TO ARRAY FLATLIST
-            <FlatList
-              style={{
-                marginTop: normalise(10),
-                maxHeight: normalise(50),
-                // backgroundColor: Colors.facebookblue
-              }}
-              horizontal={true}
-              data={usersToSEndSong}
-              renderItem={renderUsersToSendSongItem}
-              keyExtractor={(item, index) => {
-                index.toString();
-              }}
-              showsHorizontalScrollIndicator={false}
-            />
-          ) : null}
-
-          <FlatList // USER SEARCH FLATLIST
-            style={{
-              height: '65%',
-              marginTop: usersToSEndSong.length > 0 ? 0 : normalise(5),
-            }}
-            data={userSearchData}
-            renderItem={renderAddUsersToMessageItem}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={Seperator}
-          />
-        </View>
-      </RBSheet>
+        )} */}
+      </>
     );
-  };
+  }
 
-  // GET ISRC CODE
-  const callApi = async () => {
-    if (props.registerType === 'spotify') {
-      const spotifyToken = await getSpotifyToken();
+  //   function findIsNotRead() {
+  //     let hasUnseenMessage = false;
+  //     var arr = props.chatList;
 
-      return await axios.get(
-        `https://api.spotify.com/v1/search?q=isrc:${props.postData[positionInArray].isrc_code}&type=track`,
-        {
-          headers: {
-            Authorization: spotifyToken,
-          },
-        },
-      );
-    } else {
-      const AppleToken = await getAppleDevToken();
+  //     if (!_.isEmpty(arr) && !_.isEmpty(props.userProfileResp)) {
+  //       for (var i = 0; i < arr.length; i++) {
+  //         if (props.userProfileResp._id === arr[i].receiver_id) {
+  //           hasUnseenMessage = !arr[i].read;
+  //           if (hasUnseenMessage) {
+  //             break;
+  //           }
+  //         }
+  //       }
 
-      return await axios.get(
-        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${props.postData[positionInArray].isrc_code}`,
-        {
-          headers: {
-            Authorization: AppleToken,
-          },
-        },
-      );
-    }
-  };
-
-  //OPEN IN APPLE / SPOTIFY
-  const openInAppleORSpotify = async () => {
-    try {
-      const res = await callApi();
-      // console.log(res);
-
-      if (res.status === 200) {
-        if (
-          !_.isEmpty(
-            props.registerType === 'spotify'
-              ? res.data.tracks.items
-              : res.data.data,
-          )
-        ) {
-          if (props.userProfileResp.register_type === 'spotify') {
-            // console.log('success - spotify');
-            // console.log(res.data.tracks.items[0].external_urls.spotify);
-            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(
-                    res.data.tracks.items[0].external_urls.spotify,
-                  )
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
-              })
-              .catch(() => {
-                // console.log('not supported');
-              });
-            setBool(false);
-          } else {
-            // console.log('success - apple');
-            // console.log(res.data.data[0].attributes.url);
-            Linking.canOpenURL(res.data.data[0].attributes.url)
-              .then(supported => {
-                if (supported) {
-                  Linking.openURL(res.data.data[0].attributes.url)
-                    .then(() => {
-                      // console.log('success');
-                    })
-                    .catch(() => {
-                      // console.log('error');
-                    });
-                }
-              })
-              .catch(() => {
-                // console.log('not supported');
-              });
-            setBool(false);
-          }
-        } else {
-          setBool(false);
-          toast('', 'No Song Found');
-        }
-      } else {
-        setBool(false);
-        toast('Oops', 'Something Went Wrong');
-      }
-    } catch (error) {
-      setBool(false);
-      // console.log(error);
-    }
-  };
+  //       return hasUnseenMessage;
+  //     }
+  //   }
 
   // GET PLAYER PLAYING STATE FOR PAUSE/PLAY ICON IN FEED
   function getPlayerState() {
@@ -1188,14 +902,14 @@ function Home(props) {
         obj => obj.song_uri === props.playingSongRef.uri,
       );
       let array = [...postData];
-
+      let i;
       for (i = 0; i < array.length; i++) {
         if (i === myindex) {
           array[i].playing = true;
           let duration = global.playerReference.getDuration();
           global.playerReference.getCurrentTime(seconds => {
             let timeout = (duration - seconds) * 1000;
-            // console.log('timeout' + timeout);
+
             clearTimeout(timeoutVar);
             setTimeoutFunc(timeout);
           });
@@ -1204,20 +918,16 @@ function Home(props) {
         }
       }
       setPostArray(array);
-      // console.log(array);
     }
     // NOT PLAYING
     else {
-      // console.log('player not playing or playing song is not in feed');
-
       let array = [...postData];
-
+      let i;
       for (i = 0; i < array.length; i++) {
         array[i].playing = false;
       }
       //  setVisibleMiniPlayer(false)
       setPostArray(array);
-      // console.log(array);
     }
   }
 
@@ -1225,26 +935,98 @@ function Home(props) {
   function setTimeoutFunc(timeout) {
     setTimeoutVar(
       setTimeout(() => {
-        // console.log('now');
         findPlayingSong(postArray);
       }, timeout),
     );
   }
 
-  //PULL TO REFRESH
-  const onRefresh = () => {
-    setRefresing(true);
-    setOffset(1);
-    props.homePage(1);
+  // GET ISRC CODE
+  const callApi = async () => {
+    if (props.registerType === 'spotify') {
+      const spotifyToken = await getSpotifyToken();
+
+      return await axios.get(
+        `https://api.spotify.com/v1/search?q=isrc:${posts[positionInArray].isrc_code}&type=track`,
+        {
+          headers: {
+            Authorization: spotifyToken,
+          },
+        },
+      );
+    } else {
+      const AppleToken = await getAppleDevToken();
+
+      return await axios.get(
+        `https://api.music.apple.com/v1/catalog/us/songs?filter[isrc]=${posts[positionInArray].isrc_code}`,
+        {
+          headers: {
+            Authorization: AppleToken,
+          },
+        },
+      );
+    }
+  };
+
+  //OPEN IN APPLE / SPOTIFY
+  const openInAppleORSpotify = async () => {
+    try {
+      const res = await callApi();
+
+      if (res.status === 200) {
+        if (
+          !_.isEmpty(
+            props.registerType === 'spotify'
+              ? res.data.tracks.items
+              : res.data.data,
+          )
+        ) {
+          if (props.userProfileResp.register_type === 'spotify') {
+            Linking.canOpenURL(res.data.tracks.items[0].external_urls.spotify)
+              .then(() => {
+                Linking.openURL(res.data.tracks.items[0].external_urls.spotify)
+                  .then(() => {
+                    setBool(false);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+            setBool(false);
+          } else {
+            console.log(2);
+            Linking.canOpenURL(res.data.data[0].attributes.url)
+              .then(() => {
+                Linking.openURL(res.data.data[0].attributes.url)
+                  .then(() => {
+                    setBool(false);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              })
+              .catch(() => {});
+            setBool(false);
+          }
+        } else {
+          setBool(false);
+          toast('', 'No Song Found');
+        }
+      } else {
+        setBool(false);
+        toast('Oops', 'Something Went Wrong');
+      }
+    } catch (error) {
+      console.log({ error });
+      setBool(false);
+    }
   };
 
   function onfinish() {
-    //  alert("onfinish")
-    // console.log("lod"+JSON.stringify(props.postData))
-
-    if (props.postData.length !== 0) {
-      // console.log("timestamtp"+props.postData[0].createdAt)
-      let loadData = { offset: 1, create: props.postData[0].createdAt };
+    if (posts.length !== 0) {
+      let loadData = { offset: 1, create: posts[0].createdAt };
       props.loadMorePost(loadData);
     } else {
       console.log('empty');
@@ -1256,16 +1038,16 @@ function Home(props) {
     <View
       style={{
         flex: 1,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.darkerblack,
       }}>
-      {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
-
       <StatusBar backgroundColor={Colors.darkerblack} />
-
       <SafeAreaView style={{ flex: 1, position: 'relative' }}>
-        <Timer value={timerValue} onFinish={() => onfinish()} />
-
-        <Loader visible={homeReq} />
+        <Timer
+          onFinish={() => {
+            onfinish();
+          }}
+        />
+        <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
         <Loader visible={contactsLoading} />
         <Loader visible={bool} />
         <HomeHeaderComponent
@@ -1274,8 +1056,10 @@ function Home(props) {
           imageone={
             _.isEmpty(props.userProfileResp)
               ? ''
-              : constants.profile_picture_base_url +
+              : props.userProfileResp.profile_image
+              ? constants.profile_picture_base_url +
                 props.userProfileResp.profile_image
+              : null
           }
           staticFirstImage={false}
           imageoneheight={normalise(26)}
@@ -1283,11 +1067,11 @@ function Home(props) {
           borderRadius={normalise(30)}
           title={'CHOONA'}
           thirditemtext={false}
-          imagetwo={ImagePath.inbox}
+          imagetwo={ImagePath.boxicon}
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
-          notRead={findIsNotRead()}
+          notRead={false}
           onIconPress={true}
           pressLogo={() => {
             flatlistRef.current.scrollToIndex({
@@ -1300,12 +1084,215 @@ function Home(props) {
             props.navigation.navigate('Profile', { fromAct: false });
           }}
           onPressThirdItem={() => {
-            props.navigation.navigate('Inbox');
+            props.navigation.navigate('Contact');
             //  props.navigation.navigate('BlankScreen');
           }}
         />
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={firstTimeModalShow}
+          presentationStyle="overFullScreen">
+          <LinearGradient
+            colors={['rgba(159, 0, 255, 0.8)', 'rgba(3, 150, 91, 0.8)']}
+            locations={[0, 0.5, 1]}
+            useAngle={true}
+            angle={315}
+            angleCenter={{ x: -4, y: 1 }}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: normalise(12),
+            }}>
+            <View
+              style={{
+                backgroundColor: '#121317',
+                borderRadius: normalise(8),
+                boxShadow: '0px -8px 40px rgba(0, 0, 0, 0.4)',
+                padding: normalise(16),
+                width: '100%',
+              }}>
+              <View
+                style={{
+                  alignItems: 'flex-start',
+                  borderBottomColor: '#25262A',
+                  borderBottomWidth: normalise(1),
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Bold',
+                    fontSize: normalise(14),
+                    marginBottom: normalise(12),
+                  }}>
+                  Welcome to Choona
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    setFirstTimeModalShow(false);
+                    AsyncStorage.setItem('IS_FIRST_OPEN', 'true');
+                  }}>
+                  <Image
+                    source={ImagePath.modalClose}
+                    style={{
+                      height: normalise(24),
+                      right: normalise(-4),
+                      top: normalise(-4),
+                      width: normalise(24),
+                    }}
+                  />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  borderBottomColor: '#25262A',
+                  borderBottomWidth: normalise(1),
+                  paddingTop: normalise(12),
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Firstly, thank you so much for joining Choona!
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Choona is made by a tiny team and is currently bootstrapped;
+                  so please help us, to help you. We have created this platform
+                  for music lovers, like yourself, to share their music.
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  We have released Choona to a wider audience, in order to get
+                  some feedback from people like you. It won’t be perfect yet,
+                  but please reach out with any bugs or feature requests to
+                  contact@choona.com{' '}
+                  <Text
+                    style={{
+                      color: '#979797',
+                    }}>
+                    (this is also in the setting menu should you need it going
+                    forward)
+                  </Text>
+                  .
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Choona is better with friends; so please share it. Also, check
+                  your phonebook to see if any of your friends are already on
+                  here. Failing that, you can follow our founder below to see
+                  his{' '}
+                  <Text
+                    style={{
+                      textDecorationLine: 'line-through',
+                      textDecorationStyle: 'solid',
+                    }}>
+                    awful
+                  </Text>{' '}
+                  taste in music.
+                </Text>
+              </View>
+              <View
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: normalise(12),
+                }}>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                  <Image
+                    source={{
+                      uri:
+                        constants.profile_picture_base_url +
+                        andyProfile.profile_image,
+                    }}
+                    style={{
+                      borderRadius: normalise(16),
+                      height: normalise(32),
+                      marginRight: normalise(8),
+                      width: normalise(32),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'ProximaNova-SemiBold',
+                        fontSize: normalise(12),
+                      }}>
+                      {andyProfile.full_name}
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'ProximaNova-Regular',
+                        fontSize: normalise(10),
+                        opacity: 0.5,
+                      }}>
+                      Founder
+                    </Text>
+                  </View>
+                </View>
+                {!andyProfile.isFollowing && (
+                  <Pressable
+                    onPress={() => {
+                      props.followUnfollowReq({ follower_id: andyProfile._id });
+                      setFollowButtonPressed(true);
+                    }}
+                    disabled={followButtonPressed}
+                    style={{
+                      alignItems: 'center',
+                      backgroundColor: followButtonPressed ? '#25262a' : '#fff',
+                      borderRadius: normalise(16),
+                      height: normalise(30),
+                      justifyContent: 'center',
+                      width: normalise(100),
+                    }}>
+                    <Text
+                      style={{
+                        color: followButtonPressed ? '#fff' : '#25262a',
+                        fontFamily: 'ProximaNova-Bold',
+                        fontSize: normalise(10),
+                        textTransform: 'uppercase',
+                      }}>
+                      {followButtonPressed ? 'Following' : 'Follow Me'}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </View>
+          </LinearGradient>
+        </Modal>
 
-        {_.isEmpty(props.postData) ? (
+        {!isShown && (
+          <CompleteProfileBlock
+            navigation={props.navigation}
+            setIsShown={setIsShown}
+          />
+        )}
+
+        {_.isEmpty(posts) ? (
           <EmptyComponent
             buttonPress={() => {
               setContactsLoading(true);
@@ -1321,52 +1308,16 @@ function Home(props) {
         ) : (
           <View style={{ flex: 1 }}>
             <FlatList
-              // style={{marginTop: normalise(10)}}
-              data={props.postData}
+              data={posts}
               renderItem={renderItem}
-              windowSize={150}
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item._id}
               ref={flatlistRef}
-              initialScrollIndex={0}
-              extraData={postArray}
-              onEndReached={() => {
-                console.log('onend reached' + onScrolled);
-
-                if (onScrolled) {
-                  setOffset(offset + 1);
-                  props.homePage(offset + 1);
-                  setOnScrolled(false);
-                }
-              }}
+              onEndReached={() => fetchNextPage()}
               onEndReachedThreshold={2}
-              initialNumToRender={10}
-              onMomentumScrollBegin={() => {
-                setOnScrolled(true);
-              }}
-              ListFooterComponent={
-                props.status === HOME_PAGE_REQUEST ? (
-                  <ActivityIndicator
-                    size={'large'}
-                    style={{
-                      alignSelf: 'center',
-                      marginBottom: normalise(50),
-                      marginTop: normalise(-40),
-                    }}
-                  />
-                ) : null
-              }
-              getItemLayout={(data, index) => ({
-                length: 250,
-                offset: normalise(385) * index,
-                index,
-              })}
-              onScrollToIndexFailed={val => {
-                // console.log(val);
-              }}
               refreshControl={
                 <RefreshControl
-                  refreshing={refresing}
+                  refreshing={refreshing}
                   onRefresh={onRefresh}
                   colors={[Colors.black]}
                   progressBackgroundColor={Colors.white}
@@ -1396,26 +1347,19 @@ function Home(props) {
                     paddingVertical: '2.7%',
                     paddingHorizontal: '4.3%',
                   }}>
-                  <Text style={{ color: 'white', fontSize: normalise(10) }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: normalise(10),
+                      fontFamily: 'Kallisto',
+                    }}>
                     Load Newer Posts
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
             ) : null}
-            {renderAddToUsers()}
 
-            {/* {console.log('props.statj' + props.status)} */}
-            {(props.status === HOME_PAGE_SUCCESS ||
-              props.status === USER_PROFILE_SUCCESS ||
-              props.status === COUNTRY_CODE_SUCCESS ||
-              props.status === OTHERS_PROFILE_SUCCESS ||
-              props.status === EDIT_PROFILE_SUCCESS ||
-              props.status === DUMMY_ACTION_SUCCESS ||
-              props.status === LOAD_MORE_SUCCESS ||
-              props.status === LOAD_MORE_REQUEST ||
-              props.status === HOME_PAGE_REQUEST ||
-              props.status === DUMMY_ACTION_REQUEST) &&
-            visibleminiPlayer === true ? (
+            {visibleminiPlayer === true ? (
               <MusicPlayerBar
                 onPress={() => {
                   props.navigation.navigate('Player', {
@@ -1440,15 +1384,14 @@ function Home(props) {
                 }}
                 onPressPlayOrPause={() => {
                   setTimeout(() => {
-                    findPlayingSong(props.postData);
+                    findPlayingSong(posts);
                   }, 500);
                 }}
               />
             ) : null}
-
             <Modal
               animationType="fade"
-              transparent={false}
+              transparent={true}
               visible={visible}
               onRequestClose={() => {
                 //Alert.alert("Modal has been closed.");
@@ -1472,315 +1415,22 @@ function Home(props) {
                 </Text>
               </View>
             </Modal>
-
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisible}
-              presentationStyle={'overFullScreen'}
-              onRequestClose={() => {
-                //Alert.alert("Modal has been closed.");
-              }}>
-              <ImageBackground
-                source={ImagePath ? ImagePath.page_gradient : null}
-                style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      let saveSongObject = {
-                        song_uri: props.postData[positionInArray].song_uri,
-                        song_name: props.postData[positionInArray].song_name,
-                        song_image: props.postData[positionInArray].song_image,
-                        artist_name:
-                          props.postData[positionInArray].artist_name,
-                        album_name: props.postData[positionInArray].album_name,
-                        post_id: props.postData[positionInArray]._id,
-                        isrc_code: props.postData[positionInArray].isrc_code,
-                        original_song_uri:
-                          props.postData[positionInArray].original_song_uri,
-                        original_reg_type:
-                          props.postData[positionInArray].userDetails
-                            .register_type,
-                      };
-
-                      props.saveSongReq(saveSongObject);
-                      setModalVisible(!modalVisible);
-                    }}>
-                    <Image
-                      source={ImagePath ? ImagePath.boxicon : null}
-                      style={{ height: normalise(18), width: normalise(18) }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      Save Song
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      if (bottomSheetRef) {
-                        setModalVisible(false), bottomSheetRef.open();
-                      }
-                    }}>
-                    <Image
-                      source={ImagePath ? ImagePath.sendicon : null}
-                      style={{ height: normalise(18), width: normalise(18) }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        fontSize: normalise(13),
-                        marginLeft: normalise(15),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      Send Song
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      Clipboard.setString(
-                        props.postData[positionInArray].original_song_uri,
-                      );
-                      setModalVisible(!modalVisible);
-
-                      setTimeout(() => {
-                        toast('Success', 'Song copied to clipboard.');
-                      }, 1000);
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      source={ImagePath ? ImagePath.more_copy : null}
-                      style={{ height: normalise(18), width: normalise(18) }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      Copy Link
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-
-                      props.userProfileResp._id !==
-                      props.postData[positionInArray].user_id // USER - FOLLOW/UNFOLLOW
-                        ? props.followUnfollowReq({
-                            follower_id:
-                              props.postData[positionInArray].userDetails._id,
-                          }) // USER - FOLLOW/UNFOLLOW
-                        : props.deletePostReq(
-                            props.postData[positionInArray]._id,
-                          ); //  DELETE POST
-                    }}>
-                    <Image
-                      source={ImagePath ? ImagePath.more_unfollow : null}
-                      style={{ height: normalise(18), width: normalise(18) }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      {!_.isEmpty(props.userProfileResp)
-                        ? props.userProfileResp._id ===
-                          props.postData[positionInArray].user_id
-                          ? 'Delete Post'
-                          : `Unfollow ${props.postData[positionInArray].userDetails.username}`
-                        : ''}
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      if (
-                        props.postData[positionInArray].userDetails
-                          .register_type === props.registerType
-                      ) {
-                        // console.log('same reg type');
-                        setModalVisible(false);
-                        setBool(true),
-                          Linking.canOpenURL(
-                            props.postData[positionInArray].original_song_uri,
-                          )
-                            .then(() => {
-                              Linking.openURL(
-                                props.postData[positionInArray]
-                                  .original_song_uri,
-                              )
-                                .then(() => {
-                                  // console.log('success');
-                                  setBool(false);
-                                })
-                                .catch(() => {
-                                  // console.log('error');
-                                });
-                            })
-                            .catch(err => {
-                              // console.log('unsupported');
-                            });
-                      } else {
-                        // console.log('diffirent reg type');
-                        setModalVisible(false);
-                        setBool(true),
-                          isInternetConnected()
-                            .then(() => {
-                              openInAppleORSpotify();
-                            })
-                            .catch(() => {
-                              toast('', 'Please Connect To Internet');
-                            });
-                      }
-                    }}>
-                    <Image
-                      source={
-                        ImagePath
-                          ? !_.isEmpty(props.userProfileResp)
-                            ? props.userProfileResp.register_type === 'spotify'
-                              ? ImagePath.spotifyicon
-                              : ImagePath.applemusic
-                            : null
-                          : null
-                      }
-                      style={{
-                        height: normalise(18),
-                        width: normalise(18),
-                      }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      {!_.isEmpty(props.userProfileResp)
-                        ? props.userProfileResp.register_type === 'spotify'
-                          ? 'Open on Spotify'
-                          : 'Open on Apple'
-                        : ''}
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: normalise(18),
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                      if (props.userProfileResp.register_type === 'spotify') {
-                        props.navigation.navigate('AddToPlayListScreen', {
-                          originalUri:
-                            props.postData[positionInArray].original_song_uri,
-                          registerType:
-                            props.postData[positionInArray].social_type,
-                          isrc: props.postData[positionInArray].isrc_code,
-                        });
-                      } else {
-                        // setTimeout(() => {
-                        //   toast("Oops", "Only, Spotify users can add to their playlist now.")
-                        // }, 1000)
-                        props.navigation.navigate('AddToPlayListScreen', {
-                          isrc: props.postData[positionInArray].isrc_code,
-                        });
-                      }
-                    }}>
-                    <Image
-                      source={ImagePath ? ImagePath.addicon : null}
-                      style={{
-                        height: normalise(18),
-                        width: normalise(18),
-                        // borderRadius: normalise(9),
-                      }}
-                      resizeMode="contain"
-                    />
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        marginLeft: normalise(15),
-                        fontSize: normalise(13),
-                        fontFamily: 'ProximaNova-Regular',
-                      }}>
-                      Add to Playlist
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                      setPositionInArray(0);
-                    }}
-                    style={{
-                      // marginStart: normalise(20),
-                      // marginEnd: normalise(20),
-                      marginTop: normalise(24),
-                      marginBottom: normalise(20),
-                      height: normalise(40),
-                      // width: '95%',
-                      backgroundColor: Colors.fadeblack,
-                      opacity: 10,
-                      borderRadius: 6,
-                      // padding: 35,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: normalise(12),
-                        fontFamily: 'ProximaNova-Bold',
-                        color: Colors.white,
-                      }}>
-                      CANCEL
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </ImageBackground>
-            </Modal>
+            {modalVisible && (
+              <MoreModal
+                setBool={setBool}
+                index={positionInArray}
+                setIndex={setPositionInArray}
+                navigation={props.navigation}
+                openInAppleORSpotify={openInAppleORSpotify}
+                postData={posts}
+                show={modalVisible}
+                setShow={setModalVisible}
+                setReportModal={setReportModal}
+              />
+            )}
+            <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
           </View>
         )}
-
         {modal1Visible === true ? (
           <View
             style={{
@@ -1807,11 +1457,11 @@ function Home(props) {
               category={Categories.history}
               showHistory={true}
               onEmojiSelected={emoji => {
-                setVisible(true),
-                  setModalReact(emoji),
-                  setTimeout(() => {
-                    setVisible(false);
-                  }, 2000);
+                setVisible(true);
+                setModalReact(emoji);
+                setTimeout(() => {
+                  setVisible(false);
+                }, 2000);
               }}
             />
           </View>
@@ -1819,53 +1469,9 @@ function Home(props) {
       </SafeAreaView>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modalView: {
-    // marginBottom: normalise(10),
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
-    backgroundColor: Colors.darkerblack,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    // margin: 20,
-    padding: 20,
-    paddingTop: normalise(24),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-  },
-});
+};
 
 const mapStateToProps = state => {
-  //  console.log("psotdata"+ JSON.stringify(state.UserReducer))
   return {
     status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
@@ -1882,6 +1488,7 @@ const mapStateToProps = state => {
     currentPage: state.UserReducer.currentPage,
     SuccessToken: state.TokenReducer.token,
     loadData: state.UserReducer.loadData,
+    header: state.TokenReducer,
   };
 };
 
@@ -1921,10 +1528,6 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
-    },
-
-    createChatTokenRequest: payload => {
-      dispatch(createChatTokenRequest(payload));
     },
 
     dummyRequest: () => {

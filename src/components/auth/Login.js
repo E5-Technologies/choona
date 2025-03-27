@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import env from 'react-native-config';
 import {
   Dimensions,
@@ -13,15 +13,15 @@ import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {loginWithSpotify} from '../../utils/helpers/SpotifyLogin';
+import { loginWithSpotify } from '../../utils/helpers/SpotifyLogin';
 // import toast from '../../utils/helpers/ShowErrorAlert';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
-import {loginRequest} from '../../action/UserAction';
-import {connect} from 'react-redux';
+import { loginRequest, signupRequest } from '../../action/UserAction';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
   AppleAuthError,
@@ -30,8 +30,10 @@ import appleAuth, {
   // AppleAuthCredentialState,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
-import {OneSignal} from 'react-native-onesignal';
+import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
+import OneSignal from 'react-native-onesignal';
+import axios from 'axios';
+import constants from '../../utils/helpers/constants';
 
 let user = null;
 let status = '';
@@ -41,12 +43,12 @@ function SignUp(props) {
   const [userDetails, setUserDetails] = useState({});
   // const [credentialStateForUser, updateCredentialStateForUser] = useState(-1);
   const [loginType, setLoginType] = useState('');
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     (async () => {
-      // const {userId} = await OneSignal.getDeviceState();
-      const id = OneSignal.User.pushSubscription.getPushSubscriptionId();
-      setToken(id);
+      const { userId } = await OneSignal.getDeviceState();
+      setToken(userId);
     })();
   });
 
@@ -58,10 +60,9 @@ function SignUp(props) {
   // }, []);
 
   function spotifyLogin() {
-    console.log(1);
     loginWithSpotify()
       .then(value => {
-        console.log(2, !_.isEmpty(value));
+          console.log("HERE", value);
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
@@ -71,7 +72,8 @@ function SignUp(props) {
             deviceToken: token2,
             deviceType: Platform.OS,
           };
-          console.log({payload});
+          console.log({ payload });
+
           props.loginRequest(payload);
         }
       })
@@ -158,7 +160,7 @@ function SignUp(props) {
 
   // API REQUEST
   function signInwithApple(appleData, token) {
-    console.log({appleData}, {token});
+    console.log({ appleData }, { token });
     // isInternetConnected().then(() => {
 
     var appleSignUpObject = {};
@@ -192,13 +194,54 @@ function SignUp(props) {
         status = props.status;
 
         if (props.error.status === 201) {
-          props.navigation.navigate('SignUp', {
-            userDetails: userDetails,
-            loginType: loginType,
-          });
+          if (loginType === 'Apple') {
+            let formdata = new FormData();
+            formdata.append(
+              'full_name',
+              `${userDetails.fullName.givenName} ${userDetails.fullName.familyName}`,
+            );
+            formdata.append('profile_image', '');
+            formdata.append('phone', '');
+            formdata.append('location', '');
+            formdata.append('email', userDetails.email);
+            formdata.append('deviceToken', token2);
+            formdata.append('deviceType', Platform.OS);
+            formdata.append('social_id', userDetails.user);
+            formdata.append('register_type', 'apple');
+
+            axios
+              .post(
+                constants.BASE_URL + '/user/available',
+                {
+                  username: `${userDetails.fullName.givenName}${userDetails.fullName.familyName}`,
+                },
+                {
+                  headers: {
+                    Accept: 'application/json',
+                    contenttype: 'application/json',
+                  },
+                },
+              )
+              .then(res => {
+                if (res.data.status === 200) {
+                  formdata.append(
+                    'username',
+                    `${userDetails.fullName.givenName}${userDetails.fullName.familyName}`,
+                  );
+                  props.signUpRequest(formdata);
+                } else {
+                  formdata.append('username', userDetails.nonce);
+                  props.signUpRequest(formdata);
+                }
+              });
+          } else {
+            props.navigation.navigate('SignUp', {
+              userDetails: userDetails,
+              loginType: loginType,
+            });
+          }
         } else {
           alert(props.error.message);
-          console.log(JSON.stringify(props.error), 'this is error h')
         }
 
         break;
@@ -207,7 +250,11 @@ function SignUp(props) {
 
   return (
     <View
-      style={{flex: 1, backgroundColor: Colors.black, position: 'relative'}}>
+      style={{
+        flex: 1,
+        backgroundColor: Colors.darkerblack,
+        position: 'relative',
+      }}>
       {Platform.OS === 'android' ? (
         <MyStatusBar />
       ) : (
@@ -274,15 +321,29 @@ function SignUp(props) {
           left: 0,
           right: 0,
         }}>
-        <Text
-          style={{
-            color: Colors.white,
-            fontFamily: 'ProximaNova-SemiBold',
-            fontSize: normalise(11),
-            marginBottom: normalise(12),
-          }}>
-          SIMPLY SIGN IN WITH ONE OF THE BELOW
-        </Text>
+        {Platform.OS === 'ios' ? (
+          <Text
+            style={{
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              fontSize: normalise(12),
+              marginBottom: normalise(12),
+            }}>
+            SIGN IN WITH YOUR MUSIC SERVICE
+          </Text>
+        ) : Platform.OS === 'android' ? (
+          <Text
+            style={{
+              color: Colors.white,
+              fontFamily: 'ProximaNova-SemiBold',
+              fontSize: normalise(11),
+              marginBottom: normalise(12),
+            }}>
+            LOGIN WITH
+          </Text>
+        ) : (
+          <></>
+        )}
         <TouchableOpacity
           style={{
             backgroundColor: '#1ED760',
@@ -294,6 +355,7 @@ function SignUp(props) {
             marginBottom: normalise(12),
           }}
           onPress={() => {
+            console.log(1);
             spotifyLogin();
             setLoginType('Spotify');
           }}>
@@ -305,31 +367,64 @@ function SignUp(props) {
             resizeMode="contain"
           />
         </TouchableOpacity>
-
-        {Platform.OS === 'ios' ? (
+        {Platform.OS === 'ios' && (
           <TouchableOpacity
             style={{
-              backgroundColor: '#E74E4C',
+              backgroundColor: '#ffffff',
               borderRadius: normalise(26),
               height: normalise(52),
               width: '100%',
               alignItems: 'center',
               justifyContent: 'center',
+              flexDirection: 'row',
             }}
             onPress={() => onAppleButtonPress()}>
             <Image
-              source={ImagePath ? ImagePath.appleButtonLogo : null}
+              source={ImagePath ? ImagePath.appleSmallLogo : null}
               style={{
-                height: normalise(26),
+                height: normalise(19),
+                marginRight: normalise(8),
+                top: normalise(-2),
+                width: normalise(16),
               }}
               resizeMode="contain"
             />
+            <Text
+              style={{
+                color: Colors.darkerblack,
+                fontSize: normalise(14),
+                fontFamily: 'ProximaNova-SemiBold',
+                textTransform: 'uppercase',
+              }}>
+              Sign in with Apple
+            </Text>
           </TouchableOpacity>
-        ) : null}
+        )}
       </View>
     </View>
   );
 }
+
+/* Login with Spotify */
+
+// position: absolute;
+// left: 34.93 %;
+// right: 28.53 %;
+// top: 84.24 %;
+// bottom: 8.87 %;
+
+// font - family: Proxima Nova;
+// font - style: normal;
+// font - weight: 600;
+// font - size: 14px;
+// line - height: 14px;
+// display: flex;
+// align - items: center;
+// text - align: center;
+// text - transform: uppercase;
+
+// /* NavBar */
+// color: #121317;
 
 const mapStateToProps = state => {
   return {
@@ -341,6 +436,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    signUpRequest: payload => {
+      dispatch(signupRequest(payload));
+    },
     loginRequest: payload => {
       dispatch(loginRequest(payload));
     },

@@ -1,13 +1,13 @@
 import constants from '../../../utils/helpers/constants';
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {OneSignal} from 'react-native-onesignal';
+import OneSignal from 'react-native-onesignal';
 
 const updateToken = async token => {
   try {
-    // const { userId } = await OneSignal.getDeviceState();
-    const id = OneSignal.User.pushSubscription.getPushSubscriptionId();
-    updatetoken(token, id);
+    const { userId } = await OneSignal.getDeviceState();
+
+    updatetoken(token, userId);
   } catch (error) {
     console.log(error);
   }

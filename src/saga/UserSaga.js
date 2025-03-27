@@ -17,6 +17,18 @@ import {
   USER_SEARCH_REQUEST,
   USER_SEARCH_SUCCESS,
   USER_SEARCH_FAILURE,
+  USER_BLOCK_REQUEST,
+  USER_BLOCK_SUCCESS,
+  USER_BLOCK_FAILURE,
+  USER_UNBLOCK_REQUEST,
+  USER_UNBLOCK_SUCCESS,
+  USER_UNBLOCK_FAILURE,
+  REPORT_REQUEST,
+  REPORT_SUCCESS,
+  REPORT_FAILURE,
+  USER_BLOCKLIST_REQUEST,
+  USER_BLOCKLIST_SUCCESS,
+  USER_BLOCKLIST_FAILURE,
   USER_FOLLOW_UNFOLLOW_REQUEST,
   USER_FOLLOW_UNFOLLOW_SUCCESS,
   USER_FOLLOW_UNFOLLOW_FAILURE,
@@ -92,8 +104,6 @@ export function* loginAction(action) {
 
   try {
     const response = yield call(postApi, 'user/signin', action.payload, header);
-
-    console.log('USER_SIGN_IN_RESPONSE--' + JSON.stringify(response));
     if (response.data.status === 200) {
       yield call(
         AsyncStorage.setItem,
@@ -114,7 +124,6 @@ export function* loginAction(action) {
       yield put({ type: USER_LOGIN_FAILURE, error: response.data });
     }
   } catch (error) {
-    console.log(JSON.stringify(error), 'its heee >>')
     yield put({ type: USER_LOGIN_FAILURE, error: error });
   }
 }
@@ -148,7 +157,6 @@ export function* UserSignUpAction(action) {
       });
     }
   } catch (error) {
-    console.log(JSON.stringify(error), 'its error in signup')
     yield put({ type: USER_SIGNUP_FAILURE, error: error });
   }
 }
@@ -237,6 +245,94 @@ export function* userFollowOrUnfollowAction(action) {
     yield put({ type: USER_FOLLOW_UNFOLLOW_SUCCESS, data: response.data.data });
   } catch (error) {
     yield put({ type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error });
+  }
+}
+
+export function* userBlockAction(action) {
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/blockuser',
+      action.payload,
+      Header,
+    );
+    yield put({ type: USER_BLOCK_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: USER_BLOCK_FAILURE, error: error });
+  }
+}
+
+export function* userUnBlockAction(action) {
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/unblockuser',
+      action.payload,
+      Header,
+    );
+    yield put({ type: USER_UNBLOCK_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: USER_UNBLOCK_FAILURE, error: error });
+  }
+}
+
+export function* userBlockListAction(action) {
+  try {
+    const items = yield select(getItems);
+
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/getblockedusers',
+      action.payload,
+      Header,
+    );
+    yield put({ type: USER_BLOCKLIST_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: USER_BLOCKLIST_FAILURE, error: error });
+  }
+}
+
+export function* Report(action) {
+  try {
+    const items = yield select(getItems);
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    const response = yield call(
+      postApi,
+      'user/report',
+      action.payload,
+      Header,
+    );
+
+    yield put({ type: REPORT_SUCCESS, data: response.data.data });
+  } catch (error) {
+    yield put({ type: REPORT_FAILURE, error: error });
   }
 }
 
@@ -519,9 +615,8 @@ export function* getCountryCodeAction(action) {
       Accept: 'application/json',
       contenttype: 'application/json',
     };
-    // const items = yield select(getItems);
+
     const response = yield call(getApi, 'country-code/list', Header);
-    console.log(response.data.data, 'cnountry list')
 
     let UK = response.data.data.findIndex(obj => obj.dial_code === '+44');
     let USA = response.data.data.findIndex(obj => obj.dial_code === '+1');
@@ -546,7 +641,6 @@ export function* getCountryCodeAction(action) {
       data1: response.data.data,
     });
   } catch (error) {
-    console.log(JSON.stringify(error), 'errro in country code')
     yield put({ type: COUNTRY_CODE_FAILURE, error: error });
   }
 }
@@ -579,11 +673,13 @@ export function* getUsersFromContact(action) {
     };
 
     const response = yield call(postApi, 'user/phone', action.payload, Header);
+    console.log(response?.data, 'its data of phone user')
     yield put({
       type: GET_USERS_FROM_CONTACTS_SUCCESS,
       data: response.data.data,
     });
   } catch (error) {
+    console.log(error, 'hey its error')
     yield put({ type: GET_USERS_FROM_CONTACTS_FAILURE, error: error });
   }
 }
@@ -609,7 +705,7 @@ export function* followingSearchAction(action) {
 
   const result = _.filter(followingData.followingDataCopy, item => {
     return (
-      item.username.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
+      item.full_name.toLowerCase().indexOf(action.search.toLowerCase()) !== -1
     );
   });
 
@@ -640,6 +736,22 @@ export function* watchuserSearchAction() {
 
 export function* watchuserFollowOrUnfollowAction() {
   yield takeLatest(USER_FOLLOW_UNFOLLOW_REQUEST, userFollowOrUnfollowAction);
+}
+
+export function* watchuserBlockAction() {
+  yield takeLatest(USER_BLOCK_REQUEST, userBlockAction);
+}
+
+export function* watchuserUnBlockAction() {
+  yield takeLatest(USER_UNBLOCK_REQUEST, userUnBlockAction);
+}
+
+export function* watchuserBlockListAction() {
+  yield takeLatest(USER_BLOCKLIST_REQUEST, userBlockListAction);
+}
+
+export function* watchReportAction() {
+  yield takeLatest(REPORT_REQUEST, Report);
 }
 
 export function* watchothersProfileAction() {

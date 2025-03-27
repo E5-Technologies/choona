@@ -30,9 +30,11 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Seperator from './ListCells/Seperator';
 import Loader from '../../widgets/AuthLoader';
-
+import normaliseNew from '../../utils/helpers/DimensNew';
 import { fetchReactionsOnPost } from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
+import ReactionsReverseMap from '../Reactions/ReactionsReverse';
+import ReactionsComponent from '../Reactions/ReactionsComponent';
 
 const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 let reaction_count = 0;
@@ -51,7 +53,6 @@ function HomeItemReaction(props) {
     fetchReactionsOnPost(props.route.params.post_id, props.header.token)
       .then(res => {
         setReactionsLoading(false);
-        console.log('data' + JSON.stringify(res));
         if (res) {
           setReactionList(editArray(res));
           reaction_count = res.length;
@@ -70,9 +71,18 @@ function HomeItemReaction(props) {
   let userId = props.userProfileResp._id;
 
   function editArray(array) {
+    var reactionMap = {};
     var editedList = [];
 
     array.map(item => {
+      if (item.text) {
+        const key = ReactionsReverseMap[item.text];
+        if (!reactionMap[key]) {
+          reactionMap[key] = [];
+        }
+        reactionMap[key].push(item);
+      }
+
       let reactionObject = {};
 
       reactionObject.header = item.text;
@@ -85,7 +95,18 @@ function HomeItemReaction(props) {
       );
     });
 
-    return editedList;
+    const sortedList = Object.keys(reactionMap).map(key => {
+      return {
+        header: key,
+        data: reactionMap[key],
+      };
+    });
+    // console.log(JSON.stringify(sortedList, null, 4));
+
+    return sortedList;
+    // console.log(JSON.stringify(editedList, null, 4));
+
+    // return editedList;
   }
 
   function getFilteredData(keyword) {
@@ -197,7 +218,7 @@ function HomeItemReaction(props) {
     let ID = props.route.params.post_id;
     let Comment = reaction_count;
     let ReactionList = reactionList;
-    console.log('hhh', JSON.stringify(ReactionList));
+    // console.log('hhh', JSON.stringify(ReactionList));
     const { navigation, route } = props;
     route.params.onSelectReaction(ID, Comment, ReactionList);
     navigation.goBack();
@@ -259,7 +280,7 @@ function HomeItemReaction(props) {
           marginBottom:
             data.index === reactionList.length - 1
               ? normalise(120)
-              : normalise(0),
+              : normalise(10),
         }}>
         <View
           style={{
@@ -269,16 +290,14 @@ function HomeItemReaction(props) {
             justifyContent: 'center',
             backgroundColor: Colors.darkerblack,
           }}>
-          <Text
+          <View
             style={{
-              color: Colors.white,
-              fontSize: normalise(30),
-              marginLeft: normalise(5),
-              fontWeight: 'bold',
+              width: normalise(26),
+              height: normalise(26),
+              marginHorizontal: normaliseNew(16),
             }}>
-            {' '}
-            {data.item.header}
-          </Text>
+            <ReactionsComponent value={data.item.header} />
+          </View>
         </View>
         {
           //  alert('login'+JSON.stringify(props.userProfileResp._id))
@@ -294,13 +313,10 @@ function HomeItemReaction(props) {
             item.toString();
           }}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={Seperator}
         />
       </View>
     );
   }
-
-  console.log(props);
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
@@ -330,7 +346,7 @@ function HomeItemReaction(props) {
             _onBackPress();
           }}
         />
-        <View style={{ flex: 1, backgroundColor: Colors.black }}>
+        <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
           <View style={{ width: '92%', alignSelf: 'center' }}>
             <TextInput
               autoCorrect={false}
@@ -372,7 +388,7 @@ function HomeItemReaction(props) {
                   getFilteredData('');
                 }}
                 style={{
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.darkerblack,
                   padding: 6,
                   paddingTop: 4,
                   paddingBottom: 4,
@@ -424,7 +440,7 @@ function HomeItemReaction(props) {
             <View />
           )}
 
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               alignSelf: 'center',
@@ -498,7 +514,7 @@ function HomeItemReaction(props) {
                 {react[5]}
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <Modal
             animationType="fade"
