@@ -66,6 +66,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
 import PlayerScreenSelectUser from './src/components/PlayerScreen/PlayerScreenSelectUser';
+import Create from './src/components/main/TabNavigator/Create';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -85,7 +86,7 @@ const App = () => {
     setTimeout(() => {
       dispatch(getTokenRequest());
     }, 3000);
-    
+
     // const unsuscribe = firebase().onMessage(async () => {
     //   dispatch(getChatListRequest());
     //   dispatch(getProfileRequest());
@@ -192,8 +193,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
@@ -223,8 +224,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                   }}
@@ -237,7 +238,8 @@ const App = () => {
           />
           <Tab.Screen
             name="Add"
-            component={AddSong}
+            // component={AddSong}
+            component={Create}
             options={{
               headerShown: false,
               tabBarIcon: ({ focused }) => (
@@ -247,8 +249,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(40),
                     width: normalise(40),
                   }}
@@ -266,7 +268,7 @@ const App = () => {
             }}
           />
           <Tab.Screen
-          
+
             name="Notification"
             component={Notification}
             options={{
@@ -279,8 +281,8 @@ const App = () => {
                         Platform.OS === 'android'
                           ? normalise(10)
                           : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                            ? normalise(0)
+                            : normalise(10),
                       height: normalise(20),
                       width: normalise(20),
                     }}
@@ -333,8 +335,8 @@ const App = () => {
                         Platform.OS === 'android'
                           ? normalise(10)
                           : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                            ? normalise(0)
+                            : normalise(10),
                       height: normalise(22),
                       width: normalise(22),
                     }}
@@ -440,6 +442,7 @@ const App = () => {
               component={PlayerScreenSelectUser}
             />
             <Stack.Screen name="PlayerComment" component={PlayerComment} />
+            <Stack.Screen name="AddSong" component={AddSong} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

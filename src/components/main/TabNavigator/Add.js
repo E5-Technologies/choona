@@ -171,11 +171,12 @@ const AddSong = props => {
       <SafeAreaView style={styles.safeAreaContainer}>
         <HeaderComponent
           firstitemtext={true}
-          textone={''}
+          textone={'Cancel'}
           title={'ADD SONG'}
           thirditemtext={true}
           texttwo={''}
           hideBorderBottom={true}
+          onPressFirstItem={()=>props.navigation.goBack()}
         />
         <View
           style={{
