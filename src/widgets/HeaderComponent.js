@@ -71,7 +71,7 @@ function HeaderComponent(props) {
           }}>
           <Image
             source={props.imagetwo}
-            style={HeaderStyles.headerIcon}
+            style={[HeaderStyles.headerIcon, props.imagetwoStyle]}
             resizeMode="contain"
           />
         </TouchableOpacity>

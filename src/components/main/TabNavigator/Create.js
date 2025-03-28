@@ -25,16 +25,17 @@ import HeaderComponent from '../../../widgets/HeaderComponent';
 const Create = props => {
     const actionList = [{
         title: 'POST A SONG',
-        action: () => props.navigation.navigate('AddSong')
+        action: () => props.navigation.navigate('AddSong', { from: 'CreatePost' })
     },
     {
         title: 'POST A PLAYLIST',
-        action: () => Alert.alert('hifdf')
+        // action: () => props.navigation.navigate('CreatePlayList')
+        action: () => props.navigation.navigate("AddSong", { from: 'Playlist' })
     },
     {
         title: 'LAUNCH A SESSION',
         action: () => Alert.alert('hi112')
-    },]
+    }]
 
     return (
         <View style={styles.containerView}>

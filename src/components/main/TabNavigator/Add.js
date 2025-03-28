@@ -11,6 +11,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -102,14 +103,14 @@ const AddSong = props => {
         change2={true}
         image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => {
-          props.navigation.navigate('CreatePost', {
+          props.navigation.navigate(props?.route?.params?.from == "Playlist" ? "CreatePlayList" : 'CreatePost', {
             image:
               props.registerType === 'spotify'
                 ? item.item.album.images[0].url
                 : item.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '600x600',
-                  ),
+                  '{w}x{h}',
+                  '600x600',
+                ),
             title:
               props.registerType === 'spotify'
                 ? item.item.name
@@ -136,9 +137,9 @@ const AddSong = props => {
               props.registerType === 'spotify'
                 ? item.item.album.images[0].url
                 : item.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '300x300',
-                  ),
+                  '{w}x{h}',
+                  '300x300',
+                ),
             username: '',
             profile_pic: '',
             originalUri:
@@ -176,7 +177,7 @@ const AddSong = props => {
           thirditemtext={true}
           texttwo={''}
           hideBorderBottom={true}
-          onPressFirstItem={()=>props.navigation.goBack()}
+          onPressFirstItem={() => props.navigation.goBack()}
         />
         <View
           style={{

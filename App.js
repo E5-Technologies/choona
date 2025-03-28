@@ -67,6 +67,7 @@ import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
 import PlayerScreenSelectUser from './src/components/PlayerScreen/PlayerScreenSelectUser';
 import Create from './src/components/main/TabNavigator/Create';
+import CreatePlayList from './src/components/main/CreatePlayList';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -443,6 +444,7 @@ const App = () => {
             />
             <Stack.Screen name="PlayerComment" component={PlayerComment} />
             <Stack.Screen name="AddSong" component={AddSong} />
+            <Stack.Screen name="CreatePlayList" component={CreatePlayList} />
           </Stack.Navigator>
         )}
       </NavigationContainer>
