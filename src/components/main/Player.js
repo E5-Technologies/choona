@@ -194,7 +194,7 @@ function Player(props) {
                 props.navigation.goBack();
               }
             } catch (error) {
-                console.log(error, 'this is error getting  song uri');
+                console.log(JSON.stringify(error), 'this is error getting  song uri');
             }
           };
 

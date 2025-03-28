@@ -12,6 +12,7 @@ import {
   FlatList,
   Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -91,6 +92,7 @@ import MoreModal from '../../Posts/MoreModal';
 import ReportModal from '../../Posts/ReportModal';
 import Reactions from '../../Reactions/Reactions';
 import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
+import HomeSessionItem from '../ListCells/HomeSessionItem';
 
 let status = '';
 let songStatus = '';
@@ -123,6 +125,7 @@ const Home = props => {
   const postsUrl = constants.BASE_URL + '/post/list?page=';
 
   const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+  const [activeTab, setActiveTab] = useState(0)
 
   const {
     data: newPosts,
@@ -508,14 +511,14 @@ const Home = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -600,7 +603,7 @@ const Home = props => {
           props.saveSongRefReq(saveSongResObj);
           props.dummyRequest();
         })
-        .catch(err => {});
+        .catch(err => { });
     } else {
       if (global.playerReference !== null) {
         if (global.playerReference._filename === data.item.song_uri) {
@@ -652,7 +655,7 @@ const Home = props => {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => {});
+            .catch(err => { });
         }
       } else {
         MusicPlayer(data.item.song_uri, true)
@@ -683,7 +686,7 @@ const Home = props => {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => {});
+          .catch(err => { });
       }
     }
   };
@@ -718,16 +721,16 @@ const Home = props => {
         : false,
       disco: data.item.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
       throwback: data.item.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
       thumbsDown: data.item.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
     };
 
@@ -749,8 +752,8 @@ const Home = props => {
             _.isEmpty(postArray)
               ? false
               : posts.length === postArray.length
-              ? postArray[data.index].playing
-              : false
+                ? postArray[data.index].playing
+                : false
           }
           picture={data.item.userDetails.profile_image}
           name={data.item.userDetails.username}
@@ -828,8 +831,8 @@ const Home = props => {
               setModalVisible(true);
             }
           }}
-          // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
-          // playingSongRef={props.playingSongRef}
+        // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+        // playingSongRef={props.playingSongRef}
         />
         {/* {(data.index === 1 ||
           (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
@@ -1007,7 +1010,7 @@ const Home = props => {
                     console.log(err);
                   });
               })
-              .catch(() => {});
+              .catch(() => { });
             setBool(false);
           }
         } else {
@@ -1057,9 +1060,9 @@ const Home = props => {
             _.isEmpty(props.userProfileResp)
               ? ''
               : props.userProfileResp.profile_image
-              ? constants.profile_picture_base_url +
+                ? constants.profile_picture_base_url +
                 props.userProfileResp.profile_image
-              : null
+                : null
           }
           staticFirstImage={false}
           imageoneheight={normalise(26)}
@@ -1088,6 +1091,50 @@ const Home = props => {
             //  props.navigation.navigate('BlankScreen');
           }}
         />
+        <View
+          style={styles.tabBarWrapperStyle}>
+          <TouchableOpacity
+            style={[styles.tabBarButtonStyle]}
+            onPress={() => {
+              // props.getTop50SongReq();
+              setActiveTab(0)
+            }}
+          >
+            <Text
+              style={[styles.tabBarTextStyle, {
+                color: activeTab === 0 ? Colors.white : Colors.grey_text,
+              }]}>
+              FEED
+            </Text>
+            {activeTab === 0 ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={styles.ActiveTabBar}
+                resizeMode="contain"
+              />
+            ) : null}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tabBarButtonStyle]}
+            onPress={() => {
+              setActiveTab(1)
+            }}
+          >
+            <Text
+              style={[styles.tabBarTextStyle, {
+                color: activeTab === 1 ? Colors.white : Colors.grey_text,
+              }]}>
+              SESSIONS
+            </Text>
+            {activeTab === 1 ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={styles.ActiveTabBar}
+                resizeMode="contain"
+              />
+            ) : null}
+          </TouchableOpacity>
+        </View>
         <Modal
           animationType="fade"
           transparent={true}
@@ -1291,146 +1338,178 @@ const Home = props => {
             setIsShown={setIsShown}
           />
         )}
-
-        {_.isEmpty(posts) ? (
-          <EmptyComponent
-            buttonPress={() => {
-              setContactsLoading(true);
-              getContacts();
-            }}
-            buttonText={'Check for friends'}
-            image={ImagePath ? ImagePath.emptyPost : null}
-            text={
-              'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
-            }
-            title={'Your Feed is empty'}
-          />
-        ) : (
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={posts}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={item => item._id}
-              ref={flatlistRef}
-              onEndReached={() => fetchNextPage()}
-              onEndReachedThreshold={2}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={[Colors.black]}
-                  progressBackgroundColor={Colors.white}
-                  title={'Refreshing...'}
-                  titleColor={Colors.white}
-                />
+        {activeTab === 0 ?
+          _.isEmpty(posts) ? (
+            <EmptyComponent
+              buttonPress={() => {
+                setContactsLoading(true);
+                getContacts();
+              }}
+              buttonText={'Check for friends'}
+              image={ImagePath ? ImagePath.emptyPost : null}
+              text={
+                'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
               }
+              title={'Your Feed is empty'}
             />
-            {loadMoreVisible ? (
-              <TouchableOpacity
-                style={{
-                  borderRadius: 20,
-                  alignSelf: 'center',
-                  position: 'absolute',
-                  top: 20,
-                }}
-                onPress={() => loadMore()}>
-                <LinearGradient
-                  colors={['#008373', '#4950AC', '#7A1FD4']}
-                  start={{ x: 1.0, y: 5.1 }}
-                  end={{ x: 2.0, y: 2.5 }}
+          ) : (
+            <View style={{ flex: 1 }}>
+              <FlatList
+                data={posts}
+                renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item._id}
+                ref={flatlistRef}
+                onEndReached={() => fetchNextPage()}
+                onEndReachedThreshold={2}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    colors={[Colors.black]}
+                    progressBackgroundColor={Colors.white}
+                    title={'Refreshing...'}
+                    titleColor={Colors.white}
+                  />
+                }
+              />
+              {loadMoreVisible ? (
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 20,
+                    alignSelf: 'center',
+                    position: 'absolute',
+                    top: 20,
+                  }}
+                  onPress={() => loadMore()}>
+                  <LinearGradient
+                    colors={['#008373', '#4950AC', '#7A1FD4']}
+                    start={{ x: 1.0, y: 5.1 }}
+                    end={{ x: 2.0, y: 2.5 }}
+                    style={{
+                      flex: 1,
+                      borderRadius: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: '2.7%',
+                      paddingHorizontal: '4.3%',
+                    }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: normalise(10),
+                        fontFamily: 'Kallisto',
+                      }}>
+                      Load Newer Posts
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              ) : null}
+
+              {visibleminiPlayer === true ? (
+                <MusicPlayerBar
+                  onPress={() => {
+                    props.navigation.navigate('Player', {
+                      comments: [],
+                      song_title: props.playingSongRef.song_name,
+                      album_name: props.playingSongRef.album_name,
+                      song_pic: props.playingSongRef.song_pic,
+                      username: props.playingSongRef.username,
+                      profile_pic: props.playingSongRef.profile_pic,
+                      uri: props.playingSongRef.uri,
+                      reactions: props.playingSongRef.reactionData,
+                      id: props.playingSongRef.id,
+                      artist: props.playingSongRef.artist,
+                      changePlayer: props.playingSongRef.changePlayer,
+                      originalUri: props.playingSongRef.originalUri,
+                      isrc: props.playingSongRef.isrc,
+                      registerType: props.playingSongRef.regType,
+                      details: props.playingSongRef.details,
+                      showPlaylist: props.playingSongRef.showPlaylist,
+                      comingFromMessage: props.playingSongRef.comingFromMessage,
+                    });
+                  }}
+                  onPressPlayOrPause={() => {
+                    setTimeout(() => {
+                      findPlayingSong(posts);
+                    }, 500);
+                  }}
+                />
+              ) : null}
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={visible}
+                onRequestClose={() => {
+                  //Alert.alert("Modal has been closed.");
+                }}>
+                <View
                   style={{
                     flex: 1,
-                    borderRadius: 20,
-                    alignItems: 'center',
+                    backgroundColor: '#000000',
+                    opacity: 0.9,
                     justifyContent: 'center',
-                    paddingVertical: '2.7%',
-                    paddingHorizontal: '4.3%',
+                    alignItems: 'center',
                   }}>
                   <Text
                     style={{
-                      color: 'white',
-                      fontSize: normalise(10),
-                      fontFamily: 'Kallisto',
+                      fontSize:
+                        Platform.OS === 'android'
+                          ? normalise(70)
+                          : normalise(100),
                     }}>
-                    Load Newer Posts
+                    {modalReact}
                   </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            ) : null}
-
-            {visibleminiPlayer === true ? (
-              <MusicPlayerBar
-                onPress={() => {
-                  props.navigation.navigate('Player', {
-                    comments: [],
-                    song_title: props.playingSongRef.song_name,
-                    album_name: props.playingSongRef.album_name,
-                    song_pic: props.playingSongRef.song_pic,
-                    username: props.playingSongRef.username,
-                    profile_pic: props.playingSongRef.profile_pic,
-                    uri: props.playingSongRef.uri,
-                    reactions: props.playingSongRef.reactionData,
-                    id: props.playingSongRef.id,
-                    artist: props.playingSongRef.artist,
-                    changePlayer: props.playingSongRef.changePlayer,
-                    originalUri: props.playingSongRef.originalUri,
-                    isrc: props.playingSongRef.isrc,
-                    registerType: props.playingSongRef.regType,
-                    details: props.playingSongRef.details,
-                    showPlaylist: props.playingSongRef.showPlaylist,
-                    comingFromMessage: props.playingSongRef.comingFromMessage,
-                  });
-                }}
-                onPressPlayOrPause={() => {
-                  setTimeout(() => {
-                    findPlayingSong(posts);
-                  }, 500);
-                }}
-              />
-            ) : null}
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={visible}
-              onRequestClose={() => {
-                //Alert.alert("Modal has been closed.");
-              }}>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: '#000000',
-                  opacity: 0.9,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontSize:
-                      Platform.OS === 'android'
-                        ? normalise(70)
-                        : normalise(100),
-                  }}>
-                  {modalReact}
-                </Text>
-              </View>
-            </Modal>
-            {modalVisible && (
-              <MoreModal
-                setBool={setBool}
-                index={positionInArray}
-                setIndex={setPositionInArray}
-                navigation={props.navigation}
-                openInAppleORSpotify={openInAppleORSpotify}
-                postData={posts}
-                show={modalVisible}
-                setShow={setModalVisible}
-                setReportModal={setReportModal}
-              />
-            )}
-            <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
+                </View>
+              </Modal>
+              {modalVisible && (
+                <MoreModal
+                  setBool={setBool}
+                  index={positionInArray}
+                  setIndex={setPositionInArray}
+                  navigation={props.navigation}
+                  openInAppleORSpotify={openInAppleORSpotify}
+                  postData={posts}
+                  show={modalVisible}
+                  setShow={setModalVisible}
+                  setReportModal={setReportModal}
+                />
+              )}
+              <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
+            </View>
+          )
+          :
+          <View style={{ flex: 1 }}>
+            <FlatList
+              data={Array(10).fill('')}
+              renderItem={() => {
+                return (
+                  <HomeSessionItem/>
+                  // <View>
+                  //   <Text>
+                  //     Hi
+                  //   </Text>
+                  // </View>
+                )
+              }}
+              showsVerticalScrollIndicator={false}
+            // keyExtractor={item => item._id}
+            // ref={flatlistRef}
+            // onEndReached={() => fetchNextPage()}
+            // onEndReachedThreshold={2}
+            // refreshControl={
+            //   <RefreshControl
+            //     refreshing={refreshing}
+            //     onRefresh={onRefresh}
+            //     colors={[Colors.black]}
+            //     progressBackgroundColor={Colors.white}
+            //     title={'Refreshing...'}
+            //     titleColor={Colors.white}
+            //   />
+            // }
+            />
           </View>
-        )}
+        }
         {modal1Visible === true ? (
           <View
             style={{
@@ -1470,6 +1549,36 @@ const Home = props => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarWrapperStyle: {
+    backgroundColor: Colors.darkerblack,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: normalise(40),
+    // borderBottomColor: Colors.fadeblack,
+    // borderBottomWidth: 1,
+  },
+  tabBarButtonStyle: {
+    width: '50%',
+    height: normalise(40),
+    alignItems: 'center',
+    justifyContent: 'center',
+    // borderRightWidth: normalise(1),
+    // borderRightColor: Colors.darkerblack,
+  },
+  tabBarTextStyle: {
+    fontFamily: 'Kallisto',
+    fontSize: normalise(10),
+    textTransform: 'uppercase',
+  },
+  ActiveTabBar: {
+    width: '100%',
+    height: normalise(3),
+    position: 'absolute',
+    bottom: 0,
+  }
+})
 
 const mapStateToProps = state => {
   return {
