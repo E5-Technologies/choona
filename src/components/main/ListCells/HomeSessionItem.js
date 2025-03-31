@@ -4,6 +4,7 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normalise from '../../../utils/helpers/Dimens';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeSessionItem = ({
     onPressMusicbox,
@@ -14,8 +15,9 @@ const HomeSessionItem = ({
     // title = 'This is new song',
     verified = true
 }) => {
+    const navigation=useNavigation()
     return (
-        <View style={styles.listItemHeaderContainer}>
+        <TouchableOpacity style={styles.listItemHeaderContainer} onPress={()=>navigation.navigate('SessionDetail')}>
             <View style={styles.listItemHeaderSongDetails}>
                 <View style={styles.nameWrapper}>
                     <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={2}>
@@ -87,7 +89,7 @@ const HomeSessionItem = ({
                     />
                 </TouchableOpacity>
             )} */}
-        </View>
+        </TouchableOpacity>
     );
 };
 

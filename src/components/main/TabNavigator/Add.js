@@ -103,25 +103,48 @@ const AddSong = props => {
         change2={true}
         image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => {
-          props.navigation.navigate(props?.route?.params?.from == "Playlist" ? "CreatePlayList" : 'CreatePost', {
-            image:
-              props.registerType === 'spotify'
-                ? item.item.album.images[0].url
-                : item.item.attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '600x600',
-                ),
-            title:
-              props.registerType === 'spotify'
-                ? item.item.name
-                : item.item.attributes.name,
-            title2:
-              props.registerType === 'spotify'
-                ? singerList(item.item.artists)
-                : item.item.attributes.artistName,
-            details: item.item,
-            registerType: props.registerType,
-          });
+          props.navigation.navigate(props?.route?.params?.from == "Playlist" ? "CreatePlayList" : 'CreatePost', props?.route?.params?.from == "Playlist" ?
+            {
+              songItem: {
+                image:
+                  props.registerType === 'spotify'
+                    ? item.item.album.images[0].url
+                    : item.item.attributes.artwork.url.replace(
+                      '{w}x{h}',
+                      '600x600',
+                    ),
+                title:
+                  props.registerType === 'spotify'
+                    ? item.item.name
+                    : item.item.attributes.name,
+                title2:
+                  props.registerType === 'spotify'
+                    ? singerList(item.item.artists)
+                    : item.item.attributes.artistName,
+                details: item.item,
+                registerType: props.registerType,
+              }
+            } :
+            {
+              image:
+                props.registerType === 'spotify'
+                  ? item.item.album.images[0].url
+                  : item.item.attributes.artwork.url.replace(
+                    '{w}x{h}',
+                    '600x600',
+                  ),
+              title:
+                props.registerType === 'spotify'
+                  ? item.item.name
+                  : item.item.attributes.name,
+              title2:
+                props.registerType === 'spotify'
+                  ? singerList(item.item.artists)
+                  : item.item.attributes.artistName,
+              details: item.item,
+              registerType: props.registerType,
+            }
+          );
         }}
         onPressImage={() => {
           props.navigation.navigate('Player', {
@@ -262,9 +285,9 @@ const AddSong = props => {
           )}
         </View>
         {_.isEmpty(data) || search === null || search === '' ? (
-          <RecentlyPlayedHeader registerType={props.registerType} />
+          <RecentlyPlayedHeader registerType={props.registerType}/>
         ) : (
-          <View />
+          <View/>
         )}
         {_.isEmpty(data) || search === null || search === '' ? (
           _.isEmpty(recentlyPlayed) ? (

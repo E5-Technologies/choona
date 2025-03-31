@@ -18,8 +18,9 @@ import ImagePath from '../../assests/ImagePath';
 
 
 function CreatePlayList(props) {
-    console.log(props.route.params, 'these are params')
-    const propsItem = { ...props.route.params }
+    console.log(props.route?.params, 'these are params')
+    const { songItem } = props.route.params
+    console.log(songItem, 'this is props Item')
     const { width, height } = useWindowDimensions()
     const [playListArary, setPlayListArray] = useState([])
     const imagArray = [
@@ -35,8 +36,8 @@ function CreatePlayList(props) {
     ]
 
     useEffect(() => {
-        setPlayListArray([...playListArary, propsItem])
-    }, [propsItem])
+        setPlayListArray([...playListArary, songItem])
+    }, [songItem])
 
     useEffect(() => {
         console.log(playListArary, 'its play list')
@@ -69,7 +70,7 @@ function CreatePlayList(props) {
                                 height: width / 1.9
                             }]}>
                                 {
-                                    imagArray?.map((item) => {
+                                    playListArary?.map((item) => {
                                         return (
                                             <Image
                                                 source={{ uri: item?.image }}
@@ -87,13 +88,12 @@ function CreatePlayList(props) {
                     }
                     <View style={styles.playListItemContainer}>
                         <FlatList
-                            data={imagArray}
-                            renderItem={() => {
+                            data={playListArary}
+                            renderItem={({item, index}) => {
                                 return (
                                     <View style={styles.itemWrapper}>
                                         <Image
-                                            source={
-                                                ImagePath.dp2
+                                            source={{ uri: item?.image }
                                             }
                                             style={styles.songListItemImage}
                                             resizeMode="contain"
@@ -117,7 +117,7 @@ function CreatePlayList(props) {
                 </View>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity
-                        onPress={() => props.navigation.navigate("AddSong", { from: 'PlayList' })}
+                        onPress={() => props.navigation.navigate("AddSong", { from: 'Playlist' })}
                         style={styles.buttonStyle}>
                         <Text
                             style={{
