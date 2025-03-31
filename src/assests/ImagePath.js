@@ -108,6 +108,8 @@ const ImagePath = {
   reactHeart: require('./images/react_heart.png'),
   reactFire: require('./images/react_fire.png'),
   reactDisco: require('./images/react_disco.png'),
+  playSolid:require('./images/playSolid.png'),
+  blueTick: require('./images/blueTick.png')
 };
 
 export default ImagePath;

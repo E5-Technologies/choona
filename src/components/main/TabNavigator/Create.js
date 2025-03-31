@@ -34,7 +34,7 @@ const Create = props => {
     },
     {
         title: 'LAUNCH A SESSION',
-        action: () => Alert.alert('hi112')
+        action: () => props.navigation.navigate("AddSong", { from: 'AssembleSession' })
     }]
 
     return (

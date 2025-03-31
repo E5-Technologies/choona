@@ -17,29 +17,24 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
 
 
-function CreatePlayList(props) {
+function AssembleSession(props) {
     console.log(props.route?.params, 'these are params')
-    const { songItem, previousPlaylistData } = props.route?.params
+    const { songItem, previousSessionData } = props?.route?.params
     console.log(songItem, 'this is props Item')
     const { width, height } = useWindowDimensions()
-    const [playListArary, setPlayListArray] = useState([])
-    const imagArray = [
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
-        { url: "https://picsum.photos/200/300" },
+    const [sessionList, setSessionList] = useState([])
 
-    ]
 
     useEffect(() => {
-        if (songItem && !previousPlaylistData.find(item => item?.detail?.track_number == songItem?.detail?.track_number)) {
-            const newArray = previousPlaylistData ? [...previousPlaylistData, songItem] : [...playListArary, songItem]
-            setPlayListArray(newArray);
-        }
+        // if (songItem && !sessionList.find(item => item?.detail?.track_number == songItem?.detail?.track_number)) {
+        //     const updatedPlayList = [...sessionList, songItem];
+        //     Alert.alert('hi')
+        //     setSessionList(updatedPlayList);
+        // }
+
+        const newArray = previousSessionData ? [...previousSessionData, songItem] : [...sessionList, songItem]
+        console.log(newArray, 'its new array')
+        setSessionList(newArray);
     }, [songItem]);
 
     return (
@@ -49,30 +44,29 @@ function CreatePlayList(props) {
                 <HeaderComponent
                     firstitemtext={true}
                     textone={'CANCEL'}
-                    title={'PLAYLIST'}
+                    title={'SESSION'}
                     thirditemtext={false}
                     imagetwo={ImagePath.backicon}
                     imagetwoStyle={styles.imageTwoStyle}
                     onPressFirstItem={() => {
+                        setSessionList([])
                         // props.navigation.goBack();
-                        setPlayListArray([])
-                        // props.navigation.goBack();
-                        props.navigation.navigate("AddSong", { from: 'AssembleSession', previousPlaylistData: [] })
+                        props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: [] })
                     }}
-                    onPressThirdItem={() => Alert.alert('Post this library')}
+                    onPressThirdItem={() => props.navigation.navigate("SessionLaunchScreen")}
                 />
                 <View style={{ flex: 1, }}>
-                    {playListArary &&
+                    {sessionList &&
                         <View style={styles.topContainerStyle}>
                             <Text style={styles.mainTitleStyle} numberOfLines={1}>
-                                @ 08 Summer Mix
+                                @08 Summer Mix
                             </Text>
                             <View style={[styles.combienBanerWrapper, {
                                 width: width / 1.9,
                                 height: width / 1.9
                             }]}>
                                 {
-                                    playListArary?.map((item) => {
+                                    sessionList?.map((item) => {
                                         return (
                                             <Image
                                                 source={{ uri: item?.image }}
@@ -90,7 +84,7 @@ function CreatePlayList(props) {
                     }
                     <View style={styles.playListItemContainer}>
                         <FlatList
-                            data={playListArary}
+                            data={sessionList}
                             renderItem={({ item, index }) => {
                                 return (
                                     <View style={styles.itemWrapper}>
@@ -102,10 +96,10 @@ function CreatePlayList(props) {
                                         />
                                         <View style={styles.listItemHeaderSongText}>
                                             <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={2}>
-                                                Summer 91 (Looking Back)
+                                                {item?.title}
                                             </Text>
                                             <Text style={styles.songlistItemHeaderSongTextArtist} numberOfLines={1}>
-                                                Noizu
+                                                {item?.title2}
                                             </Text>
                                         </View>
                                     </View>
@@ -114,13 +108,11 @@ function CreatePlayList(props) {
                             showsVerticalScrollIndicator={false}
                             keyExtractor={item => item._id}
                         />
-
                     </View>
                 </View>
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity
-                        // onPress={() => props.navigation.navigate("AddSong", { from: 'Playlist' })}
-                        onPress={() => props.navigation.navigate("AddSong", { from: 'Playlist', previousPlaylistData: playListArary })}
+                        onPress={() => props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: sessionList })}
                         style={styles.buttonStyle}>
                         <Text
                             style={{
@@ -245,4 +237,4 @@ const styles = StyleSheet.create({
 
 
 
-export default CreatePlayList
+export default AssembleSession

@@ -224,7 +224,7 @@ function SessionDetail(props) {
                     </View>
                     <View style={styles.listenersContainer}>
                         <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
-                            NOW PLAYING
+                        LISTENERS
                         </Text>
                         <View style={[styles.bottomLineStyle, { width: width / 3, marginBottom: normalise(20) }]}>
                         </View>

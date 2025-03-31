@@ -69,6 +69,9 @@ import PlayerScreenSelectUser from './src/components/PlayerScreen/PlayerScreenSe
 import Create from './src/components/main/TabNavigator/Create';
 import CreatePlayList from './src/components/main/CreatePlayList';
 import SessionDetail from './src/components/main/SessionDetail';
+import AssembleSession from './src/components/main/AssembleSession';
+import SessionLaunchScreen from './src/components/main/SessionLaunchScreen';
+import SessionActive from './src/components/main/SessionActive';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -447,6 +450,9 @@ const App = () => {
             <Stack.Screen name="AddSong" component={AddSong} />
             <Stack.Screen name="CreatePlayList" component={CreatePlayList} />
             <Stack.Screen name="SessionDetail" component={SessionDetail} />
+            <Stack.Screen name="AssembleSession" component={AssembleSession} />
+            <Stack.Screen name="SessionLaunchScreen" component={SessionLaunchScreen} />
+            <Stack.Screen name="SessionActive" component={SessionActive} />
           </Stack.Navigator>
         )}
       </NavigationContainer>
