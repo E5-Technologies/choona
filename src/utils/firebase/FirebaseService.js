@@ -1,18 +1,18 @@
-import firebaseConfig from './firebaseConfig';
-import firebase from '@react-native-firebase/app';
+// import firebaseConfig from './firebaseConfig';
+// import firebase from '@react-native-firebase/app';
 
-let instance = null;
+// let instance = null;
 
-class FirebaseService {
-  constructor() {
-    if (!instance) {
-      this.app = firebase.initializeApp(firebaseConfig);
-      // eslint-disable-next-line consistent-this
-      instance = this;
-    }
-    return instance;
-  }
-}
+// class FirebaseService {
+//   constructor() {
+//     if (!instance) {
+//       this.app = firebase.initializeApp(firebaseConfig);
+//       // eslint-disable-next-line consistent-this
+//       instance = this;
+//     }
+//     return instance;
+//   }
+// }
 
-const firebaseService = new FirebaseService().app;
-export default firebaseService;
+// const firebaseService = new FirebaseService().app;
+// export default firebaseService;

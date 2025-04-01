@@ -131,9 +131,11 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+    // implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0")) // old firebase configuration
+    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
     implementation ("com.android.support:multidex:2.0.1")
-     implementation project(':react-native-config')
+    implementation project(':react-native-config')
+    // implementation("com.google.firebase:firebase-analytics")
 
 
     if (hermesEnabled.toBoolean()) {
