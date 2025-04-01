@@ -50,8 +50,9 @@ function AssembleSession(props) {
                     imagetwoStyle={styles.imageTwoStyle}
                     onPressFirstItem={() => {
                         setSessionList([])
+                        props.navigation.popToTop("Create")
                         // props.navigation.goBack();
-                        props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: [] })
+                        // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: [] })
                     }}
                     onPressThirdItem={() => props.navigation.navigate("SessionLaunchScreen")}
                 />

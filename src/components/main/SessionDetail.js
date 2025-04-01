@@ -155,7 +155,7 @@ function SessionDetail(props) {
                                     @Ankush009
                                 </Text>
                                 <Image
-                                    source={ImagePath.green_tick}
+                                    source={ImagePath.blueTick}
                                     style={{ width: 16, height: 16 }}
                                     resizeMode="contain"
                                 />
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     },
 
     bottomLineStyle: {
-        marginTop: normalise(10),
+        marginTop: normalise(0),
         backgroundColor: Colors.white,
         alignSelf: 'center',
         opacity: 0.7,

@@ -1,6 +1,6 @@
 const ImagePath = {
   addicon: require('../assests/images/iconadd.png'),
-  alert: require('../assests/images/fi_alert-circle.png'),  
+  alert: require('../assests/images/fi_alert-circle.png'),
   backicon: require('../assests/images/back_icon.png'),
   spotifyicon: require('../assests/images/SpotifyIcon.png'),
   albumsPic: require('../assests/images/Albums.png'),
@@ -38,8 +38,8 @@ const ImagePath = {
   blankreactionbg: require('./images/Artwork.png'),
   choonaSplashBg: require('./images/choona-splash-bg.png'),
   choonaSplashLogo: require('./images/choona-splash-logo.png'),
-  closeIcon:require('./images/close_icon.png'),
-  redCloseIcon:require('./images/red_close_icon.png'),
+  closeIcon: require('./images/close_icon.png'),
+  redCloseIcon: require('./images/red_close_icon.png'),
   splashLogo: require('./images/splashLogo.png'),
   spotifyButtonLogo: require('./images/spotifyLogo.png'),
   appleButtonLogo: require('./images/appleMusicLogo.png'),
@@ -108,8 +108,10 @@ const ImagePath = {
   reactHeart: require('./images/react_heart.png'),
   reactFire: require('./images/react_fire.png'),
   reactDisco: require('./images/react_disco.png'),
-  playSolid:require('./images/playSolid.png'),
-  blueTick: require('./images/blueTick.png')
+  playSolid: require('./images/playSolid.png'),
+  blueTick: require('./images/blueTickIcon.png'),
+  toggleOff: require('./images/toggleOff.png'),
+  toggleOn: require('./images/toggleOn.png')
 };
 
 export default ImagePath;

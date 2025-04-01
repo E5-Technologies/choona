@@ -25,7 +25,7 @@ const HomeSessionItem = ({
                     </Text>
                     {verified &&
                         <Image
-                            source={ImagePath.green_tick}
+                            source={ImagePath.blueTick}
                             style={{ width: 16, height: 16 }}
                             resizeMode="contain"
                         />

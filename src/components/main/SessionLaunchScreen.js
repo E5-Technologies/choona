@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+    Alert,
     FlatList,
     Image,
     SafeAreaView,
@@ -221,24 +222,23 @@ function SessionLaunchScreen(props) {
                                     <Text style={[styles.listItemHeaderSongTextTitle, { textAlign: 'center', textAlignVertical: 'center', marginBottom: normalise(0) }]} numberOfLines={2}>
                                         LISTENERS (0)
                                     </Text>
-                                    <View style={{ marginLeft: 20, position: 'absolute', right: -80, }}>
+                                    <TouchableOpacity style={{ marginLeft: 20, position: 'absolute', right: -80, }} onPress={() => Alert.alert('private')}>
                                         <Text style={[{ textAlign: 'center', color: Colors.meta, fontSize: normalise(12), marginBottom: normalise(3) }]} numberOfLines={2}>
                                             Private
                                         </Text>
                                         <Image
-                                            source={ImagePath.iconadd
-                                            }
-                                            style={{ width: 25, height: 15 }}
-                                            resizeMode="cover"
+                                            source={ImagePath.toggleOff}
+                                            style={{ width: 45, }}
+                                            resizeMode="contain"
                                         />
-                                    </View>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={[styles.bottomLineStyle, { width: width / 2, }]}>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                                 <Image
-                                    source={ImagePath.iconadd}
+                                    source={ImagePath.add_white}
                                     style={styles.inviteIcon}
                                     resizeMode="cover"
                                 />
@@ -358,8 +358,8 @@ const styles = StyleSheet.create({
     },
     inviteIcon: {
         borderRadius: normalise(5),
-        height: normalise(25),
-        width: normalise(25),
+        height: normalise(23),
+        width: normalise(23),
     },
     headerStyle: {
         justifyContent: "space-between", flexDirection: 'row', alignItems: 'center', paddingHorizontal: normalise(24),

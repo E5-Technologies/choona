@@ -32,14 +32,12 @@ function CreatePlayList(props) {
         { url: "https://picsum.photos/200/300" },
         { url: "https://picsum.photos/200/300" },
         { url: "https://picsum.photos/200/300" },
-
     ]
 
     useEffect(() => {
-        if (songItem && !previousPlaylistData.find(item => item?.detail?.track_number == songItem?.detail?.track_number)) {
             const newArray = previousPlaylistData ? [...previousPlaylistData, songItem] : [...playListArary, songItem]
             setPlayListArray(newArray);
-        }
+
     }, [songItem]);
 
     return (
@@ -56,8 +54,9 @@ function CreatePlayList(props) {
                     onPressFirstItem={() => {
                         // props.navigation.goBack();
                         setPlayListArray([])
-                        // props.navigation.goBack();
-                        props.navigation.navigate("AddSong", { from: 'AssembleSession', previousPlaylistData: [] })
+                        props.navigation.popToTop("Create")
+                        // // props.navigation.goBack();
+                        // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousPlaylistData: [] })
                     }}
                     onPressThirdItem={() => Alert.alert('Post this library')}
                 />
