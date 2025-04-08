@@ -15,6 +15,13 @@ import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
+import TextInputField from '../../widgets/TextInputField';
+import { connect } from 'react-redux';
+import { createPostRequest } from '../../action/PostAction';
+import { CREATE_POST_FAILURE, CREATE_POST_REQUEST, CREATE_POST_SUCCESS } from '../../action/TypeConstants';
+import { pausePlayerAction } from '../../saga/PlayerSaga';
+
+let status;
 
 
 function CreatePlayList(props) {
@@ -23,6 +30,7 @@ function CreatePlayList(props) {
     console.log(songItem, 'this is props Item')
     const { width, height } = useWindowDimensions()
     const [playListArary, setPlayListArray] = useState([])
+    const [playListName, setPlayListName] = useState('');
     const imagArray = [
         { url: "https://picsum.photos/200/300" },
         { url: "https://picsum.photos/200/300" },
@@ -35,10 +43,87 @@ function CreatePlayList(props) {
     ]
 
     useEffect(() => {
-            const newArray = previousPlaylistData ? [...previousPlaylistData, songItem] : [...playListArary, songItem]
-            setPlayListArray(newArray);
+        const newArray = previousPlaylistData ? [...previousPlaylistData, songItem] : [...playListArary, songItem]
+        setPlayListArray(newArray);
 
     }, [songItem]);
+
+    console.log(JSON.stringify(playListArary), 'this is playListArray')
+
+
+    const songListPayload = () => {
+        return playListArary?.map((item) => {
+            return {
+                song_uri: songItem.registerType === 'spotify'
+                    ? item.details.external_urls.spotify
+                    : item.details.attributes.previews[0].url,
+                original_song_uri: songItem.registerType === 'spotify'
+                    ? item.details.external_urls.spotify
+                    : item.details.attributes.url,
+                song_name: item?.title,
+                song_image: item?.image,
+                artist_name: item?.title2,
+                isrc_code:
+                    songItem.registerType === 'spotify'
+                        ? item.details.external_ids.isrc
+                        : item.details.attributes.isrc,
+                album_name:
+                    songItem.registerType === 'spotify'
+                        ? item.details.album.name
+                        : item.details.attributes.albumName,
+            }
+        })
+    }
+    console.log(songListPayload(), 'its data>>>>')
+
+    const createPost = async () => {
+        // let tapUser = [];
+        // await props.followingData.map((item, index) => {
+        //   if (search.search(item.username) !== -1) {
+        //     tagFriend.map(items => {
+        //       if (items === item.username) {
+        //         tapUser.push(item.username);
+        //       }
+        //     });
+        //   }
+        //   if (index === props.followingData.length - 1) {
+        //     setTagFriend([]);
+        //   }
+        // });
+
+        var payload = {
+            //   tag: tapUser,
+            post_content: playListName,
+            playlist_name: playListName,
+            social_type:
+                songItem.registerType === 'spotify' ? 'spotify' : 'apple',
+            songs: songListPayload(),
+        };
+        console.log(payload, 'this is plalist paload')
+        // return
+        props.createPostRequest(payload);
+    };
+
+
+    if (status === '' || status !== props.status) {
+        switch (props.status) {
+            case CREATE_POST_REQUEST:
+                status = props.status;
+                break;
+
+            case CREATE_POST_SUCCESS:
+                props.navigation.popToTop();
+                props.navigation.replace('bottomTab', { screen: 'Home' });
+                status = props.status;
+                break;
+
+            case CREATE_POST_FAILURE:
+                toast('Error', 'Something Went Wong, Please Try Again');
+                status = props.status;
+                break;
+        }
+    }
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
@@ -58,14 +143,34 @@ function CreatePlayList(props) {
                         // // props.navigation.goBack();
                         // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousPlaylistData: [] })
                     }}
-                    onPressThirdItem={() => Alert.alert('Post this library')}
+                    onPressThirdItem={createPost}
                 />
+
                 <View style={{ flex: 1, }}>
                     {playListArary &&
                         <View style={styles.topContainerStyle}>
-                            <Text style={styles.mainTitleStyle} numberOfLines={1}>
+                            <TextInputField
+                                backgroundColor={Colors.fadeblack}
+                                style={{ backgroundColor: Colors.fadeblack }}
+                                autocorrect={false}
+                                placeholder={'PlayList name'}
+                                maxLength={50}
+                                value={playListName}
+                                tick_visible={playListName ? true : false}
+                                onChangeText={text => {
+                                    setPlayListName(text);
+                                    // check(text);
+                                }}
+                                mainStyle={{
+                                    // borderWidth:1, 
+                                    borderColor: Colors.white,
+                                    marginTop: -normalise(22),
+                                    width: '75%'
+                                }}
+                            />
+                            {/* <Text style={styles.mainTitleStyle} numberOfLines={1}>
                                 @ 08 Summer Mix
-                            </Text>
+                            </Text> */}
                             <View style={[styles.combienBanerWrapper, {
                                 width: width / 1.9,
                                 height: width / 1.9
@@ -140,7 +245,8 @@ const styles = StyleSheet.create({
     topContainerStyle: {
         // justifyContent: 'center',
         alignItems: 'center',
-        marginTop: normalise(25)
+        marginTop: normalise(25),
+
     },
     mainTitleStyle: {
         color: Colors.white,
@@ -242,6 +348,22 @@ const styles = StyleSheet.create({
     }
 })
 
+const mapStateToProps = state => {
+    return {
+        status: state.PostReducer.status,
+        createPostResponse: state.PostReducer.createPostResponse,
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        createPostRequest: payload => {
+            dispatch(createPostRequest(payload));
+        },
+    };
+};
 
 
-export default CreatePlayList
+
+// export default CreatePlayList
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePlayList);

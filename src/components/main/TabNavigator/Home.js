@@ -145,8 +145,9 @@ const Home = props => {
             'x-access-token': token,
           },
         })
-        .catch(error => console.log(error));
-
+        .catch(error => console.log(error, 'ye error h'));
+      console.log(res, 'this is post data')
+      console.log(postsUrl + pageParam, 'its url')
       return res.data;
     },
     {
@@ -576,25 +577,25 @@ const Home = props => {
 
   const playSong = data => {
     if (props.playingSongRef === '') {
-      MusicPlayer(data.item.song_uri, true)
+      MusicPlayer(data.item.songs[0]?.song_uri, true)
         .then(track => {
           let saveSongResObj = {};
-          (saveSongResObj.uri = data.item.song_uri),
-            (saveSongResObj.song_name = data.item.song_name),
-            (saveSongResObj.album_name = data.item.album_name),
-            (saveSongResObj.song_pic = data.item.song_image),
+          (saveSongResObj.uri = data.item.songs[0]?.song_uri),
+            (saveSongResObj.song_name = data.item.songs[0]?.song_name),
+            (saveSongResObj.album_name = data.item.songs[0]?.album_name),
+            (saveSongResObj.song_pic = data.item.songs[0]?.song_image),
             (saveSongResObj.username = data.item.userDetails.username),
             (saveSongResObj.profile_pic = data.item.userDetails.profile_image),
             (saveSongResObj.commentData = data.item.comment);
           saveSongResObj.reactionData = data.item.reaction;
           (saveSongResObj.id = data.item._id),
-            (saveSongResObj.artist = data.item.artist_name),
+            (saveSongResObj.artist = data.item.songs[0]?.artist_name),
             (saveSongResObj.changePlayer = changePlayer);
           (saveSongResObj.originalUri =
             data.item.original_song_uri !== ''
               ? data.item.original_song_uri
               : undefined),
-            (saveSongResObj.isrc = data.item.isrc_code),
+            (saveSongResObj.isrc = data.item.songs[0]?.isrc_code),
             (saveSongResObj.regType = data.item.userDetails.register_type),
             (saveSongResObj.details = data.item),
             (saveSongResObj.showPlaylist = true),
@@ -606,7 +607,7 @@ const Home = props => {
         .catch(err => { });
     } else {
       if (global.playerReference !== null) {
-        if (global.playerReference._filename === data.item.song_uri) {
+        if (global.playerReference._filename === data.item.songs[0]?.song_uri) {
           if (global.playerReference.isPlaying()) {
             global.playerReference.pause();
 
@@ -627,26 +628,26 @@ const Home = props => {
         } else {
           global.playerReference.release();
           global.playerReference = null;
-          MusicPlayer(data.item.song_uri, true)
+          MusicPlayer(data.item.songs[0]?.song_uri, true)
             .then(track => {
               let saveSongResObj = {};
-              (saveSongResObj.uri = data.item.song_uri),
-                (saveSongResObj.song_name = data.item.song_name),
-                (saveSongResObj.album_name = data.item.album_name),
-                (saveSongResObj.song_pic = data.item.song_image),
+              (saveSongResObj.uri = data.item.songs[0]?.song_uri),
+                (saveSongResObj.song_name = data.item.songs[0]?.song_name),
+                (saveSongResObj.album_name = data.item.songs[0]?.album_name),
+                (saveSongResObj.song_pic = data.item.songs[0]?.song_image),
                 (saveSongResObj.username = data.item.userDetails.username),
                 (saveSongResObj.profile_pic =
                   data.item.userDetails.profile_image),
                 (saveSongResObj.commentData = data.item.comment);
               saveSongResObj.reactionData = data.item.reaction;
               (saveSongResObj.id = data.item._id),
-                (saveSongResObj.artist = data.item.artist_name),
+                (saveSongResObj.artist = data.item.songs[0]?.artist_name),
                 (saveSongResObj.changePlayer = changePlayer);
               (saveSongResObj.originalUri =
-                data.item.original_song_uri !== ''
-                  ? data.item.original_song_uri
+                data.item.songs[0]?.original_song_uri !== ''
+                  ? data.item.songs[0]?.original_song_uri
                   : undefined),
-                (saveSongResObj.isrc = data.item.isrc_code),
+                (saveSongResObj.isrc = data.item.songs[0]?.isrc_code),
                 (saveSongResObj.regType = data.item.userDetails.register_type),
                 (saveSongResObj.details = data.item),
                 (saveSongResObj.showPlaylist = true),
@@ -658,26 +659,26 @@ const Home = props => {
             .catch(err => { });
         }
       } else {
-        MusicPlayer(data.item.song_uri, true)
+        MusicPlayer(data.item.songs[0]?.song_uri, true)
           .then(track => {
             let saveSongResObj = {};
-            (saveSongResObj.uri = data.item.song_uri),
-              (saveSongResObj.song_name = data.item.song_name),
-              (saveSongResObj.album_name = data.item.album_name),
-              (saveSongResObj.song_pic = data.item.song_image),
+            (saveSongResObj.uri = data.item.songs[0]?.song_uri),
+              (saveSongResObj.song_name = data.item.songs[0]?.song_name),
+              (saveSongResObj.album_name = data.item.songs[0]?.album_name),
+              (saveSongResObj.song_pic = data.item.songs[0]?.song_image),
               (saveSongResObj.username = data.item.userDetails.username),
               (saveSongResObj.profile_pic =
                 data.item.userDetails.profile_image),
               (saveSongResObj.commentData = data.item.comment);
             saveSongResObj.reactionData = data.item.reaction;
             (saveSongResObj.id = data.item._id),
-              (saveSongResObj.artist = data.item.artist_name),
+              (saveSongResObj.artist = data.item.songs[0]?.artist_name),
               (saveSongResObj.changePlayer = changePlayer);
             (saveSongResObj.originalUri =
-              data.item.original_song_uri !== ''
-                ? data.item.original_song_uri
+              data.item.songs[0]?.original_song_uri !== ''
+                ? data.item.songs[0]?.original_song_uri
                 : undefined),
-              (saveSongResObj.isrc = data.item.isrc_code),
+              (saveSongResObj.isrc = data.item.songs[0]?.isrc_code),
               (saveSongResObj.regType = data.item.userDetails.register_type),
               (saveSongResObj.details = data.item),
               (saveSongResObj.showPlaylist = true),
@@ -708,6 +709,7 @@ const Home = props => {
   }
 
   function renderItem(data) {
+    // console.log(JSON.stringify(data), 'it item data')
     /** REACTION - ADDITION */
     const reactionMap = {
       thumbsUp: data.item.fireReactionIds
@@ -746,7 +748,8 @@ const Home = props => {
     return (
       <>
         <HomeItemList
-          image={data.item.song_image}
+          // image={data?.item?.songs[0]?.song_image}
+          image={data?.item?.songs}
           id={data.item._id}
           play={
             _.isEmpty(postArray)
@@ -774,9 +777,9 @@ const Home = props => {
           navi={props}
           content={data.item.post_content}
           time={data.item.createdAt}
-          title={data.item.song_name}
-          singer={data.item.artist_name}
-          songUri={data.item.song_uri}
+          title={data.item.songs[0]?.song_name}
+          singer={data.item.songs[0]?.artist_name}
+          songUri={data.item.songs[0]?.song_uri}
           modalVisible={modal1Visible}
           postType={data.item.social_type === 'spotify'}
           onReactionPress={newHitReact}
@@ -816,7 +819,7 @@ const Home = props => {
               props.navigation.navigate('HomeItemComments', {
                 index: data.index,
                 comment: data.item.comment,
-                image: data.item.song_image,
+                image: data.item.songs[0]?.song_image,
                 username: data.item.userDetails.username,
                 userComment: data.item.post_content,
                 time: data.item.createdAt,
@@ -1338,6 +1341,7 @@ const Home = props => {
             setIsShown={setIsShown}
           />
         )}
+        {/* {console.log(posts, 'these are post h songs')} */}
         {activeTab === 0 ?
           _.isEmpty(posts) ? (
             <EmptyComponent
@@ -1484,7 +1488,7 @@ const Home = props => {
               data={Array(10).fill('')}
               renderItem={() => {
                 return (
-                  <HomeSessionItem/>
+                  <HomeSessionItem />
                   // <View>
                   //   <Text>
                   //     Hi

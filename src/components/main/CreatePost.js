@@ -123,27 +123,32 @@ function AddSong(props) {
       post_content: search,
       social_type:
         props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
-      song_name: title1,
-      song_uri:
-        props.route.params.registerType === 'spotify'
-          ? spotifyUrl
-          : props.route.params.details.attributes.previews[0].url,
-      song_image: imgsource,
-      artist_name: title2,
-      album_name:
-        props.route.params.registerType === 'spotify'
-          ? props.route.params.details.album.name
-          : props.route.params.details.attributes.albumName,
-      original_song_uri:
-        props.route.params.registerType === 'spotify'
-          ? props.route.params.details.external_urls.spotify
-          : props.route.params.details.attributes.url,
-      isrc_code:
-        props.route.params.registerType === 'spotify'
-          ? props.route.params.details.external_ids.isrc
-          : props.route.params.details.attributes.isrc,
+      songs: [
+        {
+          song_uri:
+            props.route.params.registerType === 'spotify'
+              ? spotifyUrl
+              : props.route.params.details.attributes.previews[0].url,
+          original_song_uri:
+            props.route.params.registerType === 'spotify'
+              ? props.route.params.details.external_urls.spotify
+              : props.route.params.details.attributes.url,
+          song_name: title1,
+          song_image: imgsource,
+          artist_name: title2,
+          isrc_code:
+            props.route.params.registerType === 'spotify'
+              ? props.route.params.details.external_ids.isrc
+              : props.route.params.details.attributes.isrc,
+          album_name:
+            props.route.params.registerType === 'spotify'
+              ? props.route.params.details.album.name
+              : props.route.params.details.attributes.albumName,
+        }
+      ],
     };
-
+    console.log(payload, 'its playlod <<')
+    // return
     props.createPostRequest(payload);
   };
 

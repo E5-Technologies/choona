@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -11,6 +11,8 @@ import HomeListItemFooter from '../../HomeScreen/HomeListItem/HomeListItemFooter
 function HomeItemList(props) {
   const [numberOfLines, setNumberOfLines] = useState(3);
   const [viewMore, setViewMore] = useState(false);
+  const { width, height } = useWindowDimensions()
+
 
   const onPressImage = () => {
     if (props.onPressImage) {
@@ -88,7 +90,7 @@ function HomeItemList(props) {
   return (
     <View
       style={{
-          backgroundColor: Colors.darkerblack,
+        backgroundColor: Colors.darkerblack,
         alignSelf: 'center',
         paddingBottom: normalise(16),
       }}>
@@ -100,20 +102,41 @@ function HomeItemList(props) {
         songUri={props.songUri}
         title={props.title}
       />
-      <Image
-        source={
-          ImagePath
-            ? props.image === ''
-              ? ImagePath.profiletrack1
-              : { uri: props.image }
-            : null
-        }
-        style={{
-          aspectRatio: 1,
+      {props?.image?.length > 1 ?
+        <View style={[styles.combienBanerWrapper, {
           width: '100%',
-        }}
-        resizeMode="cover"
-      />
+          aspectRatio: 1
+        }]}>
+          {
+            props.image?.map((item) => {
+              return (
+                <Image
+                  source={{ uri: item?.song_image }}
+                  style={styles.bannerImageStyle}
+                  resizeMode="cover"
+                />
+              )
+            }
+            )
+          }
+        </View>
+        :
+        <Image
+          source={
+            ImagePath
+              ? props.image === ''
+                ? ImagePath.profiletrack1
+                : { uri: props.image[0].song_image }
+              : null
+          }
+          style={{
+            aspectRatio: 1,
+            width: '100%',
+          }}
+          resizeMode="cover"
+        />
+      }
+
       <HomeListItemFooter
         commentCount={props.comment_count}
         numberOfLines={numberOfLines}
@@ -182,3 +205,19 @@ HomeItemList.defaultProps = {
   play: false,
   myReactions: {},
 };
+
+
+const styles = StyleSheet.create({
+  combienBanerWrapper: {
+    flexDirection: 'row',
+    backgroundColor: 'green',
+    flexWrap: 'wrap',
+    backgroundColor: Colors.fadeblack,
+    marginBottom: normalise(10),
+    overflow: 'hidden'
+  },
+  bannerImageStyle: {
+    width: '50%',
+    height: '50%',
+  },
+})

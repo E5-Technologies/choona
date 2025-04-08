@@ -16,17 +16,19 @@ function TextInputField(props) {
 
   return (
     <View
-      style={{
+      style={[{
         marginBottom: normalize(16),
-      }}>
-      <Text
-        style={{
-          fontSize: normalize(10),
-          color: Colors.meta,
-          fontFamily: 'ProximaNova-SemiBold',
-        }}>
-        {props.text}
-      </Text>
+      }, props.mainStyle]}>
+      {props.text &&
+        <Text
+          style={{
+            fontSize: normalize(10),
+            color: Colors.meta,
+            fontFamily: 'ProximaNova-SemiBold',
+          }}>
+          {props.text}
+        </Text>
+      }
 
       <TextInput
         style={{

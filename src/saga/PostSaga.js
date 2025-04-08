@@ -105,6 +105,7 @@ export function* createPostAction(action) {
 
   try {
     const response = yield call(postApi, 'post/store', action.payload, header);
+    console.log(response?.data, 'its response after api hit')
 
     yield put({ type: CREATE_POST_SUCCESS, data: response.data });
   } catch (error) {

@@ -180,13 +180,14 @@ function Player(props) {
         props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
 
         if (changePlayer2) {
-            console.log('getting spotify song uri');
+          console.log('getting spotify song uri');
           const getSpotifyApi = async () => {
             try {
               const res = await callApi();
-                console.log(res);
+              console.log(res);
               if (res.data.status === 200) {
                 let suc = res.data.data.audio;
+                // let suc = res.data.data.link
                 setUri(suc);
                 playSongOnLoad(suc);
               } else {
@@ -194,7 +195,7 @@ function Player(props) {
                 props.navigation.goBack();
               }
             } catch (error) {
-                console.log(JSON.stringify(error), 'this is error getting  song uri');
+              console.log(JSON.stringify(error), 'this is error getting  song uri');
             }
           };
 
@@ -281,7 +282,7 @@ function Player(props) {
     }
   }
 
-  function _onReaction(ID, reaction) {}
+  function _onReaction(ID, reaction) { }
 
   function _onSelectBack(data, comment) {
     // console.log('aaa' + JSON.stringify(comment));

@@ -376,6 +376,8 @@ const App = () => {
     );
   };
 
+  console.log(TokenReducer.token, 'its user token')
+
   if (TokenReducer.loading) {
     return <Splash />;
   } else {
