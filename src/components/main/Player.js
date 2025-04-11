@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,7 +11,7 @@ import {
   Linking,
   BackHandler,
   Pressable,
-  Platform
+  Platform,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 
@@ -23,13 +23,13 @@ import ImagePath from '../../assests/ImagePath';
 
 import StatusBar from '../../utils/MyStatusBar';
 
-import { commentOnPostReq, dummyRequest } from '../../action/UserAction';
+import {commentOnPostReq, dummyRequest} from '../../action/UserAction';
 
-import { fetchCommentsOnPost } from '../../helpers/post';
+import {fetchCommentsOnPost} from '../../helpers/post';
 
 import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
 
 import {
@@ -44,7 +44,7 @@ import {
   GET_SONG_FROM_ISRC_FAILURE,
 } from '../../action/TypeConstants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
+import {saveSongRequest, saveSongRefReq} from '../../action/SongAction';
 import {
   getCurrentPlayerPostionAction,
   playerResumeRequest,
@@ -52,11 +52,11 @@ import {
   playerSeekToRequest,
   getSongFromisrc,
 } from '../../action/PlayerAction';
-import { updateMessageCommentRequest } from '../../action/MessageAction';
+import {updateMessageCommentRequest} from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
 import axios from 'axios';
-import { getUsersFromHome } from '../../action/UserAction';
+import {getUsersFromHome} from '../../action/UserAction';
 import MoreModal from '../Posts/MoreModal';
 import Avatar from '../Avatar';
 import LinearGradient from 'react-native-linear-gradient';
@@ -94,6 +94,13 @@ function Player(props) {
   const [reactions, setSReactions] = useState(
     props.route.params.changePlayer ? [] : props.route.params.reactions,
   );
+
+  const arrSongs = props.route.params.details?.songs;
+
+  const currentSongIndex = arrSongs?.findIndex(
+    item => item.isrc_code === props.route.params.isrc,
+  );
+  const totalSongs = arrSongs?.length;
 
   //COMMENT ON POST
   const [commentData, setCommentData] = useState(
@@ -195,7 +202,10 @@ function Player(props) {
                 props.navigation.goBack();
               }
             } catch (error) {
-              console.log(JSON.stringify(error), 'this is error getting  song uri');
+              console.log(
+                JSON.stringify(error),
+                'this is error getting  song uri',
+              );
             }
           };
 
@@ -282,7 +292,7 @@ function Player(props) {
     }
   }
 
-  function _onReaction(ID, reaction) { }
+  function _onReaction(ID, reaction) {}
 
   function _onSelectBack(data, comment) {
     // console.log('aaa' + JSON.stringify(comment));
@@ -319,7 +329,7 @@ function Player(props) {
       setPlayVisible(true);
       playSong(songuri);
     } else {
-      console.log('jkf')
+      console.log('jkf');
       if (global.playerReference !== null) {
         if (global.playerReference._filename === uri) {
           console.log('Already Playing');
@@ -514,24 +524,47 @@ function Player(props) {
     }
   };
 
+  const changeSong = (type = 'next') => {
+    if (currentSongIndex < 0) {
+      return;
+    }
+
+    let nextIndex = currentSongIndex;
+
+    if (type == 'next') {
+      if (currentSongIndex + 1 >= totalSongs) {
+        return;
+      }
+      nextIndex = currentSongIndex + 1;
+    }
+
+    if (type == 'previous') {
+      if (currentSongIndex - 1 < 0) {
+        return;
+      }
+      nextIndex = currentSongIndex - 1;
+    }
+    const nextSong = arrSongs[nextIndex];
+  };
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <LinearGradient
         colors={['#0E402C', '#101119', '#360455']}
-        style={{ flex: 1 }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}>
-        <KeyboardAvoidingView style={{ flex: 1 }}>
+        style={{flex: 1}}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}>
+        <KeyboardAvoidingView style={{flex: 1}}>
           <StatusBar backgroundColor="transparent" />
 
           <Loader visible={bool} />
 
           <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
 
-          <SafeAreaView style={{ flex: 1 }}>
+          <SafeAreaView style={{flex: 1}}>
             <ScrollView
               keyboardShouldPersistTaps="always"
-              contentContainerStyle={{ paddingBottom: 50 }}>
+              contentContainerStyle={{paddingBottom: 50}}>
               <View
                 style={{
                   marginHorizontal: normalise(15),
@@ -542,7 +575,7 @@ function Player(props) {
                   justifyContent: changePlayer ? 'flex-end' : 'space-between',
                 }}>
                 {changePlayer ? null : (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Pressable
                       onPress={() => {
                         if (
@@ -612,7 +645,7 @@ function Player(props) {
                     </View>
                   </View>
                 )}
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   {changePlayer ? null : (
                     <TouchableOpacity
                       style={{
@@ -626,7 +659,7 @@ function Player(props) {
                       <Image
                         source={ImagePath.threedots}
                         style={{
-                          transform: [{ rotate: '90deg' }],
+                          transform: [{rotate: '90deg'}],
                           width: normalise(14),
                         }}
                         resizeMode="contain"
@@ -658,7 +691,7 @@ function Player(props) {
                         style={{
                           height: normalise(15),
                           width: normalise(15),
-                          transform: [{ rotate: '-90deg' }],
+                          transform: [{rotate: '-90deg'}],
                         }}
                         resizeMode="contain"
                       />
@@ -710,7 +743,7 @@ function Player(props) {
                 <View
                   style={{
                     flexDirection: 'column',
-                    width: '80%',
+                    width: '70%',
                     alignSelf: 'center',
                   }}>
                   <Text
@@ -735,28 +768,91 @@ function Player(props) {
                     {artist}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  disabled={disabled}
-                  onPress={() => {
-                    setDisabled(true);
-                    if (hasSongLoaded) {
-                      playing();
-                    }
-                    setTimeout(() => {
-                      setDisabled(false);
-                    }, 1000);
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  <Image
-                    source={playVisible ? ImagePath.play : ImagePath.pause}
-                    style={{ height: normalise(30), width: normalise(30) }}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    disabled={disabled}
+                    onPress={() => {
+                      setDisabled(true);
+                      changeSong('previous');
+                      setTimeout(() => {
+                        setDisabled(false);
+                      }, 1000);
+                    }}
+                    style={{
+                      height: normalise(32),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: normalise(32),
+                    }}>
+                    <Image
+                      source={ImagePath ? ImagePath.previousSong : null}
+                      style={{
+                        height: normalise(16),
+                        width: normalise(16),
+                        tintColor: currentSongIndex == 0 ? 'grey' : '#fff',
+                      }}
+                      resizeMode={'contain'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    disabled={disabled}
+                    onPress={() => {
+                      setDisabled(true);
+                      if (hasSongLoaded) {
+                        playing();
+                      }
+                      setTimeout(() => {
+                        setDisabled(false);
+                      }, 1000);
+                    }}>
+                    <Image
+                      source={playVisible ? ImagePath.play : ImagePath.pause}
+                      style={{height: normalise(30), width: normalise(30)}}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                  {arrSongs?.length > 1 && (
+                    <TouchableOpacity
+                      disabled={disabled}
+                      onPress={() => {
+                        setDisabled(true);
+                        changeSong('next');
+                        setTimeout(() => {
+                          setDisabled(false);
+                        }, 1000);
+                      }}
+                      style={{
+                        height: normalise(32),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: normalise(32),
+                      }}>
+                      <Image
+                        source={ImagePath ? ImagePath.nextSong : null}
+                        style={{
+                          height: normalise(16),
+                          width: normalise(16),
+                          tintColor:
+                            currentSongIndex >= totalSongs - 1
+                              ? 'grey'
+                              : '#fff',
+                        }}
+                        resizeMode={'contain'}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
               <View
                 style={{
                   width: '100%',
-                  paddingHorizontal: Platform.OS === "ios" ? normalise(16) : normalise(16) - 15,
+                  paddingHorizontal:
+                    Platform.OS === 'ios' ? normalise(16) : normalise(16) - 15,
                 }}>
                 <Slider
                   style={{
@@ -819,7 +915,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.boxicon}
-                        style={{ height: normalise(20), width: normalise(20) }}
+                        style={{height: normalise(20), width: normalise(20)}}
                         resizeMode="contain"
                       />
                     </TouchableOpacity>
@@ -855,7 +951,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.sendicon}
-                        style={{ height: normalise(20), width: normalise(20) }}
+                        style={{height: normalise(20), width: normalise(20)}}
                         resizeMode="contain"
                       />
                     </TouchableOpacity>
@@ -925,7 +1021,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.reactionShow}
-                        style={{ height: normalise(20), width: normalise(20) }}
+                        style={{height: normalise(20), width: normalise(20)}}
                         resizeMode="contain"
                       />
                     </TouchableOpacity>
@@ -954,7 +1050,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.comment_grey}
-                        style={{ height: normalise(20), width: normalise(20) }}
+                        style={{height: normalise(20), width: normalise(20)}}
                         resizeMode="contain"
                       />
                       <Text
@@ -982,7 +1078,7 @@ function Player(props) {
                       <Image
                         source={ImagePath.threedots}
                         style={{
-                          transform: [{ rotate: '90deg' }],
+                          transform: [{rotate: '90deg'}],
                           width: normalise(14),
                         }}
                         resizeMode="contain"
@@ -1028,7 +1124,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.boxicon}
-                      style={{ height: normalise(20), width: normalise(20) }}
+                      style={{height: normalise(20), width: normalise(20)}}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1065,7 +1161,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.sendicon}
-                      style={{ height: normalise(20), width: normalise(20) }}
+                      style={{height: normalise(20), width: normalise(20)}}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1148,7 +1244,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.comment_grey}
-                      style={{ height: normalise(22), width: normalise(22) }}
+                      style={{height: normalise(22), width: normalise(22)}}
                       resizeMode="contain"
                     />
                     <Text
@@ -1274,7 +1370,10 @@ function Player(props) {
                   setReportModal={setReportModal}
                 />
               )}
-              <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
+              <ReportModal
+                reportModal={reportModal}
+                setReportModal={setReportModal}
+              />
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>

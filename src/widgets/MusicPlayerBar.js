@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import propTypes from 'prop-types';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
 import ImagePath from '../assests/ImagePath';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
@@ -18,6 +18,13 @@ function MusicPlayerBar(props) {
     global.playerReference !== null && global.playerReference !== undefined
       ? global.playerReference
       : null;
+
+  const arrSongs = props.playingSongRef?.details?.songs;
+
+  const currentSongIndex = arrSongs?.findIndex(
+    item => item.isrc_code === props.playingSongRef?.isrc,
+  );
+  const totalSongs = arrSongs?.length;
 
   useEffect(() => {
     getPlatingState();
@@ -61,6 +68,31 @@ function MusicPlayerBar(props) {
     }
   };
 
+  const changeSong = (type = 'next') => {
+    if (currentSongIndex < 0) {
+      return;
+    }
+
+    let nextIndex = currentSongIndex;
+
+    if (type == 'next') {
+      if (currentSongIndex + 1 >= totalSongs) {
+        return;
+      }
+      nextIndex = currentSongIndex + 1;
+    }
+
+    if (type == 'previous') {
+      if (currentSongIndex - 1 < 0) {
+        return;
+      }
+      nextIndex = currentSongIndex - 1;
+    }
+
+    props?.onChangeSong &&
+      props?.onChangeSong(props.playingSongRef?.details, nextIndex);
+  };
+
   const onPress = () => {
     if (props.onPress) {
       props.onPress();
@@ -78,7 +110,7 @@ function MusicPlayerBar(props) {
       // source={ImagePath.gradientbar}
       style={{
         width: '100%',
-        height: normalise(45),
+        // height: normalise(45),
         backgroundColor: Colors.fadeblack,
         opacity: 0.9,
         position: 'absolute',
@@ -100,7 +132,6 @@ function MusicPlayerBar(props) {
         <View
           style={{
             width: '100%',
-            paddingRight: normalise(13),
             alignItems: 'center',
             justifyContent: 'space-between',
             flexDirection: 'row',
@@ -109,6 +140,7 @@ function MusicPlayerBar(props) {
             style={{
               alignItems: 'center',
               flexDirection: 'row',
+              flex: 1,
             }}>
             <TouchableOpacity
               onPress={() => {
@@ -117,26 +149,27 @@ function MusicPlayerBar(props) {
               <Image
                 source={
                   props?.playingSongRef?.song_pic
-                    ? { uri: props.playingSongRef.song_pic }
+                    ? {uri: props.playingSongRef.song_pic}
                     : null
                 }
-                style={{ height: normalise(45), width: normalise(45) }}
+                style={{height: normalise(45), width: normalise(45)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
             <View
               style={{
                 marginLeft: normalise(8),
-                width: '75%',
+                // width: '75%',
+                flex: 1,
               }}>
               <Text
                 style={{
                   color: Colors.white,
                   fontSize: normalise(11),
                   fontFamily: 'ProximaNova-Semibold',
-                  width: '100%',
+                  // width: '100%',
                 }}
-                numberOfLines={1}>
+                numberOfLines={2}>
                 {props.playingSongRef.song_name}
               </Text>
               <Text
@@ -144,40 +177,101 @@ function MusicPlayerBar(props) {
                   color: Colors.grey_text,
                   fontSize: normalise(10),
                   fontFamily: 'ProximaNovaAW07-Medium',
-                  width: '100%',
+                  // width: '100%',
                 }}
                 numberOfLines={1}>
                 {props.playingSongRef.artist}
               </Text>
             </View>
           </View>
-          <TouchableOpacity
-            disabled={disabled}
-            onPress={() => {
-              setDisabled(true);
-              playOrPause();
-              onPressPlayOrPause();
-              setTimeout(() => {
-                setDisabled(false);
-              }, 1000);
-            }}
+
+          <View
             style={{
-              height: normalise(44),
-              paddingLeft: normalise(10),
-              paddingTop: normalise(10),
-              position: 'absolute',
-              right: normalise(0),
-              top: normalise(0),
-              width: normalise(44),
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <Image
-              source={
-                ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
-              }
-              style={{ height: normalise(24), width: normalise(24) }}
-              resizeMode={'contain'}
-            />
-          </TouchableOpacity>
+            {arrSongs?.length > 1 && (
+              <TouchableOpacity
+                disabled={disabled}
+                onPress={() => {
+                  setDisabled(true);
+                  changeSong('previous');
+                  setTimeout(() => {
+                    setDisabled(false);
+                  }, 1000);
+                }}
+                style={{
+                  height: normalise(32),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: normalise(32),
+                }}>
+                <Image
+                  source={ImagePath ? ImagePath.previousSong : null}
+                  style={{
+                    height: normalise(16),
+                    width: normalise(16),
+                    tintColor: currentSongIndex == 0 ? 'grey' : '#fff',
+                  }}
+                  resizeMode={'contain'}
+                />
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity
+              disabled={disabled}
+              onPress={() => {
+                setDisabled(true);
+                playOrPause();
+                onPressPlayOrPause();
+                setTimeout(() => {
+                  setDisabled(false);
+                }, 1000);
+              }}
+              style={{
+                height: normalise(44),
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: normalise(44),
+              }}>
+              <Image
+                source={
+                  ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+                }
+                style={{height: normalise(24), width: normalise(24)}}
+                resizeMode={'contain'}
+              />
+            </TouchableOpacity>
+            {arrSongs?.length > 1 && (
+              <TouchableOpacity
+                disabled={disabled}
+                onPress={() => {
+                  setDisabled(true);
+                  changeSong('next');
+                  setTimeout(() => {
+                    setDisabled(false);
+                  }, 1000);
+                }}
+                style={{
+                  height: normalise(32),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: normalise(32),
+                }}>
+                <Image
+                  source={ImagePath ? ImagePath.nextSong : null}
+                  style={{
+                    height: normalise(16),
+                    width: normalise(16),
+                    tintColor:
+                      currentSongIndex >= totalSongs - 1 ? 'grey' : '#fff',
+                  }}
+                  resizeMode={'contain'}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     </View>

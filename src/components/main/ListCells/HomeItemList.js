@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import normalise from '../../../utils/helpers/Dimens';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
@@ -11,12 +18,17 @@ import HomeListItemFooter from '../../HomeScreen/HomeListItem/HomeListItemFooter
 function HomeItemList(props) {
   const [numberOfLines, setNumberOfLines] = useState(3);
   const [viewMore, setViewMore] = useState(false);
-  const { width, height } = useWindowDimensions()
-
+  const {width, height} = useWindowDimensions();
 
   const onPressImage = () => {
     if (props.onPressImage) {
       props.onPressImage();
+    }
+  };
+
+  const onPlaylistImagePress = songIndex => {
+    if (props.onPlaylistImagePress) {
+      props.onPlaylistImagePress(songIndex);
     }
   };
 
@@ -73,7 +85,7 @@ function HomeItemList(props) {
       return (
         <Text
           key={text}
-          style={{ color: '#3DB2EB' }}
+          style={{color: '#3DB2EB'}}
           onPress={() => {
             props.navi.navigation.navigate('OthersProfile', {
               id: text.substr(1, text.length - 1),
@@ -102,31 +114,37 @@ function HomeItemList(props) {
         songUri={props.songUri}
         title={props.title}
       />
-      {props?.image?.length > 1 ?
-        <View style={[styles.combienBanerWrapper, {
-          width: '100%',
-          aspectRatio: 1
-        }]}>
-          {
-            props.image?.map((item) => {
-              return (
+      {props?.image?.length > 1 ? (
+        <View
+          style={[
+            styles.combienBanerWrapper,
+            {
+              width: '100%',
+              // aspectRatio: 1,
+            },
+          ]}>
+          {props.image?.map((item, index) => {
+            return (
+              <TouchableOpacity
+                style={styles.bannerImageStyle}
+                onPress={() => onPlaylistImagePress(index)}>
                 <Image
-                  source={{ uri: item?.song_image }}
-                  style={styles.bannerImageStyle}
+                  source={{uri: item?.song_image}}
+                  style={{flex: 1, aspectRatio: 1}}
+                  // style={styles.bannerImageStyle}
                   resizeMode="cover"
                 />
-              )
-            }
-            )
-          }
+              </TouchableOpacity>
+            );
+          })}
         </View>
-        :
+      ) : (
         <Image
           source={
             ImagePath
               ? props.image === ''
                 ? ImagePath.profiletrack1
-                : { uri: props.image[0].song_image }
+                : {uri: props.image[0].song_image}
               : null
           }
           style={{
@@ -135,7 +153,7 @@ function HomeItemList(props) {
           }}
           resizeMode="cover"
         />
-      }
+      )}
 
       <HomeListItemFooter
         commentCount={props.comment_count}
@@ -206,7 +224,6 @@ HomeItemList.defaultProps = {
   myReactions: {},
 };
 
-
 const styles = StyleSheet.create({
   combienBanerWrapper: {
     flexDirection: 'row',
@@ -214,10 +231,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     backgroundColor: Colors.fadeblack,
     marginBottom: normalise(10),
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   bannerImageStyle: {
     width: '50%',
     height: '50%',
   },
-})
+});
