@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   SafeAreaView,
   View,
@@ -13,6 +13,7 @@ import {
   Pressable,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
 import normalise from '../../../utils/helpers/Dimens';
@@ -22,12 +23,12 @@ import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
 import StatusBar from '../../../utils/MyStatusBar';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {useInfiniteQuery} from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 
 // import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
@@ -69,17 +70,17 @@ import {
   loadMoreRequest,
   loadMoreData,
 } from '../../../action/UserAction';
-import {saveSongRequest, saveSongRefReq} from '../../../action/SongAction';
-import {deletePostReq} from '../../../action/PostAction';
-import {connect} from 'react-redux';
+import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
+import { deletePostReq } from '../../../action/PostAction';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-import {useScrollToTop} from '@react-navigation/native';
+import { useScrollToTop } from '@react-navigation/native';
 import Contacts from 'react-native-contacts';
-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import MusicPlayer from '../../../widgets/MusicPlayer';
 import Timer from '../Timer';
@@ -91,7 +92,7 @@ import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
 import MoreModal from '../../Posts/MoreModal';
 import ReportModal from '../../Posts/ReportModal';
 import Reactions from '../../Reactions/Reactions';
-import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
+import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 import HomeSessionItem from '../ListCells/HomeSessionItem';
 
 let status = '';
@@ -124,7 +125,7 @@ const Home = props => {
   const [posts, setPosts] = useState([]);
   const postsUrl = constants.BASE_URL + '/post/list?page=';
 
-  const {hitReact: newHitReact, isPending} = useContext(ReactionsContext);
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
   const [activeTab, setActiveTab] = useState(0);
 
   const {
@@ -136,7 +137,7 @@ const Home = props => {
     refetch,
   } = useInfiniteQuery(
     'homePosts',
-    async ({pageParam = 1}) => {
+    async ({ pageParam = 1 }) => {
       const res = await axios
         .get(postsUrl + pageParam, {
           headers: {
@@ -146,8 +147,8 @@ const Home = props => {
           },
         })
         .catch(error => console.log(error, 'ye error h'));
-      console.log(res, 'this is post data');
-      console.log(postsUrl + pageParam, 'its url');
+      // console.log(res, 'this is post data');
+      // console.log(postsUrl + pageParam, 'its url');
       return res.data;
     },
     {
@@ -222,7 +223,6 @@ const Home = props => {
       if (global.playerReference !== null) {
         if (global.playerReference?.isPlaying()) {
           global.playerReference.pause();
-
           findPlayingSong(posts);
         }
       }
@@ -512,14 +512,14 @@ const Home = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -570,7 +570,7 @@ const Home = props => {
           });
         });
 
-        props.navigation.navigate('UsersFromContacts', {data: finalArray});
+        props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
   };
@@ -674,7 +674,7 @@ const Home = props => {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => {});
+            .catch(err => { });
         }
       } else {
         MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
@@ -710,7 +710,7 @@ const Home = props => {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => {});
+          .catch(err => { });
       }
     }
   };
@@ -730,6 +730,8 @@ const Home = props => {
       }
     });
   }
+  // console.log(JSON.stringify(posts),'its post data>>')
+
 
   function renderItem(data) {
     // console.log(JSON.stringify(data), 'it item data')
@@ -746,16 +748,16 @@ const Home = props => {
         : false,
       disco: data.item.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
       throwback: data.item.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
       thumbsDown: data.item.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
     };
 
@@ -770,98 +772,105 @@ const Home = props => {
 
     return (
       <>
-        <HomeItemList
-          // image={data?.item?.songs[0]?.song_image}
-          image={data?.item?.songs}
-          id={data.item._id}
-          play={
-            _.isEmpty(postArray)
-              ? false
-              : posts.length === postArray.length
-              ? postArray[data.index].playing
-              : false
+        <TouchableOpacity onPress={() => {
+          if (data?.item?.songs?.length > 1) {
+            props.navigation.navigate('PlayListDetail', { songsList: data, playSong: playSong, postArray: postArray })
           }
-          onPlaylistImagePress={songIndex => playSong(data, songIndex)}
-          picture={data.item.userDetails.profile_image}
-          name={data.item.userDetails.username}
-          comment_count={data.item.comment_count ? data.item.comment_count : 0}
-          reaction_count={
-            data.item.reaction_count ? data.item.reaction_count : 0
-          }
-          reactions={{
-            fire_count: data.item.fire_count,
-            love_count: data.item.love_count,
-            dancer_count: data.item.dancer_count,
-            man_dancing_count: data.item.man_dancing_count,
-            face_count: data.item.face_count,
-            thumbsup_count: data.item.thumbsup_count,
-          }}
-          myReactions={reactionMap}
-          myReactionsPending={reactionPendingMap}
-          navi={props}
-          content={data.item.post_content}
-          time={data.item.createdAt}
-          title={data.item.songs[0]?.song_name}
-          singer={data.item.songs[0]?.artist_name}
-          songUri={data.item.songs[0]?.song_uri}
-          modalVisible={modal1Visible}
-          postType={data.item.social_type === 'spotify'}
-          onReactionPress={newHitReact}
-          onPressImage={() => {
-            if (!isFetching) {
-              if (props.userProfileResp._id === data.item.user_id) {
-                props.navigation.navigate('Profile', {fromAct: false});
-              } else {
-                props.navigation.navigate('OthersProfile', {
-                  id: data.item.user_id,
+        }
+        }>
+          <HomeItemList
+            // image={data?.item?.songs[0]?.song_image}
+            image={data?.item?.songs}
+            id={data.item._id}
+            play={
+              _.isEmpty(postArray)
+                ? false
+                : posts.length === postArray.length
+                  ? postArray[data.index].playing
+                  : false
+            }
+            // postArray[data.index].playing
+            onPlaylistImagePress={songIndex => playSong(data, songIndex)}
+            picture={data.item.userDetails.profile_image}
+            name={data.item.userDetails.username}
+            comment_count={data.item.comment_count ? data.item.comment_count : 0}
+            reaction_count={
+              data.item.reaction_count ? data.item.reaction_count : 0
+            }
+            reactions={{
+              fire_count: data.item.fire_count,
+              love_count: data.item.love_count,
+              dancer_count: data.item.dancer_count,
+              man_dancing_count: data.item.man_dancing_count,
+              face_count: data.item.face_count,
+              thumbsup_count: data.item.thumbsup_count,
+            }}
+            myReactions={reactionMap}
+            myReactionsPending={reactionPendingMap}
+            navi={props}
+            content={data.item.post_content}
+            time={data.item.createdAt}
+            title={data.item.songs[0]?.song_name}
+            singer={data.item.songs[0]?.artist_name}
+            songUri={data.item.songs[0]?.song_uri}
+            modalVisible={modal1Visible}
+            postType={data.item.social_type === 'spotify'}
+            onReactionPress={newHitReact}
+            onPressImage={() => {
+              if (!isFetching) {
+                if (props.userProfileResp._id === data.item.user_id) {
+                  props.navigation.navigate('Profile', { fromAct: false });
+                } else {
+                  props.navigation.navigate('OthersProfile', {
+                    id: data.item.user_id,
+                  });
+                }
+              }
+            }}
+            onAddReaction={() => {
+              hitreact1(modal1Visible);
+            }}
+            onPressMusicbox={() => {
+              if (!isFetching) {
+                playSong(data);
+                setVisibleMiniPlayer(true);
+              }
+            }}
+            onPressReactionbox={() => {
+              if (!isFetching) {
+                props.navigation.navigate('HomeItemReactions', {
+                  reactionCount: data.item.reaction_count
+                    ? data.item.reaction_count
+                    : 0,
+                  post_id: data.item._id,
+                  onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
                 });
               }
-            }
-          }}
-          onAddReaction={() => {
-            hitreact1(modal1Visible);
-          }}
-          onPressMusicbox={() => {
-            if (!isFetching) {
-              playSong(data);
-              setVisibleMiniPlayer(true);
-            }
-          }}
-          onPressReactionbox={() => {
-            if (!isFetching) {
-              props.navigation.navigate('HomeItemReactions', {
-                reactionCount: data.item.reaction_count
-                  ? data.item.reaction_count
-                  : 0,
-                post_id: data.item._id,
-                onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
-              });
-            }
-          }}
-          onPressCommentbox={() => {
-            if (!isFetching) {
-              props.navigation.navigate('HomeItemComments', {
-                index: data.index,
-                comment: data.item.comment,
-                image: data.item.songs[0]?.song_image,
-                username: data.item.userDetails.username,
-                userComment: data.item.post_content,
-                time: data.item.createdAt,
-                id: data.item._id,
-                onSelect: (ID, comment) => _onSelectBack(ID, comment),
-              });
-            }
-          }}
-          onPressSecondImage={() => {
-            if (!isFetching) {
-              setPositionInArray(data.index);
-              setModalVisible(true);
-            }
-          }}
+            }}
+            onPressCommentbox={() => {
+              if (!isFetching) {
+                props.navigation.navigate('HomeItemComments', {
+                  index: data.index,
+                  comment: data.item.comment,
+                  image: data.item.songs[0]?.song_image,
+                  username: data.item.userDetails.username,
+                  userComment: data.item.post_content,
+                  time: data.item.createdAt,
+                  id: data.item._id,
+                  onSelect: (ID, comment) => _onSelectBack(ID, comment),
+                });
+              }
+            }}
+            onPressSecondImage={() => {
+              if (!isFetching) {
+                setPositionInArray(data.index);
+                setModalVisible(true);
+              }
+            }}
           // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
           // playingSongRef={props.playingSongRef}
-        />
-        {/* {(data.index === 1 ||
+          />
+          {/* {(data.index === 1 ||
           (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
           <View
             style={{
@@ -888,6 +897,7 @@ const Home = props => {
             />
           </View>
         )} */}
+        </TouchableOpacity>
       </>
     );
   }
@@ -925,12 +935,14 @@ const Home = props => {
   // FIND THE PLAYING SONG AND ADD THE PAUSE/PLAY ICON TO FEED
   function findPlayingSong(postData) {
     const res = getPlayerState();
-
     // IF PLAYING
     if (res === true && !props.playingSongRef.changePlayer) {
-      const myindex = postData.findIndex(
-        obj => obj.song_uri === props.playingSongRef.uri,
-      );
+      // console.log(props.playingSongRef, 'its post urli')
+      // const myindex = postData.findIndex(
+      //   obj => obj.song_uri === props.playingSongRef.uri,
+      // );
+      const myindex = postData.findIndex(obj => obj._id === props.playingSongRef.id)
+      // console.log(myindex, 'its my index');
       let array = [...postData];
       let i;
       for (i = 0; i < array.length; i++) {
@@ -974,7 +986,6 @@ const Home = props => {
   const callApi = async () => {
     if (props.registerType === 'spotify') {
       const spotifyToken = await getSpotifyToken();
-
       return await axios.get(
         `https://api.spotify.com/v1/search?q=isrc:${posts[positionInArray].isrc_code}&type=track`,
         {
@@ -1037,7 +1048,7 @@ const Home = props => {
                     console.log(err);
                   });
               })
-              .catch(() => {});
+              .catch(() => { });
             setBool(false);
           }
         } else {
@@ -1049,14 +1060,14 @@ const Home = props => {
         toast('Oops', 'Something Went Wrong');
       }
     } catch (error) {
-      console.log({error});
+      console.log({ error });
       setBool(false);
     }
   };
 
   function onfinish() {
     if (posts.length !== 0) {
-      let loadData = {offset: 1, create: posts[0].createdAt};
+      let loadData = { offset: 1, create: posts[0].createdAt };
       props.loadMorePost(loadData);
     } else {
       console.log('empty');
@@ -1071,7 +1082,7 @@ const Home = props => {
         backgroundColor: Colors.darkerblack,
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <SafeAreaView style={{flex: 1, position: 'relative'}}>
+      <SafeAreaView style={{ flex: 1, position: 'relative' }}>
         <Timer
           onFinish={() => {
             onfinish();
@@ -1087,9 +1098,9 @@ const Home = props => {
             _.isEmpty(props.userProfileResp)
               ? ''
               : props.userProfileResp.profile_image
-              ? constants.profile_picture_base_url +
+                ? constants.profile_picture_base_url +
                 props.userProfileResp.profile_image
-              : null
+                : null
           }
           staticFirstImage={false}
           imageoneheight={normalise(26)}
@@ -1111,7 +1122,7 @@ const Home = props => {
             });
           }}
           onPressFirstItem={() => {
-            props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('Profile', { fromAct: false });
           }}
           onPressThirdItem={() => {
             props.navigation.navigate('Contact');
@@ -1175,7 +1186,7 @@ const Home = props => {
             locations={[0, 0.5, 1]}
             useAngle={true}
             angle={315}
-            angleCenter={{x: -4, y: 1}}
+            angleCenter={{ x: -4, y: 1 }}
             style={{
               flex: 1,
               alignItems: 'center',
@@ -1297,7 +1308,7 @@ const Home = props => {
                   justifyContent: 'space-between',
                   paddingTop: normalise(12),
                 }}>
-                <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                   <Image
                     source={{
                       uri:
@@ -1334,7 +1345,7 @@ const Home = props => {
                 {!andyProfile.isFollowing && (
                   <Pressable
                     onPress={() => {
-                      props.followUnfollowReq({follower_id: andyProfile._id});
+                      props.followUnfollowReq({ follower_id: andyProfile._id });
                       setFollowButtonPressed(true);
                     }}
                     disabled={followButtonPressed}
@@ -1384,7 +1395,7 @@ const Home = props => {
               title={'Your Feed is empty'}
             />
           ) : (
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <FlatList
                 data={posts}
                 renderItem={renderItem}
@@ -1415,8 +1426,8 @@ const Home = props => {
                   onPress={() => loadMore()}>
                   <LinearGradient
                     colors={['#008373', '#4950AC', '#7A1FD4']}
-                    start={{x: 1.0, y: 5.1}}
-                    end={{x: 2.0, y: 2.5}}
+                    start={{ x: 1.0, y: 5.1 }}
+                    end={{ x: 2.0, y: 2.5 }}
                     style={{
                       flex: 1,
                       borderRadius: 20,
@@ -1461,7 +1472,7 @@ const Home = props => {
                     });
                   }}
                   onChangeSong={(data, songIndex) =>
-                    playSong({item: data}, songIndex)
+                    playSong({ item: data }, songIndex)
                   }
                   onPressPlayOrPause={() => {
                     setTimeout(() => {
@@ -1516,7 +1527,7 @@ const Home = props => {
             </View>
           )
         ) : (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FlatList
               data={Array(10).fill('')}
               renderItem={() => {
@@ -1530,20 +1541,20 @@ const Home = props => {
                 );
               }}
               showsVerticalScrollIndicator={false}
-              // keyExtractor={item => item._id}
-              // ref={flatlistRef}
-              // onEndReached={() => fetchNextPage()}
-              // onEndReachedThreshold={2}
-              // refreshControl={
-              //   <RefreshControl
-              //     refreshing={refreshing}
-              //     onRefresh={onRefresh}
-              //     colors={[Colors.black]}
-              //     progressBackgroundColor={Colors.white}
-              //     title={'Refreshing...'}
-              //     titleColor={Colors.white}
-              //   />
-              // }
+            // keyExtractor={item => item._id}
+            // ref={flatlistRef}
+            // onEndReached={() => fetchNextPage()}
+            // onEndReachedThreshold={2}
+            // refreshControl={
+            //   <RefreshControl
+            //     refreshing={refreshing}
+            //     onRefresh={onRefresh}
+            //     colors={[Colors.black]}
+            //     progressBackgroundColor={Colors.white}
+            //     title={'Refreshing...'}
+            //     titleColor={Colors.white}
+            //   />
+            // }
             />
           </View>
         )}

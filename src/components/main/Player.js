@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -23,13 +23,13 @@ import ImagePath from '../../assests/ImagePath';
 
 import StatusBar from '../../utils/MyStatusBar';
 
-import {commentOnPostReq, dummyRequest} from '../../action/UserAction';
+import { commentOnPostReq, dummyRequest } from '../../action/UserAction';
 
-import {fetchCommentsOnPost} from '../../helpers/post';
+import { fetchCommentsOnPost } from '../../helpers/post';
 
 import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 
 import {
@@ -44,7 +44,7 @@ import {
   GET_SONG_FROM_ISRC_FAILURE,
 } from '../../action/TypeConstants';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {saveSongRequest, saveSongRefReq} from '../../action/SongAction';
+import { saveSongRequest, saveSongRefReq } from '../../action/SongAction';
 import {
   getCurrentPlayerPostionAction,
   playerResumeRequest,
@@ -52,11 +52,11 @@ import {
   playerSeekToRequest,
   getSongFromisrc,
 } from '../../action/PlayerAction';
-import {updateMessageCommentRequest} from '../../action/MessageAction';
+import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
 import axios from 'axios';
-import {getUsersFromHome} from '../../action/UserAction';
+import { getUsersFromHome } from '../../action/UserAction';
 import MoreModal from '../Posts/MoreModal';
 import Avatar from '../Avatar';
 import LinearGradient from 'react-native-linear-gradient';
@@ -68,9 +68,12 @@ let playerStatus;
 
 function Player(props) {
   // PLAYER
+  console.log(JSON.stringify(props.route.params), 'theese are xong props')
 
   const [playVisible, setPlayVisible] = useState(false);
   const [uri, setUri] = useState(props.route.params.uri);
+  // const [uri, setUri] = useState(props.route.params.details.songs.original_song_uri);
+
   const [trackRef, setTrackRef] = useState('');
   const [songTitle, setSongTitle] = useState(props.route.params.song_title);
   const [albumTitle, setAlbumTitle] = useState(props.route.params.album_name);
@@ -194,6 +197,7 @@ function Player(props) {
               console.log(res);
               if (res.data.status === 200) {
                 let suc = res.data.data.audio;
+                console.log(res.data.data, 'this is suc link')
                 // let suc = res.data.data.link
                 setUri(suc);
                 playSongOnLoad(suc);
@@ -292,7 +296,7 @@ function Player(props) {
     }
   }
 
-  function _onReaction(ID, reaction) {}
+  function _onReaction(ID, reaction) { }
 
   function _onSelectBack(data, comment) {
     // console.log('aaa' + JSON.stringify(comment));
@@ -548,23 +552,23 @@ function Player(props) {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <LinearGradient
         colors={['#0E402C', '#101119', '#360455']}
-        style={{flex: 1}}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}>
-        <KeyboardAvoidingView style={{flex: 1}}>
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}>
+        <KeyboardAvoidingView style={{ flex: 1 }}>
           <StatusBar backgroundColor="transparent" />
 
           <Loader visible={bool} />
 
           <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
 
-          <SafeAreaView style={{flex: 1}}>
+          <SafeAreaView style={{ flex: 1 }}>
             <ScrollView
               keyboardShouldPersistTaps="always"
-              contentContainerStyle={{paddingBottom: 50}}>
+              contentContainerStyle={{ paddingBottom: 50 }}>
               <View
                 style={{
                   marginHorizontal: normalise(15),
@@ -575,7 +579,7 @@ function Player(props) {
                   justifyContent: changePlayer ? 'flex-end' : 'space-between',
                 }}>
                 {changePlayer ? null : (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Pressable
                       onPress={() => {
                         if (
@@ -645,7 +649,7 @@ function Player(props) {
                     </View>
                   </View>
                 )}
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   {changePlayer ? null : (
                     <TouchableOpacity
                       style={{
@@ -659,7 +663,7 @@ function Player(props) {
                       <Image
                         source={ImagePath.threedots}
                         style={{
-                          transform: [{rotate: '90deg'}],
+                          transform: [{ rotate: '90deg' }],
                           width: normalise(14),
                         }}
                         resizeMode="contain"
@@ -691,7 +695,7 @@ function Player(props) {
                         style={{
                           height: normalise(15),
                           width: normalise(15),
-                          transform: [{rotate: '-90deg'}],
+                          transform: [{ rotate: '-90deg' }],
                         }}
                         resizeMode="contain"
                       />
@@ -790,7 +794,7 @@ function Player(props) {
                       width: normalise(32),
                     }}>
                     <Image
-                      source={ImagePath ? ImagePath.previousSong : null}
+                      source={ImagePath ? ImagePath?.backwardicon : null}
                       style={{
                         height: normalise(16),
                         width: normalise(16),
@@ -812,7 +816,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={playVisible ? ImagePath.play : ImagePath.pause}
-                      style={{height: normalise(30), width: normalise(30)}}
+                      style={{ height: normalise(30), width: normalise(30) }}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -833,7 +837,7 @@ function Player(props) {
                         width: normalise(32),
                       }}>
                       <Image
-                        source={ImagePath ? ImagePath.nextSong : null}
+                        source={ImagePath ? ImagePath.forwardicon : null}
                         style={{
                           height: normalise(16),
                           width: normalise(16),
@@ -915,7 +919,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.boxicon}
-                        style={{height: normalise(20), width: normalise(20)}}
+                        style={{ height: normalise(20), width: normalise(20) }}
                         resizeMode="contain"
                       />
                     </TouchableOpacity>
@@ -951,7 +955,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.sendicon}
-                        style={{height: normalise(20), width: normalise(20)}}
+                        style={{ height: normalise(20), width: normalise(20) }}
                         resizeMode="contain"
                       />
                     </TouchableOpacity>
@@ -1021,7 +1025,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.reactionShow}
-                        style={{height: normalise(20), width: normalise(20)}}
+                        style={{ height: normalise(20), width: normalise(20) }}
                         resizeMode="contain"
                       />
                     </TouchableOpacity>
@@ -1050,7 +1054,7 @@ function Player(props) {
                       }}>
                       <Image
                         source={ImagePath.comment_grey}
-                        style={{height: normalise(20), width: normalise(20)}}
+                        style={{ height: normalise(20), width: normalise(20) }}
                         resizeMode="contain"
                       />
                       <Text
@@ -1078,7 +1082,7 @@ function Player(props) {
                       <Image
                         source={ImagePath.threedots}
                         style={{
-                          transform: [{rotate: '90deg'}],
+                          transform: [{ rotate: '90deg' }],
                           width: normalise(14),
                         }}
                         resizeMode="contain"
@@ -1124,7 +1128,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.boxicon}
-                      style={{height: normalise(20), width: normalise(20)}}
+                      style={{ height: normalise(20), width: normalise(20) }}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1161,7 +1165,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.sendicon}
-                      style={{height: normalise(20), width: normalise(20)}}
+                      style={{ height: normalise(20), width: normalise(20) }}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
@@ -1244,7 +1248,7 @@ function Player(props) {
                     }}>
                     <Image
                       source={ImagePath.comment_grey}
-                      style={{height: normalise(22), width: normalise(22)}}
+                      style={{ height: normalise(22), width: normalise(22) }}
                       resizeMode="contain"
                     />
                     <Text

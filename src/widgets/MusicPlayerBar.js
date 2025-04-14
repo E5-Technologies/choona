@@ -208,7 +208,7 @@ function MusicPlayerBar(props) {
                   width: normalise(32),
                 }}>
                 <Image
-                  source={ImagePath ? ImagePath.previousSong : null}
+                  source={ImagePath ? ImagePath?.backwardicon : null}
                   style={{
                     height: normalise(16),
                     width: normalise(16),
@@ -260,7 +260,7 @@ function MusicPlayerBar(props) {
                   width: normalise(32),
                 }}>
                 <Image
-                  source={ImagePath ? ImagePath.nextSong : null}
+                  source={ImagePath ? ImagePath?.forwardicon : null}
                   style={{
                     height: normalise(16),
                     width: normalise(16),
