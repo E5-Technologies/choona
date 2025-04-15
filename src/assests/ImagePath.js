@@ -112,8 +112,8 @@ const ImagePath = {
   blueTick: require('./images/blueTickIcon.png'),
   toggleOff: require('./images/toggleOff.png'),
   toggleOn: require('./images/toggleOn.png'),
-  nextSong: require('./images/next.png'),
-  previousSong: require('./images/previous.png'),
+  // nextSong: require('./images/next.png'),
+  // previousSong: require('./images/previous.png'),
 };
 
 export default ImagePath;
