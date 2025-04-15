@@ -54,14 +54,14 @@ function AssembleSession(props) {
                         // props.navigation.goBack();
                         // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: [] })
                     }}
-                    onPressThirdItem={() => props.navigation.navigate("SessionLaunchScreen")}
+                    onPressThirdItem={() => props.navigation.navigate("SessionLaunchScreen", { sessionSonglist: sessionList })}
                 />
                 <View style={{ flex: 1, }}>
                     {sessionList &&
                         <View style={styles.topContainerStyle}>
-                            <Text style={styles.mainTitleStyle} numberOfLines={1}>
+                            {/* <Text style={styles.mainTitleStyle} numberOfLines={1}>
                                 @08 Summer Mix
-                            </Text>
+                            </Text> */}
                             <View style={[styles.combienBanerWrapper, {
                                 width: width / 1.9,
                                 height: width / 1.9
