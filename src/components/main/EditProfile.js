@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -19,14 +19,14 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   EDIT_PROFILE_REQUEST,
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
 } from '../../action/TypeConstants';
-import { getProfileRequest, editProfileRequest } from '../../action/UserAction';
+import {getProfileRequest, editProfileRequest} from '../../action/UserAction';
 import Loader from '../../widgets/AuthLoader';
 import axios from 'axios';
 import CountryPicker from 'react-native-country-picker-modal';
@@ -34,7 +34,7 @@ import Avatar from '../Avatar';
 let status = '';
 
 const EditProfile = props => {
-  const [username, setUsername] = useState(props.userProfileResp.username);
+  const [username, setUsername] = useState(props?.userProfileResp?.username);
   const [fullname, setFullname] = useState(props.userProfileResp.full_name);
   const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp.phone);
   const [location, setLocation] = useState(props.userProfileResp.location);
@@ -99,7 +99,7 @@ const EditProfile = props => {
           },
         },
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -215,7 +215,7 @@ const EditProfile = props => {
     await axios
       .post(
         constants.BASE_URL + '/user/available',
-        { username: username },
+        {username: username},
         {
           headers: {
             Accept: 'application/json',
@@ -234,13 +234,13 @@ const EditProfile = props => {
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
+      style={{flex: 1, backgroundColor: Colors.darkerblack}}
       behavior="height">
       <StatusBar />
 
       <Loader visible={props.status === EDIT_PROFILE_REQUEST} />
 
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.darkerblack}}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -272,7 +272,7 @@ const EditProfile = props => {
             <Avatar image={profilePic} height={120} width={120} />
           </Pressable>
           <TouchableOpacity
-            style={{ marginTop: normalise(10), marginBottom: normalise(20) }}
+            style={{marginTop: normalise(10), marginBottom: normalise(20)}}
             onPress={() => {
               showPickerOptions();
             }}>
@@ -296,7 +296,7 @@ const EditProfile = props => {
             <TextInputField
               text={'CHOOSE USERNAME'}
               backgroundColor={Colors.fadeblack}
-              style={{ backgroundColor: Colors.fadeblack }}
+              style={{backgroundColor: Colors.fadeblack}}
               autocorrect={false}
               placeholder={'Enter Username'}
               tick_req={true}
@@ -408,7 +408,7 @@ const EditProfile = props => {
             backgroundColor: Colors.white,
             borderWidth: normalise(0.5),
             shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
+            shadowOffset: {width: 0, height: 4},
             shadowOpacity: 0.5,
             shadowRadius: 9,
             elevation: 11,

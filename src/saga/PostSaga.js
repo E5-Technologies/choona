@@ -1,4 +1,4 @@
-import { put, call, takeLatest, select } from 'redux-saga/effects';
+import {put, call, takeLatest, select} from 'redux-saga/effects';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -22,8 +22,9 @@ import {
   getSpotifyApi,
   getAppleDevelopersToken,
 } from '../utils/helpers/ApiRequest';
-import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
+import {Alert} from 'react-native';
 
 const getItems = state => state.TokenReducer;
 
@@ -31,6 +32,7 @@ export function* searchSongsForPostAction(action) {
   const spotifyToken = yield call(getSpotifyToken);
   const items = yield select(getItems);
   const AppleToken = yield call(getAppleDevToken);
+  // Alert.alert(AppleToken);
 
   let spotifyHeader = {
     Authorization:
@@ -71,7 +73,6 @@ export function* searchSongsForPostAction(action) {
             listName: 'Recently',
           });
         } catch (error) {
-          alert('error');
           console.log('alert' + error);
         }
       }
@@ -90,7 +91,7 @@ export function* searchSongsForPostAction(action) {
       });
     }
   } catch (error) {
-    yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error });
+    yield put({type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error});
   }
 }
 
@@ -105,11 +106,11 @@ export function* createPostAction(action) {
 
   try {
     const response = yield call(postApi, 'post/store', action.payload, header);
-    console.log(response?.data, 'its response after api hit')
+    console.log(response?.data, 'its response after api hit');
 
-    yield put({ type: CREATE_POST_SUCCESS, data: response.data });
+    yield put({type: CREATE_POST_SUCCESS, data: response.data});
   } catch (error) {
-    yield put({ type: CREATE_POST_FAILURE, data: error });
+    yield put({type: CREATE_POST_FAILURE, data: error});
   }
 }
 
@@ -128,9 +129,9 @@ export function* deletePostAction(action) {
       `post/delete/${action.payload}`,
       Header,
     );
-    yield put({ type: DELETE_POST_SUCCESS, data: response.data.data });
+    yield put({type: DELETE_POST_SUCCESS, data: response.data.data});
   } catch (error) {
-    yield put({ type: DELETE_POST_FAILURE, error: error });
+    yield put({type: DELETE_POST_FAILURE, error: error});
   }
 }
 

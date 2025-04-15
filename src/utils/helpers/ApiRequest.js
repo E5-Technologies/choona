@@ -53,6 +53,7 @@ export async function postApi(url, payload, header) {
 
 export async function getAppleDevelopersToken(url, header) {
   // console.log('URL: ', `${url}`);
+  console.log(url, 'its url');
 
   return await axios.get(url, {
     headers: header,

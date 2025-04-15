@@ -1,16 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
-import { NativeModules } from 'react-native';
+import {useCallback, useEffect, useState} from 'react';
+import {Alert, NativeModules} from 'react-native';
 import axios from 'axios';
 
-import { getSpotifyToken } from './SpotifyLogin';
-import { getAppleDevToken } from './AppleDevToken';
+import {getSpotifyToken} from './SpotifyLogin';
+import {getAppleDevToken} from './AppleDevToken';
 import toast from './ShowErrorAlert';
 
 export function useRecentlyPlayed(registerType) {
   const [loading, setLoading] = useState(false);
   const [musicToken, setMusicToken] = useState('');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-
+  // Alert.alert('apple');
+  // console.log(registerType, 'its register rype');
   const getRecentlyPlayed = useCallback(async () => {
     const getRecentlyPlayedApi = async () => {
       if (registerType === 'spotify') {
@@ -54,7 +55,7 @@ export function useRecentlyPlayed(registerType) {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.log(error, 'its error h >>>');
     }
   }, [musicToken, registerType]);
 
@@ -64,16 +65,30 @@ export function useRecentlyPlayed(registerType) {
     } else {
       const fetchMusicToken = async () => {
         const AppleToken = await getAppleDevToken();
+
         if (AppleToken !== '') {
           let newtoken = AppleToken.split(' ');
-          NativeModules.Print.printValue(newtoken.pop())
+          // console.log(newtoken, 'its register rype');
+          let finalToken = newtoken.pop();
+
+          if (!finalToken || finalToken.trim() === '') {
+            toast('Error', 'Invalid Apple Music token received.');
+            return;
+          }
+          // console.log(finalToken, 'token');
+          // return;
+          NativeModules.Print.printValue(finalToken)
             .then(res => {
+              console.log(res, 'its res');
+              return;
               if (res === '') {
+                console.log('hi');
                 toast(
                   'Error',
                   'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
                 );
               } else {
+                return;
                 setMusicToken(res);
                 getRecentlyPlayed();
               }
@@ -85,7 +100,7 @@ export function useRecentlyPlayed(registerType) {
               );
             });
         } else {
-          toast('Oops', 'Something Went Wrong');
+          toast('Oops', 'Something Went Wrong!');
         }
       };
       fetchMusicToken();

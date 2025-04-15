@@ -1,15 +1,15 @@
 import constants from './constants';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
-import { getAppleDevelopersToken } from './ApiRequest';
+import {getAppleDevelopersToken} from './ApiRequest';
 
 export const getAppleDevToken = async () => {
   try {
     const creds = await AsyncStorage.getItem(constants.APPLE);
-
+    console.log(creds, 'these are creds');
     if (creds === null) {
       const token = await getAppleDevelopersToken(constants.appleGetTokenApi);
-      // console.log('Dev Token First' + token);
+      console.log('Dev Token First' + token);
       await AsyncStorage.setItem(
         constants.APPLE,
         JSON.stringify({

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -22,19 +22,19 @@ import SavedSongsListItem from './../ListCells/SavedSongsListItem';
 import Seperator from '../ListCells/Seperator';
 import _ from 'lodash';
 import StatusBar from '../../../utils/MyStatusBar';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
   SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 } from '../../../action/TypeConstants';
-import { seachSongsForPostRequest } from '../../../action/PostAction';
+import {seachSongsForPostRequest} from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
-import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
-import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
+import {useRecentlyPlayed} from '../../../utils/helpers/RecentlyPlayed';
+import {RecentlyPlayedHeader} from '../../Headers/RecentlyPlayedHeader';
 // import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
@@ -43,9 +43,11 @@ const AddSong = props => {
   const inputRef = React.useRef(null);
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
-  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+  const {recentlyPlayed, loading, refetch} = useRecentlyPlayed(
     props.registerType,
   );
+
+  console.log(recentlyPlayed, 'thhhhh');
   let post = true;
 
   if (status === '' || status !== props.status) {
@@ -66,9 +68,8 @@ const AddSong = props => {
     }
   }
 
-  const handleAddSong = (item) => {
-
-    console.log(props?.route?.params?.from, 'its from')
+  const handleAddSong = item => {
+    console.log(props?.route?.params?.from, 'its from');
     // return
     const songItem = {
       image:
@@ -89,24 +90,22 @@ const AddSong = props => {
 
     switch (props?.route?.params?.from) {
       case 'CreatePost':
-        props.navigation.navigate('CreatePost', songItem
-        );
+        props.navigation.navigate('CreatePost', songItem);
         break;
       case 'Playlist':
         props.navigation.navigate('CreatePlayList', {
           songItem,
-          previousPlaylistData: props?.route?.params?.previousPlaylistData
+          previousPlaylistData: props?.route?.params?.previousPlaylistData,
         });
         break;
       case 'AssembleSession':
         props.navigation.navigate('AssembleSession', {
           songItem,
-          previousSessionData: props?.route?.params?.previousSessionData
+          previousSessionData: props?.route?.params?.previousSessionData,
         });
         break;
       default:
-        props.navigation.navigate('CreatePost', songItem
-        );
+        props.navigation.navigate('CreatePost', songItem);
         break;
     }
 
@@ -152,8 +151,7 @@ const AddSong = props => {
     //     registerType: props.registerType,
     //   }
     // );
-
-  }
+  };
 
   function singerList(artists) {
     let names = '';
@@ -206,9 +204,9 @@ const AddSong = props => {
               props.registerType === 'spotify'
                 ? item.item.album.images[0].url
                 : item.item.attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '300x300',
-                ),
+                    '{w}x{h}',
+                    '300x300',
+                  ),
             username: '',
             profile_pic: '',
             originalUri:
@@ -298,7 +296,7 @@ const AddSong = props => {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
-              transform: [{ scaleX: -1 }],
+              transform: [{scaleX: -1}],
             }}
             resizeMode="contain"
           />
@@ -353,7 +351,7 @@ const AddSong = props => {
                 }}>
                 <Image
                   source={ImagePath.searchicongrey}
-                  style={{ height: normalise(35), width: normalise(35) }}
+                  style={{height: normalise(35), width: normalise(35)}}
                   resizeMode="contain"
                 />
                 <Text
@@ -421,8 +419,8 @@ const AddSong = props => {
 };
 
 const styles = StyleSheet.create({
-  containerView: { flex: 1, backgroundColor: Colors.darkerblack },
-  safeAreaContainer: { flex: 1 },
+  containerView: {flex: 1, backgroundColor: Colors.darkerblack},
+  safeAreaContainer: {flex: 1},
 });
 
 const mapStateToProps = state => {

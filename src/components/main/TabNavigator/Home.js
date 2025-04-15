@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   SafeAreaView,
   View,
@@ -23,12 +23,12 @@ import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
 import StatusBar from '../../../utils/MyStatusBar';
-import EmojiSelector, { Categories } from 'react-native-emoji-selector';
+import EmojiSelector, {Categories} from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
-import { useInfiniteQuery } from 'react-query';
+import {useInfiniteQuery} from 'react-query';
 
 // import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
@@ -70,17 +70,17 @@ import {
   loadMoreRequest,
   loadMoreData,
 } from '../../../action/UserAction';
-import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
-import { deletePostReq } from '../../../action/PostAction';
-import { connect } from 'react-redux';
+import {saveSongRequest, saveSongRefReq} from '../../../action/SongAction';
+import {deletePostReq} from '../../../action/PostAction';
+import {connect} from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-import { useScrollToTop } from '@react-navigation/native';
+import {useScrollToTop} from '@react-navigation/native';
 import Contacts from 'react-native-contacts';
-import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
+import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import MusicPlayer from '../../../widgets/MusicPlayer';
 import Timer from '../Timer';
@@ -92,8 +92,9 @@ import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
 import MoreModal from '../../Posts/MoreModal';
 import ReportModal from '../../Posts/ReportModal';
 import Reactions from '../../Reactions/Reactions';
-import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
+import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
 import HomeSessionItem from '../ListCells/HomeSessionItem';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 let status = '';
 let songStatus = '';
@@ -125,7 +126,7 @@ const Home = props => {
   const [posts, setPosts] = useState([]);
   const postsUrl = constants.BASE_URL + '/post/list?page=';
 
-  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+  const {hitReact: newHitReact, isPending} = useContext(ReactionsContext);
   const [activeTab, setActiveTab] = useState(0);
 
   const {
@@ -137,7 +138,7 @@ const Home = props => {
     refetch,
   } = useInfiniteQuery(
     'homePosts',
-    async ({ pageParam = 1 }) => {
+    async ({pageParam = 1}) => {
       const res = await axios
         .get(postsUrl + pageParam, {
           headers: {
@@ -512,14 +513,14 @@ const Home = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-          ? 'B'
-          : reaction === react[2]
-            ? 'C'
-            : reaction === react[3]
-              ? 'D'
-              : reaction === react[4]
-                ? 'E'
-                : 'F';
+        ? 'B'
+        : reaction === react[2]
+        ? 'C'
+        : reaction === react[3]
+        ? 'D'
+        : reaction === react[4]
+        ? 'E'
+        : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -570,7 +571,7 @@ const Home = props => {
           });
         });
 
-        props.navigation.navigate('UsersFromContacts', { data: finalArray });
+        props.navigation.navigate('UsersFromContacts', {data: finalArray});
       }
     });
   };
@@ -674,7 +675,7 @@ const Home = props => {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => { });
+            .catch(err => {});
         }
       } else {
         MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
@@ -710,7 +711,7 @@ const Home = props => {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => { });
+          .catch(err => {});
       }
     }
   };
@@ -732,7 +733,6 @@ const Home = props => {
   }
   // console.log(JSON.stringify(posts),'its post data>>')
 
-
   function renderItem(data) {
     // console.log(JSON.stringify(data), 'it item data')
     /** REACTION - ADDITION */
@@ -748,16 +748,16 @@ const Home = props => {
         : false,
       disco: data.item.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
-          `${props.userProfileResp?._id}`,
-        )
+            `${props.userProfileResp?._id}`,
+          )
         : false,
       throwback: data.item.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
       thumbsDown: data.item.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
-          `${props.userProfileResp?._id}`,
-        )
+            `${props.userProfileResp?._id}`,
+          )
         : false,
     };
 
@@ -772,12 +772,16 @@ const Home = props => {
 
     return (
       <>
-        <TouchableOpacity onPress={() => {
-          if (data?.item?.songs?.length > 1) {
-            props.navigation.navigate('PlayListDetail', { songsList: data, playSong: playSong, postArray: postArray })
-          }
-        }
-        }>
+        <TouchableOpacity
+          onPress={() => {
+            if (data?.item?.songs?.length > 1) {
+              props.navigation.navigate('PlayListDetail', {
+                songsList: data,
+                playSong: playSong,
+                postArray: postArray,
+              });
+            }
+          }}>
           <HomeItemList
             // image={data?.item?.songs[0]?.song_image}
             image={data?.item?.songs}
@@ -786,14 +790,16 @@ const Home = props => {
               _.isEmpty(postArray)
                 ? false
                 : posts.length === postArray.length
-                  ? postArray[data.index].playing
-                  : false
+                ? postArray[data.index].playing
+                : false
             }
             // postArray[data.index].playing
             onPlaylistImagePress={songIndex => playSong(data, songIndex)}
             picture={data.item.userDetails.profile_image}
             name={data.item.userDetails.username}
-            comment_count={data.item.comment_count ? data.item.comment_count : 0}
+            comment_count={
+              data.item.comment_count ? data.item.comment_count : 0
+            }
             reaction_count={
               data.item.reaction_count ? data.item.reaction_count : 0
             }
@@ -819,7 +825,7 @@ const Home = props => {
             onPressImage={() => {
               if (!isFetching) {
                 if (props.userProfileResp._id === data.item.user_id) {
-                  props.navigation.navigate('Profile', { fromAct: false });
+                  props.navigation.navigate('Profile', {fromAct: false});
                 } else {
                   props.navigation.navigate('OthersProfile', {
                     id: data.item.user_id,
@@ -867,8 +873,8 @@ const Home = props => {
                 setModalVisible(true);
               }
             }}
-          // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
-          // playingSongRef={props.playingSongRef}
+            // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+            // playingSongRef={props.playingSongRef}
           />
           {/* {(data.index === 1 ||
           (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
@@ -941,7 +947,9 @@ const Home = props => {
       // const myindex = postData.findIndex(
       //   obj => obj.song_uri === props.playingSongRef.uri,
       // );
-      const myindex = postData.findIndex(obj => obj._id === props.playingSongRef.id)
+      const myindex = postData.findIndex(
+        obj => obj._id === props.playingSongRef.id,
+      );
       // console.log(myindex, 'its my index');
       let array = [...postData];
       let i;
@@ -1048,7 +1056,7 @@ const Home = props => {
                     console.log(err);
                   });
               })
-              .catch(() => { });
+              .catch(() => {});
             setBool(false);
           }
         } else {
@@ -1060,14 +1068,14 @@ const Home = props => {
         toast('Oops', 'Something Went Wrong');
       }
     } catch (error) {
-      console.log({ error });
+      console.log({error});
       setBool(false);
     }
   };
 
   function onfinish() {
     if (posts.length !== 0) {
-      let loadData = { offset: 1, create: posts[0].createdAt };
+      let loadData = {offset: 1, create: posts[0].createdAt};
       props.loadMorePost(loadData);
     } else {
       console.log('empty');
@@ -1082,465 +1090,464 @@ const Home = props => {
         backgroundColor: Colors.darkerblack,
       }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <SafeAreaView style={{ flex: 1, position: 'relative' }}>
-        <Timer
-          onFinish={() => {
-            onfinish();
-          }}
-        />
-        <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
-        <Loader visible={contactsLoading} />
-        <Loader visible={bool} />
-        <HomeHeaderComponent
-          firstitemtext={false}
-          marginTop={0}
-          imageone={
-            _.isEmpty(props.userProfileResp)
-              ? ''
-              : props.userProfileResp.profile_image
-                ? constants.profile_picture_base_url +
-                props.userProfileResp.profile_image
-                : null
-          }
-          staticFirstImage={false}
-          imageoneheight={normalise(26)}
-          imageonewidth={normalise(26)}
-          borderRadius={normalise(30)}
-          title={'CHOONA'}
-          thirditemtext={false}
-          imagetwo={ImagePath.boxicon}
-          imagetwoheight={25}
-          imagetwowidth={25}
-          middleImageReq={true}
-          notRead={false}
-          onIconPress={true}
-          pressLogo={() => {
-            flatlistRef.current.scrollToIndex({
-              animated: true,
-              index: 0,
-              viewPosition: 0,
-            });
-          }}
-          onPressFirstItem={() => {
-            props.navigation.navigate('Profile', { fromAct: false });
-          }}
-          onPressThirdItem={() => {
-            props.navigation.navigate('Contact');
-            //  props.navigation.navigate('BlankScreen');
-          }}
-        />
-        <View style={styles.tabBarWrapperStyle}>
-          <TouchableOpacity
-            style={[styles.tabBarButtonStyle]}
-            onPress={() => {
-              // props.getTop50SongReq();
-              setActiveTab(0);
-            }}>
-            <Text
-              style={[
-                styles.tabBarTextStyle,
-                {
-                  color: activeTab === 0 ? Colors.white : Colors.grey_text,
-                },
-              ]}>
-              FEED
-            </Text>
-            {activeTab === 0 ? (
-              <Image
-                source={ImagePath.gradient_border_horizontal}
-                style={styles.ActiveTabBar}
-                resizeMode="contain"
-              />
-            ) : null}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tabBarButtonStyle]}
-            onPress={() => {
-              setActiveTab(1);
-            }}>
-            <Text
-              style={[
-                styles.tabBarTextStyle,
-                {
-                  color: activeTab === 1 ? Colors.white : Colors.grey_text,
-                },
-              ]}>
-              SESSIONS
-            </Text>
-            {activeTab === 1 ? (
-              <Image
-                source={ImagePath.gradient_border_horizontal}
-                style={styles.ActiveTabBar}
-                resizeMode="contain"
-              />
-            ) : null}
-          </TouchableOpacity>
-        </View>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={firstTimeModalShow}
-          presentationStyle="overFullScreen">
-          <LinearGradient
-            colors={['rgba(159, 0, 255, 0.8)', 'rgba(3, 150, 91, 0.8)']}
-            locations={[0, 0.5, 1]}
-            useAngle={true}
-            angle={315}
-            angleCenter={{ x: -4, y: 1 }}
+      {/* <SafeAreaView style={{flex: 1, position: 'relative'}}> */}
+      <Timer
+        onFinish={() => {
+          onfinish();
+        }}
+      />
+      <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
+      <Loader visible={contactsLoading} />
+      <Loader visible={bool} />
+      <HomeHeaderComponent
+        firstitemtext={false}
+        marginTop={0}
+        imageone={
+          _.isEmpty(props.userProfileResp)
+            ? ''
+            : props.userProfileResp.profile_image
+            ? constants.profile_picture_base_url +
+              props.userProfileResp.profile_image
+            : null
+        }
+        staticFirstImage={false}
+        imageoneheight={normalise(26)}
+        imageonewidth={normalise(26)}
+        borderRadius={normalise(30)}
+        title={'CHOONA'}
+        thirditemtext={false}
+        imagetwo={ImagePath.boxicon}
+        imagetwoheight={25}
+        imagetwowidth={25}
+        middleImageReq={true}
+        notRead={false}
+        onIconPress={true}
+        pressLogo={() => {
+          flatlistRef.current.scrollToIndex({
+            animated: true,
+            index: 0,
+            viewPosition: 0,
+          });
+        }}
+        onPressFirstItem={() => {
+          props.navigation.navigate('Profile', {fromAct: false});
+        }}
+        onPressThirdItem={() => {
+          props.navigation.navigate('Contact');
+          //  props.navigation.navigate('BlankScreen');
+        }}
+      />
+      <View style={styles.tabBarWrapperStyle}>
+        <TouchableOpacity
+          style={[styles.tabBarButtonStyle]}
+          onPress={() => {
+            // props.getTop50SongReq();
+            setActiveTab(0);
+          }}>
+          <Text
+            style={[
+              styles.tabBarTextStyle,
+              {
+                color: activeTab === 0 ? Colors.white : Colors.grey_text,
+              },
+            ]}>
+            FEED
+          </Text>
+          {activeTab === 0 ? (
+            <Image
+              source={ImagePath.gradient_border_horizontal}
+              style={styles.ActiveTabBar}
+              resizeMode="contain"
+            />
+          ) : null}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBarButtonStyle]}
+          onPress={() => {
+            setActiveTab(1);
+          }}>
+          <Text
+            style={[
+              styles.tabBarTextStyle,
+              {
+                color: activeTab === 1 ? Colors.white : Colors.grey_text,
+              },
+            ]}>
+            SESSIONS
+          </Text>
+          {activeTab === 1 ? (
+            <Image
+              source={ImagePath.gradient_border_horizontal}
+              style={styles.ActiveTabBar}
+              resizeMode="contain"
+            />
+          ) : null}
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={firstTimeModalShow}
+        presentationStyle="overFullScreen">
+        <LinearGradient
+          colors={['rgba(159, 0, 255, 0.8)', 'rgba(3, 150, 91, 0.8)']}
+          locations={[0, 0.5, 1]}
+          useAngle={true}
+          angle={315}
+          angleCenter={{x: -4, y: 1}}
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: normalise(12),
+          }}>
+          <View
             style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: normalise(12),
+              backgroundColor: '#121317',
+              borderRadius: normalise(8),
+              boxShadow: '0px -8px 40px rgba(0, 0, 0, 0.4)',
+              padding: normalise(16),
+              width: '100%',
             }}>
             <View
               style={{
-                backgroundColor: '#121317',
-                borderRadius: normalise(8),
-                boxShadow: '0px -8px 40px rgba(0, 0, 0, 0.4)',
-                padding: normalise(16),
-                width: '100%',
+                alignItems: 'flex-start',
+                borderBottomColor: '#25262A',
+                borderBottomWidth: normalise(1),
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'ProximaNova-Bold',
+                  fontSize: normalise(14),
+                  marginBottom: normalise(12),
+                }}>
+                Welcome to Choona
+              </Text>
+              <Pressable
+                onPress={() => {
+                  setFirstTimeModalShow(false);
+                  AsyncStorage.setItem('IS_FIRST_OPEN', 'true');
+                }}>
+                <Image
+                  source={ImagePath.modalClose}
+                  style={{
+                    height: normalise(24),
+                    right: normalise(-4),
+                    top: normalise(-4),
+                    width: normalise(24),
+                  }}
+                />
+              </Pressable>
+            </View>
+            <View
+              style={{
+                borderBottomColor: '#25262A',
+                borderBottomWidth: normalise(1),
+                paddingTop: normalise(12),
+              }}>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'ProximaNova-Regular',
+                  fontSize: normalise(11),
+                  marginBottom: normalise(16),
+                }}>
+                Firstly, thank you so much for joining Choona!
+              </Text>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'ProximaNova-Regular',
+                  fontSize: normalise(11),
+                  marginBottom: normalise(16),
+                }}>
+                Choona is made by a tiny team and is currently bootstrapped; so
+                please help us, to help you. We have created this platform for
+                music lovers, like yourself, to share their music.
+              </Text>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'ProximaNova-Regular',
+                  fontSize: normalise(11),
+                  marginBottom: normalise(16),
+                }}>
+                We have released Choona to a wider audience, in order to get
+                some feedback from people like you. It won’t be perfect yet, but
+                please reach out with any bugs or feature requests to
+                contact@choona.com{' '}
+                <Text
+                  style={{
+                    color: '#979797',
+                  }}>
+                  (this is also in the setting menu should you need it going
+                  forward)
+                </Text>
+                .
+              </Text>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'ProximaNova-Regular',
+                  fontSize: normalise(11),
+                  marginBottom: normalise(16),
+                }}>
+                Choona is better with friends; so please share it. Also, check
+                your phonebook to see if any of your friends are already on
+                here. Failing that, you can follow our founder below to see his{' '}
+                <Text
+                  style={{
+                    textDecorationLine: 'line-through',
+                    textDecorationStyle: 'solid',
+                  }}>
+                  awful
+                </Text>{' '}
+                taste in music.
+              </Text>
+            </View>
+            <View
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingTop: normalise(12),
+              }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                <Image
+                  source={{
+                    uri:
+                      constants.profile_picture_base_url +
+                      andyProfile.profile_image,
+                  }}
+                  style={{
+                    borderRadius: normalise(16),
+                    height: normalise(32),
+                    marginRight: normalise(8),
+                    width: normalise(32),
+                  }}
+                />
+                <View>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontFamily: 'ProximaNova-SemiBold',
+                      fontSize: normalise(12),
+                    }}>
+                    {andyProfile.full_name}
+                  </Text>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontFamily: 'ProximaNova-Regular',
+                      fontSize: normalise(10),
+                      opacity: 0.5,
+                    }}>
+                    Founder
+                  </Text>
+                </View>
+              </View>
+              {!andyProfile.isFollowing && (
+                <Pressable
+                  onPress={() => {
+                    props.followUnfollowReq({follower_id: andyProfile._id});
+                    setFollowButtonPressed(true);
+                  }}
+                  disabled={followButtonPressed}
+                  style={{
+                    alignItems: 'center',
+                    backgroundColor: followButtonPressed ? '#25262a' : '#fff',
+                    borderRadius: normalise(16),
+                    height: normalise(30),
+                    justifyContent: 'center',
+                    width: normalise(100),
+                  }}>
+                  <Text
+                    style={{
+                      color: followButtonPressed ? '#fff' : '#25262a',
+                      fontFamily: 'ProximaNova-Bold',
+                      fontSize: normalise(10),
+                      textTransform: 'uppercase',
+                    }}>
+                    {followButtonPressed ? 'Following' : 'Follow Me'}
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+          </View>
+        </LinearGradient>
+      </Modal>
+
+      {!isShown && (
+        <CompleteProfileBlock
+          navigation={props.navigation}
+          setIsShown={setIsShown}
+        />
+      )}
+      {/* {console.log(posts, 'these are post h songs')} */}
+      {activeTab === 0 ? (
+        _.isEmpty(posts) ? (
+          <EmptyComponent
+            buttonPress={() => {
+              setContactsLoading(true);
+              getContacts();
+            }}
+            buttonText={'Check for friends'}
+            image={ImagePath ? ImagePath.emptyPost : null}
+            text={
+              'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
+            }
+            title={'Your Feed is empty'}
+          />
+        ) : (
+          <View style={{flex: 1}}>
+            <FlatList
+              data={posts}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item._id}
+              ref={flatlistRef}
+              onEndReached={() => fetchNextPage()}
+              onEndReachedThreshold={2}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={[Colors.black]}
+                  progressBackgroundColor={Colors.white}
+                  title={'Refreshing...'}
+                  titleColor={Colors.white}
+                />
+              }
+            />
+            {loadMoreVisible ? (
+              <TouchableOpacity
+                style={{
+                  borderRadius: 20,
+                  alignSelf: 'center',
+                  position: 'absolute',
+                  top: 20,
+                }}
+                onPress={() => loadMore()}>
+                <LinearGradient
+                  colors={['#008373', '#4950AC', '#7A1FD4']}
+                  start={{x: 1.0, y: 5.1}}
+                  end={{x: 2.0, y: 2.5}}
+                  style={{
+                    flex: 1,
+                    borderRadius: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: '2.7%',
+                    paddingHorizontal: '4.3%',
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: normalise(10),
+                      fontFamily: 'Kallisto',
+                    }}>
+                    Load Newer Posts
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : null}
+
+            {visibleminiPlayer === true ? (
+              <MusicPlayerBar
+                onPress={() => {
+                  props.navigation.navigate('Player', {
+                    comments: [],
+                    song_title: props.playingSongRef.song_name,
+                    album_name: props.playingSongRef.album_name,
+                    song_pic: props.playingSongRef.song_pic,
+                    username: props.playingSongRef.username,
+                    profile_pic: props.playingSongRef.profile_pic,
+                    uri: props.playingSongRef.uri,
+                    reactions: props.playingSongRef.reactionData,
+                    id: props.playingSongRef.id,
+                    artist: props.playingSongRef.artist,
+                    changePlayer: props.playingSongRef.changePlayer,
+                    originalUri: props.playingSongRef.originalUri,
+                    isrc: props.playingSongRef.isrc,
+                    registerType: props.playingSongRef.regType,
+                    details: props.playingSongRef.details,
+                    showPlaylist: props.playingSongRef.showPlaylist,
+                    comingFromMessage: props.playingSongRef.comingFromMessage,
+                  });
+                }}
+                onChangeSong={(data, songIndex) =>
+                  playSong({item: data}, songIndex)
+                }
+                onPressPlayOrPause={() => {
+                  setTimeout(() => {
+                    findPlayingSong(posts);
+                  }, 500);
+                }}
+              />
+            ) : null}
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => {
+                //Alert.alert("Modal has been closed.");
               }}>
               <View
                 style={{
-                  alignItems: 'flex-start',
-                  borderBottomColor: '#25262A',
-                  borderBottomWidth: normalise(1),
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'ProximaNova-Bold',
-                    fontSize: normalise(14),
-                    marginBottom: normalise(12),
-                  }}>
-                  Welcome to Choona
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    setFirstTimeModalShow(false);
-                    AsyncStorage.setItem('IS_FIRST_OPEN', 'true');
-                  }}>
-                  <Image
-                    source={ImagePath.modalClose}
-                    style={{
-                      height: normalise(24),
-                      right: normalise(-4),
-                      top: normalise(-4),
-                      width: normalise(24),
-                    }}
-                  />
-                </Pressable>
-              </View>
-              <View
-                style={{
-                  borderBottomColor: '#25262A',
-                  borderBottomWidth: normalise(1),
-                  paddingTop: normalise(12),
-                }}>
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'ProximaNova-Regular',
-                    fontSize: normalise(11),
-                    marginBottom: normalise(16),
-                  }}>
-                  Firstly, thank you so much for joining Choona!
-                </Text>
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'ProximaNova-Regular',
-                    fontSize: normalise(11),
-                    marginBottom: normalise(16),
-                  }}>
-                  Choona is made by a tiny team and is currently bootstrapped;
-                  so please help us, to help you. We have created this platform
-                  for music lovers, like yourself, to share their music.
-                </Text>
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'ProximaNova-Regular',
-                    fontSize: normalise(11),
-                    marginBottom: normalise(16),
-                  }}>
-                  We have released Choona to a wider audience, in order to get
-                  some feedback from people like you. It won’t be perfect yet,
-                  but please reach out with any bugs or feature requests to
-                  contact@choona.com{' '}
-                  <Text
-                    style={{
-                      color: '#979797',
-                    }}>
-                    (this is also in the setting menu should you need it going
-                    forward)
-                  </Text>
-                  .
-                </Text>
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'ProximaNova-Regular',
-                    fontSize: normalise(11),
-                    marginBottom: normalise(16),
-                  }}>
-                  Choona is better with friends; so please share it. Also, check
-                  your phonebook to see if any of your friends are already on
-                  here. Failing that, you can follow our founder below to see
-                  his{' '}
-                  <Text
-                    style={{
-                      textDecorationLine: 'line-through',
-                      textDecorationStyle: 'solid',
-                    }}>
-                    awful
-                  </Text>{' '}
-                  taste in music.
-                </Text>
-              </View>
-              <View
-                style={{
+                  flex: 1,
+                  backgroundColor: '#000000',
+                  opacity: 0.9,
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingTop: normalise(12),
                 }}>
-                <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                  <Image
-                    source={{
-                      uri:
-                        constants.profile_picture_base_url +
-                        andyProfile.profile_image,
-                    }}
-                    style={{
-                      borderRadius: normalise(16),
-                      height: normalise(32),
-                      marginRight: normalise(8),
-                      width: normalise(32),
-                    }}
-                  />
-                  <View>
-                    <Text
-                      style={{
-                        color: '#fff',
-                        fontFamily: 'ProximaNova-SemiBold',
-                        fontSize: normalise(12),
-                      }}>
-                      {andyProfile.full_name}
-                    </Text>
-                    <Text
-                      style={{
-                        color: '#fff',
-                        fontFamily: 'ProximaNova-Regular',
-                        fontSize: normalise(10),
-                        opacity: 0.5,
-                      }}>
-                      Founder
-                    </Text>
-                  </View>
-                </View>
-                {!andyProfile.isFollowing && (
-                  <Pressable
-                    onPress={() => {
-                      props.followUnfollowReq({ follower_id: andyProfile._id });
-                      setFollowButtonPressed(true);
-                    }}
-                    disabled={followButtonPressed}
-                    style={{
-                      alignItems: 'center',
-                      backgroundColor: followButtonPressed ? '#25262a' : '#fff',
-                      borderRadius: normalise(16),
-                      height: normalise(30),
-                      justifyContent: 'center',
-                      width: normalise(100),
-                    }}>
-                    <Text
-                      style={{
-                        color: followButtonPressed ? '#fff' : '#25262a',
-                        fontFamily: 'ProximaNova-Bold',
-                        fontSize: normalise(10),
-                        textTransform: 'uppercase',
-                      }}>
-                      {followButtonPressed ? 'Following' : 'Follow Me'}
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            </View>
-          </LinearGradient>
-        </Modal>
-
-        {!isShown && (
-          <CompleteProfileBlock
-            navigation={props.navigation}
-            setIsShown={setIsShown}
-          />
-        )}
-        {/* {console.log(posts, 'these are post h songs')} */}
-        {activeTab === 0 ? (
-          _.isEmpty(posts) ? (
-            <EmptyComponent
-              buttonPress={() => {
-                setContactsLoading(true);
-                getContacts();
-              }}
-              buttonText={'Check for friends'}
-              image={ImagePath ? ImagePath.emptyPost : null}
-              text={
-                'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
-              }
-              title={'Your Feed is empty'}
-            />
-          ) : (
-            <View style={{ flex: 1 }}>
-              <FlatList
-                data={posts}
-                renderItem={renderItem}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={item => item._id}
-                ref={flatlistRef}
-                onEndReached={() => fetchNextPage()}
-                onEndReachedThreshold={2}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    colors={[Colors.black]}
-                    progressBackgroundColor={Colors.white}
-                    title={'Refreshing...'}
-                    titleColor={Colors.white}
-                  />
-                }
-              />
-              {loadMoreVisible ? (
-                <TouchableOpacity
+                <Text
                   style={{
-                    borderRadius: 20,
-                    alignSelf: 'center',
-                    position: 'absolute',
-                    top: 20,
-                  }}
-                  onPress={() => loadMore()}>
-                  <LinearGradient
-                    colors={['#008373', '#4950AC', '#7A1FD4']}
-                    start={{ x: 1.0, y: 5.1 }}
-                    end={{ x: 2.0, y: 2.5 }}
-                    style={{
-                      flex: 1,
-                      borderRadius: 20,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: '2.7%',
-                      paddingHorizontal: '4.3%',
-                    }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: normalise(10),
-                        fontFamily: 'Kallisto',
-                      }}>
-                      Load Newer Posts
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              ) : null}
-
-              {visibleminiPlayer === true ? (
-                <MusicPlayerBar
-                  onPress={() => {
-                    props.navigation.navigate('Player', {
-                      comments: [],
-                      song_title: props.playingSongRef.song_name,
-                      album_name: props.playingSongRef.album_name,
-                      song_pic: props.playingSongRef.song_pic,
-                      username: props.playingSongRef.username,
-                      profile_pic: props.playingSongRef.profile_pic,
-                      uri: props.playingSongRef.uri,
-                      reactions: props.playingSongRef.reactionData,
-                      id: props.playingSongRef.id,
-                      artist: props.playingSongRef.artist,
-                      changePlayer: props.playingSongRef.changePlayer,
-                      originalUri: props.playingSongRef.originalUri,
-                      isrc: props.playingSongRef.isrc,
-                      registerType: props.playingSongRef.regType,
-                      details: props.playingSongRef.details,
-                      showPlaylist: props.playingSongRef.showPlaylist,
-                      comingFromMessage: props.playingSongRef.comingFromMessage,
-                    });
-                  }}
-                  onChangeSong={(data, songIndex) =>
-                    playSong({ item: data }, songIndex)
-                  }
-                  onPressPlayOrPause={() => {
-                    setTimeout(() => {
-                      findPlayingSong(posts);
-                    }, 500);
-                  }}
-                />
-              ) : null}
-              <Modal
-                animationType="fade"
-                transparent={true}
-                visible={visible}
-                onRequestClose={() => {
-                  //Alert.alert("Modal has been closed.");
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: '#000000',
-                    opacity: 0.9,
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    fontSize:
+                      Platform.OS === 'android'
+                        ? normalise(70)
+                        : normalise(100),
                   }}>
-                  <Text
-                    style={{
-                      fontSize:
-                        Platform.OS === 'android'
-                          ? normalise(70)
-                          : normalise(100),
-                    }}>
-                    {modalReact}
-                  </Text>
-                </View>
-              </Modal>
-              {modalVisible && (
-                <MoreModal
-                  setBool={setBool}
-                  index={positionInArray}
-                  setIndex={setPositionInArray}
-                  navigation={props.navigation}
-                  openInAppleORSpotify={openInAppleORSpotify}
-                  postData={posts}
-                  show={modalVisible}
-                  setShow={setModalVisible}
-                  setReportModal={setReportModal}
-                />
-              )}
-              <ReportModal
-                reportModal={reportModal}
+                  {modalReact}
+                </Text>
+              </View>
+            </Modal>
+            {modalVisible && (
+              <MoreModal
+                setBool={setBool}
+                index={positionInArray}
+                setIndex={setPositionInArray}
+                navigation={props.navigation}
+                openInAppleORSpotify={openInAppleORSpotify}
+                postData={posts}
+                show={modalVisible}
+                setShow={setModalVisible}
                 setReportModal={setReportModal}
               />
-            </View>
-          )
-        ) : (
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={Array(10).fill('')}
-              renderItem={() => {
-                return (
-                  <HomeSessionItem />
-                  // <View>
-                  //   <Text>
-                  //     Hi
-                  //   </Text>
-                  // </View>
-                );
-              }}
-              showsVerticalScrollIndicator={false}
+            )}
+            <ReportModal
+              reportModal={reportModal}
+              setReportModal={setReportModal}
+            />
+          </View>
+        )
+      ) : (
+        <View style={{flex: 1}}>
+          <FlatList
+            data={Array(10).fill('')}
+            renderItem={() => {
+              return (
+                <HomeSessionItem />
+                // <View>
+                //   <Text>
+                //     Hi
+                //   </Text>
+                // </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
             // keyExtractor={item => item._id}
             // ref={flatlistRef}
             // onEndReached={() => fetchNextPage()}
@@ -1555,45 +1562,45 @@ const Home = props => {
             //     titleColor={Colors.white}
             //   />
             // }
-            />
-          </View>
-        )}
-        {modal1Visible === true ? (
-          <View
-            style={{
-              position: 'absolute',
-              margin: 20,
-              height: normalise(280),
-              width: '92%',
-              alignSelf: 'center',
-              marginHorizontal: normalise(15),
-              backgroundColor: Colors.white,
-              borderRadius: 20,
-              padding: 35,
-              bottom: 50,
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-            }}>
-            <EmojiSelector
-              category={Categories.history}
-              showHistory={true}
-              onEmojiSelected={emoji => {
-                setVisible(true);
-                setModalReact(emoji);
-                setTimeout(() => {
-                  setVisible(false);
-                }, 2000);
-              }}
-            />
-          </View>
-        ) : null}
-      </SafeAreaView>
+          />
+        </View>
+      )}
+      {modal1Visible === true ? (
+        <View
+          style={{
+            position: 'absolute',
+            margin: 20,
+            height: normalise(280),
+            width: '92%',
+            alignSelf: 'center',
+            marginHorizontal: normalise(15),
+            backgroundColor: Colors.white,
+            borderRadius: 20,
+            padding: 35,
+            bottom: 50,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}>
+          <EmojiSelector
+            category={Categories.history}
+            showHistory={true}
+            onEmojiSelected={emoji => {
+              setVisible(true);
+              setModalReact(emoji);
+              setTimeout(() => {
+                setVisible(false);
+              }, 2000);
+            }}
+          />
+        </View>
+      ) : null}
+      {/* </SafeAreaView> */}
     </View>
   );
 };

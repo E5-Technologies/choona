@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -10,21 +10,21 @@ import {
 } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
 
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useDispatch, useSelector } from 'react-redux';
-import { getTokenRequest } from './src/action/index';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useDispatch, useSelector} from 'react-redux';
+import {getTokenRequest} from './src/action/index';
 import Colors from './src/assests/Colors';
 import ImagePath from './src/assests/ImagePath';
 import normalise from './src/utils/helpers/Dimens';
 
-import { getChatListRequest } from './src/action/MessageAction';
+import {getChatListRequest} from './src/action/MessageAction';
 
-import { getProfileRequest } from './src/action/UserAction';
+import {getProfileRequest} from './src/action/UserAction';
 
 import Splash from './src/components/SplashComponent/Splash';
 
@@ -59,7 +59,7 @@ import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts';
 import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
-import { editProfileRequest } from './src/action/UserAction';
+import {editProfileRequest} from './src/action/UserAction';
 import _ from 'lodash';
 import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -73,6 +73,10 @@ import AssembleSession from './src/components/main/AssembleSession';
 import SessionLaunchScreen from './src/components/main/SessionLaunchScreen';
 import SessionActive from './src/components/main/SessionActive';
 import PlayListDetail from './src/components/main/PlayListDetail';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -137,7 +141,7 @@ const App = () => {
 
   useEffect(() => {
     (async () => {
-      const { userId } = await OneSignal.getDeviceState();
+      const {userId} = await OneSignal.getDeviceState();
       AsyncStorage.setItem('deviceToken', userId);
     })();
   });
@@ -154,7 +158,7 @@ const App = () => {
     const MessageReducer = useSelector(state => state.MessageReducer);
 
     const [showMessageDot, setShowMessageDot] = useState(false);
-
+    const insets = useSafeAreaInsets();
     useEffect(() => {
       let hasUnseenMessage = false;
       var arr = MessageReducer.chatList;
@@ -174,35 +178,48 @@ const App = () => {
     }, [MessageReducer.chatList, UserReducer.userProfileResp]);
 
     return (
-      <View style={styles.appStyle}>
+      <View style={[styles.appStyle]}>
         <Tab.Navigator
           initialRouteName={'Home'}
-          tabBarOptions={{
+          // tabBarOptions={{
+          //   headerShown: false,
+          //   activeBackgroundColor: Colors.darkerblack,
+          //   inactiveBackgroundColor: Colors.darkerblack,
+          //   safeAreaInsets: {bottom: 0},
+          //   style: {
+          //     height: Platform.OS === 'android' ? normalise(45) : normalise(90),
+          //     borderTopColor: Colors.fadeblack,
+          //   },
+          // }}
+          screenOptions={{
             headerShown: false,
-            activeBackgroundColor: Colors.darkerblack,
-            inactiveBackgroundColor: Colors.darkerblack,
-            safeAreaInsets: { bottom: 0 },
-            style: {
+            tabBarStyle: {
+              backgroundColor: Colors.darkerblack,
               height: Platform.OS === 'android' ? normalise(45) : normalise(68),
               borderTopColor: Colors.fadeblack,
+              borderTopWidth: 1,
             },
+            tabBarActiveBackgroundColor: Colors.darkerblack,
+            tabBarInactiveBackgroundColor: Colors.darkerblack,
+            safeAreaInsets: {bottom: 0},
           }}>
           <Tab.Screen
             name="Home"
             component={Home}
             options={{
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
+              tabBarIcon: ({focused}) => (
                 <Image
                   style={{
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
+                    marginTop: normalise(12),
                   }}
                   source={
                     ImagePath
@@ -222,7 +239,7 @@ const App = () => {
             component={Search}
             options={{
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
+              tabBarIcon: ({focused}) => (
                 <Image
                   style={{
                     opacity: focused ? 1 : 0.5,
@@ -230,10 +247,11 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
+                    marginTop: normalise(12),
                   }}
                   source={ImagePath ? ImagePath.exploreactive : null}
                   resizeMode="contain"
@@ -248,17 +266,18 @@ const App = () => {
             component={Create}
             options={{
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
+              tabBarIcon: ({focused}) => (
                 <Image
                   style={{
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                          ? normalise(0)
-                          : normalise(10),
+                        ? normalise(0)
+                        : normalise(10),
                     height: normalise(40),
                     width: normalise(40),
+                    marginTop: normalise(12),
                   }}
                   source={
                     ImagePath
@@ -274,12 +293,11 @@ const App = () => {
             }}
           />
           <Tab.Screen
-
             name="Notification"
             component={Notification}
             options={{
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
+              tabBarIcon: ({focused}) => (
                 <View>
                   <Image
                     style={{
@@ -287,10 +305,11 @@ const App = () => {
                         Platform.OS === 'android'
                           ? normalise(10)
                           : Dimensions.get('window').height > 736
-                            ? normalise(0)
-                            : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                       height: normalise(20),
                       width: normalise(20),
+                      marginTop: normalise(12),
                     }}
                     source={
                       ImagePath
@@ -332,7 +351,7 @@ const App = () => {
             component={Inbox}
             options={{
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
+              tabBarIcon: ({focused}) => (
                 <View>
                   <Image
                     style={{
@@ -341,10 +360,11 @@ const App = () => {
                         Platform.OS === 'android'
                           ? normalise(10)
                           : Dimensions.get('window').height > 736
-                            ? normalise(0)
-                            : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                       height: normalise(22),
                       width: normalise(22),
+                      marginTop: normalise(12),
                     }}
                     source={ImagePath ? ImagePath.inbox : null}
                     resizeMode="contain"
@@ -377,96 +397,110 @@ const App = () => {
     );
   };
 
-  console.log(TokenReducer.token, 'its user token')
-
   if (TokenReducer.loading) {
     return <Splash />;
   } else {
     return (
-      <NavigationContainer onReady={() => RNBootSplash.hide({ fade: true })}>
-        {TokenReducer.token === null ? (
-          <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName={'Login'}>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="SignUp" component={SignUp} />
-          </Stack.Navigator>
-        ) : (
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="bottomTab" component={BottomTab} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="BlockList" component={BlockList} />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
-            <Stack.Screen name="Followers" component={Followers} />
-            <Stack.Screen name="Following" component={Following} />
-            <Stack.Screen name="OthersProfile" component={OthersProfile} />
-            <Stack.Screen name="CreatePost" component={CreatePost} />
-            <Stack.Screen name="Contact" component={Contact} />
-            {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
-            <Stack.Screen
-              name="Player"
-              component={Player}
-              options={{
-                cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-              }}
-            />
-            <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
-            <Stack.Screen name="HomeItemList" component={HomeItemList} />
-            <Stack.Screen
-              name="HomeItemComments"
-              component={HomeItemComments}
-            />
-            <Stack.Screen
-              name="HomeItemReactions"
-              component={HomeItemReactions}
-            />
-            <Stack.Screen
-              name="AddSongsInMessage"
-              component={AddSongsInMessage}
-            />
-            <Stack.Screen
-              name="SendSongInMessageFinal"
-              component={SendSongInMessageFinal}
-            />
-            <Stack.Screen name="GenreClicked" component={GenreClicked} />
-            <Stack.Screen
-              name="GenreSongClicked"
-              component={GenreSongClicked}
-            />
-            <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
-            <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
-            <Stack.Screen name="PostListForUser" component={PostListForUser} />
-            <Stack.Screen
-              name="UsersFromContacts"
-              component={UsersFromContacts}
-            />
-            <Stack.Screen
-              name="AddToPlayListScreen"
-              component={AddToPlayListScreen}
-            />
-            <Stack.Screen name="SingleSongClick" component={SingleSongClick} />
-            <Stack.Screen
-              name="PlayerScreenSelectUser"
-              component={PlayerScreenSelectUser}
-            />
-            <Stack.Screen name="PlayerComment" component={PlayerComment} />
-            <Stack.Screen name="AddSong" component={AddSong} />
-            <Stack.Screen name="CreatePlayList" component={CreatePlayList} />
-            <Stack.Screen name="SessionDetail" component={SessionDetail} />
-            <Stack.Screen name="AssembleSession" component={AssembleSession} />
-            <Stack.Screen name="SessionLaunchScreen" component={SessionLaunchScreen} />
-            <Stack.Screen name="SessionActive" component={SessionActive} />
-            <Stack.Screen name="PlayListDetail" component={PlayListDetail} />
-
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
+          {TokenReducer.token === null ? (
+            <Stack.Navigator
+              screenOptions={{headerShown: false}}
+              initialRouteName={'Login'}>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+            </Stack.Navigator>
+          ) : (
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen name="bottomTab" component={BottomTab} />
+              <Stack.Screen name="Profile" component={Profile} />
+              <Stack.Screen name="BlockList" component={BlockList} />
+              <Stack.Screen name="EditProfile" component={EditProfile} />
+              <Stack.Screen name="Followers" component={Followers} />
+              <Stack.Screen name="Following" component={Following} />
+              <Stack.Screen name="OthersProfile" component={OthersProfile} />
+              <Stack.Screen name="CreatePost" component={CreatePost} />
+              <Stack.Screen name="Contact" component={Contact} />
+              {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
+              <Stack.Screen
+                name="Player"
+                component={Player}
+                options={{
+                  cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                }}
+              />
+              <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
+              <Stack.Screen name="HomeItemList" component={HomeItemList} />
+              <Stack.Screen
+                name="HomeItemComments"
+                component={HomeItemComments}
+              />
+              <Stack.Screen
+                name="HomeItemReactions"
+                component={HomeItemReactions}
+              />
+              <Stack.Screen
+                name="AddSongsInMessage"
+                component={AddSongsInMessage}
+              />
+              <Stack.Screen
+                name="SendSongInMessageFinal"
+                component={SendSongInMessageFinal}
+              />
+              <Stack.Screen name="GenreClicked" component={GenreClicked} />
+              <Stack.Screen
+                name="GenreSongClicked"
+                component={GenreSongClicked}
+              />
+              <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
+              <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
+              <Stack.Screen
+                name="PostListForUser"
+                component={PostListForUser}
+              />
+              <Stack.Screen
+                name="UsersFromContacts"
+                component={UsersFromContacts}
+              />
+              <Stack.Screen
+                name="AddToPlayListScreen"
+                component={AddToPlayListScreen}
+              />
+              <Stack.Screen
+                name="SingleSongClick"
+                component={SingleSongClick}
+              />
+              <Stack.Screen
+                name="PlayerScreenSelectUser"
+                component={PlayerScreenSelectUser}
+              />
+              <Stack.Screen name="PlayerComment" component={PlayerComment} />
+              <Stack.Screen name="AddSong" component={AddSong} />
+              <Stack.Screen name="CreatePlayList" component={CreatePlayList} />
+              <Stack.Screen name="SessionDetail" component={SessionDetail} />
+              <Stack.Screen
+                name="AssembleSession"
+                component={AssembleSession}
+              />
+              <Stack.Screen
+                name="SessionLaunchScreen"
+                component={SessionLaunchScreen}
+              />
+              <Stack.Screen name="SessionActive" component={SessionActive} />
+              <Stack.Screen name="PlayListDetail" component={PlayListDetail} />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </SafeAreaProvider>
     );
   }
 };
 
 const styles = StyleSheet.create({
-  appStyle: { flex: 1, backgroundColor: Colors.darkerblack },
+  appStyle: {
+    flex: 1,
+    backgroundColor: Colors.darkerblack,
+  },
 });
 
 export default App;
