@@ -30,7 +30,8 @@ class Print: UIViewController {
                                    object: nil)
     SharedClass.shared.developerToken = developerToken
    
-//    var musicUserToken = musicToken()
+    //var musicUserToken = musicToken()
+    
 //    if musicUserToken != ""{
 //        resolve(musicUserToken)
 //      }else{
@@ -55,45 +56,20 @@ class Print: UIViewController {
                 self.authorizationManager!.requestCloudServiceAuthorization()
                 
                 self.authorizationManager!.requestMediaLibraryAuthorization()
-                return
+              resolve("")
+              return
                 
             }
-            print("CAPABILITIES--",capabilities)
+            print(capabilities)
         }
-
-         print("FLOW_REACHED_HERE")
         
       if #available(iOS 11.0, *) {
-                
-//        cloudServiceController.requestUserToken(forDeveloperToken: developerToken!) { userToken, error in
-//               
-//          print("USER TOKEN", userToken)
-//          if let error = error {
-//                    print("Failed to get user token: \(error.localizedDescription)")
-//                  reject("E_COUNT", "User Token blank", error)
-//                    return
-//                }
-//
-//                guard let token = userToken else {
-//                    print("User token is nil")
-//                  reject("E_COUNT", "User Token blank", error)
-//                    return
-//                }
-//
-//                    UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
-//                    UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
-//                    self.appleMusicUserToken = token
-//                    print("Music User Token:", token)
-//                    resolve(token)
-//            }
-        
-        
         cloudServiceController.requestUserToken(forDeveloperToken: developerToken!, completionHandler: { token, error in
-          print("Music User Token:", token)
-
+          
           guard let token = token else {
             print(error?.localizedDescription)
-            reject("E_COUNT", "User Token blank", error)
+            resolve("")
+//            reject("E_COUNT", "User Token blank", error)
             return }
           UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
           UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
@@ -182,12 +158,12 @@ class Print: UIViewController {
       // Fallback on earlier versions
     }
 //      cloudServiceSetupViewController.delegate = self
-//      
+//
 //      cloudServiceSetupViewController.load(options: [.action: SKCloudServiceSetupAction.subscribe]) { [weak self] (result, error) in
 //          guard error == nil else {
 //              fatalError("An Error occurred: \(error!.localizedDescription)")
 //          }
-//          
+//
 //          if result {
 //              self?.present(cloudServiceSetupViewController, animated: true, completion: nil)
 //              self?.didPresentCloudServiceSetup = true
@@ -251,3 +227,4 @@ extension Print: SKCloudServiceSetupViewControllerDelegate {
         //        }
     }
 }
+
