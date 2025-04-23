@@ -64,7 +64,8 @@ export function useRecentlyPlayed(registerType) {
       getRecentlyPlayed();
     } else {
       const fetchMusicToken = async () => {
-        const AppleToken = await getAppleDevToken();
+        const AppleToken =
+          'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjQ0N0JBS0Y3TUgifQ.eyJpYXQiOjE3NDUzODc1NzcsImV4cCI6MTc2MTE2NDU3NywiaXNzIjoiOURWTU03VTc5OCJ9.xwRmxtmmQd2JGycGqgcixa96rymuUNAXlhOpSxOMTLCEDECjlGG5u2ZZAMo7MLaZqB8sycntsz0CZ_ZiZsjFgw'; //await getAppleDevToken();
 
         if (AppleToken !== '') {
           let newtoken = AppleToken.split(' ');
@@ -75,25 +76,23 @@ export function useRecentlyPlayed(registerType) {
             toast('Error', 'Invalid Apple Music token received.');
             return;
           }
-          // console.log(finalToken, 'token');
+          console.log(finalToken, 'token');
           // return;
           NativeModules.Print.printValue(finalToken)
             .then(res => {
               console.log(res, 'its res');
-              return;
               if (res === '') {
-                console.log('hi');
                 toast(
                   'Error',
                   'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
                 );
               } else {
-                return;
                 setMusicToken(res);
                 getRecentlyPlayed();
               }
             })
-            .catch(() => {
+            .catch(err => {
+              console.log('APPLE_MUSIC_ERROR--' + JSON.stringify(err));
               toast(
                 'Error',
                 'There was an error getting your recently played tracks.',

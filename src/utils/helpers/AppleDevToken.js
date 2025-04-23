@@ -9,7 +9,7 @@ export const getAppleDevToken = async () => {
     console.log(creds, 'these are creds');
     if (creds === null) {
       const token = await getAppleDevelopersToken(constants.appleGetTokenApi);
-      console.log('Dev Token First' + token);
+      console.log('Dev Token First' + JSON.stringify(token));
       await AsyncStorage.setItem(
         constants.APPLE,
         JSON.stringify({
