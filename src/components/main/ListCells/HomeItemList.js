@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ import HomeListItemFooter from '../../HomeScreen/HomeListItem/HomeListItemFooter
 function HomeItemList(props) {
   const [numberOfLines, setNumberOfLines] = useState(3);
   const [viewMore, setViewMore] = useState(false);
-  const { width, height } = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
 
   const onPressImage = () => {
     if (props.onPressImage) {
@@ -85,7 +85,7 @@ function HomeItemList(props) {
       return (
         <Text
           key={text}
-          style={{ color: '#3DB2EB' }}
+          style={{color: '#3DB2EB'}}
           onPress={() => {
             props.navi.navigation.navigate('OthersProfile', {
               id: text.substr(1, text.length - 1),
@@ -125,25 +125,25 @@ function HomeItemList(props) {
           ]}>
           {props.image?.map((item, index) => {
             return (
-              <TouchableOpacity
-                style={styles.bannerImageStyle}
-                onPress={() => onPlaylistImagePress(index)}>
+              // <TouchableOpacity
+              //   style={styles.bannerImageStyle}
+              //   onPress={() => onPlaylistImagePress(index)}>
+              <View style={styles.bannerImageStyle}>
                 <Image
-                  source={{ uri: item?.song_image }}
-                  style={{ flex: 1, aspectRatio: 1 }}
+                  source={{uri: item?.song_image}}
+                  style={{flex: 1, aspectRatio: 1}}
                   // style={styles.bannerImageStyle}
                   resizeMode="cover"
                 />
-              </TouchableOpacity>
+              </View>
+              // </TouchableOpacity>
             );
           })}
-          {props.image?.length > 4 &&
+          {props.image?.length > 4 && (
             <View style={styles.moreTextWrapper}>
-              <Text style={styles.moreText}>
-                +{props.image?.length - 4}
-              </Text>
+              <Text style={styles.moreText}>+{props.image?.length - 4}</Text>
             </View>
-          }
+          )}
         </View>
       ) : (
         <Image
@@ -151,7 +151,7 @@ function HomeItemList(props) {
             ImagePath
               ? props.image === ''
                 ? ImagePath.profiletrack1
-                : { uri: props.image[0].song_image }
+                : {uri: props.image[0].song_image}
               : null
           }
           style={{

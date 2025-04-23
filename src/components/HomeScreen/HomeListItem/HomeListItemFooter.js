@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import moment from 'moment';
 
 import Colors from '../../../assests/Colors';
@@ -9,7 +9,7 @@ import normalise from '../../../utils/helpers/Dimens';
 
 import HomeListItemReactions from './HomeListItemReactions';
 import Avatar from '../../../components/Avatar';
-import { ReactionButtonThumbsUp } from '../../Reactions/Buttons/Buttons';
+import {ReactionButtonThumbsUp} from '../../Reactions/Buttons/Buttons';
 import ReactionButtonBar from '../../Reactions/ButtonBar/ButtonBar';
 
 const HomeListItemFooter = ({
@@ -32,7 +32,7 @@ const HomeListItemFooter = ({
   viewMore,
   myReactions,
   myReactionsPending,
-  relatedId
+  relatedId,
 }) => {
   const [actualNumLines, setActualNumLines] = useState(0);
   const onTextLayout = useCallback(
@@ -46,7 +46,7 @@ const HomeListItemFooter = ({
 
   return (
     <View style={styles.listItemFooterContainer}>
-      <View style={styles.listItemFooterTop}>
+      <View style={[styles.listItemFooterTop]}>
         <View style={styles.listItemFooterInfo}>
           <TouchableOpacity
             onPress={() => {
@@ -59,7 +59,7 @@ const HomeListItemFooter = ({
               width={26}
             />
           </TouchableOpacity>
-          <View>
+          <View style={{flex: 1}}>
             <TouchableOpacity onPress={() => onPressImage()}>
               <Text numberOfLines={1} style={styles.listItemFooterName}>
                 {userName}
@@ -109,7 +109,7 @@ const HomeListItemFooter = ({
         </View>
       </View>
       <View>
-        {postText.length > 0 ? (
+        {postText?.length > 0 ? (
           <Text
             numberOfLines={
               actualNumLines == 0 ? null : viewMore ? actualNumLines : 3
@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
   listItemFooterInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flex: 1,
   },
   listItemFooterAvatar: {
     marginRight: normalise(6),
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
     marginLeft: normalise(6),
   },
   listItemFooterActionsButton: {
-    transform: [{ rotate: '90deg' }],
+    transform: [{rotate: '90deg'}],
     width: normalise(14),
   },
   listItemFooterReactions: {

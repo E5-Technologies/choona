@@ -150,11 +150,11 @@ const Home = props => {
         .catch(error => console.log(error, 'ye error h'));
       // console.log(res, 'this is post data');
       // console.log(postsUrl + pageParam, 'its url');
-      return res.data;
+      return res?.data;
     },
     {
-      getPreviousPageParam: pageParam => pageParam.page - 1,
-      getNextPageParam: pageParam => pageParam.page + 1,
+      getPreviousPageParam: pageParam => pageParam?.page - 1,
+      getNextPageParam: pageParam => pageParam?.page + 1,
     },
   );
 
@@ -182,7 +182,7 @@ const Home = props => {
     if (newPosts) {
       var merged = [].concat.apply(
         [],
-        newPosts.pages.map(page => page.data),
+        newPosts.pages.map(page => page?.data),
       );
       setPosts(merged);
     }
@@ -737,24 +737,24 @@ const Home = props => {
     // console.log(JSON.stringify(data), 'it item data')
     /** REACTION - ADDITION */
     const reactionMap = {
-      thumbsUp: data.item.fireReactionIds
+      thumbsUp: data?.item?.fireReactionIds
         ? data.item.fireReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
-      fire: data.item.loveReactionIds
+      fire: data?.item?.loveReactionIds
         ? data.item.loveReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
-      heart: data.item.dancerReactionIds
+      heart: data?.item?.dancerReactionIds
         ? data.item.dancerReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
-      disco: data.item.manDancingReactionIds
+      disco: data?.item?.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
             `${props.userProfileResp?._id}`,
           )
         : false,
-      throwback: data.item.faceReactionIds
+      throwback: data?.item?.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
-      thumbsDown: data.item.thumbsUpReactionIds
+      thumbsDown: data?.item?.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
             `${props.userProfileResp?._id}`,
           )
@@ -762,12 +762,12 @@ const Home = props => {
     };
 
     const reactionPendingMap = {
-      thumbsUp: isPending('thumbsUp', data.item._id),
-      fire: isPending('fire', data.item._id),
-      heart: isPending('heart', data.item._id),
-      disco: isPending('disco', data.item._id),
-      throwback: isPending('throwback', data.item._id),
-      thumbsDown: isPending('thumbsDown', data.item._id),
+      thumbsUp: isPending('thumbsUp', data?.item?._id),
+      fire: isPending('fire', data?.item?._id),
+      heart: isPending('heart', data?.item?._id),
+      disco: isPending('disco', data?.item?._id),
+      throwback: isPending('throwback', data?.item?._id),
+      thumbsDown: isPending('thumbsDown', data?.item?._id),
     };
 
     return (
@@ -785,7 +785,7 @@ const Home = props => {
           <HomeItemList
             // image={data?.item?.songs[0]?.song_image}
             image={data?.item?.songs}
-            id={data.item._id}
+            id={data.item?._id}
             play={
               _.isEmpty(postArray)
                 ? false
@@ -795,32 +795,32 @@ const Home = props => {
             }
             // postArray[data.index].playing
             onPlaylistImagePress={songIndex => playSong(data, songIndex)}
-            picture={data.item.userDetails.profile_image}
-            name={data.item.userDetails.username}
+            picture={data?.item?.userDetails?.profile_image}
+            name={data?.item?.userDetails?.username}
             comment_count={
-              data.item.comment_count ? data.item.comment_count : 0
+              data?.item?.comment_count ? data.item.comment_count : 0
             }
             reaction_count={
-              data.item.reaction_count ? data.item.reaction_count : 0
+              data?.item?.reaction_count ? data.item.reaction_count : 0
             }
             reactions={{
-              fire_count: data.item.fire_count,
-              love_count: data.item.love_count,
-              dancer_count: data.item.dancer_count,
-              man_dancing_count: data.item.man_dancing_count,
-              face_count: data.item.face_count,
-              thumbsup_count: data.item.thumbsup_count,
+              fire_count: data?.item?.fire_count,
+              love_count: data?.item?.love_count,
+              dancer_count: data?.item?.dancer_count,
+              man_dancing_count: data?.item?.man_dancing_count,
+              face_count: data?.item?.face_count,
+              thumbsup_count: data?.item?.thumbsup_count,
             }}
             myReactions={reactionMap}
             myReactionsPending={reactionPendingMap}
             navi={props}
-            content={data.item.post_content}
-            time={data.item.createdAt}
-            title={data.item.songs[0]?.song_name}
-            singer={data.item.songs[0]?.artist_name}
-            songUri={data.item.songs[0]?.song_uri}
+            content={data?.item?.post_content}
+            time={data?.item?.createdAt}
+            title={data?.item?.songs[0]?.song_name}
+            singer={data?.item?.songs[0]?.artist_name}
+            songUri={data?.item?.songs[0]?.song_uri}
             modalVisible={modal1Visible}
-            postType={data.item.social_type === 'spotify'}
+            postType={data?.item?.social_type === 'spotify'}
             onReactionPress={newHitReact}
             onPressImage={() => {
               if (!isFetching) {
@@ -973,11 +973,14 @@ const Home = props => {
     else {
       let array = [...postData];
       let i;
-      for (i = 0; i < array.length; i++) {
-        array[i].playing = false;
+      if(array?.length>0){
+      for (i = 0; i < array?.length; i++) {
+        array[i]?.playing = false;
       }
+    
       //  setVisibleMiniPlayer(false)
       setPostArray(array);
+    }
     }
   }
 
@@ -1407,7 +1410,7 @@ const Home = props => {
               data={posts}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}
-              keyExtractor={item => item._id}
+              keyExtractor={item => item?._id}
               ref={flatlistRef}
               onEndReached={() => fetchNextPage()}
               onEndReachedThreshold={2}

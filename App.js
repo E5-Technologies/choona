@@ -122,10 +122,16 @@ const App = () => {
         console.log('zxcv', 'App is in active Mode.');
       }
     }
-    AppState.addEventListener('change', _handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      'change',
+      _handleAppStateChange,
+    );
+    // return () => {
+    //   AppState.removeEventListener('change', _handleAppStateChange);
+    //   // unsuscribe();
+    // };
     return () => {
-      AppState.removeEventListener('change', _handleAppStateChange);
-      // unsuscribe();
+      subscription.remove(); // ✅ Proper cleanup
     };
   }, [dispatch]);
 

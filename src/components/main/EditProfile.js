@@ -35,7 +35,7 @@ let status = '';
 
 const EditProfile = props => {
   const [username, setUsername] = useState(props?.userProfileResp?.username);
-  const [fullname, setFullname] = useState(props.userProfileResp.full_name);
+  const [fullname, setFullname] = useState(props.userProfileResp?.full_name);
   const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp.phone);
   const [location, setLocation] = useState(props.userProfileResp.location);
   const [picture, setPicture] = useState(false);
