@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 
 // import normalise from '../../../utils/helpers/Dimens';
@@ -46,7 +46,7 @@ function CommentList(props) {
       return (
         <Text
           key={text}
-          style={{ color: '#3DB2EB' }}
+          style={{color: '#3DB2EB'}}
           onPress={() => {
             props.navi.navigation.navigate('OthersProfile', {
               id: text.substr(1, text.length - 1),
@@ -80,12 +80,14 @@ function CommentList(props) {
         />
       </TouchableOpacity>
       <View style={styles.commentInfoContainer}>
-        <View style={[styles.commentInfo, { marginBottom: '1%' }]}>
+        <View style={[styles.commentInfo, {marginBottom: '1%'}]}>
           <TouchableOpacity
             onPress={() => {
               onPressImage();
             }}>
-            <Text style={styles.commentUsername}>{props.name}</Text>
+            <Text style={styles.commentUsername} numberOfLines={1}>
+              {props.name}
+            </Text>
           </TouchableOpacity>
           <Text style={styles.commentTime}>{props.time}</Text>
         </View>
@@ -98,7 +100,7 @@ function CommentList(props) {
             textDecorationStyle: 'dotted',
             fontWeight: 'bold',
           }}>
-          <Text style={[styles.commentText, { paddingRight: '8%' }]}>
+          <Text style={[styles.commentText, {paddingRight: '8%'}]}>
             {parts}
           </Text>
         </Hyperlink>
@@ -141,6 +143,8 @@ const styles = StyleSheet.create({
     fontFamily: 'ProximaNova-Semibold',
     fontSize: normaliseNew(13),
     textTransform: 'lowercase',
+    flex: 1,
+    marginRight: 15,
   },
   commentTime: {
     color: Colors.grey_text,

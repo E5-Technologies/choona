@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
+  Keyboard,
 } from 'react-native';
 import Colors from '../../assests/Colors';
 import normalise from '../../utils/helpers/Dimens';
@@ -24,6 +25,8 @@ import {
   CREATE_POST_SUCCESS,
 } from '../../action/TypeConstants';
 import {pausePlayerAction} from '../../saga/PlayerSaga';
+import Loader from '../../widgets/AuthLoader';
+import isInternetConnected from '../../utils/helpers/NetInfo';
 
 let status;
 
@@ -34,6 +37,7 @@ function CreatePlayList(props) {
   const {width, height} = useWindowDimensions();
   const [playListArary, setPlayListArray] = useState([]);
   const [playListName, setPlayListName] = useState('');
+  const [bool, setBool] = useState(false);
   const imagArray = [
     {url: 'https://picsum.photos/200/300'},
     {url: 'https://picsum.photos/200/300'},
@@ -82,6 +86,7 @@ function CreatePlayList(props) {
   console.log(songListPayload(), 'its data>>>>');
 
   const createPost = async () => {
+    setBool(true);
     // let tapUser = [];
     // await props.followingData.map((item, index) => {
     //   if (search.search(item.username) !== -1) {
@@ -95,17 +100,29 @@ function CreatePlayList(props) {
     //     setTagFriend([]);
     //   }
     // });
-
-    var payload = {
-      //   tag: tapUser,
-      post_content: playListName,
-      playlist_name: playListName,
-      social_type: songItem.registerType === 'spotify' ? 'spotify' : 'apple',
-      songs: songListPayload(),
-    };
-    console.log(payload, 'this is plalist paload');
-    // return
-    props.createPostRequest(payload);
+    setTimeout(() => {
+      var payload = {
+        //   tag: tapUser,
+        post_content: playListName,
+        playlist_name: playListName,
+        social_type: songItem.registerType === 'spotify' ? 'spotify' : 'apple',
+        songs: songListPayload(),
+      };
+      console.log(payload, 'this is plalist paload');
+      // return
+      isInternetConnected()
+        .then(async () => {
+          // Alert.alert('incond');
+          await props.createPostRequest(payload);
+          setBool(false);
+          Keyboard.dismiss();
+        })
+        .catch(() => {
+          setBool(false);
+          toast('Error', 'Please Connect To Internet');
+        });
+    }, 200);
+    // props.createPostRequest(payload);
   };
 
   if (status === '' || status !== props.status) {
@@ -246,6 +263,7 @@ function CreatePlayList(props) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
+      <Loader visible={bool} />
     </View>
   );
 }

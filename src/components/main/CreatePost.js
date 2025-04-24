@@ -11,6 +11,7 @@ import {
   Keyboard,
   Dimensions,
   Platform,
+  Alert,
 } from 'react-native';
 import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
@@ -54,6 +55,7 @@ function AddSong(props) {
   const [tagFriend, setTagFriend] = useState([]);
   const [showmention, setShowMention] = useState(false);
   const [Selection, setSelection] = useState({start: 0, end: 0});
+  const [commentsLoading, setCommentsLoading] = useState(false);
 
   useEffect(() => {
     if (props.route.params.registerType === 'spotify') {
@@ -108,52 +110,66 @@ function AddSong(props) {
   };
 
   const createPost = async () => {
-    let tapUser = [];
-    await props.followingData.map((item, index) => {
-      if (search.search(item.username) !== -1) {
-        tagFriend.map(items => {
-          if (items === item.username) {
-            tapUser.push(item.username);
-          }
-        });
-      }
-      if (index === props.followingData.length - 1) {
-        setTagFriend([]);
-      }
-    });
+    setBool(true);
+    setTimeout(async () => {
+      let tapUser = [];
+      await props.followingData.map((item, index) => {
+        if (search.search(item.username) !== -1) {
+          tagFriend.map(items => {
+            if (items === item.username) {
+              tapUser.push(item.username);
+            }
+          });
+        }
+        if (index === props.followingData.length - 1) {
+          setTagFriend([]);
+        }
+      });
 
-    var payload = {
-      tag: tapUser,
-      post_content: search,
-      social_type:
-        props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
-      songs: [
-        {
-          song_uri:
-            props.route.params.registerType === 'spotify'
-              ? spotifyUrl
-              : props.route.params.details.attributes.previews[0].url,
-          original_song_uri:
-            props.route.params.registerType === 'spotify'
-              ? props.route.params.details.external_urls.spotify
-              : props.route.params.details.attributes.url,
-          song_name: title1,
-          song_image: imgsource,
-          artist_name: title2,
-          isrc_code:
-            props.route.params.registerType === 'spotify'
-              ? props.route.params.details.external_ids.isrc
-              : props.route.params.details.attributes.isrc,
-          album_name:
-            props.route.params.registerType === 'spotify'
-              ? props.route.params.details.album.name
-              : props.route.params.details.attributes.albumName,
-        },
-      ],
-    };
-    console.log(payload, 'its playlod <<');
-    // return
-    props.createPostRequest(payload);
+      var payload = {
+        tag: tapUser,
+        post_content: search,
+        social_type:
+          props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
+        songs: [
+          {
+            song_uri:
+              props.route.params.registerType === 'spotify'
+                ? spotifyUrl
+                : props.route.params.details.attributes.previews[0].url,
+            original_song_uri:
+              props.route.params.registerType === 'spotify'
+                ? props.route.params.details.external_urls.spotify
+                : props.route.params.details.attributes.url,
+            song_name: title1,
+            song_image: imgsource,
+            artist_name: title2,
+            isrc_code:
+              props.route.params.registerType === 'spotify'
+                ? props.route.params.details.external_ids.isrc
+                : props.route.params.details.attributes.isrc,
+            album_name:
+              props.route.params.registerType === 'spotify'
+                ? props.route.params.details.album.name
+                : props.route.params.details.attributes.albumName,
+          },
+        ],
+      };
+      console.log(payload, 'its playlod <<');
+      // return
+      isInternetConnected()
+        .then(async () => {
+          // Alert.alert('incond');
+          await props.createPostRequest(payload);
+          setBool(false);
+          Keyboard.dismiss();
+        })
+        .catch(() => {
+          setBool(false);
+          toast('Error', 'Please Connect To Internet');
+        });
+    }, 200);
+    // props.createPostRequest(payload);
   };
 
   if (status === '' || status !== props.status) {
@@ -239,11 +255,14 @@ function AddSong(props) {
       return text;
     }
   });
+  useEffect(() => {
+    console.log(bool, 'its bool value');
+  }, [bool]);
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       {/* <Loader visible={props.status === CREATE_POST_REQUEST} /> */}
-      <Loader visible={bool} />
+
       <StatusBar backgroundColor={Colors.darkerblack} />
       {/* <TouchableWithoutFeedback
         onPress={() => {
@@ -263,6 +282,7 @@ function AddSong(props) {
             createPost();
           }}
         />
+
         <View
           style={{
             marginTop: normalise(20),
@@ -526,6 +546,7 @@ function AddSong(props) {
           />
         </View> */}
       </SafeAreaView>
+      <Loader visible={bool} />
       {/* </TouchableWithoutFeedback> */}
     </View>
   );

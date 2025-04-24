@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {connect} from 'react-redux';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import {
@@ -17,9 +17,10 @@ import {
   Keyboard,
   Dimensions,
   FlatList,
+  Alert,
 } from 'react-native';
 // import { SafeAreaView } from 'react-native-safe-area-context';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import moment from 'moment';
 import Colors from '../../assests/Colors';
 import constants from '../../utils/helpers/constants';
@@ -49,7 +50,7 @@ import {
 import Loader from '../../widgets/AuthLoader';
 import CommentList from '../main/ListCells/CommentList';
 
-import { fetchCommentsOnPost } from '../../helpers/post';
+import {fetchCommentsOnPost} from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import MyStatusBar from '../../utils/MyStatusBar';
@@ -76,7 +77,7 @@ function HomeItemComments(props) {
   const [tagFriend, setTagFriend] = useState([]);
 
   const [showmention, setShowMention] = useState(false);
-  const [Selection, setSelection] = useState({ start: 0, end: 0 });
+  const [Selection, setSelection] = useState({start: 0, end: 0});
   useEffect(() => {
     props.followingListReq('user', '');
     props.followListReq('user', '');
@@ -109,7 +110,7 @@ function HomeItemComments(props) {
         time={moment(data.item.createdAt).from()}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', { fromAct: false });
+            props.navigation.navigate('Profile', {fromAct: false});
           } else {
             props.navigation.navigate('OthersProfile', {
               id: data.item.user_id,
@@ -178,7 +179,7 @@ function HomeItemComments(props) {
   const _onBackPress = () => {
     let ID = props.route.params.id;
     let Comment = comments.length;
-    const { navigation, route } = props;
+    const {navigation, route} = props;
     route.params.onSelect(ID, Comment);
     navigation.goBack();
   };
@@ -187,7 +188,7 @@ function HomeItemComments(props) {
     let ID = props.route.params.id;
     let Comment = comment_count;
 
-    const { navigation, route } = props;
+    const {navigation, route} = props;
     console.log(ID + ':' + Comment);
     route.params.onSelect(ID, Comment);
     navigation.goBack();
@@ -226,7 +227,7 @@ function HomeItemComments(props) {
   parts = parts.map(text => {
     if (/^@/.test(text)) {
       return (
-        <Text key={text} style={{ color: '#3DB2EB' }}>
+        <Text key={text} style={{color: '#3DB2EB'}}>
           {text}
         </Text>
       );
@@ -238,7 +239,7 @@ function HomeItemComments(props) {
   return (
     <View style={styles.container} keyboardShouldPersistTaps="always">
       <MyStatusBar />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -287,14 +288,18 @@ function HomeItemComments(props) {
                 }}
               /> */}
               <Image
-                source={image ? { uri: image } : null}
+                source={image ? {uri: image} : null}
                 style={styles.commentHeaderAvatar}
                 resizeMode="contain"
               />
             </TouchableOpacity>
             <View style={styles.commentHeaderInfoContainer}>
               <View style={styles.commentHeaderInfoTop}>
-                <Text style={styles.commentHeaderInfoUsername}>{username}</Text>
+                <Text
+                  style={styles.commentHeaderInfoUsername}
+                  numberOfLines={1}>
+                  {username}
+                </Text>
 
                 <Text style={styles.commentHeaderInfoTime}>
                   {moment(time).from()}
@@ -309,7 +314,7 @@ function HomeItemComments(props) {
           </View>
         </View>
         <SwipeListView
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           data={comments}
           keyboardShouldPersistTaps="always"
           renderItem={renderItem}
@@ -343,12 +348,12 @@ function HomeItemComments(props) {
               data={followerList.concat(followingList).filter(function (o) {
                 return this[o.username] ? false : (this[o.username] = true);
               }, {})}
-              style={{ marginBottom: '0%' }}
+              style={{marginBottom: '0%'}}
               keyboardShouldPersistTaps="always"
-              renderItem={({ item, index }) => {
+              renderItem={({item, index}) => {
                 return (
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', paddingTop: '3%' }}
+                    style={{flexDirection: 'row', paddingTop: '3%'}}
                     onPress={() => {
                       setSelection({
                         start: commentText.lastIndexOf('@'),
@@ -391,7 +396,7 @@ function HomeItemComments(props) {
                         borderBottomColor: '#25262A',
                         justifyContent: 'center',
                       }}>
-                      <Text style={{ fontSize: 14, color: 'white' }}>
+                      <Text style={{fontSize: 14, color: 'white'}}>
                         {item.full_name}
                       </Text>
 
@@ -411,156 +416,156 @@ function HomeItemComments(props) {
             />
           </View>
         ) : null}
-
       </SafeAreaView>
       <View
+        style={[
+          styles.commentFooterContainer,
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: Colors.darkerblack,
+          },
+        ]}>
+        <TextInput
           style={[
-            styles.commentFooterContainer,
+            styles.commentFooterInput,
             {
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: Colors.darkerblack,
+              flex: 1,
+              //flexWrap:'wrap',
+              //alignItems:'center'
             },
-          ]}>
-          <TextInput
-            style={[
-              styles.commentFooterInput,
-              {
-                flex: 1,
-                //flexWrap:'wrap',
-                //alignItems:'center'
-              },
-            ]}
-            multiline
-            // maxHeight={100}
-            autoFocus={true}
-            keyboardAppearance="dark"
-            onContentSizeChange={e =>
-              updateSize(e.nativeEvent.contentSize.height)
-            }
-            placeholder={'Add a comment...'}
-            placeholderTextColor={Colors.white}
-            onFocus={() => setEmoji(true)}
-            scrollEnabled={false}
-            onChangeText={text => {
-              let indexvalue = text.lastIndexOf('@');
-              let newString = text.substr(text.lastIndexOf('@'));
+          ]}
+          multiline
+          // maxHeight={100}
+          autoFocus={true}
+          keyboardAppearance="dark"
+          onContentSizeChange={e =>
+            updateSize(e.nativeEvent.contentSize.height)
+          }
+          placeholder={'Add a comment...'}
+          placeholderTextColor={Colors.white}
+          onFocus={() => setEmoji(true)}
+          scrollEnabled={false}
+          onChangeText={text => {
+            let indexvalue = text.lastIndexOf('@');
+            let newString = text.substr(text.lastIndexOf('@'));
 
-              if (indexvalue !== -1) {
-                if (newString.length === 1) {
-                  if (
-                    commentText.substr(indexvalue - 1) === ' ' ||
-                    commentText.substr(indexvalue - 1) === ''
-                  ) {
-                    setFollowingList([...props.followingData]);
-                    setFollower([...props.followerData]);
-                    props.followingData.length === 0
-                      ? setShowMention(false)
-                      : setShowMention(true);
-                  } else {
-                    setShowMention(false);
-                  }
+            if (indexvalue !== -1) {
+              if (newString.length === 1) {
+                if (
+                  commentText.substr(indexvalue - 1) === ' ' ||
+                  commentText.substr(indexvalue - 1) === ''
+                ) {
+                  setFollowingList([...props.followingData]);
+                  setFollower([...props.followerData]);
+                  props.followingData.length === 0
+                    ? setShowMention(false)
+                    : setShowMention(true);
                 } else {
-                  let newSubString = newString.substr(1, newString.length - 1);
-                  let newArray = [];
-                  let newFollowArray = [];
-                  if (props.followingData.length !== 0) {
-                    props.followingData.map((item, index) => {
-                      //  console.log("mapItem"+item.full_name)
-                      if (item.username.includes(newSubString)) {
-                        newArray.push(item);
-                      }
-                      if (index === props.followingData.length - 1) {
-                        if (props.followerData.length !== 0) {
-                          props.followerData.map((items, indexs) => {
-                            if (items.username.includes(newSubString)) {
-                              newFollowArray.push(items);
-                            }
-                            if (indexs === props.followerData.length - 1) {
-                              newFollowArray.length === 0
-                                ? setShowMention(false)
-                                : (setFollowingList(newArray),
-                                  setFollower(newFollowArray),
-                                  setShowMention(true));
-                            }
-                          });
-                        } else {
-                          setFollowingList(newArray), setShowMention(true);
-                        }
-                      }
-                    });
-                  } else {
-                    props.followerData.map((items, indexs) => {
-                      if (items.username.includes(newSubString)) {
-                        newFollowArray.push(items);
-                      }
-                      if (indexs === props.followerData.length - 1) {
-                        newArray.length === 0
-                          ? setShowMention(false)
-                          : (setFollower(newFollowArray), setShowMention(true));
-                      }
-                    });
-                  }
+                  setShowMention(false);
                 }
               } else {
-                setShowMention(false);
-              }
-              setCommentText(text);
-            }}>
-            {parts}
-          </TextInput>
-          {commentText !== '' ? (
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: '3%',
-              }}
-              onPress={async () => {
-                setCommentsLoading(true);
-                let tapUser = [];
-                await props.followingData.map((item, index) => {
-                  if (commentText.search(item.username) !== -1) {
-                    tagFriend.map(items => {
-                      if (items === item.username) {
-                        tapUser.push(item.username);
+                let newSubString = newString.substr(1, newString.length - 1);
+                let newArray = [];
+                let newFollowArray = [];
+                if (props.followingData.length !== 0) {
+                  props.followingData.map((item, index) => {
+                    //  console.log("mapItem"+item.full_name)
+                    if (item.username.includes(newSubString)) {
+                      newArray.push(item);
+                    }
+                    if (index === props.followingData.length - 1) {
+                      if (props.followerData.length !== 0) {
+                        props.followerData.map((items, indexs) => {
+                          if (items.username.includes(newSubString)) {
+                            newFollowArray.push(items);
+                          }
+                          if (indexs === props.followerData.length - 1) {
+                            newFollowArray.length === 0
+                              ? setShowMention(false)
+                              : (setFollowingList(newArray),
+                                setFollower(newFollowArray),
+                                setShowMention(true));
+                          }
+                        });
+                      } else {
+                        setFollowingList(newArray), setShowMention(true);
                       }
-                    });
-                  }
-                  if (index === props.followingData.length - 1) {
-                    setTagFriend([]);
-                  }
-                });
-
-                // Keyboard.dismiss();
-                let commentObject = {
-                  post_id: id,
-                  text: commentText,
-                  tag: tapUser,
-                };
-                // console.log("ffff"+ JSON.stringify(commentObject))
-                isInternetConnected()
-                  .then(() => {
-                    props.commentOnPost(commentObject);
-                    setCommentText('');
-                    setCommentsLoading(false);
-                    Keyboard.dismiss();
-                  })
-                  .catch(() => {
-                    setCommentsLoading(false);
-                    toast('Error', 'Please Connect To Internet');
+                    }
                   });
+                } else {
+                  props.followerData.map((items, indexs) => {
+                    if (items.username.includes(newSubString)) {
+                      newFollowArray.push(items);
+                    }
+                    if (indexs === props.followerData.length - 1) {
+                      newArray.length === 0
+                        ? setShowMention(false)
+                        : (setFollower(newFollowArray), setShowMention(true));
+                    }
+                  });
+                }
+              }
+            } else {
+              setShowMention(false);
+            }
+            setCommentText(text);
+          }}>
+          {parts}
+        </TextInput>
+        {commentText !== '' ? (
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: '3%',
+            }}
+            onPress={async () => {
+              setCommentsLoading(true);
+              let tapUser = [];
+              await props.followingData.map((item, index) => {
+                if (commentText.search(item.username) !== -1) {
+                  tagFriend.map(items => {
+                    if (items === item.username) {
+                      tapUser.push(item.username);
+                    }
+                  });
+                }
+                if (index === props.followingData.length - 1) {
+                  setTagFriend([]);
+                }
+              });
+              // Alert.alert('hi');
+              // Keyboard.dismiss();
+              let commentObject = {
+                post_id: id,
+                text: commentText,
+                tag: tapUser,
+              };
+              console.log('ffff' + JSON.stringify(commentObject));
+              isInternetConnected()
+                .then(() => {
+                  // Alert.alert('incond');
+                  props.commentOnPost(commentObject);
+                  setCommentText('');
+                  setCommentsLoading(false);
+                  Keyboard.dismiss();
+                })
+                .catch(() => {
+                  setCommentsLoading(false);
+                  toast('Error', 'Please Connect To Internet');
+                });
+            }}>
+            <Text
+              style={{
+                color: Colors.white,
+                fontFamily: 'ProximaNova-Bold',
               }}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontFamily: 'ProximaNova-Bold',
-                }}>
-                POST
-              </Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+              POST
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
       {/* {Platform.OS === 'ios' && <KeyboardSpacer />} */}
     </View>
   );
@@ -703,8 +708,8 @@ function HomeItemComments(props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.darkerblack },
-  safeContainer: { flex: 1 },
+  container: {flex: 1, backgroundColor: Colors.darkerblack},
+  safeContainer: {flex: 1},
   commentHeader: {
     backgroundColor: Colors.darkerblack,
     paddingLeft: normaliseNew(16),
@@ -714,7 +719,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.fadeblack,
     paddingBottom: normaliseNew(12),
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.5,
     shadowRadius: 8,
     elevation: 11,
@@ -723,7 +728,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
-  commentHeaderAvatarButton: { justifyContent: 'center' },
+  commentHeaderAvatarButton: {justifyContent: 'center'},
   commentHeaderAvatar: {
     borderRadius: normaliseNew(4),
     height: normaliseNew(64),
@@ -742,6 +747,8 @@ const styles = StyleSheet.create({
     fontSize: normaliseNew(13),
     fontFamily: 'ProximaNova-Semibold',
     textTransform: 'lowercase',
+    flex: 1,
+    marginRight: 15,
   },
   commentHeaderInfoTime: {
     color: Colors.grey_text,

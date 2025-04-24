@@ -28,7 +28,7 @@ import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {useInfiniteQuery} from 'react-query';
+import {useInfiniteQuery, useQueryClient} from 'react-query';
 
 // import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
@@ -95,6 +95,7 @@ import Reactions from '../../Reactions/Reactions';
 import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
 import HomeSessionItem from '../ListCells/HomeSessionItem';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+// import {useQueryClient} from '@tanstack/react-query';
 
 let status = '';
 let songStatus = '';
@@ -128,7 +129,7 @@ const Home = props => {
 
   const {hitReact: newHitReact, isPending} = useContext(ReactionsContext);
   const [activeTab, setActiveTab] = useState(0);
-
+  const queryClient = useQueryClient();
   const {
     data: newPosts,
     isFetching,
@@ -139,18 +140,38 @@ const Home = props => {
   } = useInfiniteQuery(
     'homePosts',
     async ({pageParam = 1}) => {
-      const res = await axios
-        .get(postsUrl + pageParam, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'x-access-token': token,
-          },
-        })
-        .catch(error => console.log(error, 'ye error h'));
-      // console.log(res, 'this is post data');
-      // console.log(postsUrl + pageParam, 'its url');
-      return res?.data;
+      console.log(pageParam, 'its page param h');
+      console.log(postsUrl + pageParam, 'its url');
+      if (!isNaN(pageParam)) {
+        const res = await axios
+          .get(postsUrl + pageParam, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'x-access-token': token,
+            },
+          })
+          .catch(error => console.log(error, 'ye error h'));
+        console.log(res?.data, res?.data?.page, 'this is post data');
+        // console.log(postsUrl + pageParam, 'its url');
+        if (res?.data) {
+          if (res?.data?.data?.length === 0) {
+            return {
+              data: [],
+              page: 0,
+              isLast: true,
+            };
+          } else {
+            return res?.data;
+          }
+        }
+      } else {
+        return {
+          data: [],
+          page: 0,
+          isLast: true,
+        };
+      }
     },
     {
       getPreviousPageParam: pageParam => pageParam?.page - 1,
@@ -213,6 +234,7 @@ const Home = props => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+    queryClient.removeQueries(['homePosts']);
     refetch();
     wait(2000).then(() => setRefreshing(false));
   }, [refetch]);
@@ -321,7 +343,7 @@ const Home = props => {
         props.homePage(1);
         if (props.loadData.length !== 0) {
           const intersection = posts.filter(item1 =>
-            props.loadData.some(item2 => item1._id === item2._id),
+            props.loadData.some(item2 => item1?._id === item2?._id),
           );
           if (intersection.length <= 0) {
             setLoadMoreVisible(true);
@@ -435,7 +457,7 @@ const Home = props => {
     if (!_.isEmpty(posts[rindex].reaction)) {
       const present = posts[rindex].reaction.some(
         obj =>
-          obj.user_id.includes(props.userProfileResp._id) &&
+          obj.user_id.includes(props.userProfileResp?._id) &&
           obj.text.includes(x),
       );
 
@@ -594,7 +616,7 @@ const Home = props => {
             (saveSongResObj.profile_pic = data.item.userDetails.profile_image),
             (saveSongResObj.commentData = data.item.comment);
           saveSongResObj.reactionData = data.item.reaction;
-          (saveSongResObj.id = data.item._id),
+          (saveSongResObj.id = data.item?._id),
             (saveSongResObj.artist =
               data.item.songs[selectedSongIndex]?.artist_name),
             (saveSongResObj.changePlayer = changePlayer);
@@ -657,7 +679,7 @@ const Home = props => {
                   data.item.userDetails.profile_image),
                 (saveSongResObj.commentData = data.item.comment);
               saveSongResObj.reactionData = data.item.reaction;
-              (saveSongResObj.id = data.item._id),
+              (saveSongResObj.id = data.item?._id),
                 (saveSongResObj.artist =
                   data.item.songs[selectedSongIndex]?.artist_name),
                 (saveSongResObj.changePlayer = changePlayer);
@@ -693,7 +715,7 @@ const Home = props => {
                 data.item.userDetails.profile_image),
               (saveSongResObj.commentData = data.item.comment);
             saveSongResObj.reactionData = data.item.reaction;
-            (saveSongResObj.id = data.item._id),
+            (saveSongResObj.id = data.item?._id),
               (saveSongResObj.artist =
                 data.item.songs[selectedSongIndex]?.artist_name),
               (saveSongResObj.changePlayer = changePlayer);
@@ -824,11 +846,11 @@ const Home = props => {
             onReactionPress={newHitReact}
             onPressImage={() => {
               if (!isFetching) {
-                if (props.userProfileResp._id === data.item.user_id) {
+                if (props.userProfileResp._id === data?.item?.user_id) {
                   props.navigation.navigate('Profile', {fromAct: false});
                 } else {
                   props.navigation.navigate('OthersProfile', {
-                    id: data.item.user_id,
+                    id: data?.item?.user_id,
                   });
                 }
               }
@@ -845,10 +867,10 @@ const Home = props => {
             onPressReactionbox={() => {
               if (!isFetching) {
                 props.navigation.navigate('HomeItemReactions', {
-                  reactionCount: data.item.reaction_count
-                    ? data.item.reaction_count
+                  reactionCount: data?.item?.reaction_count
+                    ? data?.item?.reaction_count
                     : 0,
-                  post_id: data.item._id,
+                  post_id: data?.item?._id,
                   onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
                 });
               }
@@ -862,7 +884,7 @@ const Home = props => {
                   username: data.item.userDetails.username,
                   userComment: data.item.post_content,
                   time: data.item.createdAt,
-                  id: data.item._id,
+                  id: data?.item?._id,
                   onSelect: (ID, comment) => _onSelectBack(ID, comment),
                 });
               }
@@ -953,7 +975,7 @@ const Home = props => {
       // console.log(myindex, 'its my index');
       let array = [...postData];
       let i;
-      for (i = 0; i < array.length; i++) {
+      for (i = 0; i < array?.length; i++) {
         if (i === myindex) {
           array[i].playing = true;
           let duration = global.playerReference.getDuration();
@@ -971,16 +993,20 @@ const Home = props => {
     }
     // NOT PLAYING
     else {
+      // console.log(postData, 'its post data');
+      // console.log(postData,'its post data')
+
       let array = [...postData];
       let i;
-      if(array?.length>0){
-      for (i = 0; i < array?.length; i++) {
-        array[i]?.playing = false;
+      if (array?.length > 0) {
+        for (i = 0; i < array?.length; i++) {
+          array[i].playing = false;
+        }
       }
-    
+
       //  setVisibleMiniPlayer(false)
       setPostArray(array);
-    }
+      // }
     }
   }
 
@@ -1078,7 +1104,7 @@ const Home = props => {
 
   function onfinish() {
     if (posts.length !== 0) {
-      let loadData = {offset: 1, create: posts[0].createdAt};
+      let loadData = {offset: 1, create: posts[0]?.createdAt};
       props.loadMorePost(loadData);
     } else {
       console.log('empty');
@@ -1414,6 +1440,7 @@ const Home = props => {
               ref={flatlistRef}
               onEndReached={() => fetchNextPage()}
               onEndReachedThreshold={2}
+              contentContainerStyle={{paddingBottom: 45}}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}

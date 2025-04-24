@@ -1,13 +1,12 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import {Image, View} from 'react-native';
 
 import ImagePath from '../assests/ImagePath';
 import normalise from '../utils/helpers/Dimens';
 
-const Avatar = ({ image, height, width }) => {
-  const noImage =
-    image === 'https://api.choona.co/uploads/user/thumb/' || image === null;
-
+const Avatar = ({image, height, width}) => {
+  // const noImage =
+  // image === 'https://api.choona.co/uploads/user/thumb/' || image === null;
   return (
     <View
       style={{
@@ -16,8 +15,16 @@ const Avatar = ({ image, height, width }) => {
         overflow: 'hidden',
         width: normalise(width),
       }}>
-      <Image
+      {/* <Image
         source={!noImage ? { uri: image } : ImagePath.userPlaceholder}
+        style={{
+          height: normalise(height),
+          width: normalise(width),
+        }}
+        resizeMode="contain"
+      /> */}
+      <Image
+        source={image ? {uri: image} : ImagePath.userPlaceholder}
         style={{
           height: normalise(height),
           width: normalise(width),

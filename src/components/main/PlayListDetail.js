@@ -73,8 +73,8 @@ function PlayListDetail(props) {
                 style={[
                   styles.combienBanerWrapper,
                   {
-                    width: width / 1.9,
-                    height: width / 1.9,
+                    width: width / 2,
+                    height: width / 2,
                   },
                 ]}>
                 {playListArary?.map(item => {
@@ -95,7 +95,11 @@ function PlayListDetail(props) {
                 )}
               </View>
 
-              <View style={[styles.bottomLineStyle, {width: width / 2}]}></View>
+              <View
+                style={[
+                  styles.bottomLineStyle,
+                  // {width: width / 2}
+                ]}></View>
             </View>
           )}
           <View style={styles.playListItemContainer}>
@@ -213,13 +217,13 @@ const styles = StyleSheet.create({
   topContainerStyle: {
     // justifyContent: 'center',
     alignItems: 'center',
-    marginTop: normalise(25),
+    marginTop: normalise(13),
   },
   mainTitleStyle: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(14),
-    marginBottom: normalise(14),
+    marginBottom: normalise(13),
   },
   combienBanerWrapper: {
     flexDirection: 'row',
@@ -239,13 +243,14 @@ const styles = StyleSheet.create({
     height: 0.5,
     alignSelf: 'center',
     opacity: 0.7,
+    width: '50%',
   },
   playListItemContainer: {
     width: '90%',
     alignSelf: 'center',
     marginTop: normalise(15),
     flex: 1,
-    marginBottom: normalise(62),
+    marginBottom: normalise(52),
   },
   itemWrapper: {
     flexDirection: 'row',

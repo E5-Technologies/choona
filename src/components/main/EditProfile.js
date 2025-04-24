@@ -36,12 +36,13 @@ let status = '';
 const EditProfile = props => {
   const [username, setUsername] = useState(props?.userProfileResp?.username);
   const [fullname, setFullname] = useState(props.userProfileResp?.full_name);
-  const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp.phone);
-  const [location, setLocation] = useState(props.userProfileResp.location);
+  const [phoneNumber, setPhoneNumber] = useState(props.userProfileResp?.phone);
+  const [location, setLocation] = useState(props.userProfileResp?.location);
   const [picture, setPicture] = useState(false);
   const [profilePic, setProfilePic] = useState(
-    props.userProfileResp.profile_image
-      ? constants.profile_picture_base_url + props.userProfileResp.profile_image
+    props.userProfileResp?.profile_image
+      ? constants.profile_picture_base_url +
+          props.userProfileResp?.profile_image
       : null,
   );
   const [imageDetails, setImageDetails] = useState('');

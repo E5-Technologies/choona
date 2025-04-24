@@ -68,8 +68,8 @@ class Print: UIViewController {
           
           guard let token = token else {
             print(error?.localizedDescription)
-            resolve("")
-//            reject("E_COUNT", "User Token blank", error)
+            // resolve("")
+           reject("E_COUNT", "User Token blank", error)
             return }
           UserDefaults.standard.set(token, forKey: "MUSIC_USER_TOKEN")
           UserDefaults.standard.set(developerToken, forKey: "DEVELOPER_TOKEN")
