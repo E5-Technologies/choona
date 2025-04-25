@@ -78,13 +78,52 @@ export function useRecentlyPlayed(registerType) {
           }
           console.log(finalToken, 'token');
           // return;
+          // NativeModules.Print.printValue(finalToken)
+          //   .then(res => {
+          //     console.log(res, 'its res');
+          //     if (res === '') {
+          //       toast(
+          //         'Error',
+          //         'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
+          //       );
+          //     } else {
+          //       setMusicToken(res);
+          //       getRecentlyPlayed();
+          //     }
+          //   })
+          //   .catch(err => {
+          //     console.log('APPLE_MUSIC_ERROR--' + JSON.stringify(err));
+          //     toast(
+          //       'Error',
+          //       'There was an error getting your recently played tracks.',
+          //     );
+          //   });
+
+          //************** */
+          // NativeModules.Print.checkAuthorizationStatus()
+          //   .then(status => {
+          //     console.log('Authorization status:', status);
+          //     if (!status.cloudService || !status.mediaLibrary) {
+          //       // Request permissions
+          //       return Print.printValue(developerToken);
+          //     }
+          //     return Print.printValue(developerToken);
+          //   })
+          //   .then(token => {
+          //     // Handle token
+          //   })
+          //   .catch(error => {
+          //     console.error('Error:', error);
+          //   });
+
+          //******************** */
           NativeModules.Print.printValue(finalToken)
             .then(res => {
               console.log(res, 'its res');
               if (res === '') {
                 toast(
                   'Error',
-                  'This feature is available for users with Apple Music Subcription. You need to subscribe to Apple Music to use this feature.',
+                  'This feature is available for users with Apple Music Subscription. You need to subscribe to Apple Music to use this feature.',
                 );
               } else {
                 setMusicToken(res);
@@ -92,11 +131,19 @@ export function useRecentlyPlayed(registerType) {
               }
             })
             .catch(err => {
-              console.log('APPLE_MUSIC_ERROR--' + JSON.stringify(err));
-              toast(
-                'Error',
-                'There was an error getting your recently played tracks.',
-              );
+              console.log('APPLE_MUSIC_ERROR--', err);
+
+              if (err.code === 'E_AUTH') {
+                toast(
+                  'Permission Required',
+                  'Please grant access to Apple Music in Settings to use this feature.',
+                );
+              } else {
+                toast(
+                  'Error',
+                  'There was an error getting your recently played tracks.',
+                );
+              }
             });
         } else {
           toast('Oops', 'Something Went Wrong!');
