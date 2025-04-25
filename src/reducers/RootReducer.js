@@ -1,10 +1,11 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import TokenReducer from '../reducers/TokenReducer';
 import UserReducer from '../reducers/UserReducer';
 import PostReducer from './PostReducer';
 import SongReducer from './SongReducer';
 import MessageReducer from './MessageReducer';
 import PlayerReducer from './PlayerReducer';
+import SessionReducer from './SessionReducer';
 
 const allReducers = combineReducers({
   TokenReducer: TokenReducer,
@@ -13,6 +14,7 @@ const allReducers = combineReducers({
   SongReducer: SongReducer,
   MessageReducer: MessageReducer,
   PlayerReducer: PlayerReducer,
+  SessionReducer: SessionReducer,
 });
 
 const RootReducer = (state, action) => {

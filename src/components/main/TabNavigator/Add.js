@@ -88,6 +88,9 @@ const AddSong = props => {
       registerType: props.registerType,
     };
 
+    console.log(songItem, 'when sent song to session');
+    // return;
+
     switch (props?.route?.params?.from) {
       case 'CreatePost':
         props.navigation.navigate('CreatePost', songItem);

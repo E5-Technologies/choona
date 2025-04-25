@@ -27,13 +27,14 @@ import {
 import {pausePlayerAction} from '../../saga/PlayerSaga';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
+import toast from '../../utils/helpers/ShowErrorAlert';
 
 let status;
 
 function CreatePlayList(props) {
   console.log(props.route?.params, 'these are params');
   const {songItem, previousPlaylistData} = props.route?.params;
-  console.log(songItem, 'this is props Item');
+  console.log(songItem, 'this is props Item playlist');
   const {width, height} = useWindowDimensions();
   const [playListArary, setPlayListArray] = useState([]);
   const [playListName, setPlayListName] = useState('');
@@ -84,7 +85,7 @@ function CreatePlayList(props) {
     });
   };
   console.log(songListPayload(), 'its data>>>>');
-
+  // return;
   const createPost = async () => {
     setBool(true);
     // let tapUser = [];

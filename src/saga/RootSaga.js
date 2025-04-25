@@ -1,5 +1,5 @@
-import { all } from 'redux-saga/effects';
-import { watchtokenAction, watchgetTokenAction } from './TokenSaga';
+import {all} from 'redux-saga/effects';
+import {watchtokenAction, watchgetTokenAction} from './TokenSaga';
 import {
   watchLoginRequest,
   watchUserSignUpAction,
@@ -27,7 +27,7 @@ import {
   watchDummyAction,
   watchFollowerSearch,
   watchFollowingSearch,
-  watchLoadMoreAction
+  watchLoadMoreAction,
 } from './UserSaga';
 
 import {
@@ -68,6 +68,7 @@ import {
   watchGetPlayListOfUser,
   watchAddSongsToPlaylistRequest,
 } from './PlayerSaga';
+import {watchCreateSessionRequest} from './SessionSaga';
 
 function* RootSaga() {
   yield all([
@@ -127,6 +128,7 @@ function* RootSaga() {
     watchFollowingSearch(),
     watchDeleteConversationAction(),
     watchLoadMoreAction(),
+    watchCreateSessionRequest(),
   ]);
 }
 
