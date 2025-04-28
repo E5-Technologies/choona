@@ -16,10 +16,15 @@ import StatusBar from '../../utils/MyStatusBar';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useSelector, useDispatch } from 'react-redux';
+import isInternetConnected from '../../utils/helpers/NetInfo';
+import { getSessionDetailRequest } from '../../action/SessionAction';
+import Loader from '../../widgets/AuthLoader';
+import constants from '../../utils/helpers/constants';
 
 
 function SessionDetail(props) {
-    // console.log(props?.route?.params, 'these are params')
+    console.log(props?.route?.params, 'these are params')
     // const { currentSession } = props?.route?.params
     // console.log(currentSession, 'its current sessionI')
     const { width, height } = useWindowDimensions()
@@ -130,9 +135,29 @@ function SessionDetail(props) {
         ]
     })
 
+    // Redux state ++++++++++++++++++++++++++++++++++++++++++++
+    const dispatch = useDispatch();
+    //   const userProfileResp = useSelector(
+    //     state => state.UserReducer.userProfileResp,
+    //   );
+    const sessionReduxData = useSelector(state => state.SessionReducer);
+    const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data
+    // console.log(sessionReduxData, 'its session state');
+
+    useEffect(() => {
+        isInternetConnected()
+            .then(() => {
+                dispatch(getSessionDetailRequest({ sessionId: props?.route?.params?.sessionId }))
+            })
+            .catch(() => {
+                toast('Error', 'Please Connect To Internet');
+            });
+    }, [])
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+            <Loader visible={sessionReduxData?.loading} />
             <StatusBar backgroundColor={Colors.darkerblack} />
             <SafeAreaView style={{ flex: 1 }}>
                 <HeaderComponent
@@ -140,19 +165,19 @@ function SessionDetail(props) {
                     textone={'BACK'}
                     title={'SESSIONS'}
                     thirditemtext={false}
-                    imagetwo={ImagePath.addButtonSmall}
+                    imagetwo={sessionDetailReduxdata?.isPrivate ? null : ImagePath.addButtonSmall}
                     imagetwoStyle={styles.imageTwoStyle}
                     onPressFirstItem={() => {
                         props.navigation.goBack();
                     }}
-                    onPressThirdItem={() => Alert.alert('Post this library')}
+                    onPressThirdItem={() => Alert.alert('Under development')}
                 />
                 <View style={{ flex: 1, }}>
                     <View style={{ flex: 2.5, }}>
                         <View style={styles.listItemHeaderSongDetails}>
                             <View style={styles.nameWrapper}>
-                                <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={2}>
-                                    @Ankush009
+                                <Text style={[styles.listItemHeaderSongTextTitle, { textTransform: 'uppercase', marginBottom: 0, fontFamily: 'ProximaNova-Bold', }]} numberOfLines={2}>
+                                    {sessionDetailReduxdata?.own_user?.username}
                                 </Text>
                                 <Image
                                     source={ImagePath.blueTick}
@@ -161,20 +186,19 @@ function SessionDetail(props) {
                                 />
                             </View>
                             <Image
-                                source={ImagePath.apple_icon_round
-                                }
+                                source={sessionDetailReduxdata?.own_user?.profile_image ? { uri: constants.profile_picture_base_url + sessionDetailReduxdata?.own_user?.profile_image } : ImagePath.userPlaceholder}
                                 style={styles.listItemHeaderSongTypeIcon}
                                 resizeMode="contain"
                             />
-                            <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
+                            <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(8), fontFamily: 'ProximaNova-Bold', }]} numberOfLines={2}>
                                 NOW PLAYING
                             </Text>
-                            <View style={[styles.bottomLineStyle, { width: width / 3 }]}>
+                            <View style={[styles.bottomLineStyle, { width: '45%' }]}>
                             </View>
                         </View>
                         <View style={styles.playListItemContainer}>
                             <FlatList
-                                data={sessionData?.sessionItem}
+                                data={sessionDetailReduxdata?.session_songs}
                                 renderItem={({ item, index }) => {
                                     return (
                                         <View style={[styles.itemWrapper]}>
@@ -197,57 +221,55 @@ function SessionDetail(props) {
                                                 />
                                             </TouchableOpacity>
                                             <Image
-                                                source={{ uri: item?.banner }
+                                                source={{ uri: item?.song_image }
                                                 }
                                                 style={styles.songListItemImage}
                                                 resizeMode="cover"
                                             />
                                             <View style={styles.listItemHeaderSongText}>
                                                 <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={2}>
-                                                    Summer 91 (Looking Back)
+                                                    {item?.song_name}
                                                 </Text>
                                                 <Text style={styles.songlistItemHeaderSongTextArtist} numberOfLines={1}>
-                                                    Noizu
+                                                    {item?.artist_name}
                                                 </Text>
-                                                {/* <View style={[styles.bottomLineStyle, { width: '100%', opacity:0.4, alignSelf:'baseline'}]}>
-                                            </View> */}
                                             </View>
-
                                         </View>
-
                                     )
                                 }}
                                 showsVerticalScrollIndicator={false}
-                                keyExtractor={item => item._id}
+                                keyExtractor={item => item?._id}
                             />
                         </View>
                     </View>
-                    <View style={styles.listenersContainer}>
-                        <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
-                        LISTENERS
-                        </Text>
-                        <View style={[styles.bottomLineStyle, { width: width / 3, marginBottom: normalise(20) }]}>
-                        </View>
-                        <ScrollView>
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                                {
-                                    sessionData?.joineeList?.map((item, index) => {
-                                        return (
-                                            <View style={[styles.joineeIitemWrapper, index == 0 && { marginLeft: normalise(40) }, index == 3 && { marginRight: normalise(40) }]}>
-                                                <Image
-                                                    source={{ uri: item?.userProfile }
-                                                    }
-                                                    style={styles.songListItemImage}
-                                                    resizeMode="cover"
-                                                />
-                                            </View>
+                    {(sessionDetailReduxdata?.watch_users && sessionDetailReduxdata?.watch_users?.length > 0) &&
+                        <View style={styles.listenersContainer}>
+                            <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
+                                LISTENERS
+                            </Text>
+                            <View style={[styles.bottomLineStyle, { width: width / 3, marginBottom: normalise(20) }]}>
+                            </View>
+                            <ScrollView>
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                    {
+                                        sessionDetailReduxdata?.watch_users?.map((item, index) => {
+                                            return (
+                                                <View style={[styles.joineeIitemWrapper, index == 0 && { marginLeft: normalise(40) }, index == 3 && { marginRight: normalise(40) }]}>
+                                                    <Image
+                                                        source={{ uri: item?.userProfile }
+                                                        }
+                                                        style={styles.songListItemImage}
+                                                        resizeMode="cover"
+                                                    />
+                                                </View>
+                                            )
+                                        }
                                         )
                                     }
-                                    )
-                                }
-                            </View>
-                        </ScrollView>
-                    </View>
+                                </View>
+                            </ScrollView>
+                        </View>
+                    }
                 </View>
             </SafeAreaView>
         </View>
@@ -264,7 +286,7 @@ const styles = StyleSheet.create({
 
     itemWrapper: {
         flexDirection: 'row',
-        marginBottom: normalise(8),
+        marginBottom: normalise(6),
         flex: 1,
         alignItems: 'center'
     },
@@ -300,7 +322,8 @@ const styles = StyleSheet.create({
         height: normalise(100),
         width: normalise(100),
         borderRadius: normalise(80),
-
+        borderWidth: 0.5,
+        borderColor: Colors.fordGray
     },
     listItemHeaderSongText: {
         alignItems: 'flex-start',
@@ -336,8 +359,9 @@ const styles = StyleSheet.create({
 
     nameWrapper: {
         flexDirection: 'row',
-        marginTop: normalise(16),
+        marginTop: normalise(15),
         marginBottom: normalise(6),
+        alignItems: 'center'
     },
 
     playButtonStyle: {

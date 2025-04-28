@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normalise from '../../../utils/helpers/Dimens';
 import { useNavigation } from '@react-navigation/native';
+import constants from '../../../utils/helpers/constants';
 
 const HomeSessionItem = ({
+    item,
     onPressMusicbox,
     play,
     postType,
-    singer = "i am singer",
+    singer,
     songUri,
     // title = 'This is new song',
     verified = true
 }) => {
-    const navigation=useNavigation()
+    console.log(JSON.stringify(item?.session_songs), 'its session item')
+    const navigation = useNavigation()
     return (
-        <TouchableOpacity style={styles.listItemHeaderContainer} onPress={()=>navigation.navigate('SessionDetail')}>
+        <TouchableOpacity style={styles.listItemHeaderContainer} onPress={() => navigation.navigate('SessionDetail', { sessionId: item?._id })}>
             <View style={styles.listItemHeaderSongDetails}>
                 <View style={styles.nameWrapper}>
-                    <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={2}>
-                        @Ankush009
+                    <Text style={[styles.listItemHeaderSongTextTitle, { textTransform: 'uppercase' }]} numberOfLines={2}>
+                        {item?.own_user?.username}
                     </Text>
                     {verified &&
                         <Image
@@ -32,7 +35,7 @@ const HomeSessionItem = ({
                     }
                 </View>
                 <Image
-                    source={ImagePath.apple_icon_round
+                    source={item?.own_user?.profile_image ? { uri: constants.profile_picture_base_url + item?.own_user?.profile_image } : ImagePath.userPlaceholder
                     }
                     style={styles.listItemHeaderSongTypeIcon}
                     resizeMode="contain"
@@ -40,30 +43,31 @@ const HomeSessionItem = ({
             </View>
             <View style={styles.songlistWrapperBox}>
                 <FlatList
-                    data={Array(3).fill('')}
-                    renderItem={() => {
+                    data={item?.session_songs}
+                    renderItem={({ item }) => {
+
                         return (
-                            <View style={{ flexDirection: 'row', marginBottom: normalise(4), flex: 1, }}>
+                            <View style={{ flexDirection: 'row', marginBottom: normalise(3), flex: 1, }}>
                                 <Image
                                     source={
-                                        ImagePath.dp2
+                                        { uri: item?.song_image }
                                     }
                                     style={styles.songListItemImage}
                                     resizeMode="contain"
                                 />
                                 <View style={styles.listItemHeaderSongText}>
                                     <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={1}>
-                                        This is new song, music hhhj
+                                        {item?.song_name}
                                     </Text>
                                     <Text style={styles.songlistItemHeaderSongTextArtist} numberOfLines={1}>
-                                        {singer}  i a singer
+                                        {item?.artist_name}
                                     </Text>
                                 </View>
                             </View>
                         )
                     }}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item._id}
+                    keyExtractor={item => item?._id}
                 />
                 <View style={styles.bottomLineStyle}>
 
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
     songlistItemHeaderSongTextTitle: {
         color: Colors.white,
         fontFamily: 'ProximaNova-Semibold',
-        fontSize: normalise(12),
+        fontSize: normalise(13),
         marginBottom: normalise(5),
         // paddingRight: normalise(5),
     },
@@ -177,12 +181,12 @@ const styles = StyleSheet.create({
         width: normalise(36),
     },
     bottomLineStyle: {
-        marginTop: normalise(10),
+        marginTop: normalise(7),
         backgroundColor: Colors.white,
         height: 0.5,
-        width: '70%',
+        width: '80%',
         alignSelf: 'center',
-        opacity: 0.7
+        opacity: 0.5
 
     },
     listItemHeaderPlay: { height: normalise(24), width: normalise(24) },

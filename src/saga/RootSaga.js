@@ -68,7 +68,12 @@ import {
   watchGetPlayListOfUser,
   watchAddSongsToPlaylistRequest,
 } from './PlayerSaga';
-import {watchCreateSessionRequest} from './SessionSaga';
+
+import {
+  watchCreateSessionRequest,
+  watchCreateSessionListRequest,
+  watchSessionDetailRequest
+} from './SessionSaga';
 
 function* RootSaga() {
   yield all([
@@ -129,6 +134,8 @@ function* RootSaga() {
     watchDeleteConversationAction(),
     watchLoadMoreAction(),
     watchCreateSessionRequest(),
+    watchCreateSessionListRequest(),
+    watchSessionDetailRequest(),
   ]);
 }
 

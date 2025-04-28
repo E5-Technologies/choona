@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   SafeAreaView,
   View,
@@ -23,12 +23,12 @@ import HomeHeaderComponent from '../../../widgets/HomeHeaderComponent';
 import _ from 'lodash';
 import HomeItemList from '../ListCells/HomeItemList';
 import StatusBar from '../../../utils/MyStatusBar';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 import MusicPlayerBar from '../../../widgets/MusicPlayerBar';
 import updateToken from '../../main/ListCells/UpdateToken';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {useInfiniteQuery, useQueryClient} from 'react-query';
+import { useInfiniteQuery, useQueryClient } from 'react-query';
 
 // import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
@@ -59,6 +59,9 @@ import {
   DUMMY_ACTION_REQUEST,
   LOAD_MORE_SUCCESS,
   LOAD_MORE_REQUEST,
+  CREATE_SESSION_LIST_REQUEST,
+  CREATE_SESSION_LIST_SUCCESS,
+  CREATE_SESSION_LIST_FAILURE,
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest,
@@ -70,17 +73,17 @@ import {
   loadMoreRequest,
   loadMoreData,
 } from '../../../action/UserAction';
-import {saveSongRequest, saveSongRefReq} from '../../../action/SongAction';
-import {deletePostReq} from '../../../action/PostAction';
-import {connect} from 'react-redux';
+import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
+import { deletePostReq } from '../../../action/PostAction';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import Loader from '../../../widgets/AuthLoader';
 import constants from '../../../utils/helpers/constants';
-import {useScrollToTop} from '@react-navigation/native';
+import { useScrollToTop } from '@react-navigation/native';
 import Contacts from 'react-native-contacts';
-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 import MusicPlayer from '../../../widgets/MusicPlayer';
 import Timer from '../Timer';
@@ -92,9 +95,10 @@ import CompleteProfileBlock from '../../HomeScreen/CompleteProfileBlock';
 import MoreModal from '../../Posts/MoreModal';
 import ReportModal from '../../Posts/ReportModal';
 import Reactions from '../../Reactions/Reactions';
-import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
+import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 import HomeSessionItem from '../ListCells/HomeSessionItem';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { createSessionListRequest, fetchSessionListRequestStatusIdle } from '../../../action/SessionAction';
 // import {useQueryClient} from '@tanstack/react-query';
 
 let status = '';
@@ -127,9 +131,11 @@ const Home = props => {
   const [posts, setPosts] = useState([]);
   const postsUrl = constants.BASE_URL + '/post/list?page=';
 
-  const {hitReact: newHitReact, isPending} = useContext(ReactionsContext);
+  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
   const [activeTab, setActiveTab] = useState(0);
+  const [sessionListStatus, setSessionListStatus] = useState('')
   const queryClient = useQueryClient();
+
   const {
     data: newPosts,
     isFetching,
@@ -139,7 +145,7 @@ const Home = props => {
     refetch,
   } = useInfiniteQuery(
     'homePosts',
-    async ({pageParam = 1}) => {
+    async ({ pageParam = 1 }) => {
       console.log(pageParam, 'its page param h');
       console.log(postsUrl + pageParam, 'its url');
       if (!isNaN(pageParam)) {
@@ -152,7 +158,7 @@ const Home = props => {
             },
           })
           .catch(error => console.log(error, 'ye error h'));
-        console.log(res?.data, res?.data?.page, 'this is post data');
+        // console.log(res?.data, res?.data?.page, 'this is post data');
         // console.log(postsUrl + pageParam, 'its url');
         if (res?.data) {
           if (res?.data?.data?.length === 0) {
@@ -220,6 +226,13 @@ const Home = props => {
     getModalData();
   }, []);
 
+  useEffect(() => {
+    if (activeTab == 1)
+      props.createSessionListReq()
+  }, [activeTab])
+
+  // console.log(props.sessionListData, "this is session data>>")
+
   React.useEffect(() => {
     const subscribe = props.navigation.addListener('focus', () => {
       refetch();
@@ -227,6 +240,37 @@ const Home = props => {
 
     return subscribe;
   }, [props.navigation, refetch]);
+
+  useEffect(() => {
+    handleNavigation();
+  }, [props.sessionReducerData.status]);
+
+  //helpers************************************************************
+
+  const handleNavigation = () => {
+    if (sessionListStatus === '' || sessionListStatus !== props.sessionReducerData.status) {
+      switch (props.sessionReducerData.status) {
+        case CREATE_SESSION_LIST_REQUEST:
+          setSessionListStatus(CREATE_SESSION_LIST_REQUEST);
+          props.fetchSessionListRequestStatusIdleHandle({ status: '' }) //to set status back to idle
+          break;
+        case CREATE_SESSION_LIST_SUCCESS:
+          setSessionListStatus(CREATE_SESSION_LIST_SUCCESS);
+          props.fetchSessionListRequestStatusIdleHandle({ status: '' })
+          break;
+        case CREATE_SESSION_LIST_FAILURE:
+          setSessionListStatus(CREATE_SESSION_LIST_FAILURE);
+          toast('Error', 'Something Went Wrong, Please Try Again');
+          props.fetchSessionListRequestStatusIdleHandle({ status: '' })
+          break;
+        default:
+          setSessionListStatus('');
+          break;
+      }
+    }
+  };
+
+
 
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -535,14 +579,14 @@ const Home = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-        ? 'B'
-        : reaction === react[2]
-        ? 'C'
-        : reaction === react[3]
-        ? 'D'
-        : reaction === react[4]
-        ? 'E'
-        : 'F';
+          ? 'B'
+          : reaction === react[2]
+            ? 'C'
+            : reaction === react[3]
+              ? 'D'
+              : reaction === react[4]
+                ? 'E'
+                : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -593,7 +637,7 @@ const Home = props => {
           });
         });
 
-        props.navigation.navigate('UsersFromContacts', {data: finalArray});
+        props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
   };
@@ -697,7 +741,7 @@ const Home = props => {
               props.saveSongRefReq(saveSongResObj);
               props.dummyRequest();
             })
-            .catch(err => {});
+            .catch(err => { });
         }
       } else {
         MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
@@ -733,7 +777,7 @@ const Home = props => {
             props.saveSongRefReq(saveSongResObj);
             props.dummyRequest();
           })
-          .catch(err => {});
+          .catch(err => { });
       }
     }
   };
@@ -770,16 +814,16 @@ const Home = props => {
         : false,
       disco: data?.item?.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
       throwback: data?.item?.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
       thumbsDown: data?.item?.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
-            `${props.userProfileResp?._id}`,
-          )
+          `${props.userProfileResp?._id}`,
+        )
         : false,
     };
 
@@ -812,8 +856,8 @@ const Home = props => {
               _.isEmpty(postArray)
                 ? false
                 : posts.length === postArray.length
-                ? postArray[data.index].playing
-                : false
+                  ? postArray[data.index].playing
+                  : false
             }
             // postArray[data.index].playing
             onPlaylistImagePress={songIndex => playSong(data, songIndex)}
@@ -847,7 +891,7 @@ const Home = props => {
             onPressImage={() => {
               if (!isFetching) {
                 if (props.userProfileResp._id === data?.item?.user_id) {
-                  props.navigation.navigate('Profile', {fromAct: false});
+                  props.navigation.navigate('Profile', { fromAct: false });
                 } else {
                   props.navigation.navigate('OthersProfile', {
                     id: data?.item?.user_id,
@@ -895,8 +939,8 @@ const Home = props => {
                 setModalVisible(true);
               }
             }}
-            // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
-            // playingSongRef={props.playingSongRef}
+          // marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+          // playingSongRef={props.playingSongRef}
           />
           {/* {(data.index === 1 ||
           (data.index >= 6 && (data.index - 6) % 5 === 0)) && (
@@ -1085,7 +1129,7 @@ const Home = props => {
                     console.log(err);
                   });
               })
-              .catch(() => {});
+              .catch(() => { });
             setBool(false);
           }
         } else {
@@ -1097,14 +1141,14 @@ const Home = props => {
         toast('Oops', 'Something Went Wrong');
       }
     } catch (error) {
-      console.log({error});
+      console.log({ error });
       setBool(false);
     }
   };
 
   function onfinish() {
     if (posts.length !== 0) {
-      let loadData = {offset: 1, create: posts[0]?.createdAt};
+      let loadData = { offset: 1, create: posts[0]?.createdAt };
       props.loadMorePost(loadData);
     } else {
       console.log('empty');
@@ -1128,6 +1172,7 @@ const Home = props => {
       <Loader visible={isFetching && !isFetchingNextPage && !isRefetching} />
       <Loader visible={contactsLoading} />
       <Loader visible={bool} />
+      <Loader visible={props.sessionReducerData?.loading} />
       <HomeHeaderComponent
         firstitemtext={false}
         marginTop={0}
@@ -1135,9 +1180,9 @@ const Home = props => {
           _.isEmpty(props.userProfileResp)
             ? ''
             : props.userProfileResp.profile_image
-            ? constants.profile_picture_base_url +
+              ? constants.profile_picture_base_url +
               props.userProfileResp.profile_image
-            : null
+              : null
         }
         staticFirstImage={false}
         imageoneheight={normalise(26)}
@@ -1159,7 +1204,7 @@ const Home = props => {
           });
         }}
         onPressFirstItem={() => {
-          props.navigation.navigate('Profile', {fromAct: false});
+          props.navigation.navigate('Profile', { fromAct: false });
         }}
         onPressThirdItem={() => {
           props.navigation.navigate('Contact');
@@ -1223,7 +1268,7 @@ const Home = props => {
           locations={[0, 0.5, 1]}
           useAngle={true}
           angle={315}
-          angleCenter={{x: -4, y: 1}}
+          angleCenter={{ x: -4, y: 1 }}
           style={{
             flex: 1,
             alignItems: 'center',
@@ -1344,7 +1389,7 @@ const Home = props => {
                 justifyContent: 'space-between',
                 paddingTop: normalise(12),
               }}>
-              <View style={{alignItems: 'center', flexDirection: 'row'}}>
+              <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                 <Image
                   source={{
                     uri:
@@ -1381,7 +1426,7 @@ const Home = props => {
               {!andyProfile.isFollowing && (
                 <Pressable
                   onPress={() => {
-                    props.followUnfollowReq({follower_id: andyProfile._id});
+                    props.followUnfollowReq({ follower_id: andyProfile._id });
                     setFollowButtonPressed(true);
                   }}
                   disabled={followButtonPressed}
@@ -1431,7 +1476,7 @@ const Home = props => {
             title={'Your Feed is empty'}
           />
         ) : (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FlatList
               data={posts}
               renderItem={renderItem}
@@ -1440,7 +1485,7 @@ const Home = props => {
               ref={flatlistRef}
               onEndReached={() => fetchNextPage()}
               onEndReachedThreshold={2}
-              contentContainerStyle={{paddingBottom: 45}}
+              contentContainerStyle={{ paddingBottom: 45 }}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -1463,8 +1508,8 @@ const Home = props => {
                 onPress={() => loadMore()}>
                 <LinearGradient
                   colors={['#008373', '#4950AC', '#7A1FD4']}
-                  start={{x: 1.0, y: 5.1}}
-                  end={{x: 2.0, y: 2.5}}
+                  start={{ x: 1.0, y: 5.1 }}
+                  end={{ x: 2.0, y: 2.5 }}
                   style={{
                     flex: 1,
                     borderRadius: 20,
@@ -1509,7 +1554,7 @@ const Home = props => {
                   });
                 }}
                 onChangeSong={(data, songIndex) =>
-                  playSong({item: data}, songIndex)
+                  playSong({ item: data }, songIndex)
                 }
                 onPressPlayOrPause={() => {
                   setTimeout(() => {
@@ -1564,35 +1609,48 @@ const Home = props => {
           </View>
         )
       ) : (
-        <View style={{flex: 1}}>
-          <FlatList
-            data={Array(10).fill('')}
-            renderItem={() => {
-              return (
-                <HomeSessionItem />
-                // <View>
-                //   <Text>
-                //     Hi
-                //   </Text>
-                // </View>
-              );
-            }}
-            showsVerticalScrollIndicator={false}
-            // keyExtractor={item => item._id}
-            // ref={flatlistRef}
-            // onEndReached={() => fetchNextPage()}
-            // onEndReachedThreshold={2}
-            // refreshControl={
-            //   <RefreshControl
-            //     refreshing={refreshing}
-            //     onRefresh={onRefresh}
-            //     colors={[Colors.black]}
-            //     progressBackgroundColor={Colors.white}
-            //     title={'Refreshing...'}
-            //     titleColor={Colors.white}
-            //   />
-            // }
-          />
+        <View style={{ flex: 1 }}>
+          {
+            _.isEmpty(props.sessionListData?.data) ? (
+              <EmptyComponent
+                buttonPress={() => {
+                  setContactsLoading(true);
+                  getContacts();
+                }}
+                buttonText={'Check for friends'}
+                image={ImagePath ? ImagePath.emptyPost : null}
+                text={
+                  'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
+                }
+                title={'No Session Found'}
+              />)
+              :
+              <FlatList
+                // data={Array(10).fill('')}
+                data={props.sessionListData?.data}
+                renderItem={({ item }) => {
+                  return (
+                    <HomeSessionItem
+                      item={item} />
+                  );
+                }}
+                showsVerticalScrollIndicator={false}
+              // keyExtractor={item => item._id}
+              // ref={flatlistRef}
+              // onEndReached={() => fetchNextPage()}
+              // onEndReachedThreshold={2}
+              // refreshControl={
+              //   <RefreshControl
+              //     refreshing={refreshing}
+              //     onRefresh={onRefresh}
+              //     colors={[Colors.black]}
+              //     progressBackgroundColor={Colors.white}
+              //     title={'Refreshing...'}
+              //     titleColor={Colors.white}
+              //   />
+              // }
+              />
+          }
         </View>
       )}
       {modal1Visible === true ? (
@@ -1683,6 +1741,8 @@ const mapStateToProps = state => {
     SuccessToken: state.TokenReducer.token,
     loadData: state.UserReducer.loadData,
     header: state.TokenReducer,
+    sessionListData: state.SessionReducer.sessionListData,
+    sessionReducerData: state.SessionReducer
   };
 };
 
@@ -1731,6 +1791,12 @@ const mapDispatchToProps = dispatch => {
     saveSongRefReq: object => {
       dispatch(saveSongRefReq(object));
     },
+    createSessionListReq: () => {
+      dispatch(createSessionListRequest())
+    },
+    fetchSessionListRequestStatusIdleHandle: (payload) => {
+      dispatch(fetchSessionListRequestStatusIdle(payload))
+    }
   };
 };
 

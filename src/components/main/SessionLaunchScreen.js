@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -15,7 +15,7 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   crateSessionRequestStatusIdle,
@@ -26,7 +26,6 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import {
   CREATE_SESSION_FAILURE,
   CREATE_SESSION_REQUEST,
-  CREATE_SESSION_STATUS_IDLE,
   CREATE_SESSION_SUCCESS,
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -37,118 +36,13 @@ function SessionLaunchScreen(props) {
   // console.log(props?.route?.params, 'these are params')
   // const { currentSession } = props?.route?.params
   // console.log(currentSession, 'its current sessionI')
-  const {sessionSonglist, songItem} = props?.route?.params;
-  console.log(JSON.stringify(sessionSonglist), 'its essionlist');
-  const {width, height} = useWindowDimensions();
+  const { sessionSonglist, songItem } = props?.route?.params;
+  // console.log(JSON.stringify(sessionSonglist), 'its essionlist');
+  const { width, height } = useWindowDimensions();
   const [playVisible, setPlayVisible] = useState(true);
   const [disabled, setDisabled] = useState(false);
   const [isPrivate, setIsPrivate] = useState(true);
   const [status, setStatus] = useState('');
-
-  const [sessionData, setSessionData] = useState({
-    userId: '1',
-    userName: 'ANkush Dhiman',
-    userProfile: 'https://picsum.photos/200/300',
-    sessionItem: [
-      {
-        id: 1,
-        banner: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        banner: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        banner: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        banner: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        banner: 'https://picsum.photos/200/300',
-      },
-
-      {
-        id: 1,
-        banner: 'https://picsum.photos/200/300',
-      },
-    ],
-    joineeList: [
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-      {
-        id: 1,
-        userNma: 'Ajeet',
-        userProfile: 'https://picsum.photos/200/300',
-      },
-    ],
-  });
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -203,25 +97,26 @@ function SessionLaunchScreen(props) {
       });
     // dispatch(createSessionRequest(requestObj));
   };
+  
   const handleNavigation = () => {
     if (status === '' || status !== sessionReduxData.status) {
       switch (sessionReduxData.status) {
         case CREATE_SESSION_REQUEST:
           setStatus(CREATE_SESSION_REQUEST);
-          dispatch(crateSessionRequestStatusIdle({status: ''}));
+          dispatch(crateSessionRequestStatusIdle({ status: '' }));
           break;
         case CREATE_SESSION_SUCCESS:
           setStatus(CREATE_SESSION_SUCCESS);
           // Navigate to Home or another screen on success
           props.navigation.popToTop();
-          props.navigation.replace('bottomTab', {screen: 'Home'}); // Navigate to Home
-          dispatch(crateSessionRequestStatusIdle({status: ''}));
+          props.navigation.replace('bottomTab', { screen: 'Home' }); // Navigate to Home
+          dispatch(crateSessionRequestStatusIdle({ status: '' }));
           break;
 
         case CREATE_SESSION_FAILURE:
           setStatus(CREATE_SESSION_FAILURE);
           toast('Error', 'Something Went Wrong, Please Try Again');
-          dispatch(crateSessionRequestStatusIdle({status: ''}));
+          dispatch(crateSessionRequestStatusIdle({ status: '' }));
           break;
         default:
           setStatus('');
@@ -235,54 +130,43 @@ function SessionLaunchScreen(props) {
   }, [sessionReduxData.status]);
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader visible={sessionReduxData?.loading} />
       <LinearGradient
         colors={['#0E402C', '#101119', '#360455']}
-        style={{flex: 1}}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}>
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}>
         <StatusBar backgroundColor={Colors.darkerblack} />
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <View style={styles.headerStyle}>
             <TouchableOpacity onPress={() => props.navigation.goBack()}>
               <Image
                 source={ImagePath.backicon}
-                style={{width: normalise(16), height: normalise(14)}}
+                style={{ width: normalise(16), height: normalise(14) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={[{alignItems: 'center', flexDirection: 'row'}]}
+              style={[{ alignItems: 'center', flexDirection: 'row' }]}
               onPress={
                 handlePostSession
                 //   props.navigation.navigate('SessionActive')
-              }>
-              {/* <Text
-                style={[
-                  styles.listItemHeaderSongTextTitle,
-                  {marginBottom: normalise(0), fontSize: normalise(10)},
-                ]}
-                numberOfLines={2}>
-                START{'\n'}SESSION
-              </Text> */}
+              }
+            >
               <Text
                 style={[
                   styles.listItemHeaderSongTextTitle,
-                  {marginBottom: normalise(0), fontSize: normalise(10)},
+                  { marginBottom: normalise(0), fontSize: normalise(10) },
                 ]}
-                numberOfLines={2}>
+                numberOfLines={2}
+              >
                 Post
               </Text>
-              <Image
-                source={ImagePath.playSolid}
-                style={styles.startSessionIcon}
-                resizeMode="contain"
-              />
             </TouchableOpacity>
           </View>
-          <View style={{flex: 1}}>
-            <View style={{flex: 2.5}}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 2.5 }}>
               <View style={styles.listItemHeaderSongDetails}>
                 <Text style={styles.hostedText} numberOfLines={1}>
                   Hosted by
@@ -291,14 +175,14 @@ function SessionLaunchScreen(props) {
                   <Text
                     style={[
                       styles.listItemHeaderSongTextTitle,
-                      {textTransform: 'uppercase'},
+                      { textTransform: 'uppercase', marginBottom: normalise(0) },
                     ]}
-                    numberOfLines={2}>
+                    numberOfLines={1}>
                     {userProfileResp?.username}
                   </Text>
                   <Image
                     source={ImagePath.blueTick}
-                    style={{width: 16, height: 16}}
+                    style={{ width: 16, height: 16 }}
                     resizeMode="contain"
                   />
                 </View>
@@ -306,10 +190,10 @@ function SessionLaunchScreen(props) {
                   source={
                     userProfileResp?.profile_image
                       ? {
-                          uri:
-                            constants.profile_picture_base_url +
-                            userProfileResp?.profile_image,
-                        }
+                        uri:
+                          constants.profile_picture_base_url +
+                          userProfileResp?.profile_image,
+                      }
                       : ImagePath.userPlaceholder
                   }
                   style={styles.listItemHeaderSongTypeIcon}
@@ -318,22 +202,23 @@ function SessionLaunchScreen(props) {
                 <Text
                   style={[
                     styles.listItemHeaderSongTextTitle,
-                    {marginTop: normalise(10)},
+                    { marginTop: normalise(10), marginBottom: 0 },
                   ]}
-                  numberOfLines={2}>
+                  numberOfLines={1}>
                   NOW PLAYING
                 </Text>
                 <View
-                  style={[styles.bottomLineStyle, {width: width / 3}]}></View>
+
+                  style={[styles.bottomLineStyle, { width: width / 3, marginTop: normalise(6), }]}></View>
               </View>
               <View style={styles.playListItemContainer}>
                 <FlatList
                   data={sessionSonglist}
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     return (
                       <View style={[styles.itemWrapper]}>
                         <Image
-                          source={{uri: item?.image}}
+                          source={{ uri: item?.image }}
                           style={styles.songListItemImage}
                           resizeMode="cover"
                         />
@@ -359,9 +244,9 @@ function SessionLaunchScreen(props) {
                 />
               </View>
             </View>
-            <View style={[styles.listenersContainer, {}]}>
+            {/* <View style={[styles.listenersContainer, {}]}>
               <View
-                style={{marginBottom: normalise(15), marginTop: normalise(10)}}>
+                style={{ marginBottom: normalise(15), marginTop: normalise(10) }}>
                 <View style={{}}>
                   <Text
                     style={[
@@ -376,7 +261,7 @@ function SessionLaunchScreen(props) {
                     LISTENERS (0)
                   </Text>
                   <TouchableOpacity
-                    style={{marginLeft: 20, position: 'absolute', right: -80}}
+                    style={{ marginLeft: 20, position: 'absolute', right: -80 }}
                     onPress={() => setIsPrivate(!isPrivate)}>
                     <Text
                       style={[
@@ -394,13 +279,13 @@ function SessionLaunchScreen(props) {
                       source={
                         isPrivate ? ImagePath.toggleOn : ImagePath.toggleOff
                       }
-                      style={{width: 45}}
+                      style={{ width: 45 }}
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
                 </View>
                 <View
-                  style={[styles.bottomLineStyle, {width: width / 2}]}></View>
+                  style={[styles.bottomLineStyle, { width: width / 2 }]}></View>
               </View>
               <TouchableOpacity
                 style={{
@@ -417,11 +302,36 @@ function SessionLaunchScreen(props) {
                 <Text
                   style={[
                     styles.listItemHeaderSongTextTitle,
-                    {marginLeft: normalise(8), fontSize: normalise(13)},
+                    { marginLeft: normalise(8), fontSize: normalise(13) },
                   ]}
                   numberOfLines={2}>
                   Send Invite
                 </Text>
+              </TouchableOpacity>
+            </View> */}
+            <View style={{}}>
+              <TouchableOpacity
+                style={{ marginHorizontal: 20, justifyContent:'center', alignItems:'center'}}
+                onPress={() => setIsPrivate(!isPrivate)}>
+                <Text
+                  style={[
+                    {
+                      textAlign: 'center',
+                      color: Colors.meta,
+                      fontSize: normalise(12),
+                      marginBottom: normalise(3),
+                    },
+                  ]}
+                  numberOfLines={2}>
+                  {isPrivate ? 'Private' : 'Public'}
+                </Text>
+                <Image
+                  source={
+                    isPrivate ? ImagePath.toggleOn : ImagePath.toggleOff
+                  }
+                  style={{ width: 45 }}
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -459,8 +369,8 @@ const styles = StyleSheet.create({
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(49),
-    width: normalise(49),
+    height: normalise(47),
+    width: normalise(47),
   },
 
   listItemHeaderSongDetails: {
@@ -517,8 +427,10 @@ const styles = StyleSheet.create({
 
   nameWrapper: {
     flexDirection: 'row',
-    marginTop: normalise(2),
-    marginBottom: normalise(6),
+    // marginTop: normalise(2),
+    marginBottom: normalise(4),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   playButtonStyle: {
@@ -551,7 +463,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: normalise(24),
+    paddingHorizontal: normalise(20),
     paddingVertical: normalise(15),
   },
   startSessionIcon: {
