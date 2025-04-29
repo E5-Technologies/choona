@@ -136,6 +136,8 @@ const Home = props => {
   const [sessionListStatus, setSessionListStatus] = useState('')
   const queryClient = useQueryClient();
 
+  console.log(props.userProfileResp, 'this is user data')
+
   const {
     data: newPosts,
     isFetching,
@@ -244,6 +246,8 @@ const Home = props => {
   useEffect(() => {
     handleNavigation();
   }, [props.sessionReducerData.status]);
+
+
 
   //helpers************************************************************
 
@@ -1631,7 +1635,8 @@ const Home = props => {
                 renderItem={({ item }) => {
                   return (
                     <HomeSessionItem
-                      item={item} />
+                      item={item}
+                      userId={props.userProfileResp?._id} />
                   );
                 }}
                 showsVerticalScrollIndicator={false}

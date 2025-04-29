@@ -77,6 +77,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import MySessionDetailScreen from './src/components/main/MySessionDetailScreen';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -494,6 +495,8 @@ const App = () => {
               />
               <Stack.Screen name="SessionActive" component={SessionActive} />
               <Stack.Screen name="PlayListDetail" component={PlayListDetail} />
+              <Stack.Screen name="MySessionDetailScreen" component={MySessionDetailScreen} />
+
             </Stack.Navigator>
           )}
         </NavigationContainer>

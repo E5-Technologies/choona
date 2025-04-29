@@ -15,12 +15,13 @@ const HomeSessionItem = ({
     singer,
     songUri,
     // title = 'This is new song',
-    verified = true
+    verified = true,
+    userId
 }) => {
-    console.log(JSON.stringify(item?.session_songs), 'its session item')
+    console.log(JSON.stringify(item?.own_user?._id), userId, 'its session item')
     const navigation = useNavigation()
     return (
-        <TouchableOpacity style={styles.listItemHeaderContainer} onPress={() => navigation.navigate('SessionDetail', { sessionId: item?._id })}>
+        <TouchableOpacity style={styles.listItemHeaderContainer} onPress={() => navigation.navigate(userId == item?.own_user?._id ?'MySessionDetailScreen': 'SessionDetail', { sessionId: item?._id })}>
             <View style={styles.listItemHeaderSongDetails}>
                 <View style={styles.nameWrapper}>
                     <Text style={[styles.listItemHeaderSongTextTitle, { textTransform: 'uppercase' }]} numberOfLines={2}>
