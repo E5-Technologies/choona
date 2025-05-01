@@ -30,6 +30,7 @@ import {
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import { getSessionDetailRequest } from '../../action/SessionAction';
+import socketService from '../../utils/socket/socketService';
 
 // let status;
 
@@ -40,17 +41,29 @@ function MySessionDetailScreen(props) {
     const { width, height } = useWindowDimensions()
     const [playVisible, setPlayVisible] = useState(true);
     const [disabled, setDisabled] = useState(false);
-      const [isPrivate, setIsPrivate] = useState(true);
-    
+    const [isPrivate, setIsPrivate] = useState(true);
+
 
 
     const dispatch = useDispatch();
-      const userProfileResp = useSelector(
+    const userProfileResp = useSelector(
         state => state.UserReducer.userProfileResp,
-      );
+    );
     const sessionReduxData = useSelector(state => state.SessionReducer);
     const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data
     // console.log(sessionReduxData, 'its session state');
+
+
+    useEffect(() => {
+        socketService.initializeSocket(userProfileResp?._id).then((res) => {
+            console.log(res, 'its status hhhh')
+        }).catch(error => {
+            console.log(error, 'hey erorr h')
+        })
+        return () => {
+            socketService.disconnect();
+        };
+    }, []);
 
     useEffect(() => {
         isInternetConnected()
@@ -61,6 +74,10 @@ function MySessionDetailScreen(props) {
                 toast('Error', 'Please Connect To Internet');
             });
     }, [])
+
+
+
+
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
@@ -145,50 +162,50 @@ function MySessionDetailScreen(props) {
                                     style={[styles.bottomLineStyle, { width: width / 3, marginTop: normalise(6), }]}></View>
                             </View>
                             <View style={styles.playListItemContainer}>
-                            <FlatList
-                                data={sessionDetailReduxdata?.session_songs}
-                                renderItem={({ item, index }) => {
-                                    return (
-                                        <View style={[styles.itemWrapper]}>
-                                            <TouchableOpacity
-                                                disabled={disabled}
-                                                onPress={() => {
-                                                    // setDisabled(true);
-                                                    // if (hasSongLoaded) {
-                                                    //     playing();
-                                                    // }
-                                                    // setTimeout(() => {
-                                                    //     setDisabled(false);
-                                                    // }, 1000);
-                                                    Alert.alert('play Song')
-                                                }} style={styles.playButtonStyle}>
+                                <FlatList
+                                    data={sessionDetailReduxdata?.session_songs}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <View style={[styles.itemWrapper]}>
+                                                <TouchableOpacity
+                                                    disabled={disabled}
+                                                    onPress={() => {
+                                                        // setDisabled(true);
+                                                        // if (hasSongLoaded) {
+                                                        //     playing();
+                                                        // }
+                                                        // setTimeout(() => {
+                                                        //     setDisabled(false);
+                                                        // }, 1000);
+                                                        Alert.alert('play Song')
+                                                    }} style={styles.playButtonStyle}>
+                                                    <Image
+                                                        source={playVisible ? ImagePath.play : ImagePath.pause}
+                                                        style={{ height: normalise(25), width: normalise(25) }}
+                                                        resizeMode="contain"
+                                                    />
+                                                </TouchableOpacity>
                                                 <Image
-                                                    source={playVisible ? ImagePath.play : ImagePath.pause}
-                                                    style={{ height: normalise(25), width: normalise(25) }}
-                                                    resizeMode="contain"
+                                                    source={{ uri: item?.song_image }
+                                                    }
+                                                    style={styles.songListItemImage}
+                                                    resizeMode="cover"
                                                 />
-                                            </TouchableOpacity>
-                                            <Image
-                                                source={{ uri: item?.song_image }
-                                                }
-                                                style={styles.songListItemImage}
-                                                resizeMode="cover"
-                                            />
-                                            <View style={styles.listItemHeaderSongText}>
-                                                <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={2}>
-                                                    {item?.song_name}
-                                                </Text>
-                                                <Text style={styles.songlistItemHeaderSongTextArtist} numberOfLines={1}>
-                                                    {item?.artist_name}
-                                                </Text>
+                                                <View style={styles.listItemHeaderSongText}>
+                                                    <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={2}>
+                                                        {item?.song_name}
+                                                    </Text>
+                                                    <Text style={styles.songlistItemHeaderSongTextArtist} numberOfLines={1}>
+                                                        {item?.artist_name}
+                                                    </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    )
-                                }}
-                                showsVerticalScrollIndicator={false}
-                                keyExtractor={item => item?._id}
-                            />
-                        </View>
+                                        )
+                                    }}
+                                    showsVerticalScrollIndicator={false}
+                                    keyExtractor={item => item?._id}
+                                />
+                            </View>
                         </View>
                         {/* <View style={[styles.listenersContainer, {}]}>
               <View
