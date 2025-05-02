@@ -10,6 +10,12 @@ import {
   CREATE_SESSION_LIST_STATUS_IDLE,
   CREATE_SESSION_DETAIL_REQUEST,
   CREATE_SESSION_DETAIL_STATUS_IDLE,
+  START_SESSION_JOINEE_REQUEST,
+  START_SESSION_JOINEE_STATUS_IDLE,
+  START_SESSION_LEFT_REQUEST,
+  START_SESSION_LEFT_STATUS_IDLE,
+  START_SESSION_REQUEST,
+  START_SESSION_STATUS_IDLE,
 } from './TypeConstants';
 
 export const createSessionRequest = payload => ({
@@ -43,6 +49,40 @@ export const getSessionDetailRequestStatusIdle = payload => ({
   payload,
 });
 
+
+
+export const startSessionRequest = (payload) => ({
+  type: START_SESSION_REQUEST,
+  payload,
+});
+
+export const startSessionRequestStatusIdle = payload => ({
+  type: START_SESSION_STATUS_IDLE,
+  payload,
+});
+
+
+
+export const startSessionJoinRequest = (payload) => ({
+  type: START_SESSION_JOINEE_REQUEST,
+  payload,
+});
+
+export const startSessionJoinRequestStatusIdle = payload => ({
+  type: START_SESSION_JOINEE_STATUS_IDLE,
+  payload,
+});
+
+
+export const startSessionLeftRequest = (payload) => ({
+  type: START_SESSION_LEFT_REQUEST,
+  payload,
+});
+
+export const startSessionLeftRequestStatusIdle = payload => ({
+  type: START_SESSION_LEFT_STATUS_IDLE,
+  payload,
+});
 
 
 

@@ -72,7 +72,10 @@ import {
 import {
   watchCreateSessionRequest,
   watchCreateSessionListRequest,
-  watchSessionDetailRequest
+  watchSessionDetailRequest,
+  watchSessionStartRequest,
+  watchSessionJoinRequest,
+  watchSessionLeftRequest
 } from './SessionSaga';
 
 function* RootSaga() {
@@ -136,6 +139,9 @@ function* RootSaga() {
     watchCreateSessionRequest(),
     watchCreateSessionListRequest(),
     watchSessionDetailRequest(),
+    watchSessionStartRequest(),
+    watchSessionJoinRequest(),
+    watchSessionLeftRequest(),
   ]);
 }
 

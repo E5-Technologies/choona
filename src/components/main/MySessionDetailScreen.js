@@ -17,20 +17,15 @@ import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
 import { useSelector, useDispatch } from 'react-redux';
 import constants from '../../utils/helpers/constants';
-import {
-    crateSessionRequestStatusIdle,
-    createSessionRequest,
-} from '../../action/SessionAction';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import {
-    CREATE_SESSION_FAILURE,
-    CREATE_SESSION_REQUEST,
-    CREATE_SESSION_SUCCESS,
-} from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import { getSessionDetailRequest } from '../../action/SessionAction';
+import { getSessionDetailRequest, startSessionRequest } from '../../action/SessionAction';
 import socketService from '../../utils/socket/socketService';
+import useTrackPlayer, { addTracks } from '../../hooks/useTrackPlayer';
+import TrackPlayerComponent from '../common/TrackPlayerComponent';
+import TrackPlayer, { Event, useTrackPlayerEvents, usePlaybackState, useProgress, State } from 'react-native-track-player';
+import { TrackProgress } from '../common/Progress';
 
 // let status;
 
@@ -42,20 +37,51 @@ function MySessionDetailScreen(props) {
     const [playVisible, setPlayVisible] = useState(true);
     const [disabled, setDisabled] = useState(false);
     const [isPrivate, setIsPrivate] = useState(true);
-
+    const [islive, setIsLive] = useState(false)
+    const [currentPlayingSong, setCurrentPlayingSong] = useState(null)
+    const { startSessionAndPlay, playTrack, pauseTrack, skipToNext, skipToPrevious, isPlaying, setIsPlaying, isPlayerReady } = useTrackPlayer();
+    const [playerVisible, setPlayerVisible] = useState(false)
+    const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([])
+    // const { position, duration } = useProgress(200);
+    const playerState = usePlaybackState();
+    console.log(playerState, 'its play back state')
+    const [currentTrack, setCurrentTrack] = useState(0);
 
 
     const dispatch = useDispatch();
     const userProfileResp = useSelector(
         state => state.UserReducer.userProfileResp,
     );
+    const userTokenData = useSelector(state => state.TokenReducer)
     const sessionReduxData = useSelector(state => state.SessionReducer);
     const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data
-    // console.log(sessionReduxData, 'its session state');
+    console.log(sessionDetailReduxdata, 'its detail data state');
+
+
+    // const { state } = usePlaybackState();
+    // useEffect(() => {
+    //     if (state == 'ended') {
+    //         setIsPlaying(false)
+    //     }
+    // }, [state])
+
 
 
     useEffect(() => {
-        socketService.initializeSocket(userProfileResp?._id).then((res) => {
+        async function setupPlayer() {
+            await TrackPlayer.setupPlayer();
+        }
+
+        setupPlayer();
+        // Cleanup the player on unmount
+        // return () => {
+        //     TrackPlayer.destroy();
+        // };
+    }, []);
+
+
+    useEffect(() => {
+        socketService.initializeSocket(userTokenData?.token).then((res) => {
             console.log(res, 'its status hhhh')
         }).catch(error => {
             console.log(error, 'hey erorr h')
@@ -76,12 +102,107 @@ function MySessionDetailScreen(props) {
     }, [])
 
 
+    useEffect(() => {
+        const handleAddTrack = async () => {
+            if (islive && sessionDetailReduxdata?.session_songs?.length) {
+                const getTrackRelatedSong = () => {
+                    return sessionDetailReduxdata.session_songs.map((item) => ({
+                        id: item._id,
+                        url: item.song_uri,
+                        title: item.song_name,
+                        artist: item.artist_name,
+                        artwork: item.song_image,
+                    }));
+                };
+                const newArray = getTrackRelatedSong();
+                // console.log(newArray,'ite new aarary')
+                // startSessionAndPlay(getTrackRelatedSong());
+                setPlayerAcceptedSongs(newArray)
+                await addTracks(newArray)
+                await TrackPlayer.play();
+
+            }
+        }
+        // setTrackInfo()
+        handleAddTrack()
+    }, [islive, sessionDetailReduxdata]);
+
+    // useEffect(() => {
+    //     startSessionAndPlay(playerAcceptedSongs)
+    //     setPlayerVisible(true)
+
+    //     // if (currentPlayingSong) {
+    //     //     const trackdata = {
+    //     //         id: currentPlayingSong?._id,
+    //     //         url: currentPlayingSong?.song_uri,
+    //     //         title: currentPlayingSong?.song_name,
+    //     //         artist: currentPlayingSong?.artist_name,
+    //     //         artwork: currentPlayingSong?.song_image,
+    //     //     }
+    //     //     startSessionAndPlay(trackdata)
+    //     //     setPlayerVisible(true)
+    //     // }
+
+    // }, [currentPlayingSong])
+
+
+    // console.log(currentPlayingSong, 'its current playing song')
+
+
+    //helperss***********************************************************************************
+    async function setTrackInfo() {
+        const track = await TrackPlayer.getCurrentTrack();
+        console.log(track, 'its track hhhhhh')
+        const info = await TrackPlayer.getTrack(track);
+        console.log(info, 'its track info iiii')
+    }
+
+    const handleStartSession = () => {
+        // const requestObj = {
+        //     isLive: true,
+        //     sessionId: sessionDetailReduxdata?._id
+        // }
+        // dispatch(startSessionRequest(requestObj))
+        setIsLive(!islive)
+    }
+
+    // // Track playback events
+    // useTrackPlayerEvents(
+    //     [Event.PlaybackTrackChanged, Event.PlaybackState],
+    //     async (event) => {
+    //         // Handle song ending naturally
+    //         if (event.type === Event.PlaybackTrackChanged &&
+    //             event.nextTrack == null &&
+    //             event.lastTrack != null) {
+    //             const playerState = await TrackPlayer.getState();
+
+    //             if (playerState === State.Stopped) {
+    //                 setHasSongEnded(true);
+    //                 setIsPlaying(false);
+    //                 console.log('Song finished naturally');
+    //             }
+    //         }
+
+    //         // Update play/pause state
+    //         if (event.type === Event.PlaybackState) {
+    //             setIsPlaying(event.state === State.Playing);
+    //         }
+    //     }
+    // );
+
+
+    useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
+        if (event.state == State.nextTrack) {
+            let index = await TrackPlayer.getCurrentTrack();
+            setCurrentTrack(index);
+        }
+    });
 
 
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-            <Loader visible={sessionReduxData?.loading} />
+            <Loader visible={sessionReduxData?.loading || sessionReduxData?.startSessionLoading} />
             <LinearGradient
                 colors={['#0E402C', '#101119', '#360455']}
                 style={{ flex: 1 }}
@@ -90,14 +211,14 @@ function MySessionDetailScreen(props) {
                 <StatusBar backgroundColor={Colors.darkerblack} />
                 <SafeAreaView style={{ flex: 1 }}>
                     <View style={styles.headerStyle}>
-                        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                        <TouchableOpacity onPress={() => islive ? null : props.navigation.goBack()}>
                             <Image
-                                source={ImagePath.backicon}
+                                source={islive ? ImagePath.crossIcon : ImagePath.backicon}
                                 style={{ width: normalise(16), height: normalise(14) }}
                                 resizeMode="contain"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={[{ alignItems: 'center', flexDirection: 'row' }]}
                             onPress={
                                 null
@@ -111,8 +232,26 @@ function MySessionDetailScreen(props) {
                                 ]}
                                 numberOfLines={2}
                             >
-                                Post
+                                Start Session
                             </Text>
+                        </TouchableOpacity> */}
+
+                        <TouchableOpacity
+                            style={[{ alignItems: 'center', flexDirection: 'row' }]}
+                            onPress={handleStartSession}>
+                            <Text
+                                style={[
+                                    styles.listItemHeaderSongTextTitle,
+                                    { marginBottom: normalise(0), fontSize: normalise(10) },
+                                ]}
+                                numberOfLines={2}>
+                                START{'\n'}SESSION
+                            </Text>
+                            <Image
+                                source={ImagePath.playSolid}
+                                style={styles.startSessionIcon}
+                                resizeMode="contain"
+                            />
                         </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -161,26 +300,29 @@ function MySessionDetailScreen(props) {
 
                                     style={[styles.bottomLineStyle, { width: width / 3, marginTop: normalise(6), }]}></View>
                             </View>
-                            <View style={styles.playListItemContainer}>
+                            <View style={[styles.playListItemContainer]}>
                                 <FlatList
                                     data={sessionDetailReduxdata?.session_songs}
                                     renderItem={({ item, index }) => {
+                                        // let iscurrentPlaying = currentPlayingSong?._id == item?._id
+                                        // let iscurrentPlaying = currentPlayingSong?._id == item?._id
+
+                                        const iscurrentPlaying = currentTrack == index
+                                        // playerState == State.Playing &&
                                         return (
-                                            <View style={[styles.itemWrapper]}>
+                                            <View style={[styles.itemWrapper, !iscurrentPlaying && { opacity: 0.4 }]}>
                                                 <TouchableOpacity
                                                     disabled={disabled}
                                                     onPress={() => {
-                                                        // setDisabled(true);
-                                                        // if (hasSongLoaded) {
-                                                        //     playing();
-                                                        // }
-                                                        // setTimeout(() => {
-                                                        //     setDisabled(false);
-                                                        // }, 1000);
-                                                        Alert.alert('play Song')
+                                                        isPlaying ?
+                                                            pauseTrack()
+                                                            :
+                                                            playTrack()
                                                     }} style={styles.playButtonStyle}>
                                                     <Image
-                                                        source={playVisible ? ImagePath.play : ImagePath.pause}
+                                                        // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
+                                                        source={(playerState?.state == 'playing' && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
+
                                                         style={{ height: normalise(25), width: normalise(25) }}
                                                         resizeMode="contain"
                                                     />
@@ -192,7 +334,7 @@ function MySessionDetailScreen(props) {
                                                     resizeMode="cover"
                                                 />
                                                 <View style={styles.listItemHeaderSongText}>
-                                                    <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={2}>
+                                                    <Text style={styles.songlistItemHeaderSongTextTitle} numberOfLines={1}>
                                                         {item?.song_name}
                                                     </Text>
                                                     <Text style={styles.songlistItemHeaderSongTextArtist} numberOfLines={1}>
@@ -207,97 +349,20 @@ function MySessionDetailScreen(props) {
                                 />
                             </View>
                         </View>
-                        {/* <View style={[styles.listenersContainer, {}]}>
-              <View
-                style={{ marginBottom: normalise(15), marginTop: normalise(10) }}>
-                <View style={{}}>
-                  <Text
-                    style={[
-                      styles.listItemHeaderSongTextTitle,
-                      {
-                        textAlign: 'center',
-                        textAlignVertical: 'center',
-                        marginBottom: normalise(0),
-                      },
-                    ]}
-                    numberOfLines={2}>
-                    LISTENERS (0)
-                  </Text>
-                  <TouchableOpacity
-                    style={{ marginLeft: 20, position: 'absolute', right: -80 }}
-                    onPress={() => setIsPrivate(!isPrivate)}>
-                    <Text
-                      style={[
-                        {
-                          textAlign: 'center',
-                          color: Colors.meta,
-                          fontSize: normalise(12),
-                          marginBottom: normalise(3),
-                        },
-                      ]}
-                      numberOfLines={2}>
-                      {isPrivate ? 'Private' : 'Public'}
-                    </Text>
-                    <Image
-                      source={
-                        isPrivate ? ImagePath.toggleOn : ImagePath.toggleOff
-                      }
-                      style={{ width: 45 }}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={[styles.bottomLineStyle, { width: width / 2 }]}></View>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  opacity: 0.6,
-                }}>
-                <Image
-                  source={ImagePath.add_white}
-                  style={styles.inviteIcon}
-                  resizeMode="cover"
-                />
-                <Text
-                  style={[
-                    styles.listItemHeaderSongTextTitle,
-                    { marginLeft: normalise(8), fontSize: normalise(13) },
-                  ]}
-                  numberOfLines={2}>
-                  Send Invite
-                </Text>
-              </TouchableOpacity>
-            </View> */}
-                        <View style={{}}>
-                            <TouchableOpacity
-                                style={{ marginHorizontal: 20, justifyContent: 'center', alignItems: 'center' }}
-                                onPress={() => setIsPrivate(!isPrivate)}>
-                                <Text
-                                    style={[
-                                        {
-                                            textAlign: 'center',
-                                            color: Colors.meta,
-                                            fontSize: normalise(12),
-                                            marginBottom: normalise(3),
-                                        },
-                                    ]}
-                                    numberOfLines={2}>
-                                    {isPrivate ? 'Private' : 'Public'}
-                                </Text>
-                                <Image
-                                    source={
-                                        isPrivate ? ImagePath.toggleOn : ImagePath.toggleOff
-                                    }
-                                    style={{ width: 45 }}
-                                    resizeMode="contain"
-                                />
-                            </TouchableOpacity>
-                        </View>
                     </View>
+                    <TrackProgress />
+                    {/* {playerVisible &&
+                        <TrackPlayerComponent
+                            currentTrack={{
+                                id: currentPlayingSong?._id,
+                                url: currentPlayingSong?.song_uri,
+                                title: currentPlayingSong?.song_name,
+                                artist: currentPlayingSong?.artist_name,
+                                artwork: currentPlayingSong?.song_image,
+                            }
+                            }
+                        />
+                    } */}
                 </SafeAreaView>
             </LinearGradient>
         </View>
@@ -320,12 +385,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: normalise(15),
         flex: 1,
-        marginLeft: normalise(60),
     },
 
     itemWrapper: {
         flexDirection: 'row',
-        marginBottom: normalise(10),
+        marginBottom: normalise(5),
         flex: 1,
         width: '100%',
         alignItems: 'center',

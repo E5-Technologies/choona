@@ -14,14 +14,29 @@ import {
   CREATE_SESSION_DETAIL_FAILURE,
   CREATE_SESSION_DETAIL_SUCCESS,
   CREATE_SESSION_DETAIL_STATUS_IDLE,
+  START_SESSION_REQUEST,
+  START_SESSION_FAILURE,
+  START_SESSION_SUCCESS,
+  START_SESSION_STATUS_IDLE,
+  START_SESSION_JOINEE_REQUEST,
+  START_SESSION_JOINEE_SUCCESS,
+  START_SESSION_JOINEE_FAILURE,
+  START_SESSION_JOINEE_STATUS_IDLE,
+  START_SESSION_LEFT_FAILURE,
+  START_SESSION_LEFT_STATUS_IDLE,
+  START_SESSION_LEFT_SUCCESS,
+  START_SESSION_LEFT_REQUEST,
 } from '../action/TypeConstants';
 
 const initialState = {
   status: '',
   loading: false,
+  startSessionLoading:false,
   error: {},
   sessionListData: {},
-  sessionDetailData:{},
+  sessionDetailData: {},
+  currentSessionSong: {},
+  CurrentSessionJoineeInfo: {}
 };
 
 const SessionReducer = (state = initialState, action) => {
@@ -55,7 +70,7 @@ const SessionReducer = (state = initialState, action) => {
         status: action.status,
       };
 
-      // SESSION LIST HANDLING
+    // SESSION LIST HANDLING
     case CREATE_SESSION_LIST_REQUEST:
       return {
         ...state,
@@ -85,8 +100,8 @@ const SessionReducer = (state = initialState, action) => {
         status: action.status,
       };
 
-      // SESSION DETAIL HANDLING
-      case CREATE_SESSION_DETAIL_REQUEST:
+    // SESSION DETAIL HANDLING
+    case CREATE_SESSION_DETAIL_REQUEST:
       return {
         ...state,
         status: action.type,
@@ -110,6 +125,98 @@ const SessionReducer = (state = initialState, action) => {
       };
 
     case CREATE_SESSION_DETAIL_STATUS_IDLE:
+      return {
+        ...state,
+        status: action.status,
+      };
+
+    // START SESSION  HANDLING
+    case START_SESSION_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+        startSessionLoading: true,
+      };
+
+    case START_SESSION_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        startSessionLoading: false,
+        currentSessionSong: action.data,
+      };
+
+    case START_SESSION_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        startSessionLoading: false,
+        error: action.error,
+      };
+
+    case START_SESSION_STATUS_IDLE:
+      return {
+        ...state,
+        status: action.status,
+      };
+
+
+    // START SESSION JOINEE REQUEST  HANDLING
+    case START_SESSION_JOINEE_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+        loading: true,
+      };
+
+    case START_SESSION_JOINEE_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        loading: false,
+        CurrentSessionJoineeInfo: action.data,
+      };
+
+    case START_SESSION_JOINEE_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        loading: false,
+        error: action.error,
+      };
+
+    case START_SESSION_JOINEE_STATUS_IDLE:
+      return {
+        ...state,
+        status: action.status,
+      };
+
+
+      // START SESSION LEFT REQUEST  HANDLING
+    case START_SESSION_LEFT_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+        loading: true,
+      };
+
+    case START_SESSION_LEFT_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        loading: false,
+        CurrentSessionJoineeInfo: action.data,
+      };
+
+    case START_SESSION_LEFT_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        loading: false,
+        error: action.error,
+      };
+
+    case START_SESSION_LEFT_STATUS_IDLE:
       return {
         ...state,
         status: action.status,

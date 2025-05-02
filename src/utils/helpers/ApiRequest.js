@@ -14,6 +14,20 @@ export async function getApi(url, header) {
   });
 }
 
+export async function putApi(url, payload, header) {
+  // console.log('URLaa: ', `${constants.BASE_URL}/${url}`);
+  // console.log("header"+header.accesstoken)
+
+  return await axios.put(`${constants.BASE_URL}/${url}`, payload, {
+    headers: {
+      Accept: header.Accept,
+      'Content-type': header.contenttype,
+      'x-access-token': header.accesstoken,
+    },
+  });
+}
+
+
 export async function getSpotifyApi(url, header) {
   //  console.log('URL: ', `${url}`);
   //  console.log("header",header)
