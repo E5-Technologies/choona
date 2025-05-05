@@ -4,6 +4,7 @@ import {
     FlatList,
     Image,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -42,6 +43,7 @@ function MySessionDetailScreen(props) {
     const { startSessionAndPlay, playTrack, pauseTrack, skipToNext, skipToPrevious, isPlaying, setIsPlaying, isPlayerReady } = useTrackPlayer();
     const [playerVisible, setPlayerVisible] = useState(false)
     const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([])
+    const [listenSessionStart, setListenSessionStart] = useState(null)
     // const { position, duration } = useProgress(200);
     const playerState = usePlaybackState();
     console.log(playerState, 'its play back state')
@@ -55,6 +57,7 @@ function MySessionDetailScreen(props) {
     const userTokenData = useSelector(state => state.TokenReducer)
     const sessionReduxData = useSelector(state => state.SessionReducer);
     const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data
+    const currentSessionLiveInfo = sessionReduxData?.currentSessionSong?.data
     console.log(sessionDetailReduxdata, 'its detail data state');
 
 
@@ -81,14 +84,46 @@ function MySessionDetailScreen(props) {
 
 
     useEffect(() => {
+
+        // Define your session handler
+        const handleStartSession = (sessionData) => {
+            console.log('Session started:', sessionData);
+            setListenSessionStart(sessionData)
+            // Update state or perform actions with sessionData here
+        };
+        const listenJoinUser = (sessionData) => {
+            console.log('Session started:', sessionData);
+            toast('Someonw has joined  session');
+            // Update state or perform actions with sessionData here
+        };
+        const listenLeftUser = (sessionData) => {
+            console.log('Session started:', sessionData);
+            toast('Someonw has left the session');
+            // Update state or perform actions with sessionData here
+        };
+
+        const listenSessionPlayStatus = (sessionData) => {
+            console.log('Session started:', sessionData);
+            toast('Session is playing/Stop');
+            // Update state or perform actions with sessionData here
+        };
         socketService.initializeSocket(userTokenData?.token).then((res) => {
-            console.log(res, 'its status hhhh')
+            socketService.on('start_session', handleStartSession);
+            socketService.on('join_session_user', listenJoinUser);
+            socketService.on('leave_session_user', listenLeftUser);
+            socketService.on('session_play_status', listenSessionPlayStatus);
+            // console.log(res, 'its status hhhh')
         }).catch(error => {
             console.log(error, 'hey erorr h')
         })
         return () => {
+            socketService.off('start_session');
             socketService.disconnect();
         };
+
+
+
+
     }, []);
 
     useEffect(() => {
@@ -127,6 +162,12 @@ function MySessionDetailScreen(props) {
         handleAddTrack()
     }, [islive, sessionDetailReduxdata]);
 
+    useEffect(() => {
+        if (sessionReduxData?.currentSessionSong && sessionReduxData?.currentSessionSong?.data) {
+            setIsLive(sessionReduxData?.currentSessionSong?.data?.isLive)
+        }
+    }, [sessionReduxData?.currentSessionSong?.data])
+
     // useEffect(() => {
     //     startSessionAndPlay(playerAcceptedSongs)
     //     setPlayerVisible(true)
@@ -158,12 +199,13 @@ function MySessionDetailScreen(props) {
     }
 
     const handleStartSession = () => {
-        // const requestObj = {
-        //     isLive: true,
-        //     sessionId: sessionDetailReduxdata?._id
-        // }
-        // dispatch(startSessionRequest(requestObj))
-        setIsLive(!islive)
+        const requestObj = {
+            isLive: true,
+            sessionId: sessionDetailReduxdata?._id
+        }
+        // console.log(requestObj,'its >>>>>>>')
+        dispatch(startSessionRequest(requestObj))
+        // setIsLive(!islive)
     }
 
     // // Track playback events
@@ -349,7 +391,36 @@ function MySessionDetailScreen(props) {
                                 />
                             </View>
                         </View>
+                        {(sessionDetailReduxdata?.watch_users && sessionDetailReduxdata?.watch_users?.length > 0) &&
+                            <View style={styles.listenersContainer}>
+                                <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
+                                    LISTENERS
+                                </Text>
+                                <View style={[styles.bottomLineStyle, { width: width / 3, marginBottom: normalise(20) }]}>
+                                </View>
+                                <ScrollView style={{flex:1}}>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap',}}>
+                                        {
+                                            sessionDetailReduxdata?.watch_users?.map((item, index) => {
+                                                return (
+                                                    <View style={[styles.joineeIitemWrapper, (index == 0  && sessionDetailReduxdata?.watch_users?.length>1) && { marginLeft: normalise(40) }, index == 3 && { marginRight: normalise(40) }]}>
+                                                        <Image
+                                                            source={{ uri: constants?.profile_picture_base_url + item?.profile_image }
+                                                            }
+                                                            style={styles.songListItemImage}
+                                                            resizeMode="cover"
+                                                        />
+                                                    </View>
+                                                )
+                                            }
+                                            )
+                                        }
+                                    </View>
+                                </ScrollView>
+                            </View>
+                        }
                     </View>
+
                     <TrackProgress />
                     {/* {playerVisible &&
                         <TrackPlayerComponent

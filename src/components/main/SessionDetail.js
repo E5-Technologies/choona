@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -18,7 +18,7 @@ import ImagePath from '../../assests/ImagePath';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useSelector, useDispatch } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
-import { getSessionDetailRequest } from '../../action/SessionAction';
+import { getSessionDetailRequest, startSessionJoinRequest, startSessionLeftRequest } from '../../action/SessionAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 
@@ -30,119 +30,18 @@ function SessionDetail(props) {
     const { width, height } = useWindowDimensions()
     const [playVisible, setPlayVisible] = useState(true);
     const [disabled, setDisabled] = useState(false);
-    const [sessionData, setSessionData] = useState({
-        userId: '1',
-        userName: 'ANkush Dhiman',
-        userProfile: 'https://picsum.photos/200/300',
-        sessionItem: [{
-            id: 1,
-            banner: 'https://picsum.photos/200/300',
-        },
-        {
-            id: 1,
-            banner: 'https://picsum.photos/200/300',
-        },
-        {
-            id: 1,
-            banner: 'https://picsum.photos/200/300',
-        },
-        {
-            id: 1,
-            banner: 'https://picsum.photos/200/300',
-        },
-        {
-            id: 1,
-            banner: 'https://picsum.photos/200/300',
-        },
 
-        {
-            id: 1,
-            banner: 'https://picsum.photos/200/300',
-        },
-
-        ],
-        joineeList: [
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-            {
-                id: 1,
-                userNma: 'Ajeet',
-                userProfile: 'https://picsum.photos/200/300'
-            },
-        ]
-    })
 
     // Redux state ++++++++++++++++++++++++++++++++++++++++++++
     const dispatch = useDispatch();
-    //   const userProfileResp = useSelector(
-    //     state => state.UserReducer.userProfileResp,
-    //   );
+    const userProfileResp = useSelector(
+        state => state.UserReducer.userProfileResp,
+    );
     const sessionReduxData = useSelector(state => state.SessionReducer);
     const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data
-    // console.log(sessionReduxData, 'its session state');
+    const sessionDataForJoineeAfterJoin = sessionReduxData.CurrentSessionJoineeInfo?.data
+    console.log(sessionDataForJoineeAfterJoin, 'its session state');
+    console.log(sessionDetailReduxdata, 'its data of current session')
 
     useEffect(() => {
         isInternetConnected()
@@ -155,22 +54,69 @@ function SessionDetail(props) {
     }, [])
 
 
+    useEffect(() => {
+        // if (sessionReduxData?.hasLeftSession) {
+        //     // Alert.alert(sessionReduxData?.hasLeftSession?.toString())
+        //     // props.navigation.goBack()
+        // }
+        if (sessionDetailReduxdata?.users) {
+            const isUserExist = checkUserExistence()
+            Alert.alert(isUserExist.toString())
+        }
+    }, [sessionDetailReduxdata])
+
+
+
+    //helperss***********************************************************************************
+    // async function setTrackInfo() {
+    //     const track = await TrackPlayer.getCurrentTrack();
+    //     console.log(track, 'its track hhhhhh')
+    //     const info = await TrackPlayer.getTrack(track);
+    //     console.log(info, 'its track info iiii')
+    // }
+
+
+    const checkUserExistence = useCallback(() => {
+        if (sessionDetailReduxdata?.users) {
+            return sessionDetailReduxdata?.users?.some(user => user._id === userProfileResp?._id)
+        }
+        else {
+            false
+        }
+    }, [sessionDetailReduxdata?.users]);
+
+
+    const handleJoinLeaveSession = () => {
+        const requestObj = {
+            id: sessionDetailReduxdata?._id,
+            user_id: userProfileResp?._id,
+        }
+        console.log(requestObj, 'its >>>>>>>')
+        // return
+        if (sessionDetailReduxdata?.isLive && checkUserExistence())
+            dispatch(startSessionLeftRequest(requestObj))
+        else
+            dispatch(startSessionJoinRequest(requestObj))
+    }
+
+
     return (
         <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-            <Loader visible={sessionReduxData?.loading} />
+            <Loader visible={sessionReduxData?.loading || sessionReduxData?.isRequestLoader} />
             <StatusBar backgroundColor={Colors.darkerblack} />
             <SafeAreaView style={{ flex: 1 }}>
                 <HeaderComponent
-                    firstitemtext={true}
-                    textone={'BACK'}
+                    firstitemtext={(sessionDetailReduxdata?.isLive && checkUserExistence()) ? false : true}
+                    textone={(sessionDetailReduxdata?.isLive && checkUserExistence()) ? null : 'BACK'}
+                    imageone={(sessionDetailReduxdata?.isLive && checkUserExistence()) ? ImagePath.crossIcon : null}
                     title={'SESSIONS'}
                     thirditemtext={false}
-                    imagetwo={sessionDetailReduxdata?.isPrivate ? null : ImagePath.addButtonSmall}
+                    imagetwo={(sessionDetailReduxdata?.isPrivate || (sessionDetailReduxdata?.isLive && checkUserExistence())) ? null : ImagePath.addButtonSmall}
                     imagetwoStyle={styles.imageTwoStyle}
                     onPressFirstItem={() => {
-                        props.navigation.goBack();
+                        (sessionDetailReduxdata?.isLive && checkUserExistence()) ? handleJoinLeaveSession() : props.navigation.goBack();
                     }}
-                    onPressThirdItem={() => Alert.alert('Under development')}
+                    onPressThirdItem={handleJoinLeaveSession}
                 />
                 <View style={{ flex: 1, }}>
                     <View style={{ flex: 2.5, }}>
@@ -242,7 +188,7 @@ function SessionDetail(props) {
                             />
                         </View>
                     </View>
-                    {(sessionDetailReduxdata?.watch_users && sessionDetailReduxdata?.watch_users?.length > 0) &&
+                    {/* {(sessionDetailReduxdata?.watch_users && sessionDetailReduxdata?.watch_users?.length > 0) &&
                         <View style={styles.listenersContainer}>
                             <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
                                 LISTENERS
@@ -269,7 +215,7 @@ function SessionDetail(props) {
                                 </View>
                             </ScrollView>
                         </View>
-                    }
+                    } */}
                 </View>
             </SafeAreaView>
         </View>

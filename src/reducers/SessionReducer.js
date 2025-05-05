@@ -32,11 +32,13 @@ const initialState = {
   status: '',
   loading: false,
   startSessionLoading:false,
+  isRequestLoader:false,
   error: {},
   sessionListData: {},
   sessionDetailData: {},
   currentSessionSong: {},
-  CurrentSessionJoineeInfo: {}
+  CurrentSessionJoineeInfo: {},
+  hasLeftSession:null
 };
 
 const SessionReducer = (state = initialState, action) => {
@@ -166,22 +168,24 @@ const SessionReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.type,
-        loading: true,
+        isRequestLoader: true,
       };
 
     case START_SESSION_JOINEE_SUCCESS:
       return {
         ...state,
         status: action.type,
-        loading: false,
+        isRequestLoader: false,
         CurrentSessionJoineeInfo: action.data,
+        sessionDetailData: action.data
       };
+      
 
     case START_SESSION_JOINEE_FAILURE:
       return {
         ...state,
         status: action.type,
-        loading: false,
+        isRequestLoader: false,
         error: action.error,
       };
 
@@ -197,22 +201,24 @@ const SessionReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.type,
-        loading: true,
+        isRequestLoader: true,
       };
 
     case START_SESSION_LEFT_SUCCESS:
       return {
         ...state,
         status: action.type,
-        loading: false,
+        isRequestLoader: false,
         CurrentSessionJoineeInfo: action.data,
+        hasLeftSession:true,
+        sessionDetailData: action.data
       };
 
     case START_SESSION_LEFT_FAILURE:
       return {
         ...state,
         status: action.type,
-        loading: false,
+        isRequestLoader: false,
         error: action.error,
       };
 
@@ -220,6 +226,7 @@ const SessionReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.status,
+        hasLeftSession:null,
       };
     case ASYNC_STORAGE_CLEAR:
       return initialState;

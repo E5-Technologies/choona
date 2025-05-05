@@ -25,6 +25,7 @@ import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
 import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
 import { Alert } from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
+import { act } from 'react';
 
 
 const getItems = state => state.TokenReducer;
@@ -111,15 +112,15 @@ export function* startSessionOnce(action) {
   };
 
   console.log(header, 'its header hh')
-  const objectData = { islive: action.payload.isLive }
+  const objectData = { isLive: action.payload.isLive }
   console.log(objectData,'its object data')
   try {
     const response = yield call(
       putApi,
       `session/update/${action.payload.sessionId}`,
-      { islive: action.payload.isLive.toString() },
+      // { isLive: action.payload.isLive },
       // JSON.stringify(objectData),
-      objectData,+
+      objectData,
       header,
     );
     console.log(response?.data, 'its response start session');
@@ -144,9 +145,10 @@ export function* joinSessionRequest(action) {
     const response = yield call(
       postApi,
       'session/join',
+      action.payload,
       header,
     );
-    console.log(response?.data, 'its response after api hit session LIST');
+    console.log(JSON.stringify(response?.data), 'its response joinee Joined');
     yield put({ type: START_SESSION_JOINEE_SUCCESS, data: response.data });
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
@@ -167,14 +169,15 @@ export function* leftSessionRequest(action) {
 
   try {
     const response = yield call(
-      getApi,
-      `session/remove?id=${action?.joineeId}`,
+      postApi,
+      `session/removeuser`,
+      action.payload,
       header,
     );
-    console.log(response?.data, 'its response after api hit session LIST');
+    console.log(response?.data?.data, 'response when user Left the session');
     yield put({ type: START_SESSION_LEFT_SUCCESS, data: response.data });
   } catch (error) {
-    console.log(JSON.stringify(error?.message), 'simple error1 in list get');
+    console.log(JSON.stringify(error?.message), 'when user left error');
     yield put({ type: START_SESSION_LEFT_FAILURE, data: error });
   }
 }

@@ -136,7 +136,7 @@ const Home = props => {
   const [sessionListStatus, setSessionListStatus] = useState('')
   const queryClient = useQueryClient();
 
-  console.log(props.userProfileResp, 'this is user data')
+  // console.log(props.userProfileResp, 'this is user data')
 
   const {
     data: newPosts,
