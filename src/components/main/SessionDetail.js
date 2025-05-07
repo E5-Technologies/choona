@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -21,15 +21,23 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import { getSessionDetailRequest, startSessionJoinRequest, startSessionLeftRequest } from '../../action/SessionAction';
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
+import socketService from '../../utils/socket/socketService';
+import { connect } from 'socket.io-client';
+import { addTracks } from '../../hooks/useTrackPlayer';
+import TrackPlayer, { Event, State, useTrackPlayerEvents } from 'react-native-track-player';
 
 
 function SessionDetail(props) {
-    console.log(props?.route?.params, 'these are params')
+    // console.log(props?.route?.params, 'these are params')
     // const { currentSession } = props?.route?.params
     // console.log(currentSession, 'its current sessionI')
     const { width, height } = useWindowDimensions()
     const [playVisible, setPlayVisible] = useState(true);
     const [disabled, setDisabled] = useState(false);
+    const [playerState, setPlayerState] = useState({})
+    const [currentTrack, setCurrentTrack] = useState(0);
+    const [currentState, setCurrentStatus] = useState(null)
+
 
 
     // Redux state ++++++++++++++++++++++++++++++++++++++++++++
@@ -37,11 +45,232 @@ function SessionDetail(props) {
     const userProfileResp = useSelector(
         state => state.UserReducer.userProfileResp,
     );
+    const userTokenData = useSelector(state => state.TokenReducer)
     const sessionReduxData = useSelector(state => state.SessionReducer);
     const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data
     const sessionDataForJoineeAfterJoin = sessionReduxData.CurrentSessionJoineeInfo?.data
-    console.log(sessionDataForJoineeAfterJoin, 'its session state');
-    console.log(sessionDetailReduxdata, 'its data of current session')
+    // console.log(sessionDataForJoineeAfterJoin, 'its session state');
+    // console.log(sessionDetailReduxdata, 'its data of current session')
+    const currentEmitedSongStatus = useRef({
+        hostId: null,
+        startAudioMixing: null,
+        playIndex: null,
+        playLoading: null,
+        currentTime: null,
+        startedAt: null,
+        pausedAt: null
+    })
+
+
+
+    // const handleAddTrack = async () => {
+    //     if (currentEmitedSongStatus?.current && currentEmitedSongStatus?.current?.playIndex != null) {
+    //         const getTrackRelatedSong = {
+    //             id: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex]._id,
+    //             url: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].song_uri,
+    //             title: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].song_name,
+    //             artist: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].artist_name,
+    //             artwork: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].song_image,
+    //         }
+    //         console.log(getTrackRelatedSong, 'ite new aarary')
+    //     };
+    //     // startSessionAndPlay(getTrackRelatedSong());
+    //     // setPlayerAcceptedSongs(newArray)
+    //     await addTracks(getTrackRelatedSong)
+    //     await TrackPlayer.play();
+    // }
+
+    // useEffect(() => {
+    //     console.log(currentState, 'Hello this is')
+    // }, [currentState])
+
+
+    // Then modify your handleAddTrack
+    // const handleAddTrack = async () => {
+    //     try {
+    //         if (!currentEmitedSongStatus?.current || currentEmitedSongStatus.current.playIndex == null) {
+    //             return;
+    //         }
+
+    //         const songs = sessionDetailReduxdata?.session_songs || [];
+    //         const currentIndex = currentEmitedSongStatus.current.playIndex;
+
+    //         if (currentIndex >= songs?.length) {
+    //             console.error('Invalid play index');
+    //             return;
+    //         }
+
+    //         const track = {
+    //             id: songs[currentIndex]._id,
+    //             url: songs[currentIndex].song_uri,
+    //             title: songs[currentIndex].song_name,
+    //             artist: songs[currentIndex].artist_name,
+    //             artwork: songs[currentIndex].song_image,
+    //         };
+    //         console.log(track, 'its track')
+    //         // Clear previous tracks
+    //         // await TrackPlayer.reset();
+
+    //         // Add new track (wrap in array)
+    //         await TrackPlayer.add([track]);
+
+    //         // Seek to correct position if needed
+    //         if (currentEmitedSongStatus.current?.currentTime) {
+    //             await TrackPlayer.seekTo(currentEmitedSongStatus.current?.currentTime);
+    //         }
+
+    //         // Start playback
+    //         if (currentEmitedSongStatus.current?.startAudioMixing) {
+
+    //             await TrackPlayer.play();
+    //         }
+    //         else {
+    //             await TrackPlayer.pause();
+
+    //         }
+    //     } catch (error) {
+    //         console.error('Playback error:', error);
+    //     }
+    // };
+
+
+    // const handleAddTrack = async () => {
+    //     try {
+    //         if (currentState==null) {
+    //             return;
+    //         }
+
+    //         const songs = sessionDetailReduxdata?.session_songs || [];
+    //         const currentIndex = currentState?.playIndex;
+
+    //         if (currentIndex >= songs?.length) {
+    //             console.error('Invalid play index');
+    //             return;
+    //         }
+
+    //         const track = {
+    //             id: songs[currentIndex]._id,
+    //             url: songs[currentIndex].song_uri,
+    //             title: songs[currentIndex].song_name,
+    //             artist: songs[currentIndex].artist_name,
+    //             artwork: songs[currentIndex].song_image,
+    //         };
+    //         console.log(track, 'its track')
+    //         // Clear previous tracks
+    //         // await TrackPlayer.reset();
+
+    //         // Add new track (wrap in array)
+    //         await TrackPlayer.add([track]);
+
+    //         // Seek to correct position if needed
+    //         if (currentState?.currentTime) {
+    //             await TrackPlayer.seekTo(currentState?.currentTime);
+    //         }
+
+    //         // Start playback
+    //         if (currentState?.startAudioMixing) {
+    //             await TrackPlayer.play();
+    //         }
+    //         else {
+    //             await TrackPlayer.pause();
+    //         }
+    //     } catch (error) {
+    //         console.error('Playback error:', error);
+    //     }
+    // };
+
+
+    const handleAddTrack = async () => {
+        try {
+          if (!currentState || currentState.playIndex === null || currentState.playIndex === undefined) {
+            return;
+          }
+      
+          const songs = sessionDetailReduxdata?.session_songs || [];
+          const currentIndex = currentState.playIndex;
+      
+          // Check if index is valid
+          if (currentIndex >= songs.length || currentIndex < 0) {
+            console.error('Invalid play index:', currentIndex);
+            return;
+          }
+      
+          // Clear previous tracks and stop playback
+          await TrackPlayer.reset();
+      
+          const track = {
+            id: songs[currentIndex]._id,
+            url: songs[currentIndex].song_uri,
+            title: songs[currentIndex].song_name,
+            artist: songs[currentIndex].artist_name,
+            artwork: songs[currentIndex].song_image,
+          };
+      
+          console.log('Adding new track:', track);
+          
+          // Add and prepare the new track
+          await TrackPlayer.add([track]);
+          
+          // Seek to the correct position if available
+          if (currentState.currentTime) {
+            await TrackPlayer.seekTo(currentState.currentTime);
+          }
+      
+          // Control playback state
+          if (currentState.startAudioMixing) {
+            await TrackPlayer.play();
+          } else {
+            await TrackPlayer.pause();
+          }
+      
+        } catch (error) {
+          console.error('Playback error:', error);
+        }
+      };
+
+
+
+    useEffect(() => {
+        async function setupPlayer() {
+            await TrackPlayer.setupPlayer();
+        }
+
+        setupPlayer();
+        // Cleanup the player on unmount
+        // return () => {
+        //     TrackPlayer.destroy();
+        // };
+    }, []);
+
+
+    // useEffect(() => {
+    //     if (currentState && currentState?.playIndex != null)
+    //         // console.log(currentTrack, currentState.playIndex, 'lll')
+    //         // if (currentTrack != currentState?.playIndex) {
+    //         //     // Alert.alert('inside')
+    //         //     console.log(currentTrack, currentState.playIndex, 'lll')
+    //         handleAddTrack()
+    //     // }
+    // }, [
+    //     // currentEmitedSongStatus,
+    //     currentState
+    // ])
+    const previousIndexRef = useRef(null);
+
+
+    useEffect(() => {
+        if (currentState?.playIndex !== undefined && 
+            currentState?.playIndex !== null &&
+            currentState?.playIndex !== previousIndexRef.current) {
+          
+          console.log('Index changed from', previousIndexRef.current, 'to', currentState.playIndex);
+          
+          handleAddTrack();
+          
+          // Update the ref with the new value
+          previousIndexRef.current = currentState.playIndex;
+        }
+      }, [currentState]); 
 
     useEffect(() => {
         isInternetConnected()
@@ -61,9 +290,132 @@ function SessionDetail(props) {
         // }
         if (sessionDetailReduxdata?.users) {
             const isUserExist = checkUserExistence()
-            Alert.alert(isUserExist.toString())
+            // Alert.alert(isUserExist.toString())
         }
     }, [sessionDetailReduxdata])
+
+
+    // useEffect(() => {
+    //     const handleStatusUpdate = (status) => {
+    //         console.log(status, 'its satus that we get from host emit')
+    //         // Update local player state with received status
+    //         // setPlayerState(prev => ({
+    //         //     ...prev,
+    //         //     // position: status.currentTime,
+    //         //     // trackIndex: status.playIndex,
+    //         //     // state: status.startAudioMixing ? 'playing' : 'paused'
+    //         //     hostId: status?.hostId,
+    //         //     startAudioMixing: status?.startAudioMixing,
+    //         //     playIndex: status?.playIndex ?? -1,
+    //         //     playLoading: status?.playLoading ?? false,
+    //         //     currentTime: status?.currentTime,
+    //         //     startedAt:status?.startedAt,
+    //         //     pausedAt: status?.pausedAt
+    //         // }));
+
+    //     };
+
+    //     socketService.initializeSocket(userTokenData?.token)
+    //         .then(() => {
+    //             Alert.alert('connected')
+    //             if (checkUserExistence) {
+    //                 socketService.on('session_play_status', handleStatusUpdate);
+    //             }
+    //         })
+    //         .catch(() => {
+    //             Alert.alert('not connected')
+    //         })
+
+    //     return () => {
+    //         // socketService.off('session_play_status', handleStatusUpdate);
+    //         // socketService.disconnect();
+    //     };
+    // }, [sessionDetailReduxdata]);
+
+    // useEffect(() => {
+    //     const handleStatusUpdate = (status) => {
+    //         console.log('Received status:', status);
+    //     };
+
+    //     const joinSessionRoom = async () => {
+    //         try {
+    //             await socketService.initializeSocket(userTokenData?.token);
+    //             // Join specific session room after connection
+    //             socketService.emit('join_session_room', {
+    //                 sessionId: yourSessionId,
+    //                 userId: userProfileResp?._id
+    //             });
+
+    //             socketService.on('session_play_status', handleStatusUpdate);
+    //         } catch (error) {
+    //             console.error('Connection error:', error);
+    //         }
+    //     };
+
+    //     joinSessionRoom();
+
+    //     return () => {
+    //         socketService.off('session_play_status', handleStatusUpdate);
+    //         socketService.disconnect();
+    //     };
+    // }, []);
+
+
+
+    useEffect(() => {
+        let socketInitialized = false;
+
+        const handleStatusUpdate = (status) => {
+            console.log('Received update:', status);
+            // update state
+            currentEmitedSongStatus.current = status;
+            setCurrentStatus(status);
+        };
+
+        const setupSocket = async () => {
+            try {
+                // Only initialize if not already connected
+                if (!socketService.isConnected() && userTokenData?.token) {
+                    await socketService.initializeSocket(userTokenData?.token);
+                    socketInitialized = true;
+                    console.log('Socket connected');
+                }
+
+                // Join room if needed
+                // socketService.emit('join_session_room', {
+                //     sessionId: sessionDetailReduxdata.id,
+                //     userId: userTokenData?.userId
+                // });
+
+                // Register listener
+                // socketService.on('session_play_status', handleStatusUpdate);
+                // Add listener only if component is still mounted
+                // if (isMounted) {
+                socketService.on('session_play_status', handleStatusUpdate);
+                // }
+            } catch (err) {
+                console.error('Socket setup error:', err);
+            }
+        };
+
+        setupSocket();
+
+        return () => {
+            // Clean up listener
+            // socketService.off('session_play_status', handleStatusUpdate);
+            // socketService.emit('leave_session_room', {
+            //     sessionId: sessionDetailReduxdata?._id
+            // });
+
+            // if (socketInitialized) {
+            //     socketService.disconnect();
+            // }
+        };
+    }, [
+        // sessionDetailReduxdata?._id, 
+        // userTokenData?.token
+    ]);
+
 
 
 
@@ -85,6 +437,17 @@ function SessionDetail(props) {
         }
     }, [sessionDetailReduxdata?.users]);
 
+
+    useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
+        if (event.state == State.nextTrack) {
+            let index = await TrackPlayer.getCurrentTrack();
+            // Alert.alert(index.toString())
+            setCurrentTrack(index);
+        }
+        else {
+            Alert.alert('index')
+        }
+    });
 
     const handleJoinLeaveSession = () => {
         const requestObj = {
@@ -146,6 +509,7 @@ function SessionDetail(props) {
                             <FlatList
                                 data={sessionDetailReduxdata?.session_songs}
                                 renderItem={({ item, index }) => {
+                                    let isPlayingCurrent = currentEmitedSongStatus?.current?.playIndex == index
                                     return (
                                         <View style={[styles.itemWrapper]}>
                                             <TouchableOpacity
@@ -161,7 +525,8 @@ function SessionDetail(props) {
                                                     Alert.alert('play Song')
                                                 }} style={styles.playButtonStyle}>
                                                 <Image
-                                                    source={playVisible ? ImagePath.play : ImagePath.pause}
+                                                    // source={playVisible ? ImagePath.play : ImagePath.pause}
+                                                    source={(isPlayingCurrent && currentEmitedSongStatus?.current?.startAudioMixing) ? ImagePath.pause : ImagePath.play}
                                                     style={{ height: normalise(25), width: normalise(25) }}
                                                     resizeMode="contain"
                                                 />

@@ -19,6 +19,7 @@ import {
   START_SESSION_LEFT_REQUEST,
   START_SESSION_LEFT_SUCCESS,
   START_SESSION_LEFT_FAILURE,
+  START_SESSION_JOINEE_STATUS_IDLE,
 } from '../action/TypeConstants';
 import { postApi, getApi, putApi } from '../utils/helpers/ApiRequest';
 import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
@@ -71,7 +72,7 @@ export function* getSessionList(action) {
       'session/list',
       header,
     );
-    console.log(response?.data, 'its response after api hit session LIST');
+    // console.log(response?.data, 'its response after api hit session LIST');
     yield put({ type: CREATE_SESSION_LIST_SUCCESS, data: response.data });
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
@@ -113,7 +114,7 @@ export function* startSessionOnce(action) {
 
   console.log(header, 'its header hh')
   const objectData = { isLive: action.payload.isLive }
-  console.log(objectData,'its object data')
+  console.log(objectData, 'its object data')
   try {
     const response = yield call(
       putApi,
@@ -123,10 +124,10 @@ export function* startSessionOnce(action) {
       objectData,
       header,
     );
-    console.log(response?.data, 'its response start session');
-    yield put({ type: START_SESSION_SUCCESS, data: response.data });
+    console.log(response?.data?.data, 'its response start session');
+    yield put({ type: START_SESSION_SUCCESS, data: response?.data?.data });
   } catch (error) {
-    console.log(JSON.stringify(error?.message), 'simple error1 in list get');
+    console.log(JSON.stringify(error), 'simple error1 in list get');
     toast('Error', 'Please Connect To Internet');
     yield put({ type: START_SESSION_FAILURE, data: error });
   }
@@ -135,6 +136,7 @@ export function* startSessionOnce(action) {
 //FUNCTION TO  JOIN  SESSION ONCE
 export function* joinSessionRequest(action) {
   const items = yield select(getItems);
+  // console.log(action.payload,'its pauload data')
   const header = {
     Accept: 'application/json',
     contenttype: 'application/json',
@@ -149,7 +151,12 @@ export function* joinSessionRequest(action) {
       header,
     );
     console.log(JSON.stringify(response?.data), 'its response joinee Joined');
-    yield put({ type: START_SESSION_JOINEE_SUCCESS, data: response.data });
+    if (response?.data?.status == 200) {
+      yield put({ type: START_SESSION_JOINEE_SUCCESS, data: response?.data });
+    }
+    else {
+      yield put({ type: START_SESSION_JOINEE_STATUS_IDLE });
+    }
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
     yield put({ type: START_SESSION_JOINEE_FAILURE, data: error });

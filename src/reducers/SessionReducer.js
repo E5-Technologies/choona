@@ -145,6 +145,7 @@ const SessionReducer = (state = initialState, action) => {
         ...state,
         status: action.type,
         startSessionLoading: false,
+        sessionDetailData:action.data,
         currentSessionSong: action.data,
       };
 
@@ -176,8 +177,8 @@ const SessionReducer = (state = initialState, action) => {
         ...state,
         status: action.type,
         isRequestLoader: false,
+        sessionDetailData: action.data,
         CurrentSessionJoineeInfo: action.data,
-        sessionDetailData: action.data
       };
       
 
@@ -193,6 +194,7 @@ const SessionReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.status,
+        isRequestLoader: false,
       };
 
 

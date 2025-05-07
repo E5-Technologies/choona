@@ -38,7 +38,7 @@ function AssembleSession(props) {
     const newArray = previousSessionData
       ? [...previousSessionData, songItem]
       : [...sessionList, songItem];
-    console.log(newArray, 'its new array');
+    // console.log(newArray, 'its new array');
     setSessionList(newArray);
   }, [songItem]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Alert,
     FlatList,
@@ -31,7 +31,7 @@ import { TrackProgress } from '../common/Progress';
 // let status;
 
 function MySessionDetailScreen(props) {
-    console.log(props?.route?.params, 'these are params')
+    // console.log(props?.route?.params, 'these are params')
     // const { currentSession } = props?.route?.params
     // console.log(currentSession, 'its current sessionI')
     const { width, height } = useWindowDimensions()
@@ -48,6 +48,8 @@ function MySessionDetailScreen(props) {
     const playerState = usePlaybackState();
     console.log(playerState, 'its play back state')
     const [currentTrack, setCurrentTrack] = useState(0);
+    const { position, duration } = useProgress(200);
+    const positionRef = useRef(position ?? null);
 
 
     const dispatch = useDispatch();
@@ -71,6 +73,11 @@ function MySessionDetailScreen(props) {
 
 
     useEffect(() => {
+        positionRef.current = position;
+      }, [position]);
+
+
+    useEffect(() => {
         async function setupPlayer() {
             await TrackPlayer.setupPlayer();
         }
@@ -83,48 +90,276 @@ function MySessionDetailScreen(props) {
     }, []);
 
 
+    // useEffect(() => {
+    //     let intervalId;
+    //     // Define your session handler
+    //     const handleStartSession = (sessionData) => {
+    //         console.log('Session started first time:', sessionData);
+    //         setListenSessionStart(sessionData)
+    //         // Update state or perform actions with sessionData here
+    //     };
+    //     const listenJoinUser = (sessionData) => {
+    //         console.log('Session started:', sessionData);
+    //         toast('Someonw has joined  session');
+    //         // Update state or perform actions with sessionData here
+    //     };
+    //     const listenLeftUser = (sessionData) => {
+    //         console.log('Session started:', sessionData);
+    //         toast('Someonw has left the session');
+    //         // Update state or perform actions with sessionData here
+    //     };
+
+    //     const listenSessionPlayStatus = (sessionData) => {
+    //         console.log('Session started:', sessionData);
+    //         toast('Session is playing/Stop');
+    //         // Update state or perform actions with sessionData here
+    //     };
+    //     socketService.initializeSocket(userTokenData?.token).then((res) => {
+    //         socketService.on('start_session', handleStartSession);
+    //         socketService.on('join_session_user', listenJoinUser);
+    //         socketService.on('leave_session_user', listenLeftUser);
+    //         socketService.on('session_play_status', listenSessionPlayStatus);
+    //         console.log('outside', islive)
+    //         if (islive) {
+    //             console.log('inside', islive)
+
+    //             intervalId = setInterval(() => {
+    //                 const statusPayload = {
+    //                     hostId: userProfileResp?._id,
+    //                     startAudioMixing: playerState?.state === 'playing' ?? false,
+    //                     playIndex: currentTrack ?? -1,
+    //                     playLoading: false,
+    //                     currentTime: position,
+    //                     startedAt: Date.now(),
+    //                     pausedAt: null
+    //                 };
+
+    //                 socketService.emit('session_play_status', statusPayload);
+    //             }, 5000)
+    //         }
+    //     }).catch(error => {
+    //         console.log(error, 'hey erorr h')
+    //     })
+    //     return () => {
+    //         socketService.off('start_session');
+    //         clearInterval(intervalId)
+    //         socketService.disconnect();
+    //     };
+    // }, [islive, playerState?.state, currentTrack, position]);
+
+
+    // const stateRef = useRef({
+    //     // playerState: null,
+    //     // currentTrack: null,
+    //     // position: null,
+    //     // userProfileId: null
+    //     hostId: null,
+    //     startAudioMixing: null,
+    //     playIndex: null,
+    //     playLoading: null,
+    //     currentTime: null,
+    //     startedAt: null,
+    //     pausedAt: null
+    // });
+
+    // useEffect(() => {
+    //     let intervalId;
+    //     let isMounted = true;
+    //     // Update the ref values whenever dependencies change
+    //     stateRef.current = {
+    //         // playerState: playerState?.state,
+    //         // currentTrack,
+    //         // position,
+    //         // userProfileId: userProfileResp?._id,
+
+
+    //         hostId: userProfileResp?._id,
+    //         startAudioMixing: playerState?.state === 'playing' ?? false,
+    //         playIndex: currentTrack ?? -1,
+    //         playLoading: false,
+    //         currentTime: position,
+    //         startedAt: Date.now(),
+    //         pausedAt: null
+    //     };
+
+
+
+
+    //     const handleStartSession = (sessionData) => {
+    //         console.log(sessionData, 'its sesion data when  session stared')
+    //         if (!isMounted) return;
+    //         setListenSessionStart(sessionData);
+
+    //     };
+
+    //     const setupSocket = async () => {
+    //         try {
+    //             await socketService.initializeSocket(userTokenData?.token);
+
+    //             socketService.on('start_session', handleStartSession);
+    //             socketService.on('join_session_user', () => toast('Someone joined'));
+    //             socketService.on('leave_session_user', () => toast('Someone left'));
+    //             socketService.on('session_play_status', () => toast('Play status changed'));
+
+    //             if (islive && isMounted) {
+    //                 intervalId = setInterval(() => {
+
+    //                     // socketService.emit('session_play_status', {
+    //                     //     hostId: stateRef.current.userProfileId,
+    //                     //     startAudioMixing: stateRef.current.playerState === 'playing',
+    //                     //     playIndex: stateRef.current.currentTrack ?? -1,
+    //                     //     currentTime: stateRef.current.position,
+    //                     //     startedAt: Date.now(),
+    //                     // });
+    //                     socketService.emit('session_play_status', {
+    //                         hostId: userProfileResp?._id,
+    //                         startAudioMixing: playerState?.state === 'playing' ?? false,
+    //                         playIndex: currentTrack ?? -1,
+    //                         playLoading: false,
+    //                         currentTime: position,
+    //                         startedAt: Date.now(),
+    //                         pausedAt: null
+    //                     });
+    //                     console.log({
+    //                         hostId: userProfileResp?._id,
+    //                         startAudioMixing: playerState?.state === 'playing' ?? false,
+    //                         playIndex: currentTrack ?? -1,
+    //                         playLoading: false,
+    //                         currentTime: position,
+    //                         startedAt: Date.now(),
+    //                         pausedAt: null
+    //                     }, 'its music state ref data')
+    //                     console.log('yes emitted')
+    //                 }, 5000);
+    //             }
+    //         } catch (error) {
+    //             if (isMounted) console.error('Socket error:', error);
+    //         }
+    //     };
+
+    //     setupSocket();
+
+    //     return () => {
+    //         isMounted = false;
+    //         clearInterval(intervalId);
+    //         // socketService.off('start_session');
+    //         // socketService.off('join_session_user');
+    //         // socketService.off('leave_session_user');
+    //         // socketService.off('session_play_status');
+    //         // socketService.disconnect();
+    //     };
+    // }, [islive,
+    //     playerState?.state, 
+    //     currentTrack, 
+    //     position, 
+    //     // userProfileResp?._id, 
+    //     // userTokenData?.token
+    // ]);
+
+
+
+    //// not try with when saparate the socket initalization
     useEffect(() => {
-
-        // Define your session handler
-        const handleStartSession = (sessionData) => {
-            console.log('Session started:', sessionData);
-            setListenSessionStart(sessionData)
-            // Update state or perform actions with sessionData here
-        };
-        const listenJoinUser = (sessionData) => {
-            console.log('Session started:', sessionData);
-            toast('Someonw has joined  session');
-            // Update state or perform actions with sessionData here
-        };
-        const listenLeftUser = (sessionData) => {
-            console.log('Session started:', sessionData);
-            toast('Someonw has left the session');
-            // Update state or perform actions with sessionData here
+        let isMounted = true;
+        const initializeSocket = async () => {
+            try {
+                await socketService.initializeSocket(userTokenData?.token);
+            } catch (error) {
+                console.error('Socket initialization error:', error);
+            }
         };
 
-        const listenSessionPlayStatus = (sessionData) => {
-            console.log('Session started:', sessionData);
-            toast('Session is playing/Stop');
-            // Update state or perform actions with sessionData here
-        };
-        socketService.initializeSocket(userTokenData?.token).then((res) => {
-            socketService.on('start_session', handleStartSession);
-            socketService.on('join_session_user', listenJoinUser);
-            socketService.on('leave_session_user', listenLeftUser);
-            socketService.on('session_play_status', listenSessionPlayStatus);
-            // console.log(res, 'its status hhhh')
-        }).catch(error => {
-            console.log(error, 'hey erorr h')
-        })
+        if (userTokenData?.token) {
+            initializeSocket();
+        }
+
         return () => {
-            socketService.off('start_session');
-            socketService.disconnect();
+            isMounted = false;
+            socketService.disconnect(); // Disconnect on component unmount or token change
+        };
+    }, [userTokenData?.token]);
+
+    // Lets emit the other event when session is live and depends stop, start , position and playing state
+    useEffect(() => {
+        let intervalId;
+        let isMounted = true;
+
+        // Update ref with current state
+        // stateRef.current = {
+        //     hostId: userProfileResp?._id,
+        //     startAudioMixing: playerState?.state === 'playing' ?? false,
+        //     playIndex: currentTrack ?? -1,
+        //     playLoading: false,
+        //     currentTime: position,
+        //     startedAt: Date.now(),
+        //     pausedAt: null
+        // };
+
+        const handleStartSession = (sessionData) => {
+            if (!isMounted) return;
+            setListenSessionStart(sessionData);
         };
 
+        // Setup listeners and interval
+        const setupListenersAndInterval = () => {
+            try {
+                // Add event listeners
+                socketService.on('start_session', handleStartSession);
+                socketService.on('join_session_user', () => toast('Someone joined'));
+                socketService.on('leave_session_user', () => toast('Someone left'));
+                socketService.on('session_play_status', () => toast('Play status changed'));
+
+                // Start interval if live
+                if (islive && isMounted) {
+                    intervalId = setInterval(() => {
+                        socketService.emit('session_play_status', {
+                            hostId: userProfileResp?._id,
+                            startAudioMixing: playerState?.state === 'playing' ?? false,
+                            playIndex: currentTrack ?? -1,
+                            playLoading: false,
+                            // currentTime: position,
+                            currentTime: positionRef.current, 
+                            startedAt: Date.now(),
+                            pausedAt: null,
+                            sessionId:sessionDetailReduxdata?._id
+                        });
+                        console.log('yes emiting', {
+                            hostId: userProfileResp?._id,
+                            startAudioMixing: playerState?.state === 'playing' ?? false,
+                            playIndex: currentTrack ?? -1,
+                            playLoading: false,
+                            // currentTime: position,
+                            currentTime: positionRef.current, 
+                            startedAt: Date.now(),
+                            pausedAt: null
+                        })
+                    }, 3000);
+                }
+            } catch (error) {
+                console.error('Error setting up listeners:', error);
+            }
+        };
+
+        setupListenersAndInterval();
+
+        // Cleanup on unmount or dependency change
+        return () => {
+            isMounted = false;
+            clearInterval(intervalId);
+            // Remove listeners to prevent duplicates
+            socketService.off('start_session', handleStartSession);
+            socketService.off('join_session_user');
+            socketService.off('leave_session_user');
+            socketService.off('session_play_status');
+        };
+    }, [
+        islive,
+        playerState?.state,
+        currentTrack,
+        // position,
+    ]);
 
 
-
-    }, []);
 
     useEffect(() => {
         isInternetConnected()
@@ -155,7 +390,6 @@ function MySessionDetailScreen(props) {
                 setPlayerAcceptedSongs(newArray)
                 await addTracks(newArray)
                 await TrackPlayer.play();
-
             }
         }
         // setTrackInfo()
@@ -163,10 +397,39 @@ function MySessionDetailScreen(props) {
     }, [islive, sessionDetailReduxdata]);
 
     useEffect(() => {
-        if (sessionReduxData?.currentSessionSong && sessionReduxData?.currentSessionSong?.data) {
-            setIsLive(sessionReduxData?.currentSessionSong?.data?.isLive)
+        if (sessionReduxData?.currentSessionSong && sessionDetailReduxdata) {
+            Alert.alert(sessionDetailReduxdata?.isLive?.toString())
+            setIsLive(sessionDetailReduxdata?.isLive)
+            if (!sessionDetailReduxdata?.isLive) {
+                // Alert.alert('Reset')
+                TrackPlayer.reset();
+            }
         }
-    }, [sessionReduxData?.currentSessionSong?.data])
+        // else {
+        //     Alert.alert('Reset')
+        //     TrackPlayer.reset();
+        // }
+    }, [sessionDetailReduxdata?.isLive])
+
+    // useEffect(() => {
+    //     if (islive)
+    //         Alert.alert(islive.toString())
+    // }, [islive])
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         socketService.emit('session_play_status', {
+    //             hostId: userProfileResp?._id,
+    //             startAudioMixing: playerState?.state == 'playing' ? true : false,
+    //             playIndex: currentTrack ?? -1,
+    //             playLoading: false,
+    //             currentTime: position,
+    //             // currentTime: format(position),
+    //             startedAt: Date.now(),
+    //             pausedAt: null
+    //         })
+    //     }, 5000)
+    // }, [])
 
     // useEffect(() => {
     //     startSessionAndPlay(playerAcceptedSongs)
@@ -191,11 +454,12 @@ function MySessionDetailScreen(props) {
 
 
     //helperss***********************************************************************************
-    async function setTrackInfo() {
-        const track = await TrackPlayer.getCurrentTrack();
-        console.log(track, 'its track hhhhhh')
-        const info = await TrackPlayer.getTrack(track);
-        console.log(info, 'its track info iiii')
+
+
+    function format(seconds) {
+        let mins = (parseInt(seconds / 60)).toString().padStart(2, '0');
+        let secs = (Math.trunc(seconds) % 60).toString().padStart(2, '0');
+        return `${mins}:${secs}`;
     }
 
     const handleStartSession = () => {
@@ -203,39 +467,21 @@ function MySessionDetailScreen(props) {
             isLive: true,
             sessionId: sessionDetailReduxdata?._id
         }
-        // console.log(requestObj,'its >>>>>>>')
         dispatch(startSessionRequest(requestObj))
-        // setIsLive(!islive)
     }
 
-    // // Track playback events
-    // useTrackPlayerEvents(
-    //     [Event.PlaybackTrackChanged, Event.PlaybackState],
-    //     async (event) => {
-    //         // Handle song ending naturally
-    //         if (event.type === Event.PlaybackTrackChanged &&
-    //             event.nextTrack == null &&
-    //             event.lastTrack != null) {
-    //             const playerState = await TrackPlayer.getState();
-
-    //             if (playerState === State.Stopped) {
-    //                 setHasSongEnded(true);
-    //                 setIsPlaying(false);
-    //                 console.log('Song finished naturally');
-    //             }
-    //         }
-
-    //         // Update play/pause state
-    //         if (event.type === Event.PlaybackState) {
-    //             setIsPlaying(event.state === State.Playing);
-    //         }
-    //     }
-    // );
-
+    const handleStopKillSession = () => {
+        const requestObj = {
+            isLive: false,
+            sessionId: sessionDetailReduxdata?._id
+        }
+        dispatch(startSessionRequest(requestObj))
+    }
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
         if (event.state == State.nextTrack) {
             let index = await TrackPlayer.getCurrentTrack();
+            // Alert.alert(index.toString())
             setCurrentTrack(index);
         }
     });
@@ -253,48 +499,32 @@ function MySessionDetailScreen(props) {
                 <StatusBar backgroundColor={Colors.darkerblack} />
                 <SafeAreaView style={{ flex: 1 }}>
                     <View style={styles.headerStyle}>
-                        <TouchableOpacity onPress={() => islive ? null : props.navigation.goBack()}>
+                        <TouchableOpacity onPress={() => islive ? handleStopKillSession() : props.navigation.goBack()}>
                             <Image
                                 source={islive ? ImagePath.crossIcon : ImagePath.backicon}
                                 style={{ width: normalise(16), height: normalise(14) }}
                                 resizeMode="contain"
                             />
                         </TouchableOpacity>
-                        {/* <TouchableOpacity
-                            style={[{ alignItems: 'center', flexDirection: 'row' }]}
-                            onPress={
-                                null
-                                //   props.navigation.navigate('SessionActive')
-                            }
-                        >
-                            <Text
-                                style={[
-                                    styles.listItemHeaderSongTextTitle,
-                                    { marginBottom: normalise(0), fontSize: normalise(10) },
-                                ]}
-                                numberOfLines={2}
-                            >
-                                Start Session
-                            </Text>
-                        </TouchableOpacity> */}
-
-                        <TouchableOpacity
-                            style={[{ alignItems: 'center', flexDirection: 'row' }]}
-                            onPress={handleStartSession}>
-                            <Text
-                                style={[
-                                    styles.listItemHeaderSongTextTitle,
-                                    { marginBottom: normalise(0), fontSize: normalise(10) },
-                                ]}
-                                numberOfLines={2}>
-                                START{'\n'}SESSION
-                            </Text>
-                            <Image
-                                source={ImagePath.playSolid}
-                                style={styles.startSessionIcon}
-                                resizeMode="contain"
-                            />
-                        </TouchableOpacity>
+                        {!islive &&
+                            <TouchableOpacity
+                                style={[{ alignItems: 'center', flexDirection: 'row' }]}
+                                onPress={handleStartSession}>
+                                <Text
+                                    style={[
+                                        styles.listItemHeaderSongTextTitle,
+                                        { marginBottom: normalise(0), fontSize: normalise(10) },
+                                    ]}
+                                    numberOfLines={2}>
+                                    START{'\n'}SESSION
+                                </Text>
+                                <Image
+                                    source={ImagePath.playSolid}
+                                    style={styles.startSessionIcon}
+                                    resizeMode="contain"
+                                />
+                            </TouchableOpacity>
+                        }
                     </View>
                     <View style={{ flex: 1 }}>
                         <View style={{ flex: 2.5 }}>
@@ -356,7 +586,8 @@ function MySessionDetailScreen(props) {
                                                 <TouchableOpacity
                                                     disabled={disabled}
                                                     onPress={() => {
-                                                        isPlaying ?
+                                                        // isPlaying ?
+                                                        playerState?.state === 'playing' ?
                                                             pauseTrack()
                                                             :
                                                             playTrack()
@@ -364,7 +595,6 @@ function MySessionDetailScreen(props) {
                                                     <Image
                                                         // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
                                                         source={(playerState?.state == 'playing' && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
-
                                                         style={{ height: normalise(25), width: normalise(25) }}
                                                         resizeMode="contain"
                                                     />
@@ -391,19 +621,19 @@ function MySessionDetailScreen(props) {
                                 />
                             </View>
                         </View>
-                        {(sessionDetailReduxdata?.watch_users && sessionDetailReduxdata?.watch_users?.length > 0) &&
+                        {(sessionDetailReduxdata?.users && sessionDetailReduxdata?.users?.length > 0) &&
                             <View style={styles.listenersContainer}>
                                 <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
                                     LISTENERS
                                 </Text>
                                 <View style={[styles.bottomLineStyle, { width: width / 3, marginBottom: normalise(20) }]}>
                                 </View>
-                                <ScrollView style={{flex:1}}>
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap',}}>
+                                <ScrollView style={{ flex: 1 }}>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', }}>
                                         {
-                                            sessionDetailReduxdata?.watch_users?.map((item, index) => {
+                                            sessionDetailReduxdata?.users?.map((item, index) => {
                                                 return (
-                                                    <View style={[styles.joineeIitemWrapper, (index == 0  && sessionDetailReduxdata?.watch_users?.length>1) && { marginLeft: normalise(40) }, index == 3 && { marginRight: normalise(40) }]}>
+                                                    <View style={[styles.joineeIitemWrapper, (index == 0 && sessionDetailReduxdata?.watch_users?.length > 1) && { marginLeft: normalise(40) }, index == 3 && { marginRight: normalise(40) }]}>
                                                         <Image
                                                             source={{ uri: constants?.profile_picture_base_url + item?.profile_image }
                                                             }

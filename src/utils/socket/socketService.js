@@ -8,6 +8,12 @@ class SocketService {
   }
 
   initializeSocket = async (userId) => {
+
+    if (this.socket && this.socket.connected) {
+      console.log('⚠️ Socket already connected');
+      return Promise.resolve(this.socket);
+    }
+
     return new Promise((resolve, reject) => {
       try {
         this.socket = io(SOCKET_SERVER_URL, {
@@ -52,6 +58,10 @@ class SocketService {
     if (!this.socket) return;
     this.socket.disconnect();
     console.log('🔌 Socket disconnected');
+  }
+
+  isConnected() {
+    return this.socket && this.socket.connected;
   }
 }
 

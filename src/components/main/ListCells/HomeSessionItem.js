@@ -18,7 +18,7 @@ const HomeSessionItem = ({
     verified = true,
     userId
 }) => {
-    console.log(JSON.stringify(item?.own_user?._id), userId, 'its session item')
+    // console.log(JSON.stringify(item?.own_user?._id), userId, 'its session item')
     const navigation = useNavigation()
     return (
         <TouchableOpacity style={styles.listItemHeaderContainer} onPress={() => navigation.navigate(userId == item?.own_user?._id ?'MySessionDetailScreen': 'SessionDetail', { sessionId: item?._id })}>
@@ -44,9 +44,8 @@ const HomeSessionItem = ({
             </View>
             <View style={styles.songlistWrapperBox}>
                 <FlatList
-                    data={item?.session_songs}
+                    data={item?.session_songs?.slice(0,4) ?? []}
                     renderItem={({ item }) => {
-
                         return (
                             <View style={{ flexDirection: 'row', marginBottom: normalise(3), flex: 1, }}>
                                 <Image

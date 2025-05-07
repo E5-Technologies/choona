@@ -126,6 +126,12 @@ android {
         javaMaxHeapSize "4g" // Increase heap size if necessary
         preDexLibraries = false // Optional: might help in some cases
     }
+
+    // applicationVariants.all { variant ->
+    //     variant.assembleProvider.get().dependsOn(
+    //         project(':react-native-community_netinfo').tasks.named('writeReleaseAarMetadata')
+    //     )
+    // }
 }
 
 dependencies {
