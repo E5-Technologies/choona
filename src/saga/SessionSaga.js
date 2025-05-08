@@ -1,4 +1,4 @@
-import { put, call, takeLatest, select } from 'redux-saga/effects';
+import {put, call, takeLatest, select} from 'redux-saga/effects';
 import {
   CREATE_SESSION_REQUEST,
   CREATE_SESSION_SUCCESS,
@@ -21,13 +21,12 @@ import {
   START_SESSION_LEFT_FAILURE,
   START_SESSION_JOINEE_STATUS_IDLE,
 } from '../action/TypeConstants';
-import { postApi, getApi, putApi } from '../utils/helpers/ApiRequest';
-import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
-import { Alert } from 'react-native';
+import {postApi, getApi, putApi} from '../utils/helpers/ApiRequest';
+import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
+import {Alert} from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
-import { act } from 'react';
-
+import {act} from 'react';
 
 const getItems = state => state.TokenReducer;
 
@@ -50,11 +49,11 @@ export function* createSessionAction(action) {
     );
     console.log(response?.data, 'its response after api hit session post');
 
-    yield put({ type: CREATE_SESSION_SUCCESS, data: response.data });
+    yield put({type: CREATE_SESSION_SUCCESS, data: response.data});
   } catch (error) {
     console.log(error, 'simple error');
     console.log(JSON.stringify(error?.message, error?.status), 'simple error1');
-    yield put({ type: CREATE_SESSION_FAILURE, data: error });
+    yield put({type: CREATE_SESSION_FAILURE, data: error});
   }
 }
 
@@ -67,16 +66,12 @@ export function* getSessionList(action) {
     accesstoken: items.token,
   };
   try {
-    const response = yield call(
-      getApi,
-      'session/list',
-      header,
-    );
+    const response = yield call(getApi, 'session/list', header);
     // console.log(response?.data, 'its response after api hit session LIST');
-    yield put({ type: CREATE_SESSION_LIST_SUCCESS, data: response.data });
+    yield put({type: CREATE_SESSION_LIST_SUCCESS, data: response.data});
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({ type: CREATE_SESSION_LIST_FAILURE, data: error });
+    yield put({type: CREATE_SESSION_LIST_FAILURE, data: error});
   }
 }
 
@@ -95,16 +90,16 @@ export function* getSessionDetail(action) {
       header,
     );
     console.log(response?.data, 'its response after api hit session LIST');
-    yield put({ type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data });
+    yield put({type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data});
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({ type: CREATE_SESSION_DETAIL_FAILURE, data: error });
+    yield put({type: CREATE_SESSION_DETAIL_FAILURE, data: error});
   }
 }
 
 //FUNCTION TO START SESSIONS ONCE
 export function* startSessionOnce(action) {
-  console.log(action.payload, 'action huuuu')
+  console.log(action.payload, 'action huuuu');
   const items = yield select(getItems);
   const header = {
     Accept: 'application/json',
@@ -112,9 +107,9 @@ export function* startSessionOnce(action) {
     accesstoken: items.token,
   };
 
-  console.log(header, 'its header hh')
-  const objectData = { isLive: action.payload.isLive }
-  console.log(objectData, 'its object data')
+  console.log(header, 'its header hh');
+  const objectData = {isLive: action.payload.isLive};
+  console.log(objectData, 'its object data');
   try {
     const response = yield call(
       putApi,
@@ -124,12 +119,12 @@ export function* startSessionOnce(action) {
       objectData,
       header,
     );
-    console.log(response?.data?.data, 'its response start session');
-    yield put({ type: START_SESSION_SUCCESS, data: response?.data?.data });
+    console.log(response?.data, 'its response start session');
+    yield put({type: START_SESSION_SUCCESS, data: response?.data});
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
     toast('Error', 'Please Connect To Internet');
-    yield put({ type: START_SESSION_FAILURE, data: error });
+    yield put({type: START_SESSION_FAILURE, data: error});
   }
 }
 
@@ -152,18 +147,15 @@ export function* joinSessionRequest(action) {
     );
     console.log(JSON.stringify(response?.data), 'its response joinee Joined');
     if (response?.data?.status == 200) {
-      yield put({ type: START_SESSION_JOINEE_SUCCESS, data: response?.data });
-    }
-    else {
-      yield put({ type: START_SESSION_JOINEE_STATUS_IDLE });
+      yield put({type: START_SESSION_JOINEE_SUCCESS, data: response?.data});
+    } else {
+      yield put({type: START_SESSION_JOINEE_STATUS_IDLE});
     }
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({ type: START_SESSION_JOINEE_FAILURE, data: error });
+    yield put({type: START_SESSION_JOINEE_FAILURE, data: error});
   }
 }
-
-
 
 //FUNCTION TO  JOIN  SESSION ONCE
 export function* leftSessionRequest(action) {
@@ -182,23 +174,12 @@ export function* leftSessionRequest(action) {
       header,
     );
     console.log(response?.data?.data, 'response when user Left the session');
-    yield put({ type: START_SESSION_LEFT_SUCCESS, data: response.data });
+    yield put({type: START_SESSION_LEFT_SUCCESS, data: response.data});
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'when user left error');
-    yield put({ type: START_SESSION_LEFT_FAILURE, data: error });
+    yield put({type: START_SESSION_LEFT_FAILURE, data: error});
   }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 //WATCH FUNCTIONS
 
@@ -219,7 +200,6 @@ export function* watchSessionStartRequest() {
   yield takeLatest(START_SESSION_REQUEST, startSessionOnce);
 }
 
-
 //TO WATCH THE START JOIN REQUEST
 export function* watchSessionJoinRequest() {
   yield takeLatest(START_SESSION_JOINEE_REQUEST, joinSessionRequest);
@@ -229,8 +209,3 @@ export function* watchSessionJoinRequest() {
 export function* watchSessionLeftRequest() {
   yield takeLatest(START_SESSION_LEFT_REQUEST, leftSessionRequest);
 }
-
-
-
-
-

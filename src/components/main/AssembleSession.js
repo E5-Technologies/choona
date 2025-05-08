@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   Image,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -44,7 +45,9 @@ function AssembleSession(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {Platform.OS == 'android' && (
+        <StatusBar backgroundColor={Colors.darkerblack} />
+      )}
       <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={true}
@@ -107,7 +110,7 @@ function AssembleSession(props) {
                     <View style={styles.listItemHeaderSongText}>
                       <Text
                         style={styles.songlistItemHeaderSongTextTitle}
-                        numberOfLines={2}>
+                        numberOfLines={1}>
                         {item?.title}
                       </Text>
                       <Text

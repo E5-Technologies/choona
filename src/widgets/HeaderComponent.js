@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 import PropTypes from 'prop-types';
 
 import HeaderStyles from '../styles/header';
+export const hitSlop = {top: 20, bottom: 20, left: 50, right: 50};
 
 function HeaderComponent(props) {
   const [onDisable, setOnDisable] = useState(false);
@@ -27,7 +28,7 @@ function HeaderComponent(props) {
     <View
       style={[
         HeaderStyles.headerContainer,
-        props.hideBorderBottom && { borderBottomWidth: 0 },
+        props.hideBorderBottom && {borderBottomWidth: 0},
       ]}>
       {/* Left */}
       {props.firstitemtext ? (
@@ -35,7 +36,8 @@ function HeaderComponent(props) {
           style={HeaderStyles.leftItem}
           onPress={() => {
             onPressFirstItem();
-          }}>
+          }}
+          hitSlop={hitSlop}>
           <Text style={HeaderStyles.headerItemText}>{props.textone}</Text>
         </TouchableOpacity>
       ) : (
@@ -43,7 +45,8 @@ function HeaderComponent(props) {
           style={HeaderStyles.leftItem}
           onPress={() => {
             onPressFirstItem();
-          }}>
+          }}
+          hitSlop={hitSlop}>
           <Image
             source={props.imageone}
             style={HeaderStyles.headerIcon}
@@ -60,7 +63,8 @@ function HeaderComponent(props) {
           onPress={() => {
             onPressThirdItem();
           }}
-          style={HeaderStyles.rightItem}>
+          style={HeaderStyles.rightItem}
+          hitSlop={hitSlop}>
           <Text style={HeaderStyles.headerItemText}>{props.texttwo}</Text>
         </TouchableOpacity>
       ) : (
@@ -68,7 +72,8 @@ function HeaderComponent(props) {
           style={HeaderStyles.rightItem}
           onPress={() => {
             onPressThirdItem();
-          }}>
+          }}
+          hitSlop={hitSlop}>
           <Image
             source={props.imagetwo}
             style={[HeaderStyles.headerIcon, props.imagetwoStyle]}
