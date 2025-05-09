@@ -38,6 +38,7 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import {TrackProgress} from '../common/Progress';
 import {hitSlop} from '../../widgets/HeaderComponent';
+import Popover from 'react-native-popover-view';
 
 // let status;
 
@@ -51,6 +52,7 @@ function MySessionDetailScreen(props) {
   const [isPrivate, setIsPrivate] = useState(true);
   const [islive, setIsLive] = useState(false);
   const [currentPlayingSong, setCurrentPlayingSong] = useState(null);
+  const [showPopover, setShowPopover] = useState(false);
   const {
     startSessionAndPlay,
     playTrack,
@@ -510,17 +512,57 @@ function MySessionDetailScreen(props) {
         )}
         <SafeAreaView style={{flex: 1}}>
           <View style={styles.headerStyle}>
-            <TouchableOpacity
-              onPress={() =>
-                islive ? handleStopKillSession() : props.navigation.goBack()
-              }
-              hitSlop={hitSlop}>
-              <Image
-                source={islive ? ImagePath.crossIcon : ImagePath.backicon}
-                style={{width: normalise(16), height: normalise(14)}}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+            <Popover
+              isVisible={showPopover}
+              onRequestClose={() => setShowPopover(false)}
+              from={
+                <TouchableOpacity
+                  onPress={() =>
+                    islive ? setShowPopover(true) : props.navigation.goBack()
+                  }
+                  // onPress={() =>
+                  //   islive ? handleStopKillSession() : props.navigation.goBack()
+                  // }
+                  hitSlop={hitSlop}>
+                  <Image
+                    source={islive ? ImagePath.greycross : ImagePath.backicon}
+                    style={{
+                      width: normalise(16),
+                      height: islive ? normalise(17) : normalise(14),
+                    }}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              }>
+              <View style={{}}>
+                <Text style={[styles.confrimationText, {width: '100%'}]}>
+                  Are you sure, do you want to close this session!
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    borderTopWidth: 1,
+                    borderTopColor: Colors.meta,
+                    marginVeTop: 10,
+                  }}>
+                  <TouchableOpacity
+                    style={styles.optionText}
+                    onPress={() => {
+                      handleStopKillSession();
+                      setShowPopover(false);
+                    }}>
+                    <Text style={[styles.confrimationText]}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.optionText}
+                    onPress={() => setShowPopover(false)}>
+                    <Text style={[styles.confrimationText]}>No</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Popover>
+
             {!islive && (
               <TouchableOpacity
                 style={[{alignItems: 'center', flexDirection: 'row'}]}
@@ -529,7 +571,7 @@ function MySessionDetailScreen(props) {
                 <Text
                   style={[
                     styles.listItemHeaderSongTextTitle,
-                    {marginBottom: normalise(0), fontSize: normalise(10)},
+                    {marginBottom: normalise(0), fontSize: normalise(9)},
                   ]}
                   numberOfLines={2}>
                   START{'\n'}SESSION
@@ -657,18 +699,46 @@ function MySessionDetailScreen(props) {
             {sessionDetailReduxdata?.users &&
               sessionDetailReduxdata?.users?.length > 0 && (
                 <View style={styles.listenersContainer}>
-                  <Text
+                  <View style={styles.listenersTextWrapper}>
+                    <Text
+                      style={[
+                        styles.listItemHeaderSongTextTitle,
+                        {marginTop: normalise(5)},
+                      ]}
+                      numberOfLines={2}>
+                      LISTENERS
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        opacity: 0.6,
+                      }}>
+                      <Image
+                        source={ImagePath.add_white}
+                        style={styles.inviteIcon}
+                        resizeMode="cover"
+                      />
+                      {/* <Text
                     style={[
                       styles.listItemHeaderSongTextTitle,
-                      {marginTop: normalise(10)},
+                      {marginLeft: normalise(8), fontSize: normalise(13)},
                     ]}
                     numberOfLines={2}>
-                    LISTENERS
-                  </Text>
+                    Send Invite
+                  </Text> */}
+                    </TouchableOpacity>
+                  </View>
+
                   <View
                     style={[
                       styles.bottomLineStyle,
-                      {width: width / 3, marginBottom: normalise(20)},
+                      {
+                        width: width / 3,
+                        marginBottom: normalise(20),
+                        marginTop: normalise(0),
+                      },
                     ]}></View>
                   <ScrollView style={{flex: 1}}>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -679,7 +749,9 @@ function MySessionDetailScreen(props) {
                               styles.joineeIitemWrapper,
                               index == 0 &&
                                 sessionDetailReduxdata?.watch_users?.length >
-                                  1 && {marginLeft: normalise(40)},
+                                  1 && {
+                                  marginLeft: normalise(40),
+                                },
                               index == 3 && {marginRight: normalise(40)},
                             ]}>
                             <Image
@@ -699,7 +771,6 @@ function MySessionDetailScreen(props) {
                 </View>
               )}
           </View>
-
           <TrackProgress />
           {/* {playerVisible &&
                         <TrackPlayerComponent
@@ -739,7 +810,7 @@ const styles = StyleSheet.create({
 
   itemWrapper: {
     flexDirection: 'row',
-    marginBottom: normalise(5),
+    marginBottom: normalise(3),
     flex: 1,
     width: '100%',
     alignItems: 'center',
@@ -765,8 +836,8 @@ const styles = StyleSheet.create({
 
   listItemHeaderSongTypeIcon: {
     borderRadius: normalise(10),
-    height: normalise(100),
-    width: normalise(100),
+    height: normalise(80),
+    width: normalise(80),
     borderRadius: normalise(80),
     borderWidth: 1,
     borderColor: Colors.grey,
@@ -821,7 +892,7 @@ const styles = StyleSheet.create({
   //Footer listners styles
   listenersContainer: {
     alignItems: 'center',
-    flex: 1,
+    flex: 0.5,
   },
   joineeIitemWrapper: {
     width: 50,
@@ -843,15 +914,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: normalise(20),
     paddingVertical: normalise(15),
+    height: 65,
   },
   startSessionIcon: {
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
   },
   hostedText: {
     color: Colors.meta,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(12),
+  },
+  listenersTextWrapper: {
+    flexDirection: 'row',
+  },
+  confrimationText: {
+    color: Colors.black,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normalise(12),
+    // width: '50%',
+    // paddingVertical: 10,
+    textAlign: 'center',
+    padding: 15,
+    fontWeight: '600',
+  },
+  optionText: {
+    borderEndWidth: 1,
+    borderRightColor: Colors.meta,
+    width: '50%',
   },
 });
 

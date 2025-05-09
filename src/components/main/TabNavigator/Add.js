@@ -235,10 +235,37 @@ const AddSong = props => {
     );
   }
 
+  const handleCancel = () => {
+    // Alert.alert(props?.route?.params?.from);
+    // return;
+    switch (props?.route?.params?.from) {
+      // case 'CreatePost':
+      //   props.navigation.navigate('CreatePost', songItem);
+      //   break;
+      case 'Playlist':
+        props.navigation.navigate('CreatePlayList', {
+          // songItem,
+          previousPlaylistData: props?.route?.params?.previousPlaylistData,
+        });
+        break;
+      case 'AssembleSession':
+        props.navigation.navigate('AssembleSession', {
+          // songItem,
+          previousSessionData: props?.route?.params?.previousSessionData,
+        });
+        break;
+      default:
+        // props.navigation.navigate('CreatePost', songItem);
+        props.navigation.goBack();
+        break;
+    }
+  };
+
   return (
     <View style={styles.containerView}>
-      <StatusBar />
+      {Platform.OS == 'android' && <StatusBar />}
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
+
       <SafeAreaView style={styles.safeAreaContainer}>
         <HeaderComponent
           firstitemtext={true}
@@ -247,7 +274,9 @@ const AddSong = props => {
           thirditemtext={true}
           texttwo={''}
           hideBorderBottom={true}
-          onPressFirstItem={() => props.navigation.goBack()}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
         />
         <View
           style={{

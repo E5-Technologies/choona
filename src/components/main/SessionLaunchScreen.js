@@ -29,6 +29,7 @@ import {
   CREATE_SESSION_SUCCESS,
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import {hitSlop} from '../../widgets/HeaderComponent';
 
 // let status;
 
@@ -36,7 +37,7 @@ function SessionLaunchScreen(props) {
   // console.log(props?.route?.params, 'these are params')
   // const { currentSession } = props?.route?.params
   // console.log(currentSession, 'its current sessionI')
-  const {sessionSonglist, songItem} = props?.route?.params;
+  const {sessionSonglist, songItem} = props?.route?.params ?? {};
   // console.log(JSON.stringify(sessionSonglist), 'its essionlist');
   const {width, height} = useWindowDimensions();
   const [playVisible, setPlayVisible] = useState(true);
@@ -144,7 +145,9 @@ function SessionLaunchScreen(props) {
         {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
         <SafeAreaView style={{flex: 1}}>
           <View style={styles.headerStyle}>
-            <TouchableOpacity onPress={() => props.navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => props.navigation.goBack()}
+              hitSlop={hitSlop}>
               <Image
                 source={ImagePath.backicon}
                 style={{width: normalise(16), height: normalise(14)}}
@@ -156,11 +159,16 @@ function SessionLaunchScreen(props) {
               onPress={
                 handlePostSession
                 //   props.navigation.navigate('SessionActive')
-              }>
+              }
+              hitSlop={hitSlop}>
               <Text
                 style={[
                   styles.listItemHeaderSongTextTitle,
-                  {marginBottom: normalise(0), fontSize: normalise(10)},
+                  {
+                    marginBottom: normalise(0),
+                    fontSize: normalise(10),
+                    fontSize: normalise(13),
+                  },
                 ]}
                 numberOfLines={2}>
                 Post
@@ -177,16 +185,20 @@ function SessionLaunchScreen(props) {
                   <Text
                     style={[
                       styles.listItemHeaderSongTextTitle,
-                      {textTransform: 'uppercase', marginBottom: normalise(0)},
+                      {
+                        textTransform: 'uppercase',
+                        marginBottom: normalise(0),
+                        paddingHorizontal: 30,
+                      },
                     ]}
                     numberOfLines={1}>
                     {userProfileResp?.username}
                   </Text>
-                  <Image
+                  {/* <Image
                     source={ImagePath.blueTick}
                     style={{width: 16, height: 16}}
                     resizeMode="contain"
-                  />
+                  /> */}
                 </View>
                 <Image
                   source={

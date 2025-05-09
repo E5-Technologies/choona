@@ -149,11 +149,16 @@ export function* joinSessionRequest(action) {
     if (response?.data?.status == 200) {
       yield put({type: START_SESSION_JOINEE_SUCCESS, data: response?.data});
     } else {
-      yield put({type: START_SESSION_JOINEE_STATUS_IDLE});
+      // toast(response?.data?.message);
+      // yield put({type: START_SESSION_JOINEE_STATUS_IDLE});
+      yield put({
+        type: START_SESSION_JOINEE_FAILURE,
+        error: response?.data,
+      });
     }
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({type: START_SESSION_JOINEE_FAILURE, data: error});
+    yield put({type: START_SESSION_JOINEE_FAILURE, error: error?.message});
   }
 }
 

@@ -21,7 +21,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 function AssembleSession(props) {
   // console.log(props.route?.params, 'these are params');
-  const {songItem, previousSessionData} = props?.route?.params;
+  const {songItem, previousSessionData} = props?.route?.params ?? {};
   console.log(songItem, previousSessionData, 'this is props Item');
   const {width, height} = useWindowDimensions();
   const [sessionList, setSessionList] = useState([]);
@@ -123,7 +123,7 @@ function AssembleSession(props) {
                 );
               }}
               showsVerticalScrollIndicator={false}
-              keyExtractor={item => item._id}
+              keyExtractor={item => item?._id}
             />
           </View>
         </View>
@@ -183,27 +183,28 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   playListItemContainer: {
-    width: '75%',
+    width: '100%',
     alignSelf: 'center',
     marginTop: normalise(15),
     flex: 1,
-    marginBottom: normalise(62),
+    marginBottom: normalise(50),
   },
   itemWrapper: {
     flexDirection: 'row',
-    marginBottom: normalise(16),
+    marginBottom: normalise(8),
     flex: 1,
+    marginHorizontal: normalise(20),
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(56),
-    width: normalise(56),
+    height: normalise(50),
+    width: normalise(50),
     marginRight: normalise(8),
   },
   listItemHeaderSongText: {
     alignItems: 'flex-start',
     flexDirection: 'column',
-    marginLeft: normalise(10),
+    marginLeft: normalise(8),
     // maxWidth: normalise(240),
     width: '100%',
     borderBottomWidth: 0.5,
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: normalise(13),
-    marginBottom: normalise(5),
+    marginBottom: normalise(2),
   },
   songlistItemHeaderSongTextArtist: {
     color: Colors.meta,
@@ -231,8 +232,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     right: 0,
-    // bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? normalise(24) : normalise(0),
+    // bottom: 0,
   },
   buttonStyle: {
     backgroundColor: Colors.fadeblack,
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     borderRadius: 5,
     width: '75%',
-    height: normalise(62),
+    height: normalise(45),
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',

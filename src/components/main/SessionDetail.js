@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   Image,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -21,6 +22,7 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import {
   getSessionDetailRequest,
   startSessionJoinRequest,
+  startSessionJoinRequestStatusIdle,
   startSessionLeftRequest,
 } from '../../action/SessionAction';
 import Loader from '../../widgets/AuthLoader';
@@ -33,6 +35,11 @@ import TrackPlayer, {
   State,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
+import {
+  START_SESSION_JOINEE_FAILURE,
+  START_SESSION_JOINEE_REQUEST,
+} from '../../action/TypeConstants';
+import toast from '../../utils/helpers/ShowErrorAlert';
 
 function SessionDetail(props) {
   // console.log(props?.route?.params, 'these are params')
@@ -44,6 +51,7 @@ function SessionDetail(props) {
   const [playerState, setPlayerState] = useState({});
   const [currentTrack, setCurrentTrack] = useState(0);
   const [currentState, setCurrentStatus] = useState(null);
+  const [status, setStatus] = useState('');
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -416,13 +424,58 @@ function SessionDetail(props) {
         // }
       };
     },
+
     [
       // sessionDetailReduxdata?._id,
       // userTokenData?.token
     ],
   );
 
+  useEffect(() => {
+    handleNavigation();
+  }, [sessionReduxData.status]);
+
   //helperss***********************************************************************************
+
+  const handleNavigation = () => {
+    if (status === '' || status !== sessionReduxData.status) {
+      console.log(sessionReduxData?.error, 'its error h');
+      switch (sessionReduxData.status) {
+        // case START_SESSION_JOINEE_REQUEST:
+        //   setStatus(START_SESSION_JOINEE_REQUEST);
+        //   dispatch(startSessionJoinRequestStatusIdle({status: ''}));
+        //   break;
+        // case CREATE_SESSION_SUCCESS:
+        //   setStatus(CREATE_SESSION_SUCCESS);
+        //   // Navigate to Home or another screen on success
+        //   props.navigation.popToTop();
+        //   props.navigation.replace('bottomTab', {screen: 'Home'}); // Navigate to Home
+        //   dispatch(startSessionJoinRequestStatusIdle({status: ''}));
+        //   break;
+
+        case START_SESSION_JOINEE_FAILURE:
+          setStatus(START_SESSION_JOINEE_FAILURE);
+          // Alert.alert(sessionReduxData?.error?.message);
+          toast(
+            'Error',
+            sessionReduxData?.error?.message ??
+              'Something Went Wrong, Please Try Again',
+            // ?? 'Error',
+            // 'Something Went Wrong, Please Try Again',
+          );
+          setTimeout(() => {
+            dispatch(
+              startSessionJoinRequestStatusIdle({status: '', error: {}}),
+            );
+          }, 300);
+          break;
+        default:
+          setStatus('');
+          break;
+      }
+    }
+  };
+
   // async function setTrackInfo() {
   //     const track = await TrackPlayer.getCurrentTrack();
   //     console.log(track, 'its track hhhhhh')
@@ -455,7 +508,7 @@ function SessionDetail(props) {
       id: sessionDetailReduxdata?._id,
       user_id: userProfileResp?._id,
     };
-    console.log(requestObj, 'its >>>>>>>');
+    // console.log(requestObj, 'its >>>>>>>');
     // return
     if (sessionDetailReduxdata?.isLive && checkUserExistence())
       dispatch(startSessionLeftRequest(requestObj));
@@ -467,7 +520,9 @@ function SessionDetail(props) {
       <Loader
         visible={sessionReduxData?.loading || sessionReduxData?.isRequestLoader}
       />
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {Platform.OS == 'android' && (
+        <StatusBar backgroundColor={Colors.darkerblack} />
+      )}
       <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={
@@ -512,9 +567,10 @@ function SessionDetail(props) {
                       textTransform: 'uppercase',
                       marginBottom: 0,
                       fontFamily: 'ProximaNova-Bold',
+                      paddingHorizontal: normalise(20),
                     },
                   ]}
-                  numberOfLines={2}>
+                  numberOfLines={1}>
                   {sessionDetailReduxdata?.own_user?.username}
                 </Text>
                 {/* <Image
@@ -539,12 +595,16 @@ function SessionDetail(props) {
               <Text
                 style={[
                   styles.listItemHeaderSongTextTitle,
-                  {marginTop: normalise(8), fontFamily: 'ProximaNova-Bold'},
+                  {
+                    marginTop: normalise(8),
+                    fontFamily: 'ProximaNova-Bold',
+                    fontWeight: '400',
+                  },
                 ]}
-                numberOfLines={2}>
+                numberOfLines={1}>
                 NOW PLAYING
               </Text>
-              <View style={[styles.bottomLineStyle, {width: '45%'}]}></View>
+              <View style={[styles.bottomLineStyle, {width: '35%'}]}></View>
             </View>
             <View style={styles.playListItemContainer}>
               <FlatList
@@ -584,7 +644,7 @@ function SessionDetail(props) {
                       <View style={styles.listItemHeaderSongText}>
                         <Text
                           style={styles.songlistItemHeaderSongTextTitle}
-                          numberOfLines={2}>
+                          numberOfLines={1}>
                           {item?.song_name}
                         </Text>
                         <Text
@@ -653,7 +713,7 @@ const styles = StyleSheet.create({
   songListItemImage: {
     borderRadius: normalise(5),
     height: normalise(45),
-    width: normalise(48),
+    width: normalise(45),
   },
 
   imageTwoStyle: {
@@ -674,15 +734,16 @@ const styles = StyleSheet.create({
   listItemHeaderSongTextTitle: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
-    fontSize: normalise(14),
+    fontSize: normalise(12),
     marginBottom: normalise(5),
     marginRight: normalise(5),
+    fontWeight: '600',
   },
 
   listItemHeaderSongTypeIcon: {
     borderRadius: normalise(10),
-    height: normalise(100),
-    width: normalise(100),
+    height: normalise(80),
+    width: normalise(80),
     borderRadius: normalise(80),
     borderWidth: 0.5,
     borderColor: Colors.fordGray,
