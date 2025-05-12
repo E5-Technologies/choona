@@ -38,8 +38,10 @@ import TrackPlayer, {
 import {
   START_SESSION_JOINEE_FAILURE,
   START_SESSION_JOINEE_REQUEST,
+  START_SESSION_LEFT_SUCCESS,
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import Popover from 'react-native-popover-view';
 
 function SessionDetail(props) {
   // console.log(props?.route?.params, 'these are params')
@@ -52,6 +54,8 @@ function SessionDetail(props) {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [currentState, setCurrentStatus] = useState(null);
   const [status, setStatus] = useState('');
+  const touchable = useRef();
+  const [showPopover, setShowPopover] = useState(false);
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -231,8 +235,10 @@ function SessionDetail(props) {
 
       // Control playback state
       if (currentState.startAudioMixing) {
+        Alert.alert('play');
         await TrackPlayer.play();
       } else {
+        Alert.alert('pause');
         await TrackPlayer.pause();
       }
     } catch (error) {
@@ -274,9 +280,10 @@ function SessionDetail(props) {
     ) {
       console.log(
         'Index changed from',
-        previousIndexRef.current,
+        // previousIndexRef.current,
         'to',
-        currentState.playIndex,
+        // currentState.playIndex,
+        currentState?.startAudioMixing,
       );
 
       handleAddTrack();
@@ -284,6 +291,16 @@ function SessionDetail(props) {
       // Update the ref with the new value
       previousIndexRef.current = currentState.playIndex;
     }
+    if (currentEmitedSongStatus?.current?.startAudioMixing == false) {
+      TrackPlayer.stop();
+    }
+    if (currentEmitedSongStatus?.current?.startAudioMixing == true) {
+      TrackPlayer.play();
+    }
+    // console.log(
+    //   currentEmitedSongStatus?.current?.startAudioMixing,
+    //   'its audio mising',
+    // );
   }, [currentState]);
 
   useEffect(() => {
@@ -463,12 +480,34 @@ function SessionDetail(props) {
             // ?? 'Error',
             // 'Something Went Wrong, Please Try Again',
           );
+
           setTimeout(() => {
             dispatch(
               startSessionJoinRequestStatusIdle({status: '', error: {}}),
             );
           }, 300);
           break;
+        case START_SESSION_LEFT_SUCCESS:
+          setStatus(START_SESSION_LEFT_SUCCESS);
+          // Alert.alert(sessionReduxData?.error?.message);
+          TrackPlayer.reset();
+          currentEmitedSongStatus.current = {
+            hostId: null,
+            startAudioMixing: null,
+            playIndex: null,
+            playLoading: null,
+            currentTime: null,
+            startedAt: null,
+            pausedAt: null,
+          };
+          toast('Success', 'Session left succssfully!');
+          setTimeout(() => {
+            dispatch(
+              startSessionJoinRequestStatusIdle({status: '', error: {}}),
+            );
+          }, 300);
+          break;
+
         default:
           setStatus('');
           break;
@@ -540,6 +579,11 @@ function SessionDetail(props) {
               ? ImagePath.crossIcon
               : null
           }
+          imageOneRef={
+            sessionDetailReduxdata?.isLive && checkUserExistence()
+              ? touchable
+              : null
+          }
           title={'SESSIONS'}
           thirditemtext={false}
           imagetwo={
@@ -551,7 +595,8 @@ function SessionDetail(props) {
           imagetwoStyle={styles.imageTwoStyle}
           onPressFirstItem={() => {
             sessionDetailReduxdata?.isLive && checkUserExistence()
-              ? handleJoinLeaveSession()
+              ? // handleJoinLeaveSession()
+                setShowPopover(true)
               : props.navigation.goBack();
           }}
           onPressThirdItem={handleJoinLeaveSession}
@@ -690,6 +735,39 @@ function SessionDetail(props) {
                         </View>
                     } */}
         </View>
+        <Popover
+          from={touchable}
+          isVisible={showPopover}
+          onRequestClose={() => setShowPopover(false)}>
+          <View style={{}}>
+            <Text style={[styles.confrimationText, {width: '100%'}]}>
+              Are you sure, do you want to leave this session!
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                borderTopWidth: 1,
+                borderTopColor: Colors.meta,
+                marginVeTop: 10,
+              }}>
+              <TouchableOpacity
+                style={styles.optionText}
+                onPress={() => {
+                  // handleStopKillSession();
+                  handleJoinLeaveSession();
+                  setShowPopover(false);
+                }}>
+                <Text style={[styles.confrimationText]}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionText}
+                onPress={() => setShowPopover(false)}>
+                <Text style={[styles.confrimationText]}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Popover>
       </SafeAreaView>
     </View>
   );
@@ -808,6 +886,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: normalise(11),
     marginBottom: normalise(7),
+  },
+  confrimationText: {
+    color: Colors.black,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normalise(12),
+    // width: '50%',
+    // paddingVertical: 10,
+    textAlign: 'center',
+    padding: 15,
+    fontWeight: '600',
+  },
+  optionText: {
+    borderEndWidth: 1,
+    borderRightColor: Colors.meta,
+    width: '50%',
   },
 });
 

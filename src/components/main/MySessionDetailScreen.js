@@ -81,7 +81,7 @@ function MySessionDetailScreen(props) {
   const sessionReduxData = useSelector(state => state.SessionReducer);
   const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data;
   const currentSessionLiveInfo = sessionReduxData?.currentSessionSong?.data;
-  console.log(sessionDetailReduxdata, 'its detail data state');
+  // console.log(sessionDetailReduxdata, 'its detail data state');
 
   // const { state } = usePlaybackState();
   // useEffect(() => {
@@ -334,17 +334,17 @@ function MySessionDetailScreen(props) {
               pausedAt: null,
               sessionId: sessionDetailReduxdata?._id,
             });
-            console.log('yes emiting', {
-              hostId: userProfileResp?._id,
-              startAudioMixing: playerState?.state === 'playing' ?? false,
-              playIndex: currentTrack ?? -1,
-              playLoading: false,
-              // currentTime: position,
-              currentTime: positionRef.current,
-              startedAt: Date.now(),
-              pausedAt: null,
-            });
-          }, 3000);
+            // console.log('yes emiting', {
+            //   hostId: userProfileResp?._id,
+            //   startAudioMixing: playerState?.state === 'playing' ?? false,
+            //   playIndex: currentTrack ?? -1,
+            //   playLoading: false,
+            //   // currentTime: position,
+            //   currentTime: positionRef.current,
+            //   startedAt: Date.now(),
+            //   pausedAt: null,
+            // });
+          }, 1000);
         }
       } catch (error) {
         console.error('Error setting up listeners:', error);

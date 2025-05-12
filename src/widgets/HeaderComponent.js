@@ -42,6 +42,7 @@ function HeaderComponent(props) {
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
+          ref={props.imageOneRef ?? null}
           style={HeaderStyles.leftItem}
           onPress={() => {
             onPressFirstItem();
