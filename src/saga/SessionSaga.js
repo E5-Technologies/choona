@@ -89,7 +89,7 @@ export function* getSessionDetail(action) {
       `session/get?id=${action.payload.sessionId}`,
       header,
     );
-    console.log(response?.data, 'its response after api hit session LIST');
+    // console.log(response?.data, 'its response after api hit session LIST');
     yield put({type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data});
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
@@ -119,7 +119,7 @@ export function* startSessionOnce(action) {
       objectData,
       header,
     );
-    console.log(response?.data, 'its response start session');
+    // console.log(response?.data, 'its response start session');
     yield put({type: START_SESSION_SUCCESS, data: response?.data});
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
@@ -145,7 +145,7 @@ export function* joinSessionRequest(action) {
       action.payload,
       header,
     );
-    console.log(JSON.stringify(response?.data), 'its response joinee Joined');
+    // console.log(JSON.stringify(response?.data), 'its response joinee Joined');
     if (response?.data?.status == 200) {
       yield put({type: START_SESSION_JOINEE_SUCCESS, data: response?.data});
     } else {
@@ -178,7 +178,7 @@ export function* leftSessionRequest(action) {
       action.payload,
       header,
     );
-    console.log(response?.data?.data, 'response when user Left the session');
+    // console.log(response?.data?.data, 'response when user Left the session');
     yield put({type: START_SESSION_LEFT_SUCCESS, data: response.data});
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'when user left error');

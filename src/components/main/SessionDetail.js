@@ -396,7 +396,7 @@ function SessionDetail(props) {
       let socketInitialized = false;
 
       const handleStatusUpdate = status => {
-        console.log('Received update:', status);
+        // console.log('Received update:', status);
         // update state
         currentEmitedSongStatus.current = status;
         setCurrentStatus(status);

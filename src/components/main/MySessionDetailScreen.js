@@ -21,6 +21,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
+// import toast from '../../utils/helpers/ShowErrorAlert';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import {
   getSessionDetailRequest,
@@ -66,9 +67,10 @@ function MySessionDetailScreen(props) {
   const [playerVisible, setPlayerVisible] = useState(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
   const [listenSessionStart, setListenSessionStart] = useState(null);
+  const [currentListners, setCurrentListeners] = useState([]);
   // const { position, duration } = useProgress(200);
   const playerState = usePlaybackState();
-  console.log(playerState, 'its play back state');
+  // console.log(playerState, 'its play back state');
   const [currentTrack, setCurrentTrack] = useState(0);
   const {position, duration} = useProgress(200);
   const positionRef = useRef(position ?? null);
@@ -314,11 +316,12 @@ function MySessionDetailScreen(props) {
       try {
         // Add event listeners
         socketService.on('start_session', handleStartSession);
-        socketService.on('join_session_user', () => toast('Someone joined'));
-        socketService.on('leave_session_user', () => toast('Someone left'));
-        socketService.on('session_play_status', () =>
-          toast('Play status changed'),
-        );
+        // socketService.on('join_session_user', () => toast('Someone joined'));
+        // socketService.on('leave_session_user', () => toast('Someone left'));
+        // socketService.on('session_play_status', () =>
+        //   toast('Play status changed'),
+        // );
+        socketService.on('session_users_status', handleListerUserStatus);
 
         // Start interval if live
         if (islive && isMounted) {
@@ -359,9 +362,11 @@ function MySessionDetailScreen(props) {
       clearInterval(intervalId);
       // Remove listeners to prevent duplicates
       socketService.off('start_session', handleStartSession);
-      socketService.off('join_session_user');
-      socketService.off('leave_session_user');
-      socketService.off('session_play_status');
+      socketService.off('session_users_status', handleListerUserStatus);
+
+      // socketService.off('join_session_user');
+      // socketService.off('leave_session_user');
+      // socketService.off('session_play_status');
     };
   }, [
     islive,
@@ -462,6 +467,13 @@ function MySessionDetailScreen(props) {
   // console.log(currentPlayingSong, 'its current playing song')
 
   //helperss***********************************************************************************
+
+  const handleListerUserStatus = res => {
+    if (res && res?.message) {
+      toast('Error', res?.message);
+    }
+    setCurrentListeners(res?.users);
+  };
 
   function format(seconds) {
     let mins = parseInt(seconds / 60)
@@ -585,7 +597,7 @@ function MySessionDetailScreen(props) {
             )}
           </View>
           <View style={{flex: 1}}>
-            <View style={{flex: 2.5}}>
+            <View style={{flex: 2}}>
               <View style={styles.listItemHeaderSongDetails}>
                 <Text style={styles.hostedText} numberOfLines={1}>
                   Hosted by
@@ -699,7 +711,7 @@ function MySessionDetailScreen(props) {
                 />
               </View>
             </View>
-            {sessionDetailReduxdata?.users &&
+            {/* {sessionDetailReduxdata?.users &&
               sessionDetailReduxdata?.users?.length > 0 && (
                 <View style={styles.listenersContainer}>
                   <View style={styles.listenersTextWrapper}>
@@ -711,29 +723,7 @@ function MySessionDetailScreen(props) {
                       numberOfLines={2}>
                       LISTENERS
                     </Text>
-                    {/* <TouchableOpacity
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        opacity: 0.6,
-                      }}>
-                      <Image
-                        source={ImagePath.add_white}
-                        style={styles.inviteIcon}
-                        resizeMode="cover"
-                      />
-                      <Text
-                    style={[
-                      styles.listItemHeaderSongTextTitle,
-                      {marginLeft: normalise(8), fontSize: normalise(13)},
-                    ]}
-                    numberOfLines={2}>
-                    Send Invite
-                  </Text>
-                    </TouchableOpacity> */}
                   </View>
-
                   <View
                     style={[
                       styles.bottomLineStyle,
@@ -745,7 +735,7 @@ function MySessionDetailScreen(props) {
                     ]}></View>
                   <ScrollView style={{flex: 1}}>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                      {sessionDetailReduxdata?.users?.map((item, index) => {
+                      {currentListners?.map((item, index) => {
                         return (
                           <View
                             style={[
@@ -766,13 +756,74 @@ function MySessionDetailScreen(props) {
                               style={styles.songListItemImage}
                               resizeMode="cover"
                             />
+                            <Text numberOfLines={1}>{item?.username}</Text>
                           </View>
                         );
                       })}
                     </View>
                   </ScrollView>
                 </View>
-              )}
+              )} */}
+
+            {currentListners?.length > 0 && (
+              <View style={styles.listenersContainer}>
+                <View style={styles.listenersTextWrapper}>
+                  <Text
+                    style={[
+                      styles.listItemHeaderSongTextTitle,
+                      {marginTop: normalise(5), fontSize: normalise(12)},
+                    ]}
+                    numberOfLines={2}>
+                    LISTENERS
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    styles.bottomLineStyle,
+                    {
+                      width: width / 3.8,
+                      marginBottom: normalise(8),
+                      marginTop: normalise(0),
+                    },
+                  ]}></View>
+                <ScrollView style={{flex: 1}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      flexWrap: 'wrap',
+                    }}>
+                    {currentListners?.map((item, index) => {
+                      return (
+                        <View
+                          style={[
+                            styles.joineeIitemWrapper,
+                            // index == 0 &&
+                            //   currentListners?.length > 1 && {
+                            //     marginLeft: normalise(40),
+                            //   },
+                            // index == 3 && {marginRight: normalise(40)},
+                          ]}>
+                          <Image
+                            source={
+                              item?.profile_image
+                                ? {
+                                    uri:
+                                      constants.profile_picture_base_url +
+                                      item?.profile_image,
+                                  }
+                                : ImagePath.userPlaceholder
+                            }
+                            style={[styles.songListItemImage]}
+                            resizeMode="cover"
+                          />
+                        </View>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+              </View>
+            )}
           </View>
           <TrackProgress />
           {/* {playerVisible &&
@@ -871,7 +922,7 @@ const styles = StyleSheet.create({
   },
 
   bottomLineStyle: {
-    marginTop: normalise(10),
+    marginTop: normalise(8),
     backgroundColor: Colors.white,
     alignSelf: 'center',
     opacity: 0.7,
@@ -905,7 +956,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     marginHorizontal: normalise(11),
-    marginBottom: normalise(7),
+    marginBottom: normalise(11),
   },
   inviteIcon: {
     borderRadius: normalise(5),
@@ -950,3 +1001,27 @@ const styles = StyleSheet.create({
 });
 
 export default MySessionDetailScreen;
+
+{
+  /* <TouchableOpacity
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        opacity: 0.6,
+                      }}>
+                      <Image
+                        source={ImagePath.add_white}
+                        style={styles.inviteIcon}
+                        resizeMode="cover"
+                      />
+                      <Text
+                    style={[
+                      styles.listItemHeaderSongTextTitle,
+                      {marginLeft: normalise(8), fontSize: normalise(13)},
+                    ]}
+                    numberOfLines={2}>
+                    Send Invite
+                  </Text>
+                    </TouchableOpacity> */
+}
