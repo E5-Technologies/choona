@@ -645,7 +645,11 @@ function MySessionDetailScreen(props) {
                       <View
                         style={[
                           styles.itemWrapper,
-                          !iscurrentPlaying && {opacity: 0.4},
+
+                          (iscurrentPlaying ||
+                            playerState?.state == 'none') && {opacity: 1},
+                          // !playerState?.state == 'none' &&
+                          //   !iscurrentPlaying && {opacity: 0.4},
                         ]}>
                         <TouchableOpacity
                           disabled={iscurrentPlaying ? false : true}
@@ -708,7 +712,7 @@ function MySessionDetailScreen(props) {
                       numberOfLines={2}>
                       LISTENERS
                     </Text>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
@@ -720,15 +724,15 @@ function MySessionDetailScreen(props) {
                         style={styles.inviteIcon}
                         resizeMode="cover"
                       />
-                      {/* <Text
+                      <Text
                     style={[
                       styles.listItemHeaderSongTextTitle,
                       {marginLeft: normalise(8), fontSize: normalise(13)},
                     ]}
                     numberOfLines={2}>
                     Send Invite
-                  </Text> */}
-                    </TouchableOpacity>
+                  </Text>
+                    </TouchableOpacity> */}
                   </View>
 
                   <View
@@ -814,6 +818,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignItems: 'center',
+    opacity: 0.4,
   },
   songListItemImage: {
     borderRadius: normalise(5),
