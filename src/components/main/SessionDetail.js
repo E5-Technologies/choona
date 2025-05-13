@@ -585,7 +585,11 @@ function SessionDetail(props) {
               : null
           }
           title={'SESSIONS'}
-          thirditemtext={false}
+          thirditemtext={
+            sessionDetailReduxdata?.isLive && checkUserExistence()
+              ? true
+              : false
+          }
           imagetwo={
             sessionDetailReduxdata?.isPrivate ||
             (sessionDetailReduxdata?.isLive && checkUserExistence())
@@ -599,7 +603,11 @@ function SessionDetail(props) {
                 setShowPopover(true)
               : props.navigation.goBack();
           }}
-          onPressThirdItem={handleJoinLeaveSession}
+          onPressThirdItem={
+            sessionDetailReduxdata?.isLive && checkUserExistence()
+              ? () => null
+              : handleJoinLeaveSession
+          }
         />
         <View style={{flex: 1}}>
           <View style={{flex: 2.5}}>
