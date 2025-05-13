@@ -18,6 +18,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
 import {createSessionRequest} from '../../action/SessionAction';
 import {useDispatch, useSelector} from 'react-redux';
+import toast from '../../utils/helpers/ShowErrorAlert';
 
 function AssembleSession(props) {
   // console.log(props.route?.params, 'these are params');
@@ -62,12 +63,16 @@ function AssembleSession(props) {
             // props.navigation.goBack();
             // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: [] })
           }}
-          onPressThirdItem={() =>
+          onPressThirdItem={() => {
+            if (sessionList?.length < 4) {
+              toast('Error', 'Please add atleast 4 songs!');
+              return;
+            }
             props.navigation.navigate('SessionLaunchScreen', {
               sessionSonglist: sessionList,
               songItem: songItem?.registerType,
-            })
-          }
+            });
+          }}
         />
         <View style={{flex: 1}}>
           {sessionList && (

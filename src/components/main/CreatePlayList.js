@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
   View,
   Keyboard,
+  TextInput,
 } from 'react-native';
 import Colors from '../../assests/Colors';
 import normalise from '../../utils/helpers/Dimens';
@@ -87,6 +88,15 @@ function CreatePlayList(props) {
   console.log(songListPayload(), 'its data>>>>');
   // return;
   const createPost = async () => {
+    if (playListArary?.length < 4) {
+      toast('Error', 'Please add atleast 4 songs!');
+      return;
+    }
+    if (playListName?.trim() == '') {
+      toast('Error', 'Please add playlist name!');
+      return;
+    }
+
     setBool(true);
     // let tapUser = [];
     // await props.followingData.map((item, index) => {
@@ -169,7 +179,7 @@ function CreatePlayList(props) {
         <View style={{flex: 1}}>
           {playListArary && (
             <View style={styles.topContainerStyle}>
-              <TextInputField
+              {/* <TextInputField
                 backgroundColor={Colors.fadeblack}
                 style={{backgroundColor: Colors.fadeblack}}
                 autocorrect={false}
@@ -179,13 +189,98 @@ function CreatePlayList(props) {
                 tick_visible={playListName ? true : false}
                 onChangeText={text => {
                   setPlayListName(text);
-                  // check(text);
                 }}
                 mainStyle={{
-                  // borderWidth:1,
                   borderColor: Colors.white,
                   marginTop: -normalise(22),
                   width: '75%',
+                }}
+              /> */}
+              <TextInput
+                style={{
+                  color: Colors.white,
+                  fontWeight: '400',
+                  marginHorizontal: normalise(10),
+                  marginBottom: normalise(10),
+                  borderColor: Colors.white,
+                  // marginTop: -normalise(22),
+                  width: '75%',
+                  padding: 10,
+                }}
+                keyboardAppearance="dark"
+                scrollEnabled={false}
+                multiline={false}
+                maxLength={50}
+                placeholder={'PlayList name'}
+                placeholderTextColor={Colors.darkgrey}
+                // onChangeText={text => {
+                //   let indexvalue = text.lastIndexOf('@');
+                //   let newString = text.substr(text.lastIndexOf('@'));
+
+                //   if (indexvalue !== -1) {
+                //     if (newString.length === 1) {
+                //       if (
+                //         search.substr(indexvalue - 1) === ' ' ||
+                //         search.substr(indexvalue - 1) === ''
+                //       ) {
+                //         setFollowingList([...props.followingData]);
+                //         setFollower([...props.followerData]);
+                //         props.followingData.length === 0
+                //           ? setShowMention(false)
+                //           : setShowMention(true);
+                //       } else {
+                //         setShowMention(false);
+                //       }
+                //     } else {
+                //       let newSubString = newString.substr(1, newString.length - 1);
+                //       let newArray = [];
+                //       let newFollowArray = [];
+                //       if (props.followingData.length !== 0) {
+                //         props.followingData.map((item, index) => {
+                //           //  console.log("mapItem"+item.full_name)
+                //           if (item.username.includes(newSubString)) {
+                //             newArray.push(item);
+                //           }
+                //           if (index === props.followingData.length - 1) {
+                //             if (props.followerData.length !== 0) {
+                //               props.followerData.map((items, indexs) => {
+                //                 if (items.username.includes(newSubString)) {
+                //                   newFollowArray.push(items);
+                //                 }
+                //                 if (indexs === props.followerData.length - 1) {
+                //                   newFollowArray.length === 0
+                //                     ? setShowMention(false)
+                //                     : (setFollowingList(newArray),
+                //                       setFollower(newFollowArray),
+                //                       setShowMention(true));
+                //                 }
+                //               });
+                //             } else {
+                //               setFollowingList(newArray), setShowMention(true);
+                //             }
+                //           }
+                //         });
+                //       } else {
+                //         props.followerData.map((items, indexs) => {
+                //           if (items.username.includes(newSubString)) {
+                //             newFollowArray.push(items);
+                //           }
+                //           if (indexs === props.followerData.length - 1) {
+                //             newArray.length === 0
+                //               ? setShowMention(false)
+                //               : (setFollower(newFollowArray), setShowMention(true));
+                //           }
+                //         });
+                //       }
+                //     }
+                //   } else {
+                //     setShowMention(false);
+                //   }
+                //   setSearch(text);
+                // }}
+                onChangeText={text => {
+                  setPlayListName(text);
+                  // check(text);
                 }}
               />
               {/* <Text style={styles.mainTitleStyle} numberOfLines={1}>
@@ -195,8 +290,8 @@ function CreatePlayList(props) {
                 style={[
                   styles.combienBanerWrapper,
                   {
-                    width: width / 1.9,
-                    height: width / 1.9,
+                    width: width / 2.3,
+                    height: width / 2.3,
                   },
                 ]}>
                 {playListArary?.map(item => {
@@ -209,7 +304,8 @@ function CreatePlayList(props) {
                   );
                 })}
               </View>
-              <View style={[styles.bottomLineStyle, {width: width / 2}]}></View>
+              <View
+                style={[styles.bottomLineStyle, {width: width / 2.3}]}></View>
             </View>
           )}
           <View style={styles.playListItemContainer}>
@@ -226,7 +322,7 @@ function CreatePlayList(props) {
                     <View style={styles.listItemHeaderSongText}>
                       <Text
                         style={styles.songlistItemHeaderSongTextTitle}
-                        numberOfLines={2}>
+                        numberOfLines={1}>
                         {item?.title}
                       </Text>
                       <Text
@@ -273,7 +369,7 @@ const styles = StyleSheet.create({
   topContainerStyle: {
     // justifyContent: 'center',
     alignItems: 'center',
-    marginTop: normalise(25),
+    marginTop: normalise(15),
   },
   mainTitleStyle: {
     color: Colors.white,
@@ -301,27 +397,28 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   playListItemContainer: {
-    width: '75%',
+    width: '100%',
     alignSelf: 'center',
     marginTop: normalise(15),
     flex: 1,
-    marginBottom: normalise(62),
+    marginBottom: normalise(50),
   },
   itemWrapper: {
     flexDirection: 'row',
     marginBottom: normalise(16),
     flex: 1,
+    marginHorizontal: 15,
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(56),
-    width: normalise(56),
+    height: normalise(50),
+    width: normalise(50),
     marginRight: normalise(8),
   },
   listItemHeaderSongText: {
     alignItems: 'flex-start',
     flexDirection: 'column',
-    marginLeft: normalise(10),
+    marginLeft: normalise(7),
     // maxWidth: normalise(240),
     width: '100%',
     borderBottomWidth: 0.5,
@@ -336,7 +433,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
     fontSize: normalise(13),
-    marginBottom: normalise(5),
+    marginBottom: normalise(0),
   },
   songlistItemHeaderSongTextArtist: {
     color: Colors.meta,
@@ -350,7 +447,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     // bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-    bottom: 0,
+    // bottom: 0,
+    bottom: Platform.OS === 'ios' ? normalise(24) : normalise(0),
   },
   buttonStyle: {
     backgroundColor: Colors.fadeblack,
@@ -359,7 +457,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     borderRadius: 5,
     width: '75%',
-    height: normalise(62),
+    height: normalise(45),
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
