@@ -390,8 +390,8 @@ const styles = StyleSheet.create({
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(47),
-    width: normalise(47),
+    height: normalise(40),
+    width: normalise(40),
   },
 
   listItemHeaderSongDetails: {
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   songlistItemHeaderSongTextArtist: {
     color: Colors.darkgrey,
     fontFamily: 'ProximaNova-Regular',
-    fontSize: normalise(9),
+    fontSize: normalise(11),
   },
 
   bottomLineStyle: {

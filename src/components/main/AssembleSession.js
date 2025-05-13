@@ -14,7 +14,7 @@ import {
 import Colors from '../../assests/Colors';
 import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
-import HeaderComponent from '../../widgets/HeaderComponent';
+import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
 import {createSessionRequest} from '../../action/SessionAction';
 import {useDispatch, useSelector} from 'react-redux';
@@ -43,6 +43,23 @@ function AssembleSession(props) {
     // console.log(newArray, 'its new array');
     setSessionList(newArray);
   }, [songItem]);
+
+  //Functions********************************************************
+
+  const handleRemoveItemtoList = itemId => {
+    let currentLength = sessionList?.length;
+
+    const filteredArray = sessionList?.filter(
+      item => item.details.id !== itemId,
+    );
+    setSessionList(filteredArray);
+    if (currentLength == 1) {
+      props.navigation.navigate('AddSong', {
+        from: 'AssembleSession',
+        previousSessionData: [],
+      });
+    }
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
@@ -105,6 +122,9 @@ function AssembleSession(props) {
             <FlatList
               data={sessionList}
               renderItem={({item, index}) => {
+                {
+                  console.log(item, 'this is item');
+                }
                 return (
                   <View style={styles.itemWrapper}>
                     <Image
@@ -124,6 +144,19 @@ function AssembleSession(props) {
                         {item?.title2}
                       </Text>
                     </View>
+                    <TouchableOpacity
+                      onPress={() => handleRemoveItemtoList(item?.details?.id)}
+                      hitSlop={hitSlop}
+                      style={{alignSelf: 'center', marginLeft: 15}}>
+                      <Image
+                        source={ImagePath.greycross}
+                        style={{
+                          width: normalise(16),
+                          height: normalise(17),
+                        }}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
                   </View>
                 );
               }}
@@ -202,8 +235,8 @@ const styles = StyleSheet.create({
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(50),
-    width: normalise(50),
+    height: normalise(40),
+    width: normalise(40),
     marginRight: normalise(8),
   },
   listItemHeaderSongText: {
@@ -223,13 +256,14 @@ const styles = StyleSheet.create({
   songlistItemHeaderSongTextTitle: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
-    fontSize: normalise(13),
-    marginBottom: normalise(2),
+    // fontSize: normalise(13),
+    // marginBottom: normalise(2),
+    fontSize: normalise(12),
   },
   songlistItemHeaderSongTextArtist: {
     color: Colors.meta,
     fontFamily: 'ProximaNova-Regular',
-    fontSize: normalise(12),
+    fontSize: normalise(11),
   },
   buttonWrapper: {
     width: '100%',

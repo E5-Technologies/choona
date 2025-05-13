@@ -645,7 +645,6 @@ function MySessionDetailScreen(props) {
                       <View
                         style={[
                           styles.itemWrapper,
-
                           (iscurrentPlaying ||
                             playerState?.state == 'none') && {opacity: 1},
                           // !playerState?.state == 'none' &&
@@ -814,7 +813,7 @@ const styles = StyleSheet.create({
 
   itemWrapper: {
     flexDirection: 'row',
-    marginBottom: normalise(3),
+    marginBottom: normalise(8),
     flex: 1,
     width: '100%',
     alignItems: 'center',
@@ -822,8 +821,8 @@ const styles = StyleSheet.create({
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(47),
-    width: normalise(47),
+    height: normalise(40),
+    width: normalise(40),
   },
 
   listItemHeaderSongDetails: {
@@ -853,7 +852,7 @@ const styles = StyleSheet.create({
     marginLeft: normalise(10),
     width: '100%',
     height: '100%',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.3,
     borderBottomColor: Colors.meta,
     flex: 1,
     justifyContent: 'center',
@@ -868,7 +867,7 @@ const styles = StyleSheet.create({
   songlistItemHeaderSongTextArtist: {
     color: Colors.darkgrey,
     fontFamily: 'ProximaNova-Regular',
-    fontSize: normalise(9),
+    fontSize: normalise(11),
   },
 
   bottomLineStyle: {
@@ -888,8 +887,8 @@ const styles = StyleSheet.create({
   },
 
   playButtonStyle: {
-    width: normalise(50),
-    height: normalise(50),
+    width: normalise(40),
+    height: normalise(40),
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -800,8 +800,8 @@ const styles = StyleSheet.create({
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(45),
-    width: normalise(45),
+    height: normalise(40),
+    width: normalise(40),
   },
 
   imageTwoStyle: {
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
     marginLeft: normalise(10),
     width: '100%',
     height: '100%',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.4,
     borderBottomColor: Colors.meta,
     flex: 1,
     justifyContent: 'center',
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
   songlistItemHeaderSongTextArtist: {
     color: Colors.darkgrey,
     fontFamily: 'ProximaNova-Regular',
-    fontSize: normalise(9),
+    fontSize: normalise(11),
   },
 
   bottomLineStyle: {
@@ -876,8 +876,8 @@ const styles = StyleSheet.create({
   },
 
   playButtonStyle: {
-    width: normalise(50),
-    height: normalise(50),
+    width: normalise(40),
+    height: normalise(40),
     justifyContent: 'center',
     alignItems: 'center',
   },
