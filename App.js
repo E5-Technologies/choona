@@ -484,7 +484,13 @@ const App = () => {
               <Stack.Screen name="PlayerComment" component={PlayerComment} />
               <Stack.Screen name="AddSong" component={AddSong} />
               <Stack.Screen name="CreatePlayList" component={CreatePlayList} />
-              <Stack.Screen name="SessionDetail" component={SessionDetail} />
+              <Stack.Screen
+                name="SessionDetail"
+                component={SessionDetail}
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
               <Stack.Screen
                 name="AssembleSession"
                 component={AssembleSession}
@@ -495,8 +501,13 @@ const App = () => {
               />
               <Stack.Screen name="SessionActive" component={SessionActive} />
               <Stack.Screen name="PlayListDetail" component={PlayListDetail} />
-              <Stack.Screen name="MySessionDetailScreen" component={MySessionDetailScreen} />
-
+              <Stack.Screen
+                name="MySessionDetailScreen"
+                component={MySessionDetailScreen}
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
             </Stack.Navigator>
           )}
         </NavigationContainer>

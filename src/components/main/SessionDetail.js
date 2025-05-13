@@ -235,10 +235,10 @@ function SessionDetail(props) {
 
       // Control playback state
       if (currentState.startAudioMixing) {
-        Alert.alert('play');
+        // Alert.alert('play');
         await TrackPlayer.play();
       } else {
-        Alert.alert('pause');
+        // Alert.alert('pause');
         await TrackPlayer.pause();
       }
     } catch (error) {
@@ -505,6 +505,7 @@ function SessionDetail(props) {
             dispatch(
               startSessionJoinRequestStatusIdle({status: '', error: {}}),
             );
+            props.navigation.goBack();
           }, 300);
           break;
 
@@ -669,9 +670,10 @@ function SessionDetail(props) {
                     <View
                       style={[
                         styles.itemWrapper,
-                        isPlayingCurrent &&
-                          currentEmitedSongStatus?.current
-                            ?.startAudioMixing && {opacity: 1},
+                        // isPlayingCurrent &&
+                        //   currentEmitedSongStatus?.current
+                        //     ?.startAudioMixing && {opacity: 1},
+                        isPlayingCurrent && {opacity: 1},
                       ]}>
                       <TouchableOpacity
                         disabled={true}
