@@ -38,6 +38,7 @@ import TrackPlayer, {
 import {
   START_SESSION_JOINEE_FAILURE,
   START_SESSION_JOINEE_REQUEST,
+  START_SESSION_JOINEE_STOP_HOST,
   START_SESSION_LEFT_SUCCESS,
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -56,6 +57,7 @@ function SessionDetail(props) {
   const [status, setStatus] = useState('');
   const touchable = useRef();
   const [showPopover, setShowPopover] = useState(false);
+  const [showMessageToUser, setShowMessageToUser] = useState('');
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -422,6 +424,7 @@ function SessionDetail(props) {
           // Add listener only if component is still mounted
           // if (isMounted) {
           socketService.on('session_play_status', handleStatusUpdate);
+          socketService.on('session_ended_status', handleListerUserStatus);
           // }
         } catch (err) {
           console.error('Socket setup error:', err);
@@ -453,6 +456,40 @@ function SessionDetail(props) {
   }, [sessionReduxData.status]);
 
   //helperss***********************************************************************************
+
+  const handleListerUserStatus = res => {
+    console.log(res, 'its liten whenhost leave');
+    if (res?.isLive == false) {
+      dispatch({
+        type: START_SESSION_JOINEE_STOP_HOST,
+        data: {data: {...res}},
+      });
+      // toast(
+      //   'Success',
+      //   'Session has been stopped by the host',
+      //   ToastAndroid.SHORT,
+      // );
+    }
+  };
+
+  const handleSessionLeftOverCancel = (type, messageText) => {
+    setStatus(type);
+    TrackPlayer.reset();
+    currentEmitedSongStatus.current = {
+      hostId: null,
+      startAudioMixing: null,
+      playIndex: null,
+      playLoading: null,
+      currentTime: null,
+      startedAt: null,
+      pausedAt: null,
+    };
+    setTimeout(() => {
+      toast('Success', `${messageText}`);
+      dispatch(startSessionJoinRequestStatusIdle({status: '', error: {}}));
+      props.navigation.goBack();
+    }, 800);
+  };
 
   const handleNavigation = () => {
     if (status === '' || status !== sessionReduxData.status) {
@@ -488,27 +525,36 @@ function SessionDetail(props) {
           }, 300);
           break;
         case START_SESSION_LEFT_SUCCESS:
-          setStatus(START_SESSION_LEFT_SUCCESS);
-          // Alert.alert(sessionReduxData?.error?.message);
-          TrackPlayer.reset();
-          currentEmitedSongStatus.current = {
-            hostId: null,
-            startAudioMixing: null,
-            playIndex: null,
-            playLoading: null,
-            currentTime: null,
-            startedAt: null,
-            pausedAt: null,
-          };
-          toast('Success', 'Session left succssfully!');
-          setTimeout(() => {
-            dispatch(
-              startSessionJoinRequestStatusIdle({status: '', error: {}}),
-            );
-            props.navigation.goBack();
-          }, 300);
+          // setStatus(START_SESSION_LEFT_SUCCESS);
+          // // Alert.alert(sessionReduxData?.error?.message);
+          // TrackPlayer.reset();
+          // currentEmitedSongStatus.current = {
+          //   hostId: null,
+          //   startAudioMixing: null,
+          //   playIndex: null,
+          //   playLoading: null,
+          //   currentTime: null,
+          //   startedAt: null,
+          //   pausedAt: null,
+          // };
+          // toast('Success', 'Session left succssfully!');
+          // setTimeout(() => {
+          //   dispatch(
+          //     startSessionJoinRequestStatusIdle({status: '', error: {}}),
+          //   );
+          //   props.navigation.goBack();
+          // }, 300);
+          handleSessionLeftOverCancel(
+            START_SESSION_LEFT_SUCCESS,
+            'Session left succssfully',
+          );
           break;
-
+        case START_SESSION_JOINEE_STOP_HOST:
+          handleSessionLeftOverCancel(
+            START_SESSION_JOINEE_STOP_HOST,
+            'Session has been closed by the host',
+          );
+          break;
         default:
           setStatus('');
           break;

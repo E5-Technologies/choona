@@ -507,6 +507,35 @@ function MySessionDetailScreen(props) {
     }
   });
 
+  useTrackPlayerEvents([Event.PlaybackQueueEnded], async event => {
+    console.log('✅ Playback finished for the last track');
+    TrackPlayer.reset();
+    handleStopKillSession();
+  });
+
+  // const listenLastTrackEnd = () => {
+  //   if (currentTrack && playerState?.state != 'none') {
+  //     let listLastSong = sessionDetailReduxdata?.session_songs?.length - 1;
+  //     // console.log(currentTrack, listLastSong, 'yes it is last song1');
+  //     if (currentTrack == listLastSong && duration > 0) {
+  //       console.log(currentTrack, listLastSong, 'yes it is last song');
+  //       console.log(playerState?.state, 'its statu inlast');
+  //       if (position == duration) {
+  //         TrackPlayer.reset();
+  //       }
+  //     }
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (
+  //     sessionDetailReduxdata?.session_songs?.length &&
+  //     currentTrack !== null
+  //   ) {
+  //     console.log('hheheh', position, duration);
+  //     listenLastTrackEnd();
+  //   }
+  // }, [currentTrack, position]);
+
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader

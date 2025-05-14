@@ -178,7 +178,7 @@ export function* leftSessionRequest(action) {
       action.payload,
       header,
     );
-    // console.log(response?.data?.data, 'response when user Left the session');
+    console.log(response?.data, 'response when user Left the session');
     yield put({type: START_SESSION_LEFT_SUCCESS, data: response.data});
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'when user left error');

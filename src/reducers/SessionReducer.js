@@ -1,4 +1,3 @@
-
 import {
   CREATE_SESSION_REQUEST,
   CREATE_SESSION_SUCCESS,
@@ -26,19 +25,20 @@ import {
   START_SESSION_LEFT_STATUS_IDLE,
   START_SESSION_LEFT_SUCCESS,
   START_SESSION_LEFT_REQUEST,
+  START_SESSION_JOINEE_STOP_HOST,
 } from '../action/TypeConstants';
 
 const initialState = {
   status: '',
   loading: false,
-  startSessionLoading:false,
-  isRequestLoader:false,
+  startSessionLoading: false,
+  isRequestLoader: false,
   error: {},
   sessionListData: {},
   sessionDetailData: {},
   currentSessionSong: {},
   CurrentSessionJoineeInfo: {},
-  hasLeftSession:null
+  hasLeftSession: null,
 };
 
 const SessionReducer = (state = initialState, action) => {
@@ -145,7 +145,7 @@ const SessionReducer = (state = initialState, action) => {
         ...state,
         status: action.type,
         startSessionLoading: false,
-        sessionDetailData:action.data,
+        sessionDetailData: action.data,
         currentSessionSong: action.data,
       };
 
@@ -163,7 +163,6 @@ const SessionReducer = (state = initialState, action) => {
         status: action.status,
       };
 
-
     // START SESSION JOINEE REQUEST  HANDLING
     case START_SESSION_JOINEE_REQUEST:
       return {
@@ -180,7 +179,6 @@ const SessionReducer = (state = initialState, action) => {
         sessionDetailData: action.data,
         CurrentSessionJoineeInfo: action.data,
       };
-      
 
     case START_SESSION_JOINEE_FAILURE:
       return {
@@ -197,8 +195,7 @@ const SessionReducer = (state = initialState, action) => {
         isRequestLoader: false,
       };
 
-
-      // START SESSION LEFT REQUEST  HANDLING
+    // START SESSION LEFT REQUEST  HANDLING
     case START_SESSION_LEFT_REQUEST:
       return {
         ...state,
@@ -212,8 +209,18 @@ const SessionReducer = (state = initialState, action) => {
         status: action.type,
         isRequestLoader: false,
         CurrentSessionJoineeInfo: action.data,
-        hasLeftSession:true,
-        sessionDetailData: action.data
+        hasLeftSession: true,
+        sessionDetailData: action.data,
+      };
+
+    case START_SESSION_JOINEE_STOP_HOST:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: false,
+        CurrentSessionJoineeInfo: action.data,
+        hasLeftSession: true,
+        sessionDetailData: action.data,
       };
 
     case START_SESSION_LEFT_FAILURE:
@@ -228,7 +235,7 @@ const SessionReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.status,
-        hasLeftSession:null,
+        hasLeftSession: null,
       };
     case ASYNC_STORAGE_CLEAR:
       return initialState;

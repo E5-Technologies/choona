@@ -16,6 +16,7 @@ import {
   START_SESSION_LEFT_STATUS_IDLE,
   START_SESSION_REQUEST,
   START_SESSION_STATUS_IDLE,
+  START_SESSION_LEFT_SUCCESS,
 } from './TypeConstants';
 
 export const createSessionRequest = payload => ({
@@ -28,7 +29,6 @@ export const crateSessionRequestStatusIdle = payload => ({
   payload,
 });
 
-
 export const createSessionListRequest = () => ({
   type: CREATE_SESSION_LIST_REQUEST,
 });
@@ -38,8 +38,7 @@ export const fetchSessionListRequestStatusIdle = payload => ({
   payload,
 });
 
-
-export const getSessionDetailRequest = (payload) => ({
+export const getSessionDetailRequest = payload => ({
   type: CREATE_SESSION_DETAIL_REQUEST,
   payload,
 });
@@ -49,9 +48,7 @@ export const getSessionDetailRequestStatusIdle = payload => ({
   payload,
 });
 
-
-
-export const startSessionRequest = (payload) => ({
+export const startSessionRequest = payload => ({
   type: START_SESSION_REQUEST,
   payload,
 });
@@ -61,9 +58,7 @@ export const startSessionRequestStatusIdle = payload => ({
   payload,
 });
 
-
-
-export const startSessionJoinRequest = (payload) => ({
+export const startSessionJoinRequest = payload => ({
   type: START_SESSION_JOINEE_REQUEST,
   payload,
 });
@@ -73,23 +68,20 @@ export const startSessionJoinRequestStatusIdle = payload => ({
   payload,
 });
 
-
-export const startSessionLeftRequest = (payload) => ({
+export const startSessionLeftRequest = payload => ({
   type: START_SESSION_LEFT_REQUEST,
   payload,
 });
+
+// export const startSessionLeftSuccess = payload => ({
+//   type: START_SESSION_LEFT_SUCCESS,
+//   payload,
+// });
 
 export const startSessionLeftRequestStatusIdle = payload => ({
   type: START_SESSION_LEFT_STATUS_IDLE,
   payload,
 });
-
-
-
-
-
-
-
 
 // export const deletePostReq = payload => ({
 //   type: DELETE_POST_REQUEST,
