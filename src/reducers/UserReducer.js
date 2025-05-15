@@ -77,6 +77,10 @@ import {
   LOAD_MORE_REQUEST,
   LOAD_MORE_SUCCESS,
   LOAD_MORE_DATA,
+  SEND_SESSION_INVITATION_STATUS_IDLE,
+  SEND_SESSION_INVITATION_FAILURE,
+  SEND_SESSION_INVITATION_SUCCESS,
+  SEND_SESSION_INVITATION_REQUEST,
 } from '../action/TypeConstants';
 import moment from 'moment';
 import _ from 'lodash';
@@ -111,6 +115,7 @@ const initialState = {
   getUsersFromContact: [],
   loadData: [],
   loadmoredata: [],
+  inviteLoader: false,
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -681,6 +686,35 @@ const UserReducer = (state = initialState, action) => {
         ...state,
         status: action.type,
         followingData: action.data,
+      };
+
+    case SEND_SESSION_INVITATION_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+        inviteLoader: true,
+      };
+
+    case SEND_SESSION_INVITATION_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        inviteLoader: false,
+      };
+
+    case SEND_SESSION_INVITATION_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        error: action.error,
+        inviteLoader: false,
+      };
+    case SEND_SESSION_INVITATION_STATUS_IDLE:
+      return {
+        ...state,
+        status: '',
+        error: {},
+        inviteLoader: false,
       };
 
     case ASYNC_STORAGE_CLEAR:

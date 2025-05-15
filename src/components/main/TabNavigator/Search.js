@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -14,7 +14,7 @@ import {
   Linking,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 // import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
@@ -23,11 +23,11 @@ import Colors from '../../../assests/Colors';
 import StatusBar from '../../../utils/MyStatusBar';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import ImagePath from '../../../assests/ImagePath';
-import { FlatList } from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import HomeItemList from '../ListCells/HomeItemList';
 import _ from 'lodash';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
   USER_SEARCH_REQUEST,
   USER_SEARCH_SUCCESS,
@@ -54,21 +54,21 @@ import {
   saveSongRequest,
   getTop50SongsRequest,
 } from '../../../action/SongAction';
-import { searchPostReq } from '../../../action/PostAction';
-import { deletePostReq } from '../../../action/PostAction';
+import {searchPostReq} from '../../../action/PostAction';
+import {deletePostReq} from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import constants from '../../../utils/helpers/constants';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
-import { getUsersFromHome } from '../../../action/UserAction';
+import {getUsersFromHome} from '../../../action/UserAction';
 import Contacts from 'react-native-contacts';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
 import axios from 'axios';
-import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
+import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
 import Reactions from '../../Reactions/Reactions';
-import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
+import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
 import ReportModal from '../../Posts/ReportModal';
 
 let status;
@@ -260,7 +260,7 @@ const Search = props => {
           });
         }}
         onPress={() => {
-          props.followReq({ follower_id: data.item._id });
+          props.followReq({follower_id: data.item._id});
         }}
         TouchableOpacityDisabled={false}
       />
@@ -380,7 +380,7 @@ const Search = props => {
     return `${reactId}##${postId}`;
   };
 
-  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+  const {hitReact: newHitReact, isPending} = useContext(ReactionsContext);
 
   // function hitReact(reactId, postId) {
   //   let reactionObject = {
@@ -413,16 +413,16 @@ const Search = props => {
         : false,
       disco: data.item.manDancingReactionIds
         ? data.item.manDancingReactionIds.includes(
-          `${props.userProfileResp?._id}`,
-        )
+            `${props.userProfileResp?._id}`,
+          )
         : false,
       throwback: data.item.faceReactionIds
         ? data.item.faceReactionIds.includes(`${props.userProfileResp?._id}`)
         : false,
       thumbsDown: data.item.thumbsUpReactionIds
         ? data.item.thumbsUpReactionIds.includes(
-          `${props.userProfileResp?._id}`,
-        )
+            `${props.userProfileResp?._id}`,
+          )
         : false,
     };
 
@@ -463,7 +463,7 @@ const Search = props => {
         postType={data.item.social_type === 'spotify'}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', { fromAct: false });
+            props.navigation.navigate('Profile', {fromAct: false});
           } else {
             props.navigation.navigate('OthersProfile', {
               id: data.item.user_id,
@@ -564,14 +564,14 @@ const Search = props => {
       reaction === react[0]
         ? 'A'
         : reaction === react[1]
-          ? 'B'
-          : reaction === react[2]
-            ? 'C'
-            : reaction === react[3]
-              ? 'D'
-              : reaction === react[4]
-                ? 'E'
-                : 'F';
+        ? 'B'
+        : reaction === react[2]
+        ? 'C'
+        : reaction === react[3]
+        ? 'D'
+        : reaction === react[4]
+        ? 'E'
+        : 'F';
 
     let reactionObject = {
       post_id: id,
@@ -720,7 +720,7 @@ const Search = props => {
       if (text.length >= 1) {
         isInternetConnected()
           .then(() => {
-            props.userSearchReq({ keyword: text }, sendSong);
+            props.userSearchReq({keyword: text}, sendSong);
           })
           .catch(() => {
             toast('Error', 'Please Connect To Internet');
@@ -794,7 +794,7 @@ const Search = props => {
         });
 
         // console.log(finalArray);
-        props.navigation.navigate('UsersFromContacts', { data: finalArray });
+        props.navigation.navigate('UsersFromContacts', {data: finalArray});
       }
     });
   };
@@ -913,7 +913,7 @@ const Search = props => {
 
   //VIEW
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
@@ -928,8 +928,8 @@ const Search = props => {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}>
-        <SafeAreaView style={{ flex: 1 }}>
+        style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>
           <HeaderComponent
             firstitemtext={true}
             textone={''}
@@ -1096,20 +1096,20 @@ const Search = props => {
                   bottom: normalise(10),
                   paddingLeft: normalise(35),
                   marginHorizontal: normalise(12),
-                  transform: [{ scaleX: -1 }],
+                  transform: [{scaleX: -1}],
                 }}
                 resizeMode="contain"
               />
               {(usersSearch && usersSearchText) ||
-                (songSearch && songSearchText) ? (
+              (songSearch && songSearchText) ? (
                 <TouchableOpacity
                   onPress={() => {
                     clearSearch();
                     usersSearch
                       ? setUsersSearchText('')
                       : genreSearch
-                        ? setGenreSearchText('')
-                        : setSongSearchText('');
+                      ? setGenreSearchText('')
+                      : setSongSearchText('');
                   }}
                   style={{
                     // backgroundColor: Colors.black,
@@ -1239,7 +1239,10 @@ const Search = props => {
                     setReportModal={setReportModal}
                   />
                 )}
-                <ReportModal reportModal={reportModal} setReportModal={setReportModal} />
+                <ReportModal
+                  reportModal={reportModal}
+                  setReportModal={setReportModal}
+                />
               </View>
             )
           ) : null}
@@ -1249,7 +1252,7 @@ const Search = props => {
                 <EmptyComponent
                   image={ImagePath.emptyPost}
                   text={'No songs have been posted today.'}
-                // title={'No songs have been posted today'}
+                  // title={'No songs have been posted today'}
                 />
               )
             ) : (

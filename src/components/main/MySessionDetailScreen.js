@@ -1,13 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
+  Dimensions,
   FlatList,
   Image,
+  ImageBackground,
+  Linking,
+  Modal,
   Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -40,10 +45,25 @@ import TrackPlayer, {
 import {TrackProgress} from '../common/Progress';
 import {hitSlop} from '../../widgets/HeaderComponent';
 import Popover from 'react-native-popover-view';
+import ActivityListItem from './ListCells/ActivityListItem';
+import Seperator from './ListCells/Seperator';
+import EmptyComponent from '../Empty/EmptyComponent';
+import {
+  sendSessionInvitationToUser,
+  sendSessionInvitationToUserIdleStatus,
+  userSearchRequest,
+} from '../../action/UserAction';
+import {
+  START_SESSION_JOINEE_FAILURE,
+  START_SESSION_JOINEE_REQUEST,
+  SEND_SESSION_INVITATION_FAILURE,
+  SEND_SESSION_INVITATION_SUCCESS,
+} from '../../action/TypeConstants';
 
 // let status;
 
 function MySessionDetailScreen(props) {
+  let sendSong = false;
   // console.log(props?.route?.params, 'these are params')
   // const { currentSession } = props?.route?.params
   // console.log(currentSession, 'its current sessionI')
@@ -54,6 +74,11 @@ function MySessionDetailScreen(props) {
   const [islive, setIsLive] = useState(false);
   const [currentPlayingSong, setCurrentPlayingSong] = useState(null);
   const [showPopover, setShowPopover] = useState(false);
+  const [userDataList, setUserDataList] = useState([]);
+  const [usersSearchText, setUsersSearchText] = useState('');
+  const [seletedUserToInvite, setSelectedUserToInvite] = useState([]);
+  const [status, setStatus] = useState('');
+
   const {
     startSessionAndPlay,
     playTrack,
@@ -68,6 +93,8 @@ function MySessionDetailScreen(props) {
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
   const [listenSessionStart, setListenSessionStart] = useState(null);
   const [currentListners, setCurrentListeners] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
   // const { position, duration } = useProgress(200);
   const playerState = usePlaybackState();
   // console.log(playerState, 'its play back state');
@@ -83,14 +110,22 @@ function MySessionDetailScreen(props) {
   const sessionReduxData = useSelector(state => state.SessionReducer);
   const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data;
   const currentSessionLiveInfo = sessionReduxData?.currentSessionSong?.data;
-  // console.log(sessionDetailReduxdata, 'its detail data state');
+  const userReduxData = useSelector(state => state.UserReducer);
+  const userSearchList = useSelector(state => state.UserReducer.userSearch);
+  const userInviteLoader = useSelector(state => state.UserReducer.inviteLoader);
 
+  // Alert.alert(userInviteLoader);
+
+  console.log(userInviteLoader, 'its detail user list');
   // const { state } = usePlaybackState();
   // useEffect(() => {
   //     if (state == 'ended') {
   //         setIsPlaying(false)
   //     }
   // }, [state])
+  useEffect(() => {
+    setUserDataList(userSearchList);
+  }, [userSearchList]);
 
   useEffect(() => {
     positionRef.current = position;
@@ -466,7 +501,48 @@ function MySessionDetailScreen(props) {
 
   // console.log(currentPlayingSong, 'its current playing song')
 
+  useEffect(() => {
+    handleNavigation();
+  }, [userReduxData.status]);
+
   //helperss***********************************************************************************
+
+  const handleNavigation = () => {
+    if (status === '' || status !== userReduxData.status) {
+      switch (userReduxData.status) {
+        case SEND_SESSION_INVITATION_FAILURE:
+          setStatus(SEND_SESSION_INVITATION_FAILURE);
+          // Alert.alert(sessionReduxData?.error?.message);
+          toast(
+            'Error',
+            userReduxData?.error?.message ??
+              'Something Went Wrong, Please Try Again',
+          );
+          setTimeout(() => {
+            dispatch(
+              sendSessionInvitationToUserIdleStatus({status: '', error: {}}),
+            );
+          }, 300);
+          break;
+        case SEND_SESSION_INVITATION_SUCCESS:
+          setStatus(SEND_SESSION_INVITATION_SUCCESS);
+          setModalVisible(!modalVisible);
+          setUserDataList([]);
+          setUsersSearchText('');
+          setSelectedUserToInvite([]);
+          setTimeout(() => {
+            toast('Success', 'Invitation sent successfully');
+            dispatch(
+              sendSessionInvitationToUserIdleStatus({status: '', error: {}}),
+            );
+          }, 300);
+          break;
+        default:
+          setStatus('');
+          break;
+      }
+    }
+  };
 
   const handleListerUserStatus = res => {
     if (res && res?.message) {
@@ -536,11 +612,244 @@ function MySessionDetailScreen(props) {
   //   }
   // }, [currentTrack, position]);
 
+  // SEARCH AND CLEAR FUNCTIONS
+  const search = text => {
+    if (text.length >= 1) {
+      isInternetConnected()
+        .then(() => {
+          // disableduserSearchReq({keyword: text}, sendSong);
+          dispatch(userSearchRequest({keyword: text}, sendSong));
+        })
+        .catch(() => {
+          toast('Error', 'Please Connect To Internet');
+        });
+    }
+  };
+
+  const handleUserToAddInvite = userId => {
+    const isExist = seletedUserToInvite.some(item => item == userId);
+    if (isExist) {
+      const filteredArray = seletedUserToInvite.filter(item => item !== userId);
+      setSelectedUserToInvite(filteredArray);
+    } else {
+      setSelectedUserToInvite([...seletedUserToInvite, userId]);
+    }
+  };
+
+  const handleSendInvitation = () => {
+    const objectRequest = {
+      id: sessionDetailReduxdata?._id,
+      invited_users: seletedUserToInvite,
+    };
+    // console.log(objectRequest, 'dfdfdf>>');
+    // return;
+    dispatch(sendSessionInvitationToUser(objectRequest));
+  };
+
+  //components *************************************************************
+
+  const renderModal = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        presentationStyle={'overFullScreen'}>
+        <ImageBackground
+          source={ImagePath ? ImagePath.page_gradient : null}
+          style={styles.centeredView}>
+          <Loader visible={userInviteLoader} />
+          <View style={styles.modalView}>
+            {seletedUserToInvite && seletedUserToInvite?.length > 0 && (
+              <TouchableOpacity
+                onPress={() => {
+                  handleSendInvitation();
+                }}
+                style={{
+                  padding: 10,
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  borderRadius: 5,
+                  backgroundColor: Colors.darkerblack,
+                  position: 'absolute',
+                  right: 12,
+                  top: 12,
+                  marginRight: normalise(10),
+                }}>
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(10),
+                    fontWeight: 'bold',
+                  }}>
+                  SEND
+                </Text>
+              </TouchableOpacity>
+            )}
+            <View
+              style={{
+                width: '100%',
+                alignSelf: 'center',
+                marginTop: normalise(16),
+                marginBottom: normalise(16),
+              }}>
+              <TextInput
+                style={{
+                  height: normalise(35),
+                  borderRadius: normalise(8),
+                  padding: normalise(10),
+                  color: Colors.white,
+                  marginHorizontal: normalise(12),
+                  backgroundColor: Colors.fadeblack,
+                  paddingLeft: normalise(35),
+                }}
+                keyboardAppearance="dark"
+                autoCorrect={false}
+                value={usersSearchText}
+                placeholder={'Search Users'}
+                placeholderTextColor={Colors.darkgrey}
+                onChangeText={text => {
+                  search(text);
+                  setUsersSearchText(text);
+                }}
+              />
+              <Image
+                source={ImagePath.searchicongrey}
+                style={{
+                  position: 'absolute',
+                  height: normalise(15),
+                  width: normalise(15),
+                  bottom: normalise(10),
+                  paddingLeft: normalise(35),
+                  marginHorizontal: normalise(12),
+                  transform: [{scaleX: -1}],
+                }}
+                resizeMode="contain"
+              />
+              {usersSearchText && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setUserDataList([]);
+                    setUsersSearchText('');
+                  }}
+                  style={{
+                    padding: 10,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    borderRadius: 5,
+                    backgroundColor: Colors.darkerblack,
+                    position: 'absolute',
+                    right: 12,
+                    bottom: Platform.OS === 'ios' ? normalise(8) : normalise(8),
+                    marginRight: normalise(10),
+                  }}>
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontSize: normalise(10),
+                      fontWeight: 'bold',
+                    }}>
+                    CLEAR
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            {userDataList && userDataList?.length == 0 ? (
+              <EmptyComponent
+                image={ImagePath.emptyUser}
+                text={
+                  'Search above to find users you want to send invitation by either their username or just typing their name.'
+                }
+                title={'Search Users to Send Invitation'}
+              />
+            ) : (
+              <View style={{flex: 1}}>
+                {/* {console.log(userDataList, 'this list of usered>>>>>>>>>')} */}
+                <FlatList
+                  style={{
+                    height: Dimensions.get('window').height - 295,
+                  }}
+                  data={userDataList ?? []}
+                  renderItem={renderUserData}
+                  keyExtractor={(item, index) => index.toString()}
+                  showsVerticalScrollIndicator={false}
+                  ItemSeparatorComponent={Seperator}
+                />
+              </View>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                setUserDataList([]);
+                setUsersSearchText('');
+                setSelectedUserToInvite([]);
+              }}
+              style={{
+                marginBottom: normalise(20),
+                height: normalise(40),
+                backgroundColor: Colors.fadeblack,
+                opacity: 10,
+                borderRadius: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: normalise(24),
+              }}>
+              <Text
+                style={{
+                  fontSize: normalise(12),
+                  fontFamily: 'ProximaNova-Bold',
+                  color: Colors.white,
+                }}>
+                CANCEL
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </Modal>
+    );
+  };
+
+  function renderUserData({item}) {
+    const isAlreadyExist = seletedUserToInvite.includes(item?._id);
+    return (
+      <ActivityListItem
+        image={constants.profile_picture_base_url + item.profile_image}
+        user={item.username}
+        type={false}
+        userId={item?.user_id}
+        // loginUserId={props.userProfileResp?._id}
+        follow={item?.isFollowing ? false : true}
+        // bottom={item.index === props.userSearch.length - 1 ? true : false}
+        // marginBottom={
+        //   item.index === props.userSearch.length - 1
+        //     ? normalise(80)
+        //     : normalise(0)
+        // }
+        onPressImage={() => {
+          null;
+          // props.navigation.navigate('OthersProfile', {
+          //   id: item.item._id,
+          //   following: item.item.isFollowing,
+          // });
+        }}
+        image2={isAlreadyExist ? ImagePath?.blueTick : ImagePath?.addButton}
+        onPress={() => {
+          handleUserToAddInvite(item?._id);
+          // props.followReq({follower_id: data.item._id});
+        }}
+        TouchableOpacityDisabled={false}
+        localImage={true}
+      />
+    );
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader
         visible={
-          sessionReduxData?.loading || sessionReduxData?.startSessionLoading
+          sessionReduxData?.loading ||
+          sessionReduxData?.startSessionLoading ||
+          userInviteLoader
         }
       />
       <LinearGradient
@@ -854,7 +1163,10 @@ function MySessionDetailScreen(props) {
               </View>
             )}
           </View>
-          <TrackProgress />
+          <TrackProgress
+            setModalVisible={() => setModalVisible(!modalVisible)}
+            modalVisible={modalVisible}
+          />
           {/* {playerVisible &&
                         <TrackPlayerComponent
                             currentTrack={{
@@ -868,6 +1180,7 @@ function MySessionDetailScreen(props) {
                         />
                     } */}
         </SafeAreaView>
+        {renderModal()}
       </LinearGradient>
     </View>
   );
@@ -1026,6 +1339,49 @@ const styles = StyleSheet.create({
     borderEndWidth: 1,
     borderRightColor: Colors.meta,
     width: '50%',
+  },
+
+  //modal view style
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  modalView: {
+    // marginBottom: normalise(10),
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
+    backgroundColor: Colors.darkerblack,
+    // margin: 20,
+    padding: 20,
+    paddingTop: normalise(24),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    height: '80%',
+  },
+  openButton: {
+    backgroundColor: '#F194FF',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
   },
 });
 

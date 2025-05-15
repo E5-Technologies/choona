@@ -455,6 +455,12 @@ function SessionDetail(props) {
     handleNavigation();
   }, [sessionReduxData.status]);
 
+  useEffect(() => {
+    if (props.route.params.fromScreen == 'notificionScreen') {
+      handleJoinLeaveSession();
+    }
+  }, [props.route.params.fromScreen]);
+
   //helperss***********************************************************************************
 
   const handleListerUserStatus = res => {
@@ -651,7 +657,8 @@ function SessionDetail(props) {
               : props.navigation.goBack();
           }}
           onPressThirdItem={
-            sessionDetailReduxdata?.isLive && checkUserExistence()
+            sessionDetailReduxdata?.isPrivate ||
+            (sessionDetailReduxdata?.isLive && checkUserExistence())
               ? () => null
               : handleJoinLeaveSession
           }

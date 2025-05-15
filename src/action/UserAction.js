@@ -27,6 +27,8 @@ import {
   FOLLOWER_SEARCH_REQUEST,
   FOLLOWING_SEARCH_REQUEST,
   LOAD_MORE_DATA,
+  SEND_SESSION_INVITATION_REQUEST,
+  SEND_SESSION_INVITATION_STATUS_IDLE,
 } from './TypeConstants';
 
 export const loginRequest = payload => ({
@@ -163,4 +165,13 @@ export const followerSearchReq = search => ({
 export const followingSearchReq = search => ({
   type: FOLLOWING_SEARCH_REQUEST,
   search,
+});
+
+export const sendSessionInvitationToUser = payload => ({
+  type: SEND_SESSION_INVITATION_REQUEST,
+  payload,
+});
+
+export const sendSessionInvitationToUserIdleStatus = () => ({
+  type: SEND_SESSION_INVITATION_STATUS_IDLE,
 });

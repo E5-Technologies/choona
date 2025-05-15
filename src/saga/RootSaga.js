@@ -28,6 +28,7 @@ import {
   watchFollowerSearch,
   watchFollowingSearch,
   watchLoadMoreAction,
+  watchSendInvitationToJoin,
 } from './UserSaga';
 
 import {
@@ -75,7 +76,7 @@ import {
   watchSessionDetailRequest,
   watchSessionStartRequest,
   watchSessionJoinRequest,
-  watchSessionLeftRequest
+  watchSessionLeftRequest,
 } from './SessionSaga';
 
 function* RootSaga() {
@@ -142,6 +143,7 @@ function* RootSaga() {
     watchSessionStartRequest(),
     watchSessionJoinRequest(),
     watchSessionLeftRequest(),
+    watchSendInvitationToJoin(),
   ]);
 }
 

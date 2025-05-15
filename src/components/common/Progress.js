@@ -3,7 +3,7 @@ import {Text} from 'react-native-gesture-handler';
 import {useProgress} from 'react-native-track-player';
 import ImagePath from '../../assests/ImagePath';
 
-export function TrackProgress() {
+export function TrackProgress({setModalVisible, modalVisible}) {
   const {position, duration} = useProgress(200);
 
   function format(seconds) {
@@ -31,7 +31,8 @@ export function TrackProgress() {
           right: 0,
           width: 50,
           height: 50,
-        }}>
+        }}
+        onPress={() => setModalVisible(!modalVisible)}>
         <Image
           source={ImagePath.add_white}
           style={styles.inviteIcon}

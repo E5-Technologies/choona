@@ -80,6 +80,9 @@ import {
   FOLLOWER_SEARCH_SUCCESS,
   LOAD_MORE_REQUEST,
   LOAD_MORE_SUCCESS,
+  SEND_SESSION_INVITATION_FAILURE,
+  SEND_SESSION_INVITATION_SUCCESS,
+  SEND_SESSION_INVITATION_REQUEST,
 } from '../action/TypeConstants';
 import {
   postApi,
@@ -221,6 +224,7 @@ export function* userSearchAction(action) {
       data: response.data.data,
       sendSong: action.sendSong,
     });
+    console.log(response?.data?.data, 'its data fetched user');
   } catch (error) {
     yield put({type: USER_SEARCH_FAILURE, error: error});
   }
@@ -708,6 +712,39 @@ export function* followingSearchAction(action) {
   yield put({type: FOLLOWING_SEARCH_SUCCESS, data: result});
 }
 
+export function* sendInvitationToJoin(action) {
+  console.log(action.payload, 'its paylod jkkjk>>>');
+  // return;
+  try {
+    const items = yield select(getItems);
+    const Header = {
+      Accept: 'application/json',
+      contenttype: 'application/json',
+      accesstoken: items.token,
+    };
+
+    console.log(items.token, 'its token>>>>');
+    const response = yield call(
+      postApi,
+      'session/invite',
+      action.payload,
+      Header,
+    );
+    console.log(response?.data, 'its respomse after sned invitatio');
+    if (response.status === 201) {
+      yield put({type: SEND_SESSION_INVITATION_FAILURE, error: response.data});
+    } else {
+      yield put({
+        type: SEND_SESSION_INVITATION_SUCCESS,
+        // data: response.data.data,
+      });
+    }
+  } catch (error) {
+    console.log(JSON.stringify(error), 'its error h bro');
+    yield put({type: SEND_SESSION_INVITATION_FAILURE, error: error});
+  }
+}
+
 //WATCH FUNCTIONS
 
 export function* watchLoginRequest() {
@@ -815,4 +852,7 @@ export function* watchFollowerSearch() {
 
 export function* watchFollowingSearch() {
   yield takeLatest(FOLLOWING_SEARCH_REQUEST, followingSearchAction);
+}
+export function* watchSendInvitationToJoin() {
+  yield takeLatest(SEND_SESSION_INVITATION_REQUEST, sendInvitationToJoin);
 }

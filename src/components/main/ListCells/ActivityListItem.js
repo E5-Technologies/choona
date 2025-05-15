@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
 import ReactionsReverse from '../../Reactions/ReactionsReverse';
 import ReactionsComponent from '../../Reactions/ReactionsComponent';
@@ -11,7 +11,7 @@ import Avatar from '../../Avatar';
 function ActivityListItem(props) {
   const [follow, setFollow] = useState(props.follow);
 
-  const onPress = (value='') => {
+  const onPress = (value = '') => {
     if (props.onPress) {
       props.onPress(value);
     }
@@ -31,7 +31,7 @@ function ActivityListItem(props) {
             onPress={() => {
               onPressImage();
             }}
-            style={{ marginRight: normaliseNew(8) }}>
+            style={{marginRight: normaliseNew(8)}}>
             <Avatar
               image={
                 props.image !== 'https://api.choona.co/uploads/user/thumb/'
@@ -43,7 +43,7 @@ function ActivityListItem(props) {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+            style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}
             disabled={props.TouchableOpacityDisabled}
             onPress={() => {
               onPressImage();
@@ -76,10 +76,12 @@ function ActivityListItem(props) {
                 ''
               )}
             </Text>
-            {props.reaction &&
-            ReactionsReverse[props.reaction]  ? (
-              <View style={{ width: 20, height: 20 }}>
-                <ReactionsComponent value={ReactionsReverse[props.reaction]} onClick={()=> onPress('reaction')} />
+            {props.reaction && ReactionsReverse[props.reaction] ? (
+              <View style={{width: 20, height: 20}}>
+                <ReactionsComponent
+                  value={ReactionsReverse[props.reaction]}
+                  onClick={() => onPress('reaction')}
+                />
               </View>
             ) : null}
           </TouchableOpacity>
@@ -89,7 +91,7 @@ function ActivityListItem(props) {
             <TouchableOpacity
               style={[
                 styles.followButton,
-                { backgroundColor: follow ? Colors.white : 'transparent' },
+                {backgroundColor: follow ? Colors.white : 'transparent'},
                 !follow && {
                   borderWidth: 1,
                   borderColor: Colors.fadeblack,
@@ -102,8 +104,7 @@ function ActivityListItem(props) {
               {follow ? (
                 <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
               ) : (
-                <Text
-                  style={[styles.followButtonText, { color: Colors.white }]}>
+                <Text style={[styles.followButtonText, {color: Colors.white}]}>
                   FOLLOWING
                 </Text>
               )}
@@ -114,13 +115,21 @@ function ActivityListItem(props) {
             onPress={() => {
               onPress();
             }}>
-            <Image
-              source={
-                props.image2 === '' ? ImagePath.dp2 : { uri: props.image2 }
-              }
-              style={{ height: normaliseNew(35), width: normaliseNew(35) }}
-              resizeMode="contain"
-            />
+            {props.localImage ? (
+              <Image
+                source={props.image2}
+                style={{height: normaliseNew(25), width: normaliseNew(25)}}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={
+                  props.image2 === '' ? ImagePath.dp2 : {uri: props.image2}
+                }
+                style={{height: normaliseNew(35), width: normaliseNew(35)}}
+                resizeMode="contain"
+              />
+            )}
           </TouchableOpacity>
         )}
       </View>
@@ -205,4 +214,5 @@ ActivityListItem.defaultProps = {
   TouchableOpacityDisabled: true,
   userId: '',
   loginUserId: '',
+  localImage: false,
 };
