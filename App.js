@@ -78,6 +78,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import MySessionDetailScreen from './src/components/main/MySessionDetailScreen';
+import MySessionScreen from './src/components/main/MySessionScreen';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -507,6 +508,10 @@ const App = () => {
                 options={{
                   gestureEnabled: false,
                 }}
+              />
+              <Stack.Screen
+                name="MySessionScreen"
+                component={MySessionScreen}
               />
             </Stack.Navigator>
           )}

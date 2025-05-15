@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -19,9 +19,9 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
-import { WebView } from 'react-native-webview';
+import {WebView} from 'react-native-webview';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -210,7 +210,7 @@ const Profile = props => {
           source={ImagePath ? ImagePath.page_gradient : null}
           style={styles.centeredView}>
           <View style={styles.modalView}>
-          <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 setModalVisible(!modalVisible);
                 props.navigation.push('BlockList', {
@@ -225,6 +225,21 @@ const Profile = props => {
                   fontFamily: 'ProximaNova-Semibold',
                 }}>
                 See Blocked User
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                props.navigation.navigate('MySessionScreen');
+              }}
+              style={{marginTop: normalise(18)}}>
+              <Text
+                style={{
+                  color: Colors.white,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                My Sessions
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -246,7 +261,7 @@ const Profile = props => {
                 setModalVisible(!modalVisible);
                 setModalPrivacy(true);
               }}
-              style={{ marginTop: normalise(18) }}>
+              style={{marginTop: normalise(18)}}>
               <Text
                 style={{
                   color: Colors.white,
@@ -261,7 +276,7 @@ const Profile = props => {
                 setModalVisible(!modalVisible);
                 setModaltandcs(true);
               }}
-              style={{ marginTop: normalise(18) }}>
+              style={{marginTop: normalise(18)}}>
               <Text
                 style={{
                   color: Colors.white,
@@ -272,7 +287,7 @@ const Profile = props => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ marginTop: normalise(18) }}
+              style={{marginTop: normalise(18)}}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 setModaltandcs(true);
@@ -296,7 +311,7 @@ const Profile = props => {
                         </TouchableOpacity> */}
 
             <TouchableOpacity
-              style={{ marginTop: normalise(18) }}
+              style={{marginTop: normalise(18)}}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 props.logoutReq();
@@ -318,7 +333,7 @@ const Profile = props => {
                 fontFamily: 'ProximaNova-Semibold',
               }}>
               Version{' '}
-              <Text style={{ fontSize: normalise(12) }}>
+              <Text style={{fontSize: normalise(12)}}>
                 {DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})
               </Text>
             </Text>
@@ -366,21 +381,21 @@ const Profile = props => {
         onRequestClose={() => {
           setModalPrivacy(false);
         }}>
-        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
-          <View style={{ marginTop: '10%' }}>
+        <View style={{flex: 1, backgroundColor: '#0D1E25'}}>
+          <View style={{marginTop: '10%'}}>
             <TouchableOpacity
-              style={{ marginLeft: normalise(15), top: normalise(-15) }}
+              style={{marginLeft: normalise(15), top: normalise(-15)}}
               onPress={() => {
                 setModalPrivacy(false);
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{ height: normalise(15), width: normalise(15) }}
+                style={{height: normalise(15), width: normalise(15)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.com/privacy' }} />
+          <WebView source={{uri: 'https://www.choona.com/privacy'}} />
         </View>
       </Modal>
     );
@@ -396,42 +411,42 @@ const Profile = props => {
         onRequestClose={() => {
           setModaltandcs(false);
         }}>
-        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
-          <View style={{ marginTop: '10%' }}>
+        <View style={{flex: 1, backgroundColor: '#0D1E25'}}>
+          <View style={{marginTop: '10%'}}>
             <TouchableOpacity
-              style={{ marginLeft: normalise(15), top: normalise(-15) }}
+              style={{marginLeft: normalise(15), top: normalise(-15)}}
               onPress={() => {
                 setModaltandcs(false);
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{ height: normalise(15), width: normalise(15) }}
+                style={{height: normalise(15), width: normalise(15)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{ uri: 'https://www.choona.com/terms' }} />
+          <WebView source={{uri: 'https://www.choona.com/terms'}} />
         </View>
       </Modal>
     );
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <View style={HeaderStyles.headerContainer}>
           <View style={HeaderStyles.leftItem}>
             <TouchableOpacity
-              style={{ marginRight: normalise(10) }}
+              style={{marginRight: normalise(10)}}
               onPress={() => {
                 setTotalCount(0);
                 props.navigation.goBack();
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{ height: normalise(15), width: normalise(15) }}
+                style={{height: normalise(15), width: normalise(15)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -447,13 +462,13 @@ const Profile = props => {
               },
             ]}>
             <TouchableOpacity
-              style={{ marginRight: normalise(10) }}
+              style={{marginRight: normalise(10)}}
               onPress={() => {
                 props.navigation.navigate('EditProfile');
               }}>
               <Image
                 source={ImagePath ? ImagePath.settings : null}
-                style={{ height: normalise(20), width: normalise(20) }}
+                style={{height: normalise(20), width: normalise(20)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -463,7 +478,7 @@ const Profile = props => {
               }}>
               <Image
                 source={ImagePath ? ImagePath.iconmenu : null}
-                style={{ height: normalise(20), width: normalise(20) }}
+                style={{height: normalise(20), width: normalise(20)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -489,13 +504,13 @@ const Profile = props => {
             <ActivityIndicator
               color="#ffffff"
               size="large"
-              style={{ marginTop: normalise(25) }}
+              style={{marginTop: normalise(25)}}
             />
           </View>
         ) : _.isEmpty(profilePosts) && !nonempty ? (
           <EmptyComponent
             buttonPress={() =>
-              props.navigation.replace('bottomTab', { screen: 'Add' })
+              props.navigation.replace('bottomTab', {screen: 'Add'})
             }
             buttonText={'Add your first post'}
             image={ImagePath ? ImagePath.emptyPost : null}
