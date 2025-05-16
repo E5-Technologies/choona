@@ -23,6 +23,9 @@ import {
   My_SESSION_LIST_REQUEST,
   My_SESSION_LIST_SUCCESS,
   My_SESSION_LIST_FAILURE,
+  My_SESSION_DELETE_REQUEST,
+  My_SESSION_DELETE_FAILURE,
+  My_SESSION_DELETE_SUCCESS,
 } from '../action/TypeConstants';
 import {postApi, getApi, putApi} from '../utils/helpers/ApiRequest';
 import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
@@ -113,8 +116,17 @@ export function* startSessionOnce(action) {
   };
 
   console.log(header, 'its header hh');
-  const objectData = {isLive: action.payload.isLive};
+  const objectData = {};
+  if (action.payload.isLive != null) {
+    {
+      objectData['isLive'] = action.payload.isLive;
+    }
+  }
+  if (action.payload.isPrivate != null) {
+    objectData['isPrivate'] = action.payload.isPrivate;
+  }
   console.log(objectData, 'its object data');
+
   try {
     const response = yield call(
       putApi,
@@ -124,7 +136,7 @@ export function* startSessionOnce(action) {
       objectData,
       header,
     );
-    // console.log(response?.data, 'its response start session');
+    console.log(response?.data, 'its response start session');
     yield put({type: START_SESSION_SUCCESS, data: response?.data});
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
@@ -237,6 +249,34 @@ export function* fetchMySessionListRequest(action) {
   }
 }
 
+//FUNCTION TO DELETE MY SESSION
+export function* mySessionDeleteRequestRequest(action) {
+  const items = yield select(getItems);
+  const header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items.token,
+  };
+  try {
+    const response = yield call(
+      getApi,
+      `session/remove/${action.payload.sessionId}`,
+      header,
+    );
+    console.log(response?.data, 'its response delete my session');
+    yield put({
+      type: My_SESSION_DELETE_SUCCESS,
+      // data: response.data
+    });
+    yield put({
+      type: My_SESSION_LIST_REQUEST,
+    });
+  } catch (error) {
+    console.log(JSON.stringify(error?.message), 'simple error1 in list get');
+    yield put({type: My_SESSION_DELETE_FAILURE, error: error});
+  }
+}
+
 //WATCH FUNCTIONS
 
 export function* watchCreateSessionRequest() {
@@ -269,4 +309,8 @@ export function* watchSessionLeftRequest() {
 //TO WATCH TO MY SESSION LIST REQUEST
 export function* watchMySessionListRequest() {
   yield takeLatest(My_SESSION_LIST_REQUEST, fetchMySessionListRequest);
+}
+//TO WATCH TO MY SESSION DELETE REQUEST
+export function* watchMySessionDeleteRequest() {
+  yield takeLatest(My_SESSION_DELETE_REQUEST, mySessionDeleteRequestRequest);
 }

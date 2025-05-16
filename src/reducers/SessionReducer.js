@@ -30,6 +30,10 @@ import {
   My_SESSION_LIST_SUCCESS,
   My_SESSION_LIST_FAILURE,
   My_SESSION_LIST_STATUS_IDLE,
+  My_SESSION_DELETE_REQUEST,
+  My_SESSION_DELETE_SUCCESS,
+  My_SESSION_DELETE_FAILURE,
+  My_SESSION_DELETE_STATUS_IDLE,
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -268,6 +272,37 @@ const SessionReducer = (state = initialState, action) => {
       };
 
     case My_SESSION_LIST_STATUS_IDLE:
+      return {
+        ...state,
+        status: action.status,
+        isRequestLoader: false,
+      };
+
+    // MY SESSION DELETE HANDLING
+    case My_SESSION_DELETE_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: true,
+      };
+
+    case My_SESSION_DELETE_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: false,
+        // mySessionLisDELETEa: action.data,
+      };
+
+    case My_SESSION_DELETE_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: false,
+        error: action.error,
+      };
+
+    case My_SESSION_DELETE_STATUS_IDLE:
       return {
         ...state,
         status: action.status,

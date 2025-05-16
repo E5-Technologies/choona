@@ -18,7 +18,10 @@ import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
 import EmptyComponent from '../Empty/EmptyComponent';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import {mySessionListRequest} from '../../action/SessionAction';
+import {
+  mySessionDeleteRequest,
+  mySessionListRequest,
+} from '../../action/SessionAction';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import HomeSessionItem from './ListCells/HomeSessionItem';
 
@@ -86,17 +89,42 @@ const MySessionScreen = props => {
     }
   };
 
-  const renderHiddenItem = data => (
-    <View style={styles.hiddenRow}>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => null}>
-        <Image
-          source={ImagePath.crossIcon}
-          style={styles.deleteIcon}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-    </View>
-  );
+  const renderHiddenItem = ({item}) => {
+    console.log(item, 'its data h');
+    return (
+      <View style={styles.hiddenRow}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => props.handleMySessionDelete({sessionId: item?._id})}>
+          <Image
+            source={ImagePath.deleteIcon}
+            style={styles.deleteIcon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.deleteButton,
+            {
+              borderLeftColor: Colors.fadeblack,
+              borderLeftWidth: normalise(1),
+            },
+          ]}
+          onPress={() =>
+            props.navigation.navigate('MySessionDetailScreen', {
+              sessionId: item?._id,
+              isforEdit: true,
+            })
+          }>
+          <Image
+            source={ImagePath.editIcon}
+            style={[styles.deleteIcon, {tintColor: Colors.white}]}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View
@@ -171,8 +199,9 @@ const MySessionScreen = props => {
                 );
               }}
               renderHiddenItem={renderHiddenItem}
-              leftOpenValue={75}
-              rightOpenValue={-75}
+              leftOpenValue={0}
+              rightOpenValue={-140}
+              disableRightSwipe
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item?._id}
               onEndReached={() => fetchNextPage()}
@@ -231,15 +260,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   deleteButton: {
-    width: normalise(82),
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    width: normalise(65),
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderWidth: 0.5,
+    // borderColor: Colors.meta,
+    height: '100%',
   },
   deleteIcon: {
     height: normalise(20),
     width: normalise(20),
     resizeMode: 'contain',
-    marginRight: 25,
+    // marginRight: 25,
   },
   emptyContainer: {
     flex: 1,
@@ -286,6 +318,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchMySessionList: payload => {
       dispatch(mySessionListRequest(payload));
+    },
+    handleMySessionDelete: payload => {
+      dispatch(mySessionDeleteRequest(payload));
     },
   };
 };

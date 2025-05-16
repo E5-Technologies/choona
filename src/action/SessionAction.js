@@ -18,6 +18,7 @@ import {
   START_SESSION_STATUS_IDLE,
   START_SESSION_LEFT_SUCCESS,
   My_SESSION_LIST_REQUEST,
+  My_SESSION_DELETE_REQUEST,
 } from './TypeConstants';
 
 export const createSessionRequest = payload => ({
@@ -97,5 +98,10 @@ export const startSessionLeftRequestStatusIdle = payload => ({
 
 export const mySessionListRequest = (payload = null) => ({
   type: My_SESSION_LIST_REQUEST,
+  payload,
+});
+
+export const mySessionDeleteRequest = payload => ({
+  type: My_SESSION_DELETE_REQUEST,
   payload,
 });

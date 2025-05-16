@@ -114,6 +114,8 @@ const ImagePath = {
   toggleOn: require('./images/toggleOn.png'),
   // nextSong: require('./images/next.png'),
   // previousSong: require('./images/previous.png'),
+  deleteIcon: require('./images/delete.png'),
+  editIcon: require('./images/edit.png'),
 };
 
 export default ImagePath;

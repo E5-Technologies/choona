@@ -114,6 +114,7 @@ function MySessionDetailScreen(props) {
   const userSearchList = useSelector(state => state.UserReducer.userSearch);
   const userInviteLoader = useSelector(state => state.UserReducer.inviteLoader);
 
+  console.log(sessionDetailReduxdata, 'its data for session');
   // Alert.alert(userInviteLoader);
 
   console.log(userInviteLoader, 'its detail user list');
@@ -575,6 +576,14 @@ function MySessionDetailScreen(props) {
     dispatch(startSessionRequest(requestObj));
   };
 
+  const handleUpdateSession = () => {
+    const requestObj = {
+      isPrivate: !sessionDetailReduxdata?.isPrivate,
+      sessionId: sessionDetailReduxdata?._id,
+    };
+    dispatch(startSessionRequest(requestObj));
+  };
+
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.state == State.nextTrack) {
       let index = await TrackPlayer.getCurrentTrack();
@@ -913,7 +922,7 @@ function MySessionDetailScreen(props) {
               </View>
             </Popover>
 
-            {!islive && (
+            {!islive && !props.route.params.isforEdit && (
               <TouchableOpacity
                 style={[{alignItems: 'center', flexDirection: 'row'}]}
                 onPress={handleStartSession}
@@ -1163,10 +1172,45 @@ function MySessionDetailScreen(props) {
               </View>
             )}
           </View>
-          <TrackProgress
-            setModalVisible={() => setModalVisible(!modalVisible)}
-            modalVisible={modalVisible}
-          />
+          {!props.route.params.isforEdit && (
+            <TrackProgress
+              setModalVisible={() => setModalVisible(!modalVisible)}
+              modalVisible={modalVisible}
+            />
+          )}
+          {props.route.params.isforEdit && (
+            <View style={{}}>
+              <TouchableOpacity
+                style={{
+                  marginHorizontal: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => handleUpdateSession()}>
+                <Text
+                  style={[
+                    {
+                      textAlign: 'center',
+                      color: Colors.meta,
+                      fontSize: normalise(12),
+                      marginBottom: normalise(3),
+                    },
+                  ]}
+                  numberOfLines={2}>
+                  {sessionDetailReduxdata?.isPrivate ? 'Private' : 'Public'}
+                </Text>
+                <Image
+                  source={
+                    sessionDetailReduxdata?.isPrivate
+                      ? ImagePath.toggleOn
+                      : ImagePath.toggleOff
+                  }
+                  style={{width: 45}}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </View>
+          )}
           {/* {playerVisible &&
                         <TrackPlayerComponent
                             currentTrack={{

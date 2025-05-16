@@ -1235,7 +1235,9 @@ const Home = props => {
         flex: 1,
         backgroundColor: Colors.darkerblack,
       }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {Platform.OS == 'android' && (
+        <StatusBar backgroundColor={Colors.darkerblack} />
+      )}
       {/* <SafeAreaView style={{flex: 1, position: 'relative'}}> */}
       <Timer
         onFinish={() => {
@@ -1246,444 +1248,298 @@ const Home = props => {
       <Loader visible={contactsLoading} />
       <Loader visible={bool} />
       <Loader visible={props.sessionReducerData?.loading} />
-      <HomeHeaderComponent
-        firstitemtext={false}
-        marginTop={0}
-        imageone={
-          _.isEmpty(props.userProfileResp)
-            ? ''
-            : props.userProfileResp.profile_image
-            ? constants.profile_picture_base_url +
-              props.userProfileResp.profile_image
-            : null
-        }
-        staticFirstImage={false}
-        imageoneheight={normalise(26)}
-        imageonewidth={normalise(26)}
-        borderRadius={normalise(30)}
-        title={'CHOONA'}
-        thirditemtext={false}
-        imagetwo={ImagePath.boxicon}
-        imagetwoheight={25}
-        imagetwowidth={25}
-        middleImageReq={true}
-        notRead={false}
-        onIconPress={true}
-        pressLogo={() => {
-          flatlistRef.current.scrollToIndex({
-            animated: true,
-            index: 0,
-            viewPosition: 0,
-          });
-        }}
-        onPressFirstItem={() => {
-          props.navigation.navigate('Profile', {fromAct: false});
-        }}
-        onPressThirdItem={() => {
-          props.navigation.navigate('Contact');
-          //  props.navigation.navigate('BlankScreen');
-        }}
-      />
-      <View style={styles.tabBarWrapperStyle}>
-        <TouchableOpacity
-          style={[styles.tabBarButtonStyle]}
-          onPress={() => {
-            // props.getTop50SongReq();
-            setActiveTab(0);
-          }}>
-          <Text
-            style={[
-              styles.tabBarTextStyle,
-              {
-                color: activeTab === 0 ? Colors.white : Colors.grey_text,
-              },
-            ]}>
-            FEED
-          </Text>
-          {activeTab === 0 ? (
-            <Image
-              source={ImagePath.gradient_border_horizontal}
-              style={styles.ActiveTabBar}
-              resizeMode="contain"
-            />
-          ) : null}
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabBarButtonStyle]}
-          onPress={() => {
-            setActiveTab(1);
-          }}>
-          <Text
-            style={[
-              styles.tabBarTextStyle,
-              {
-                color: activeTab === 1 ? Colors.white : Colors.grey_text,
-              },
-            ]}>
-            SESSIONS
-          </Text>
-          {activeTab === 1 ? (
-            <Image
-              source={ImagePath.gradient_border_horizontal}
-              style={styles.ActiveTabBar}
-              resizeMode="contain"
-            />
-          ) : null}
-        </TouchableOpacity>
-      </View>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={firstTimeModalShow}
-        presentationStyle="overFullScreen">
-        <LinearGradient
-          colors={['rgba(159, 0, 255, 0.8)', 'rgba(3, 150, 91, 0.8)']}
-          locations={[0, 0.5, 1]}
-          useAngle={true}
-          angle={315}
-          angleCenter={{x: -4, y: 1}}
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: normalise(12),
-          }}>
-          <View
+      <SafeAreaView style={{flex: 1}}>
+        <HomeHeaderComponent
+          firstitemtext={false}
+          marginTop={0}
+          imageone={
+            _.isEmpty(props.userProfileResp)
+              ? ''
+              : props.userProfileResp.profile_image
+              ? constants.profile_picture_base_url +
+                props.userProfileResp.profile_image
+              : null
+          }
+          staticFirstImage={false}
+          imageoneheight={normalise(26)}
+          imageonewidth={normalise(26)}
+          borderRadius={normalise(30)}
+          title={'CHOONA'}
+          thirditemtext={false}
+          imagetwo={ImagePath.boxicon}
+          imagetwoheight={25}
+          imagetwowidth={25}
+          middleImageReq={true}
+          notRead={false}
+          onIconPress={true}
+          pressLogo={() => {
+            flatlistRef.current.scrollToIndex({
+              animated: true,
+              index: 0,
+              viewPosition: 0,
+            });
+          }}
+          onPressFirstItem={() => {
+            props.navigation.navigate('Profile', {fromAct: false});
+          }}
+          onPressThirdItem={() => {
+            props.navigation.navigate('Contact');
+            //  props.navigation.navigate('BlankScreen');
+          }}
+        />
+        <View style={styles.tabBarWrapperStyle}>
+          <TouchableOpacity
+            style={[styles.tabBarButtonStyle]}
+            onPress={() => {
+              // props.getTop50SongReq();
+              setActiveTab(0);
+            }}>
+            <Text
+              style={[
+                styles.tabBarTextStyle,
+                {
+                  color: activeTab === 0 ? Colors.white : Colors.grey_text,
+                },
+              ]}>
+              FEED
+            </Text>
+            {activeTab === 0 ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={styles.ActiveTabBar}
+                resizeMode="contain"
+              />
+            ) : null}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tabBarButtonStyle]}
+            onPress={() => {
+              setActiveTab(1);
+            }}>
+            <Text
+              style={[
+                styles.tabBarTextStyle,
+                {
+                  color: activeTab === 1 ? Colors.white : Colors.grey_text,
+                },
+              ]}>
+              SESSIONS
+            </Text>
+            {activeTab === 1 ? (
+              <Image
+                source={ImagePath.gradient_border_horizontal}
+                style={styles.ActiveTabBar}
+                resizeMode="contain"
+              />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={firstTimeModalShow}
+          presentationStyle="overFullScreen">
+          <LinearGradient
+            colors={['rgba(159, 0, 255, 0.8)', 'rgba(3, 150, 91, 0.8)']}
+            locations={[0, 0.5, 1]}
+            useAngle={true}
+            angle={315}
+            angleCenter={{x: -4, y: 1}}
             style={{
-              backgroundColor: '#121317',
-              borderRadius: normalise(8),
-              boxShadow: '0px -8px 40px rgba(0, 0, 0, 0.4)',
-              padding: normalise(16),
-              width: '100%',
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: normalise(12),
             }}>
             <View
               style={{
-                alignItems: 'flex-start',
-                borderBottomColor: '#25262A',
-                borderBottomWidth: normalise(1),
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'ProximaNova-Bold',
-                  fontSize: normalise(14),
-                  marginBottom: normalise(12),
-                }}>
-                Welcome to Choona
-              </Text>
-              <Pressable
-                onPress={() => {
-                  setFirstTimeModalShow(false);
-                  AsyncStorage.setItem('IS_FIRST_OPEN', 'true');
-                }}>
-                <Image
-                  source={ImagePath.modalClose}
-                  style={{
-                    height: normalise(24),
-                    right: normalise(-4),
-                    top: normalise(-4),
-                    width: normalise(24),
-                  }}
-                />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                borderBottomColor: '#25262A',
-                borderBottomWidth: normalise(1),
-                paddingTop: normalise(12),
-              }}>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'ProximaNova-Regular',
-                  fontSize: normalise(11),
-                  marginBottom: normalise(16),
-                }}>
-                Firstly, thank you so much for joining Choona!
-              </Text>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'ProximaNova-Regular',
-                  fontSize: normalise(11),
-                  marginBottom: normalise(16),
-                }}>
-                Choona is made by a tiny team and is currently bootstrapped; so
-                please help us, to help you. We have created this platform for
-                music lovers, like yourself, to share their music.
-              </Text>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'ProximaNova-Regular',
-                  fontSize: normalise(11),
-                  marginBottom: normalise(16),
-                }}>
-                We have released Choona to a wider audience, in order to get
-                some feedback from people like you. It won’t be perfect yet, but
-                please reach out with any bugs or feature requests to
-                contact@choona.com{' '}
-                <Text
-                  style={{
-                    color: '#979797',
-                  }}>
-                  (this is also in the setting menu should you need it going
-                  forward)
-                </Text>
-                .
-              </Text>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'ProximaNova-Regular',
-                  fontSize: normalise(11),
-                  marginBottom: normalise(16),
-                }}>
-                Choona is better with friends; so please share it. Also, check
-                your phonebook to see if any of your friends are already on
-                here. Failing that, you can follow our founder below to see his{' '}
-                <Text
-                  style={{
-                    textDecorationLine: 'line-through',
-                    textDecorationStyle: 'solid',
-                  }}>
-                  awful
-                </Text>{' '}
-                taste in music.
-              </Text>
-            </View>
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingTop: normalise(12),
-              }}>
-              <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                <Image
-                  source={{
-                    uri:
-                      constants.profile_picture_base_url +
-                      andyProfile.profile_image,
-                  }}
-                  style={{
-                    borderRadius: normalise(16),
-                    height: normalise(32),
-                    marginRight: normalise(8),
-                    width: normalise(32),
-                  }}
-                />
-                <View>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontFamily: 'ProximaNova-SemiBold',
-                      fontSize: normalise(12),
-                    }}>
-                    {andyProfile.full_name}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontFamily: 'ProximaNova-Regular',
-                      fontSize: normalise(10),
-                      opacity: 0.5,
-                    }}>
-                    Founder
-                  </Text>
-                </View>
-              </View>
-              {!andyProfile.isFollowing && (
-                <Pressable
-                  onPress={() => {
-                    props.followUnfollowReq({follower_id: andyProfile._id});
-                    setFollowButtonPressed(true);
-                  }}
-                  disabled={followButtonPressed}
-                  style={{
-                    alignItems: 'center',
-                    backgroundColor: followButtonPressed ? '#25262a' : '#fff',
-                    borderRadius: normalise(16),
-                    height: normalise(30),
-                    justifyContent: 'center',
-                    width: normalise(100),
-                  }}>
-                  <Text
-                    style={{
-                      color: followButtonPressed ? '#fff' : '#25262a',
-                      fontFamily: 'ProximaNova-Bold',
-                      fontSize: normalise(10),
-                      textTransform: 'uppercase',
-                    }}>
-                    {followButtonPressed ? 'Following' : 'Follow Me'}
-                  </Text>
-                </Pressable>
-              )}
-            </View>
-          </View>
-        </LinearGradient>
-      </Modal>
-
-      {!isShown && (
-        <CompleteProfileBlock
-          navigation={props.navigation}
-          setIsShown={setIsShown}
-        />
-      )}
-      {/* {console.log(posts, 'these are post h songs')} */}
-      {activeTab === 0 ? (
-        _.isEmpty(posts) ? (
-          <EmptyComponent
-            buttonPress={() => {
-              setContactsLoading(true);
-              getContacts();
-            }}
-            buttonText={'Check for friends'}
-            image={ImagePath ? ImagePath.emptyPost : null}
-            text={
-              'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
-            }
-            title={'Your Feed is empty'}
-          />
-        ) : (
-          <View style={{flex: 1}}>
-            <FlatList
-              data={posts}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={item => item?._id}
-              ref={flatlistRef}
-              onEndReached={() => fetchNextPage()}
-              onEndReachedThreshold={2}
-              contentContainerStyle={{paddingBottom: 45}}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={[Colors.black]}
-                  progressBackgroundColor={Colors.white}
-                  title={'Refreshing...'}
-                  titleColor={Colors.white}
-                />
-              }
-            />
-            {loadMoreVisible ? (
-              <TouchableOpacity
-                style={{
-                  borderRadius: 20,
-                  alignSelf: 'center',
-                  position: 'absolute',
-                  top: 20,
-                }}
-                onPress={() => loadMore()}>
-                <LinearGradient
-                  colors={['#008373', '#4950AC', '#7A1FD4']}
-                  start={{x: 1.0, y: 5.1}}
-                  end={{x: 2.0, y: 2.5}}
-                  style={{
-                    flex: 1,
-                    borderRadius: 20,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingVertical: '2.7%',
-                    paddingHorizontal: '4.3%',
-                  }}>
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontSize: normalise(10),
-                      fontFamily: 'Kallisto',
-                    }}>
-                    Load Newer Posts
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            ) : null}
-
-            {visibleminiPlayer === true ? (
-              <MusicPlayerBar
-                onPress={() => {
-                  props.navigation.navigate('Player', {
-                    comments: [],
-                    song_title: props.playingSongRef.song_name,
-                    album_name: props.playingSongRef.album_name,
-                    song_pic: props.playingSongRef.song_pic,
-                    username: props.playingSongRef.username,
-                    profile_pic: props.playingSongRef.profile_pic,
-                    uri: props.playingSongRef.uri,
-                    reactions: props.playingSongRef.reactionData,
-                    id: props.playingSongRef.id,
-                    artist: props.playingSongRef.artist,
-                    changePlayer: props.playingSongRef.changePlayer,
-                    originalUri: props.playingSongRef.originalUri,
-                    isrc: props.playingSongRef.isrc,
-                    registerType: props.playingSongRef.regType,
-                    details: props.playingSongRef.details,
-                    showPlaylist: props.playingSongRef.showPlaylist,
-                    comingFromMessage: props.playingSongRef.comingFromMessage,
-                  });
-                }}
-                onChangeSong={(data, songIndex) =>
-                  playSong({item: data}, songIndex)
-                }
-                onPressPlayOrPause={() => {
-                  setTimeout(() => {
-                    findPlayingSong(posts);
-                  }, 500);
-                }}
-              />
-            ) : null}
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={visible}
-              onRequestClose={() => {
-                //Alert.alert("Modal has been closed.");
+                backgroundColor: '#121317',
+                borderRadius: normalise(8),
+                boxShadow: '0px -8px 40px rgba(0, 0, 0, 0.4)',
+                padding: normalise(16),
+                width: '100%',
               }}>
               <View
                 style={{
-                  flex: 1,
-                  backgroundColor: '#000000',
-                  opacity: 0.9,
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
+                  borderBottomColor: '#25262A',
+                  borderBottomWidth: normalise(1),
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
                 }}>
                 <Text
                   style={{
-                    fontSize:
-                      Platform.OS === 'android'
-                        ? normalise(70)
-                        : normalise(100),
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Bold',
+                    fontSize: normalise(14),
+                    marginBottom: normalise(12),
                   }}>
-                  {modalReact}
+                  Welcome to Choona
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    setFirstTimeModalShow(false);
+                    AsyncStorage.setItem('IS_FIRST_OPEN', 'true');
+                  }}>
+                  <Image
+                    source={ImagePath.modalClose}
+                    style={{
+                      height: normalise(24),
+                      right: normalise(-4),
+                      top: normalise(-4),
+                      width: normalise(24),
+                    }}
+                  />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  borderBottomColor: '#25262A',
+                  borderBottomWidth: normalise(1),
+                  paddingTop: normalise(12),
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Firstly, thank you so much for joining Choona!
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Choona is made by a tiny team and is currently bootstrapped;
+                  so please help us, to help you. We have created this platform
+                  for music lovers, like yourself, to share their music.
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  We have released Choona to a wider audience, in order to get
+                  some feedback from people like you. It won’t be perfect yet,
+                  but please reach out with any bugs or feature requests to
+                  contact@choona.com{' '}
+                  <Text
+                    style={{
+                      color: '#979797',
+                    }}>
+                    (this is also in the setting menu should you need it going
+                    forward)
+                  </Text>
+                  .
+                </Text>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'ProximaNova-Regular',
+                    fontSize: normalise(11),
+                    marginBottom: normalise(16),
+                  }}>
+                  Choona is better with friends; so please share it. Also, check
+                  your phonebook to see if any of your friends are already on
+                  here. Failing that, you can follow our founder below to see
+                  his{' '}
+                  <Text
+                    style={{
+                      textDecorationLine: 'line-through',
+                      textDecorationStyle: 'solid',
+                    }}>
+                    awful
+                  </Text>{' '}
+                  taste in music.
                 </Text>
               </View>
-            </Modal>
-            {modalVisible && (
-              <MoreModal
-                setBool={setBool}
-                index={positionInArray}
-                setIndex={setPositionInArray}
-                navigation={props.navigation}
-                openInAppleORSpotify={openInAppleORSpotify}
-                postData={posts}
-                show={modalVisible}
-                setShow={setModalVisible}
-                setReportModal={setReportModal}
-              />
-            )}
-            <ReportModal
-              reportModal={reportModal}
-              setReportModal={setReportModal}
-            />
-          </View>
-        )
-      ) : (
-        <View style={{flex: 1}}>
-          {_.isEmpty(props.sessionListData?.data) ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingTop: normalise(12),
+                }}>
+                <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                  <Image
+                    source={{
+                      uri:
+                        constants.profile_picture_base_url +
+                        andyProfile.profile_image,
+                    }}
+                    style={{
+                      borderRadius: normalise(16),
+                      height: normalise(32),
+                      marginRight: normalise(8),
+                      width: normalise(32),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'ProximaNova-SemiBold',
+                        fontSize: normalise(12),
+                      }}>
+                      {andyProfile.full_name}
+                    </Text>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'ProximaNova-Regular',
+                        fontSize: normalise(10),
+                        opacity: 0.5,
+                      }}>
+                      Founder
+                    </Text>
+                  </View>
+                </View>
+                {!andyProfile.isFollowing && (
+                  <Pressable
+                    onPress={() => {
+                      props.followUnfollowReq({follower_id: andyProfile._id});
+                      setFollowButtonPressed(true);
+                    }}
+                    disabled={followButtonPressed}
+                    style={{
+                      alignItems: 'center',
+                      backgroundColor: followButtonPressed ? '#25262a' : '#fff',
+                      borderRadius: normalise(16),
+                      height: normalise(30),
+                      justifyContent: 'center',
+                      width: normalise(100),
+                    }}>
+                    <Text
+                      style={{
+                        color: followButtonPressed ? '#fff' : '#25262a',
+                        fontFamily: 'ProximaNova-Bold',
+                        fontSize: normalise(10),
+                        textTransform: 'uppercase',
+                      }}>
+                      {followButtonPressed ? 'Following' : 'Follow Me'}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </View>
+          </LinearGradient>
+        </Modal>
+
+        {!isShown && (
+          <CompleteProfileBlock
+            navigation={props.navigation}
+            setIsShown={setIsShown}
+          />
+        )}
+        {/* {console.log(posts, 'these are post h songs')} */}
+        {activeTab === 0 ? (
+          _.isEmpty(posts) ? (
             <EmptyComponent
               buttonPress={() => {
                 setContactsLoading(true);
@@ -1694,75 +1550,223 @@ const Home = props => {
               text={
                 'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
               }
-              title={'No Session Found'}
+              title={'Your Feed is empty'}
             />
           ) : (
-            <FlatList
-              // data={Array(10).fill('')}
-              data={props.sessionListData?.data}
-              renderItem={({item}) => {
-                return (
-                  <HomeSessionItem
-                    item={item}
-                    userId={props.userProfileResp?._id}
+            <View style={{flex: 1}}>
+              <FlatList
+                data={posts}
+                renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item?._id}
+                ref={flatlistRef}
+                onEndReached={() => fetchNextPage()}
+                onEndReachedThreshold={2}
+                contentContainerStyle={{paddingBottom: 45}}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    colors={[Colors.black]}
+                    progressBackgroundColor={Colors.white}
+                    title={'Refreshing...'}
+                    titleColor={Colors.white}
                   />
-                );
+                }
+              />
+              {loadMoreVisible ? (
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 20,
+                    alignSelf: 'center',
+                    position: 'absolute',
+                    top: 20,
+                  }}
+                  onPress={() => loadMore()}>
+                  <LinearGradient
+                    colors={['#008373', '#4950AC', '#7A1FD4']}
+                    start={{x: 1.0, y: 5.1}}
+                    end={{x: 2.0, y: 2.5}}
+                    style={{
+                      flex: 1,
+                      borderRadius: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: '2.7%',
+                      paddingHorizontal: '4.3%',
+                    }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: normalise(10),
+                        fontFamily: 'Kallisto',
+                      }}>
+                      Load Newer Posts
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              ) : null}
+
+              {visibleminiPlayer === true ? (
+                <MusicPlayerBar
+                  onPress={() => {
+                    props.navigation.navigate('Player', {
+                      comments: [],
+                      song_title: props.playingSongRef.song_name,
+                      album_name: props.playingSongRef.album_name,
+                      song_pic: props.playingSongRef.song_pic,
+                      username: props.playingSongRef.username,
+                      profile_pic: props.playingSongRef.profile_pic,
+                      uri: props.playingSongRef.uri,
+                      reactions: props.playingSongRef.reactionData,
+                      id: props.playingSongRef.id,
+                      artist: props.playingSongRef.artist,
+                      changePlayer: props.playingSongRef.changePlayer,
+                      originalUri: props.playingSongRef.originalUri,
+                      isrc: props.playingSongRef.isrc,
+                      registerType: props.playingSongRef.regType,
+                      details: props.playingSongRef.details,
+                      showPlaylist: props.playingSongRef.showPlaylist,
+                      comingFromMessage: props.playingSongRef.comingFromMessage,
+                    });
+                  }}
+                  onChangeSong={(data, songIndex) =>
+                    playSong({item: data}, songIndex)
+                  }
+                  onPressPlayOrPause={() => {
+                    setTimeout(() => {
+                      findPlayingSong(posts);
+                    }, 500);
+                  }}
+                />
+              ) : null}
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={visible}
+                onRequestClose={() => {
+                  //Alert.alert("Modal has been closed.");
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#000000',
+                    opacity: 0.9,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize:
+                        Platform.OS === 'android'
+                          ? normalise(70)
+                          : normalise(100),
+                    }}>
+                    {modalReact}
+                  </Text>
+                </View>
+              </Modal>
+              {modalVisible && (
+                <MoreModal
+                  setBool={setBool}
+                  index={positionInArray}
+                  setIndex={setPositionInArray}
+                  navigation={props.navigation}
+                  openInAppleORSpotify={openInAppleORSpotify}
+                  postData={posts}
+                  show={modalVisible}
+                  setShow={setModalVisible}
+                  setReportModal={setReportModal}
+                />
+              )}
+              <ReportModal
+                reportModal={reportModal}
+                setReportModal={setReportModal}
+              />
+            </View>
+          )
+        ) : (
+          <View style={{flex: 1}}>
+            {_.isEmpty(props.sessionListData?.data) ? (
+              <EmptyComponent
+                buttonPress={() => {
+                  setContactsLoading(true);
+                  getContacts();
+                }}
+                buttonText={'Check for friends'}
+                image={ImagePath ? ImagePath.emptyPost : null}
+                text={
+                  'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
+                }
+                title={'No Session Found'}
+              />
+            ) : (
+              <FlatList
+                // data={Array(10).fill('')}
+                data={props.sessionListData?.data}
+                renderItem={({item}) => {
+                  return (
+                    <HomeSessionItem
+                      item={item}
+                      userId={props.userProfileResp?._id}
+                    />
+                  );
+                }}
+                showsVerticalScrollIndicator={false}
+                // keyExtractor={item => item._id}
+                // ref={flatlistRef}
+                // onEndReached={() => fetchNextPage()}
+                // onEndReachedThreshold={2}
+                // refreshControl={
+                //   <RefreshControl
+                //     refreshing={refreshing}
+                //     onRefresh={onRefresh}
+                //     colors={[Colors.black]}
+                //     progressBackgroundColor={Colors.white}
+                //     title={'Refreshing...'}
+                //     titleColor={Colors.white}
+                //   />
+                // }
+              />
+            )}
+          </View>
+        )}
+        {modal1Visible === true ? (
+          <View
+            style={{
+              position: 'absolute',
+              margin: 20,
+              height: normalise(280),
+              width: '92%',
+              alignSelf: 'center',
+              marginHorizontal: normalise(15),
+              backgroundColor: Colors.white,
+              borderRadius: 20,
+              padding: 35,
+              bottom: 50,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}>
+            <EmojiSelector
+              category={Categories.history}
+              showHistory={true}
+              onEmojiSelected={emoji => {
+                setVisible(true);
+                setModalReact(emoji);
+                setTimeout(() => {
+                  setVisible(false);
+                }, 2000);
               }}
-              showsVerticalScrollIndicator={false}
-              // keyExtractor={item => item._id}
-              // ref={flatlistRef}
-              // onEndReached={() => fetchNextPage()}
-              // onEndReachedThreshold={2}
-              // refreshControl={
-              //   <RefreshControl
-              //     refreshing={refreshing}
-              //     onRefresh={onRefresh}
-              //     colors={[Colors.black]}
-              //     progressBackgroundColor={Colors.white}
-              //     title={'Refreshing...'}
-              //     titleColor={Colors.white}
-              //   />
-              // }
             />
-          )}
-        </View>
-      )}
-      {modal1Visible === true ? (
-        <View
-          style={{
-            position: 'absolute',
-            margin: 20,
-            height: normalise(280),
-            width: '92%',
-            alignSelf: 'center',
-            marginHorizontal: normalise(15),
-            backgroundColor: Colors.white,
-            borderRadius: 20,
-            padding: 35,
-            bottom: 50,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}>
-          <EmojiSelector
-            category={Categories.history}
-            showHistory={true}
-            onEmojiSelected={emoji => {
-              setVisible(true);
-              setModalReact(emoji);
-              setTimeout(() => {
-                setVisible(false);
-              }, 2000);
-            }}
-          />
-        </View>
-      ) : null}
-      {/* </SafeAreaView> */}
+          </View>
+        ) : null}
+      </SafeAreaView>
     </View>
   );
 };
