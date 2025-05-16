@@ -1,103 +1,26 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
-  View,
-  Text,
-  AppState,
   Image,
-  Modal,
   Platform,
-  Linking,
   RefreshControl,
-  FlatList,
-  Pressable,
-  TouchableOpacity,
+  SafeAreaView,
   StyleSheet,
-  Alert,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-
-import normalise from '../../utils/helpers/Dimens';
+import _ from 'lodash';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
-import HomeHeaderComponent from '../../widgets/HomeHeaderComponent';
-import _ from 'lodash';
-import HomeItemList from './ListCells/HomeItemList';
+import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
-import EmojiSelector, {Categories} from 'react-native-emoji-selector';
-import MusicPlayerBar from '../../widgets/MusicPlayerBar';
-import updateToken from '../main/ListCells/UpdateToken';
-import LinearGradient from 'react-native-linear-gradient';
-
-import {useInfiniteQuery, useQueryClient} from 'react-query';
-
-// import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
-
-import {
-  USER_PROFILE_REQUEST,
-  USER_PROFILE_SUCCESS,
-  USER_PROFILE_FAILURE,
-  HOME_PAGE_REQUEST,
-  HOME_PAGE_SUCCESS,
-  HOME_PAGE_FAILURE,
-  SAVE_SONGS_REQUEST,
-  SAVE_SONGS_SUCCESS,
-  SAVE_SONGS_FAILURE,
-  REACTION_ON_POST_SUCCESS,
-  USER_FOLLOW_UNFOLLOW_REQUEST,
-  USER_FOLLOW_UNFOLLOW_SUCCESS,
-  USER_FOLLOW_UNFOLLOW_FAILURE,
-  DELETE_POST_REQUEST,
-  DELETE_POST_SUCCESS,
-  DELETE_POST_FAILURE,
-  GET_USER_FROM_HOME_REQUEST,
-  GET_USER_FROM_HOME_SUCCESS,
-  GET_USER_FROM_HOME_FAILURE,
-  COUNTRY_CODE_SUCCESS,
-  OTHERS_PROFILE_SUCCESS,
-  EDIT_PROFILE_SUCCESS,
-  DUMMY_ACTION_SUCCESS,
-  DUMMY_ACTION_REQUEST,
-  LOAD_MORE_SUCCESS,
-  LOAD_MORE_REQUEST,
-  CREATE_SESSION_LIST_REQUEST,
-  CREATE_SESSION_LIST_SUCCESS,
-  CREATE_SESSION_LIST_FAILURE,
-} from '../../action/TypeConstants';
-import {
-  getProfileRequest,
-  homePageReq,
-  reactionOnPostRequest,
-  userFollowUnfollowRequest,
-  getUsersFromHome,
-  dummyRequest,
-  loadMoreRequest,
-  loadMoreData,
-} from '../../action/UserAction';
-import {saveSongRequest, saveSongRefReq} from '../../../action/SongAction';
-import {deletePostReq} from '../../../action/PostAction';
 import {connect} from 'react-redux';
-import isInternetConnected from '../../utils/helpers/NetInfo';
-import toast from '../../utils/helpers/ShowErrorAlert';
-import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
-import {useScrollToTop} from '@react-navigation/native';
-import Contacts from 'react-native-contacts';
-import {getSpotifyToken} from '../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../utils/helpers/AppleDevToken';
-import axios from 'axios';
-import MusicPlayer from '../../widgets/MusicPlayer';
+import Loader from '../../widgets/AuthLoader';
 import EmptyComponent from '../Empty/EmptyComponent';
-
-import AsyncStorage from '@react-native-community/async-storage';
-
-import HomeSessionItem from './ListCells/HomeSessionItem';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {
-  createSessionListRequest,
-  fetchSessionListRequestStatusIdle,
-} from '../../action/SessionAction';
+import {SwipeListView} from 'react-native-swipe-list-view';
+import {mySessionListRequest} from '../../action/SessionAction';
 import HeaderComponent from '../../widgets/HeaderComponent';
-// import {useQueryClient} from '@tanstack/react-query';
+import HomeSessionItem from './ListCells/HomeSessionItem';
 
 let status = '';
 let songStatus = '';
@@ -106,41 +29,74 @@ let postStatus = '';
 const MySessionScreen = props => {
   const token = props.header.token;
   const postsUrl = constants.BASE_URL + '/post/list?page=';
-  const [activeTab, setActiveTab] = useState(0);
-  const [sessionListStatus, setSessionListStatus] = useState('');
-  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+
+  // useEffect(() => {
+  //   handleNavigation();
+  // }, [props.sessionReducerData.status]);
 
   useEffect(() => {
-    handleNavigation();
-  }, [props.sessionReducerData.status]);
+    props.fetchMySessionList();
+  }, []);
 
   //helpers************************************************************
 
-  const handleNavigation = () => {
+  // const handleNavigation = () => {
+  //   if (
+  //     sessionListStatus === '' ||
+  //     sessionListStatus !== props.sessionReducerData.status
+  //   ) {
+  //     switch (props.sessionReducerData.status) {
+  //       case CREATE_SESSION_LIST_REQUEST:
+  //         setSessionListStatus(CREATE_SESSION_LIST_REQUEST);
+  //         props.fetchSessionListRequestStatusIdleHandle({status: ''}); //to set status back to idle
+  //         break;
+  //       case CREATE_SESSION_LIST_SUCCESS:
+  //         setSessionListStatus(CREATE_SESSION_LIST_SUCCESS);
+  //         props.fetchSessionListRequestStatusIdleHandle({status: ''});
+  //         break;
+  //       case CREATE_SESSION_LIST_FAILURE:
+  //         setSessionListStatus(CREATE_SESSION_LIST_FAILURE);
+  //         toast('Error', 'Something Went Wrong, Please Try Again');
+  //         props.fetchSessionListRequestStatusIdleHandle({status: ''});
+  //         break;
+  //       default:
+  //         setSessionListStatus('');
+  //         break;
+  //     }
+  //   }
+  // };
+
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    props.fetchMySessionList();
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
+
+  const fetchNextPage = () => {
     if (
-      sessionListStatus === '' ||
-      sessionListStatus !== props.sessionReducerData.status
+      props.mySessionListData?.page < props.mySessionListData?.totalPages &&
+      !props.isRequestLoader
     ) {
-      switch (props.sessionReducerData.status) {
-        case CREATE_SESSION_LIST_REQUEST:
-          setSessionListStatus(CREATE_SESSION_LIST_REQUEST);
-          props.fetchSessionListRequestStatusIdleHandle({status: ''}); //to set status back to idle
-          break;
-        case CREATE_SESSION_LIST_SUCCESS:
-          setSessionListStatus(CREATE_SESSION_LIST_SUCCESS);
-          props.fetchSessionListRequestStatusIdleHandle({status: ''});
-          break;
-        case CREATE_SESSION_LIST_FAILURE:
-          setSessionListStatus(CREATE_SESSION_LIST_FAILURE);
-          toast('Error', 'Something Went Wrong, Please Try Again');
-          props.fetchSessionListRequestStatusIdleHandle({status: ''});
-          break;
-        default:
-          setSessionListStatus('');
-          break;
-      }
+      props.fetchMySessionList({page: props.mySessionListData?.page + 1});
     }
   };
+
+  const renderHiddenItem = data => (
+    <View style={styles.hiddenRow}>
+      <TouchableOpacity style={styles.deleteButton} onPress={() => null}>
+        <Image
+          source={ImagePath.crossIcon}
+          style={styles.deleteIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View
@@ -151,7 +107,7 @@ const MySessionScreen = props => {
       {Platform.OS == 'android' && (
         <StatusBar backgroundColor={Colors.darkerblack} />
       )}
-      <Loader visible={props.sessionReducerData?.loading} />
+      <Loader visible={props.isRequestLoader} />
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.darkerblack}}>
         <HeaderComponent
           firstitemtext={false}
@@ -165,25 +121,47 @@ const MySessionScreen = props => {
           //   onPressThirdItem={() => {
           //     updateProfile();
           //   }}
+          imageOneStyle={styles.imageOneStyle}
         />
         <View style={{flex: 1}}>
-          {_.isEmpty(props.sessionListData?.data) ? (
+          {_.isEmpty(props.mySessionListData?.data) ? (
             <EmptyComponent
-              buttonPress={() => {
-                setContactsLoading(true);
-                getContacts();
-              }}
-              buttonText={'Check for friends'}
               image={ImagePath ? ImagePath.emptyPost : null}
-              text={
-                'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
-              }
+              // text={
+              //   'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
+              // }
               title={'No Session Found'}
             />
           ) : (
-            <FlatList
-              // data={Array(10).fill('')}
-              data={props.sessionListData?.data}
+            // <FlatList
+            //   // data={Array(10).fill('')}
+            //   data={props.mySessionListData?.data}
+            //   renderItem={({item}) => {
+            //     return (
+            //       <HomeSessionItem
+            //         item={item}
+            //         userId={props.userProfileResp?._id}
+            //       />
+            //     );
+            //   }}
+            //   showsVerticalScrollIndicator={false}
+            //   keyExtractor={item => item?._id}
+            //   onEndReached={() => fetchNextPage()}
+            //   onEndReachedThreshold={0.5}
+            //   refreshControl={
+            //     <RefreshControl
+            //       refreshing={refreshing}
+            //       onRefresh={onRefresh}
+            //       colors={[Colors.black]}
+            //       progressBackgroundColor={Colors.white}
+            //       title={'Refreshing...'}
+            //       titleColor={Colors.white}
+            //     />
+            //   }
+            // />
+
+            <SwipeListView
+              data={props.mySessionListData?.data}
               renderItem={({item}) => {
                 return (
                   <HomeSessionItem
@@ -192,21 +170,23 @@ const MySessionScreen = props => {
                   />
                 );
               }}
+              renderHiddenItem={renderHiddenItem}
+              leftOpenValue={75}
+              rightOpenValue={-75}
               showsVerticalScrollIndicator={false}
-              // keyExtractor={item => item._id}
-              // ref={flatlistRef}
-              // onEndReached={() => fetchNextPage()}
-              // onEndReachedThreshold={2}
-              // refreshControl={
-              //   <RefreshControl
-              //     refreshing={refreshing}
-              //     onRefresh={onRefresh}
-              //     colors={[Colors.black]}
-              //     progressBackgroundColor={Colors.white}
-              //     title={'Refreshing...'}
-              //     titleColor={Colors.white}
-              //   />
-              // }
+              keyExtractor={item => item?._id}
+              onEndReached={() => fetchNextPage()}
+              onEndReachedThreshold={0.2}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={[Colors.black]}
+                  progressBackgroundColor={Colors.white}
+                  title={'Refreshing...'}
+                  titleColor={Colors.white}
+                />
+              }
             />
           )}
         </View>
@@ -221,16 +201,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: normalise(40),
-    // borderBottomColor: Colors.fadeblack,
-    // borderBottomWidth: 1,
   },
   tabBarButtonStyle: {
     width: '50%',
     height: normalise(40),
     alignItems: 'center',
     justifyContent: 'center',
-    // borderRightWidth: normalise(1),
-    // borderRightColor: Colors.darkerblack,
   },
   tabBarTextStyle: {
     fontFamily: 'Kallisto',
@@ -243,38 +219,73 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
   },
+  imageOneStyle: {
+    width: normalise(15),
+    height: normalise(15),
+  },
+
+  hiddenRow: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  deleteButton: {
+    width: normalise(82),
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  deleteIcon: {
+    height: normalise(20),
+    width: normalise(20),
+    resizeMode: 'contain',
+    marginRight: 25,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalise(100),
+  },
+  emptyImage: {
+    width: normalise(120),
+    height: normalise(120),
+    resizeMode: 'contain',
+    marginBottom: normalise(20),
+  },
+  emptyText: {
+    fontSize: normalise(14),
+    color: Colors.gray,
+  },
 });
 
 const mapStateToProps = state => {
   return {
-    status: state.UserReducer.status,
+    // status: state.UserReducer.status,
     userProfileResp: state.UserReducer.userProfileResp,
-    postData: state.UserReducer.postData,
-    reactionResp: state.UserReducer.reactionResp,
-    songStatus: state.SongReducer.status,
-    savedSongResponse: state.SongReducer.savedSongResponse,
-    playingSongRef: state.SongReducer.playingSongRef,
-    chatList: state.MessageReducer.chatList,
-    messageStatus: state.MessageReducer.status,
-    postStatus: state.PostReducer.status,
-    userSearchFromHome: state.UserReducer.userSearchFromHome,
-    registerType: state.TokenReducer.registerType,
-    currentPage: state.UserReducer.currentPage,
-    SuccessToken: state.TokenReducer.token,
-    loadData: state.UserReducer.loadData,
+    // postData: state.UserReducer.postData,
+    // reactionResp: state.UserReducer.reactionResp,
+    // songStatus: state.SongReducer.status,
+    // savedSongResponse: state.SongReducer.savedSongResponse,
+    // playingSongRef: state.SongReducer.playingSongRef,
+    // chatList: state.MessageReducer.chatList,
+    // messageStatus: state.MessageReducer.status,
+    // postStatus: state.PostReducer.status,
+    // userSearchFromHome: state.UserReducer.userSearchFromHome,
+    // registerType: state.TokenReducer.registerType,
+    // currentPage: state.UserReducer.currentPage,
+    // SuccessToken: state.TokenReducer.token,
+    // loadData: state.UserReducer.loadData,
     header: state.TokenReducer,
-    sessionListData: state.SessionReducer.sessionListData,
-    sessionReducerData: state.SessionReducer,
+    mySessionListData: state.SessionReducer.mySessionListData,
+    isRequestLoader: state.SessionReducer.isRequestLoader,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    createSessionListReq: () => {
-      dispatch(createSessionListRequest());
-    },
-    fetchSessionListRequestStatusIdleHandle: payload => {
-      dispatch(fetchSessionListRequestStatusIdle(payload));
+    fetchMySessionList: payload => {
+      dispatch(mySessionListRequest(payload));
     },
   };
 };

@@ -26,6 +26,10 @@ import {
   START_SESSION_LEFT_SUCCESS,
   START_SESSION_LEFT_REQUEST,
   START_SESSION_JOINEE_STOP_HOST,
+  My_SESSION_LIST_REQUEST,
+  My_SESSION_LIST_SUCCESS,
+  My_SESSION_LIST_FAILURE,
+  My_SESSION_LIST_STATUS_IDLE,
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -39,6 +43,7 @@ const initialState = {
   currentSessionSong: {},
   CurrentSessionJoineeInfo: {},
   hasLeftSession: null,
+  mySessionListData: {},
 };
 
 const SessionReducer = (state = initialState, action) => {
@@ -236,6 +241,37 @@ const SessionReducer = (state = initialState, action) => {
         ...state,
         status: action.status,
         hasLeftSession: null,
+      };
+
+    // MY SESSION LIST HANDLING
+    case My_SESSION_LIST_REQUEST:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: true,
+      };
+
+    case My_SESSION_LIST_SUCCESS:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: false,
+        mySessionListData: action.data,
+      };
+
+    case My_SESSION_LIST_FAILURE:
+      return {
+        ...state,
+        status: action.type,
+        isRequestLoader: false,
+        error: action.error,
+      };
+
+    case My_SESSION_LIST_STATUS_IDLE:
+      return {
+        ...state,
+        status: action.status,
+        isRequestLoader: false,
       };
     case ASYNC_STORAGE_CLEAR:
       return initialState;

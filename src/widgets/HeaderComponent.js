@@ -50,7 +50,7 @@ function HeaderComponent(props) {
           hitSlop={hitSlop}>
           <Image
             source={props.imageone}
-            style={HeaderStyles.headerIcon}
+            style={[HeaderStyles.headerIcon, props.imageOneStyle]}
             resizeMode="contain"
           />
         </TouchableOpacity>

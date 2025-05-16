@@ -20,6 +20,9 @@ import {
   START_SESSION_LEFT_SUCCESS,
   START_SESSION_LEFT_FAILURE,
   START_SESSION_JOINEE_STATUS_IDLE,
+  My_SESSION_LIST_REQUEST,
+  My_SESSION_LIST_SUCCESS,
+  My_SESSION_LIST_FAILURE,
 } from '../action/TypeConstants';
 import {postApi, getApi, putApi} from '../utils/helpers/ApiRequest';
 import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
@@ -27,8 +30,10 @@ import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
 import {Alert} from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
 import {act} from 'react';
+import {mySessionListRequest} from '../action/SessionAction';
 
 const getItems = state => state.TokenReducer;
+const getMySesssinoInfo = state => state.SessionReducer.mySessionListData;
 
 //FUNCTION TO  CREATE FRESH NEW SESSION
 export function* createSessionAction(action) {
@@ -186,6 +191,52 @@ export function* leftSessionRequest(action) {
   }
 }
 
+//FUNCTION TO GET LIST OF MY SESSION
+export function* fetchMySessionListRequest(action) {
+  // console.log(action, 'this isaction');
+  let currentPage = action?.payload?.page ?? 1;
+  // console.log(currentPage, 'this is current page');
+  const items = yield select(getItems);
+  const getMySesssinoInfoData = yield select(getMySesssinoInfo);
+  // console.log(getMySesssinoInfoData, 'this imy info from redux');
+  const header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items.token,
+  };
+  try {
+    const response = yield call(
+      getApi,
+      `session/me?page=${currentPage}&limit=20`,
+      header,
+    );
+    // console.log(response?.data, 'My sessin list api response');
+    if (response?.data?.status == 200) {
+      const newData = response?.data?.data ?? [];
+      const totalPages = response?.data?.totalPages ?? 1;
+      const currentPageNo = response?.data?.page;
+      if (currentPage == 1) {
+        yield put({type: My_SESSION_LIST_SUCCESS, data: response.data});
+      } else {
+        const modifiedData = {
+          ...getMySesssinoInfoData,
+          data: [...getMySesssinoInfoData?.data, ...newData],
+          totalPages: totalPages,
+          page: currentPageNo,
+          status: response?.data?.status,
+        };
+        // console.log(modifiedData, 'its modfies data');
+        yield put({type: My_SESSION_LIST_SUCCESS, data: modifiedData});
+      }
+    } else {
+      yield put({type: My_SESSION_LIST_FAILURE, error: response.data});
+    }
+  } catch (error) {
+    // console.log(JSON.stringify(error?.message), 'simple error1 in list get');
+    yield put({type: My_SESSION_LIST_FAILURE, error: error});
+  }
+}
+
 //WATCH FUNCTIONS
 
 export function* watchCreateSessionRequest() {
@@ -213,4 +264,9 @@ export function* watchSessionJoinRequest() {
 //TO WATCH THE LEFT SESSION REQUEST
 export function* watchSessionLeftRequest() {
   yield takeLatest(START_SESSION_LEFT_REQUEST, leftSessionRequest);
+}
+
+//TO WATCH TO MY SESSION LIST REQUEST
+export function* watchMySessionListRequest() {
+  yield takeLatest(My_SESSION_LIST_REQUEST, fetchMySessionListRequest);
 }

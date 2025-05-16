@@ -17,6 +17,7 @@ import {
   START_SESSION_REQUEST,
   START_SESSION_STATUS_IDLE,
   START_SESSION_LEFT_SUCCESS,
+  My_SESSION_LIST_REQUEST,
 } from './TypeConstants';
 
 export const createSessionRequest = payload => ({
@@ -93,3 +94,8 @@ export const startSessionLeftRequestStatusIdle = payload => ({
 //   flag,
 //   text,
 // });
+
+export const mySessionListRequest = (payload = null) => ({
+  type: My_SESSION_LIST_REQUEST,
+  payload,
+});

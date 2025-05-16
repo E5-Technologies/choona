@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -29,7 +30,7 @@ const HomeSessionItem = ({
   // console.log(JSON.stringify(item), 'its session item');
   const navigation = useNavigation();
   return (
-    <TouchableOpacity
+    <Pressable
       style={styles.listItemHeaderContainer}
       onPress={() =>
         navigation.navigate(
@@ -139,7 +140,7 @@ const HomeSessionItem = ({
                     />
                 </TouchableOpacity>
             )} */}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
