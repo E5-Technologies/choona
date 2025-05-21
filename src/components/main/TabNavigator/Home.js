@@ -102,6 +102,8 @@ import {
   createSessionListRequest,
   fetchSessionListRequestStatusIdle,
 } from '../../../action/SessionAction';
+import {usePlayFullAppleMusic} from '../../../hooks/usePlayFullAppleMusic';
+import {extractSongIdFromUrl} from '../../../utils/helpers/CommonFunctions';
 // import {useQueryClient} from '@tanstack/react-query';
 
 let status = '';
@@ -138,6 +140,22 @@ const Home = props => {
   const [activeTab, setActiveTab] = useState(0);
   const [sessionListStatus, setSessionListStatus] = useState('');
   const queryClient = useQueryClient();
+
+  const {
+    onAuth,
+    setPlaybackQueue,
+    onToggle,
+    currentSongData,
+    isAuthorizeToAccessAppleMusic,
+    isPlaying,
+    haveAppleMusicSubscription,
+  } = usePlayFullAppleMusic();
+
+  useEffect(() => {
+    if (Platform.OS == 'ios') {
+      onAuth();
+    }
+  }, []);
 
   // console.log(props.userProfileResp, 'this is user data')
 
@@ -716,70 +734,164 @@ const Home = props => {
   };
 
   const playSong = (data, songIndex = null) => {
+    console.log(JSON.stringify(data), 'its lay song data');
     const selectedSongIndex = songIndex ?? 0;
+    console.log(selectedSongIndex,'hey this is index')
+    if (haveAppleMusicSubscription && data?.item?.social_type=="apple") {
+      console.log(haveAppleMusicSubscription, 'this is>>');
+      // Alert.alert('yes have subscrition');
+      let songId = extractSongIdFromUrl(
+        data?.item?.songs[selectedSongIndex]?.original_song_uri,
+      );
 
-    if (props.playingSongRef === '') {
-      MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-        .then(track => {
-          let saveSongResObj = {};
-          (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
-            (saveSongResObj.song_name =
-              data.item.songs[selectedSongIndex]?.song_name),
-            (saveSongResObj.album_name =
-              data.item.songs[selectedSongIndex]?.album_name),
-            (saveSongResObj.song_pic =
-              data.item.songs[selectedSongIndex]?.song_image),
-            (saveSongResObj.username = data.item.userDetails.username),
-            (saveSongResObj.profile_pic = data.item.userDetails.profile_image),
-            (saveSongResObj.commentData = data.item.comment);
-          saveSongResObj.reactionData = data.item.reaction;
-          (saveSongResObj.id = data.item?._id),
-            (saveSongResObj.artist =
-              data.item.songs[selectedSongIndex]?.artist_name),
-            (saveSongResObj.changePlayer = changePlayer);
-          (saveSongResObj.originalUri =
-            data.item.original_song_uri !== ''
-              ? data.item.original_song_uri
-              : undefined),
-            (saveSongResObj.isrc =
-              data.item.songs[selectedSongIndex]?.isrc_code),
-            (saveSongResObj.regType = data.item.userDetails.register_type),
-            (saveSongResObj.details = data.item),
-            (saveSongResObj.showPlaylist = true),
-            (saveSongResObj.comingFromMessage = undefined);
+      let saveSongResObj = {};
+            (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
+            // (saveSongResObj.apple_song_id = data.item.songs[selectedSongIndex]?.apple_song_id),
+            (saveSongResObj.apple_song_id =songId),
+              (saveSongResObj.song_name =
+                data.item.songs[selectedSongIndex]?.song_name),
+              (saveSongResObj.album_name =
+                data.item.songs[selectedSongIndex]?.album_name),
+              (saveSongResObj.song_pic =
+                data.item.songs[selectedSongIndex]?.song_image),
+              (saveSongResObj.username = data.item.userDetails.username),
+              (saveSongResObj.profile_pic =
+                data.item.userDetails.profile_image),
+              (saveSongResObj.commentData = data.item.comment);
+            saveSongResObj.reactionData = data.item.reaction;
+            (saveSongResObj.id = data.item?._id),
+              (saveSongResObj.artist =
+                data.item.songs[selectedSongIndex]?.artist_name),
+              (saveSongResObj.changePlayer = changePlayer);
+            (saveSongResObj.originalUri =
+              data.item.original_song_uri !== ''
+                ? data.item.original_song_uri
+                : undefined),
+              (saveSongResObj.isrc =
+                data.item.songs[selectedSongIndex]?.isrc_code),
+              (saveSongResObj.regType = data.item.userDetails.register_type),
+              (saveSongResObj.details = data.item),
+              (saveSongResObj.showPlaylist = true),
+              (saveSongResObj.comingFromMessage = undefined);
 
-          props.saveSongRefReq(saveSongResObj);
-          props.dummyRequest();
-        })
-        .catch(err => {
-          console.log('Error while playing music..' + JSON.stringify(err));
-        });
+            props.saveSongRefReq(saveSongResObj);
+             props.dummyRequest();
+      // Alert.alert(songId?.toString())
+      if (currentSongData?.id != songId) {
+        console.log(songId?.toString(), songId, '><');
+        setPlaybackQueue(songId);
+      }
+      setTimeout(() => {
+        onToggle();
+        // if (playVisible == true) {
+        //   setPlayVisible(false);
+        // } else {
+        //   setPlayVisible(true);
+        // }
+      }, 500);
     } else {
-      if (global.playerReference !== null) {
-        if (
-          global.playerReference._filename ===
-          data.item.songs[selectedSongIndex]?.song_uri
-        ) {
-          if (global.playerReference.isPlaying()) {
-            global.playerReference.pause();
+      if (props.playingSongRef === '') {
+        // Alert.alert('empty')
+        MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
+          .then(track => {
+            let saveSongResObj = {};
+            (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
+              (saveSongResObj.song_name =
+                data.item.songs[selectedSongIndex]?.song_name),
+              (saveSongResObj.album_name =
+                data.item.songs[selectedSongIndex]?.album_name),
+              (saveSongResObj.song_pic =
+                data.item.songs[selectedSongIndex]?.song_image),
+              (saveSongResObj.username = data.item.userDetails.username),
+              (saveSongResObj.profile_pic =
+                data.item.userDetails.profile_image),
+              (saveSongResObj.commentData = data.item.comment);
+            saveSongResObj.reactionData = data.item.reaction;
+            (saveSongResObj.id = data.item?._id),
+              (saveSongResObj.artist =
+                data.item.songs[selectedSongIndex]?.artist_name),
+              (saveSongResObj.changePlayer = changePlayer);
+            (saveSongResObj.originalUri =
+              data.item.original_song_uri !== ''
+                ? data.item.original_song_uri
+                : undefined),
+              (saveSongResObj.isrc =
+                data.item.songs[selectedSongIndex]?.isrc_code),
+              (saveSongResObj.regType = data.item.userDetails.register_type),
+              (saveSongResObj.details = data.item),
+              (saveSongResObj.showPlaylist = true),
+              (saveSongResObj.comingFromMessage = undefined);
 
-            setTimeout(() => {
-              findPlayingSong(posts);
-            }, 500);
+            props.saveSongRefReq(saveSongResObj);
+            props.dummyRequest();
+          })
+          .catch(err => {
+            console.log('Error while playing music..' + JSON.stringify(err));
+          });
+      } else {
+        if (global.playerReference !== null) {
+          if (
+            global.playerReference._filename ===
+            data.item.songs[selectedSongIndex]?.song_uri
+          ) {
+            if (global.playerReference.isPlaying()) {
+              global.playerReference.pause();
+
+              setTimeout(() => {
+                findPlayingSong(posts);
+              }, 500);
+            } else {
+              global.playerReference.play(success => {
+                if (success) {
+                } else {
+                }
+              });
+
+              setTimeout(() => {
+                findPlayingSong(posts);
+              }, 500);
+            }
           } else {
-            global.playerReference.play(success => {
-              if (success) {
-              } else {
-              }
-            });
+            global.playerReference.release();
+            global.playerReference = null;
+            MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
+              .then(track => {
+                let saveSongResObj = {};
+                (saveSongResObj.uri =
+                  data.item.songs[selectedSongIndex]?.song_uri),
+                  (saveSongResObj.song_name =
+                    data.item.songs[selectedSongIndex]?.song_name),
+                  (saveSongResObj.album_name =
+                    data.item.songs[selectedSongIndex]?.album_name),
+                  (saveSongResObj.song_pic =
+                    data.item.songs[selectedSongIndex]?.song_image),
+                  (saveSongResObj.username = data.item.userDetails.username),
+                  (saveSongResObj.profile_pic =
+                    data.item.userDetails.profile_image),
+                  (saveSongResObj.commentData = data.item.comment);
+                saveSongResObj.reactionData = data.item.reaction;
+                (saveSongResObj.id = data.item?._id),
+                  (saveSongResObj.artist =
+                    data.item.songs[selectedSongIndex]?.artist_name),
+                  (saveSongResObj.changePlayer = changePlayer);
+                (saveSongResObj.originalUri =
+                  data.item.songs[selectedSongIndex]?.original_song_uri !== ''
+                    ? data.item.songs[selectedSongIndex]?.original_song_uri
+                    : undefined),
+                  (saveSongResObj.isrc =
+                    data.item.songs[selectedSongIndex]?.isrc_code),
+                  (saveSongResObj.regType =
+                    data.item.userDetails.register_type),
+                  (saveSongResObj.details = data.item),
+                  (saveSongResObj.showPlaylist = true),
+                  (saveSongResObj.comingFromMessage = undefined);
 
-            setTimeout(() => {
-              findPlayingSong(posts);
-            }, 500);
+                props.saveSongRefReq(saveSongResObj);
+                props.dummyRequest();
+              })
+              .catch(err => {});
           }
         } else {
-          global.playerReference.release();
-          global.playerReference = null;
           MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
             .then(track => {
               let saveSongResObj = {};
@@ -816,44 +928,10 @@ const Home = props => {
             })
             .catch(err => {});
         }
-      } else {
-        MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-          .then(track => {
-            let saveSongResObj = {};
-            (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
-              (saveSongResObj.song_name =
-                data.item.songs[selectedSongIndex]?.song_name),
-              (saveSongResObj.album_name =
-                data.item.songs[selectedSongIndex]?.album_name),
-              (saveSongResObj.song_pic =
-                data.item.songs[selectedSongIndex]?.song_image),
-              (saveSongResObj.username = data.item.userDetails.username),
-              (saveSongResObj.profile_pic =
-                data.item.userDetails.profile_image),
-              (saveSongResObj.commentData = data.item.comment);
-            saveSongResObj.reactionData = data.item.reaction;
-            (saveSongResObj.id = data.item?._id),
-              (saveSongResObj.artist =
-                data.item.songs[selectedSongIndex]?.artist_name),
-              (saveSongResObj.changePlayer = changePlayer);
-            (saveSongResObj.originalUri =
-              data.item.songs[selectedSongIndex]?.original_song_uri !== ''
-                ? data.item.songs[selectedSongIndex]?.original_song_uri
-                : undefined),
-              (saveSongResObj.isrc =
-                data.item.songs[selectedSongIndex]?.isrc_code),
-              (saveSongResObj.regType = data.item.userDetails.register_type),
-              (saveSongResObj.details = data.item),
-              (saveSongResObj.showPlaylist = true),
-              (saveSongResObj.comingFromMessage = undefined);
-
-            props.saveSongRefReq(saveSongResObj);
-            props.dummyRequest();
-          })
-          .catch(err => {});
       }
     }
   };
+
 
   function _onSelectBack(ID, comment) {
     posts.map((item, index) => {
@@ -926,6 +1004,7 @@ const Home = props => {
             image={data?.item?.songs}
             id={data.item?._id}
             play={
+              (currentSongData?.id==props.playingSongRef.apple_song_id  && isPlaying && props.playingSongRef.id ==data.item?._id) ? true :
               _.isEmpty(postArray)
                 ? false
                 : posts.length === postArray.length
