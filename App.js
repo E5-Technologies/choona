@@ -79,6 +79,7 @@ import {
 } from 'react-native-safe-area-context';
 import MySessionDetailScreen from './src/components/main/MySessionDetailScreen';
 import MySessionScreen from './src/components/main/MySessionScreen';
+import SongListScreen from './src/components/main/AppleMusic/SongListScren';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -513,6 +514,7 @@ const App = () => {
                 name="MySessionScreen"
                 component={MySessionScreen}
               />
+              <Stack.Screen name="SongListScreen" component={SongListScreen} />
             </Stack.Navigator>
           )}
         </NavigationContainer>

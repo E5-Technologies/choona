@@ -61,6 +61,7 @@ import MoreModal from '../Posts/MoreModal';
 import Avatar from '../Avatar';
 import LinearGradient from 'react-native-linear-gradient';
 import ReportModal from '../Posts/ReportModal';
+import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
 
 let status;
 let songStatus;
@@ -141,6 +142,14 @@ function Player(props) {
   const [key, setKey] = useState(props.route.params.key);
   const [chatToken, setChatToken] = useState(props.route.params.chatToken);
 
+  const {
+    onAuth,
+    setPlaybackQueue,
+    onToggle,
+    isAuthorizeToAccessAppleMusic,
+    isPlaying,
+  } = usePlayFullAppleMusic();
+
   // console.log("commentData: " + JSON.stringify(commentData));
   let track;
   var bottomSheetRef;
@@ -156,6 +165,17 @@ function Player(props) {
     props.navigation.goBack();
     return true;
   }
+
+  useEffect(() => {
+    onAuth();
+  }, []);
+  useEffect(() => {
+    if (props.route.params?.id && isAuthorizeToAccessAppleMusic) {
+      setPlaybackQueue(props.route.params?.id);
+    }
+  }, [isAuthorizeToAccessAppleMusic]);
+
+  console.log(isAuthorizeToAccessAppleMusic, 'this is authorized or not');
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -449,31 +469,42 @@ function Player(props) {
 
   // PAUSE AND PLAY
   function playing() {
-    if (uri === null) {
-      setBool(false);
-      setPlayVisible(true);
-      toast(
-        'Error',
-        'Sorry, this track cannot be played as it does not have a proper link.',
-      );
+    if (isAuthorizeToAccessAppleMusic) {
+      setTimeout(() => {
+        onToggle();
+        if (playVisible == true) {
+          setPlayVisible(false);
+        } else {
+          setPlayVisible(true);
+        }
+      }, 500);
     } else {
-      if (playVisible === true) {
-        setPlayVisible(false);
-
-        global.playerReference.play(success => {
-          if (success) {
-            // console.log('PlayBack End!');
-            setPlayVisible(true);
-          } else {
-            // console.log('NOOOOOOOO');
-          }
-        });
-      } else {
+      if (uri === null) {
+        setBool(false);
         setPlayVisible(true);
+        toast(
+          'Error',
+          'Sorry, this track cannot be played as it does not have a proper link.',
+        );
+      } else {
+        if (playVisible === true) {
+          setPlayVisible(false);
 
-        global.playerReference.pause(() => {
-          //   console.log('paused');
-        });
+          global.playerReference.play(success => {
+            if (success) {
+              // console.log('PlayBack End!');
+              setPlayVisible(true);
+            } else {
+              // console.log('NOOOOOOOO');
+            }
+          });
+        } else {
+          setPlayVisible(true);
+
+          global.playerReference.pause(() => {
+            //   console.log('paused');
+          });
+        }
       }
     }
   }

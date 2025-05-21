@@ -47,7 +47,7 @@ const AddSong = props => {
     props.registerType,
   );
 
-  console.log(recentlyPlayed, 'thhhhh');
+  console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
   let post = true;
 
   if (status === '' || status !== props.status) {
@@ -167,6 +167,7 @@ const AddSong = props => {
   }
 
   function renderItem(item) {
+    console.log(item, 'its song item h sir');
     return (
       <SavedSongsListItem
         image={
@@ -227,7 +228,7 @@ const AddSong = props => {
             changePlayer: true,
             registerType: props.registerType,
             changePlayer2: props.registerType === 'spotify' ? true : false,
-            id: props.registerType === 'spotify' ? item.item.id : null,
+            id: props.registerType === 'spotify' ? item.item.id : item.item.id,
             showPlaylist: false,
           });
         }}

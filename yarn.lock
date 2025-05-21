@@ -1897,6 +1897,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@lomray/react-native-apple-music@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@lomray/react-native-apple-music/-/react-native-apple-music-1.2.1.tgz#9a001f7bf786e45871841c346d860293e633e7f1"
+  integrity sha512-e3sONvPAXRdOYox1OvkhXoJWEV3TPaKABQODD1XY9RN5kAO5FtAZxVGn2Ux1u87vo54zIpF2zA5qmRWhTjMegw==
+
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
   resolved "https://registry.npmjs.org/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz"

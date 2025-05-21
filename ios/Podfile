@@ -1,3 +1,4 @@
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -18,7 +19,8 @@ require Pod::Executable.execute_command('node', ['-p',
  node_require('react-native/scripts/react_native_pods.rb')
  node_require('react-native-permissions/scripts/setup.rb')
 
-platform :ios, min_ios_version_supported
+# platform :ios, min_ios_version_supported
+platform :ios, '15.0'
 prepare_react_native_project!
 
 setup_permissions([

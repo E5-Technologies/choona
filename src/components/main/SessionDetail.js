@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Alert,
+  Button,
   FlatList,
   Image,
   Platform,
@@ -43,6 +44,7 @@ import {
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Popover from 'react-native-popover-view';
+import PlayButton from './AppleMusic/PlayButton';
 
 function SessionDetail(props) {
   // console.log(props?.route?.params, 'these are params')
@@ -831,6 +833,16 @@ function SessionDetail(props) {
             </View>
           </View>
         </Popover>
+
+        <TouchableOpacity
+          onPress={() =>
+            props.navigation.navigate('SongListScreen', {
+              songList: sessionDetailReduxdata?.session_songs,
+            })
+          }
+          style={{paddingVertical: 10, height: 50, backgroundColor: 'white'}}>
+          <Text>Go to Apple Music</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </View>
   );
