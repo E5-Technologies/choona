@@ -1,6 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import propTypes from 'prop-types';
-import {View, Text, TouchableOpacity, Image, Alert, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Alert,
+  Platform,
+} from 'react-native';
 
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
@@ -8,20 +15,37 @@ import ImagePath from '../assests/ImagePath';
 import {connect} from 'react-redux';
 import Loader from './AuthLoader';
 import {usePlayFullAppleMusic} from '../hooks/usePlayFullAppleMusic';
+import { AppleMusicContext } from '../context/AppleMusicContext';
+import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 function MusicPlayerBar(props) {
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
   const [disabled, setDisabled] = useState(false);
+  const {isPlaying} = useIsPlaying();
+
+  // const {
+  //   onAuth,
+  //   onToggle,
+  //   currentSongData,
+  //   isAuthorizeToAccessAppleMusic,
+  //   isPlaying,
+  //   haveAppleMusicSubscription,
+  // } = usePlayFullAppleMusic();
+
   const {
-    onAuth,
-    onToggle,
-    currentSongData,
-    isAuthorizeToAccessAppleMusic,
-    isPlaying,
-    haveAppleMusicSubscription,
-  } = usePlayFullAppleMusic();
+      onToggle,
+      // isPlaying,
+      // isAuthorizeToAccessAppleMusic,
+      // haveAppleMusicSubscription,
+    } = usePlayFullAppleMusic();
+  
+    const {
+      isAuthorizeToAccessAppleMusic,
+      haveAppleMusicSubscription,
+      // isPlaying
+    } = useContext(AppleMusicContext);
 
   const ref =
     global.playerReference !== null && global.playerReference !== undefined
@@ -36,9 +60,9 @@ function MusicPlayerBar(props) {
   const totalSongs = arrSongs?.length;
 
   useEffect(() => {
-  // if (Platform.OS == 'ios') {
-  //     onAuth();
-  //   }
+    // if (Platform.OS == 'ios') {
+    //     onAuth();
+    //   }
 
     getPlatingState();
     getPlayingPosition();
@@ -49,7 +73,10 @@ function MusicPlayerBar(props) {
 
   function getPlatingState() {
     setTimeout(() => {
-       console.log(haveAppleMusicSubscription.toString(),'its sucnseiiton or not')
+      // console.log(
+      //   haveAppleMusicSubscription.toString(),
+      //   'its sucnseiiton or not',
+      // );
       if (haveAppleMusicSubscription) {
         // Alert.alert(isPlaying.toString())
         setPlay(isPlaying);
@@ -75,16 +102,22 @@ function MusicPlayerBar(props) {
   }
 
   const playOrPause = () => {
-    const res = ref.isPlaying();
-    if (res) {
-      ref.pause();
-      // console.log('paused');
+    if (haveAppleMusicSubscription) {
+      // Alert.alert(isPlaying.toString())
+      // setPlay(isPlaying);
+      onToggle()
     } else {
-      ref.play(success => {
-        if (success) {
-          // console.log('Playback End');
-        }
-      });
+      const res = ref.isPlaying();
+      if (res) {
+        ref.pause();
+        // console.log('paused');
+      } else {
+        ref.play(success => {
+          if (success) {
+            // console.log('Playback End');
+          }
+        });
+      }
     }
   };
 

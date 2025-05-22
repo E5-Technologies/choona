@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,6 +12,7 @@ import {
   BackHandler,
   Pressable,
   Platform,
+  Alert,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 
@@ -62,6 +63,8 @@ import Avatar from '../Avatar';
 import LinearGradient from 'react-native-linear-gradient';
 import ReportModal from '../Posts/ReportModal';
 import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
+import {AppleMusicContext} from '../../context/AppleMusicContext';
+import {useIsPlaying} from '@lomray/react-native-apple-music';
 
 let status;
 let songStatus;
@@ -69,7 +72,7 @@ let playerStatus;
 
 function Player(props) {
   // PLAYER
-  console.log(JSON.stringify(props.route.params), 'theese are xong props');
+  // console.log(JSON.stringify(props.route.params), 'theese are xong props');
 
   const [playVisible, setPlayVisible] = useState(false);
   const [uri, setUri] = useState(props.route.params.uri);
@@ -141,18 +144,19 @@ function Player(props) {
   );
   const [key, setKey] = useState(props.route.params.key);
   const [chatToken, setChatToken] = useState(props.route.params.chatToken);
+  const {isPlaying} = useIsPlaying();
 
-  const {
-    onAuth,
-    setPlaybackQueue,
-    onToggle,
-    isAuthorizeToAccessAppleMusic,
-    isPlaying,
-  } = usePlayFullAppleMusic();
+  const {onToggle} = usePlayFullAppleMusic();
+
+  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+    useContext(AppleMusicContext);
+
+  console.log(isAuthorizeToAccessAppleMusic);
 
   // console.log("commentData: " + JSON.stringify(commentData));
   let track;
   var bottomSheetRef;
+  
 
   function handleBackButtonClick() {
     console.log('hello');
@@ -166,16 +170,25 @@ function Player(props) {
     return true;
   }
 
-  useEffect(() => {
-    onAuth();
-  }, []);
-  useEffect(() => {
-    if (props.route.params?.id && isAuthorizeToAccessAppleMusic) {
-      setPlaybackQueue(props.route.params?.id);
-    }
-  }, [isAuthorizeToAccessAppleMusic]);
+  // useEffect(() => {
+  //   onAuth();
+  // }, []);
 
-  console.log(isAuthorizeToAccessAppleMusic, 'this is authorized or not');
+  // useEffect(() => {
+  //   console.log(isPlaying.toString(), 'its current state');
+  //   if (
+  //     Platform.OS == 'ios' &&
+  //     isAuthorizeToAccessAppleMusic &&
+  //     haveAppleMusicSubscription &&
+  //     registerType == 'apple'
+  //   ) {
+  //     // setPlaybackQueue(props.route.params?.id);
+  //     console.log(isPlaying.toString(), 'its current state');
+  //     setPlayVisible(isPlaying);
+  //   }
+  // }, []);
+
+  // console.log(isAuthorizeToAccessAppleMusic, 'this is authorized or not');
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -186,67 +199,96 @@ function Player(props) {
 
     // });
 
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    const handleInistialState = async () => {
+      console.log(
+        isAuthorizeToAccessAppleMusic,
+        haveAppleMusicSubscription,
+        registerType,
+        'its all info',
+      );
+      if (
+        Platform.OS == 'ios' &&
+        isAuthorizeToAccessAppleMusic &&
+        haveAppleMusicSubscription &&
+        registerType == 'apple'
+      ) {
+        // setPlaybackQueue(props.route.params?.id);
+        // console.log(isPlaying.toString(), 'its current state');
+        
+        // Alert.alert(isPlaying.toString());
+        setPlayVisible(isPlaying);
+      } else {
+        BackHandler.addEventListener(
+          'hardwareBackPress',
+          handleBackButtonClick,
+        );
+        console.log('coming:' + props.route.params.comingFromMessage);
+        if (!props.route.params.comingFromMessage) {
+          fetchCommentsOnPost(props.route.params.id, props.header.token)
+            .then(res => {
+              if (res) {
+                setCommentData(res);
 
-    console.log('coming:' + props.route.params.comingFromMessage);
-
-    if (!props.route.params.comingFromMessage) {
-      fetchCommentsOnPost(props.route.params.id, props.header.token)
-        .then(res => {
-          if (res) {
-            setCommentData(res);
-
-            setArrayLength(`${res.length} ${res.length > 1 ? '' : ''}`);
-          }
-        })
-        .catch(err => {
-          toast('Error', err);
-        });
-    }
-
-    isInternetConnected()
-      .then(() => {
-        Sound.setCategory('Playback', false);
-        props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
-
-        if (changePlayer2) {
-          console.log('getting spotify song uri');
-          const getSpotifyApi = async () => {
-            try {
-              const res = await callApi();
-              console.log(res);
-              if (res.data.status === 200) {
-                let suc = res.data.data.audio;
-                console.log(res.data.data, 'this is suc link');
-                // let suc = res.data.data.link
-                setUri(suc);
-                playSongOnLoad(suc);
-              } else {
-                toast('Oops', 'Something Went Wrong');
-                props.navigation.goBack();
+                setArrayLength(`${res.length} ${res.length > 1 ? '' : ''}`);
               }
-            } catch (error) {
-              console.log(
-                JSON.stringify(error),
-                'this is error getting  song uri',
-              );
-            }
-          };
-
-          getSpotifyApi();
-        } else {
-          playSongOnLoad();
+            })
+            .catch(err => {
+              toast('Error', err);
+            });
         }
 
-        // return () => {
-        //     clearInterval(myVar),
-        //         unsuscribe();
-        // }
-      })
-      .catch(() => {
-        toast('', 'Please Connect To Internet');
-      });
-  }, []);
+        isInternetConnected()
+          .then(() => {
+            Sound.setCategory('Playback', false);
+            props.getSongFromIsrc(props.userProfileResp.register_type, isrc);
+
+            if (changePlayer2) {
+              console.log('getting spotify song uri');
+              const getSpotifyApi = async () => {
+                try {
+                  const res = await callApi();
+                  console.log(res);
+                  if (res.data.status === 200) {
+                    let suc = res.data.data.audio;
+                    console.log(res.data.data, 'this is suc link');
+                    // let suc = res.data.data.link
+                    setUri(suc);
+                    playSongOnLoad(suc);
+                  } else {
+                    toast('Oops', 'Something Went Wrong');
+                    props.navigation.goBack();
+                  }
+                } catch (error) {
+                  console.log(
+                    JSON.stringify(error),
+                    'this is error getting  song uri',
+                  );
+                }
+              };
+
+              getSpotifyApi();
+            } else {
+              playSongOnLoad();
+            }
+
+            // return () => {
+            //     clearInterval(myVar),
+            //         unsuscribe();
+            // }
+          })
+          .catch(() => {
+            toast('', 'Please Connect To Internet');
+          });
+      }
+    };
+    setTimeout(()=>{
+      handleInistialState();
+    },1000)
+  }, [isPlaying]);
+
+  // useEffect(() => {
+  //   console.log(playVisible.toString(), isPlaying, 'both values');
+  // }, [playVisible]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -469,44 +511,49 @@ function Player(props) {
 
   // PAUSE AND PLAY
   function playing() {
-    if (isAuthorizeToAccessAppleMusic) {
-      setTimeout(() => {
-        onToggle();
-        if (playVisible == true) {
-          setPlayVisible(false);
-        } else {
-          setPlayVisible(true);
-        }
-      }, 500);
+    //  if (haveAppleMusicSubscription) {
+    //     // Alert.alert(isPlaying.toString())
+    //     setPlay(isPlaying);
+    //   }
+    // if (isAuthorizeToAccessAppleMusic && haveAppleMusicSubscription) {
+    //   Alert.alert('yes');
+    //   setTimeout(() => {
+    //     onToggle();
+    //     if (playVisible == true) {
+    //       setPlayVisible(false);
+    //     } else {
+    //       setPlayVisible(true);
+    //     }
+    //   }, 500);
+    // } else {
+    if (uri === null) {
+      setBool(false);
+      setPlayVisible(true);
+      toast(
+        'Error',
+        'Sorry, this track cannot be played as it does not have a proper link.',
+      );
     } else {
-      if (uri === null) {
-        setBool(false);
-        setPlayVisible(true);
-        toast(
-          'Error',
-          'Sorry, this track cannot be played as it does not have a proper link.',
-        );
+      if (playVisible === true) {
+        setPlayVisible(false);
+
+        global.playerReference.play(success => {
+          if (success) {
+            // console.log('PlayBack End!');
+            setPlayVisible(true);
+          } else {
+            // console.log('NOOOOOOOO');
+          }
+        });
       } else {
-        if (playVisible === true) {
-          setPlayVisible(false);
+        setPlayVisible(true);
 
-          global.playerReference.play(success => {
-            if (success) {
-              // console.log('PlayBack End!');
-              setPlayVisible(true);
-            } else {
-              // console.log('NOOOOOOOO');
-            }
-          });
-        } else {
-          setPlayVisible(true);
-
-          global.playerReference.pause(() => {
-            //   console.log('paused');
-          });
-        }
+        global.playerReference.pause(() => {
+          //   console.log('paused');
+        });
       }
     }
+    // }
   }
 
   // CHANGE TIME
@@ -582,6 +629,35 @@ function Player(props) {
     const nextSong = arrSongs[nextIndex];
   };
 
+  //HANDLE SONG FOR FULL AND RREVIEW
+  const handleSongPlayFullPreview = () => {
+    if (
+      Platform.OS == 'ios' &&
+      isAuthorizeToAccessAppleMusic &&
+      haveAppleMusicSubscription &&
+      registerType == 'apple'
+    ) {
+      console.log(
+        isAuthorizeToAccessAppleMusic,
+        haveAppleMusicSubscription,
+        registerType,
+        'its all info1',
+      );
+      onToggle();
+      setTimeout(() => {
+        setPlayVisible(!playVisible);
+      }, 500);
+      // Alert.alert('this is apple');
+    } else {
+      setDisabled(true);
+      if (hasSongLoaded) {
+        playing();
+      }
+      setTimeout(() => {
+        setDisabled(false);
+      }, 1000);
+    }
+  };
   return (
     <View style={{flex: 1}}>
       <LinearGradient
@@ -836,17 +912,20 @@ function Player(props) {
                   </TouchableOpacity> */}
                   <TouchableOpacity
                     disabled={disabled}
-                    onPress={() => {
-                      setDisabled(true);
-                      if (hasSongLoaded) {
-                        playing();
-                      }
-                      setTimeout(() => {
-                        setDisabled(false);
-                      }, 1000);
-                    }}>
+                    onPress={
+                      () => handleSongPlayFullPreview()
+                      //   {
+                      //   setDisabled(true);
+                      //   if (hasSongLoaded) {
+                      //     playing();
+                      //   }
+                      //   setTimeout(() => {
+                      //     setDisabled(false);
+                      //   }, 1000);
+                      // }
+                    }>
                     <Image
-                      source={playVisible ? ImagePath.play : ImagePath.pause}
+                      source={!playVisible ? ImagePath.play : ImagePath.pause}
                       style={{height: normalise(30), width: normalise(30)}}
                       resizeMode="contain"
                     />

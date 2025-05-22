@@ -116,7 +116,7 @@ const SongListScren = () => {
   const {song} = useCurrentSong();
   const [songList, setSongList] = useState({});
 
-  console.log(song, isPlaying, 'thesa rerf');
+  // console.log(song, isPlaying, 'thesa rerf');
 
   // const onAuth = () => {
   //   Auth.authorize()

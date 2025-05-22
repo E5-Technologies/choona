@@ -12,16 +12,17 @@ import toast from '../utils/helpers/ShowErrorAlert';
 import {useEffect, useState} from 'react';
 
 export const usePlayFullAppleMusic = () => {
-  const {isPlaying} = useIsPlaying();
-  const {song: currentSongData} = useCurrentSong();
+  // const {isPlaying} = useIsPlaying();
+  // const {song: currentSongData} = useCurrentSong();
   const [isAuthorizeToAccessAppleMusic, setIsAuthorizeToAccessAppleMusic] =
     useState(false);
   const [haveAppleMusicSubscription, setHaveAppleMusicSubscription] =
     useState(false);
-  console.log(currentSongData, isPlaying, 'thesa rerf');
+  // console.log(currentSongData, isPlaying, 'thesa rerf');
   useEffect(() => {
      if (Platform.OS == 'ios') {
       onAuth();
+      // checkPlaybackState()
     }
   }, []);
 
@@ -147,6 +148,49 @@ export const usePlayFullAppleMusic = () => {
     }
   }
 
+
+  const checkPlaybackState = async () => {
+  try {
+    const state = await Player.getCurrentState();
+    console.log(state,'its statieof bpback')
+    
+    console.log('Current Playback State:', {
+      isPlaying: state.isPlaying,
+      currentSong: state.nowPlayingItem?.title || 'None',
+      songId: state.nowPlayingItem?.id || 'None',
+      playbackRate: state.playbackRate,
+      position: state.position,
+      duration: state.duration,
+      repeatMode: state.repeatMode,
+      shuffleMode: state.shuffleMode
+    });
+
+    return state;
+  } catch (error) {
+    console.error('Error getting playback state:', {
+      error: error.message,
+      code: error.code || 'UNKNOWN',
+      stack: error.stack
+    });
+    
+    Alert.alert(
+      'Playback Error',
+      'Could not check current playback status. Please try again.'
+    );
+    
+    throw error; // Re-throw if you want calling code to handle it
+  }
+};
+
+// // Usage example:
+// const handleCheckState = async () => {
+//   try {
+//     const currentState = await checkPlaybackState();
+//     // Do something with the state...
+//   } catch (error) {
+//     // Handle error if needed
+//   }
+// };
   //   useEffect(() => {
   //     console.log(songList, 'this is first song');
 
@@ -154,8 +198,8 @@ export const usePlayFullAppleMusic = () => {
   //   }, [songList]);
 
   return {
-    isPlaying,
-    currentSongData,
+    // isPlaying,
+    // currentSongData,
     onAuth,
     onToggle,
     onSkip,

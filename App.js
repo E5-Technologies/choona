@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -80,6 +80,9 @@ import {
 import MySessionDetailScreen from './src/components/main/MySessionDetailScreen';
 import MySessionScreen from './src/components/main/MySessionScreen';
 import SongListScreen from './src/components/main/AppleMusic/SongListScren';
+import {AppleMusicContext} from './src/context/AppleMusicContext';
+import {usePlayFullAppleMusic} from './src/hooks/usePlayFullAppleMusic';
+// import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 // import * as Sentry from '@sentry/react-native';
 
@@ -93,6 +96,9 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   const dispatch = useDispatch();
   const TokenReducer = useSelector(state => state.TokenReducer);
+  const {isAuthorizeToAccessAppleMusic , haveAppleMusicSubscription} = usePlayFullAppleMusic();
+  // const {isPlaying} = useIsPlaying();
+
   //const UserReducer = useSelector(state => state.UserReducer)
 
   useEffect(() => {
@@ -411,113 +417,135 @@ const App = () => {
   } else {
     return (
       <SafeAreaProvider>
-        <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
-          {TokenReducer.token === null ? (
-            <Stack.Navigator
-              screenOptions={{headerShown: false}}
-              initialRouteName={'Login'}>
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="SignUp" component={SignUp} />
-            </Stack.Navigator>
-          ) : (
-            <Stack.Navigator screenOptions={{headerShown: false}}>
-              <Stack.Screen name="bottomTab" component={BottomTab} />
-              <Stack.Screen name="Profile" component={Profile} />
-              <Stack.Screen name="BlockList" component={BlockList} />
-              <Stack.Screen name="EditProfile" component={EditProfile} />
-              <Stack.Screen name="Followers" component={Followers} />
-              <Stack.Screen name="Following" component={Following} />
-              <Stack.Screen name="OthersProfile" component={OthersProfile} />
-              <Stack.Screen name="CreatePost" component={CreatePost} />
-              <Stack.Screen name="Contact" component={Contact} />
-              {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
-              <Stack.Screen
-                name="Player"
-                component={Player}
-                options={{
-                  cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-                }}
-              />
-              <Stack.Screen name="InsideaMessage" component={InsideaMessage} />
-              <Stack.Screen name="HomeItemList" component={HomeItemList} />
-              <Stack.Screen
-                name="HomeItemComments"
-                component={HomeItemComments}
-              />
-              <Stack.Screen
-                name="HomeItemReactions"
-                component={HomeItemReactions}
-              />
-              <Stack.Screen
-                name="AddSongsInMessage"
-                component={AddSongsInMessage}
-              />
-              <Stack.Screen
-                name="SendSongInMessageFinal"
-                component={SendSongInMessageFinal}
-              />
-              <Stack.Screen name="GenreClicked" component={GenreClicked} />
-              <Stack.Screen
-                name="GenreSongClicked"
-                component={GenreSongClicked}
-              />
-              <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
-              <Stack.Screen name="AddAnotherSong" component={AddAnotherSong} />
-              <Stack.Screen
-                name="PostListForUser"
-                component={PostListForUser}
-              />
-              <Stack.Screen
-                name="UsersFromContacts"
-                component={UsersFromContacts}
-              />
-              <Stack.Screen
-                name="AddToPlayListScreen"
-                component={AddToPlayListScreen}
-              />
-              <Stack.Screen
-                name="SingleSongClick"
-                component={SingleSongClick}
-              />
-              <Stack.Screen
-                name="PlayerScreenSelectUser"
-                component={PlayerScreenSelectUser}
-              />
-              <Stack.Screen name="PlayerComment" component={PlayerComment} />
-              <Stack.Screen name="AddSong" component={AddSong} />
-              <Stack.Screen name="CreatePlayList" component={CreatePlayList} />
-              <Stack.Screen
-                name="SessionDetail"
-                component={SessionDetail}
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="AssembleSession"
-                component={AssembleSession}
-              />
-              <Stack.Screen
-                name="SessionLaunchScreen"
-                component={SessionLaunchScreen}
-              />
-              <Stack.Screen name="SessionActive" component={SessionActive} />
-              <Stack.Screen name="PlayListDetail" component={PlayListDetail} />
-              <Stack.Screen
-                name="MySessionDetailScreen"
-                component={MySessionDetailScreen}
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="MySessionScreen"
-                component={MySessionScreen}
-              />
-              <Stack.Screen name="SongListScreen" component={SongListScreen} />
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
+        <AppleMusicContext.Provider value={{
+          isAuthorizeToAccessAppleMusic,
+          haveAppleMusicSubscription,
+          // isPlaying
+        }}>
+          <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
+            {TokenReducer.token === null ? (
+              <Stack.Navigator
+                screenOptions={{headerShown: false}}
+                initialRouteName={'Login'}>
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="SignUp" component={SignUp} />
+              </Stack.Navigator>
+            ) : (
+              <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Screen name="bottomTab" component={BottomTab} />
+                <Stack.Screen name="Profile" component={Profile} />
+                <Stack.Screen name="BlockList" component={BlockList} />
+                <Stack.Screen name="EditProfile" component={EditProfile} />
+                <Stack.Screen name="Followers" component={Followers} />
+                <Stack.Screen name="Following" component={Following} />
+                <Stack.Screen name="OthersProfile" component={OthersProfile} />
+                <Stack.Screen name="CreatePost" component={CreatePost} />
+                <Stack.Screen name="Contact" component={Contact} />
+                {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
+                <Stack.Screen
+                  name="Player"
+                  component={Player}
+                  options={{
+                    cardStyleInterpolator:
+                      CardStyleInterpolators.forVerticalIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="InsideaMessage"
+                  component={InsideaMessage}
+                />
+                <Stack.Screen name="HomeItemList" component={HomeItemList} />
+                <Stack.Screen
+                  name="HomeItemComments"
+                  component={HomeItemComments}
+                />
+                <Stack.Screen
+                  name="HomeItemReactions"
+                  component={HomeItemReactions}
+                />
+                <Stack.Screen
+                  name="AddSongsInMessage"
+                  component={AddSongsInMessage}
+                />
+                <Stack.Screen
+                  name="SendSongInMessageFinal"
+                  component={SendSongInMessageFinal}
+                />
+                <Stack.Screen name="GenreClicked" component={GenreClicked} />
+                <Stack.Screen
+                  name="GenreSongClicked"
+                  component={GenreSongClicked}
+                />
+                <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
+                <Stack.Screen
+                  name="AddAnotherSong"
+                  component={AddAnotherSong}
+                />
+                <Stack.Screen
+                  name="PostListForUser"
+                  component={PostListForUser}
+                />
+                <Stack.Screen
+                  name="UsersFromContacts"
+                  component={UsersFromContacts}
+                />
+                <Stack.Screen
+                  name="AddToPlayListScreen"
+                  component={AddToPlayListScreen}
+                />
+                <Stack.Screen
+                  name="SingleSongClick"
+                  component={SingleSongClick}
+                />
+                <Stack.Screen
+                  name="PlayerScreenSelectUser"
+                  component={PlayerScreenSelectUser}
+                />
+                <Stack.Screen name="PlayerComment" component={PlayerComment} />
+                <Stack.Screen name="AddSong" component={AddSong} />
+                <Stack.Screen
+                  name="CreatePlayList"
+                  component={CreatePlayList}
+                />
+                <Stack.Screen
+                  name="SessionDetail"
+                  component={SessionDetail}
+                  options={{
+                    gestureEnabled: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="AssembleSession"
+                  component={AssembleSession}
+                />
+                <Stack.Screen
+                  name="SessionLaunchScreen"
+                  component={SessionLaunchScreen}
+                />
+                <Stack.Screen name="SessionActive" component={SessionActive} />
+                <Stack.Screen
+                  name="PlayListDetail"
+                  component={PlayListDetail}
+                />
+                <Stack.Screen
+                  name="MySessionDetailScreen"
+                  component={MySessionDetailScreen}
+                  options={{
+                    gestureEnabled: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="MySessionScreen"
+                  component={MySessionScreen}
+                />
+                <Stack.Screen
+                  name="SongListScreen"
+                  component={SongListScreen}
+                />
+              </Stack.Navigator>
+            )}
+          </NavigationContainer>
+        </AppleMusicContext.Provider>
       </SafeAreaProvider>
     );
   }
