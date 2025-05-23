@@ -1,0 +1,76 @@
+diff --git a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m
+index 33312d7..9adcbaf 100644
+--- a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m
++++ b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m
+@@ -19,7 +19,7 @@ @interface RCT_EXTERN_MODULE(MusicModule, NSObject)
+ RCT_EXTERN_METHOD(skipToNextEntry)
+ RCT_EXTERN_METHOD(togglePlayerState)
+ RCT_EXTERN_METHOD(getCurrentState:(RCTResponseSenderBlock)callback)
+-
++RCT_EXTERN_METHOD(resetPlaybackQueue:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+ // Определение, что этот модуль имеет события, которые могут быть отправлены в JavaScript.
+ // Эта функция сообщает React Native о событиях, которые этот модуль может отправить.
+ - (NSArray<NSString *> *)supportedEvents {
+diff --git a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift
+index 76f6734..2449de9 100644
+--- a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift
++++ b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift
+@@ -519,6 +519,22 @@ class MusicModule: RCTEventEmitter {
+         }
+     }
+ 
++    @objc(resetPlaybackQueue:rejecter:)
++    func resetPlaybackQueue(_ resolve: @escaping RCTPromiseResolveBlock, 
++                          rejecter reject: @escaping RCTPromiseRejectBlock) {
++        Task {
++            do {
++                let player = SystemMusicPlayer.shared
++                player.queue = []  // Clear the queue
++                try await player.stop()  // Stop current playback
++                resolve("Queue cleared successfully")
++            } catch {
++                reject("ERROR", "Failed to reset queue: \(error)", error)
++            }
++        }
++    }
++
++
+     enum MediaType {
+         case song(MusicCatalogResourceRequest<Song>)
+         case album(MusicCatalogResourceRequest<Album>)
+diff --git a/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts b/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts
+index 458777f..1a4e4e9 100644
+--- a/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts
++++ b/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts
+@@ -41,5 +41,8 @@ declare class MusicKit {
+      * @return {Promise<ITracksFromLibrary[]>} A promise returns a list of recently played items including tracks, playlists, stations, albums
+      */
+     static getTracksFromLibrary(): Promise<ITracksFromLibrary>;
++
++    static resetPlaybackQueue(): Promise<void>;
++    // resetPlaybackQueue(): Promise<void>
+ }
+ export { MusicKit as default };
+diff --git a/node_modules/@lomray/react-native-apple-music/modules/music-kit.js b/node_modules/@lomray/react-native-apple-music/modules/music-kit.js
+index 8928e8b..5c48fb2 100644
+--- a/node_modules/@lomray/react-native-apple-music/modules/music-kit.js
++++ b/node_modules/@lomray/react-native-apple-music/modules/music-kit.js
+@@ -50,6 +50,18 @@ class MusicKit {
+             };
+         }
+     }
++
++    static async resetPlaybackQueue() {
++    try {
++        // await MusicModule.resetPlaybackQueue();
++        const result = await MusicModule.resetPlaybackQueue();
++        console.log('Reset queue result:', result); // Should log "Queue cleared successfully"
++        return result;
++    } catch (error) {
++        console.error('Apple Music Kit: Resetting Playback Failed.', error);
++        throw error;
++    }
++}
+ }
+ 
+ export { MusicKit as default };

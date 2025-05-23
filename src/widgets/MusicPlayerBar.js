@@ -15,8 +15,8 @@ import ImagePath from '../assests/ImagePath';
 import {connect} from 'react-redux';
 import Loader from './AuthLoader';
 import {usePlayFullAppleMusic} from '../hooks/usePlayFullAppleMusic';
-import { AppleMusicContext } from '../context/AppleMusicContext';
-import { useIsPlaying } from '@lomray/react-native-apple-music';
+import {AppleMusicContext} from '../context/AppleMusicContext';
+import {useIsPlaying} from '@lomray/react-native-apple-music';
 
 function MusicPlayerBar(props) {
   const [play, setPlay] = useState(false);
@@ -35,17 +35,28 @@ function MusicPlayerBar(props) {
   // } = usePlayFullAppleMusic();
 
   const {
-      onToggle,
-      // isPlaying,
-      // isAuthorizeToAccessAppleMusic,
-      // haveAppleMusicSubscription,
-    } = usePlayFullAppleMusic();
-  
-    const {
-      isAuthorizeToAccessAppleMusic,
-      haveAppleMusicSubscription,
-      // isPlaying
-    } = useContext(AppleMusicContext);
+    onToggle,
+    checkPlaybackState,
+    // isPlaying,
+    // isAuthorizeToAccessAppleMusic,
+    // haveAppleMusicSubscription,
+  } = usePlayFullAppleMusic();
+
+  const {
+    isAuthorizeToAccessAppleMusic,
+    haveAppleMusicSubscription,
+    // isPlaying
+  } = useContext(AppleMusicContext);
+
+  useEffect(() => {
+    const handleProgress = async () => {
+      const progressState = await checkPlaybackState();
+      console.log(JSON.stringify(progressState), 'this is progress state');
+    };
+    setTime(() => {
+      handleProgress();
+    }, 1000);
+  }, []);
 
   const ref =
     global.playerReference !== null && global.playerReference !== undefined
@@ -53,6 +64,8 @@ function MusicPlayerBar(props) {
       : null;
 
   const arrSongs = props.playingSongRef?.details?.songs;
+
+  // console.log(props.playingSongRef, 'this is the ref song info in bar')
 
   const currentSongIndex = arrSongs?.findIndex(
     item => item.isrc_code === props.playingSongRef?.isrc,
@@ -77,14 +90,18 @@ function MusicPlayerBar(props) {
       //   haveAppleMusicSubscription.toString(),
       //   'its sucnseiiton or not',
       // );
-      if (haveAppleMusicSubscription) {
+      if (
+        haveAppleMusicSubscription &&
+        Platform.OS == 'ios' &&
+        props.playingSongRef?.regType == 'apple'
+      ) {
         // Alert.alert(isPlaying.toString())
         setPlay(isPlaying);
       } else {
-        // Alert.alert('out')
+        // Alert.alert('spotify')
+        console.log('spotify');
         if (ref !== null && ref !== undefined) {
           const isPlaying = ref.isPlaying();
-
           setPlay(isPlaying);
         }
       }
@@ -102,10 +119,14 @@ function MusicPlayerBar(props) {
   }
 
   const playOrPause = () => {
-    if (haveAppleMusicSubscription) {
+    if (
+      haveAppleMusicSubscription &&
+      Platform.OS == 'ios' &&
+      props.playingSongRef?.regType == 'apple'
+    ) {
       // Alert.alert(isPlaying.toString())
       // setPlay(isPlaying);
-      onToggle()
+      onToggle();
     } else {
       const res = ref.isPlaying();
       if (res) {

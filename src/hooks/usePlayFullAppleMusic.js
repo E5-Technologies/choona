@@ -20,7 +20,7 @@ export const usePlayFullAppleMusic = () => {
     useState(false);
   // console.log(currentSongData, isPlaying, 'thesa rerf');
   useEffect(() => {
-     if (Platform.OS == 'ios') {
+    if (Platform.OS == 'ios') {
       onAuth();
       // checkPlaybackState()
     }
@@ -148,49 +148,64 @@ export const usePlayFullAppleMusic = () => {
     }
   }
 
+  async function resetPlaybackQueue() {
+    try {
+      // Stop current playback
+      // await Player.stop();
+
+      // Clear the queue (implementation may vary based on library version)
+      const res= await MusicKit.resetPlaybackQueue();
+      console.log(res, 'its res>>>>>>>')
+
+      // Alternative if the above doesn't work:
+      // await Player.reset();
+    } catch (error) {
+      console.log('Error resetting queue:', error);
+    }
+  }
 
   const checkPlaybackState = async () => {
-  try {
-    const state = await Player.getCurrentState();
-    console.log(state,'its statieof bpback')
-    
-    console.log('Current Playback State:', {
-      isPlaying: state.isPlaying,
-      currentSong: state.nowPlayingItem?.title || 'None',
-      songId: state.nowPlayingItem?.id || 'None',
-      playbackRate: state.playbackRate,
-      position: state.position,
-      duration: state.duration,
-      repeatMode: state.repeatMode,
-      shuffleMode: state.shuffleMode
-    });
+    try {
+      const state = await Player.getCurrentState();
+      // console.log(state, 'its statieof bpback');
 
-    return state;
-  } catch (error) {
-    console.error('Error getting playback state:', {
-      error: error.message,
-      code: error.code || 'UNKNOWN',
-      stack: error.stack
-    });
-    
-    Alert.alert(
-      'Playback Error',
-      'Could not check current playback status. Please try again.'
-    );
-    
-    throw error; // Re-throw if you want calling code to handle it
-  }
-};
+      // console.log('Current Playback State:', {
+      //   isPlaying: state.isPlaying,
+      //   currentSong: state.nowPlayingItem?.title || 'None',
+      //   songId: state.nowPlayingItem?.id || 'None',
+      //   playbackRate: state.playbackRate,
+      //   position: state.position,
+      //   duration: state.duration,
+      //   repeatMode: state.repeatMode,
+      //   shuffleMode: state.shuffleMode,
+      // });
 
-// // Usage example:
-// const handleCheckState = async () => {
-//   try {
-//     const currentState = await checkPlaybackState();
-//     // Do something with the state...
-//   } catch (error) {
-//     // Handle error if needed
-//   }
-// };
+      return state;
+    } catch (error) {
+      console.error('Error getting playback state:', {
+        error: error.message,
+        code: error.code || 'UNKNOWN',
+        stack: error.stack,
+      });
+
+      Alert.alert(
+        'Playback Error',
+        'Could not check current playback status. Please try again.',
+      );
+
+      throw error; // Re-throw if you want calling code to handle it
+    }
+  };
+
+  // // Usage example:
+  // const handleCheckState = async () => {
+  //   try {
+  //     const currentState = await checkPlaybackState();
+  //     // Do something with the state...
+  //   } catch (error) {
+  //     // Handle error if needed
+  //   }
+  // };
   //   useEffect(() => {
   //     console.log(songList, 'this is first song');
 
@@ -206,5 +221,7 @@ export const usePlayFullAppleMusic = () => {
     setPlaybackQueue,
     isAuthorizeToAccessAppleMusic,
     haveAppleMusicSubscription,
+    resetPlaybackQueue,
+    checkPlaybackState,
   };
 };
