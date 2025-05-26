@@ -174,7 +174,6 @@ function Player(props) {
     return true;
   }
 
-
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
 
@@ -192,13 +191,20 @@ function Player(props) {
         registerType == 'apple' &&
         (currentSongData.id != null || currentSongData.id != undefined)
       ) {
-        // console.log(currentSongData?.id,props.route.params?.apple_song_id, 'hey hti is >>>>>')
+        console.log(
+          currentSongData?.id,
+          props.route.params?.apple_song_id,
+          'Hello hello coder>>>>',
+        );
         if (currentSongData?.id != props.route.params?.apple_song_id) {
+          // setPlaybackQueue(props.route.params?.apple_song_id);
+          await setPlaybackQueue(props.route.params?.apple_song_id);
           setAppleMusicPlayerLoader(true);
-          setPlaybackQueue(props.route.params?.apple_song_id);
+          // ApplePlayer.play();
           setTimeout(() => {
+            // Alert.alert('new');
             ApplePlayer.play();
-            setPlayVisible(true);
+            setPlayVisible(isPlaying);
             setAppleMusicPlayerLoader(false);
           }, 500);
         } else {
@@ -272,7 +278,6 @@ function Player(props) {
       handleInistialState();
     }, 1000);
   }, [isPlaying, currentSongData]);
-
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -967,7 +972,8 @@ function Player(props) {
                     Platform.OS === 'ios' ? normalise(16) : normalise(16) - 15,
                 }}>
                 {Platform.OS === 'ios' &&
-                props.playingSongRef?.regType == 'apple' &&
+                (props.playingSongRef?.regType == 'apple' ||
+                  registerType == 'apple') &&
                 isAuthorizeToAccessAppleMusic &&
                 haveAppleMusicSubscription ? (
                   <View style={{marginTop: 12}}>

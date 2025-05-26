@@ -48,9 +48,9 @@ const AddSong = props => {
     props.registerType,
   );
 
-  const {resetPlaybackQueue} = usePlayFullAppleMusic();
+  const {resetPlaybackQueue, setPlaybackQueue} = usePlayFullAppleMusic();
 
-  console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
+  // console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
   let post = true;
 
   if (status === '' || status !== props.status) {
@@ -170,7 +170,7 @@ const AddSong = props => {
   }
 
   function renderItem(item) {
-    console.log(item, 'its song item h sir');
+    // console.log(item, 'its song item h sir');
     return (
       <SavedSongsListItem
         image={
@@ -197,8 +197,8 @@ const AddSong = props => {
         change2={true}
         image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => handleAddSong(item)}
-        onPressImage={() => {
-          resetPlaybackQueue();
+        onPressImage={async () => {
+          await resetPlaybackQueue();
           setTimeout(() => {
             props.navigation.navigate('Player', {
               song_title:

@@ -6,7 +6,7 @@ import {getAppleDevelopersToken} from './ApiRequest';
 export const getAppleDevToken = async () => {
   try {
     const creds = await AsyncStorage.getItem(constants.APPLE);
-    console.log(creds, 'these are creds');
+    // console.log(creds, 'these are creds');
     if (creds === null) {
       const token = await getAppleDevelopersToken(constants.appleGetTokenApi);
       console.log('Dev Token First' + JSON.stringify(token));
