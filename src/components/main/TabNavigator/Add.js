@@ -35,6 +35,7 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 
 import {useRecentlyPlayed} from '../../../utils/helpers/RecentlyPlayed';
 import {RecentlyPlayedHeader} from '../../Headers/RecentlyPlayedHeader';
+import {usePlayFullAppleMusic} from '../../../hooks/usePlayFullAppleMusic';
 // import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
@@ -46,6 +47,8 @@ const AddSong = props => {
   const {recentlyPlayed, loading, refetch} = useRecentlyPlayed(
     props.registerType,
   );
+
+  const {resetPlaybackQueue} = usePlayFullAppleMusic();
 
   console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
   let post = true;
@@ -195,42 +198,48 @@ const AddSong = props => {
         image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => handleAddSong(item)}
         onPressImage={() => {
-          props.navigation.navigate('Player', {
-            song_title:
-              props.registerType === 'spotify'
-                ? item.item.name
-                : item.item.attributes.name,
-            album_name:
-              props.registerType === 'spotify'
-                ? item.item.album.name
-                : item.item.attributes.albumName,
-            song_pic:
-              props.registerType === 'spotify'
-                ? item.item.album.images[0].url
-                : item.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '300x300',
-                  ),
-            username: '',
-            profile_pic: '',
-            originalUri:
-              props.registerType === 'spotify'
-                ? item.item.external_urls.spotify
-                : item.item.attributes.url,
-            uri:
-              props.registerType === 'spotify'
-                ? item.item.preview_url
-                : item.item.attributes.previews[0].url,
-            artist:
-              props.registerType === 'spotify'
-                ? singerList(item.item.artists)
-                : item.item.attributes.artistName,
-            changePlayer: true,
-            registerType: props.registerType,
-            changePlayer2: props.registerType === 'spotify' ? true : false,
-            id: props.registerType === 'spotify' ? item.item.id : item.item.id,
-            showPlaylist: false,
-          });
+          resetPlaybackQueue();
+          setTimeout(() => {
+            props.navigation.navigate('Player', {
+              song_title:
+                props.registerType === 'spotify'
+                  ? item.item.name
+                  : item.item.attributes.name,
+              album_name:
+                props.registerType === 'spotify'
+                  ? item.item.album.name
+                  : item.item.attributes.albumName,
+              song_pic:
+                props.registerType === 'spotify'
+                  ? item.item.album.images[0].url
+                  : item.item.attributes.artwork.url.replace(
+                      '{w}x{h}',
+                      '300x300',
+                    ),
+              username: '',
+              profile_pic: '',
+              originalUri:
+                props.registerType === 'spotify'
+                  ? item.item.external_urls.spotify
+                  : item.item.attributes.url,
+              uri:
+                props.registerType === 'spotify'
+                  ? item.item.preview_url
+                  : item.item.attributes.previews[0].url,
+              artist:
+                props.registerType === 'spotify'
+                  ? singerList(item.item.artists)
+                  : item.item.attributes.artistName,
+              changePlayer: true,
+              registerType: props.registerType,
+              changePlayer2: props.registerType === 'spotify' ? true : false,
+              id:
+                props.registerType === 'spotify' ? item.item.id : item.item.id,
+              apple_song_id:
+                props.registerType === 'spotify' ? item.item.id : item.item.id,
+              showPlaylist: false,
+            });
+          }, 500);
         }}
       />
     );

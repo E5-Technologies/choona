@@ -104,7 +104,10 @@ import {
 } from '../../../action/SessionAction';
 import {usePlayFullAppleMusic} from '../../../hooks/usePlayFullAppleMusic';
 import {extractSongIdFromUrl} from '../../../utils/helpers/CommonFunctions';
-import {AppleMusicContext} from '../../../context/AppleMusicContext';
+import {
+  AppleMusicContext,
+  useMusicPlayer,
+} from '../../../context/AppleMusicContext';
 import {
   Player,
   useCurrentSong,
@@ -162,6 +165,10 @@ const Home = props => {
     //   haveAppleMusicSubscription,
   } = usePlayFullAppleMusic();
 
+  const {progress, duration} = useMusicPlayer();
+
+  console.log(progress, duration, 'THi is the value>>>>>');
+
   const {
     isAuthorizeToAccessAppleMusic,
     haveAppleMusicSubscription,
@@ -175,7 +182,7 @@ const Home = props => {
   );
 
   // setTimeout(() => {
-
+  checkPlaybackState();
   // }, 100);
 
   // useEffect(() => {
@@ -811,6 +818,7 @@ const Home = props => {
         setPlaybackQueue(songId);
         setTimeout(() => {
           Player.play();
+          // playAppleSong()
         }, 500);
       } else {
         setTimeout(() => {
@@ -1384,7 +1392,7 @@ const Home = props => {
       console.log('empty');
     }
   }
-
+  const insets = useSafeAreaInsets();
   // VIEW
   return (
     <View
@@ -1392,9 +1400,13 @@ const Home = props => {
         flex: 1,
         backgroundColor: Colors.darkerblack,
       }}>
-      {Platform.OS == 'android' && (
+      {/* {Platform.OS == 'android' && (
         <StatusBar backgroundColor={Colors.darkerblack} />
-      )}
+      )} */}
+       <StatusBar
+        barStyle="light-content" // 👈 Makes iOS status bar text white
+        backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
+      />
       {/* <SafeAreaView style={{flex: 1, position: 'relative'}}> */}
       <Timer
         onFinish={() => {

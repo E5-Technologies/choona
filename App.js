@@ -80,7 +80,7 @@ import {
 import MySessionDetailScreen from './src/components/main/MySessionDetailScreen';
 import MySessionScreen from './src/components/main/MySessionScreen';
 import SongListScreen from './src/components/main/AppleMusic/SongListScren';
-import {AppleMusicContext} from './src/context/AppleMusicContext';
+import {AppleMusicContext, MusicPlayerProvider} from './src/context/AppleMusicContext';
 import {usePlayFullAppleMusic} from './src/hooks/usePlayFullAppleMusic';
 // import { useIsPlaying } from '@lomray/react-native-apple-music';
 
@@ -417,6 +417,7 @@ const App = () => {
   } else {
     return (
       <SafeAreaProvider>
+        <MusicPlayerProvider>
         <AppleMusicContext.Provider value={{
           isAuthorizeToAccessAppleMusic,
           haveAppleMusicSubscription,
@@ -546,6 +547,7 @@ const App = () => {
             )}
           </NavigationContainer>
         </AppleMusicContext.Provider>
+        </MusicPlayerProvider>
       </SafeAreaProvider>
     );
   }

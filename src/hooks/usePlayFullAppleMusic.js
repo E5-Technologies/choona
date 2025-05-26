@@ -213,8 +213,6 @@ export const usePlayFullAppleMusic = () => {
   //   }, [songList]);
 
   return {
-    // isPlaying,
-    // currentSongData,
     onAuth,
     onToggle,
     onSkip,

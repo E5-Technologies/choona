@@ -15,8 +15,12 @@ import ImagePath from '../assests/ImagePath';
 import {connect} from 'react-redux';
 import Loader from './AuthLoader';
 import {usePlayFullAppleMusic} from '../hooks/usePlayFullAppleMusic';
-import {AppleMusicContext} from '../context/AppleMusicContext';
-import {useIsPlaying} from '@lomray/react-native-apple-music';
+import {AppleMusicContext, useMusicPlayer} from '../context/AppleMusicContext';
+import {
+  useIsPlaying,
+  useCurrentSong,
+  Player,
+} from '@lomray/react-native-apple-music';
 
 function MusicPlayerBar(props) {
   const [play, setPlay] = useState(false);
@@ -24,6 +28,7 @@ function MusicPlayerBar(props) {
   const [time, setTime] = useState(0);
   const [disabled, setDisabled] = useState(false);
   const {isPlaying} = useIsPlaying();
+  const {song: currentSongData} = useCurrentSong();
 
   // const {
   //   onAuth,
@@ -37,10 +42,16 @@ function MusicPlayerBar(props) {
   const {
     onToggle,
     checkPlaybackState,
+    setPlaybackQueue,
     // isPlaying,
     // isAuthorizeToAccessAppleMusic,
     // haveAppleMusicSubscription,
   } = usePlayFullAppleMusic();
+
+  const {progress, duration} = useMusicPlayer();
+
+  console.log(progress, duration, 'thi is progress and the duration');
+  const percentage = duration > 0 ? (progress / duration) * 100 : 0;
 
   const {
     isAuthorizeToAccessAppleMusic,
@@ -93,7 +104,8 @@ function MusicPlayerBar(props) {
       if (
         haveAppleMusicSubscription &&
         Platform.OS == 'ios' &&
-        props.playingSongRef?.regType == 'apple'
+        props.playingSongRef?.regType == 'apple' &&
+        currentSongData?.id == props.playingSongRef?.apple_song_id
       ) {
         // Alert.alert(isPlaying.toString())
         setPlay(isPlaying);
@@ -124,9 +136,14 @@ function MusicPlayerBar(props) {
       Platform.OS == 'ios' &&
       props.playingSongRef?.regType == 'apple'
     ) {
-      // Alert.alert(isPlaying.toString())
-      // setPlay(isPlaying);
-      onToggle();
+      if (currentSongData?.id == props.playingSongRef?.apple_song_id) {
+        onToggle();
+      } else {
+        setPlaybackQueue(props.playingSongRef?.apple_song_id);
+        setTimeout(() => {
+          Player.play();
+        }, 500);
+      }
     } else {
       const res = ref.isPlaying();
       if (res) {
@@ -191,14 +208,28 @@ function MusicPlayerBar(props) {
         bottom: 0,
       }}>
       <Loader visible={bool} />
-      <View
-        style={{
-          height: normalise(2),
-          width: `${time * 3.4}%`,
-          alignSelf: 'flex-start',
-          backgroundColor: Colors.white,
-        }}
-      />
+      {Platform.OS === 'ios' &&
+      props.playingSongRef?.regType == 'apple' &&
+      currentSongData?.id == props.playingSongRef?.apple_song_id ? (
+        <View
+          style={{
+            height: normalise(2),
+            width: `${percentage}%`,
+            alignSelf: 'flex-start',
+            backgroundColor: Colors.white,
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            height: normalise(2),
+            width: `${time * 3.4}%`,
+            alignSelf: 'flex-start',
+            backgroundColor: Colors.white,
+          }}
+        />
+      )}
+
       <TouchableOpacity
         onPress={() => {
           onPress();

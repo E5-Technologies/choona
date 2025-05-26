@@ -63,9 +63,15 @@ import Avatar from '../Avatar';
 import LinearGradient from 'react-native-linear-gradient';
 import ReportModal from '../Posts/ReportModal';
 import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
-import {AppleMusicContext} from '../../context/AppleMusicContext';
-import {useIsPlaying} from '@lomray/react-native-apple-music';
-
+import {
+  AppleMusicContext,
+  useMusicPlayer,
+} from '../../context/AppleMusicContext';
+import {
+  useCurrentSong,
+  useIsPlaying,
+  Player as ApplePlayer,
+} from '@lomray/react-native-apple-music';
 let status;
 let songStatus;
 let playerStatus;
@@ -73,7 +79,7 @@ let playerStatus;
 function Player(props) {
   // PLAYER
   // console.log(JSON.stringify(props.route.params), 'theese are xong props');
-
+  const [appleMusicPlayerLoader, setAppleMusicPlayerLoader] = useState(false);
   const [playVisible, setPlayVisible] = useState(false);
   const [uri, setUri] = useState(props.route.params.uri);
   // const [uri, setUri] = useState(props.route.params.details.songs.original_song_uri);
@@ -146,21 +152,19 @@ function Player(props) {
   const [chatToken, setChatToken] = useState(props.route.params.chatToken);
   const {isPlaying} = useIsPlaying();
 
-  const {onToggle} = usePlayFullAppleMusic();
+  const {onToggle, setPlaybackQueue} = usePlayFullAppleMusic();
+  const {progress, duration} = useMusicPlayer();
+  const percentage = duration > 0 ? (progress / duration) * 100 : 0;
 
   const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
     useContext(AppleMusicContext);
-
-  console.log(isAuthorizeToAccessAppleMusic);
+  const {song: currentSongData} = useCurrentSong();
 
   // console.log("commentData: " + JSON.stringify(commentData));
   let track;
   var bottomSheetRef;
-  
 
   function handleBackButtonClick() {
-    console.log('hello');
-
     if (global.playerReference !== null) {
       if (global.playerReference.isPlaying()) {
         props.dummyRequest();
@@ -170,25 +174,6 @@ function Player(props) {
     return true;
   }
 
-  // useEffect(() => {
-  //   onAuth();
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log(isPlaying.toString(), 'its current state');
-  //   if (
-  //     Platform.OS == 'ios' &&
-  //     isAuthorizeToAccessAppleMusic &&
-  //     haveAppleMusicSubscription &&
-  //     registerType == 'apple'
-  //   ) {
-  //     // setPlaybackQueue(props.route.params?.id);
-  //     console.log(isPlaying.toString(), 'its current state');
-  //     setPlayVisible(isPlaying);
-  //   }
-  // }, []);
-
-  // console.log(isAuthorizeToAccessAppleMusic, 'this is authorized or not');
 
   useEffect(() => {
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
@@ -200,23 +185,25 @@ function Player(props) {
     // });
 
     const handleInistialState = async () => {
-      console.log(
-        isAuthorizeToAccessAppleMusic,
-        haveAppleMusicSubscription,
-        registerType,
-        'its all info',
-      );
       if (
         Platform.OS == 'ios' &&
         isAuthorizeToAccessAppleMusic &&
         haveAppleMusicSubscription &&
-        registerType == 'apple'
+        registerType == 'apple' &&
+        (currentSongData.id != null || currentSongData.id != undefined)
       ) {
-        // setPlaybackQueue(props.route.params?.id);
-        // console.log(isPlaying.toString(), 'its current state');
-        
-        // Alert.alert(isPlaying.toString());
-        setPlayVisible(isPlaying);
+        // console.log(currentSongData?.id,props.route.params?.apple_song_id, 'hey hti is >>>>>')
+        if (currentSongData?.id != props.route.params?.apple_song_id) {
+          setAppleMusicPlayerLoader(true);
+          setPlaybackQueue(props.route.params?.apple_song_id);
+          setTimeout(() => {
+            ApplePlayer.play();
+            setPlayVisible(true);
+            setAppleMusicPlayerLoader(false);
+          }, 500);
+        } else {
+          setPlayVisible(isPlaying);
+        }
       } else {
         BackHandler.addEventListener(
           'hardwareBackPress',
@@ -281,14 +268,11 @@ function Player(props) {
           });
       }
     };
-    setTimeout(()=>{
+    setTimeout(() => {
       handleInistialState();
-    },1000)
-  }, [isPlaying]);
+    }, 1000);
+  }, [isPlaying, currentSongData]);
 
-  // useEffect(() => {
-  //   console.log(playVisible.toString(), isPlaying, 'both values');
-  // }, [playVisible]);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -643,10 +627,24 @@ function Player(props) {
         registerType,
         'its all info1',
       );
-      onToggle();
-      setTimeout(() => {
-        setPlayVisible(!playVisible);
-      }, 500);
+      if (currentSongData?.id != props.route.params?.apple_song_id) {
+        // console.log(songId?.toString(), songId, '><');
+        setPlaybackQueue(props.route.params?.apple_song_id);
+        setTimeout(() => {
+          ApplePlayer.play();
+          setPlayVisible(!playVisible);
+          // playAppleSong()
+        }, 500);
+      } else {
+        setTimeout(() => {
+          onToggle();
+          setPlayVisible(!playVisible);
+        }, 500);
+      }
+      // onToggle();
+      // setTimeout(() => {
+      //   setPlayVisible(!playVisible);
+      // }, 500);
       // Alert.alert('this is apple');
     } else {
       setDisabled(true);
@@ -668,7 +666,7 @@ function Player(props) {
         <KeyboardAvoidingView style={{flex: 1}}>
           <StatusBar backgroundColor="transparent" />
 
-          <Loader visible={bool} />
+          <Loader visible={bool || appleMusicPlayerLoader} />
 
           <Loader visible={props.playerStatus === GET_SONG_FROM_ISRC_REQUEST} />
 
@@ -968,24 +966,56 @@ function Player(props) {
                   paddingHorizontal:
                     Platform.OS === 'ios' ? normalise(16) : normalise(16) - 15,
                 }}>
-                <Slider
-                  style={{
-                    width: '100%',
-                    marginHorizontal: 20,
-                    height: 40,
-                    alignSelf: 'center',
-                    marginTop: normalise(5),
-                  }}
-                  minimumValue={0}
-                  maximumValue={30}
-                  step={1}
-                  thumbTintColor="#99000000"
-                  value={playerCurrentTime}
-                  minimumTrackTintColor="#FFFFFF"
-                  maximumTrackTintColor="#000000"
-                />
+                {Platform.OS === 'ios' &&
+                props.playingSongRef?.regType == 'apple' &&
+                isAuthorizeToAccessAppleMusic &&
+                haveAppleMusicSubscription ? (
+                  <View style={{marginTop: 12}}>
+                    <View
+                      style={{
+                        width: `${percentage}%`,
+                        alignSelf: 'flex-start',
+                        backgroundColor: Colors.white,
+                        // marginHorizontal: 20,
+                        height: 4,
+                        // alignSelf: 'center',
+                        marginTop: normalise(5),
+                        borderRadius: 10,
+                        zIndex: 1,
+                      }}
+                    />
+                    <View
+                      style={{
+                        width: '100%',
+                        alignSelf: 'flex-start',
+                        backgroundColor: '#000000',
+                        height: 4,
+                        marginTop: normalise(5),
+                        borderRadius: 10,
+                        position: 'absolute',
+                        // marginBottom:-10
+                      }}
+                    />
+                  </View>
+                ) : (
+                  <Slider
+                    style={{
+                      width: '100%',
+                      marginHorizontal: 20,
+                      height: 40,
+                      alignSelf: 'center',
+                      marginTop: normalise(5),
+                    }}
+                    minimumValue={0}
+                    maximumValue={30}
+                    step={1}
+                    thumbTintColor="#99000000"
+                    value={playerCurrentTime}
+                    minimumTrackTintColor="#FFFFFF"
+                    maximumTrackTintColor="#000000"
+                  />
+                )}
               </View>
-
               {changePlayer ? null : (
                 <View
                   style={{
