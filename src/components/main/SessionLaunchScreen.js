@@ -51,7 +51,7 @@ function SessionLaunchScreen(props) {
     state => state.UserReducer.userProfileResp,
   );
   const sessionReduxData = useSelector(state => state.SessionReducer);
-  console.log(sessionReduxData, 'its session state');
+  console.log(sessionSonglist, 'its session state list h ye');
 
   const handlePostSession = () => {
     const songListPayload = () => {
@@ -76,6 +76,9 @@ function SessionLaunchScreen(props) {
             songItem === 'spotify'
               ? item?.details?.album?.name
               : item?.details?.attributes?.albumName,
+              apple_song_id:songItem === 'spotify'
+              ? item?.details?.id
+              : item?.details?.id,
         };
       });
     };

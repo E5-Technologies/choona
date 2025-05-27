@@ -137,7 +137,12 @@ export function* startSessionOnce(action) {
       header,
     );
     console.log(response?.data, 'its response start session');
-    yield put({type: START_SESSION_SUCCESS, data: response?.data});
+    if(response?.data?.status==200){
+      yield put({type: START_SESSION_SUCCESS, data: response?.data});
+    }
+    else{
+      yield put({type: START_SESSION_FAILURE, error: error});
+    }
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
     toast('Error', 'Please Connect To Internet');

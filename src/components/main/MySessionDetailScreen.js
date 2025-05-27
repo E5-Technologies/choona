@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Alert,
   Dimensions,
@@ -59,6 +59,16 @@ import {
   SEND_SESSION_INVITATION_FAILURE,
   SEND_SESSION_INVITATION_SUCCESS,
 } from '../../action/TypeConstants';
+import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
+import {
+  AppleMusicContext,
+  useMusicPlayer,
+} from '../../context/AppleMusicContext';
+import {
+  Player,
+  useCurrentSong,
+  useIsPlaying,
+} from '@lomray/react-native-apple-music';
 
 // let status;
 
@@ -78,6 +88,9 @@ function MySessionDetailScreen(props) {
   const [usersSearchText, setUsersSearchText] = useState('');
   const [seletedUserToInvite, setSelectedUserToInvite] = useState([]);
   const [status, setStatus] = useState('');
+  const {isPlaying: appleFullSongPlaying} = useIsPlaying();
+  const {song: currentSongData} = useCurrentSong();
+  console.log(currentSongData, 'this is my current song>>>>>>');
 
   const {
     startSessionAndPlay,
@@ -90,7 +103,16 @@ function MySessionDetailScreen(props) {
     isPlayerReady,
   } = useTrackPlayer();
 
-  
+  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+    useContext(AppleMusicContext);
+
+  const {onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue} =
+    usePlayFullAppleMusic();
+
+  const {progress, duration: appleFullSongDuration} = useMusicPlayer();
+  const percentage =
+    appleFullSongDuration > 0 ? (progress / appleFullSongDuration) * 100 : 0;
+
   const [playerVisible, setPlayerVisible] = useState(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
   const [listenSessionStart, setListenSessionStart] = useState(null);
@@ -116,7 +138,7 @@ function MySessionDetailScreen(props) {
   const userSearchList = useSelector(state => state.UserReducer.userSearch);
   const userInviteLoader = useSelector(state => state.UserReducer.inviteLoader);
 
-  console.log(sessionDetailReduxdata, 'its data for session');
+  console.log(userTokenData, 'its data for token info');
   // Alert.alert(userInviteLoader);
 
   console.log(userInviteLoader, 'its detail user list');
@@ -227,43 +249,90 @@ function MySessionDetailScreen(props) {
       });
   }, []);
 
+  console.log(sessionDetailReduxdata, 'thi is the list session songs');
+
+  // TO CHECK THAT USER APPLE STATUS
+  const checkIsAppleStatus = useMemo(() => {
+    if (
+      Platform.OS == 'ios' &&
+      isAuthorizeToAccessAppleMusic &&
+      haveAppleMusicSubscription &&
+      userTokenData?.registerType == 'apple'
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [
+    isAuthorizeToAccessAppleMusic,
+    haveAppleMusicSubscription,
+    userTokenData?.registerType,
+  ]);
+
   useEffect(() => {
     const handleAddTrack = async () => {
       if (islive && sessionDetailReduxdata?.session_songs?.length) {
-        const getTrackRelatedSong = () => {
-          return sessionDetailReduxdata.session_songs.map(item => ({
-            id: item._id,
-            url: item.song_uri,
-            title: item.song_name,
-            artist: item.artist_name,
-            artwork: item.song_image,
-          }));
-        };
+        let getTrackRelatedSong;
+        if (checkIsAppleStatus) {
+          getTrackRelatedSong = () => {
+            return sessionDetailReduxdata.session_songs.map(
+              item => item?.apple_song_id ?? '',
+            );
+          };
+        } else {
+          getTrackRelatedSong = () => {
+            return sessionDetailReduxdata.session_songs.map(item => ({
+              id: item._id,
+              url: item.song_uri,
+              title: item.song_name,
+              artist: item.artist_name,
+              artwork: item.song_image,
+              apple_song_id: item?.apple_song_id ?? '',
+            }));
+          };
+        }
         const newArray = getTrackRelatedSong();
+        console.log(newArray, 'this is song arrau');
+        setPlayerAcceptedSongs(newArray);
+        if (checkIsAppleStatus) {
+          setPlaybackQueue(newArray[0]);
+          setCurrentTrack(0);
+          setTimeout(() => {
+            Player.play();
+            Alert.alert('play');
+          }, 500);
+        } else {
+          await addTracks(newArray);
+          await TrackPlayer.play();
+        }
         // console.log(newArray,'ite new aarary')
         // startSessionAndPlay(getTrackRelatedSong());
-        setPlayerAcceptedSongs(newArray);
-        await addTracks(newArray);
-        await TrackPlayer.play();
       }
     };
     // setTrackInfo()
-    handleAddTrack();
-  }, [islive, sessionDetailReduxdata]);
+    if (islive) {
+      handleAddTrack();
+    }
+  }, [
+    islive,
+    //  sessionDetailReduxdata
+  ]);
 
   useEffect(() => {
     if (sessionReduxData?.currentSessionSong && sessionDetailReduxdata) {
-      // Alert.alert(sessionDetailReduxdata?.isLive?.toString())
       setIsLive(sessionDetailReduxdata?.isLive);
-      if (!sessionDetailReduxdata?.isLive) {
-        // Alert.alert('Reset')
-        TrackPlayer.reset();
+      if (checkIsAppleStatus) {
+        if (!sessionDetailReduxdata?.isLive) {
+          Alert.alert('reset');
+          resetPlaybackQueue();
+        }
+      } else {
+        if (!sessionDetailReduxdata?.isLive) {
+          // Alert.alert('Reset')
+          TrackPlayer.reset();
+        }
       }
     }
-    // else {
-    //     Alert.alert('Reset')
-    //     TrackPlayer.reset();
-    // }
   }, [sessionDetailReduxdata?.isLive]);
 
   useEffect(() => {
@@ -616,6 +685,14 @@ function MySessionDetailScreen(props) {
     );
   }
 
+  const handlePlayPauseViaButton = () => {
+    if (checkIsAppleStatus) {
+      appleFullSongPlaying ? Player.pause() : Player.play();
+    } else {
+      playerState?.state === 'playing' ? pauseTrack() : playTrack();
+    }
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader
@@ -775,17 +852,13 @@ function MySessionDetailScreen(props) {
                         ]}>
                         <TouchableOpacity
                           disabled={iscurrentPlaying ? false : true}
-                          onPress={() => {
-                            // isPlaying ?
-                            playerState?.state === 'playing'
-                              ? pauseTrack()
-                              : playTrack();
-                          }}
+                          onPress={handlePlayPauseViaButton}
                           style={styles.playButtonStyle}>
                           <Image
                             // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
                             source={
-                              playerState?.state == 'playing' &&
+                              (appleFullSongPlaying ||
+                                playerState?.state == 'playing') &&
                               iscurrentPlaying
                                 ? ImagePath.pause
                                 : ImagePath.play
