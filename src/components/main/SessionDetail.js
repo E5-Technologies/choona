@@ -834,7 +834,7 @@ function SessionDetail(props) {
           </View>
         </Popover>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() =>
             props.navigation.navigate('SongListScreen', {
               songList: sessionDetailReduxdata?.session_songs,
@@ -842,7 +842,7 @@ function SessionDetail(props) {
           }
           style={{paddingVertical: 10, height: 50, backgroundColor: 'white'}}>
           <Text>Go to Apple Music</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </SafeAreaView>
     </View>
   );
