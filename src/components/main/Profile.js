@@ -227,7 +227,7 @@ const Profile = props => {
                 See Blocked User
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 setModalVisible(!modalVisible);
                 props.navigation.navigate('MySessionScreen');
@@ -241,7 +241,7 @@ const Profile = props => {
                 }}>
                 My Sessions
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL('mailto:contact@choona.com');

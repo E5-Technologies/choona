@@ -1449,8 +1449,8 @@ const Home = props => {
             });
           }}
           onPressFirstItem={() => {
-            // props.navigation.navigate('Profile', {fromAct: false});
-            resetPlaybackQueue();
+            props.navigation.navigate('Profile', {fromAct: false});
+            // resetPlaybackQueue();
           }}
           onPressThirdItem={() => {
             props.navigation.navigate('Contact');
