@@ -167,19 +167,17 @@ const Home = props => {
 
   const {progress, duration} = useMusicPlayer();
 
-  console.log(progress, duration, 'THi is the value>>>>>');
-
   const {
     isAuthorizeToAccessAppleMusic,
     haveAppleMusicSubscription,
     // isPlaying
   } = useContext(AppleMusicContext);
 
-  console.log(
-    haveAppleMusicSubscription,
-    isAuthorizeToAccessAppleMusic,
-    'this is subcription value',
-  );
+  // console.log(
+  //   haveAppleMusicSubscription,
+  //   isAuthorizeToAccessAppleMusic,
+  //   'this is subcription value',
+  // );
 
   // setTimeout(() => {
   checkPlaybackState();

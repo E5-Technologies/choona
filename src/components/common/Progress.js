@@ -2,9 +2,12 @@ import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-gesture-handler';
 import {useProgress} from 'react-native-track-player';
 import ImagePath from '../../assests/ImagePath';
+import { useMusicPlayer } from '../../context/AppleMusicContext';
 
-export function TrackProgress({setModalVisible, modalVisible}) {
-  const {position, duration} = useProgress(200);
+export function TrackProgress({setModalVisible, modalVisible, duration, position }) {
+  // const {progress, duration: appleFullSongDuration} = useMusicPlayer();
+  // const {position, duration} = useProgress(200);
+  console.log(position,'this is the possition')
 
   function format(seconds) {
     let mins = parseInt(seconds / 60)

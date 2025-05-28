@@ -90,7 +90,8 @@ function MySessionDetailScreen(props) {
   const [status, setStatus] = useState('');
   const {isPlaying: appleFullSongPlaying} = useIsPlaying();
   const {song: currentSongData} = useCurrentSong();
-  console.log(currentSongData, 'this is my current song>>>>>>');
+
+  // console.log(currentSongData, 'this is my current song>>>>>>');
 
   const {
     startSessionAndPlay,
@@ -109,10 +110,6 @@ function MySessionDetailScreen(props) {
   const {onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue} =
     usePlayFullAppleMusic();
 
-  const {progress, duration: appleFullSongDuration} = useMusicPlayer();
-  const percentage =
-    appleFullSongDuration > 0 ? (progress / appleFullSongDuration) * 100 : 0;
-
   const [playerVisible, setPlayerVisible] = useState(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
   const [listenSessionStart, setListenSessionStart] = useState(null);
@@ -123,8 +120,6 @@ function MySessionDetailScreen(props) {
   const playerState = usePlaybackState();
   // console.log(playerState, 'its play back state');
   const [currentTrack, setCurrentTrack] = useState(0);
-  const {position, duration} = useProgress(200);
-  const positionRef = useRef(position ?? null);
 
   const dispatch = useDispatch();
   const userProfileResp = useSelector(
@@ -138,28 +133,77 @@ function MySessionDetailScreen(props) {
   const userSearchList = useSelector(state => state.UserReducer.userSearch);
   const userInviteLoader = useSelector(state => state.UserReducer.inviteLoader);
 
-  console.log(userTokenData, 'its data for token info');
-  // Alert.alert(userInviteLoader);
+  //TRACK PLAYER DURATION ADN PROGRESS HANDLING FOR APPLE AND APPLE PREVIEW
+  const {progress, duration: appleFullSongDuration} = useMusicPlayer();
+  const {position, duration} = useProgress(200);
+  const positionRef = useRef(null);
 
-  console.log(userInviteLoader, 'its detail user list');
+  console.log(
+    appleFullSongDuration,
+    progress,
+    Math.abs(appleFullSongDuration - progress),
+    'thi is the discussion',
+  );
+  //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  useEffect(() => {
+    const playbackListener = Player.addListener(
+      'onPlaybackStateChange',
+      state => {
+        console.log('New Playback State:', state);
+
+        // let checkId = Math.abs(
+        //   state?.currentSong?.duration - state?.playbackTime,
+        // );
+        // console.log(checkId, 'ti>>><<<<<');
+        if (
+          islive &&
+          state.playbackStatus === 'paused' &&
+          state.playbackTime === 0
+          // &&
+          // Math.abs(state?.currentSong?.duration - state?.playbackTime) == state?.currentSong?.duration
+        ) {
+          // if (appleFullSongDuration - progress <) {
+            // let nextTrack = currentTrack + 1;
+            // setPlaybackQueue(playerAcceptedSongs[nextTrack]);
+            // setCurrentTrack(nextTrack);
+            Alert.alert('hi')
+          // }
+        }
+      },
+    );
+
+    // Clean up on unmount
+    return () => {
+      playbackListener.remove();
+    };
+  }, []);
+
+
 
   useEffect(() => {
     setUserDataList(userSearchList);
   }, [userSearchList]);
 
   useEffect(() => {
-    positionRef.current = position;
-  }, [position]);
+    if (checkIsAppleStatus) {
+      positionRef.current = progress; //FOR APPLE FULL MUSIC
+    } else {
+      positionRef.current = position; //FOR APPLE/SPOTIFY PREVIEW
+    }
+  }, [position, progress]);
 
   useEffect(() => {
-    async function setupPlayer() {
-      await TrackPlayer.setupPlayer();
+    if (!checkIsAppleStatus) {
+      async function setupPlayer() {
+        await TrackPlayer.setupPlayer();
+      }
+      setupPlayer();
+      // Cleanup the player on unmount
+      // return () => {
+      //     TrackPlayer.destroy();
+      // };
     }
-    setupPlayer();
-    // Cleanup the player on unmount
-    // return () => {
-    //     TrackPlayer.destroy();
-    // };
   }, []);
 
   //// not try with when saparate the socket initalization
@@ -202,17 +246,24 @@ function MySessionDetailScreen(props) {
         // Start interval if live
         if (islive && isMounted) {
           intervalId = setInterval(() => {
-            socketService.emit('session_play_status', {
+            const emitObjData = {
               hostId: userProfileResp?._id,
-              startAudioMixing: playerState?.state === 'playing' ?? false,
+              // startAudioMixing: playerState?.state === 'playing' ?? false,
               playIndex: currentTrack ?? -1,
               playLoading: false,
-              // currentTime: position,
               currentTime: positionRef.current,
               startedAt: Date.now(),
               pausedAt: null,
               sessionId: sessionDetailReduxdata?._id,
-            });
+            };
+
+            emitObjData.startAudioMixing = checkIsAppleStatus
+              ? appleFullSongPlaying
+              : playerState?.state === 'playing'
+              ? true
+              : false;
+            // console.log(emitObjData, 'this is the emit data');
+            socketService.emit('session_play_status', emitObjData);
           }, 1000);
         }
       } catch (error) {
@@ -234,6 +285,7 @@ function MySessionDetailScreen(props) {
     islive,
     playerState?.state,
     currentTrack,
+    appleFullSongPlaying,
     // position,
   ]);
 
@@ -248,8 +300,6 @@ function MySessionDetailScreen(props) {
         toast('Error', 'Please Connect To Internet');
       });
   }, []);
-
-  console.log(sessionDetailReduxdata, 'thi is the list session songs');
 
   // TO CHECK THAT USER APPLE STATUS
   const checkIsAppleStatus = useMemo(() => {
@@ -299,7 +349,7 @@ function MySessionDetailScreen(props) {
           setCurrentTrack(0);
           setTimeout(() => {
             Player.play();
-            Alert.alert('play');
+            // Alert.alert('play');
           }, 500);
         } else {
           await addTracks(newArray);
@@ -325,6 +375,7 @@ function MySessionDetailScreen(props) {
         if (!sessionDetailReduxdata?.isLive) {
           Alert.alert('reset');
           resetPlaybackQueue();
+          setCurrentTrack(null); // addded later when handling apple full music player
         }
       } else {
         if (!sessionDetailReduxdata?.isLive) {
@@ -845,10 +896,10 @@ function MySessionDetailScreen(props) {
                       <View
                         style={[
                           styles.itemWrapper,
-                          (iscurrentPlaying ||
-                            playerState?.state == 'none') && {opacity: 1},
-                          // !playerState?.state == 'none' &&
-                          //   !iscurrentPlaying && {opacity: 0.4},
+                          // (iscurrentPlaying ||
+                          //   playerState?.state == 'none') && {opacity: 1},
+
+                          !iscurrentPlaying && islive && {opacity: 0.4},
                         ]}>
                         <TouchableOpacity
                           disabled={iscurrentPlaying ? false : true}
@@ -1013,6 +1064,8 @@ function MySessionDetailScreen(props) {
             <TrackProgress
               setModalVisible={() => setModalVisible(!modalVisible)}
               modalVisible={modalVisible}
+              duration={appleFullSongDuration}
+              position={progress}
             />
           )}
           {props.route.params.isforEdit && (
@@ -1091,7 +1144,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignItems: 'center',
-    opacity: 0.4,
+    // opacity: 0.4,
+    opacity: 1,
   },
   songListItemImage: {
     borderRadius: normalise(5),
