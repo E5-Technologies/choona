@@ -167,7 +167,7 @@ function MySessionDetailScreen(props) {
             // let nextTrack = currentTrack + 1;
             // setPlaybackQueue(playerAcceptedSongs[nextTrack]);
             // setCurrentTrack(nextTrack);
-            Alert.alert('hi')
+            // Alert.alert('hi')
           // }
         }
       },
@@ -178,7 +178,6 @@ function MySessionDetailScreen(props) {
       playbackListener.remove();
     };
   }, []);
-
 
 
   useEffect(() => {
@@ -262,7 +261,7 @@ function MySessionDetailScreen(props) {
               : playerState?.state === 'playing'
               ? true
               : false;
-            // console.log(emitObjData, 'this is the emit data');
+            console.log(emitObjData, 'this is the emit data');
             socketService.emit('session_play_status', emitObjData);
           }, 1000);
         }
@@ -277,7 +276,6 @@ function MySessionDetailScreen(props) {
     return () => {
       isMounted = false;
       clearInterval(intervalId);
-      // Remove listeners to prevent duplicates
       socketService.off('start_session', handleStartSession);
       socketService.off('session_users_status', handleListerUserStatus);
     };
@@ -373,7 +371,7 @@ function MySessionDetailScreen(props) {
       setIsLive(sessionDetailReduxdata?.isLive);
       if (checkIsAppleStatus) {
         if (!sessionDetailReduxdata?.isLive) {
-          Alert.alert('reset');
+          // Alert.alert('reset');
           resetPlaybackQueue();
           setCurrentTrack(null); // addded later when handling apple full music player
         }

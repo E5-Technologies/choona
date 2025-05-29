@@ -1,4 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Alert,
   FlatList,
@@ -38,6 +45,16 @@ import {
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Popover from 'react-native-popover-view';
+import {
+  AppleMusicContext,
+  useMusicPlayer,
+} from '../../context/AppleMusicContext';
+import {
+  Player,
+  useCurrentSong,
+  useIsPlaying,
+} from '@lomray/react-native-apple-music';
+import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
 
 function SessionDetail(props) {
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -68,6 +85,13 @@ function SessionDetail(props) {
     pausedAt: null,
   });
 
+  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+    useContext(AppleMusicContext);
+  const {isPlaying: appleFullSongPlaying} = useIsPlaying();
+  const {song: currentSongData} = useCurrentSong();
+  const {onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue} =
+    usePlayFullAppleMusic();
+
   const handleAddTrack = async () => {
     try {
       if (
@@ -82,39 +106,45 @@ function SessionDetail(props) {
       const currentIndex = currentState.playIndex;
 
       // Check if index is valid
-      if (currentIndex >= songs.length || currentIndex < 0) {
+      if (currentIndex >= songs?.length || currentIndex < 0) {
         console.error('Invalid play index:', currentIndex);
         return;
       }
 
-      // Clear previous tracks and stop playback
-      await TrackPlayer.reset();
-
-      const track = {
-        id: songs[currentIndex]._id,
-        url: songs[currentIndex].song_uri,
-        title: songs[currentIndex].song_name,
-        artist: songs[currentIndex].artist_name,
-        artwork: songs[currentIndex].song_image,
-      };
-
-      console.log('Adding new track:', track);
-
-      // Add and prepare the new track
-      await TrackPlayer.add([track]);
-
-      // Seek to the correct position if available
-      if (currentState.currentTime) {
-        await TrackPlayer.seekTo(currentState.currentTime);
-      }
-
-      // Control playback state
-      if (currentState.startAudioMixing) {
-        // Alert.alert('play');
-        await TrackPlayer.play();
+      if (checkIsAppleStatus) {
+        await resetPlaybackQueue();
+        await setPlaybackQueue(songs[currentIndex]?.apple_song_id);
+        // Control playback state
+        if (currentState.startAudioMixing) {
+          Player.play();
+        } else {
+          Player.pause();
+        }
       } else {
-        // Alert.alert('pause');
-        await TrackPlayer.pause();
+        // Clear previous tracks and stop playback
+        await TrackPlayer.reset();
+        const track = {
+          id: songs[currentIndex]._id,
+          url: songs[currentIndex].song_uri,
+          title: songs[currentIndex].song_name,
+          artist: songs[currentIndex].artist_name,
+          artwork: songs[currentIndex].song_image,
+        };
+        console.log('Adding new track:', track);
+        // Add and prepare the new track
+        await TrackPlayer.add([track]);
+        // Seek to the correct position if available
+        if (currentState.currentTime) {
+          await TrackPlayer.seekTo(currentState.currentTime);
+        }
+        // Control playback state
+        if (currentState.startAudioMixing) {
+          // Alert.alert('play');
+          await TrackPlayer.play();
+        } else {
+          // Alert.alert('pause');
+          await TrackPlayer.pause();
+        }
       }
     } catch (error) {
       console.error('Playback error:', error);
@@ -147,17 +177,23 @@ function SessionDetail(props) {
         // currentState.playIndex,
         currentState?.startAudioMixing,
       );
-
       handleAddTrack();
-
       // Update the ref with the new value
       previousIndexRef.current = currentState.playIndex;
     }
     if (currentEmitedSongStatus?.current?.startAudioMixing == false) {
-      TrackPlayer.stop();
+      if (checkIsAppleStatus) {
+        Player.stop();
+      } else {
+        TrackPlayer.stop();
+      }
     }
     if (currentEmitedSongStatus?.current?.startAudioMixing == true) {
-      TrackPlayer.play();
+      if (checkIsAppleStatus) {
+        Player.play();
+      } else {
+        TrackPlayer.play();
+      }
     }
     // console.log(
     //   currentEmitedSongStatus?.current?.startAudioMixing,
@@ -188,12 +224,13 @@ function SessionDetail(props) {
     }
   }, [sessionDetailReduxdata]);
 
+  // TO CONNECT WITH SOCKET
   useEffect(
     () => {
       let socketInitialized = false;
 
       const handleStatusUpdate = status => {
-        // console.log('Received update:', status);
+        console.log('Received update:', status);
         // update state
         currentEmitedSongStatus.current = status;
         setCurrentStatus(status);
@@ -205,7 +242,7 @@ function SessionDetail(props) {
           if (!socketService.isConnected() && userTokenData?.token) {
             await socketService.initializeSocket(userTokenData?.token);
             socketInitialized = true;
-            console.log('Socket connected');
+            console.log('Socket connected on listern side');
           }
           socketService.on('session_play_status', handleStatusUpdate);
           socketService.on('session_ended_status', handleListerUserStatus);
@@ -283,7 +320,7 @@ function SessionDetail(props) {
 
   const handleNavigation = () => {
     if (status === '' || status !== sessionReduxData.status) {
-      console.log(sessionReduxData?.error, 'its error h');
+      // console.log(sessionReduxData?.error, 'its error h');
       switch (sessionReduxData.status) {
         case START_SESSION_JOINEE_FAILURE:
           setStatus(START_SESSION_JOINEE_FAILURE);
@@ -350,6 +387,23 @@ function SessionDetail(props) {
     else dispatch(startSessionJoinRequest(requestObj));
   };
 
+  // TO CHECK THAT USER APPLE STATUS
+  const checkIsAppleStatus = useMemo(() => {
+    if (
+      Platform.OS == 'ios' &&
+      isAuthorizeToAccessAppleMusic &&
+      haveAppleMusicSubscription &&
+      userTokenData?.registerType == 'apple'
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [
+    isAuthorizeToAccessAppleMusic,
+    haveAppleMusicSubscription,
+    userTokenData?.registerType,
+  ]);
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader
