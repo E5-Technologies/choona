@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Alert,
-  Button,
   FlatList,
   Image,
   Platform,
@@ -9,7 +8,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import Colors from '../../assests/Colors';
@@ -17,7 +15,6 @@ import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
-import {ScrollView} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import {
@@ -29,8 +26,6 @@ import {
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import socketService from '../../utils/socket/socketService';
-import {connect} from 'socket.io-client';
-import {addTracks} from '../../hooks/useTrackPlayer';
 import TrackPlayer, {
   Event,
   State,
@@ -38,28 +33,18 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import {
   START_SESSION_JOINEE_FAILURE,
-  START_SESSION_JOINEE_REQUEST,
   START_SESSION_JOINEE_STOP_HOST,
   START_SESSION_LEFT_SUCCESS,
 } from '../../action/TypeConstants';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Popover from 'react-native-popover-view';
-import PlayButton from './AppleMusic/PlayButton';
 
 function SessionDetail(props) {
-  // console.log(props?.route?.params, 'these are params')
-  // const { currentSession } = props?.route?.params
-  // console.log(currentSession, 'its current sessionI')
-  const {width, height} = useWindowDimensions();
-  const [playVisible, setPlayVisible] = useState(true);
-  const [disabled, setDisabled] = useState(false);
-  const [playerState, setPlayerState] = useState({});
   const [currentTrack, setCurrentTrack] = useState(0);
   const [currentState, setCurrentStatus] = useState(null);
   const [status, setStatus] = useState('');
   const touchable = useRef();
   const [showPopover, setShowPopover] = useState(false);
-  const [showMessageToUser, setShowMessageToUser] = useState('');
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -82,120 +67,6 @@ function SessionDetail(props) {
     startedAt: null,
     pausedAt: null,
   });
-
-  // const handleAddTrack = async () => {
-  //     if (currentEmitedSongStatus?.current && currentEmitedSongStatus?.current?.playIndex != null) {
-  //         const getTrackRelatedSong = {
-  //             id: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex]._id,
-  //             url: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].song_uri,
-  //             title: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].song_name,
-  //             artist: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].artist_name,
-  //             artwork: sessionDetailReduxdata.session_songs[currentEmitedSongStatus?.current?.playIndex].song_image,
-  //         }
-  //         console.log(getTrackRelatedSong, 'ite new aarary')
-  //     };
-  //     // startSessionAndPlay(getTrackRelatedSong());
-  //     // setPlayerAcceptedSongs(newArray)
-  //     await addTracks(getTrackRelatedSong)
-  //     await TrackPlayer.play();
-  // }
-
-  // useEffect(() => {
-  //     console.log(currentState, 'Hello this is')
-  // }, [currentState])
-
-  // Then modify your handleAddTrack
-  // const handleAddTrack = async () => {
-  //     try {
-  //         if (!currentEmitedSongStatus?.current || currentEmitedSongStatus.current.playIndex == null) {
-  //             return;
-  //         }
-
-  //         const songs = sessionDetailReduxdata?.session_songs || [];
-  //         const currentIndex = currentEmitedSongStatus.current.playIndex;
-
-  //         if (currentIndex >= songs?.length) {
-  //             console.error('Invalid play index');
-  //             return;
-  //         }
-
-  //         const track = {
-  //             id: songs[currentIndex]._id,
-  //             url: songs[currentIndex].song_uri,
-  //             title: songs[currentIndex].song_name,
-  //             artist: songs[currentIndex].artist_name,
-  //             artwork: songs[currentIndex].song_image,
-  //         };
-  //         console.log(track, 'its track')
-  //         // Clear previous tracks
-  //         // await TrackPlayer.reset();
-
-  //         // Add new track (wrap in array)
-  //         await TrackPlayer.add([track]);
-
-  //         // Seek to correct position if needed
-  //         if (currentEmitedSongStatus.current?.currentTime) {
-  //             await TrackPlayer.seekTo(currentEmitedSongStatus.current?.currentTime);
-  //         }
-
-  //         // Start playback
-  //         if (currentEmitedSongStatus.current?.startAudioMixing) {
-
-  //             await TrackPlayer.play();
-  //         }
-  //         else {
-  //             await TrackPlayer.pause();
-
-  //         }
-  //     } catch (error) {
-  //         console.error('Playback error:', error);
-  //     }
-  // };
-
-  // const handleAddTrack = async () => {
-  //     try {
-  //         if (currentState==null) {
-  //             return;
-  //         }
-
-  //         const songs = sessionDetailReduxdata?.session_songs || [];
-  //         const currentIndex = currentState?.playIndex;
-
-  //         if (currentIndex >= songs?.length) {
-  //             console.error('Invalid play index');
-  //             return;
-  //         }
-
-  //         const track = {
-  //             id: songs[currentIndex]._id,
-  //             url: songs[currentIndex].song_uri,
-  //             title: songs[currentIndex].song_name,
-  //             artist: songs[currentIndex].artist_name,
-  //             artwork: songs[currentIndex].song_image,
-  //         };
-  //         console.log(track, 'its track')
-  //         // Clear previous tracks
-  //         // await TrackPlayer.reset();
-
-  //         // Add new track (wrap in array)
-  //         await TrackPlayer.add([track]);
-
-  //         // Seek to correct position if needed
-  //         if (currentState?.currentTime) {
-  //             await TrackPlayer.seekTo(currentState?.currentTime);
-  //         }
-
-  //         // Start playback
-  //         if (currentState?.startAudioMixing) {
-  //             await TrackPlayer.play();
-  //         }
-  //         else {
-  //             await TrackPlayer.pause();
-  //         }
-  //     } catch (error) {
-  //         console.error('Playback error:', error);
-  //     }
-  // };
 
   const handleAddTrack = async () => {
     try {
@@ -261,19 +132,6 @@ function SessionDetail(props) {
     //     TrackPlayer.destroy();
     // };
   }, []);
-
-  // useEffect(() => {
-  //     if (currentState && currentState?.playIndex != null)
-  //         // console.log(currentTrack, currentState.playIndex, 'lll')
-  //         // if (currentTrack != currentState?.playIndex) {
-  //         //     // Alert.alert('inside')
-  //         //     console.log(currentTrack, currentState.playIndex, 'lll')
-  //         handleAddTrack()
-  //     // }
-  // }, [
-  //     // currentEmitedSongStatus,
-  //     currentState
-  // ])
   const previousIndexRef = useRef(null);
 
   useEffect(() => {
@@ -330,71 +188,6 @@ function SessionDetail(props) {
     }
   }, [sessionDetailReduxdata]);
 
-  // useEffect(() => {
-  //     const handleStatusUpdate = (status) => {
-  //         console.log(status, 'its satus that we get from host emit')
-  //         // Update local player state with received status
-  //         // setPlayerState(prev => ({
-  //         //     ...prev,
-  //         //     // position: status.currentTime,
-  //         //     // trackIndex: status.playIndex,
-  //         //     // state: status.startAudioMixing ? 'playing' : 'paused'
-  //         //     hostId: status?.hostId,
-  //         //     startAudioMixing: status?.startAudioMixing,
-  //         //     playIndex: status?.playIndex ?? -1,
-  //         //     playLoading: status?.playLoading ?? false,
-  //         //     currentTime: status?.currentTime,
-  //         //     startedAt:status?.startedAt,
-  //         //     pausedAt: status?.pausedAt
-  //         // }));
-
-  //     };
-
-  //     socketService.initializeSocket(userTokenData?.token)
-  //         .then(() => {
-  //             Alert.alert('connected')
-  //             if (checkUserExistence) {
-  //                 socketService.on('session_play_status', handleStatusUpdate);
-  //             }
-  //         })
-  //         .catch(() => {
-  //             Alert.alert('not connected')
-  //         })
-
-  //     return () => {
-  //         // socketService.off('session_play_status', handleStatusUpdate);
-  //         // socketService.disconnect();
-  //     };
-  // }, [sessionDetailReduxdata]);
-
-  // useEffect(() => {
-  //     const handleStatusUpdate = (status) => {
-  //         console.log('Received status:', status);
-  //     };
-
-  //     const joinSessionRoom = async () => {
-  //         try {
-  //             await socketService.initializeSocket(userTokenData?.token);
-  //             // Join specific session room after connection
-  //             socketService.emit('join_session_room', {
-  //                 sessionId: yourSessionId,
-  //                 userId: userProfileResp?._id
-  //             });
-
-  //             socketService.on('session_play_status', handleStatusUpdate);
-  //         } catch (error) {
-  //             console.error('Connection error:', error);
-  //         }
-  //     };
-
-  //     joinSessionRoom();
-
-  //     return () => {
-  //         socketService.off('session_play_status', handleStatusUpdate);
-  //         socketService.disconnect();
-  //     };
-  // }, []);
-
   useEffect(
     () => {
       let socketInitialized = false;
@@ -414,17 +207,6 @@ function SessionDetail(props) {
             socketInitialized = true;
             console.log('Socket connected');
           }
-
-          // Join room if needed
-          // socketService.emit('join_session_room', {
-          //     sessionId: sessionDetailReduxdata.id,
-          //     userId: userTokenData?.userId
-          // });
-
-          // Register listener
-          // socketService.on('session_play_status', handleStatusUpdate);
-          // Add listener only if component is still mounted
-          // if (isMounted) {
           socketService.on('session_play_status', handleStatusUpdate);
           socketService.on('session_ended_status', handleListerUserStatus);
           // }
@@ -503,18 +285,6 @@ function SessionDetail(props) {
     if (status === '' || status !== sessionReduxData.status) {
       console.log(sessionReduxData?.error, 'its error h');
       switch (sessionReduxData.status) {
-        // case START_SESSION_JOINEE_REQUEST:
-        //   setStatus(START_SESSION_JOINEE_REQUEST);
-        //   dispatch(startSessionJoinRequestStatusIdle({status: ''}));
-        //   break;
-        // case CREATE_SESSION_SUCCESS:
-        //   setStatus(CREATE_SESSION_SUCCESS);
-        //   // Navigate to Home or another screen on success
-        //   props.navigation.popToTop();
-        //   props.navigation.replace('bottomTab', {screen: 'Home'}); // Navigate to Home
-        //   dispatch(startSessionJoinRequestStatusIdle({status: ''}));
-        //   break;
-
         case START_SESSION_JOINEE_FAILURE:
           setStatus(START_SESSION_JOINEE_FAILURE);
           // Alert.alert(sessionReduxData?.error?.message);
@@ -522,10 +292,7 @@ function SessionDetail(props) {
             'Error',
             sessionReduxData?.error?.message ??
               'Something Went Wrong, Please Try Again',
-            // ?? 'Error',
-            // 'Something Went Wrong, Please Try Again',
           );
-
           setTimeout(() => {
             dispatch(
               startSessionJoinRequestStatusIdle({status: '', error: {}}),
@@ -533,25 +300,6 @@ function SessionDetail(props) {
           }, 300);
           break;
         case START_SESSION_LEFT_SUCCESS:
-          // setStatus(START_SESSION_LEFT_SUCCESS);
-          // // Alert.alert(sessionReduxData?.error?.message);
-          // TrackPlayer.reset();
-          // currentEmitedSongStatus.current = {
-          //   hostId: null,
-          //   startAudioMixing: null,
-          //   playIndex: null,
-          //   playLoading: null,
-          //   currentTime: null,
-          //   startedAt: null,
-          //   pausedAt: null,
-          // };
-          // toast('Success', 'Session left succssfully!');
-          // setTimeout(() => {
-          //   dispatch(
-          //     startSessionJoinRequestStatusIdle({status: '', error: {}}),
-          //   );
-          //   props.navigation.goBack();
-          // }, 300);
           handleSessionLeftOverCancel(
             START_SESSION_LEFT_SUCCESS,
             'Session left succssfully',
@@ -569,13 +317,6 @@ function SessionDetail(props) {
       }
     }
   };
-
-  // async function setTrackInfo() {
-  //     const track = await TrackPlayer.getCurrentTrack();
-  //     console.log(track, 'its track hhhhhh')
-  //     const info = await TrackPlayer.getTrack(track);
-  //     console.log(info, 'its track info iiii')
-  // }
 
   const checkUserExistence = useCallback(() => {
     if (sessionDetailReduxdata?.users) {
