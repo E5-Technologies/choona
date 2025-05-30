@@ -100,10 +100,10 @@ export const usePlayFullAppleMusic = () => {
       // }
       else {
         // User is not eligible (might be in unsupported region)
-        Alert.alert(
-          'Not Available',
-          'Apple Music subscription is not available for your account',
-        );
+        // Alert.alert(
+        //   'Not Available',
+        //   'Apple Music subscription is not available for your account',
+        // );
         setHaveAppleMusicSubscription(false);
         // return false;
       }

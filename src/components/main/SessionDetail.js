@@ -74,7 +74,7 @@ function SessionDetail(props) {
   const sessionDataForJoineeAfterJoin =
     sessionReduxData.CurrentSessionJoineeInfo?.data;
   // console.log(sessionDataForJoineeAfterJoin, 'its session state');
-  // console.log(sessionDetailReduxdata, 'its data of current session')
+  console.log(sessionDetailReduxdata, 'its data of current session');
   const currentEmitedSongStatus = useRef({
     hostId: null,
     startAudioMixing: null,
@@ -101,10 +101,8 @@ function SessionDetail(props) {
       ) {
         return;
       }
-
       const songs = sessionDetailReduxdata?.session_songs || [];
       const currentIndex = currentState.playIndex;
-
       // Check if index is valid
       if (currentIndex >= songs?.length || currentIndex < 0) {
         console.error('Invalid play index:', currentIndex);
@@ -152,15 +150,17 @@ function SessionDetail(props) {
   };
 
   useEffect(() => {
-    async function setupPlayer() {
-      await TrackPlayer.setupPlayer();
-    }
+    if (!checkIsAppleStatus) {
+      async function setupPlayer() {
+        await TrackPlayer.setupPlayer();
+      }
 
-    setupPlayer();
-    // Cleanup the player on unmount
-    // return () => {
-    //     TrackPlayer.destroy();
-    // };
+      setupPlayer();
+      // Cleanup the player on unmount
+      // return () => {
+      //     TrackPlayer.destroy();
+      // };
+    }
   }, []);
   const previousIndexRef = useRef(null);
 
@@ -376,15 +376,23 @@ function SessionDetail(props) {
   });
 
   const handleJoinLeaveSession = () => {
-    const requestObj = {
-      id: sessionDetailReduxdata?._id,
-      user_id: userProfileResp?._id,
-    };
-    // console.log(requestObj, 'its >>>>>>>');
-    // return
-    if (sessionDetailReduxdata?.isLive && checkUserExistence())
-      dispatch(startSessionLeftRequest(requestObj));
-    else dispatch(startSessionJoinRequest(requestObj));
+    if (
+      sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
+      !checkIsAppleStatus
+    ) {
+      Alert.alert(
+        "You don't have apple music subscription, To join the session Apple music subscription is required!",
+      );
+      return;
+    } else {
+      const requestObj = {
+        id: sessionDetailReduxdata?._id,
+        user_id: userProfileResp?._id,
+      };
+      if (sessionDetailReduxdata?.isLive && checkUserExistence())
+        dispatch(startSessionLeftRequest(requestObj));
+      else dispatch(startSessionJoinRequest(requestObj));
+    }
   };
 
   // TO CHECK THAT USER APPLE STATUS

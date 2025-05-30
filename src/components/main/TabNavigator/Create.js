@@ -9,18 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import {connect} from 'react-redux';
 import {seachSongsForPostRequest} from '../../../action/PostAction';
-import {SEARCH_SONG_REQUEST_FOR_POST_REQUEST} from '../../../action/TypeConstants';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normalise from '../../../utils/helpers/Dimens';
 import StatusBar from '../../../utils/MyStatusBar';
-import Loader from '../../../widgets/AuthLoader';
 import HeaderComponent from '../../../widgets/HeaderComponent';
+import useHandlePlatformSubscriptionAction from '../../../hooks/useHandlePlatformSubscriptionAction';
 
 const Create = props => {
+  const handleAddSongNavigation = useHandlePlatformSubscriptionAction(() =>
+    props.navigation.navigate('AddSong', {from: 'AssembleSession'}),
+  );
+
   const actionList = [
     {
       title: 'POST A SONG',
@@ -28,24 +30,22 @@ const Create = props => {
     },
     {
       title: 'POST A PLAYLIST',
-      // action: () => props.navigation.navigate('CreatePlayList')
       action: () => props.navigation.navigate('AddSong', {from: 'Playlist'}),
     },
     {
       title: 'LAUNCH A SESSION',
-      action: () =>
-        props.navigation.navigate('AddSong', {from: 'AssembleSession'}),
+      action: () => {
+        handleAddSongNavigation();
+      },
     },
   ];
 
   return (
     <View style={styles.containerView}>
       {Platform.OS == 'android' && <StatusBar />}
-      <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
       <SafeAreaView style={styles.safeAreaContainer}>
         <HeaderComponent
           firstitemtext={true}
-          // textone={'cancel'}
           title={'CREATE'}
           thirditemtext={true}
           texttwo={''}
@@ -72,42 +72,6 @@ const Create = props => {
               </TouchableOpacity>
             );
           })}
-          {/* <TouchableOpacity style={styles.nameWrapper} >
-                        <Image
-                            source={ImagePath.addButton}
-                            style={styles.imageStyle}
-                            resizeMode="contain"
-                        />
-                        <View style={styles.featureName}>
-                            <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={2}>
-                                Post
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.nameWrapper} >
-                        <Image
-                            source={ImagePath.addButton}
-                            style={styles.imageStyle}
-                            resizeMode="contain"
-                        />
-                        <View style={styles.featureName}>
-                            <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={2}>
-                                POST A PLAYLIST
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.nameWrapper} >
-                        <Image
-                            source={ImagePath.addButton}
-                            style={styles.imageStyle}
-                            resizeMode="contain"
-                        />
-                        <View style={styles.featureName}>
-                            <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={2}>
-                                LAUNCH A SESSION
-                            </Text>
-                        </View>
-                    </TouchableOpacity> */}
         </View>
       </SafeAreaView>
     </View>

@@ -209,8 +209,8 @@ function MusicPlayerBar(props) {
       }}>
       <Loader visible={bool} />
       {Platform.OS === 'ios' &&
-      props.playingSongRef?.regType == 'apple' &&
-      currentSongData?.id == props.playingSongRef?.apple_song_id ? (
+      (props.playingSongRef?.regType == 'apple' &&
+      currentSongData?.id == props.playingSongRef?.apple_song_id && haveAppleMusicSubscription) ? (
         <View
           style={{
             height: normalise(2),

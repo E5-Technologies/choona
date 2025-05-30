@@ -164,10 +164,10 @@ function MySessionDetailScreen(props) {
           // Math.abs(state?.currentSong?.duration - state?.playbackTime) == state?.currentSong?.duration
         ) {
           // if (appleFullSongDuration - progress <) {
-            // let nextTrack = currentTrack + 1;
-            // setPlaybackQueue(playerAcceptedSongs[nextTrack]);
-            // setCurrentTrack(nextTrack);
-            // Alert.alert('hi')
+          // let nextTrack = currentTrack + 1;
+          // setPlaybackQueue(playerAcceptedSongs[nextTrack]);
+          // setCurrentTrack(nextTrack);
+          // Alert.alert('hi')
           // }
         }
       },
@@ -178,7 +178,6 @@ function MySessionDetailScreen(props) {
       playbackListener.remove();
     };
   }, []);
-
 
   useEffect(() => {
     setUserDataList(userSearchList);
@@ -443,11 +442,21 @@ function MySessionDetailScreen(props) {
   }
 
   const handleStartSession = () => {
-    const requestObj = {
-      isLive: true,
-      sessionId: sessionDetailReduxdata?._id,
-    };
-    dispatch(startSessionRequest(requestObj));
+    if (
+      sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
+      !checkIsAppleStatus
+    ) {
+      Alert.alert(
+        "You don't have apple music subscription, you can't host the session, Apple music subscription is required!",
+      );
+      return;
+    } else {
+      const requestObj = {
+        isLive: true,
+        sessionId: sessionDetailReduxdata?._id,
+      };
+      dispatch(startSessionRequest(requestObj));
+    }
   };
 
   const handleStopKillSession = () => {

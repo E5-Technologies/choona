@@ -50,6 +50,7 @@ function SessionLaunchScreen(props) {
   const userProfileResp = useSelector(
     state => state.UserReducer.userProfileResp,
   );
+  const userTokenData = useSelector(state => state.TokenReducer);
   const sessionReduxData = useSelector(state => state.SessionReducer);
   console.log(sessionSonglist, 'its session state list h ye');
 
@@ -76,9 +77,8 @@ function SessionLaunchScreen(props) {
             songItem === 'spotify'
               ? item?.details?.album?.name
               : item?.details?.attributes?.albumName,
-              apple_song_id:songItem === 'spotify'
-              ? item?.details?.id
-              : item?.details?.id,
+          apple_song_id:
+            songItem === 'spotify' ? item?.details?.id : item?.details?.id,
         };
       });
     };
@@ -88,6 +88,7 @@ function SessionLaunchScreen(props) {
       //   hostBy: userProfileResp?.username,
       songs: songListPayload(),
       invited_users: [],
+      sessionRegisterType: userTokenData?.registerType,
     };
     console.log(requestObj, 'its request object');
     // return;

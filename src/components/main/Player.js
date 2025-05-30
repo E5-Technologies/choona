@@ -191,18 +191,10 @@ function Player(props) {
         registerType == 'apple' &&
         (currentSongData.id != null || currentSongData.id != undefined)
       ) {
-        console.log(
-          currentSongData?.id,
-          props.route.params?.apple_song_id,
-          'Hello hello coder>>>>',
-        );
         if (currentSongData?.id != props.route.params?.apple_song_id) {
-          // setPlaybackQueue(props.route.params?.apple_song_id);
           await setPlaybackQueue(props.route.params?.apple_song_id);
           setAppleMusicPlayerLoader(true);
-          // ApplePlayer.play();
           setTimeout(() => {
-            // Alert.alert('new');
             ApplePlayer.play();
             setPlayVisible(isPlaying);
             setAppleMusicPlayerLoader(false);
@@ -240,7 +232,7 @@ function Player(props) {
               const getSpotifyApi = async () => {
                 try {
                   const res = await callApi();
-                  console.log(res);
+                  console.log(res, 'thi is the data played');
                   if (res.data.status === 200) {
                     let suc = res.data.data.audio;
                     console.log(res.data.data, 'this is suc link');
@@ -380,6 +372,7 @@ function Player(props) {
 
   const playSongOnLoad = songuri => {
     if (props.playingSongRef === '') {
+      Alert.alert('check music when no subscription');
       console.log('first time', songuri);
       setPlayVisible(true);
       playSong(songuri);
