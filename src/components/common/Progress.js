@@ -1,55 +1,54 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-gesture-handler';
-import {useProgress} from 'react-native-track-player';
 import ImagePath from '../../assests/ImagePath';
-import { useMusicPlayer } from '../../context/AppleMusicContext';
+import {useMemo} from 'react';
 
-export function TrackProgress({setModalVisible, modalVisible, duration, position }) {
-  // const {progress, duration: appleFullSongDuration} = useMusicPlayer();
-  // const {position, duration} = useProgress(200);
-  console.log(position,'this is the possition')
+export function TrackProgress({
+  setModalVisible,
+  modalVisible,
+  duration,
+  position,
+  isShow=false
+}) {
+  // function format(seconds) {
+  //   let mins = parseInt(seconds / 60)
+  //     .toString()
+  //     .padStart(2, '0');
+  //   let secs = (Math.trunc(seconds) % 60).toString().padStart(2, '0');
+  //   return `${mins}:${secs}`;
+  // }
 
-  function format(seconds) {
-    let mins = parseInt(seconds / 60)
-      .toString()
-      .padStart(2, '0');
-    let secs = (Math.trunc(seconds) % 60).toString().padStart(2, '0');
-    return `${mins}:${secs}`;
-  }
+  const formattedTime = useMemo(() => {
+    const format = seconds => {
+      let mins = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, '0');
+      let secs = Math.floor(seconds % 60)
+        .toString()
+        .padStart(2, '0');
+      return `${mins}:${secs}`;
+    };
+
+    return `${format(position)} / ${format(duration)}`;
+  }, [position, duration]);
 
   return (
     <View style={{}}>
       <Text style={styles.trackProgress}>
-        {format(position)} / {format(duration)}
+        {/* {format(position)} / {format(duration)} */}
+        {formattedTime}
       </Text>
+      {isShow &&
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          opacity: 0.6,
-          // backgroundColor: 'green',
-          position: 'absolute',
-          top: -10,
-          right: 0,
-          width: 50,
-          height: 50,
-        }}
+        style={styles.addIconWrapper}
         onPress={() => setModalVisible(!modalVisible)}>
         <Image
           source={ImagePath.add_white}
           style={styles.inviteIcon}
           resizeMode="cover"
         />
-        {/* <Text
-                    style={[
-                      styles.listItemHeaderSongTextTitle,
-                      {marginLeft: normalise(8), fontSize: normalise(13)},
-                    ]}
-                    numberOfLines={2}>
-                    Send Invite
-                  </Text> */}
       </TouchableOpacity>
+}
     </View>
   );
 }
@@ -62,8 +61,18 @@ const styles = StyleSheet.create({
     color: '#eee',
   },
   inviteIcon: {
-    // borderRadius: 5,
     height: 25,
     width: 25,
+  },
+  addIconWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.6,
+    position: 'absolute',
+    top: -10,
+    right: 0,
+    width: 50,
+    height: 50,
   },
 });

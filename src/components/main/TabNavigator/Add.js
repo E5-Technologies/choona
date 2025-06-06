@@ -36,6 +36,7 @@ import isInternetConnected from '../../../utils/helpers/NetInfo';
 import {useRecentlyPlayed} from '../../../utils/helpers/RecentlyPlayed';
 import {RecentlyPlayedHeader} from '../../Headers/RecentlyPlayedHeader';
 import {usePlayFullAppleMusic} from '../../../hooks/usePlayFullAppleMusic';
+import {useMusicPlayer} from '../../../context/AppleMusicContext';
 // import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
@@ -49,6 +50,7 @@ const AddSong = props => {
   );
 
   const {resetPlaybackQueue, setPlaybackQueue} = usePlayFullAppleMusic();
+  const {resetProgress} = useMusicPlayer();
 
   // console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
   let post = true;
@@ -199,6 +201,7 @@ const AddSong = props => {
         onPressSecondImage={() => handleAddSong(item)}
         onPressImage={async () => {
           await resetPlaybackQueue();
+          resetProgress();
           setTimeout(() => {
             props.navigation.navigate('Player', {
               song_title:

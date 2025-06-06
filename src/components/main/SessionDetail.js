@@ -50,11 +50,13 @@ import {
   useMusicPlayer,
 } from '../../context/AppleMusicContext';
 import {
+  MusicKit,
   Player,
   useCurrentSong,
   useIsPlaying,
 } from '@lomray/react-native-apple-music';
 import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
+import {TrackProgress} from '../common/Progress';
 
 function SessionDetail(props) {
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -73,8 +75,7 @@ function SessionDetail(props) {
   const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data;
   const sessionDataForJoineeAfterJoin =
     sessionReduxData.CurrentSessionJoineeInfo?.data;
-  // console.log(sessionDataForJoineeAfterJoin, 'its session state');
-  console.log(sessionDetailReduxdata, 'its data of current session');
+
   const currentEmitedSongStatus = useRef({
     hostId: null,
     startAudioMixing: null,
@@ -84,6 +85,12 @@ function SessionDetail(props) {
     startedAt: null,
     pausedAt: null,
   });
+
+  const {
+    progress,
+    duration: appleFullSongDuration,
+    resetProgress,
+  } = useMusicPlayer();
 
   const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
     useContext(AppleMusicContext);
@@ -111,6 +118,7 @@ function SessionDetail(props) {
 
       if (checkIsAppleStatus) {
         await resetPlaybackQueue();
+        resetProgress(); // ADDED TO RESET THE TIME TO 0
         await setPlaybackQueue(songs[currentIndex]?.apple_song_id);
         // Control playback state
         if (currentState.startAudioMixing) {
@@ -183,7 +191,7 @@ function SessionDetail(props) {
     }
     if (currentEmitedSongStatus?.current?.startAudioMixing == false) {
       if (checkIsAppleStatus) {
-        Player.stop();
+        Player.pause();
       } else {
         TrackPlayer.stop();
       }
@@ -195,6 +203,7 @@ function SessionDetail(props) {
         TrackPlayer.play();
       }
     }
+    checkProgressGap();
     // console.log(
     //   currentEmitedSongStatus?.current?.startAudioMixing,
     //   'its audio mising',
@@ -228,7 +237,6 @@ function SessionDetail(props) {
   useEffect(
     () => {
       let socketInitialized = false;
-
       const handleStatusUpdate = status => {
         console.log('Received update:', status);
         // update state
@@ -238,7 +246,7 @@ function SessionDetail(props) {
 
       const setupSocket = async () => {
         try {
-          // Only initialize if not already connected
+          // Only initialize if not  connected
           if (!socketService.isConnected() && userTokenData?.token) {
             await socketService.initializeSocket(userTokenData?.token);
             socketInitialized = true;
@@ -285,7 +293,6 @@ function SessionDetail(props) {
   //helperss***********************************************************************************
 
   const handleListerUserStatus = res => {
-    console.log(res, 'its liten whenhost leave');
     if (res?.isLive == false) {
       dispatch({
         type: START_SESSION_JOINEE_STOP_HOST,
@@ -341,12 +348,20 @@ function SessionDetail(props) {
             START_SESSION_LEFT_SUCCESS,
             'Session left succssfully',
           );
+          if (checkIsAppleStatus) {
+            resetPlaybackQueue();
+            resetProgress();
+          }
           break;
         case START_SESSION_JOINEE_STOP_HOST:
           handleSessionLeftOverCancel(
             START_SESSION_JOINEE_STOP_HOST,
             'Session has been closed by the host',
           );
+          if (checkIsAppleStatus) {
+            resetPlaybackQueue();
+            resetProgress();
+          }
           break;
         default:
           setStatus('');
@@ -368,10 +383,8 @@ function SessionDetail(props) {
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.state == State.nextTrack) {
       let index = await TrackPlayer.getCurrentTrack();
-      // Alert.alert(index.toString())
       setCurrentTrack(index);
     } else {
-      // Alert.alert('index')
     }
   });
 
@@ -389,9 +402,11 @@ function SessionDetail(props) {
         id: sessionDetailReduxdata?._id,
         user_id: userProfileResp?._id,
       };
-      if (sessionDetailReduxdata?.isLive && checkUserExistence())
+      if (sessionDetailReduxdata?.isLive && checkUserExistence()) {
         dispatch(startSessionLeftRequest(requestObj));
-      else dispatch(startSessionJoinRequest(requestObj));
+      } else {
+        dispatch(startSessionJoinRequest(requestObj));
+      }
     }
   };
 
@@ -412,6 +427,13 @@ function SessionDetail(props) {
     haveAppleMusicSubscription,
     userTokenData?.registerType,
   ]);
+
+  const checkProgressGap = useCallback(() => {
+    if (currentState?.currentTime - progress > 10) {
+      MusicKit.seekToTime(currentState?.currentTime);
+    }
+  }, [progress, currentState?.currentTime]);
+
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader
@@ -485,11 +507,6 @@ function SessionDetail(props) {
                   numberOfLines={1}>
                   {sessionDetailReduxdata?.own_user?.username}
                 </Text>
-                {/* <Image
-                  source={ImagePath.blueTick}
-                  style={{width: 16, height: 16}}
-                  resizeMode="contain"
-                /> */}
               </View>
               <Image
                 source={
@@ -574,35 +591,14 @@ function SessionDetail(props) {
               />
             </View>
           </View>
-          {/* {(sessionDetailReduxdata?.watch_users && sessionDetailReduxdata?.watch_users?.length > 0) &&
-                        <View style={styles.listenersContainer}>
-                            <Text style={[styles.listItemHeaderSongTextTitle, { marginTop: normalise(10) }]} numberOfLines={2}>
-                                LISTENERS
-                            </Text>
-                            <View style={[styles.bottomLineStyle, { width: width / 3, marginBottom: normalise(20) }]}>
-                            </View>
-                            <ScrollView>
-                                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                                    {
-                                        sessionDetailReduxdata?.watch_users?.map((item, index) => {
-                                            return (
-                                                <View style={[styles.joineeIitemWrapper, index == 0 && { marginLeft: normalise(40) }, index == 3 && { marginRight: normalise(40) }]}>
-                                                    <Image
-                                                        source={{ uri: item?.userProfile }
-                                                        }
-                                                        style={styles.songListItemImage}
-                                                        resizeMode="cover"
-                                                    />
-                                                </View>
-                                            )
-                                        }
-                                        )
-                                    }
-                                </View>
-                            </ScrollView>
-                        </View>
-                    } */}
         </View>
+        <TrackProgress
+          setModalVisible={() => null}
+          modalVisible={false}
+          duration={appleFullSongDuration}
+          position={progress}
+          isShow={false}
+        />
         <Popover
           from={touchable}
           isVisible={showPopover}
@@ -622,7 +618,6 @@ function SessionDetail(props) {
               <TouchableOpacity
                 style={styles.optionText}
                 onPress={() => {
-                  // handleStopKillSession();
                   handleJoinLeaveSession();
                   setShowPopover(false);
                 }}>
@@ -636,16 +631,6 @@ function SessionDetail(props) {
             </View>
           </View>
         </Popover>
-
-        {/* <TouchableOpacity
-          onPress={() =>
-            props.navigation.navigate('SongListScreen', {
-              songList: sessionDetailReduxdata?.session_songs,
-            })
-          }
-          style={{paddingVertical: 10, height: 50, backgroundColor: 'white'}}>
-          <Text>Go to Apple Music</Text>
-        </TouchableOpacity> */}
       </SafeAreaView>
     </View>
   );
@@ -684,8 +669,6 @@ const styles = StyleSheet.create({
 
   listItemHeaderSongDetails: {
     alignItems: 'center',
-    // flex: 1,
-    // flexDirection: 'row',
   },
   listItemHeaderSongTextTitle: {
     color: Colors.white,
@@ -769,8 +752,6 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(12),
-    // width: '50%',
-    // paddingVertical: 10,
     textAlign: 'center',
     padding: 15,
     fontWeight: '600',

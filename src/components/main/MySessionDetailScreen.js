@@ -89,9 +89,8 @@ function MySessionDetailScreen(props) {
   const [seletedUserToInvite, setSelectedUserToInvite] = useState([]);
   const [status, setStatus] = useState('');
   const {isPlaying: appleFullSongPlaying} = useIsPlaying();
-  const {song: currentSongData} = useCurrentSong();
 
-  // console.log(currentSongData, 'this is my current song>>>>>>');
+  console.log(appleFullSongPlaying, 'this is my current song>>>>>>');
 
   const {
     startSessionAndPlay,
@@ -134,16 +133,14 @@ function MySessionDetailScreen(props) {
   const userInviteLoader = useSelector(state => state.UserReducer.inviteLoader);
 
   //TRACK PLAYER DURATION ADN PROGRESS HANDLING FOR APPLE AND APPLE PREVIEW
-  const {progress, duration: appleFullSongDuration} = useMusicPlayer();
+  const {
+    progress,
+    duration: appleFullSongDuration,
+    resetProgress,
+  } = useMusicPlayer();
   const {position, duration} = useProgress(200);
   const positionRef = useRef(null);
 
-  console.log(
-    appleFullSongDuration,
-    progress,
-    Math.abs(appleFullSongDuration - progress),
-    'thi is the discussion',
-  );
   //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   useEffect(() => {
@@ -238,7 +235,7 @@ function MySessionDetailScreen(props) {
     const setupListenersAndInterval = () => {
       try {
         // Add event listeners
-        socketService.on('start_session', handleStartSession);
+        // socketService.on('start_session', handleStartSession);
         socketService.on('session_users_status', handleListerUserStatus);
 
         // Start interval if live
@@ -270,12 +267,11 @@ function MySessionDetailScreen(props) {
     };
 
     setupListenersAndInterval();
-
     // Cleanup on unmount or dependency change
     return () => {
       isMounted = false;
       clearInterval(intervalId);
-      socketService.off('start_session', handleStartSession);
+      // socketService.off('start_session', handleStartSession);
       socketService.off('session_users_status', handleListerUserStatus);
     };
   }, [
@@ -373,6 +369,7 @@ function MySessionDetailScreen(props) {
           // Alert.alert('reset');
           resetPlaybackQueue();
           setCurrentTrack(null); // addded later when handling apple full music player
+          resetProgress();
         }
       } else {
         if (!sessionDetailReduxdata?.isLive) {
@@ -1073,6 +1070,7 @@ function MySessionDetailScreen(props) {
               modalVisible={modalVisible}
               duration={appleFullSongDuration}
               position={progress}
+              isShow={true}
             />
           )}
           {props.route.params.isforEdit && (
