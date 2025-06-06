@@ -42,7 +42,7 @@ export const MusicPlayerProvider = ({children}) => {
     if (isPlayingSong) {
       intervalRef.current = setInterval(async () => {
         const state = await Player.getCurrentState();
-        console.log(state ,'its player current State>>')
+        // console.log(state ,'its player current State>>')
         if (state) {
           setProgress(state?.playbackTime ?? 0);
           setDuration(state?.currentSong?.duration ?? 0);

@@ -90,7 +90,7 @@ function MySessionDetailScreen(props) {
   const [status, setStatus] = useState('');
   const {isPlaying: appleFullSongPlaying} = useIsPlaying();
 
-  console.log(appleFullSongPlaying, 'this is my current song>>>>>>');
+  // console.log(appleFullSongPlaying, 'this is my current song>>>>>>');
 
   const {
     startSessionAndPlay,
@@ -167,6 +167,25 @@ function MySessionDetailScreen(props) {
           // Alert.alert('hi')
           // }
         }
+
+        const duration = state?.currentSong?.duration;
+        const time = state?.playbackTime;
+
+        console.log(duration, state?.playbackTime, 'hey it both>>');
+
+        const isCompleted =
+          state.playbackStatus == 'paused' &&
+          duration > 0 &&
+          duration - time == duration;
+        console.log(isCompleted, 'its completed');
+        setTimeout(() => {
+          if (isCompleted) {
+            console.log('Track likely finished automatically');
+            // Proceed to next track or logic
+            // Alert.alert('finished');
+            changeTrack();
+          }
+        }, 200);
       },
     );
 
@@ -174,7 +193,7 @@ function MySessionDetailScreen(props) {
     return () => {
       playbackListener.remove();
     };
-  }, []);
+  }, [appleFullSongPlaying]);
 
   useEffect(() => {
     setUserDataList(userSearchList);
@@ -257,7 +276,7 @@ function MySessionDetailScreen(props) {
               : playerState?.state === 'playing'
               ? true
               : false;
-            console.log(emitObjData, 'this is the emit data');
+            // console.log(emitObjData, 'this is the emit data');
             socketService.emit('session_play_status', emitObjData);
           }, 1000);
         }
@@ -335,7 +354,7 @@ function MySessionDetailScreen(props) {
           };
         }
         const newArray = getTrackRelatedSong();
-        console.log(newArray, 'this is song arrau');
+        // console.log(newArray, 'this is song arrau');
         setPlayerAcceptedSongs(newArray);
         if (checkIsAppleStatus) {
           setPlaybackQueue(newArray[0]);
@@ -481,7 +500,7 @@ function MySessionDetailScreen(props) {
   });
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], async event => {
-    console.log('✅ Playback finished for the last track');
+    // console.log('✅ Playback finished for the last track');
     TrackPlayer.reset();
     handleStopKillSession();
   });
@@ -541,6 +560,22 @@ function MySessionDetailScreen(props) {
     // console.log(objectRequest, 'dfdfdf>>');
     // return;
     dispatch(sendSessionInvitationToUser(objectRequest));
+  };
+
+  const changeTrack = () => {
+    console.log(currentTrack < playerAcceptedSongs?.length - 1, 'its vlue');
+    if (currentTrack < playerAcceptedSongs?.length - 1) {
+      console.log('next track>>>');
+      let nextTrack = currentTrack + 1;
+      // resetProgress();
+      setPlaybackQueue(playerAcceptedSongs[nextTrack]);
+      setCurrentTrack(nextTrack);
+      console.log('next track>>>1');
+      setTimeout(() => {
+        Player.play();
+        // Alert.alert('play');
+      }, 500);
+    }
   };
 
   //components *************************************************************
