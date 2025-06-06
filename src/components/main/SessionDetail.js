@@ -432,7 +432,7 @@ function SessionDetail(props) {
     if (currentState?.currentTime - progress > 10) {
       MusicKit.seekToTime(currentState?.currentTime);
     }
-  }, [progress, currentState?.currentTime]);
+  }, [progress, currentState]);
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
