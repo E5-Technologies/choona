@@ -64,6 +64,7 @@ function SessionDetail(props) {
   const [status, setStatus] = useState('');
   const touchable = useRef();
   const [showPopover, setShowPopover] = useState(false);
+  const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -117,10 +118,19 @@ function SessionDetail(props) {
       }
 
       if (checkIsAppleStatus) {
+        const getTrackRelatedSong = () => {
+          return songs.map(
+            item => item?.apple_song_id ?? '',
+          );
+        };
+        const newArray = getTrackRelatedSong();
+        console.log(newArray, 'this is song arrau');
+        setPlayerAcceptedSongs(newArray);
         await resetPlaybackQueue();
         resetProgress(); // ADDED TO RESET THE TIME TO 0
         await setPlaybackQueue(songs[currentIndex]?.apple_song_id);
         // Control playback state
+        // MusicKit.setPlaybackQueueList(newArray ?? [], 'song');
         if (currentState.startAudioMixing) {
           Player.play();
         } else {
