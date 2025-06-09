@@ -3,20 +3,24 @@ new file mode 100644
 index 0000000..2908d96
 Binary files /dev/null and b/node_modules/@lomray/react-native-apple-music/.DS_Store differ
 diff --git a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m
-index 33312d7..6571785 100644
+index 33312d7..bb41e83 100644
 --- a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m
 +++ b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.m
-@@ -19,6 +19,8 @@ @interface RCT_EXTERN_MODULE(MusicModule, NSObject)
+@@ -19,6 +19,12 @@ @interface RCT_EXTERN_MODULE(MusicModule, NSObject)
  RCT_EXTERN_METHOD(skipToNextEntry)
  RCT_EXTERN_METHOD(togglePlayerState)
  RCT_EXTERN_METHOD(getCurrentState:(RCTResponseSenderBlock)callback)
 +RCT_EXTERN_METHOD(resetPlaybackQueue:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 +RCT_EXTERN_METHOD(seekToTime:(double)timeInSeconds resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
++RCT_EXTERN_METHOD(setPlaybackQueueList:(NSArray<NSString *> *)itemIds
++                  type:(NSString *)type
++                  resolver:(RCTPromiseResolveBlock)resolve
++                  rejecter:(RCTPromiseRejectBlock)reject)
  
  // Определение, что этот модуль имеет события, которые могут быть отправлены в JavaScript.
  // Эта функция сообщает React Native о событиях, которые этот модуль может отправить.
 diff --git a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift
-index 76f6734..2f52efe 100644
+index 76f6734..11ed069 100644
 --- a/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift
 +++ b/node_modules/@lomray/react-native-apple-music/ios/MusicModule.swift
 @@ -1,3 +1,571 @@
@@ -1025,9 +1029,7 @@ index 76f6734..2f52efe 100644
 +            }
 +        }
 +    }
- 
--        resolve(subscriptionDetails)
--      }
++
 +    @objc(play)
 +    func play() {
 +        Task {
@@ -1051,6 +1053,26 @@ index 76f6734..2f52efe 100644
 +                try await player.skipToNextEntry()
 +            } catch {
 +                print("Next failed: \(error)")
++            }
++        }
++    }
+ 
+-        resolve(subscriptionDetails)
+-      }
++    @objc(authorization:)
++    func authorization(_ callback: @escaping RCTResponseSenderBlock) {
++        SKCloudServiceController.requestAuthorization { (status) in
++            switch status {
++            case .authorized:
++                callback(["authorized"])
++            case .denied:
++                callback(["denied"])
++            case .notDetermined:
++                callback(["notDetermined"])
++            case .restricted:
++                callback(["restricted"])
++            @unknown default:
++                callback(["unknown"])
 +            }
 +        }
      }
@@ -1123,24 +1145,6 @@ index 76f6734..2f52efe 100644
 -      @unknown default:
 -        callback(["unknown"])
 -      }
-+    @objc(authorization:)
-+    func authorization(_ callback: @escaping RCTResponseSenderBlock) {
-+        SKCloudServiceController.requestAuthorization { (status) in
-+            switch status {
-+            case .authorized:
-+                callback(["authorized"])
-+            case .denied:
-+                callback(["denied"])
-+            case .notDetermined:
-+                callback(["notDetermined"])
-+            case .restricted:
-+                callback(["restricted"])
-+            @unknown default:
-+                callback(["unknown"])
-+            }
-+        }
-+    }
-+
 +    func convertSongToDictionary(_ song: Song) -> [String: Any] {
 +        var artworkUrlString: String = ""
 +
@@ -1247,12 +1251,12 @@ index 76f6734..2f52efe 100644
 -      var artworkUrlString: String = ""
 +        return resultCollection
 +    }
- 
--      if let artwork = musicVideo.artwork {
++
 +    @available(iOS 16.0, *)
 +    func convertMusicVideosToDictionary(_ musicVideo: MusicVideo) -> [String: Any] {
 +        var artworkUrlString: String = ""
-+
+ 
+-      if let artwork = musicVideo.artwork {
 +        if let artwork = musicVideo.artwork {
              let artworkUrl = artwork.url(width: 200, height: 200)
  
@@ -1380,7 +1384,7 @@ index 76f6734..2f52efe 100644
          }
      }
  
-@@ -444,80 +1009,145 @@ class MusicModule: RCTEventEmitter {
+@@ -444,80 +1009,205 @@ class MusicModule: RCTEventEmitter {
                  if let requestType = MediaType.getRequest(forType: type, musicItemId: musicItemId) {
                      switch requestType {
                      case .song(let request):
@@ -1420,52 +1424,31 @@ index 76f6734..2f52efe 100644
                      case .playlist(let request):
 -                        // Use request for playlist type
                          let response = try await request.response()
--
-                         guard let tracksToBeAdded = response.items.first else { return }
--
--                        let player = SystemMusicPlayer.shared
--
--                        player.queue = [tracksToBeAdded] /// <- directly add items to the queue
--
++                        guard let tracksToBeAdded = response.items.first else { return }
 +                        player.queue = [tracksToBeAdded]
-                         try await player.prepareToPlay()
--
-                         resolve("Playlist is added to queue")
--
-                         return
++                        try await player.prepareToPlay()
++                        resolve("Playlist is added to queue")
++                        return
  
-                     case .station(let request):
--                        // Use request for station type
-                         let response = try await request.response()
--
++                    case .station(let request):
++                        let response = try await request.response()
                          guard let tracksToBeAdded = response.items.first else { return }
--
--                        let player = SystemMusicPlayer.shared
--
--                        player.queue = [tracksToBeAdded] /// <- directly add items to the queue
--
 +                        player.queue = [tracksToBeAdded]
-                         try await player.prepareToPlay()
--
-                         resolve("Station is added to queue")
--
-                         return
--
-                     }
-                 } else {
-                     print("Unknown media type.")
--
-                     return
-                 }
--               } catch {
--                 reject("ERROR", "Failed to set tracks to queue: \(error)", error)
--               }
++                        try await player.prepareToPlay()
++                        resolve("Station is added to queue")
++                        return
++                    }
++                } else {
++                    print("Unknown media type.")
++                    return
++                }
 +            } catch {
 +                reject("ERROR", "Failed to set tracks to queue: \(error)", error)
 +            }
 +        }
 +    }
-+
+ 
+-                        let player = SystemMusicPlayer.shared
 +    @objc(resetPlaybackQueue:rejecter:)
 +    func resetPlaybackQueue(_ resolve: @escaping RCTPromiseResolveBlock, 
 +                          rejecter reject: @escaping RCTPromiseRejectBlock) {
@@ -1531,8 +1514,10 @@ index 76f6734..2f52efe 100644
 +            }
 +        }
 +    }
-+
-+
+ 
+-                        player.queue = [tracksToBeAdded] /// <- directly add items to the queue
+ 
+-                        try await player.prepareToPlay()
 +    @objc(seekToTime:resolver:rejecter:)
 +func seekToTime(_ timeInSeconds: Double, 
 +                resolver resolve: @escaping RCTPromiseResolveBlock, 
@@ -1544,49 +1529,134 @@ index 76f6734..2f52efe 100644
 +                reject("ERROR", "No track currently playing", nil)
 +                return
 +            }
-+            
+                 
+-                        resolve("Playlist is added to queue")
 +            // Convert seconds to TimeInterval
 +            let seekTime = TimeInterval(timeInSeconds)
-+            
+             
+-                        return
 +            // Perform the seek operation
 +            player.playbackTime = seekTime
-+            
+             
+-                    case .station(let request):
+-                        // Use request for station type
+-                        let response = try await request.response()
 +            // If paused, we need to manually update the state
 +            if player.state.playbackStatus == .paused {
 +                DispatchQueue.main.async {
 +                    self.sendPlaybackStateUpdate()
 +                }
 +            }
-+            
+             
+-                        guard let tracksToBeAdded = response.items.first else { return }
 +            resolve("Seeked to \(timeInSeconds) seconds")
 +        } catch {
 +            reject("ERROR", "Failed to seek: \(error)", error)
++        }
++    }
++}
+ 
+-                        let player = SystemMusicPlayer.shared
++@objc(setPlaybackQueueList:type:resolver:rejecter:)
++func setPlaybackQueueList(_ itemIds: [String], type: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
++    Task {
++        do {
++            var musicItems: [MusicPlayer.Queue.Entry] = []
+ 
+-                        player.queue = [tracksToBeAdded] /// <- directly add items to the queue
++            for itemId in itemIds {
++                let musicItemId = MusicItemID(itemId)
+ 
+-                        try await player.prepareToPlay()
++                guard let requestType = MediaType.getRequest(forType: type, musicItemId: musicItemId) else {
++                    continue
++                }
+ 
+-                        resolve("Station is added to queue")
++                switch requestType {
++                case .song(let request):
++                    let response = try await request.response()
++                    for item in response.items {
++                        let entry = MusicPlayer.Queue.Entry(item)
++                        musicItems.append(entry)
++                    }
+ 
+-                        return
++                case .album(let request):
++                    let response = try await request.response()
++                    for item in response.items {
++                        let entry = MusicPlayer.Queue.Entry(item)
++                        musicItems.append(entry)
++                    }
+ 
++                case .playlist(let request):
++                    let response = try await request.response()
++                    for item in response.items {
++                        let entry = MusicPlayer.Queue.Entry(item)
++                        musicItems.append(entry)
+                     }
+-                } else {
+-                    print("Unknown media type.")
+ 
+-                    return
++                case .station(let request):
++                    let response = try await request.response()
++                    for item in response.items {
++                        let entry = MusicPlayer.Queue.Entry(item)
++                        musicItems.append(entry)
++                    }
+                 }
+-               } catch {
+-                 reject("ERROR", "Failed to set tracks to queue: \(error)", error)
+-               }
++            }
++
++            if !musicItems.isEmpty {
++                player.queue = ApplicationMusicPlayer.Queue(musicItems)
++    try await player.prepareToPlay()
++     try await player.play()
++    resolve("\(musicItems.count) track(s) added to queue")
++            } else {
++                reject("ERROR", "No valid tracks found", nil)
++            }
++
++        } catch {
++            reject("ERROR", "Failed to set tracks to queue: \(error.localizedDescription)", error)
          }
      }
 +}
++
  
      enum MediaType {
          case song(MusicCatalogResourceRequest<Song>)
+@@ -540,4 +1230,6 @@ class MusicModule: RCTEventEmitter {
+             }
+         }
+     }
++
+ }
++
 diff --git a/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts b/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts
-index 458777f..8be58ee 100644
+index 458777f..2e19192 100644
 --- a/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts
 +++ b/node_modules/@lomray/react-native-apple-music/modules/music-kit.d.ts
-@@ -41,5 +41,10 @@ declare class MusicKit {
+@@ -41,5 +41,11 @@ declare class MusicKit {
       * @return {Promise<ITracksFromLibrary[]>} A promise returns a list of recently played items including tracks, playlists, stations, albums
       */
      static getTracksFromLibrary(): Promise<ITracksFromLibrary>;
 +
 +    static resetPlaybackQueue(): Promise<void>;
 +   static seekToTime(timeInSeconds: number): Promise<void>;
++    static setPlaybackQueueList(itemIds: string[], type: MusicItem): Promise<void>;
 +
 +    // resetPlaybackQueue(): Promise<void>
  }
  export { MusicKit as default };
 diff --git a/node_modules/@lomray/react-native-apple-music/modules/music-kit.js b/node_modules/@lomray/react-native-apple-music/modules/music-kit.js
-index 8928e8b..3e1e448 100644
+index 8928e8b..f514022 100644
 --- a/node_modules/@lomray/react-native-apple-music/modules/music-kit.js
 +++ b/node_modules/@lomray/react-native-apple-music/modules/music-kit.js
-@@ -50,6 +50,30 @@ class MusicKit {
+@@ -50,6 +50,39 @@ class MusicKit {
              };
          }
      }
@@ -1614,6 +1684,15 @@ index 8928e8b..3e1e448 100644
 +        throw error;
 +    }
 +}
++
++  static async setPlaybackQueueList(itemIds, type) {
++        try {
++            await MusicModule.setPlaybackQueueList(itemIds, type);
++        }
++        catch (error) {
++            console.error('Apple Music Kit: Setting Playback Failed.', error);
++        }
++    }
  }
  
  export { MusicKit as default };
