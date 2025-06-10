@@ -25,6 +25,7 @@ import ImagePath from '../../assests/ImagePath';
 import {useSelector, useDispatch} from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import {
+  clearSessionDetail,
   getSessionDetailRequest,
   startSessionJoinRequest,
   startSessionJoinRequestStatusIdle,
@@ -39,6 +40,8 @@ import TrackPlayer, {
   useTrackPlayerEvents,
 } from 'react-native-track-player';
 import {
+  CREATE_SESSION_DETAIL_FAILURE,
+  CREATE_SESSION_DETAIL_SUCCESS,
   START_SESSION_JOINEE_FAILURE,
   START_SESSION_JOINEE_STOP_HOST,
   START_SESSION_LEFT_SUCCESS,
@@ -57,6 +60,7 @@ import {
 } from '@lomray/react-native-apple-music';
 import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
 import {TrackProgress} from '../common/Progress';
+import {useFocusEffect} from '@react-navigation/native';
 
 function SessionDetail(props) {
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -73,7 +77,8 @@ function SessionDetail(props) {
   );
   const userTokenData = useSelector(state => state.TokenReducer);
   const sessionReduxData = useSelector(state => state.SessionReducer);
-  const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data;
+  const sessionDetailReduxdata =
+    sessionReduxData?.sessionDetailData?.data ?? {};
   const sessionDataForJoineeAfterJoin =
     sessionReduxData.CurrentSessionJoineeInfo?.data;
 
@@ -119,9 +124,7 @@ function SessionDetail(props) {
 
       if (checkIsAppleStatus) {
         const getTrackRelatedSong = () => {
-          return songs.map(
-            item => item?.apple_song_id ?? '',
-          );
+          return songs.map(item => item?.apple_song_id ?? '');
         };
         const newArray = getTrackRelatedSong();
         console.log(newArray, 'this is song arrau');
@@ -166,6 +169,15 @@ function SessionDetail(props) {
       console.error('Playback error:', error);
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // This will run when the screen is focused
+      return () => {
+        dispatch(clearSessionDetail());
+      };
+    }, []),
+  );
 
   useEffect(() => {
     if (!checkIsAppleStatus) {
@@ -221,16 +233,37 @@ function SessionDetail(props) {
   }, [currentState]);
 
   useEffect(() => {
-    isInternetConnected()
-      .then(() => {
-        dispatch(
-          getSessionDetailRequest({sessionId: props?.route?.params?.sessionId}),
-        );
-      })
-      .catch(() => {
-        toast('Error', 'Please Connect To Internet');
-      });
-  }, []);
+    if (props?.route?.params?.sessionId) {
+      isInternetConnected()
+        .then(() => {
+          console.log(
+            props?.route?.params?.sessionId,
+            'it this is the session it>>>',
+          );
+          // return;
+          dispatch(
+            getSessionDetailRequest({
+              sessionId: props?.route?.params?.sessionId,
+            }),
+          );
+          if (props.route.params?.fromScreen) {
+            props.navigation.setParams({
+              fromScreen: undefined,
+              sessionId: null,
+            });
+          }
+        })
+        .catch(() => {
+          toast('Error', 'Please Connect To Internet');
+          if (props.route.params?.fromScreen) {
+            props.navigation.setParams({
+              fromScreen: undefined,
+              sessionId: null,
+            });
+          }
+        });
+    }
+  }, [props?.route?.params?.sessionId]);
 
   useEffect(() => {
     // if (sessionReduxData?.hasLeftSession) {
@@ -295,10 +328,16 @@ function SessionDetail(props) {
   }, [sessionReduxData.status]);
 
   useEffect(() => {
-    if (props.route.params.fromScreen == 'notificionScreen') {
-      handleJoinLeaveSession();
+    if (
+      props.route.params.fromScreen == 'notificionScreen' &&
+      Object.keys(sessionDetailReduxdata).length > 0
+    ) {
+      setTimeout(() => {
+        handleJoinLeaveSession();
+      }, 1000);
+      // Alert.alert('hi')
     }
-  }, [props.route.params.fromScreen]);
+  }, [props.route.params.fromScreen, sessionDetailReduxdata]);
 
   //helperss***********************************************************************************
 
@@ -318,7 +357,12 @@ function SessionDetail(props) {
 
   const handleSessionLeftOverCancel = (type, messageText) => {
     setStatus(type);
-    TrackPlayer.reset();
+    if (checkIsAppleStatus) {
+      resetPlaybackQueue();
+      resetProgress();
+    } else {
+      TrackPlayer.reset();
+    }
     currentEmitedSongStatus.current = {
       hostId: null,
       startAudioMixing: null,
@@ -337,7 +381,11 @@ function SessionDetail(props) {
 
   const handleNavigation = () => {
     if (status === '' || status !== sessionReduxData.status) {
-      // console.log(sessionReduxData?.error, 'its error h');
+      console.log(
+        sessionReduxData?.error,
+        sessionReduxData.status,
+        'its error jfdkfjdfkh',
+      );
       switch (sessionReduxData.status) {
         case START_SESSION_JOINEE_FAILURE:
           setStatus(START_SESSION_JOINEE_FAILURE);
@@ -373,6 +421,35 @@ function SessionDetail(props) {
             resetProgress();
           }
           break;
+
+        case CREATE_SESSION_DETAIL_FAILURE:
+          handleSessionLeftOverCancel(
+            CREATE_SESSION_DETAIL_FAILURE,
+            sessionReduxData?.error?.message ??
+              'Something Went Wrong, Please Try Again',
+          );
+          setTimeout(() => {
+            dispatch(
+              startSessionJoinRequestStatusIdle({status: '', error: {}}),
+            );
+          }, 300);
+          break;
+        // case CREATE_SESSION_DETAIL_SUCCESS:
+        //   Alert.alert('join sesssion request form notifi');
+        //   if (
+        //     props.route.params.fromScreen == 'notificionScreen' &&
+        //     sessionDetailReduxdata &&
+        //     sessionReduxData?.loading
+        //   ) {
+        //     // handleJoinLeaveSession()
+        //     Alert.alert('join sesssion request form notifi');
+        //   }
+        //   setTimeout(() => {
+        //     dispatch(
+        //       startSessionJoinRequestStatusIdle({status: '', error: {}}),
+        //     );
+        //   }, 300);
+        //   break;
         default:
           setStatus('');
           break;
@@ -409,9 +486,13 @@ function SessionDetail(props) {
       return;
     } else {
       const requestObj = {
-        id: sessionDetailReduxdata?._id,
+        id:
+          props.route.params.fromScreen == 'notificionScreen'
+            ? props.route.params?.sessionId
+            : sessionDetailReduxdata?._id,
         user_id: userProfileResp?._id,
       };
+      console.log(requestObj, 'thi is  the request object');
       if (sessionDetailReduxdata?.isLive && checkUserExistence()) {
         dispatch(startSessionLeftRequest(requestObj));
       } else {

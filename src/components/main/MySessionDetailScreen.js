@@ -1557,8 +1557,8 @@ function MySessionDetailScreen(props) {
   const {position, duration} = useProgress(200);
   const positionRef = useRef(null);
   const playerAcceptedSongsRef = useRef([]);
-  const thisSong = useCurrentSong();
-  console.log(thisSong, 'thi isi ssong');
+  const {song: currentPlayinSongData} = useCurrentSong();
+  // console.log(currentPlayinSongData, 'thi isi ssong');
   //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   // useEffect(() => {
@@ -1575,18 +1575,19 @@ function MySessionDetailScreen(props) {
   //     playbackListener.remove();
   //   };
   // }, [appleFullSongPlaying]);
+  
   useEffect(() => {
-    if (thisSong && islive) {
-      let currentSongId = thisSong?.song?.id;
+    if (currentPlayinSongData && islive) {
+      let currentSongId = currentPlayinSongData?.id;
       let playingSongIndex = playerAcceptedSongsRef.current.findIndex(
         item => item == currentSongId,
       );
-      console.log(playingSongIndex, 'its playing song index');
+      // console.log(playingSongIndex, 'its playing song index');
       if (playingSongIndex != currentTrack) {
         setCurrentTrack(playingSongIndex);
       }
     }
-  }, [thisSong]);
+  }, [currentPlayinSongData]);
 
   useEffect(() => {
     setUserDataList(userSearchList);
@@ -2325,7 +2326,7 @@ function MySessionDetailScreen(props) {
                     //   currentPlayingSong?.currentSong?.id ==
                     //   item?.apple_song_id;
                     const iscurrentPlaying =
-                      thisSong?.song?.id == item?.apple_song_id;
+                      currentPlayinSongData?.id == item?.apple_song_id;
                     // playerState == State.Playing &&
                     return (
                       <View

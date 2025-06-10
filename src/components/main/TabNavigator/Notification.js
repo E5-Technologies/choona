@@ -339,7 +339,6 @@ const Notification = props => {
             }>
             {today.length !== 0 && (
               <>
-                {console.log(today, 'list of today')}
                 <View style={styles.activityHeader}>
                   <Text style={styles.activityHeaderText}>TODAY</Text>
                 </View>

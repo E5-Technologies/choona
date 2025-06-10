@@ -34,6 +34,7 @@ import {
   My_SESSION_DELETE_SUCCESS,
   My_SESSION_DELETE_FAILURE,
   My_SESSION_DELETE_STATUS_IDLE,
+  CLEAR_SESSION_DETAIL,
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -125,6 +126,12 @@ const SessionReducer = (state = initialState, action) => {
         status: action.type,
         loading: false,
         sessionDetailData: action.data,
+      };
+
+    case CLEAR_SESSION_DETAIL:
+      return {
+        ...state,
+        sessionDetailData: {},
       };
 
     case CREATE_SESSION_DETAIL_FAILURE:

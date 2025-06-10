@@ -34,6 +34,7 @@ import {Alert} from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
 import {act} from 'react';
 import {mySessionListRequest} from '../action/SessionAction';
+import {ColorSpace} from 'react-native-agora';
 
 const getItems = state => state.TokenReducer;
 const getMySesssinoInfo = state => state.SessionReducer.mySessionListData;
@@ -91,17 +92,25 @@ export function* getSessionDetail(action) {
     contenttype: 'application/json',
     accesstoken: items.token,
   };
+  console.log(action.payload.sessionId, 'thi sis hte session idddi<><');
   try {
     const response = yield call(
       getApi,
       `session/get?id=${action.payload.sessionId}`,
       header,
     );
-    // console.log(response?.data, 'its response after api hit session LIST');
-    yield put({type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data});
+    console.log(response?.data, 'its response after api hit session LIST');
+    if (response?.data?.status == 200) {
+      yield put({type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data});
+    } else {
+      yield put({type: CREATE_SESSION_DETAIL_FAILURE, error: response.data});
+    }
   } catch (error) {
-    console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({type: CREATE_SESSION_DETAIL_FAILURE, data: error});
+    console.log(
+      JSON.stringify(error),
+      'simple error1 in list get when get data of sesssion',
+    );
+    yield put({type: CREATE_SESSION_DETAIL_FAILURE, error: error});
   }
 }
 
@@ -137,10 +146,9 @@ export function* startSessionOnce(action) {
       header,
     );
     console.log(response?.data, 'its response start session');
-    if(response?.data?.status==200){
+    if (response?.data?.status == 200) {
       yield put({type: START_SESSION_SUCCESS, data: response?.data});
-    }
-    else{
+    } else {
       yield put({type: START_SESSION_FAILURE, error: error});
     }
   } catch (error) {
@@ -179,7 +187,7 @@ export function* joinSessionRequest(action) {
       });
     }
   } catch (error) {
-    console.log(JSON.stringify(error?.message), 'simple error1 in list get');
+    console.log(JSON.stringify(error), 'simple error1 in list get');
     yield put({type: START_SESSION_JOINEE_FAILURE, error: error?.message});
   }
 }
