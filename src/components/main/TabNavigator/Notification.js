@@ -238,6 +238,7 @@ const Notification = props => {
     touchableOpacityDisabled,
     user,
     session_id,
+    showButton = true,
   }) => {
     return (
       <View style={styles.container1}>
@@ -270,24 +271,27 @@ const Notification = props => {
                 </>
               </Text>
             </TouchableOpacity>
-            <View>
-              <TouchableOpacity
-                style={[styles.followButton, {backgroundColor: Colors.white}]}
-                onPress={() =>
-                  props.navigation.navigate('SessionDetail', {
-                    sessionId: session_id,
-                    fromScreen: 'notificionScreen',
-                  })
-                }>
-                {/* {follow ? (
+            {showButton && (
+              <View>
+                <TouchableOpacity
+                  style={[styles.followButton, {backgroundColor: Colors.white}]}
+                  onPress={() =>
+                    props.navigation.navigate('SessionDetail', {
+                      sessionId: session_id,
+                      fromScreen: 'notificionScreen',
+                    })
+                  }>
+                  {/* {follow ? (
               <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
             ) : ( */}
-                <Text style={[styles.followButtonText, {color: Colors.black}]}>
-                  ACCEPT
-                </Text>
-                {/* )} */}
-              </TouchableOpacity>
-            </View>
+                  <Text
+                    style={[styles.followButtonText, {color: Colors.black}]}>
+                    ACCEPT
+                  </Text>
+                  {/* )} */}
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -429,7 +433,7 @@ const Notification = props => {
                 <View style={styles.activityHeader}>
                   <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
                 </View>
-                <FlatList
+                {/* <FlatList
                   data={previous}
                   renderItem={({item}) =>
                     item.post_id !== null ? (
@@ -460,6 +464,47 @@ const Notification = props => {
                       />
                     ) : null
                   }
+                /> */}
+
+                <FlatList
+                  data={previous}
+                  scrollEnabled
+                  renderItem={({item, index}) => {
+                    let activity_type = item?.activity_type;
+
+                    const content =
+                      item.post_id !== null ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            props.navigation.navigate('SingleSongClick', {
+                              data: item.post_id,
+                            });
+                          }}>
+                          <ActivitySingle item={item} props={props} />
+                        </TouchableOpacity>
+                      ) : (
+                        <ActivitySingle item={item} props={props} />
+                      );
+                    return (
+                      <>
+                        {activity_type == 'invitation' ? (
+                          <AcceptRejectInvite
+                            title={item?.text}
+                            touchableOpacityDisabled={true}
+                            image={item?.profile_image}
+                            user={item?.username}
+                            session_id={item?.session_id}
+                            showButton={false}
+                          />
+                        ) : (
+                          <View key={index}>{content}</View>
+                        )}
+                      </>
+                    );
+                  }}
+                  keyExtractor={(item, index) => index.toString()}
+                  showsVerticalScrollIndicator={false}
+                  ItemSeparatorComponent={Seperator}
                 />
               </>
             )}
@@ -522,7 +567,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    marginRight: normaliseNew(8),
+    // marginRight: normaliseNew(8),
   },
   detailsAvatar: {
     borderRadius: normaliseNew(16),
@@ -552,7 +597,8 @@ const styles = StyleSheet.create({
     borderRadius: normaliseNew(16),
     height: normaliseNew(32),
     justifyContent: 'center',
-    width: normaliseNew(90),
+    width: normaliseNew(85),
+    marginLeft: normaliseNew(5),
   },
   followButtonText: {
     color: Colors.black,
