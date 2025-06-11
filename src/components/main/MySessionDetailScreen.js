@@ -1575,7 +1575,7 @@ function MySessionDetailScreen(props) {
   //     playbackListener.remove();
   //   };
   // }, [appleFullSongPlaying]);
-  
+
   useEffect(() => {
     if (currentPlayinSongData && islive) {
       let currentSongId = currentPlayinSongData?.id;
@@ -2381,7 +2381,7 @@ function MySessionDetailScreen(props) {
                 />
               </View>
             </View>
-            {currentListners?.length > 0 && (
+            {currentListners?.length > 0 && islive && (
               <View style={styles.listenersContainer}>
                 <View style={styles.listenersTextWrapper}>
                   <Text
@@ -2447,7 +2447,7 @@ function MySessionDetailScreen(props) {
               modalVisible={modalVisible}
               duration={appleFullSongDuration}
               position={progress}
-              isShow={sessionDetailReduxdata?.isPrivate ? true: false}
+              isShow={sessionDetailReduxdata?.isPrivate ? true : false}
             />
           )}
           {props.route.params.isforEdit && (
