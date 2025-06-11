@@ -68,7 +68,7 @@ function HeaderComponent(props) {
           hitSlop={hitSlop}>
           <Text style={HeaderStyles.headerItemText}>{props.texttwo}</Text>
         </TouchableOpacity>
-      ) : (
+      ) : props.imagetwo ? (
         <TouchableOpacity
           style={HeaderStyles.rightItem}
           onPress={() => {
@@ -81,7 +81,7 @@ function HeaderComponent(props) {
             resizeMode="contain"
           />
         </TouchableOpacity>
-      )}
+      ) : null}
     </View>
   );
 }

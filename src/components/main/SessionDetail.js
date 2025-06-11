@@ -92,6 +92,8 @@ function SessionDetail(props) {
     pausedAt: null,
   });
 
+  console.log(sessionDetailReduxdata, 'thi is the session id>>')
+
   const {
     progress,
     duration: appleFullSongDuration,
@@ -246,21 +248,21 @@ function SessionDetail(props) {
               sessionId: props?.route?.params?.sessionId,
             }),
           );
-          if (props.route.params?.fromScreen) {
-            props.navigation.setParams({
-              fromScreen: undefined,
-              sessionId: null,
-            });
-          }
+          // if (props.route.params?.fromScreen) {
+          //   props.navigation.setParams({
+          //     fromScreen: undefined,
+          //     sessionId: null,
+          //   });
+          // }
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
-          if (props.route.params?.fromScreen) {
-            props.navigation.setParams({
-              fromScreen: undefined,
-              sessionId: null,
-            });
-          }
+          // if (props.route.params?.fromScreen) {
+          //   props.navigation.setParams({
+          //     fromScreen: undefined,
+          //     sessionId: null,
+          //   });
+          // }
         });
     }
   }, [props?.route?.params?.sessionId]);
@@ -331,10 +333,10 @@ function SessionDetail(props) {
     if (
       props.route.params.fromScreen == 'notificionScreen' &&
       Object.keys(sessionDetailReduxdata).length > 0
-    ) {
-      setTimeout(() => {
+    ) { 
+      // setTimeout(() => {
         handleJoinLeaveSession();
-      }, 1000);
+      // }, 1000);
       // Alert.alert('hi')
     }
   }, [props.route.params.fromScreen, sessionDetailReduxdata]);
@@ -562,7 +564,8 @@ function SessionDetail(props) {
               : false
           }
           imagetwo={
-            sessionDetailReduxdata?.isPrivate ||
+            sessionDetailReduxdata?.isPrivate 
+            ||
             (sessionDetailReduxdata?.isLive && checkUserExistence())
               ? null
               : ImagePath.addButtonSmall

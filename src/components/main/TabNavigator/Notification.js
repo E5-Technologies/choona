@@ -286,7 +286,7 @@ const Notification = props => {
             ) : ( */}
                   <Text
                     style={[styles.followButtonText, {color: Colors.black}]}>
-                    ACCEPT
+                    JOIN
                   </Text>
                   {/* )} */}
                 </TouchableOpacity>
