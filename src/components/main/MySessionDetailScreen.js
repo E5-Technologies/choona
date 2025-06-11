@@ -2447,7 +2447,7 @@ function MySessionDetailScreen(props) {
               modalVisible={modalVisible}
               duration={appleFullSongDuration}
               position={progress}
-              isShow={true}
+              isShow={sessionDetailReduxdata?.isPrivate ? true: false}
             />
           )}
           {props.route.params.isforEdit && (
