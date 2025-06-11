@@ -92,7 +92,7 @@ function SessionDetail(props) {
     pausedAt: null,
   });
 
-  console.log(sessionDetailReduxdata, 'thi is the session id>>')
+  console.log(sessionDetailReduxdata, 'thi is the session id>>');
 
   const {
     progress,
@@ -248,19 +248,12 @@ function SessionDetail(props) {
               sessionId: props?.route?.params?.sessionId,
             }),
           );
-          // if (props.route.params?.fromScreen) {
-          //   props.navigation.setParams({
-          //     fromScreen: undefined,
-          //     sessionId: null,
-          //   });
-          // }
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
           // if (props.route.params?.fromScreen) {
           //   props.navigation.setParams({
           //     fromScreen: undefined,
-          //     sessionId: null,
           //   });
           // }
         });
@@ -329,17 +322,43 @@ function SessionDetail(props) {
     handleNavigation();
   }, [sessionReduxData.status]);
 
+  // console.log(props.route.params?.fromScreen, 'this is the route h')
+
   useEffect(() => {
     if (
       props.route.params.fromScreen == 'notificionScreen' &&
       Object.keys(sessionDetailReduxdata).length > 0
-    ) { 
+    ) {
       // setTimeout(() => {
-        handleJoinLeaveSession();
+      // handleJoinLeaveSession();
       // }, 1000);
       // Alert.alert('hi')
+      if (
+        sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
+        !checkIsAppleStatus
+      ) {
+        Alert.alert(
+          "You don't have apple music subscription, To join the session Apple music subscription is required!",
+        );
+        return;
+      } else {
+        const requestObj = {
+          id:
+            props.route.params.fromScreen == 'notificionScreen'
+              ? props.route.params?.sessionId
+              : sessionDetailReduxdata?._id,
+          user_id: userProfileResp?._id,
+        };
+        console.log(requestObj, 'thi is  the request object');
+        dispatch(startSessionJoinRequest(requestObj));
+        if (props.route.params?.fromScreen) {
+          props.navigation.setParams({
+            fromScreen: undefined,
+          });
+        }
+      }
     }
-  }, [props.route.params.fromScreen, sessionDetailReduxdata]);
+  }, [sessionDetailReduxdata]);
 
   //helperss***********************************************************************************
 
@@ -412,6 +431,11 @@ function SessionDetail(props) {
             resetPlaybackQueue();
             resetProgress();
           }
+          // if (props.route.params?.fromScreen) {
+          //   props.navigation.setParams({
+          //     fromScreen: undefined,
+          //   });
+          // }
           break;
         case START_SESSION_JOINEE_STOP_HOST:
           handleSessionLeftOverCancel(
@@ -564,8 +588,7 @@ function SessionDetail(props) {
               : false
           }
           imagetwo={
-            sessionDetailReduxdata?.isPrivate 
-            ||
+            sessionDetailReduxdata?.isPrivate ||
             (sessionDetailReduxdata?.isLive && checkUserExistence())
               ? null
               : ImagePath.addButtonSmall

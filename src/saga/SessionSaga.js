@@ -175,7 +175,7 @@ export function* joinSessionRequest(action) {
       action.payload,
       header,
     );
-    // console.log(JSON.stringify(response?.data), 'its response joinee Joined');
+    console.log(JSON.stringify(response?.data), 'its response joinee Joined');
     if (response?.data?.status == 200) {
       yield put({type: START_SESSION_JOINEE_SUCCESS, data: response?.data});
     } else {
