@@ -154,7 +154,7 @@ export function* startSessionOnce(action) {
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
     toast('Error', 'Please Connect To Internet');
-    yield put({type: START_SESSION_FAILURE, data: error});
+    yield put({type: START_SESSION_FAILURE, error: error});
   }
 }
 

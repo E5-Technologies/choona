@@ -1473,6 +1473,7 @@ import {
   START_SESSION_JOINEE_REQUEST,
   SEND_SESSION_INVITATION_FAILURE,
   SEND_SESSION_INVITATION_SUCCESS,
+  START_SESSION_SUCCESS,
 } from '../../action/TypeConstants';
 import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
 import {
@@ -1791,8 +1792,19 @@ function MySessionDetailScreen(props) {
   }, [sessionDetailReduxdata?.isLive]);
 
   useEffect(() => {
-    handleNavigation();
-  }, [userReduxData.status]);
+    if (
+      userReduxData.status == SEND_SESSION_INVITATION_FAILURE ||
+      userReduxData.status == SEND_SESSION_INVITATION_SUCCESS
+    ) {
+      handleNavigation();
+    }
+  }, [userReduxData.status, sessionReduxData.status]);
+
+  useEffect(() => {
+    if (!islive) {
+      setCurrentListeners([]);
+    }
+  }, [islive]);
 
   //helperss***********************************************************************************
 
@@ -1801,7 +1813,6 @@ function MySessionDetailScreen(props) {
       switch (userReduxData.status) {
         case SEND_SESSION_INVITATION_FAILURE:
           setStatus(SEND_SESSION_INVITATION_FAILURE);
-          // Alert.alert(sessionReduxData?.error?.message);
           toast(
             'Error',
             userReduxData?.error?.message ??
