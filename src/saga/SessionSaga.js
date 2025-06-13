@@ -99,7 +99,7 @@ export function* getSessionDetail(action) {
       `session/get?id=${action.payload.sessionId}`,
       header,
     );
-    console.log(response?.data, 'its response after api hit session LIST');
+    // console.log(response?.data, 'its response after api hit session LIST');
     if (response?.data?.status == 200) {
       yield put({type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data});
     } else {

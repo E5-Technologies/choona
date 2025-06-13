@@ -131,6 +131,7 @@ const SessionReducer = (state = initialState, action) => {
     case CLEAR_SESSION_DETAIL:
       return {
         ...state,
+        loading: false,
         sessionDetailData: {},
       };
 
