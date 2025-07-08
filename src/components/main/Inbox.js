@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -20,7 +20,7 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import InboxListItem from '../../components/main/ListCells/InboxItemList';
 import StatusBar from '../../utils/MyStatusBar';
 import database from '@react-native-firebase/database';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import {
   GET_CHAT_LIST_REQUEST,
@@ -140,14 +140,14 @@ function Inbox(props) {
           data.item.user_id === data.item.receiver_id ? true : data.item.read
         }
         onPress={() =>
-          props.navigation.navigate('InsideaMessage', { index: data.index })
+          props.navigation.navigate('InsideaMessage', {index: data.index})
         }
         onPressImage={() => {
-          props.navigation.navigate('OthersProfile', { id: data.item.user_id });
+          props.navigation.navigate('OthersProfile', {id: data.item.user_id});
         }}
         onPressDelete={() =>
           Alert.alert('Do you want to delete this conversation?', '', [
-            { text: 'No' },
+            {text: 'No'},
 
             {
               text: 'Delete',
@@ -187,13 +187,13 @@ function Inbox(props) {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={props.status === GET_CHAT_LIST_REQUEST} />
       <Loader visible={bool} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
-          firstitemtext={''}
+          firstitemtext={false}
           title={'INBOX'}
           thirditemtext={false}
           imagetwo={ImagePath ? ImagePath.newmessage : null}
@@ -202,6 +202,11 @@ function Inbox(props) {
           onPressThirdItem={() => {
             props.navigation.navigate('AddSongsInMessage');
           }}
+          imageone={ImagePath.backicon}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+          imageOneStyle={{width:20, height:20}}
         />
         {_.isEmpty(props.chatList) ? null : (
           <View

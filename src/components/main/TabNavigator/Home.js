@@ -165,6 +165,13 @@ const Home = props => {
     //   haveAppleMusicSubscription,
   } = usePlayFullAppleMusic();
 
+  useEffect(() => {
+    if (props.route.params?.activeTab === 1) {
+      console.log(props.route.params?.activeTab, 'thisidfd');
+      setActiveTab(1);
+    }
+  }, [props.route.params?.activeTab]);
+
   const {progress, duration} = useMusicPlayer();
 
   const {
@@ -1401,7 +1408,7 @@ const Home = props => {
       {/* {Platform.OS == 'android' && (
         <StatusBar backgroundColor={Colors.darkerblack} />
       )} */}
-       <StatusBar
+      <StatusBar
         barStyle="light-content" // 👈 Makes iOS status bar text white
         backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
       />
@@ -1419,21 +1426,23 @@ const Home = props => {
         <HomeHeaderComponent
           firstitemtext={false}
           marginTop={0}
-          imageone={
-            _.isEmpty(props.userProfileResp)
-              ? ''
-              : props.userProfileResp.profile_image
-              ? constants.profile_picture_base_url +
-                props.userProfileResp.profile_image
-              : null
-          }
+          // imageone={
+          //   _.isEmpty(props.userProfileResp)
+          //     ? ''
+          //     : props.userProfileResp.profile_image
+          //     ? constants.profile_picture_base_url +
+          //       props.userProfileResp.profile_image
+          //     : null
+          // }
+          imageone={ImagePath.searchIcon}
           staticFirstImage={false}
           imageoneheight={normalise(26)}
           imageonewidth={normalise(26)}
           borderRadius={normalise(30)}
           title={'CHOONA'}
           thirditemtext={false}
-          imagetwo={ImagePath.boxicon}
+          // imagetwo={ImagePath.boxicon}
+          imagetwo={ImagePath.inbox}
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
@@ -1447,11 +1456,12 @@ const Home = props => {
             });
           }}
           onPressFirstItem={() => {
-            props.navigation.navigate('Profile', {fromAct: false});
+            // props.navigation.navigate('Profile', {fromAct: false});
             // resetPlaybackQueue();
           }}
           onPressThirdItem={() => {
-            props.navigation.navigate('Contact');
+            // props.navigation.navigate('Contact');
+            props.navigation.navigate('Inbox');
             //  props.navigation.navigate('BlankScreen');
           }}
         />

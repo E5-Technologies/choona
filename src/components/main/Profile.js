@@ -59,7 +59,7 @@ const Profile = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalPrivacy, setModalPrivacy] = useState(false);
   const [modaltandcs, setModaltandcs] = useState(false);
-  const [activity] = useState(props.route.params.fromAct);
+  const [activity] = useState(props?.route?.params?.fromAct || false);
   const [nonempty, setNonEmpty] = useState(false);
 
   const [pageId, setPageId] = useState(1);
@@ -478,6 +478,17 @@ const Profile = props => {
               }}>
               <Image
                 source={ImagePath ? ImagePath.iconmenu : null}
+                style={{height: normalise(20), width: normalise(20)}}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+              <TouchableOpacity
+              style={{marginLeft: normalise(10)}}
+              onPress={() => {
+                props.navigation.navigate('Contact');
+              }}>
+              <Image
+                source={ImagePath ? ImagePath.boxicon : null}
                 style={{height: normalise(20), width: normalise(20)}}
                 resizeMode="contain"
               />

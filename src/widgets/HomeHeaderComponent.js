@@ -56,7 +56,7 @@ function HomeHeaderComponent(props) {
             onPress={() => {
               onPressFirstItem();
             }}>
-            <Avatar image={props.imageone} height={22} width={22} />
+            <Avatar image={props.imageone} height={22} width={22} imageStyle={props.imageOneStyle}/>
           </TouchableOpacity>
         </View>
       )}
@@ -133,6 +133,7 @@ HomeHeaderComponent.propTypes = {
   read: PropTypes.bool,
   onIconPress: PropTypes.bool,
   pressLogo: PropTypes.func,
+  imageoneheight: PropTypes.string,
 };
 HomeHeaderComponent.defaultProps = {
   firstitemtext: true,

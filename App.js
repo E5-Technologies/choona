@@ -7,10 +7,16 @@ import {
   Platform,
   Dimensions,
   AppState,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
 
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+  useNavigation,
+} from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
@@ -80,8 +86,15 @@ import {
 import MySessionDetailScreen from './src/components/main/MySessionDetailScreen';
 import MySessionScreen from './src/components/main/MySessionScreen';
 import SongListScreen from './src/components/main/AppleMusic/SongListScren';
-import {AppleMusicContext, MusicPlayerProvider} from './src/context/AppleMusicContext';
+import {
+  AppleMusicContext,
+  MusicPlayerProvider,
+} from './src/context/AppleMusicContext';
 import {usePlayFullAppleMusic} from './src/hooks/usePlayFullAppleMusic';
+import Avatar from './src/components/Avatar';
+import constants from './src/utils/helpers/constants';
+import {all} from 'redux-saga/effects';
+import ProfileTabNavigator from './src/navigation/ProfileTabNavigator';
 // import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 // import * as Sentry from '@sentry/react-native';
@@ -96,7 +109,10 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   const dispatch = useDispatch();
   const TokenReducer = useSelector(state => state.TokenReducer);
-  const {isAuthorizeToAccessAppleMusic , haveAppleMusicSubscription} = usePlayFullAppleMusic();
+  // const userProfile = useSelector(state => state.UserReducer.userProfileResp);
+  const userProfile = null;
+  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+    usePlayFullAppleMusic();
   // const {isPlaying} = useIsPlaying();
 
   //const UserReducer = useSelector(state => state.UserReducer)
@@ -221,6 +237,7 @@ const App = () => {
           <Tab.Screen
             name="Home"
             component={Home}
+            initialParams={{activeTab: 0}}
             options={{
               headerShown: false,
               tabBarIcon: ({focused}) => (
@@ -307,7 +324,7 @@ const App = () => {
               tabBarLabel: '',
             }}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Notification"
             component={Notification}
             options={{
@@ -359,9 +376,68 @@ const App = () => {
               ),
               tabBarLabel: '',
             }}
-          />
+          /> */}
 
           <Tab.Screen
+            // name="Notification"
+            // component={Notification}
+            name="HomeScreen"
+            component={Home}
+            initialParams={{activeTab: 1}}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({focused}) => (
+                <View>
+                  <Image
+                    style={[
+                      {
+                        marginTop:
+                          Platform.OS === 'android'
+                            ? normalise(10)
+                            : Dimensions.get('window').height > 736
+                            ? normalise(0)
+                            : normalise(10),
+                        height: normalise(20),
+                        width: normalise(20),
+                        marginTop: normalise(12),
+                      },
+                    ]}
+                    source={
+                      ImagePath
+                        ? focused
+                          ? ImagePath.iconmenu
+                          : ImagePath.iconmenu
+                        : null
+                    }
+                    resizeMode="contain"
+                  />
+                  {!_.isEmpty(UserReducer.userProfileResp) ? (
+                    UserReducer.userProfileResp.isActivity ? (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          right: normalise(-2),
+                          top:
+                            Platform.OS === 'android'
+                              ? normalise(8)
+                              : normalise(-2),
+                          backgroundColor: Colors.red,
+                          borderRadius: normalize(8),
+                          height: 10,
+                          width: 10,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      />
+                    ) : null
+                  ) : null}
+                </View>
+              ),
+              tabBarLabel: '',
+            }}
+          />
+
+          {/* <Tab.Screen
             name="Inbox"
             component={Inbox}
             options={{
@@ -406,6 +482,143 @@ const App = () => {
               ),
               tabBarLabel: '',
             }}
+          />  */}
+
+          {/* <Tab.Screen
+            name="ProfileScreen"
+            component={Profile}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({focused}) => (
+                <View>
+                  <Image
+                    style={{
+                      opacity: focused ? 1 : 0.6,
+                      marginTop:
+                        Platform.OS === 'android'
+                          ? normalise(10)
+                          : Dimensions.get('window').height > 736
+                          ? normalise(0)
+                          : normalise(10),
+                      height: normalise(22),
+                      width: normalise(22),
+                      marginTop: normalise(12),
+                    }}
+                    source={ImagePath ? ImagePath.inbox : null}
+                    resizeMode="contain"
+                  />
+                  {showMessageDot ? (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        right: normalise(-2),
+                        top:
+                          Platform.OS === 'android'
+                            ? normalise(8)
+                            : normalise(-2),
+                        backgroundColor: Colors.red,
+                        borderRadius: normalize(8),
+                        height: 10,
+                        width: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    />
+                  ) : null}
+                </View>
+              ),
+              tabBarLabel: '',
+              // tabBarButton: props => {
+              //   const navigation = useNavigation();
+              //   return (
+              //     <TouchableOpacity
+              //       {...props}
+              //       onPress={() => {
+              //         navigation.navigate('Profile', {fromAct: false});
+              //       }}
+              //       activeOpacity={0.7}>
+              //       {props.children}
+              //     </TouchableOpacity>
+              //   );
+              // },
+            }}
+          />  */}
+
+          {/* <Tab.Screen
+            name="Profile"
+            component={()=> null}
+            options={{
+              headerShown: false,
+              tabBarLabel: '',
+              tabBarIcon: ({focused}) => (
+                <Avatar
+                  image={
+                    userProfile?.profile_image
+                      ? constants.profile_picture_base_url +
+                        userProfile?.profile_image
+                      : null
+                  }
+                  height={24}
+                  width={24}
+                  imageWrapper={{
+                    marginTop:
+                      Platform.OS === 'android' ? normalise(10) : normalise(12),
+                    opacity: focused ? 1 : 0.6,
+                  }}
+                />
+              ),
+              tabBarButton: props => {
+                const navigation = useNavigation();
+                return (
+                  <TouchableOpacity
+                    {...props}
+                    // onPress={() => {
+                    //   navigation
+                    //     .getParent()
+                    //     ?.navigate('Profile', {fromAct: false});
+                    // }}
+                    activeOpacity={0.7}>
+                    {props.children}
+                  </TouchableOpacity>
+                );
+              },
+            }}
+          /> */}
+
+          <Tab.Screen
+            name="ProfileScreen"
+            component={Profile}
+            options={{
+              headerShown: false,
+              tabBarLabel: '',
+              tabBarIcon: ({focused}) => (
+                <Avatar
+                  image={
+                    userProfile?.profile_image
+                      ? constants.profile_picture_base_url +
+                        userProfile?.profile_image
+                      : null
+                  }
+                  height={24}
+                  width={24}
+                  imageWrapper={{
+                    marginTop:
+                      Platform.OS === 'android' ? normalise(10) : normalise(12),
+                    opacity: focused ? 1 : 0.6,
+                  }}
+                />
+              ),
+              // tabBarButton: props => (
+              //   <TouchableOpacity
+              //     {...props}
+              //     activeOpacity={1}
+              //     onPress={() => {
+              //       // Do nothing
+              //     }}>
+              //     {props.children}
+              //   </TouchableOpacity>
+              // ),
+            }}
           />
         </Tab.Navigator>
       </View>
@@ -418,135 +631,158 @@ const App = () => {
     return (
       <SafeAreaProvider>
         <MusicPlayerProvider>
-        <AppleMusicContext.Provider value={{
-          isAuthorizeToAccessAppleMusic,
-          haveAppleMusicSubscription,
-          // isPlaying
-        }}>
-          <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
-            {TokenReducer.token === null ? (
-              <Stack.Navigator
-                screenOptions={{headerShown: false}}
-                initialRouteName={'Login'}>
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="SignUp" component={SignUp} />
-              </Stack.Navigator>
-            ) : (
-              <Stack.Navigator screenOptions={{headerShown: false}}>
-                <Stack.Screen name="bottomTab" component={BottomTab} />
-                <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="BlockList" component={BlockList} />
-                <Stack.Screen name="EditProfile" component={EditProfile} />
-                <Stack.Screen name="Followers" component={Followers} />
-                <Stack.Screen name="Following" component={Following} />
-                <Stack.Screen name="OthersProfile" component={OthersProfile} />
-                <Stack.Screen name="CreatePost" component={CreatePost} />
-                <Stack.Screen name="Contact" component={Contact} />
-                {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
-                <Stack.Screen
-                  name="Player"
-                  component={Player}
-                  options={{
-                    cardStyleInterpolator:
-                      CardStyleInterpolators.forVerticalIOS,
-                  }}
-                />
-                <Stack.Screen
-                  name="InsideaMessage"
-                  component={InsideaMessage}
-                />
-                <Stack.Screen name="HomeItemList" component={HomeItemList} />
-                <Stack.Screen
-                  name="HomeItemComments"
-                  component={HomeItemComments}
-                />
-                <Stack.Screen
-                  name="HomeItemReactions"
-                  component={HomeItemReactions}
-                />
-                <Stack.Screen
-                  name="AddSongsInMessage"
-                  component={AddSongsInMessage}
-                />
-                <Stack.Screen
-                  name="SendSongInMessageFinal"
-                  component={SendSongInMessageFinal}
-                />
-                <Stack.Screen name="GenreClicked" component={GenreClicked} />
-                <Stack.Screen
-                  name="GenreSongClicked"
-                  component={GenreSongClicked}
-                />
-                <Stack.Screen name="FeaturedTrack" component={FeaturedTrack} />
-                <Stack.Screen
-                  name="AddAnotherSong"
-                  component={AddAnotherSong}
-                />
-                <Stack.Screen
-                  name="PostListForUser"
-                  component={PostListForUser}
-                />
-                <Stack.Screen
-                  name="UsersFromContacts"
-                  component={UsersFromContacts}
-                />
-                <Stack.Screen
-                  name="AddToPlayListScreen"
-                  component={AddToPlayListScreen}
-                />
-                <Stack.Screen
-                  name="SingleSongClick"
-                  component={SingleSongClick}
-                />
-                <Stack.Screen
-                  name="PlayerScreenSelectUser"
-                  component={PlayerScreenSelectUser}
-                />
-                <Stack.Screen name="PlayerComment" component={PlayerComment} />
-                <Stack.Screen name="AddSong" component={AddSong} />
-                <Stack.Screen
-                  name="CreatePlayList"
-                  component={CreatePlayList}
-                />
-                <Stack.Screen
-                  name="SessionDetail"
-                  component={SessionDetail}
-                  options={{
-                    gestureEnabled: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="AssembleSession"
-                  component={AssembleSession}
-                />
-                <Stack.Screen
-                  name="SessionLaunchScreen"
-                  component={SessionLaunchScreen}
-                />
-                <Stack.Screen name="SessionActive" component={SessionActive} />
-                <Stack.Screen
-                  name="PlayListDetail"
-                  component={PlayListDetail}
-                />
-                <Stack.Screen
-                  name="MySessionDetailScreen"
-                  component={MySessionDetailScreen}
-                  options={{
-                    gestureEnabled: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="MySessionScreen"
-                  component={MySessionScreen}
-                />
-                <Stack.Screen
-                  name="SongListScreen"
-                  component={SongListScreen}
-                />
-              </Stack.Navigator>
-            )}
-          </NavigationContainer>
-        </AppleMusicContext.Provider>
+          <AppleMusicContext.Provider
+            value={{
+              isAuthorizeToAccessAppleMusic,
+              haveAppleMusicSubscription,
+              // isPlaying
+            }}>
+            <NavigationContainer
+              onReady={() => RNBootSplash.hide({fade: true})}>
+              {TokenReducer.token === null ? (
+                <Stack.Navigator
+                  screenOptions={{headerShown: false}}
+                  initialRouteName={'Login'}>
+                  <Stack.Screen name="Login" component={Login} />
+                  <Stack.Screen name="SignUp" component={SignUp} />
+                </Stack.Navigator>
+              ) : (
+                <Stack.Navigator
+                  screenOptions={{headerShown: false}}
+                  options={({route}) => {
+                    const routeName = getFocusedRouteNameFromRoute(route);
+                    if (routeName === 'Profile') {
+                      return {tabBarStyle: {display: 'none'}};
+                    }
+                    return {};
+                  }}>
+                  <Stack.Screen name="bottomTab" component={BottomTab} />
+                  <Stack.Screen name="Profile" component={Profile} />
+                  <Stack.Screen name="BlockList" component={BlockList} />
+                  <Stack.Screen name="EditProfile" component={EditProfile} />
+                  <Stack.Screen name="Inbox" component={Inbox} />
+                  <Stack.Screen name="Followers" component={Followers} />
+                  <Stack.Screen name="Following" component={Following} />
+                  <Stack.Screen
+                    name="OthersProfile"
+                    component={OthersProfile}
+                  />
+                  <Stack.Screen name="CreatePost" component={CreatePost} />
+                  <Stack.Screen name="Contact" component={Contact} />
+                  {/* <Stack.Screen name="Inbox" component={Inbox} /> */}
+                  <Stack.Screen
+                    name="Player"
+                    component={Player}
+                    options={{
+                      cardStyleInterpolator:
+                        CardStyleInterpolators.forVerticalIOS,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="InsideaMessage"
+                    component={InsideaMessage}
+                  />
+                  <Stack.Screen name="HomeItemList" component={HomeItemList} />
+                  <Stack.Screen
+                    name="HomeItemComments"
+                    component={HomeItemComments}
+                  />
+                  <Stack.Screen
+                    name="HomeItemReactions"
+                    component={HomeItemReactions}
+                  />
+                  <Stack.Screen
+                    name="AddSongsInMessage"
+                    component={AddSongsInMessage}
+                  />
+                  <Stack.Screen
+                    name="SendSongInMessageFinal"
+                    component={SendSongInMessageFinal}
+                  />
+                  <Stack.Screen name="GenreClicked" component={GenreClicked} />
+                  <Stack.Screen
+                    name="GenreSongClicked"
+                    component={GenreSongClicked}
+                  />
+                  <Stack.Screen
+                    name="FeaturedTrack"
+                    component={FeaturedTrack}
+                  />
+                  <Stack.Screen
+                    name="AddAnotherSong"
+                    component={AddAnotherSong}
+                  />
+                  <Stack.Screen
+                    name="PostListForUser"
+                    component={PostListForUser}
+                  />
+                  <Stack.Screen
+                    name="UsersFromContacts"
+                    component={UsersFromContacts}
+                  />
+                  <Stack.Screen
+                    name="AddToPlayListScreen"
+                    component={AddToPlayListScreen}
+                  />
+                  <Stack.Screen
+                    name="SingleSongClick"
+                    component={SingleSongClick}
+                  />
+                  <Stack.Screen
+                    name="PlayerScreenSelectUser"
+                    component={PlayerScreenSelectUser}
+                  />
+                  <Stack.Screen
+                    name="PlayerComment"
+                    component={PlayerComment}
+                  />
+                  <Stack.Screen name="AddSong" component={AddSong} />
+                  <Stack.Screen
+                    name="CreatePlayList"
+                    component={CreatePlayList}
+                  />
+                  <Stack.Screen
+                    name="SessionDetail"
+                    component={SessionDetail}
+                    options={{
+                      gestureEnabled: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="AssembleSession"
+                    component={AssembleSession}
+                  />
+                  <Stack.Screen
+                    name="SessionLaunchScreen"
+                    component={SessionLaunchScreen}
+                  />
+                  <Stack.Screen
+                    name="SessionActive"
+                    component={SessionActive}
+                  />
+                  <Stack.Screen
+                    name="PlayListDetail"
+                    component={PlayListDetail}
+                  />
+                  <Stack.Screen
+                    name="MySessionDetailScreen"
+                    component={MySessionDetailScreen}
+                    options={{
+                      gestureEnabled: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="MySessionScreen"
+                    component={MySessionScreen}
+                  />
+                  <Stack.Screen
+                    name="SongListScreen"
+                    component={SongListScreen}
+                  />
+                </Stack.Navigator>
+              )}
+            </NavigationContainer>
+          </AppleMusicContext.Provider>
         </MusicPlayerProvider>
       </SafeAreaProvider>
     );
