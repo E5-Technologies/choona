@@ -265,6 +265,12 @@ const App = () => {
               ),
               tabBarLabel: '',
             }}
+            listeners={({navigation}) => ({
+              tabPress: e => {
+                // e.preventDefault();
+                navigation.navigate('Home', {activeTab: 0});
+              },
+            })}
           />
           <Tab.Screen
             name="Search"
@@ -397,21 +403,22 @@ const App = () => {
                             : Dimensions.get('window').height > 736
                             ? normalise(0)
                             : normalise(10),
-                        height: normalise(20),
+                        height: normalise(19),
                         width: normalise(20),
                         marginTop: normalise(12),
+                        tintColor: focused ? Colors.white : Colors.grey,
                       },
                     ]}
                     source={
                       ImagePath
                         ? focused
-                          ? ImagePath.iconmenu
-                          : ImagePath.iconmenu
+                          ? ImagePath.hamburger
+                          : ImagePath.hamburger
                         : null
                     }
                     resizeMode="contain"
                   />
-                  {!_.isEmpty(UserReducer.userProfileResp) ? (
+                  {/* {!_.isEmpty(UserReducer.userProfileResp) ? (
                     UserReducer.userProfileResp.isActivity ? (
                       <View
                         style={{
@@ -430,11 +437,32 @@ const App = () => {
                         }}
                       />
                     ) : null
-                  ) : null}
+                  ) : null} */}
                 </View>
               ),
               tabBarLabel: '',
+              // tabBarButton: props => {
+              //   const navigation = useNavigation();
+              //   return (
+              //     <TouchableOpacity
+              //       onPress={() => {
+              //         navigation
+              //           .getParent()
+              //           ?.navigate('Home', {activeTab: 1});
+              //       }}
+              //       {...props}
+              //       activeOpacity={0.7}>
+              //       {props.children}
+              //     </TouchableOpacity>
+              //   );
+              // },
             }}
+            listeners={({navigation}) => ({
+              tabPress: e => {
+                // e.preventDefault();
+                navigation.navigate('Home', {activeTab: 1});
+              },
+            })}
           />
 
           {/* <Tab.Screen
@@ -594,9 +622,9 @@ const App = () => {
               tabBarIcon: ({focused}) => (
                 <Avatar
                   image={
-                    userProfile?.profile_image
+                    UserReducer?.userProfileResp?.profile_image
                       ? constants.profile_picture_base_url +
-                        userProfile?.profile_image
+                        UserReducer?.userProfileResp?.profile_image
                       : null
                   }
                   height={24}
@@ -663,6 +691,7 @@ const App = () => {
                   <Stack.Screen name="Inbox" component={Inbox} />
                   <Stack.Screen name="Followers" component={Followers} />
                   <Stack.Screen name="Following" component={Following} />
+                  <Stack.Screen name="Notification" component={Notification} />
                   <Stack.Screen
                     name="OthersProfile"
                     component={OthersProfile}

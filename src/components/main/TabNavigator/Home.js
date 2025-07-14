@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 import {
   SafeAreaView,
   View,
@@ -114,6 +114,8 @@ import {
   useIsPlaying,
 } from '@lomray/react-native-apple-music';
 import {ColorSpace} from 'react-native-agora';
+import Popover from 'react-native-popover-view';
+import HeaderMenu from '../../common/Menu';
 // import {useQueryClient} from '@tanstack/react-query';
 
 let status = '';
@@ -122,7 +124,6 @@ let postStatus = '';
 
 const Home = props => {
   const token = props.header.token;
-
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
@@ -152,6 +153,7 @@ const Home = props => {
   const queryClient = useQueryClient();
   const {isPlaying} = useIsPlaying();
   const {song: currentSongData} = useCurrentSong();
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const {
     onAuth,
@@ -166,13 +168,25 @@ const Home = props => {
   } = usePlayFullAppleMusic();
 
   useEffect(() => {
-    if (props.route.params?.activeTab === 1) {
-      console.log(props.route.params?.activeTab, 'thisidfd');
-      setActiveTab(1);
-    }
+    setActiveTab(props.route.params?.activeTab);
   }, [props.route.params?.activeTab]);
 
   const {progress, duration} = useMusicPlayer();
+
+  const optionListMenu = [
+    {
+      id: 1,
+      // name: 'Inbox',
+      icon: ImagePath.inbox,
+      pressEvent: () => props.navigation.navigate('Inbox'),
+    },
+    {
+      id: 2,
+      // name: 'Notification',
+      icon: ImagePath.notificationactive,
+      pressEvent: () => props.navigation.navigate('Notification'),
+    },
+  ];
 
   const {
     isAuthorizeToAccessAppleMusic,
@@ -1442,7 +1456,8 @@ const Home = props => {
           title={'CHOONA'}
           thirditemtext={false}
           // imagetwo={ImagePath.boxicon}
-          imagetwo={ImagePath.inbox}
+          // imagetwo={ImagePath.inbox}
+          imagetwo={ImagePath?.threedots}
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
@@ -1461,9 +1476,11 @@ const Home = props => {
           }}
           onPressThirdItem={() => {
             // props.navigation.navigate('Contact');
-            props.navigation.navigate('Inbox');
+            // props.navigation.navigate('Inbox');
+            setMenuVisible(true);
             //  props.navigation.navigate('BlankScreen');
           }}
+          imageTwoStyle={{transform: [{rotate: '90deg'}], width: normalise(14)}}
         />
         <View style={styles.tabBarWrapperStyle}>
           <TouchableOpacity
@@ -1945,6 +1962,12 @@ const Home = props => {
             />
           </View>
         ) : null}
+
+        <HeaderMenu
+          menuVisible={menuVisible}
+          setMenuVisible={() => setMenuVisible(false)}
+          optionList={optionListMenu}
+        />
       </SafeAreaView>
     </View>
   );
@@ -1977,6 +2000,19 @@ const styles = StyleSheet.create({
     height: normalise(3),
     position: 'absolute',
     bottom: 0,
+  },
+  confrimationText: {
+    color: 'red',
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normalise(12),
+    textAlign: 'center',
+    padding: 15,
+    fontWeight: '600',
+  },
+  optionText: {
+    borderEndWidth: 1,
+    borderRightColor: Colors.meta,
+    width: '50%',
   },
 });
 

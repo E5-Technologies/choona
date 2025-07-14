@@ -93,10 +93,10 @@ function HomeHeaderComponent(props) {
           <>
             <Image
               source={props && props.imagetwo ? props.imagetwo : null}
-              style={{
+              style={[{
                 height: props.imagetwoheight,
                 width: props.imagetwowidth,
-              }}
+              },props.imageTwoStyle]}
               resizeMode="contain"
             />
             {props.notRead ? (

@@ -303,7 +303,15 @@ const Notification = props => {
       <StatusBar />
       <Loader visible={isLoading} />
       <SafeAreaView style={styles.activityContainer}>
-        <HeaderComponent title={'ACTIVITY'} />
+        <HeaderComponent
+          title={'ACTIVITY'}
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+           imageOneStyle={{width:20, height:20}}
+        />
         {emptyVisible ? (
           <EmptyComponent
             buttonPress={() => {
