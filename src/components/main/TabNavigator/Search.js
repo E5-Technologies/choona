@@ -530,6 +530,7 @@ const Search = props => {
   }
 
   function renderGenreData(data) {
+    // console.log(JSON.stringify(data?.item), 'jjjhjk');
     return (
       <TouchableOpacity
         style={
@@ -537,15 +538,19 @@ const Search = props => {
             //   margin: normalise(4),
           }
         }
-        onPress={() => {
-          props.navigation.navigate('GenreSongClicked', {
-            data: data.item._id,
-            ptID: 0,
-          });
-        }}>
+        // onPress={() => {
+        //   props.navigation.navigate('GenreSongClicked', {
+        //     data: data.item._id,
+        //     ptID: 0,
+        //   });
+        // }}
+        >
         <Image
           source={{
-            uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
+            // uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
+            // uri: props.registerType === 'spotify'? data?.item?.images[0]?.url : data?.item?.attributes?.artwork?.url?.replace('{w}x{h}', '500x500'),
+            uri: props.registerType === 'spotify'? data?.item?.track?.album?.images[1]?.url : data?.item?.attributes?.artwork?.url?.replace('{w}x{h}', '500x500'),
+
           }}
           style={{
             width: Math.floor(Dimensions.get('window').width / 2),

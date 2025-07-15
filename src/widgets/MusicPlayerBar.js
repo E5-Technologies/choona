@@ -49,8 +49,6 @@ function MusicPlayerBar(props) {
   } = usePlayFullAppleMusic();
 
   const {progress, duration} = useMusicPlayer();
-
-  console.log(progress, duration, 'thi is progress and the duration');
   const percentage = duration > 0 ? (progress / duration) * 100 : 0;
 
   const {
@@ -93,7 +91,7 @@ function MusicPlayerBar(props) {
     setTimeout(() => {
       setBool(false);
     }, 1000);
-  });
+  }, []);
 
   function getPlatingState() {
     setTimeout(() => {
@@ -209,8 +207,9 @@ function MusicPlayerBar(props) {
       }}>
       <Loader visible={bool} />
       {Platform.OS === 'ios' &&
-      (props.playingSongRef?.regType == 'apple' &&
-      currentSongData?.id == props.playingSongRef?.apple_song_id && haveAppleMusicSubscription) ? (
+      props.playingSongRef?.regType == 'apple' &&
+      currentSongData?.id == props.playingSongRef?.apple_song_id &&
+      haveAppleMusicSubscription ? (
         <View
           style={{
             height: normalise(2),

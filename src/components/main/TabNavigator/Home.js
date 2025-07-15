@@ -136,7 +136,7 @@ const Home = props => {
   const [timeoutVar, setTimeoutVar] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
-  const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
+  const [visibleminiPlayer, setVisibleMiniPlayer] = useState(false);
   const [isShown, setIsShown] = useState(true);
 
   const [firstTimeModalShow, setFirstTimeModalShow] = useState(false);
@@ -268,6 +268,7 @@ const Home = props => {
     isFetchingNextPage,
     isRefetching,
     refetch,
+    hasNextPage,
   } = useInfiniteQuery(
     'homePosts',
     async ({pageParam = 1}) => {
@@ -1755,7 +1756,11 @@ const Home = props => {
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item?._id}
                 ref={flatlistRef}
-                onEndReached={() => fetchNextPage()}
+                onEndReached={() => {
+                  if (hasNextPage && !isFetchingNextPage) {
+                    fetchNextPage();
+                  }
+                }}
                 onEndReachedThreshold={2}
                 contentContainerStyle={{paddingBottom: 45}}
                 refreshControl={
