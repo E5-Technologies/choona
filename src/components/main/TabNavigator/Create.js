@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Alert,
+  Dimensions,
   Image,
   Platform,
   SafeAreaView,
@@ -17,7 +18,9 @@ import normalise from '../../../utils/helpers/Dimens';
 import StatusBar from '../../../utils/MyStatusBar';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import useHandlePlatformSubscriptionAction from '../../../hooks/useHandlePlatformSubscriptionAction';
+import GradientButton from '../../common/GradientButton';
 
+const {width} = Dimensions.get('window');
 const Create = props => {
   const handleAddSongNavigation = useHandlePlatformSubscriptionAction(() =>
     props.navigation.navigate('AddSong', {from: 'AssembleSession'}),
@@ -50,26 +53,43 @@ const Create = props => {
           thirditemtext={true}
           texttwo={''}
         />
+        <View style={styles.headPhoneImageWrapper}>
+          <Image
+            source={ImagePath.headPhoneImage}
+            style={styles.headPhoneImage}
+            resizeMode="contain"
+          />
+        </View>
         <View
           style={{paddingHorizontal: normalise(20), marginTop: normalise(45)}}>
           {actionList?.map(item => {
             return (
-              <TouchableOpacity
-                style={styles.nameWrapper}
-                onPress={() => item?.action()}>
-                <Image
-                  source={ImagePath.addButton}
-                  style={styles.imageStyle}
-                  resizeMode="contain"
-                />
-                <View style={styles.featureName}>
-                  <Text
-                    style={styles.listItemHeaderSongTextTitle}
-                    numberOfLines={2}>
-                    {item?.title}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              // <TouchableOpacity
+              //   style={styles.nameWrapper}
+              //   onPress={() => item?.action()}>
+              //   <Image
+              //     source={ImagePath.addButton}
+              //     style={styles.imageStyle}
+              //     resizeMode="contain"
+              //   />
+              //   <View style={styles.featureName}>
+              //     <Text
+              //       style={styles.listItemHeaderSongTextTitle}
+              //       numberOfLines={2}>
+              //       {item?.title}
+              //     </Text>
+              //   </View>
+              // </TouchableOpacity>
+              <GradientButton
+                title={item?.title}
+                containerStyle={{marginBottom: 25}}
+                rightIconStyle={{
+                  transform: [{rotate: '180deg'}],
+                  width: 17,
+                  height: 17,
+                }}
+                onPress={() => item?.action()}
+              />
             );
           })}
         </View>
@@ -102,6 +122,17 @@ const styles = StyleSheet.create({
   imageStyle: {
     width: 35,
     height: 35,
+  },
+  headPhoneImageWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalise(50),
+    marginBottom: normalise(30),
+  },
+  headPhoneImage: {
+    width: width * 0.5,
+    height: width * 0.5,
+    resizeMode: 'contain',
   },
 });
 

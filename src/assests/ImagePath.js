@@ -117,7 +117,8 @@ const ImagePath = {
   deleteIcon: require('./images/delete.png'),
   editIcon: require('./images/edit.png'),
   searchIcon:require('./images/loupe.png'),
-  hamburger:require('./images/hamburger.png')
+  hamburger:require('./images/hamburger.png'),
+  headPhoneImage:require('./images/Headphones.png')
 };
 
 export default ImagePath;
