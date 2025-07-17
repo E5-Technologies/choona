@@ -15,7 +15,7 @@ import {
 import Colors from '../../assests/Colors';
 import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
-import HeaderComponent from '../../widgets/HeaderComponent';
+import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
 import {connect} from 'react-redux';
@@ -29,6 +29,7 @@ import {pausePlayerAction} from '../../saga/PlayerSaga';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import GradientButton from '../common/GradientButton';
 
 let status;
 
@@ -58,7 +59,6 @@ function CreatePlayList(props) {
     setPlayListArray(newArray);
   }, [songItem]);
 
-  console.log(JSON.stringify(playListArary), 'this is playListArray');
 
   const songListPayload = () => {
     return playListArary?.map(item => {
@@ -155,6 +155,21 @@ function CreatePlayList(props) {
     }
   }
 
+  const handleRemoveItemtoList = itemId => {
+    let currentLength = playListArary?.length;
+
+    const filteredArray = playListArary?.filter(
+      item => item.details.id !== itemId,
+    );
+    setPlayListArray(filteredArray);
+    if (currentLength == 1) {
+      props.navigation.navigate('AddSong', {
+        from: 'AssembleSession',
+        previousPlaylistData: [],
+      });
+    }
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -164,8 +179,6 @@ function CreatePlayList(props) {
           textone={'CANCEL'}
           title={'PLAYLIST'}
           thirditemtext={false}
-          imagetwo={ImagePath.backicon}
-          imagetwoStyle={styles.imageTwoStyle}
           onPressFirstItem={() => {
             // props.navigation.goBack();
             setPlayListArray([]);
@@ -173,39 +186,23 @@ function CreatePlayList(props) {
             // // props.navigation.goBack();
             // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousPlaylistData: [] })
           }}
-          onPressThirdItem={createPost}
         />
 
         <View style={{flex: 1}}>
           {playListArary && (
             <View style={styles.topContainerStyle}>
-              {/* <TextInputField
-                backgroundColor={Colors.fadeblack}
-                style={{backgroundColor: Colors.fadeblack}}
-                autocorrect={false}
-                placeholder={'PlayList name'}
-                maxLength={50}
-                value={playListName}
-                tick_visible={playListName ? true : false}
-                onChangeText={text => {
-                  setPlayListName(text);
-                }}
-                mainStyle={{
-                  borderColor: Colors.white,
-                  marginTop: -normalise(22),
-                  width: '75%',
-                }}
-              /> */}
               <TextInput
                 style={{
                   color: Colors.white,
-                  fontWeight: '400',
+                  fontFamily: 'ProximaNova-regular',
                   marginHorizontal: normalise(10),
                   marginBottom: normalise(10),
                   borderColor: Colors.white,
                   // marginTop: -normalise(22),
-                  width: '75%',
-                  padding: 10,
+                  // width: '75%',
+                  width: width / 2,
+                  // padding: 10,
+                  textAlign: 'center',
                 }}
                 keyboardAppearance="dark"
                 scrollEnabled={false}
@@ -213,85 +210,16 @@ function CreatePlayList(props) {
                 maxLength={50}
                 placeholder={'PlayList name'}
                 placeholderTextColor={Colors.darkgrey}
-                // onChangeText={text => {
-                //   let indexvalue = text.lastIndexOf('@');
-                //   let newString = text.substr(text.lastIndexOf('@'));
-
-                //   if (indexvalue !== -1) {
-                //     if (newString.length === 1) {
-                //       if (
-                //         search.substr(indexvalue - 1) === ' ' ||
-                //         search.substr(indexvalue - 1) === ''
-                //       ) {
-                //         setFollowingList([...props.followingData]);
-                //         setFollower([...props.followerData]);
-                //         props.followingData.length === 0
-                //           ? setShowMention(false)
-                //           : setShowMention(true);
-                //       } else {
-                //         setShowMention(false);
-                //       }
-                //     } else {
-                //       let newSubString = newString.substr(1, newString.length - 1);
-                //       let newArray = [];
-                //       let newFollowArray = [];
-                //       if (props.followingData.length !== 0) {
-                //         props.followingData.map((item, index) => {
-                //           //  console.log("mapItem"+item.full_name)
-                //           if (item.username.includes(newSubString)) {
-                //             newArray.push(item);
-                //           }
-                //           if (index === props.followingData.length - 1) {
-                //             if (props.followerData.length !== 0) {
-                //               props.followerData.map((items, indexs) => {
-                //                 if (items.username.includes(newSubString)) {
-                //                   newFollowArray.push(items);
-                //                 }
-                //                 if (indexs === props.followerData.length - 1) {
-                //                   newFollowArray.length === 0
-                //                     ? setShowMention(false)
-                //                     : (setFollowingList(newArray),
-                //                       setFollower(newFollowArray),
-                //                       setShowMention(true));
-                //                 }
-                //               });
-                //             } else {
-                //               setFollowingList(newArray), setShowMention(true);
-                //             }
-                //           }
-                //         });
-                //       } else {
-                //         props.followerData.map((items, indexs) => {
-                //           if (items.username.includes(newSubString)) {
-                //             newFollowArray.push(items);
-                //           }
-                //           if (indexs === props.followerData.length - 1) {
-                //             newArray.length === 0
-                //               ? setShowMention(false)
-                //               : (setFollower(newFollowArray), setShowMention(true));
-                //           }
-                //         });
-                //       }
-                //     }
-                //   } else {
-                //     setShowMention(false);
-                //   }
-                //   setSearch(text);
-                // }}
                 onChangeText={text => {
                   setPlayListName(text);
-                  // check(text);
                 }}
               />
-              {/* <Text style={styles.mainTitleStyle} numberOfLines={1}>
-                                @ 08 Summer Mix
-                            </Text> */}
               <View
                 style={[
                   styles.combienBanerWrapper,
                   {
-                    width: width / 2.3,
-                    height: width / 2.3,
+                    width: width / 2.4,
+                    height: width / 2.4,
                   },
                 ]}>
                 {playListArary?.map(item => {
@@ -305,7 +233,7 @@ function CreatePlayList(props) {
                 })}
               </View>
               <View
-                style={[styles.bottomLineStyle, {width: width / 2.3}]}></View>
+                style={[styles.bottomLineStyle, {width: width / 2.4}]}></View>
             </View>
           )}
           <View style={styles.playListItemContainer}>
@@ -331,33 +259,49 @@ function CreatePlayList(props) {
                         {item?.title2}
                       </Text>
                     </View>
+                    <TouchableOpacity
+                      onPress={() => handleRemoveItemtoList(item?.details?.id)}
+                      hitSlop={hitSlop}
+                      style={{alignSelf: 'center', marginLeft: 15}}>
+                      <Image
+                        source={ImagePath.greycross}
+                        style={{
+                          width: normalise(16),
+                          height: normalise(17),
+                        }}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
                   </View>
                 );
               }}
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item._id}
             />
+            <View style={styles.buttonWrapper}>
+              <GradientButton
+                title={'ADD SONG'}
+                containerStyle={{
+                  marginBottom: normalise(10),
+                }}
+                showRightIcon={false}
+                onPress={() =>
+                  props.navigation.navigate('AddSong', {
+                    from: 'Playlist',
+                    previousPlaylistData: playListArary,
+                  })
+                }
+              />
+              <GradientButton
+                title={'CONTINUE'}
+                containerStyle={{
+                  marginBottom: normalise(10),
+                }}
+                showRightIcon={false}
+                onPress={createPost}
+              />
+            </View>
           </View>
-        </View>
-        <View style={styles.buttonWrapper}>
-          <TouchableOpacity
-            // onPress={() => props.navigation.navigate("AddSong", { from: 'Playlist' })}
-            onPress={() =>
-              props.navigation.navigate('AddSong', {
-                from: 'Playlist',
-                previousPlaylistData: playListArary,
-              })
-            }
-            style={styles.buttonStyle}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(10),
-                fontWeight: 'bold',
-              }}>
-              ADD SONG
-            </Text>
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
       <Loader visible={bool} />
@@ -399,20 +343,20 @@ const styles = StyleSheet.create({
   playListItemContainer: {
     width: '100%',
     alignSelf: 'center',
-    marginTop: normalise(15),
+    marginTop: normalise(8),
     flex: 1,
-    marginBottom: normalise(50),
+    // marginBottom: normalise(50),
   },
   itemWrapper: {
     flexDirection: 'row',
-    marginBottom: normalise(16),
-    flex: 1,
+    marginBottom: normalise(8),
+    // flex: 1,
     marginHorizontal: 15,
   },
   songListItemImage: {
     borderRadius: normalise(5),
-    height: normalise(50),
-    width: normalise(50),
+    height: normalise(40),
+    width: normalise(40),
     marginRight: normalise(8),
   },
   listItemHeaderSongText: {
@@ -444,11 +388,12 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    right: 0,
+    // position: 'absolute',
+    // right: 0,
+    // backgroundColor:'red',
     // bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
     // bottom: 0,
-    bottom: Platform.OS === 'ios' ? normalise(24) : normalise(0),
+    // bottom: Platform.OS === 'ios' ? normalise(24) : normalise(0),
   },
   buttonStyle: {
     backgroundColor: Colors.fadeblack,

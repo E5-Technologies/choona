@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   KeyboardAvoidingView,
@@ -25,12 +25,13 @@ import {
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAILURE,
 } from '../../action/TypeConstants';
-import { signupRequest } from '../../action/UserAction';
-import { connect } from 'react-redux';
+import {signupRequest} from '../../action/UserAction';
+import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import axios from 'axios';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import CountryPicker from 'react-native-country-picker-modal';
+import GradientButton from '../common/GradientButton';
 let status = '';
 
 const Login = props => {
@@ -53,7 +54,7 @@ const Login = props => {
 
   useEffect(() => {
     (async () => {
-      const { userId } = await OneSignal.getDeviceState();
+      const {userId} = await OneSignal.getDeviceState();
 
       setDeviceToken(userId);
     })();
@@ -121,7 +122,7 @@ const Login = props => {
           },
         },
       ],
-      { cancelable: true },
+      {cancelable: true},
     );
   };
 
@@ -233,7 +234,7 @@ const Login = props => {
     await axios
       .post(
         constants.BASE_URL + '/user/available',
-        { username: username },
+        {username: username},
         {
           headers: {
             Accept: 'application/json',
@@ -254,13 +255,13 @@ const Login = props => {
   //VIEW BEGINS
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: Colors.darkerblack }}
+      style={{flex: 1, backgroundColor: Colors.darkerblack}}
       behavior="height">
       <StatusBar backgroundColor={Colors.darkerblack} />
 
-      <SafeAreaView style={{ flex: 1, width: '90%', alignSelf: 'center' }}>
+      <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center'}}>
         <ScrollView
-          style={{ height: '90%' }}
+          style={{height: '90%'}}
           showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -270,13 +271,13 @@ const Login = props => {
               marginTop: normalise(25),
             }}>
             <TouchableOpacity
-              style={{ left: normalise(-2), position: 'absolute' }}
+              style={{left: normalise(-2), position: 'absolute'}}
               onPress={() => {
                 props.navigation.goBack();
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{ height: normalise(15), width: normalise(15) }}
+                style={{height: normalise(15), width: normalise(15)}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -305,7 +306,7 @@ const Login = props => {
             }}>
             {picture ? (
               <Image
-                source={profilePic ? { uri: profilePic } : null}
+                source={profilePic ? {uri: profilePic} : null}
                 style={{
                   height: normalise(120),
                   width: normalise(120),
@@ -467,7 +468,7 @@ const Login = props => {
             </View>
           ) : null}
 
-          <Button
+          {/* <Button
             title={'COMPLETE PROFILE'}
             marginTop={normalise(40)}
             marginBottom={normalise(40)}
@@ -475,6 +476,16 @@ const Login = props => {
             onPress={() => {
               register();
             }}
+          /> */}
+
+          <GradientButton
+            title={'COMPLETE PROFILE'}
+            containerStyle={{
+              marginBottom: normalise(40),
+              marginTop: normalise(40),
+            }}
+            showRightIcon={false}
+            onPress={() => register()}
           />
         </ScrollView>
       </SafeAreaView>

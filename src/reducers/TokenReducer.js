@@ -6,6 +6,7 @@ import {
   GET_TOKEN_REQUEST,
   GET_TOKEN_SUCCESS,
   GET_TOKEN_FAILURE,
+  UPDATE_IS_FIRST_TIME,
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   loading: true,
   token: '',
   registerType: '',
+  isFirstTime: false,
 };
 
 const TokenReducer = (state = initialState, action) => {
@@ -31,6 +33,7 @@ const TokenReducer = (state = initialState, action) => {
         loading: false,
         token: action.token,
         registerType: action.registerType,
+        isFirstTime: action.isFirstTime,
       };
 
     case ASYNC_STORAGE_FAILURE:
@@ -47,6 +50,7 @@ const TokenReducer = (state = initialState, action) => {
         registerType: '',
         loading: false,
         error: {},
+        isFirstTime: false,
       };
 
     case GET_TOKEN_REQUEST:
@@ -68,6 +72,11 @@ const TokenReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.type,
+      };
+    case UPDATE_IS_FIRST_TIME:
+      return {
+        ...state,
+        isFirstTime: false,
       };
 
     default:

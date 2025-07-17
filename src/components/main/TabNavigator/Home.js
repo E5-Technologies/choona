@@ -62,6 +62,7 @@ import {
   CREATE_SESSION_LIST_REQUEST,
   CREATE_SESSION_LIST_SUCCESS,
   CREATE_SESSION_LIST_FAILURE,
+  UPDATE_IS_FIRST_TIME,
 } from '../../../action/TypeConstants';
 import {
   getProfileRequest,
@@ -116,6 +117,7 @@ import {
 import {ColorSpace} from 'react-native-agora';
 import Popover from 'react-native-popover-view';
 import HeaderMenu from '../../common/Menu';
+import {useDispatch, useSelector} from 'react-redux';
 // import {useQueryClient} from '@tanstack/react-query';
 
 let status = '';
@@ -123,6 +125,7 @@ let songStatus = '';
 let postStatus = '';
 
 const Home = props => {
+  const dispatch = useDispatch(0);
   const token = props.header.token;
   const [modalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -154,6 +157,7 @@ const Home = props => {
   const {isPlaying} = useIsPlaying();
   const {song: currentSongData} = useCurrentSong();
   const [menuVisible, setMenuVisible] = useState(false);
+  const TokenReducer = useSelector(state => state.TokenReducer);
 
   const {
     onAuth,
@@ -312,6 +316,11 @@ const Home = props => {
       },
     },
   );
+  useEffect(() => {
+    if (TokenReducer?.isFirstTime == true) {
+      dispatch({type: UPDATE_IS_FIRST_TIME});
+    }
+  }, []);
 
   useEffect(() => {
     if (props.status === 'REACTION_ON_POST_SUCCESS') {

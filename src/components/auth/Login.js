@@ -72,7 +72,7 @@ function SignUp(props) {
             deviceToken: token2,
             deviceType: Platform.OS,
           };
-          console.log({ payload });
+          console.log({ payload },'lfjdfj');
           props.loginRequest(payload);
         }
       })

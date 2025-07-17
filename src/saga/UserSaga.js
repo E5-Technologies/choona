@@ -122,6 +122,7 @@ export function* loginAction(action) {
         type: ASYNC_STORAGE_SUCCESS,
         token: response.data.token,
         registerType: response.data.data.register_type,
+        isFirstTime:false
       });
     } else {
       yield put({type: USER_LOGIN_FAILURE, error: response.data});
@@ -157,6 +158,7 @@ export function* UserSignUpAction(action) {
         type: ASYNC_STORAGE_SUCCESS,
         token: response.data.token,
         registerType: response.data.data.register_type,
+        isFirstTime:true
       });
     }
   } catch (error) {

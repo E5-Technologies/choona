@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   Platform,
@@ -11,19 +10,17 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import Colors from '../../assests/Colors';
-import normalise from '../../utils/helpers/Dimens';
-import StatusBar from '../../utils/MyStatusBar';
-import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
-import {createSessionRequest} from '../../action/SessionAction';
-import {useDispatch, useSelector} from 'react-redux';
+import normalise from '../../utils/helpers/Dimens';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import StatusBar from '../../utils/MyStatusBar';
+import HeaderComponent, { hitSlop } from '../../widgets/HeaderComponent';
+import GradientButton from '../common/GradientButton';
 
 function AssembleSession(props) {
-  // console.log(props.route?.params, 'these are params');
   const {songItem, previousSessionData} = props?.route?.params ?? {};
-  console.log(songItem, previousSessionData, 'this is props Item');
   const {width, height} = useWindowDimensions();
   const [sessionList, setSessionList] = useState([]);
 
@@ -31,17 +28,29 @@ function AssembleSession(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // if (songItem && !sessionList.find(item => item?.detail?.track_number == songItem?.detail?.track_number)) {
-    //     const updatedPlayList = [...sessionList, songItem];
-    //     Alert.alert('hi')
-    //     setSessionList(updatedPlayList);
-    // }
+    if (previousSessionData?.length) {
+      setSessionList(previousSessionData);
+    }
+  }, []);
 
-    const newArray = previousSessionData
-      ? [...previousSessionData, songItem]
-      : [...sessionList, songItem];
-    // console.log(newArray, 'its new array');
-    setSessionList(newArray);
+  useEffect(() => {
+    // const newArray = previousSessionData
+    //   ? [...previousSessionData, songItem]
+    //   : [...sessionList, songItem];
+    // // console.log(newArray, 'its new array');
+    // setSessionList(newArray);
+
+    if (!songItem) return;
+    setSessionList(prevList => {
+      const isAlreadyPresent = prevList.some(
+        item => item?.details?.id === songItem?.details?.id,
+      );
+      if (!isAlreadyPresent) {
+        return [...prevList, songItem];
+      } else {
+      }
+      return prevList;
+    });
   }, [songItem]);
 
   //Functions********************************************************
@@ -72,37 +81,20 @@ function AssembleSession(props) {
           textone={'CANCEL'}
           title={'SESSION'}
           thirditemtext={false}
-          imagetwo={ImagePath.backicon}
-          imagetwoStyle={styles.imageTwoStyle}
           onPressFirstItem={() => {
             setSessionList([]);
             props.navigation.popToTop('Create');
-            // props.navigation.goBack();
-            // props.navigation.navigate("AddSong", { from: 'AssembleSession', previousSessionData: [] })
-          }}
-          onPressThirdItem={() => {
-            if (sessionList?.length < 4) {
-              toast('Error', 'Please add atleast 4 songs!');
-              return;
-            }
-            props.navigation.navigate('SessionLaunchScreen', {
-              sessionSonglist: sessionList,
-              songItem: songItem?.registerType,
-            });
           }}
         />
         <View style={{flex: 1}}>
           {sessionList && (
             <View style={styles.topContainerStyle}>
-              {/* <Text style={styles.mainTitleStyle} numberOfLines={1}>
-                                @08 Summer Mix
-                            </Text> */}
               <View
                 style={[
                   styles.combienBanerWrapper,
                   {
-                    width: width / 1.9,
-                    height: width / 1.9,
+                    width: width / 2.4,
+                    height: width / 2.4,
                   },
                 ]}>
                 {sessionList?.map(item => {
@@ -115,16 +107,13 @@ function AssembleSession(props) {
                   );
                 })}
               </View>
-              <View style={[styles.bottomLineStyle, {width: width / 2}]}></View>
+              <View style={[styles.bottomLineStyle, {width: width / 2.4}]}></View>
             </View>
           )}
           <View style={styles.playListItemContainer}>
             <FlatList
               data={sessionList}
               renderItem={({item, index}) => {
-                {
-                  console.log(item, 'this is item');
-                }
                 return (
                   <View style={styles.itemWrapper}>
                     <Image
@@ -163,26 +152,39 @@ function AssembleSession(props) {
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item?._id}
             />
+            <View style={styles.buttonWrapper}>
+              <GradientButton
+                title={'ADD SONG'}
+                containerStyle={{
+                  marginBottom: normalise(10),
+                }}
+                showRightIcon={false}
+                onPress={() =>
+                  props.navigation.navigate('AddSong', {
+                    from: 'AssembleSession',
+                    previousSessionData: sessionList,
+                  })
+                }
+              />
+              <GradientButton
+                title={'CONTINUE'}
+                containerStyle={{
+                  marginBottom: normalise(10),
+                }}
+                showRightIcon={false}
+                onPress={() => {
+                  if (sessionList?.length < 4) {
+                    toast('Error', 'Please add atleast 4 songs!');
+                    return;
+                  }
+                  props.navigation.navigate('SessionLaunchScreen', {
+                    sessionSonglist: sessionList,
+                    songItem: songItem?.registerType,
+                  });
+                }}
+              />
+            </View>
           </View>
-        </View>
-        <View style={styles.buttonWrapper}>
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.navigate('AddSong', {
-                from: 'AssembleSession',
-                previousSessionData: sessionList,
-              })
-            }
-            style={styles.buttonStyle}>
-            <Text
-              style={{
-                color: Colors.white,
-                fontSize: normalise(10),
-                fontWeight: 'bold',
-              }}>
-              ADD SONG
-            </Text>
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </View>
@@ -191,7 +193,6 @@ function AssembleSession(props) {
 
 const styles = StyleSheet.create({
   topContainerStyle: {
-    // justifyContent: 'center',
     alignItems: 'center',
     marginTop: normalise(25),
   },
@@ -214,7 +215,6 @@ const styles = StyleSheet.create({
     height: '50%',
   },
   bottomLineStyle: {
-    // marginTop: normalise(20),
     backgroundColor: Colors.white,
     height: 0.5,
     alignSelf: 'center',
@@ -225,7 +225,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: normalise(15),
     flex: 1,
-    marginBottom: normalise(50),
   },
   itemWrapper: {
     flexDirection: 'row',
@@ -243,21 +242,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'column',
     marginLeft: normalise(8),
-    // maxWidth: normalise(240),
     width: '100%',
     borderBottomWidth: 0.5,
     borderBottomColor: Colors.fadeblack,
     paddingBottom: normalise(3),
     flex: 1,
-    // backgroundColor: 'green',
     justifyContent: 'center',
   },
 
   songlistItemHeaderSongTextTitle: {
     color: Colors.white,
     fontFamily: 'ProximaNova-Semibold',
-    // fontSize: normalise(13),
-    // marginBottom: normalise(2),
     fontSize: normalise(12),
   },
   songlistItemHeaderSongTextArtist: {
@@ -269,10 +264,6 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    right: 0,
-    bottom: Platform.OS === 'ios' ? normalise(24) : normalise(0),
-    // bottom: 0,
   },
   buttonStyle: {
     backgroundColor: Colors.fadeblack,

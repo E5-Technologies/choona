@@ -81,6 +81,7 @@ import {
   SEND_SESSION_INVITATION_FAILURE,
   SEND_SESSION_INVITATION_SUCCESS,
   SEND_SESSION_INVITATION_REQUEST,
+  UPDATE_IS_FIRST_TIME,
 } from '../action/TypeConstants';
 import moment from 'moment';
 import _ from 'lodash';
@@ -116,6 +117,7 @@ const initialState = {
   loadData: [],
   loadmoredata: [],
   inviteLoader: false,
+  isFirstTime: false,
 };
 
 const UserReducer = (state = initialState, action) => {

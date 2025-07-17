@@ -109,6 +109,7 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   const dispatch = useDispatch();
   const TokenReducer = useSelector(state => state.TokenReducer);
+  // console.log(TokenReducer, 'jkfhhhdkf');
   // const userProfile = useSelector(state => state.UserReducer.userProfileResp);
   const userProfile = null;
   const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
@@ -211,7 +212,9 @@ const App = () => {
     return (
       <View style={[styles.appStyle]}>
         <Tab.Navigator
-          initialRouteName={'Home'}
+          initialRouteName={
+            TokenReducer?.isFirstTime ? 'ProfileScreen' : 'Home'
+          }
           // tabBarOptions={{
           //   headerShown: false,
           //   activeBackgroundColor: Colors.darkerblack,
@@ -673,9 +676,11 @@ const App = () => {
                   initialRouteName={'Login'}>
                   <Stack.Screen name="Login" component={Login} />
                   <Stack.Screen name="SignUp" component={SignUp} />
+                  <Stack.Screen name="Profile" component={Profile} />
                 </Stack.Navigator>
               ) : (
                 <Stack.Navigator
+                  // initialRouteName="Profile"
                   screenOptions={{headerShown: false}}
                   options={({route}) => {
                     const routeName = getFocusedRouteNameFromRoute(route);
