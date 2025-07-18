@@ -1422,7 +1422,6 @@ const Home = props => {
     }
   }
   const insets = useSafeAreaInsets();
-  // VIEW
   return (
     <View
       style={{
@@ -1448,20 +1447,12 @@ const Home = props => {
       <Loader visible={props.sessionReducerData?.loading} />
       <SafeAreaView style={{flex: 1}}>
         <HomeHeaderComponent
-          firstitemtext={false}
+          firstitemtext={activeTab == 1 ? false : true}
           marginTop={0}
-          // imageone={
-          //   _.isEmpty(props.userProfileResp)
-          //     ? ''
-          //     : props.userProfileResp.profile_image
-          //     ? constants.profile_picture_base_url +
-          //       props.userProfileResp.profile_image
-          //     : null
-          // }
-          imageone={ImagePath.searchIcon}
+          imageone={ImagePath.searchicon}
           staticFirstImage={false}
-          imageoneheight={normalise(26)}
-          imageonewidth={normalise(26)}
+          imageoneheight={normalise(18)}
+          imageonewidth={normalise(18)}
           borderRadius={normalise(30)}
           title={'CHOONA'}
           thirditemtext={false}
@@ -1481,7 +1472,7 @@ const Home = props => {
             });
           }}
           onPressFirstItem={() => {
-            // props.navigation.navigate('Profile', {fromAct: false});
+            props.navigation.navigate('SearchScreen')
             // resetPlaybackQueue();
           }}
           onPressThirdItem={() => {
@@ -1906,7 +1897,7 @@ const Home = props => {
                 buttonText={'Check for friends'}
                 image={ImagePath ? ImagePath.emptyPost : null}
                 text={
-                  'You don’t follow anyone yet, check your phonebook below to see if anyone you know is already on Choona.'
+                  'You don’t have any public or private sessions.'
                 }
                 title={'No Session Found'}
               />

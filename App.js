@@ -95,6 +95,7 @@ import Avatar from './src/components/Avatar';
 import constants from './src/utils/helpers/constants';
 import {all} from 'redux-saga/effects';
 import ProfileTabNavigator from './src/navigation/ProfileTabNavigator';
+import SearchScreen from './src/components/main/SearchScreen';
 // import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 // import * as Sentry from '@sentry/react-native';
@@ -813,6 +814,10 @@ const App = () => {
                     name="SongListScreen"
                     component={SongListScreen}
                   />
+                  <Stack.Screen name="SearchScreen" component={SearchScreen} options={{
+                    presentation:"modal"
+                  }}/>
+
                 </Stack.Navigator>
               )}
             </NavigationContainer>

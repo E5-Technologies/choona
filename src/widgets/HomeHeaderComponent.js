@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 import ImagePath from '../assests/ImagePath';
 import PropTypes from 'prop-types';
@@ -25,6 +25,7 @@ function HomeHeaderComponent(props) {
       props.pressLogo();
     }
   }
+
   return (
     <View style={HeaderStyles.headerContainer}>
       {/* Left */}
@@ -56,7 +57,19 @@ function HomeHeaderComponent(props) {
             onPress={() => {
               onPressFirstItem();
             }}>
-            <Avatar image={props.imageone} height={22} width={22} imageStyle={props.imageOneStyle}/>
+            <Image
+              source={props && props.imageone ? props.imageone : null}
+              style={[
+                {
+                  height: props.imageoneheight,
+                  width: props.imageonewidth,
+                },
+                props.imageOneStyle,
+              ]}
+              resizeMode="contain"
+            />
+
+            {/* <Avatar image={props.imageone} height={22} width={22} imageStyle={props.imageOneStyle}/> */}
           </TouchableOpacity>
         </View>
       )}
@@ -93,10 +106,13 @@ function HomeHeaderComponent(props) {
           <>
             <Image
               source={props && props.imagetwo ? props.imagetwo : null}
-              style={[{
-                height: props.imagetwoheight,
-                width: props.imagetwowidth,
-              },props.imageTwoStyle]}
+              style={[
+                {
+                  height: props.imagetwoheight,
+                  width: props.imagetwowidth,
+                },
+                props.imageTwoStyle,
+              ]}
               resizeMode="contain"
             />
             {props.notRead ? (
