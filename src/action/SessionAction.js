@@ -20,6 +20,7 @@ import {
   My_SESSION_LIST_REQUEST,
   My_SESSION_DELETE_REQUEST,
   CLEAR_SESSION_DETAIL,
+  GET_SESSION_LIST_REQUEST_SEARCH,
 } from './TypeConstants';
 
 export const createSessionRequest = payload => ({
@@ -34,6 +35,11 @@ export const crateSessionRequestStatusIdle = payload => ({
 
 export const createSessionListRequest = () => ({
   type: CREATE_SESSION_LIST_REQUEST,
+});
+
+export const createSessionListRequestSearch = payload => ({
+  type: GET_SESSION_LIST_REQUEST_SEARCH,
+  payload,
 });
 
 export const fetchSessionListRequestStatusIdle = payload => ({
@@ -110,5 +116,3 @@ export const mySessionDeleteRequest = payload => ({
 export const clearSessionDetail = () => ({
   type: CLEAR_SESSION_DETAIL,
 });
-
-

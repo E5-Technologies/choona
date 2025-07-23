@@ -1,32 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-    FlatList,
-    Image,
-    Keyboard,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    TextInput,
-    TouchableOpacity,
-    View
+  FlatList,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 import EmptyComponent from '../Empty/EmptyComponent';
 import HomeSessionItem from './ListCells/HomeSessionItem';
+import {
+  createSessionListRequestSearch,
+} from '../../action/SessionAction';
+import {useDispatch, useSelector} from 'react-redux';
+import debounce from 'lodash.debounce';
 
 const SearchScreen = props => {
+  const dispatch = useDispatch();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const top50 = [];
+
+  const [searchText, setSearchText] = useState('');
 
   const userProfileData = useSelector(
     state => state.UserReducer.userProfileResp,
   );
 
+  const sessionData = useSelector(
+    state => state.SessionReducer.searchSessionListData,
+  );
 
-  console.log(userProfileData,'jkfhdkff')
+  // console.log(sessionData, 'thisissessiondatalist');
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -47,6 +57,18 @@ const SearchScreen = props => {
       keyboardDidShowListener.remove();
     };
   }, []);
+
+  const handleSearch = useCallback(
+    debounce(text => {
+      dispatch(createSessionListRequestSearch({searchText: text}));
+    }, 500), // 500ms debounce
+    [],
+  );
+
+  const onChangeText = text => {
+    setSearchText(text);
+    handleSearch(text);
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
@@ -78,13 +100,10 @@ const SearchScreen = props => {
                 }}
                 keyboardAppearance="dark"
                 autoCorrect={false}
-                //   value={usersSearch ? usersSearchText : songSearchText}
+                value={searchText}
                 placeholder="Search public sessions"
                 placeholderTextColor={Colors.darkgrey}
-                //   onChangeText={text => {
-                //     search(text);
-                //     usersSearch ? setUsersSearchText(text) : setSongSearchText(text);
-                //   }}
+                onChangeText={text => onChangeText(text)}
               />
               <Image
                 source={ImagePath.searchicongrey}
@@ -113,7 +132,7 @@ const SearchScreen = props => {
               />
             </TouchableOpacity>
           </View>
-          {top50?.length === 0 ? (
+          {sessionData?.data?.length === 0 ? (
             !isKeyboardVisible && (
               <EmptyComponent
                 image={ImagePath.emptyPost}
@@ -124,9 +143,8 @@ const SearchScreen = props => {
           ) : (
             <>
               <FlatList
-                data={top50}
+                data={sessionData?.data}
                 keyExtractor={(item, index) => index?.toString()}
-                numColumns={2}
                 showsVerticalScrollIndicator={false}
                 renderItem={({item}) => {
                   return (

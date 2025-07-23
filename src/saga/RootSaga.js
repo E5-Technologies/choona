@@ -79,6 +79,7 @@ import {
   watchSessionLeftRequest,
   watchMySessionListRequest,
   watchMySessionDeleteRequest,
+  watchCreateSessionListRequestSearch,
 } from './SessionSaga';
 
 function* RootSaga() {
@@ -148,6 +149,7 @@ function* RootSaga() {
     watchSendInvitationToJoin(),
     watchMySessionListRequest(),
     watchMySessionDeleteRequest(),
+    watchCreateSessionListRequestSearch(),
   ]);
 }
 

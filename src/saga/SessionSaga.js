@@ -26,6 +26,9 @@ import {
   My_SESSION_DELETE_REQUEST,
   My_SESSION_DELETE_FAILURE,
   My_SESSION_DELETE_SUCCESS,
+  GET_SESSION_LIST_FAILURE_SEARCH,
+  GET_SESSION_LIST_SUCCESS_SEARCH,
+  GET_SESSION_LIST_REQUEST_SEARCH,
 } from '../action/TypeConstants';
 import {postApi, getApi, putApi} from '../utils/helpers/ApiRequest';
 import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
@@ -69,18 +72,52 @@ export function* createSessionAction(action) {
 //FUNCTION TO GET LIST OF SESSIONS
 export function* getSessionList(action) {
   const items = yield select(getItems);
+
   const header = {
     Accept: 'application/json',
     contenttype: 'application/json',
     accesstoken: items.token,
   };
+
   try {
-    const response = yield call(getApi, 'session/list', header);
-    // console.log(response?.data, 'its response after api hit session LIST');
-    yield put({type: CREATE_SESSION_LIST_SUCCESS, data: response.data});
+    const url = `session/list`;
+
+    const response = yield call(getApi, url, header);
+    yield put({
+      type: CREATE_SESSION_LIST_SUCCESS,
+      data: response.data,
+    });
   } catch (error) {
-    console.log(JSON.stringify(error?.message), 'simple error1 in list get');
+    console.log(error?.message, 'Error in getSessionList saga');
     yield put({type: CREATE_SESSION_LIST_FAILURE, data: error});
+  }
+}
+
+//FUNCTION TO GET LIST OF SESSIONS
+export function* getSessionListSearch(action) {
+  console.log(action, 'Action received in getSessionList saga');
+
+  const searchText = action?.payload?.searchText || '';
+  const items = yield select(getItems);
+  const header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items.token,
+  };
+
+  try {
+    const url = searchText
+      ? `session/list?search=${encodeURIComponent(searchText)}`
+      : `session/list`;
+
+    const response = yield call(getApi, url, header);
+    yield put({
+      type: GET_SESSION_LIST_SUCCESS_SEARCH,
+      searchData: response.data,
+    });
+  } catch (error) {
+    console.log(error?.message, 'Error in getSessionList saga');
+    yield put({type: GET_SESSION_LIST_FAILURE_SEARCH, error: error});
   }
 }
 
@@ -298,6 +335,9 @@ export function* watchCreateSessionRequest() {
 
 export function* watchCreateSessionListRequest() {
   yield takeLatest(CREATE_SESSION_LIST_REQUEST, getSessionList);
+}
+export function* watchCreateSessionListRequestSearch() {
+  yield takeLatest(GET_SESSION_LIST_REQUEST_SEARCH, getSessionListSearch);
 }
 
 export function* watchSessionDetailRequest() {

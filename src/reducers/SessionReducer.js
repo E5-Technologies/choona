@@ -35,6 +35,10 @@ import {
   My_SESSION_DELETE_FAILURE,
   My_SESSION_DELETE_STATUS_IDLE,
   CLEAR_SESSION_DETAIL,
+  GET_SESSION_LIST_SUCCESS_SEARCH,
+  GET_SESSION_LIST_REQUEST_SEARCH,
+  GET_SESSION_LIST_FAILURE_SEARCH,
+  GET_SESSION_LIST_STATUS_IDLE_SEARCH,
 } from '../action/TypeConstants';
 
 const initialState = {
@@ -42,6 +46,7 @@ const initialState = {
   loading: false,
   startSessionLoading: false,
   isRequestLoader: false,
+  sessionSearchLoading: false,
   error: {},
   sessionListData: {},
   sessionDetailData: {},
@@ -49,6 +54,7 @@ const initialState = {
   CurrentSessionJoineeInfo: {},
   hasLeftSession: null,
   mySessionListData: {},
+  searchSessionListData: {},
 };
 
 const SessionReducer = (state = initialState, action) => {
@@ -316,6 +322,38 @@ const SessionReducer = (state = initialState, action) => {
         status: action.status,
         isRequestLoader: false,
       };
+    //Session search
+
+    case GET_SESSION_LIST_REQUEST_SEARCH:
+      return {
+        ...state,
+        status: action.type,
+        sessionSearchLoading: true,
+      };
+
+    case GET_SESSION_LIST_SUCCESS_SEARCH:
+      return {
+        ...state,
+        status: action.type,
+        sessionSearchLoading: false,
+        searchSessionListData: action.searchData,
+      };
+
+    case GET_SESSION_LIST_FAILURE_SEARCH:
+      return {
+        ...state,
+        status: action.type,
+        sessionSearchLoading: false,
+        error: action.error,
+      };
+
+    case GET_SESSION_LIST_STATUS_IDLE_SEARCH:
+      return {
+        ...state,
+        status: action.type,
+        sessionSearchLoading: false,
+      };
+
     case ASYNC_STORAGE_CLEAR:
       return initialState;
     default:
