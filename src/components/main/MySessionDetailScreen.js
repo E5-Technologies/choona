@@ -2338,26 +2338,28 @@ function MySessionDetailScreen(props) {
                           //   playerState?.state == 'none') && {opacity: 1},
                           !iscurrentPlaying && islive && {opacity: 0.4},
                         ]}>
-                        <TouchableOpacity
-                          disabled={iscurrentPlaying ? false : true}
-                          onPress={handlePlayPauseViaButton}
-                          style={styles.playButtonStyle}>
-                          <Image
-                            // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
-                            source={
-                              (appleFullSongPlaying ||
-                                playerState?.state == 'playing') &&
-                              iscurrentPlaying
-                                ? ImagePath.pause
-                                : ImagePath.play
-                            }
-                            style={{
-                              height: normalise(25),
-                              width: normalise(25),
-                            }}
-                            resizeMode="contain"
-                          />
-                        </TouchableOpacity>
+                        {iscurrentPlaying && (
+                          <TouchableOpacity
+                            disabled={iscurrentPlaying ? false : true}
+                            // onPress={handlePlayPauseViaButton}
+                            style={styles.playButtonStyle}>
+                            <Image
+                              // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
+                              source={
+                                (appleFullSongPlaying ||
+                                  playerState?.state == 'playing') &&
+                                iscurrentPlaying
+                                  ? ImagePath.pause
+                                  : ImagePath.play
+                              }
+                              style={{
+                                height: normalise(25),
+                                width: normalise(25),
+                              }}
+                              resizeMode="contain"
+                            />
+                          </TouchableOpacity>
+                        )}
                         <Image
                           source={{uri: item?.song_image}}
                           style={styles.songListItemImage}
@@ -2508,6 +2510,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // opacity: 0.4,
     opacity: 1,
+    marginHorizontal: normalise(10),
   },
   songListItemImage: {
     borderRadius: normalise(5),
@@ -2546,7 +2549,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.meta,
     flex: 1,
     justifyContent: 'center',
-    marginRight: normalise(10),
+    marginRight: normalise(15),
   },
   songlistItemHeaderSongTextTitle: {
     color: Colors.white,
