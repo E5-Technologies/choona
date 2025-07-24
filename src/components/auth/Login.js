@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import env from 'react-native-config';
 import {
   Dimensions,
@@ -13,15 +13,15 @@ import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import { loginWithSpotify } from '../../utils/helpers/SpotifyLogin';
+import {loginWithSpotify} from '../../utils/helpers/SpotifyLogin';
 // import toast from '../../utils/helpers/ShowErrorAlert';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
-import { loginRequest, signupRequest } from '../../action/UserAction';
-import { connect } from 'react-redux';
+import {loginRequest, signupRequest} from '../../action/UserAction';
+import {connect} from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
   AppleAuthError,
@@ -30,7 +30,7 @@ import appleAuth, {
   // AppleAuthCredentialState,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
+import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
 import OneSignal from 'react-native-onesignal';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
@@ -47,7 +47,7 @@ function SignUp(props) {
 
   useEffect(() => {
     (async () => {
-      const { userId } = await OneSignal.getDeviceState();
+      const {userId} = await OneSignal.getDeviceState();
       setToken(userId);
     })();
   });
@@ -62,7 +62,7 @@ function SignUp(props) {
   function spotifyLogin() {
     loginWithSpotify()
       .then(value => {
-          console.log("HERE", value);
+        console.log('HERE', value);
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
@@ -72,7 +72,7 @@ function SignUp(props) {
             deviceToken: token2,
             deviceType: Platform.OS,
           };
-          console.log({ payload },'lfjdfj');
+          console.log({payload}, 'lfjdfj');
           props.loginRequest(payload);
         }
       })
@@ -159,7 +159,7 @@ function SignUp(props) {
 
   // API REQUEST
   function signInwithApple(appleData, token) {
-    console.log({ appleData }, { token });
+    console.log({appleData}, {token});
     // isInternetConnected().then(() => {
 
     var appleSignUpObject = {};
@@ -343,29 +343,31 @@ function SignUp(props) {
         ) : (
           <></>
         )}
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#1ED760',
-            borderRadius: normalise(26),
-            height: normalise(52),
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: normalise(12),
-          }}
-          onPress={() => {
-            console.log(1);
-            spotifyLogin();
-            setLoginType('Spotify');
-          }}>
-          <Image
-            source={ImagePath ? ImagePath.spotifyButtonLogo : null}
+        {Platform.OS == 'android' && (
+          <TouchableOpacity
             style={{
-              height: normalise(28),
+              backgroundColor: '#1ED760',
+              borderRadius: normalise(26),
+              height: normalise(52),
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: normalise(12),
             }}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+            onPress={() => {
+              console.log(1);
+              spotifyLogin();
+              setLoginType('Spotify');
+            }}>
+            <Image
+              source={ImagePath ? ImagePath.spotifyButtonLogo : null}
+              style={{
+                height: normalise(28),
+              }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
         {Platform.OS === 'ios' && (
           <TouchableOpacity
             style={{
