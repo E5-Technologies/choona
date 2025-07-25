@@ -33,8 +33,17 @@ const HomeListItemFooter = ({
   myReactions,
   myReactionsPending,
   relatedId,
+  //new
+
+  onPressMusicbox,
+  play,
+  postType,
+  singer,
+  songUri,
+  title,
 }) => {
   const [actualNumLines, setActualNumLines] = useState(0);
+  const [disabled, setDisabled] = useState(false);
   const onTextLayout = useCallback(
     e => {
       if (actualNumLines == 0) {
@@ -44,10 +53,12 @@ const HomeListItemFooter = ({
     [actualNumLines],
   );
 
+  console.log(userAvatar, 'jkhjh');
+
   return (
     <View style={styles.listItemFooterContainer}>
       <View style={[styles.listItemFooterTop]}>
-        <View style={styles.listItemFooterInfo}>
+        {/* <View style={styles.listItemFooterInfo}>
           <TouchableOpacity
             onPress={() => {
               onPressImage();
@@ -67,6 +78,28 @@ const HomeListItemFooter = ({
             </TouchableOpacity>
             <Text style={styles.listItemFooterDate}>
               {moment(postTime).fromNow()}
+            </Text>
+          </View>
+        </View> */}
+
+        <View style={styles.listItemFooterInfo}>
+          <Image
+            source={
+              ImagePath
+                ? postType
+                  ? ImagePath.spotifyicon
+                  : ImagePath.apple_icon_round
+                : null
+            }
+            style={styles.listItemHeaderSongTypeIcon}
+            resizeMode="contain"
+          />
+          <View style={styles.listItemHeaderSongText}>
+            <Text style={styles.listItemHeaderSongTextTitle} numberOfLines={1}>
+              {title}
+            </Text>
+            <Text style={styles.listItemHeaderSongTextArtist} numberOfLines={1}>
+              {singer}
             </Text>
           </View>
         </View>
@@ -97,7 +130,7 @@ const HomeListItemFooter = ({
             />
             <Text style={styles.listItemFooterButtonText}>{commentCount}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.listItemFooterButton}
             onPress={() => onPressMenu()}>
             <Image
@@ -105,7 +138,28 @@ const HomeListItemFooter = ({
               source={ImagePath ? ImagePath.threedots : null}
               resizeMode="contain"
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          {songUri && (
+            <TouchableOpacity
+              disabled={disabled}
+              onPress={() => {
+                setDisabled(true);
+                onPressMusicbox();
+                setTimeout(() => {
+                  setDisabled(false);
+                }, 1000);
+              }}
+              style={styles.listItemFooterButton}>
+              <Image
+                source={
+                  ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+                }
+                style={styles.listItemHeaderPlay}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       <View>
@@ -154,7 +208,7 @@ export default HomeListItemFooter;
 const styles = StyleSheet.create({
   listItemFooterContainer: {
     paddingTop: normalise(10),
-    paddingHorizontal: normalise(12),
+    paddingHorizontal: normalise(7),
     backgroundColor: Colors.darkerblack,
     borderBottomColor: Colors.activityBorderColor,
     borderBottomWidth: normalise(0.5),
@@ -228,4 +282,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: normalise(12),
   },
+  listItemHeaderSongDetails: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  listItemHeaderSongTypeIcon: {
+    borderRadius: normalise(10),
+    height: normalise(20),
+    width: normalise(20),
+  },
+  listItemHeaderSongText: {
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    marginLeft: normalise(10),
+    maxWidth: normalise(240),
+    // width: '100%',
+    flex: 1,
+  },
+  listItemHeaderSongTextTitle: {
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Semibold',
+    fontSize: normalise(11),
+  },
+  listItemHeaderSongTextArtist: {
+    color: Colors.darkgrey,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normalise(10),
+  },
+  listItemHeaderPlayButton: {
+    height: normalise(36),
+    paddingLeft: normalise(6),
+    paddingTop: normalise(6),
+    position: 'absolute',
+    right: normalise(6),
+    top: normalise(6),
+    width: normalise(36),
+  },
+  listItemHeaderPlay: {height: normalise(24), width: normalise(24)},
 });

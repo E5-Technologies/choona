@@ -27,6 +27,8 @@ export const GradientButton = ({
   leftIconName,
   rightIconStyle,
   leftIconStyle,
+  addLeftSpace = false,
+  leftImageIcon,
 }) => {
   const deviceWidth = Dimensions.get('window').width;
   const buttonWidth = width ?? deviceWidth * 0.85;
@@ -45,11 +47,18 @@ export const GradientButton = ({
         ]}>
         {leftIconName && (
           <Image
-            source={ImagePath.addButton}
+            source={leftImageIcon ?? ImagePath.addButton}
             style={[styles.imageStyle, leftIconStyle]}
             resizeMode="contain"
           />
         )}
+        {/* {addLeftSpace && (
+          <Image
+            source={ImagePath.addButton}
+            style={[styles.imageStyle, leftIconStyle]}
+            resizeMode="contain"
+          />
+        )} */}
         <Text style={[styles.text, textStyle]}>{title}</Text>
         {showRightIcon && (
           <Image

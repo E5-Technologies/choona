@@ -172,7 +172,13 @@ const Home = props => {
   } = usePlayFullAppleMusic();
 
   useEffect(() => {
-    setActiveTab(props.route.params?.activeTab);
+    if (
+      props.route.params?.activeTab == 0 ||
+      props.route.params?.activeTab == 1
+    ) {
+      setActiveTab(props.route.params?.activeTab);
+      props.navigation.setParams({activeTab: undefined});
+    }
   }, [props.route.params?.activeTab]);
 
   const {progress, duration} = useMusicPlayer();
@@ -1472,7 +1478,7 @@ const Home = props => {
             });
           }}
           onPressFirstItem={() => {
-            props.navigation.navigate('SearchScreen')
+            props.navigation.navigate('SearchScreen');
             // resetPlaybackQueue();
           }}
           onPressThirdItem={() => {
@@ -1489,6 +1495,7 @@ const Home = props => {
             onPress={() => {
               // props.getTop50SongReq();
               setActiveTab(0);
+              props.navigation.navigate('Home');
             }}>
             <Text
               style={[
@@ -1896,9 +1903,7 @@ const Home = props => {
                 }}
                 buttonText={'Check for friends'}
                 image={ImagePath ? ImagePath.emptyPost : null}
-                text={
-                  'You don’t have any public or private sessions.'
-                }
+                text={'You don’t have any public or private sessions.'}
                 title={'No Session Found'}
               />
             ) : (
@@ -1984,6 +1989,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: normalise(40),
+    marginHorizontal: normalise(50),
     // borderBottomColor: Colors.fadeblack,
     // borderBottomWidth: 1,
   },
@@ -1996,9 +2002,9 @@ const styles = StyleSheet.create({
     // borderRightColor: Colors.darkerblack,
   },
   tabBarTextStyle: {
-    fontFamily: 'Kallisto',
     fontSize: normalise(10),
     textTransform: 'uppercase',
+    fontFamily: 'ProximaNova-Bold',
   },
   ActiveTabBar: {
     width: '100%',

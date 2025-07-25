@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   ReactionButtonDisco,
   ReactionButtonFire,
@@ -20,7 +20,7 @@ const ReactionButtonBar = ({
   return (
     <View style={styles.container}>
       <ReactionButtonThumbsUp
-        style={{ marginRight: 5, maxWidth: 30 }}
+        style={style.iconstyle}
         active={myReactions.thumbsUp}
         pending={myReactionsPending.thumbsUp}
         relatedId={relatedId}
@@ -29,35 +29,35 @@ const ReactionButtonBar = ({
         }}
       />
       <ReactionButtonFire
-        style={{ marginRight: 5, maxWidth: 30 }}
+        style={style.iconstyle}
         active={myReactions.fire}
         pending={myReactionsPending.fire}
         relatedId={relatedId}
         onClick={() => onReactPressed('fire', relatedId)}
       />
       <ReactionButtonHeart
-        style={{ marginRight: 5, maxWidth: 30 }}
+        style={style.iconstyle}
         active={myReactions.heart}
         pending={myReactionsPending.heart}
         relatedId={relatedId}
         onClick={() => onReactPressed('heart', relatedId)}
       />
       <ReactionButtonDisco
-        style={{ marginRight: 5, maxWidth: 30 }}
+        style={style.iconstyle}
         active={myReactions.disco}
         pending={myReactionsPending.disco}
         relatedId={relatedId}
         onClick={() => onReactPressed('disco', relatedId)}
       />
       <ReactionButtonThrowback
-        style={{ marginRight: 5, maxWidth: 30 }}
+        style={style.iconstyle}
         active={myReactions.throwback}
         pending={myReactionsPending.throwback}
         relatedId={relatedId}
         onClick={() => onReactPressed('throwback', relatedId)}
       />
       <ReactionButtonThumbsDown
-        style={{ maxWidth: 30 }}
+        style={{maxWidth: 35}}
         active={myReactions.thumbsDown}
         pending={myReactionsPending.thumbsDown}
         relatedId={relatedId}
@@ -68,3 +68,10 @@ const ReactionButtonBar = ({
 };
 
 export default ReactionButtonBar;
+
+const style = StyleSheet.create({
+  iconstyle: {
+    marginRight: 5,
+    maxWidth: 35,
+  },
+});

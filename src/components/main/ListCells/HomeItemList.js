@@ -107,12 +107,17 @@ function HomeItemList(props) {
         paddingBottom: normalise(16),
       }}>
       <HomeListItemHeader
-        onPressMusicbox={onPressMusicbox}
-        play={props.play}
-        postType={props.postType}
-        singer={props.singer}
-        songUri={props.songUri}
-        title={props.title}
+        // onPressMusicbox={onPressMusicbox}
+        // play={props.play}
+        // postType={props.postType}
+        // singer={props.singer}
+        // songUri={props.songUri}
+        // title={props.title}
+        onPressMenu={onPressSecondImage}
+        onPressImage={onPressImage}
+        userAvatar={props.picture}
+        userName={props.name}
+        postTime={props.time}
       />
       {props?.image?.length > 1 ? (
         <View
@@ -123,12 +128,12 @@ function HomeItemList(props) {
               aspectRatio: 1,
             },
           ]}>
-          {props.image?.map((item, index) => {
+          {props.image?.slice(0, 4)?.map((item, index) => {
             return (
               // <TouchableOpacity
               //   style={styles.bannerImageStyle}
               //   onPress={() => onPlaylistImagePress(index)}>
-              <View style={styles.bannerImageStyle}>
+              <View style={styles.bannerImageStyle} key={index}>
                 <Image
                   source={{uri: item?.song_image}}
                   style={{flex: 1, aspectRatio: 1}}
@@ -183,6 +188,13 @@ function HomeItemList(props) {
         userName={props.name}
         viewMore={viewMore}
         relatedId={props.id}
+        //new
+        onPressMusicbox={onPressMusicbox}
+        play={props.play}
+        postType={props.postType}
+        singer={props.singer}
+        songUri={props.songUri}
+        title={props.title}
       />
     </View>
   );
@@ -234,15 +246,26 @@ HomeItemList.defaultProps = {
 const styles = StyleSheet.create({
   combienBanerWrapper: {
     flexDirection: 'row',
-    backgroundColor: 'green',
+    // backgroundColor: 'green',
+    // flexWrap: 'wrap',
+    // backgroundColor: Colors.fadeblack,
+    // marginBottom: normalise(10),
+    // overflow: 'hidden',
+
+    width: '100%',
+    aspectRatio: 1,
+    flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: Colors.fadeblack,
-    marginBottom: normalise(10),
-    overflow: 'hidden',
   },
   bannerImageStyle: {
+    // width: '50%',
+    // height: '50%',
+
     width: '50%',
-    height: '50%',
+    aspectRatio: 1,
+    borderWidth: 0.5,
+    borderColor: Colors.darkerblack, // adjust color as needed
+    overflow: 'hidden',
   },
   moreTextWrapper: {
     position: 'absolute',

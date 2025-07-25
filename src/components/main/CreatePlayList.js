@@ -11,6 +11,7 @@ import {
   View,
   Keyboard,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import Colors from '../../assests/Colors';
 import normalise from '../../utils/helpers/Dimens';
@@ -32,8 +33,10 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import GradientButton from '../common/GradientButton';
 
 let status;
+const deviceWidth = Dimensions.get('window').width;
 
 function CreatePlayList(props) {
+  const buttonLineWidth = deviceWidth * 0.80;
   console.log(props.route?.params, 'these are params');
   const {songItem, previousPlaylistData} = props.route?.params;
   console.log(songItem, 'this is props Item playlist');
@@ -58,7 +61,6 @@ function CreatePlayList(props) {
       : [...playListArary, songItem];
     setPlayListArray(newArray);
   }, [songItem]);
-
 
   const songListPayload = () => {
     return playListArary?.map(item => {
@@ -279,6 +281,8 @@ function CreatePlayList(props) {
               keyExtractor={item => item._id}
             />
             <View style={styles.buttonWrapper}>
+              <View
+                style={[styles.bottomLineStyle, {width: buttonLineWidth, marginBottom:11,   opacity: 0.3,}]}></View>
               <GradientButton
                 title={'ADD SONG'}
                 containerStyle={{
@@ -297,8 +301,15 @@ function CreatePlayList(props) {
                 containerStyle={{
                   marginBottom: normalise(10),
                 }}
-                showRightIcon={false}
+                showRightIcon={true}
                 onPress={createPost}
+                rightIconStyle={{
+                  transform: [{rotate: '180deg'}],
+                  width: 16,
+                  height: 16,
+                }}
+                leftIconName={true}
+                leftImageIcon="no"
               />
             </View>
           </View>

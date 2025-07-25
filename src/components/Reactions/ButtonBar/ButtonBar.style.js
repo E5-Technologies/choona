@@ -7,7 +7,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent:'center',
-    gap:10,
+    gap:15,
     // justifyContent: 'space-between',
   },
 });

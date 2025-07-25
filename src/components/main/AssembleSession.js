@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Dimensions,
   FlatList,
   Image,
   Platform,
@@ -10,21 +11,24 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import StatusBar from '../../utils/MyStatusBar';
-import HeaderComponent, { hitSlop } from '../../widgets/HeaderComponent';
+import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
 import GradientButton from '../common/GradientButton';
 
+const deviceWidth = Dimensions.get('window').width;
+
 function AssembleSession(props) {
+  const buttonLineWidth = deviceWidth * 0.8;
   const {songItem, previousSessionData} = props?.route?.params ?? {};
   const {width, height} = useWindowDimensions();
   const [sessionList, setSessionList] = useState([]);
 
-  //redux state and dispatch ************************************
+  //redux state and dispatch ************************************ 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -107,7 +111,8 @@ function AssembleSession(props) {
                   );
                 })}
               </View>
-              <View style={[styles.bottomLineStyle, {width: width / 2.4}]}></View>
+              <View
+                style={[styles.bottomLineStyle, {width: width / 2.4}]}></View>
             </View>
           )}
           <View style={styles.playListItemContainer}>
@@ -153,6 +158,11 @@ function AssembleSession(props) {
               keyExtractor={item => item?._id}
             />
             <View style={styles.buttonWrapper}>
+              <View
+                style={[
+                  styles.bottomLineStyle,
+                  {width: buttonLineWidth, marginBottom: 11, opacity: 0.3},
+                ]}></View>
               <GradientButton
                 title={'ADD SONG'}
                 containerStyle={{
@@ -166,12 +176,13 @@ function AssembleSession(props) {
                   })
                 }
               />
+
               <GradientButton
                 title={'CONTINUE'}
                 containerStyle={{
                   marginBottom: normalise(10),
                 }}
-                showRightIcon={false}
+                showRightIcon={true}
                 onPress={() => {
                   if (sessionList?.length < 4) {
                     toast('Error', 'Please add atleast 4 songs!');
@@ -182,6 +193,13 @@ function AssembleSession(props) {
                     songItem: songItem?.registerType,
                   });
                 }}
+                rightIconStyle={{
+                  transform: [{rotate: '180deg'}],
+                  width: 16,
+                  height: 16,
+                }}
+                leftIconName={true}
+                leftImageIcon="no"
               />
             </View>
           </View>
