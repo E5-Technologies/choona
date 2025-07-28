@@ -482,7 +482,7 @@ const Profile = props => {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
               style={{marginLeft: normalise(10)}}
               onPress={() => {
                 props.navigation.navigate('Contact');
@@ -492,7 +492,7 @@ const Profile = props => {
                 style={{height: normalise(20), width: normalise(20)}}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
         {props.userProfileResp && (

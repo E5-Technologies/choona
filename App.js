@@ -389,6 +389,33 @@ const App = () => {
           /> */}
 
           <Tab.Screen
+            name="Contact"
+            component={Contact}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({focused}) => (
+                <Image
+                  style={{
+                    opacity: focused ? 1 : 0.5,
+                    marginTop:
+                      Platform.OS === 'android'
+                        ? normalise(10)
+                        : Dimensions.get('window').height > 736
+                        ? normalise(0)
+                        : normalise(10),
+                    height: normalise(20),
+                    width: normalise(20),
+                    marginTop: normalise(12),
+                  }}
+                  source={ImagePath ? ImagePath.boxicon : null}
+                  resizeMode="contain"
+                />
+              ),
+              tabBarLabel: '',
+            }}
+          />
+
+          <Tab.Screen
             // name="Notification"
             // component={Notification}
             name="HomeScreen"
@@ -814,10 +841,13 @@ const App = () => {
                     name="SongListScreen"
                     component={SongListScreen}
                   />
-                  <Stack.Screen name="SearchScreen" component={SearchScreen} options={{
-                    presentation:"modal"
-                  }}/>
-
+                  <Stack.Screen
+                    name="SearchScreen"
+                    component={SearchScreen}
+                    options={{
+                      presentation: 'modal',
+                    }}
+                  />
                 </Stack.Navigator>
               )}
             </NavigationContainer>

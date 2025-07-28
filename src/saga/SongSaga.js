@@ -137,7 +137,7 @@ export function* getTop50Song() {
 
       const response = yield call(
         getAppleDevelopersToken,
-        `https://api.music.apple.com/v1/catalog/us/charts?types=songs&limit=20`,
+        `https://api.music.apple.com/v1/catalog/us/charts?types=songs&limit=100`,
         spotifyHeader,
       );
       const jsonResponse = JSON.parse(response?.request?._response);

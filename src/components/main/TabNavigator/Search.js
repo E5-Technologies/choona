@@ -90,6 +90,8 @@ const Search = props => {
   const [searchPostData, setSearchPostData] = useState([]); //search post data
   const [top50, setTop50] = useState([]); //top 50 data
 
+  console.log(JSON.stringify(searchPostData[0]), 'dhfdshfdjfhdsfhk');
+
   const [positionInArray, setPositionInArray] = useState(0);
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -114,6 +116,14 @@ const Search = props => {
       props.getTop50SongReq();
     }
   }, [props.getTop50SongReq, isFocused]);
+
+  function hitreact1() {
+    if (modal1Visible === true) {
+      setModal1Visible(false);
+    } else {
+      setModal1Visible(true);
+    }
+  }
 
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
@@ -438,10 +448,7 @@ const Search = props => {
     return (
       <HomeItemList
         id={data.item._id}
-        onReactionPress={newHitReact}
-        myReactionsPending={reactionPendingMap}
-        myReactions={reactionMap}
-        image={data.item.song_image}
+        image={data.item.songs}
         picture={data.item.userDetails.profile_image}
         name={data.item.userDetails.username}
         comment_count={data.item.comment_count ? data.item.comment_count : 0}
@@ -454,6 +461,8 @@ const Search = props => {
           face_count: data.item.face_count,
           thumbsup_count: data.item.thumbsup_count,
         }}
+        myReactions={reactionMap}
+        myReactionsPending={reactionPendingMap}
         content={data.item.post_content}
         time={data.item.createdAt}
         title={data.item.song_name}
@@ -461,12 +470,13 @@ const Search = props => {
         songUri={data.item.song_uri}
         modalVisible={modal1Visible}
         postType={data.item.social_type === 'spotify'}
+        onReactionPress={newHitReact}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
             props.navigation.navigate('Profile', {fromAct: false});
           } else {
             props.navigation.navigate('OthersProfile', {
-              id: data.item.user_id,
+              id: data?.item?.user_id,
             });
           }
         }}
@@ -501,8 +511,8 @@ const Search = props => {
           props.navigation.navigate('HomeItemReactions', {
             reactions: data.item.reaction,
             post_id: data.item._id,
-            onSelectReaction: (ID, reaction, reactionList) =>
-              _onReaction(ID, reaction, reactionList),
+            // onSelectReaction: (ID, reaction, reactionList) =>
+            //   _onReaction(ID, reaction, reactionList),
           });
         }}
         onPressCommentbox={() => {
@@ -523,7 +533,8 @@ const Search = props => {
           setModalVisible(true);
         }}
         marginBottom={
-          data.index === searchPostData.length - 1 ? normalise(50) : 0
+          normalise(200)
+          // data.index === searchPostData.length - 1 ? normalise(200) : 200
         }
       />
     );
@@ -544,13 +555,18 @@ const Search = props => {
         //     ptID: 0,
         //   });
         // }}
-        >
+      >
         <Image
           source={{
             // uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
             // uri: props.registerType === 'spotify'? data?.item?.images[0]?.url : data?.item?.attributes?.artwork?.url?.replace('{w}x{h}', '500x500'),
-            uri: props.registerType === 'spotify'? data?.item?.track?.album?.images[1]?.url : data?.item?.attributes?.artwork?.url?.replace('{w}x{h}', '500x500'),
-
+            uri:
+              props.registerType === 'spotify'
+                ? data?.item?.track?.album?.images[1]?.url
+                : data?.item?.attributes?.artwork?.url?.replace(
+                    '{w}x{h}',
+                    '500x500',
+                  ),
           }}
           style={{
             width: Math.floor(Dimensions.get('window').width / 2),
@@ -722,7 +738,7 @@ const Search = props => {
   // SEARCH AND CLEAR FUNCTIONS
   const search = text => {
     if (usersSearch) {
-      if (text.length >= 1) {
+      if (text?.length >= 1) {
         isInternetConnected()
           .then(() => {
             props.userSearchReq({keyword: text}, sendSong);
@@ -732,7 +748,7 @@ const Search = props => {
           });
       }
     } else if (songSearch) {
-      if (text.length >= 0) {
+      if (text?.length >= 0) {
         isInternetConnected()
           .then(() => {
             props.searchPost(text, flag);
@@ -1256,7 +1272,7 @@ const Search = props => {
               !isKeyboardVisible && (
                 <EmptyComponent
                   image={ImagePath.emptyPost}
-                  text={'No songs have been posted today.'}
+                  text={'No song found.'}
                   // title={'No songs have been posted today'}
                 />
               )

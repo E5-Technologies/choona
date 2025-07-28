@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,8 +20,8 @@ import ActivityListItem from './ListCells/ActivityListItem';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import constants from '../../utils/helpers/constants';
-import { connect } from 'react-redux';
-import EmojiSelector, { Categories } from 'react-native-emoji-selector';
+import {connect} from 'react-redux';
+import EmojiSelector, {Categories} from 'react-native-emoji-selector';
 import {
   reactionOnPostRequest,
   userFollowUnfollowRequest,
@@ -31,7 +31,7 @@ import toast from '../../utils/helpers/ShowErrorAlert';
 import Seperator from './ListCells/Seperator';
 import Loader from '../../widgets/AuthLoader';
 import normaliseNew from '../../utils/helpers/DimensNew';
-import { fetchReactionsOnPost } from '../../helpers/post';
+import {fetchReactionsOnPost} from '../../helpers/post';
 import HeaderComponentComments from '../../widgets/HeaderComponentComments';
 import ReactionsReverseMap from '../Reactions/ReactionsReverse';
 import ReactionsComponent from '../Reactions/ReactionsComponent';
@@ -65,7 +65,14 @@ function HomeItemReaction(props) {
         toast('Error', err);
       });
 
-    BackHandler.addEventListener('hardwareBackPress', _onBackHandlerPress);
+    // BackHandler.addEventListener('hardwareBackPress', _onBackHandlerPress);
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      _onBackHandlerPress,
+    );
+
+    return () => backHandler.remove();
   }, [props.header.token, props.route.params.post_id]);
 
   let userId = props.userProfileResp._id;
@@ -86,7 +93,7 @@ function HomeItemReaction(props) {
       let reactionObject = {};
 
       reactionObject.header = item.text;
-      reactionObject.data = _.filter(array, { text: item.text });
+      reactionObject.data = _.filter(array, {text: item.text});
 
       editedList.push(reactionObject);
 
@@ -215,12 +222,12 @@ function HomeItemReaction(props) {
   // }
 
   const _onBackPress = () => {
-    let ID = props.route.params.post_id;
-    let Comment = reaction_count;
-    let ReactionList = reactionList;
-    // console.log('hhh', JSON.stringify(ReactionList));
-    const { navigation, route } = props;
-    route.params.onSelectReaction(ID, Comment, ReactionList);
+    // let ID = props.route.params.post_id;
+    // let Comment = reaction_count;
+    // let ReactionList = reactionList;
+    // // console.log('hhh', JSON.stringify(ReactionList));
+    const {navigation, route} = props;
+    // route.params.onSelectReaction(ID, Comment, ReactionList);
     navigation.goBack();
   };
 
@@ -228,7 +235,7 @@ function HomeItemReaction(props) {
     let ID = props.route.params.post_id;
     let Comment = reaction_count;
     let ReactionList = recList;
-    const { navigation, route } = props;
+    const {navigation, route} = props;
     console.log(ID + ':' + Comment);
     route.params.onSelectReaction(ID, Comment, ReactionList);
     navigation.goBack();
@@ -259,7 +266,7 @@ function HomeItemReaction(props) {
         follow={!data.item.isFollowing}
         loginUserId={props.userProfileResp._id}
         onPress={() => {
-          props.followReq({ follower_id: data.item.user_id });
+          props.followReq({follower_id: data.item.user_id});
         }}
         onPressImage={() => {
           props.navigation.navigate('OthersProfile', {
@@ -302,7 +309,7 @@ function HomeItemReaction(props) {
         {
           //  alert('login'+JSON.stringify(props.userProfileResp._id))
         }
-        <FlatList
+        {/* <FlatList
           data={data.item.data}
           test={data}
           renderItem={renderItem}
@@ -313,20 +320,32 @@ function HomeItemReaction(props) {
             item.toString();
           }}
           showsVerticalScrollIndicator={false}
+        /> */}
+
+        <FlatList
+          data={data?.item?.data}
+          renderItem={renderItem}
+          keyExtractor={(item, index) =>
+            item?.user_id?.toString() ?? index.toString()
+          }
+          listKey={(item, index) => `childList-${data?.index}`}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     );
   }
 
+  console.log(JSON.stringify(reactionList),'fdkjfhdjfhdhfk')
+
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader visible={reactionsLoading} />
       <StatusBar />
       {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
         }}> */}
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.darkerblack}}>
         <HeaderComponentComments
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -346,8 +365,8 @@ function HomeItemReaction(props) {
             _onBackPress();
           }}
         />
-        <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-          <View style={{ width: '92%', alignSelf: 'center' }}>
+        <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+          <View style={{width: '92%', alignSelf: 'center'}}>
             <TextInput
               autoCorrect={false}
               keyboardAppearance={'dark'}
@@ -410,12 +429,12 @@ function HomeItemReaction(props) {
             )}
           </View>
 
-          {reactionList.length > 0 ? (
+          {reactionList?.length > 0 ? (
             <FlatList
-              data={reactionList}
+              data={reactionList ?? []}
               renderItem={renderItemWithHeader}
-              keyExtractor={(item, index) => {
-                index.toString();
+              keyExtractor={(item) => {
+                item?.header
               }}
               showsVerticalScrollIndicator={false}
             />
@@ -428,10 +447,10 @@ function HomeItemReaction(props) {
               }}>
               <Image
                 source={ImagePath ? ImagePath.blankreactionbg : null}
-                style={{ height: normalise(225), width: normalise(225) }}
+                style={{height: normalise(225), width: normalise(225)}}
                 resizeMode="contain"
               />
-              <Text style={{ fontSize: normalise(12), color: Colors.white }}>
+              <Text style={{fontSize: normalise(12), color: Colors.white}}>
                 No results found, please try again later.
               </Text>
               {/* <Text style={{ fontSize: normalise(12), color: Colors.white }}>another name</Text> */}
@@ -439,83 +458,6 @@ function HomeItemReaction(props) {
           ) : (
             <View />
           )}
-
-          {/* <View
-            style={{
-              position: 'absolute',
-              alignSelf: 'center',
-              bottom: normalise(30),
-              height: normalise(60),
-              width: '92%',
-              justifyContent: 'space-between',
-              borderRadius: normalise(35),
-              backgroundColor: Colors.white,
-              borderWidth: normalise(0.5),
-              // shadowColor: Colors.red,
-              // shadowOffset: {width: 0, height: 5},
-              // shadowOpacity: 0.36,
-              // shadowRadius: 6.68,
-              // elevation: 11,
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderColor: Colors.white,
-              paddingHorizontal: normalise(10),
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[0]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[0]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[1]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[1]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[2]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[2]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[3]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[3]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[4]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[4]}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                hitreact(react[5]);
-              }}>
-              <Text style={{ fontSize: normalise(30), fontWeight: 'bold' }}>
-                {react[5]}
-              </Text>
-            </TouchableOpacity>
-          </View> */}
-
           <Modal
             animationType="fade"
             transparent={true}
