@@ -1462,9 +1462,8 @@ const Home = props => {
           borderRadius={normalise(30)}
           title={'CHOONA'}
           thirditemtext={false}
-          // imagetwo={ImagePath.boxicon}
-          // imagetwo={ImagePath.inbox}
-          imagetwo={ImagePath?.threedots}
+          imagetwo={ImagePath.inbox}
+          // imagetwo={ImagePath?.threedots}
           imagetwoheight={25}
           imagetwowidth={25}
           middleImageReq={true}
@@ -1484,10 +1483,11 @@ const Home = props => {
           onPressThirdItem={() => {
             // props.navigation.navigate('Contact');
             // props.navigation.navigate('Inbox');
-            setMenuVisible(true);
+            // setMenuVisible(true);
             //  props.navigation.navigate('BlankScreen');
+            props.navigation.navigate('CommonNotification');
           }}
-          imageTwoStyle={{transform: [{rotate: '90deg'}], width: normalise(14)}}
+          imageTwoStyle={{width: normalise(18)}}
         />
         <View style={styles.tabBarWrapperStyle}>
           <TouchableOpacity

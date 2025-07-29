@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   FlatList,
   BackHandler,
+  SectionList,
 } from 'react-native';
 
 import normalise from '../../utils/helpers/Dimens';
@@ -335,7 +336,7 @@ function HomeItemReaction(props) {
     );
   }
 
-  console.log(JSON.stringify(reactionList),'fdkjfhdjfhdhfk')
+  console.log(JSON.stringify(reactionList), 'fdkjfhdjfhdhfk');
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
@@ -430,12 +431,40 @@ function HomeItemReaction(props) {
           </View>
 
           {reactionList?.length > 0 ? (
-            <FlatList
-              data={reactionList ?? []}
-              renderItem={renderItemWithHeader}
-              keyExtractor={(item) => {
-                item?.header
-              }}
+            // <FlatList
+            //   data={reactionList ?? []}
+            //   renderItem={renderItemWithHeader}
+            //   keyExtractor={item => {
+            //     item?.header;
+            //   }}
+            //   showsVerticalScrollIndicator={false}
+            // />
+
+            // In your render
+            <SectionList
+              sections={reactionList}
+              keyExtractor={(item, index) =>
+                item.user_id?.toString() ?? index.toString()
+              }
+              renderItem={renderItem}
+              renderSectionHeader={({section: {header}}) => (
+                <View
+                  style={{
+                    width: '100%',
+                    height: normalise(42),
+                    justifyContent: 'center',
+                    backgroundColor: Colors.darkerblack,
+                  }}>
+                  <View
+                    style={{
+                      width: normalise(26),
+                      height: normalise(26),
+                      marginHorizontal: normaliseNew(16),
+                    }}>
+                    <ReactionsComponent value={header} />
+                  </View>
+                </View>
+              )}
               showsVerticalScrollIndicator={false}
             />
           ) : !reactionsLoading ? (

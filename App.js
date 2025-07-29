@@ -96,6 +96,7 @@ import constants from './src/utils/helpers/constants';
 import {all} from 'redux-saga/effects';
 import ProfileTabNavigator from './src/navigation/ProfileTabNavigator';
 import SearchScreen from './src/components/main/SearchScreen';
+import CommonNotification from './src/components/main/CommonNotification/CommonNotification';
 // import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 // import * as Sentry from '@sentry/react-native';
@@ -847,6 +848,10 @@ const App = () => {
                     options={{
                       presentation: 'modal',
                     }}
+                  />
+                  <Stack.Screen
+                    name="CommonNotification"
+                    component={CommonNotification}
                   />
                 </Stack.Navigator>
               )}
