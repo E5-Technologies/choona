@@ -156,8 +156,10 @@ export function* getChatListAction(action) {
     };
 
     const response = yield call(getApi, 'chat/list', Header);
+    console.log(response,'fdsdhfjksdfhsf')
     yield put({ type: GET_CHAT_LIST_SUCCESS, data: response.data.data });
   } catch (error) {
+    console.log(error,'thisiserrro')
     yield put({ type: GET_CHAT_LIST_FAILURE, error: error });
   }
 }

@@ -43,7 +43,9 @@ import useSWR from 'swr';
 import {useDispatch} from 'react-redux';
 import moment from 'moment';
 import ActivitySingle from '../../Activity/ActivitySingle';
-import normaliseNew from '../../utils/helpers/DimensNew';
+import normaliseNew from '../../../utils/helpers/DimensNew';
+import { useFocusEffect } from '@react-navigation/native';
+import Inbox from '../Inbox';
 
 let status;
 const activityUrl = constants.BASE_URL + '/activity/list';
@@ -153,6 +155,8 @@ const CommonNotification = props => {
 
   //handle state on behalf of status*************
 
+  console.log(props.chatList,'THisischdjfk')
+
   if (props.status === '' || props.status !== status) {
     switch (props.status) {
       case GET_CHAT_LIST_REQUEST:
@@ -206,6 +210,7 @@ const CommonNotification = props => {
   }
 
   // Helpers **********************************
+  //Inbox functions*****
   function sortArray(value) {
     setMessageList(value);
     setNonEmpty(true);
@@ -650,9 +655,9 @@ const CommonNotification = props => {
         flex: 1,
         backgroundColor: Colors.darkerblack,
       }}>
-      <Loader
+      {/* <Loader
         visible={props.status === GET_CHAT_LIST_REQUEST || bool || isLoading}
-      />
+      /> */}
       <StatusBar
         barStyle="light-content" // 👈 Makes iOS status bar text white
         backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
@@ -673,6 +678,7 @@ const CommonNotification = props => {
         <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
         <View style={{flex: 1}}>
           {activeTab === 0 ? <InboxComponent /> : <NotificationComponent />}
+
         </View>
       </SafeAreaView>
     </View>
@@ -782,7 +788,7 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
     marginHorizontal: normaliseNew(16),
-    paddingVertical: normaliseNesw(16),
+    paddingVertical: normaliseNew(16),
   },
   followButton: {
     alignItems: 'center',
