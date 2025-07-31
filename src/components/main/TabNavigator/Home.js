@@ -1482,10 +1482,10 @@ const Home = props => {
           }}
           onPressThirdItem={() => {
             // props.navigation.navigate('Contact');
-            props.navigation.navigate('Inbox');
+            // props.navigation.navigate('Inbox');
             // setMenuVisible(true);
             //  props.navigation.navigate('BlankScreen');
-            // props.navigation.navigate('CommonNotification');
+            props.navigation.navigate('CommonNotification');
           }}
           imageTwoStyle={{width: normalise(18)}}
         />

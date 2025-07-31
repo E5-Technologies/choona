@@ -154,6 +154,7 @@ export function* getChatListAction(action) {
       contenttype: 'application/json',
       accesstoken: items.token,
     };
+    console.log(Header, "thisisheaeder")
 
     const response = yield call(getApi, 'chat/list', Header);
     console.log(response,'fdsdhfjksdfhsf')

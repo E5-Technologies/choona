@@ -11,7 +11,7 @@ function ActivitySingle({ item, props }) {
   if (item.activity_type === 'following') {
     return (
       <ActivityListItem
-        image={constants.profile_picture_base_url + item.profile_image}
+        image={item?.profile_image ? (constants.profile_picture_base_url + item?.profile_image) : null}
         title={'started following you'}
         user={item.username}
         follow={!item.isFollowing}

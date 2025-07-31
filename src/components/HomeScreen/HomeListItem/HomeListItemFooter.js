@@ -53,8 +53,6 @@ const HomeListItemFooter = ({
     [actualNumLines],
   );
 
-  console.log(userAvatar, 'jkhjh');
-
   return (
     <View style={styles.listItemFooterContainer}>
       <View style={[styles.listItemFooterTop]}>

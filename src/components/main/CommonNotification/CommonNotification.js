@@ -1,16 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Keyboard,
   RefreshControl,
   SafeAreaView,
+  ScrollView,
+  SectionList,
   StatusBar,
   StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
+import axios from 'axios';
 import _ from 'lodash';
-import {connect} from 'react-redux';
+import moment from 'moment';
+import Contacts from 'react-native-contacts';
+import {connect, useDispatch} from 'react-redux';
 import {
   deleteConversationRequest,
   getChatListRequest,
@@ -26,27 +34,26 @@ import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
 } from '../../../action/TypeConstants';
+import {
+  editProfileRequest,
+  getProfileRequest,
+  userFollowUnfollowRequest,
+} from '../../../action/UserAction';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
+import constants from '../../../utils/helpers/constants';
 import normalise from '../../../utils/helpers/Dimens';
+import normaliseNew from '../../../utils/helpers/DimensNew';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import HeaderComponent from '../../../widgets/HeaderComponent';
+import ActivitySingle from '../../Activity/ActivitySingle';
+import Avatar from '../../Avatar';
 import EmptyComponent from '../../Empty/EmptyComponent';
+import InboxListItem from '../ListCells/InboxItemList';
 import Seperator from '../ListCells/Seperator';
 import {TabComponent} from './Components/TabComponent';
 import Loader from '../../../widgets/AuthLoader';
-import constants from '../../../utils/helpers/constants';
-import InboxListItem from '../ListCells/InboxItemList';
-import Contacts from 'react-native-contacts';
-import useSWR from 'swr';
-import {useDispatch} from 'react-redux';
-import moment from 'moment';
-import ActivitySingle from '../../Activity/ActivitySingle';
-import normaliseNew from '../../../utils/helpers/DimensNew';
-import { useFocusEffect } from '@react-navigation/native';
-import Inbox from '../Inbox';
-
 let status;
 const activityUrl = constants.BASE_URL + '/activity/list';
 const wait = timeout => {
@@ -61,47 +68,57 @@ const CommonNotification = props => {
   const [mesageList, setMessageList] = useState([]);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [pageId, setPageId] = useState(1);
   const [refreshing, setRefreshing] = React.useState(false);
   const [onScrolled, setOnScrolled] = useState(false);
   const [emptyVisible, setEmpty] = useState(undefined);
 
+  let time = moment().format('MM-DD-YYYY');
   let previous = [];
   let today = [];
-  let time = moment().format('MM-DD-YYYY');
-  // console.log({ today });
-
-  const activity = notifications ? notifications : [];
-
-  activity.map(item => {
-    let postTime = moment(item.createdAt).format('MM-DD-YYYY');
-
+  const sections = [];
+  // const activity = notifications ? notifications : [];
+  notifications.forEach(item => {
+    const postTime = moment(item.createdAt).format('MM-DD-YYYY');
     if (postTime === time) {
       today.push(item);
     } else {
-      // console.log(item.id, { item });
       previous.push(item);
     }
   });
 
-  //Effects******************************
-  useEffect(() => {
-    const unsuscribe = props.navigation.addListener('focus', payload => {
-      isInternetConnected()
-        .then(() => {
-          props.getChatListReq();
-        })
-        .catch(err => {
-          toast('Error', 'Please Connect To Internet');
-        });
+  if (today.length > 0) {
+    sections.push({title: 'TODAY', data: today});
+  }
+  if (previous.length > 0) {
+    sections.push({title: 'PREVIOUSLY', data: previous});
+  }
 
-      return () => {
-        unsuscribe();
-      };
-    });
-  });
+  //Effects******************************
+
+  useEffect(() => {
+    if (activeTab == 0) {
+      const unsuscribe = props.navigation.addListener('focus', payload => {
+        isInternetConnected()
+          .then(() => {
+            props.getChatListReq();
+          })
+          .catch(err => {
+            toast('Error', 'Please Connect To Internet!');
+          });
+
+        return () => {
+          unsuscribe();
+        };
+      });
+    }
+    if (activeTab == 1) {
+      if (pageId == 1) {
+        getActivities(pageId);
+      }
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -123,39 +140,31 @@ const CommonNotification = props => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isLoading) {
-      let formdata = new FormData();
-      formdata.append('badge_count', 0);
-      formdata.append('isActivity', false);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     let formdata = new FormData();
+  //     formdata.append('badge_count', 0);
+  //     formdata.append('isActivity', false);
 
-      isInternetConnected()
-        .then(() => {
-          dispatch(editProfileRequest(formdata));
-        })
-        .catch(err => {
-          toast('Oops', 'Please Connect To Internet');
-        });
-    }
-  }, [dispatch, isLoading]);
+  //     isInternetConnected()
+  //       .then(() => {
+  //         dispatch(editProfileRequest(formdata));
+  //       })
+  //       .catch(err => {
+  //         toast('Oops', 'Please Connect To Internet');
+  //       });
+  //   }
+  // }, [dispatch, isLoading]);
 
-  useEffect(() => {
-    if (props.status === 'EDIT_PROFILE_SUCCESS') {
-      props.getProfileReq();
-    }
-  }, [props.status, props.getProfileReq]);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setNotifications([]);
-      setPageId(1);
-      mutate();
-    }, []),
-  );
+  // useEffect(() => {
+  //   if (props.status === 'EDIT_PROFILE_SUCCESS') {
+  //     props.getProfileReq();
+  //   }
+  // }, [props.status, props.getProfileReq]);
 
   //handle state on behalf of status*************
 
-  console.log(props.chatList,'THisischdjfk')
+  console.log(props.chatList, 'THisischdjfk');
 
   if (props.status === '' || props.status !== status) {
     switch (props.status) {
@@ -171,28 +180,28 @@ const CommonNotification = props => {
 
       case GET_CHAT_LIST_FAILURE:
         status = props.status;
-        toast('Error', 'Something Went Wrong, Please Try Again');
+        toast('Error', 'Something Went Wrong, Please Try Again!');
         break;
 
       case DELETE_CONVERSATION_REQUEST:
         status = props.status;
         break;
 
-      case DELETE_CONVERSATION_SUCCESS:
-        status = props.status;
+      // case DELETE_CONVERSATION_SUCCESS:
+      //   status = props.status;
 
-        isInternetConnected()
-          .then(() => {
-            props.getChatListReq();
-          })
-          .catch(err => {
-            toast('Error', 'Please Connect To Internet');
-          });
-        break;
+      //   isInternetConnected()
+      //     .then(() => {
+      //       props.getChatListReq();
+      //     })
+      //     .catch(err => {
+      //       toast('Error', 'Please Connect To Internet');
+      //     });
+      //   break;
 
       case DELETE_CONVERSATION_FAILURE:
         status = props.status;
-        toast('Error', 'Something Went Wrong, Please Try Again');
+        toast('Error', 'Something Went Wrong, Please Try Again!');
         break;
       case USER_PROFILE_REQUEST:
         status = props.status;
@@ -204,7 +213,7 @@ const CommonNotification = props => {
 
       case USER_PROFILE_FAILURE:
         status = props.status;
-        toast('Oops', 'Something Went Wrong, Please Try Again');
+        toast('Oops', 'Something Went Wrong, Please Try Again!!');
         break;
     }
   }
@@ -288,54 +297,79 @@ const CommonNotification = props => {
     );
   };
 
-  const onReached = async () => {
-    setOnScrolled(true);
-    const response = await axios.get(`${activityUrl}?page=${pageId + 1}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'x-access-token': props.header.token,
-      },
-    });
-    if (response.data.data.length === 0) {
-      setOnScrolled(false);
-    } else {
-      setPageId(pageId + 1);
+  const key = `${activityUrl}?page=${pageId}`;
+  const getActivities = async (pageId = 1) => {
+    try {
+      setIsLoading(true);
+      console.log(props.header.token, 'thisistoken');
+      const response = await axios.get(`${activityUrl}?page=${pageId}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-access-token': props.header.token,
+        },
+        validateStatus: status => status < 500,
+      });
+      const data = response?.data;
+      console.log(data, 'thienotifda');
+      // Handle empty data
+      if (!data?.data || data?.data?.length > 0) {
+        if (pageId === 1) {
+          setNotifications(data?.data ?? []);
+        } else {
+          setNotifications(prev => [...prev, ...data?.data]);
+        }
+      }
+    } catch (error) {
+      toast('Oops', 'Something Went Wrong, Please Try Again!');
+      console.log('Error fetching activities:', error);
+    } finally {
+      setIsLoading(false);
     }
-
-    previous = [...previous, ...response.data.data];
   };
 
-  const key = `${activityUrl}?page=${pageId}`;
+  // const onReached = async () => {
+  //   setOnScrolled(true);
+  //   const response = await axios.get(`${activityUrl}?page=${pageId + 1}`, {
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //       'x-access-token': props.header.token,
+  //     },
+  //   });
+  //   if (response.data.data.length === 0) {
+  //     setOnScrolled(false);
+  //   } else {
+  //     setPageId(pageId + 1);
+  //   }
+  //   previous = [...previous, ...response.data.data];
+  // };
 
-  const {mutate} = useSWR(key, () => getActivities(pageId), {
-    onSuccess: data => {
-      setIsLoading(false);
-      if (data.data.length === 0) {
-        setEmpty(true);
-      } else {
-        setEmpty(false);
+  const onReached = async () => {
+    if (onScrolled) return;
+    setOnScrolled(true);
+    try {
+      const response = await axios.get(`${activityUrl}?page=${pageId + 1}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-access-token': props.header.token,
+        },
+      });
+
+      const newData = response.data?.data || [];
+
+      if (newData.length === 0) {
+        return;
       }
-      if (pageId === 1) {
-        setNotifications(data.data);
-      } else {
-        const newArray = [...notifications, ...data.data];
-        setNotifications(newArray);
-      }
-    },
-  });
 
-  const getActivities = async pageId => {
-    setIsLoading(true);
-    const response = await axios.get(`${activityUrl}?page=${pageId}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'x-access-token': props.header.token,
-      },
-    });
-
-    return await response.data;
+      setPageId(prev => prev + 1);
+      setNotifications(prev => [...prev, ...newData]);
+    } catch (error) {
+      console.error('Error fetching more:', error);
+    } finally {
+      setOnScrolled(false);
+    }
   };
   //Components**********************************
 
@@ -382,21 +416,19 @@ const CommonNotification = props => {
   const InboxComponent = () => {
     return (
       <View style={{flex: 1}}>
-        {_.isEmpty(mesageList) ? (
-          !isKeyboardVisible && (
-            <EmptyComponent
-              buttonPress={() => {
-                props.navigation.navigate('AddSongsInMessage');
-                // props.navigation.navigate('Inbox');
-              }}
-              buttonText={'Send a song to someone'}
-              image={ImagePath ? ImagePath.emptyInbox : null}
-              text={
-                'You haven’t started sending music to people, click the button below to send your first song.'
-              }
-              title={'Your Inbox is empty'}
-            />
-          )
+        {mesageList?.length == 0 ? (
+          <EmptyComponent
+            buttonPress={() => {
+              props.navigation.navigate('AddSongsInMessage');
+              // props.navigation.navigate('Inbox');
+            }}
+            buttonText={'Send a song to someone'}
+            image={ImagePath ? ImagePath.emptyInbox : null}
+            text={
+              'You haven’t started sending music to people, click the button below to send your first song.'
+            }
+            title={'Your Inbox is empty'}
+          />
         ) : (
           <FlatList
             // data={Array(5).fill({'': ''})}
@@ -479,176 +511,215 @@ const CommonNotification = props => {
     );
   };
 
-  const NotificationComponent = () => {
+  // const NotificationComponent = () => {
+  //   return (
+  //     <View style={{flex: 1}}>
+  //       {notifications?.length == 0 ? (
+  //         <EmptyComponent
+  //           buttonPress={() => {
+  //             setIsLoading(true);
+  //             getContacts();
+  //           }}
+  //           buttonText={'Search Phonebook'}
+  //           image={ImagePath ? ImagePath.emptyNotify : null}
+  //           text={
+  //             'You haven’t recieved any notifications yet. Choona is more fun with more people, search your phonebook below.'
+  //           }
+  //           title={'No Notifcations Yet...'}
+  //         />
+  //       ) : (
+  //         <ScrollView
+  //           onMomentumScrollEnd={({nativeEvent}) => {
+  //             if (isCloseToBottom(nativeEvent)) {
+  //               onReached();
+  //             }
+  //           }}
+  //           scrollEventThrottle={400}
+  //           showsVerticalScrollIndicator={false}
+  //           style={{flex: 1}}
+  //           refreshControl={
+  //             <RefreshControl
+  //               refreshing={refreshing}
+  //               onRefresh={() => {
+  //                 setRefreshing(true);
+  //                 // mutate();
+  //                 wait(1000).then(() => setRefreshing(false));
+  //               }}
+  //             />
+  //           }>
+  //           {today?.length !== 0 && (
+  //             <>
+  //               <View style={styles.activityHeader}>
+  //                 <Text style={styles.activityHeaderText}>TODAY</Text>
+  //               </View>
+  //               <FlatList
+  //                 data={today}
+  //                 scrollEnabled
+  //                 renderItem={({item, index}) => {
+  //                   let activity_type = item?.activity_type;
+  //                   const content =
+  //                     item.post_id !== null ? (
+  //                       <TouchableOpacity
+  //                         onPress={() => {
+  //                           props.navigation.navigate('SingleSongClick', {
+  //                             data: item.post_id,
+  //                           });
+  //                         }}>
+  //                         <ActivitySingle item={item} props={props} />
+  //                       </TouchableOpacity>
+  //                     ) : (
+  //                       <ActivitySingle item={item} props={props} />
+  //                     );
+  //                   return (
+  //                     <>
+  //                       {activity_type == 'invitation' ? (
+  //                         <AcceptRejectInvite
+  //                           title={item?.text}
+  //                           touchableOpacityDisabled={true}
+  //                           image={item?.profile_image}
+  //                           user={item?.username}
+  //                           session_id={item?.session_id}
+  //                         />
+  //                       ) : (
+  //                         <View key={index}>{content}</View>
+  //                       )}
+  //                     </>
+  //                   );
+  //                 }}
+  //                 keyExtractor={(item, index) => index.toString()}
+  //                 showsVerticalScrollIndicator={false}
+  //                 ItemSeparatorComponent={Seperator}
+  //               />
+  //             </>
+  //           )}
+  //           {previous.length !== 0 && (
+  //             <>
+  //               <View style={styles.activityHeader}>
+  //                 <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
+  //               </View>
+  //               <FlatList
+  //                 data={previous}
+  //                 scrollEnabled
+  //                 renderItem={({item, index}) => {
+  //                   let activity_type = item?.activity_type;
+  //                   const content =
+  //                     item.post_id !== null ? (
+  //                       <TouchableOpacity
+  //                         onPress={() => {
+  //                           props.navigation.navigate('SingleSongClick', {
+  //                             data: item.post_id,
+  //                           });
+  //                         }}>
+  //                         <ActivitySingle item={item} props={props} />
+  //                       </TouchableOpacity>
+  //                     ) : (
+  //                       <ActivitySingle item={item} props={props} />
+  //                     );
+  //                   return (
+  //                     <>
+  //                       {activity_type == 'invitation' ? (
+  //                         <AcceptRejectInvite
+  //                           title={item?.text}
+  //                           touchableOpacityDisabled={true}
+  //                           image={item?.profile_image}
+  //                           user={item?.username}
+  //                           session_id={item?.session_id}
+  //                           showButton={false}
+  //                         />
+  //                       ) : (
+  //                         <View key={index}>{content}</View>
+  //                       )}
+  //                     </>
+  //                   );
+  //                 }}
+  //                 keyExtractor={(item, index) => index.toString()}
+  //                 showsVerticalScrollIndicator={false}
+  //                 ItemSeparatorComponent={Seperator}
+  //               />
+  //             </>
+  //           )}
+  //         </ScrollView>
+  //       )}
+  //     </View>
+  //   );
+  // };
+
+  const notificationComponent = useCallback(() => {
     return (
       <View style={{flex: 1}}>
-        {_.isEmpty(notifications) ? (
-          !isKeyboardVisible && (
-            <EmptyComponent
-              buttonPress={() => {
-                setIsLoading(true);
-                getContacts();
-              }}
-              buttonText={'Search Phonebook'}
-              image={ImagePath ? ImagePath.emptyNotify : null}
-              text={
-                'You haven’t recieved any notifications yet. Choona is more fun with more people, search your phonebook below.'
-              }
-              title={'No Notifcations Yet...'}
-            />
-          )
-        ) : (
-          <ScrollView
-            onMomentumScrollEnd={({nativeEvent}) => {
-              if (isCloseToBottom(nativeEvent)) {
-                onReached();
-              }
+        {notifications?.length === 0 ? (
+          <EmptyComponent
+            buttonPress={() => {
+              setIsLoading(true);
+              getContacts();
             }}
-            scrollEventThrottle={400}
+            buttonText="Search Phonebook"
+            image={ImagePath?.emptyNotify || null}
+            text={
+              'You haven’t received any notifications yet. Choona is more fun with more people, search your phonebook below.'
+            }
+            title="No Notifications Yet..."
+          />
+        ) : (
+          <SectionList
+            sections={sections}
+            keyExtractor={(item, index) => `${item.id || index}`}
+            onEndReached={onReached}
+            onEndReachedThreshold={0.1}
             showsVerticalScrollIndicator={false}
-            style={{flex: 1}}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
+                colors={['#ffffff']}
+                tintColor="#ffffff"
                 onRefresh={() => {
                   setRefreshing(true);
-                  mutate();
                   wait(1000).then(() => setRefreshing(false));
                 }}
               />
-            }>
-            {today?.length !== 0 && (
-              <>
-                <View style={styles.activityHeader}>
-                  <Text style={styles.activityHeaderText}>TODAY</Text>
-                </View>
-                <FlatList
-                  data={today}
-                  scrollEnabled
-                  renderItem={({item, index}) => {
-                    let activity_type = item?.activity_type;
-
-                    const content =
-                      item.post_id !== null ? (
-                        <TouchableOpacity
-                          onPress={() => {
-                            props.navigation.navigate('SingleSongClick', {
-                              data: item.post_id,
-                            });
-                          }}>
-                          <ActivitySingle item={item} props={props} />
-                        </TouchableOpacity>
-                      ) : (
-                        <ActivitySingle item={item} props={props} />
-                      );
-                    return (
-                      <>
-                        {activity_type == 'invitation' ? (
-                          <AcceptRejectInvite
-                            title={item?.text}
-                            touchableOpacityDisabled={true}
-                            image={item?.profile_image}
-                            user={item?.username}
-                            session_id={item?.session_id}
-                          />
-                        ) : (
-                          <View key={index}>{content}</View>
-                        )}
-                      </>
-                    );
-                  }}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                  ItemSeparatorComponent={Seperator}
-                />
-              </>
+            }
+            renderSectionHeader={({section: {title}}) => (
+              <View style={styles.activityHeader}>
+                <Text style={styles.activityHeaderText}>{title}</Text>
+              </View>
             )}
-            {previous.length !== 0 && (
-              <>
-                <View style={styles.activityHeader}>
-                  <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
-                </View>
-                {/* <FlatList
-                  data={previous}
-                  renderItem={({item}) =>
-                    item.post_id !== null ? (
-                      <TouchableOpacity
-                        onPress={() => {
-                          props.navigation.navigate('SingleSongClick', {
-                            data: item.post_id,
-                          });
-                        }}>
-                        <ActivitySingle item={item} props={props} />
-                      </TouchableOpacity>
-                    ) : (
-                      <ActivitySingle item={item} props={props} />
-                    )
-                  }
-                  keyExtractor={index => {
-                    index.toString();
-                  }}
-                  ItemSeparatorComponent={Seperator}
-                  ListFooterComponent={
-                    onScrolled === true && notifications.length > 0 ? (
-                      <ActivityIndicator
-                        size={'small'}
-                        color="white"
-                        style={{
-                          alignSelf: 'center',
-                        }}
-                      />
-                    ) : null
-                  }
-                /> */}
+            renderItem={({item}) => {
+              const activity_type = item?.activity_type;
+              const content =
+                item.post_id !== null ? (
+                  <TouchableOpacity
+                    onPress={() =>
+                      props.navigation.navigate('SingleSongClick', {
+                        data: item.post_id,
+                      })
+                    }>
+                    <ActivitySingle item={item} props={props} />
+                  </TouchableOpacity>
+                ) : (
+                  <ActivitySingle item={item} props={props} />
+                );
 
-                <FlatList
-                  data={previous}
-                  scrollEnabled
-                  renderItem={({item, index}) => {
-                    let activity_type = item?.activity_type;
+              if (activity_type === 'invitation') {
+                return (
+                  <AcceptRejectInvite
+                    title={item?.text}
+                    touchableOpacityDisabled={true}
+                    image={item?.profile_image}
+                    user={item?.username}
+                    session_id={item?.session_id}
+                    showButton={false}
+                  />
+                );
+              }
 
-                    const content =
-                      item.post_id !== null ? (
-                        <TouchableOpacity
-                          onPress={() => {
-                            props.navigation.navigate('SingleSongClick', {
-                              data: item.post_id,
-                            });
-                          }}>
-                          <ActivitySingle item={item} props={props} />
-                        </TouchableOpacity>
-                      ) : (
-                        <ActivitySingle item={item} props={props} />
-                      );
-                    return (
-                      <>
-                        {activity_type == 'invitation' ? (
-                          <AcceptRejectInvite
-                            title={item?.text}
-                            touchableOpacityDisabled={true}
-                            image={item?.profile_image}
-                            user={item?.username}
-                            session_id={item?.session_id}
-                            showButton={false}
-                          />
-                        ) : (
-                          <View key={index}>{content}</View>
-                        )}
-                      </>
-                    );
-                  }}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
-                  ItemSeparatorComponent={Seperator}
-                />
-              </>
-            )}
-          </ScrollView>
+              return <View>{content}</View>;
+            }}
+            ItemSeparatorComponent={Seperator}
+          />
         )}
       </View>
     );
-  };
-
+  }, [sections, notifications]);
   return (
     <View
       style={{
@@ -658,14 +729,15 @@ const CommonNotification = props => {
       {/* <Loader
         visible={props.status === GET_CHAT_LIST_REQUEST || bool || isLoading}
       /> */}
+      <Loader visible={isLoading} />
       <StatusBar
-        barStyle="light-content" // 👈 Makes iOS status bar text white
+        barStyle="light-content"
         backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
       />
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.darkerblack}}>
         <HeaderComponent
           firstitemtext={false}
-          title={'EXPLORE'}
+          title={'NOTIFICATION'}
           thirditemtext={true}
           texttwo={''}
           hideBorderBottom={true}
@@ -677,8 +749,7 @@ const CommonNotification = props => {
         />
         <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
         <View style={{flex: 1}}>
-          {activeTab === 0 ? <InboxComponent /> : <NotificationComponent />}
-
+          {activeTab === 0 ? <InboxComponent /> : notificationComponent()}
         </View>
       </SafeAreaView>
     </View>

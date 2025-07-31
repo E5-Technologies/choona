@@ -14,7 +14,7 @@ export const TabComponent = ({activeTab, setActiveTab = () => {}}) => {
     },
     {
       key: 'notification',
-      title: 'NOTIFICATION',
+      title: 'ACTIVITY',
       isActive: activeTab === 1,
       onPress: () => setActiveTab(1),
     },
