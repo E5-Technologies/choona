@@ -9,7 +9,7 @@ const HeaderStyles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: Colors.darkerblack,
     borderBottomColor: Colors.fadeblack,
-    borderBottomWidth: normalise(1),
+    // borderBottomWidth: normalise(1),
     flexDirection: 'row',
     height: normalise(44),
     justifyContent: 'center',

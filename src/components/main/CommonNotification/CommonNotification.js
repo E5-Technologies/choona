@@ -738,7 +738,6 @@ const CommonNotification = props => {
         <HeaderComponent
           firstitemtext={false}
           title={'NOTIFICATION'}
-          thirditemtext={true}
           texttwo={''}
           hideBorderBottom={true}
           imageone={ImagePath.backicon}
@@ -746,6 +745,13 @@ const CommonNotification = props => {
             props.navigation.goBack();
           }}
           imageOneStyle={{width: 20, height: 20}}
+          thirditemtext={activeTab == 0 ? false : true}
+          imagetwo={ImagePath ? ImagePath.newmessage : null}
+          imagetwoheight={20}
+          imagetwowidth={20}
+          onPressThirdItem={() => {
+            props.navigation.navigate('AddSongsInMessage');
+          }}
         />
         <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
         <View style={{flex: 1}}>

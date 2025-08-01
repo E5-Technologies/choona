@@ -79,6 +79,8 @@ export function* getSessionList(action) {
     accesstoken: items.token,
   };
 
+  console.log(header,'hisddfdhsfd')
+
   try {
     const url = `session/list`;
 

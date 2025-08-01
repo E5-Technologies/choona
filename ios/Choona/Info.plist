@@ -53,11 +53,11 @@
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Demonstrating using StoreKit and MediaPlayer APIs.</string>
+	<string>We use your Apple Music library access to display music, create posts and playlists, host music sessions, and let you play songs directly within the app</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app would like to access your device camera to let you click pictures for profile pictures</string>
 	<key>NSContactsUsageDescription</key>
-	<string>This app would like to aceess your contacts to help you find and connect to your friends</string>
+	<string>We use your contacts to show which of your friends are already on Choona and let you send them invites or connect instantly</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app would like to access your location to set your profile location</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

@@ -1989,9 +1989,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: normalise(40),
-    marginHorizontal: normalise(50),
-    // borderBottomColor: Colors.fadeblack,
-    // borderBottomWidth: 1,
+    paddingHorizontal: normalise(50),
+    borderBottomColor: Colors.fadeblack,
+    borderBottomWidth: normalise(1),
+    width:"100%",
+    justifyContent:'center'
   },
   tabBarButtonStyle: {
     width: '50%',

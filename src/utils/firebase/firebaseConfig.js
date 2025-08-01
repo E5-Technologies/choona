@@ -22,3 +22,4 @@ export default firebaseConfig = {
   //     appId: '1:1080689694728:web:58bd03754639109e9319bd',
   //     measurementId: 'G-1CL52ELV6E',
 };
+
