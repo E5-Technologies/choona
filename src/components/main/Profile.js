@@ -12,6 +12,7 @@ import {
   Modal,
   Linking,
   Dimensions,
+  Alert,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import normalise from '../../utils/helpers/Dimens';
@@ -45,6 +46,8 @@ import ProfileHeaderFeatured from '../Profile/ProfileHeaderFeatured';
 import EmptyComponent from '../Empty/EmptyComponent';
 
 import HeaderStyles from '../../styles/header';
+import {CommonFullScreenModal} from '../common/CommonFullModal';
+import {SimpleAlert} from '../common/ConfirmModal';
 
 let status = '';
 let postStatus = '';
@@ -66,6 +69,7 @@ const Profile = props => {
 
   const [profilePosts, setProfilePosts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const onEndReached = async () => {
     setPageId(pageId + 1);
@@ -162,6 +166,55 @@ const Profile = props => {
       toast('Oops', 'Post not found');
     }
   }
+
+  const handleDeleteAccount = async () => {
+    setIsLoading(true);
+
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'x-access-token': props.header.token,
+    };
+    console.log(headers, 'headerererer');
+    try {
+      const response = await axios.delete(
+        `${constants.BASE_URL}/user/profile`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': props.header.token,
+          },
+        },
+      );
+      console.log(response, 'this is response');
+      if (response?.status == 200) {
+        toast(
+          'Success',
+          `${response?.data?.message ?? 'Account deleted successfully'}  `,
+        );
+        setShowConfirmModal(!showConfirmModal);
+        setTimeout(() => {
+          props.logoutReq();
+        }, 200);
+      } else {
+        toast(
+          'Error',
+          `${response?.data?.message} ?? "Somethig went wrong, please try again"`,
+        );
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error, 'this is error');
+      toast(
+        'Error',
+        `${response?.data?.message} ?? "Somethig went wrong, please try again"`,
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   function renderProfileData(data) {
     let array = [];
@@ -325,6 +378,26 @@ const Profile = props => {
                 Logout
               </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{marginTop: normalise(18)}}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+
+                setTimeout(() => {
+                  setShowConfirmModal(!showConfirmModal);
+                }, 200);
+                // props.logoutReq();
+              }}>
+              <Text
+                style={{
+                  color: Colors.red,
+                  fontSize: normalise(13),
+                  fontFamily: 'ProximaNova-Semibold',
+                }}>
+                Delete Account
+              </Text>
+            </TouchableOpacity>
             <Text
               style={{
                 marginTop: normalise(18),
@@ -431,6 +504,32 @@ const Profile = props => {
     );
   };
 
+  const confirmModal = () => {
+    return (
+      <CommonFullScreenModal
+        visible={showConfirmModal}
+        containerStyle={{
+          justifyContent: 'flex-end',
+          backgroundColor: '#00000080',
+          backicon: 'green',
+        }}
+        contentStyle={{justifyContent: 'flex-end', flex: 1 / 3.4}}>
+        <SimpleAlert
+          title={'Are you sure you want to delete your account?'}
+          onCancel={() => setShowConfirmModal(false)}
+          onConfirm={handleDeleteAccount}
+          cancelTitle="No"
+          confirmTitle="Yes"
+          buttonRightStyle={styles.buttonRightStyle}
+          gradientButton={false}
+          buttonLeftStyle={styles.buttonLeftStyle}
+          buttonContainerStyle={styles.buttonContainerStyle}
+          style={{paddingVertical: 15, justifyContent: 'flex-start'}}
+        />
+      </CommonFullScreenModal>
+    );
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -482,7 +581,7 @@ const Profile = props => {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-              {/* <TouchableOpacity
+            {/* <TouchableOpacity
               style={{marginLeft: normalise(10)}}
               onPress={() => {
                 props.navigation.navigate('Contact');
@@ -546,6 +645,7 @@ const Profile = props => {
         {renderModal()}
         {policyModel()}
         {tandcsModel()}
+        {confirmModal()}
       </SafeAreaView>
     </View>
   );
@@ -619,5 +719,16 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+  },
+  buttonRightStyle: {
+    backgroundColor: 'red',
+    borderWidth: 0,
+    height: 60,
+  },
+  buttonLeftStyle: {
+    height: 60,
+  },
+  buttonContainerStyle: {
+    marginBottom: 0,
   },
 });
