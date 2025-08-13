@@ -1828,6 +1828,11 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController (~> 2.7.4)
+  - RNNotifee (9.1.8):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 9.1.8)
+  - RNNotifee/NotifeeCore (9.1.8):
+    - React-Core
   - RNPermissions (4.1.5):
     - React-Core
   - RNReanimated (3.15.1):
@@ -2017,6 +2022,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -2223,6 +2229,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -2340,6 +2348,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: fde05e1048b26d59de854920f10e5632260491d9
   RNGestureHandler: a52601cdccc6213650ad4a9eb2911360d13f4447
   RNImageCropPicker: 64b6bec9ec185ee59b71a93d7058816bd0e1916e
+  RNNotifee: 4a6ee5c7deaf00e005050052d73ee6315dff7ec9
   RNPermissions: 43554bda3562f01e9cb5e793ba14dba2e2a74651
   RNReanimated: d23c509e05bab52691ce7b81deb9fb9736b4d2d8
   RNScreens: 43c178aa8dd88b96734b704f54e842c7d15a0922
