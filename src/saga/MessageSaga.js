@@ -157,10 +157,10 @@ export function* getChatListAction(action) {
     console.log(Header, "thisisheaeder")
 
     const response = yield call(getApi, 'chat/list', Header);
-    console.log(response,'fdsdhfjksdfhsf')
+    console.log(response?.data,'fdsdhfjksdfhsfCahtListtReqeust')
     yield put({ type: GET_CHAT_LIST_SUCCESS, data: response.data.data });
   } catch (error) {
-    console.log(error,'thisiserrro')
+    console.log(error, JSON.stringify(error), 'thisiserrro')
     yield put({ type: GET_CHAT_LIST_FAILURE, error: error });
   }
 }
@@ -196,6 +196,8 @@ export function* getChatMessages(action) {
         var chatResponse = {
           data: items,
         };
+
+        console.log(chatResponse,'fkdsfhdjfhjkhfkd')
 
         emiter(chatResponse || {});
 

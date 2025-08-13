@@ -164,7 +164,9 @@ const CommonNotification = props => {
 
   //handle state on behalf of status*************
 
-  console.log(props.chatList, 'THisischdjfk');
+  useEffect(() => {
+    sortArray(props.chatList);
+  }, [props.chatList]);
 
   if (props.status === '' || props.status !== status) {
     switch (props.status) {
@@ -221,6 +223,7 @@ const CommonNotification = props => {
   // Helpers **********************************
   //Inbox functions*****
   function sortArray(value) {
+    console.log(value, 'thisdfdhsjfdhk');
     setMessageList(value);
     setNonEmpty(true);
   }
@@ -371,26 +374,54 @@ const CommonNotification = props => {
       setOnScrolled(false);
     }
   };
+
+  const inboxData = [
+    {
+      item: {
+        profile_image: 'user1.jpg',
+        username: 'Alice',
+        message: [{text: 'Hi!'}, {text: 'Are you coming to the party?'}],
+        user_id: 111,
+        receiver_id: 222,
+        read: true,
+        chat_token: 'token111',
+      },
+      index: 0,
+    },
+    {
+      item: {
+        profile_image: 'user2.jpg',
+        username: 'Bob',
+        message: [{text: 'Meeting at 3pm'}],
+        user_id: 333,
+        receiver_id: 222,
+        read: false,
+        chat_token: 'token222',
+      },
+      index: 1,
+    },
+  ];
   //Components**********************************
 
-  function renderInboxItem(data) {
+  function renderInboxItem({item,index}) {
+    console.log(item,'heyiem')
     return (
       <InboxListItem
-        image={constants?.profile_picture_base_url + data?.item?.profile_image}
-        title={data?.item?.username}
+        image={constants?.profile_picture_base_url + item?.profile_image}
+        title={item?.username}
         description={
-          data?.item?.message?.[data?.item?.message?.length - 1]?.text
+          item?.message?.[item?.message?.length - 1]?.text
         }
         read={
-          data.item.user_id === data?.item?.receiver_id
+          item?.user_id === item?.receiver_id
             ? true
-            : data?.item?.read
+            : item?.read
         }
         onPress={() =>
-          props.navigation.navigate('InsideaMessage', {index: data?.index})
+          props.navigation.navigate('InsideaMessage', {index: index})
         }
         onPressImage={() => {
-          props.navigation.navigate('OthersProfile', {id: data?.item?.user_id});
+          props.navigation.navigate('OthersProfile', {id: item?.user_id});
         }}
         onPressDelete={() =>
           Alert.alert('Do you want to delete this conversation?', '', [
@@ -400,7 +431,7 @@ const CommonNotification = props => {
               text: 'Delete',
               onPress: () => {
                 props.deleteConversationRequest({
-                  chat_token: data?.item?.chat_token,
+                  chat_token: item?.chat_token,
                 });
               },
               style: 'destructive',
@@ -410,40 +441,6 @@ const CommonNotification = props => {
       />
     );
   }
-
-  console.log(mesageList, props.chatList, 'fdhjkfhdj');
-
-  const InboxComponent = () => {
-    return (
-      <View style={{flex: 1}}>
-        {mesageList?.length == 0 ? (
-          <EmptyComponent
-            buttonPress={() => {
-              props.navigation.navigate('AddSongsInMessage');
-              // props.navigation.navigate('Inbox');
-            }}
-            buttonText={'Send a song to someone'}
-            image={ImagePath ? ImagePath.emptyInbox : null}
-            text={
-              'You haven’t started sending music to people, click the button below to send your first song.'
-            }
-            title={'Your Inbox is empty'}
-          />
-        ) : (
-          <FlatList
-            // data={Array(5).fill({'': ''})}
-            data={mesageList ?? []}
-            renderItem={renderInboxItem}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={Seperator}
-          />
-        )}
-      </View>
-    );
-  };
 
   const AcceptRejectInvite = ({
     title,
@@ -511,138 +508,37 @@ const CommonNotification = props => {
     );
   };
 
-  // const NotificationComponent = () => {
-  //   return (
-  //     <View style={{flex: 1}}>
-  //       {notifications?.length == 0 ? (
-  //         <EmptyComponent
-  //           buttonPress={() => {
-  //             setIsLoading(true);
-  //             getContacts();
-  //           }}
-  //           buttonText={'Search Phonebook'}
-  //           image={ImagePath ? ImagePath.emptyNotify : null}
-  //           text={
-  //             'You haven’t recieved any notifications yet. Choona is more fun with more people, search your phonebook below.'
-  //           }
-  //           title={'No Notifcations Yet...'}
-  //         />
-  //       ) : (
-  //         <ScrollView
-  //           onMomentumScrollEnd={({nativeEvent}) => {
-  //             if (isCloseToBottom(nativeEvent)) {
-  //               onReached();
-  //             }
-  //           }}
-  //           scrollEventThrottle={400}
-  //           showsVerticalScrollIndicator={false}
-  //           style={{flex: 1}}
-  //           refreshControl={
-  //             <RefreshControl
-  //               refreshing={refreshing}
-  //               onRefresh={() => {
-  //                 setRefreshing(true);
-  //                 // mutate();
-  //                 wait(1000).then(() => setRefreshing(false));
-  //               }}
-  //             />
-  //           }>
-  //           {today?.length !== 0 && (
-  //             <>
-  //               <View style={styles.activityHeader}>
-  //                 <Text style={styles.activityHeaderText}>TODAY</Text>
-  //               </View>
-  //               <FlatList
-  //                 data={today}
-  //                 scrollEnabled
-  //                 renderItem={({item, index}) => {
-  //                   let activity_type = item?.activity_type;
-  //                   const content =
-  //                     item.post_id !== null ? (
-  //                       <TouchableOpacity
-  //                         onPress={() => {
-  //                           props.navigation.navigate('SingleSongClick', {
-  //                             data: item.post_id,
-  //                           });
-  //                         }}>
-  //                         <ActivitySingle item={item} props={props} />
-  //                       </TouchableOpacity>
-  //                     ) : (
-  //                       <ActivitySingle item={item} props={props} />
-  //                     );
-  //                   return (
-  //                     <>
-  //                       {activity_type == 'invitation' ? (
-  //                         <AcceptRejectInvite
-  //                           title={item?.text}
-  //                           touchableOpacityDisabled={true}
-  //                           image={item?.profile_image}
-  //                           user={item?.username}
-  //                           session_id={item?.session_id}
-  //                         />
-  //                       ) : (
-  //                         <View key={index}>{content}</View>
-  //                       )}
-  //                     </>
-  //                   );
-  //                 }}
-  //                 keyExtractor={(item, index) => index.toString()}
-  //                 showsVerticalScrollIndicator={false}
-  //                 ItemSeparatorComponent={Seperator}
-  //               />
-  //             </>
-  //           )}
-  //           {previous.length !== 0 && (
-  //             <>
-  //               <View style={styles.activityHeader}>
-  //                 <Text style={styles.activityHeaderText}>PREVIOUSLY</Text>
-  //               </View>
-  //               <FlatList
-  //                 data={previous}
-  //                 scrollEnabled
-  //                 renderItem={({item, index}) => {
-  //                   let activity_type = item?.activity_type;
-  //                   const content =
-  //                     item.post_id !== null ? (
-  //                       <TouchableOpacity
-  //                         onPress={() => {
-  //                           props.navigation.navigate('SingleSongClick', {
-  //                             data: item.post_id,
-  //                           });
-  //                         }}>
-  //                         <ActivitySingle item={item} props={props} />
-  //                       </TouchableOpacity>
-  //                     ) : (
-  //                       <ActivitySingle item={item} props={props} />
-  //                     );
-  //                   return (
-  //                     <>
-  //                       {activity_type == 'invitation' ? (
-  //                         <AcceptRejectInvite
-  //                           title={item?.text}
-  //                           touchableOpacityDisabled={true}
-  //                           image={item?.profile_image}
-  //                           user={item?.username}
-  //                           session_id={item?.session_id}
-  //                           showButton={false}
-  //                         />
-  //                       ) : (
-  //                         <View key={index}>{content}</View>
-  //                       )}
-  //                     </>
-  //                   );
-  //                 }}
-  //                 keyExtractor={(item, index) => index.toString()}
-  //                 showsVerticalScrollIndicator={false}
-  //                 ItemSeparatorComponent={Seperator}
-  //               />
-  //             </>
-  //           )}
-  //         </ScrollView>
-  //       )}
-  //     </View>
-  //   );
-  // };
+  const inboxComponent = useCallback(() => {
+    return (
+      <View style={{flex: 1}}>
+        {mesageList?.length == 0 ? (
+          <EmptyComponent
+            buttonPress={() => {
+              props.navigation.navigate('AddSongsInMessage');
+              // props.navigation.navigate('Inbox');
+            }}
+            buttonText={'Send a song to someone'}
+            image={ImagePath ? ImagePath.emptyInbox : null}
+            text={
+              'You haven’t started sending music to people, click the button below to send your first song.'
+            }
+            title={'Your Inbox is empty'}
+          />
+        ) : (
+          <FlatList
+            // data={inboxData}
+            data={mesageList ?? []}
+            renderItem={renderInboxItem}
+            keyExtractor={(item, index) => {
+              index.toString();
+            }}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={Seperator}
+          />
+        )}
+      </View>
+    );
+  }, [mesageList]);
 
   const notificationComponent = useCallback(() => {
     return (
@@ -720,6 +616,7 @@ const CommonNotification = props => {
       </View>
     );
   }, [sections, notifications]);
+
   return (
     <View
       style={{
@@ -755,7 +652,7 @@ const CommonNotification = props => {
         />
         <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
         <View style={{flex: 1}}>
-          {activeTab === 0 ? <InboxComponent /> : notificationComponent()}
+          {activeTab === 0 ? inboxComponent() : notificationComponent()}
         </View>
       </SafeAreaView>
     </View>

@@ -34,6 +34,7 @@ import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
 import OneSignal from 'react-native-onesignal';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
+import {getMessaging} from '@react-native-firebase/messaging';
 
 let user = null;
 let status = '';
@@ -46,11 +47,18 @@ function SignUp(props) {
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      const {userId} = await OneSignal.getDeviceState();
-      setToken(userId);
-    })();
-  });
+    const fetchFcmToken = async () => {
+      try {
+        const token = await getMessaging().getToken();
+        setToken(token);
+        console.log('FCM Token:', token);
+      } catch (error) {
+        console.error('Failed to get FCM token:', error);
+      }
+    };
+
+    fetchFcmToken();
+  }, []);
 
   // useEffect(() => {
   //   fetchAndUpdateCredentialState(updateCredentialStateForUser).catch(error =>
@@ -147,14 +155,15 @@ function SignUp(props) {
 
   //TOKEN FIREBASE
   function appleLoginWithOurServer(appleData) {
-    getDeviceToken()
-      .then(token => {
-        console.log(token);
-        signInwithApple(appleData, token);
-      })
-      .catch(err => {
-        signInwithApple(appleData, '');
-      });
+    // getDeviceToken()
+    //   .then(token => {
+    //     console.log(token, 'thisisdevicetoken');
+    //     signInwithApple(appleData, token);
+    //   })
+    //   .catch(err => {
+    //     signInwithApple(appleData, '');
+    //   });
+    signInwithApple(appleData, token2 ?? '123');
   }
 
   // API REQUEST
@@ -167,9 +176,9 @@ function SignUp(props) {
     appleSignUpObject.social_id = 'user' in appleData ? appleData.user : '';
     appleSignUpObject.social_type = 'apple';
     appleSignUpObject.deviceType = Platform.OS;
-    appleSignUpObject.deviceToken = token2;
+    appleSignUpObject.deviceToken = token || token2;
 
-    // console.log('Apple ', appleData);
+    console.log('Appledfdfdf ', appleSignUpObject);
     props.loginRequest(appleSignUpObject);
     setUserDetails(appleData);
 
@@ -207,7 +216,7 @@ function SignUp(props) {
             formdata.append('deviceType', Platform.OS);
             formdata.append('social_id', userDetails.user);
             formdata.append('register_type', 'apple');
-
+            console.log(token2, 'thissdevicetoskdn');
             axios
               .post(
                 constants.BASE_URL + '/user/available',

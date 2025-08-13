@@ -97,6 +97,11 @@ import {all} from 'redux-saga/effects';
 import ProfileTabNavigator from './src/navigation/ProfileTabNavigator';
 import SearchScreen from './src/components/main/SearchScreen';
 import CommonNotification from './src/components/main/CommonNotification/CommonNotification';
+import {
+  requestUserPermission,
+  setupNotificationChannels,
+  setupNotificationListeners,
+} from './src/utils/firebaseService';
 // import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 // import * as Sentry from '@sentry/react-native';
@@ -163,6 +168,12 @@ const App = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    requestUserPermission();
+    setupNotificationChannels();
+    setupNotificationListeners();
+  }, []);
+
   // useEffect(() => {
   //   /* O N E S I G N A L   S E T U P */
   //   OneSignal.setAppId('095694b1-0a59-42ec-bd9c-d60a09bd60a9');
@@ -173,12 +184,13 @@ const App = () => {
   //   });
   // }, []);
 
-  useEffect(() => {
-    (async () => {
-      const {userId} = await OneSignal.getDeviceState();
-      AsyncStorage.setItem('deviceToken', userId);
-    })();
-  });
+  // useEffect(() => {
+  //   (async () => {
+  //     const {userId} = await OneSignal.getDeviceState();
+  //     console.log(userId,'thsjkhfsf')
+  //     AsyncStorage.setItem('deviceToken', userId);
+  //   })();
+  // });
 
   // const TabBar = (props) => (
   //   <View>

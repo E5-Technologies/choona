@@ -372,7 +372,6 @@ function Player(props) {
 
   const playSongOnLoad = songuri => {
     if (props.playingSongRef === '') {
-      Alert.alert('check music when no subscription');
       console.log('first time', songuri);
       setPlayVisible(true);
       playSong(songuri);

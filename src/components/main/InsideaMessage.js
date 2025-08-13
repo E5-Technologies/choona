@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,7 +16,7 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import InsideMessegeHeader from '../../widgets/InsideMessegeHeader';
 import SavedSongsListItem from '../main/ListCells/SavedSongsListItem';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import StatusBar from '../../utils/MyStatusBar';
 import {
   loadChatMessageRequest,
@@ -24,9 +24,9 @@ import {
   deleteMessageRequest,
   createChatTokenRequest,
 } from '../../action/MessageAction';
-import { getUsersFromHome } from '../../action/UserAction';
-import { saveSongRequest } from '../../action/SongAction';
-import { connect } from 'react-redux';
+import {getUsersFromHome} from '../../action/UserAction';
+import {saveSongRequest} from '../../action/SongAction';
+import {connect} from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import {
   CHAT_LOAD_REQUEST,
@@ -40,8 +40,8 @@ import {
 import toast from '../../utils/helpers/ShowErrorAlert';
 import Loader from '../../widgets/AuthLoader';
 import _ from 'lodash';
-import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
+import {getSpotifyToken} from '../../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 
 let status = '';
@@ -68,15 +68,21 @@ function InsideaMessage(props) {
   var bottomSheetRef;
 
   useEffect(function () {
+    const requestObject={
+      chatToken: props.chatList[index]?.chat_token,
+      isMount: true,
+      userId: props.userProfileResp._id,
+    }
+    console.log(requestObject,'fdhfjdhfdfgd')
     props.loadChatMessageRequest({
-      chatToken: props.chatList[index].chat_token,
+      chatToken: props.chatList[index]?.chat_token,
       isMount: true,
       userId: props.userProfileResp._id,
     });
 
     return () => {
       props.loadChatMessageRequest({
-        chatToken: props.chatList[index].chat_token,
+        chatToken: props.chatList[index]?.chat_token,
         isMount: false,
         userId: props.userProfileResp._id,
       });
@@ -158,64 +164,64 @@ function InsideaMessage(props) {
               }}
               onPressItem={() => {
                 props.navigation.navigate('Player', {
-                  username: props.chatList[index].username,
-                  time: props.chatList[index].time,
-                  song_title: data.item.song_name,
-                  album_name: data.item.album_name,
-                  song_pic: data.item.image,
-                  uri: data.item.hasOwnProperty('song_uri')
-                    ? data.item.song_uri
+                  username: props?.chatList[index]?.username,
+                  time: props?.chatList[index]?.time,
+                  song_title: data?.item?.song_name,
+                  album_name: data?.item?.album_name,
+                  song_pic: data?.item?.image,
+                  uri: data?.item.hasOwnProperty('song_uri')
+                    ? data?.item?.song_uri
                     : null,
-                  artist: data.item.artist_name,
+                  artist: data?.item?.artist_name,
                   changePlayer: true,
                   comingFromMessage: true,
-                  comments: data.item.message,
-                  key: data.item.key,
-                  chatToken: props.chatList[index].chat_token,
+                  comments: data?.item?.message,
+                  key: data?.item?.key,
+                  chatToken: props.chatList[index]?.chat_token,
                   receiver_id:
-                    props.userProfileResp._id === data.item.receiver_id
-                      ? data.item.sender_id
-                      : data.item.receiver_id, //data.item.sender_id
-                  sender_id: props.userProfileResp._id, //data.item.receiver_id
-                  isrc: data.item.isrc_code,
-                  originalUri: data.item.hasOwnProperty('original_song_uri')
-                    ? data.item.original_song_uri
+                    props.userProfileResp._id === data?.item?.receiver_id
+                      ? data?.item?.sender_id
+                      : data?.item?.receiver_id, //data.item.sender_id
+                  sender_id: props?.userProfileResp?._id, //data.item.receiver_id
+                  isrc: data?.item?.isrc_code,
+                  originalUri: data?.item?.hasOwnProperty('original_song_uri')
+                    ? data?.item?.original_song_uri
                     : undefined,
-                  registerType: data.item.original_reg_type,
-                  details: data.item,
+                  registerType: data?.item?.original_reg_type,
+                  details: data?.item,
                 });
               }}
               onPressImage={() => {
                 props.navigation.navigate('Player', {
-                  username: props.chatList[index].username,
-                  time: props.chatList[index].time,
-                  song_title: data.item.song_name,
-                  album_name: data.item.album_name,
-                  song_pic: data.item.image,
-                  uri: data.item.hasOwnProperty('song_uri')
-                    ? data.item.song_uri
+                  username: props.chatList[index]?.username,
+                  time: props.chatList[index]?.time,
+                  song_title: data.item?.song_name,
+                  album_name: data.item?.album_name,
+                  song_pic: data.item?.image,
+                  uri: data.item?.hasOwnProperty('song_uri')
+                    ? data.item?.song_uri
                     : null,
-                  artist: data.item.artist_name,
+                  artist: data.item?.artist_name,
                   changePlayer: true,
                   comingFromMessage: true,
-                  comments: data.item.message,
-                  key: data.item.key,
-                  chatToken: props.chatList[index].chat_token,
+                  comments: data.item?.message,
+                  key: data.item?.key,
+                  chatToken: props?.chatList[index]?.chat_token,
                   receiver_id:
-                    props.userProfileResp._id === data.item.receiver_id
+                    props.userProfileResp._id === data?.item?.receiver_id
                       ? data.item.sender_id
-                      : data.item.receiver_id, //data.item.sender_id
-                  sender_id: props.userProfileResp._id, //data.item.receiver_id
-                  isrc: data.item.isrc_code,
+                      : data?.item?.receiver_id, //data.item.sender_id
+                  sender_id: props?.userProfileResp?._id, //data.item.receiver_id
+                  isrc: data?.item?.isrc_code,
                   originalUri: data.item.hasOwnProperty('original_song_uri')
-                    ? data.item.original_song_uri
+                    ? data?.item?.original_song_uri
                     : undefined,
-                  registerType: data.item.original_reg_type,
-                  details: data.item,
+                  registerType: data?.item?.original_reg_type,
+                  details: data?.item,
                 });
               }}
               marginBottom={
-                data.index === chatData.length - 1 ? normalise(20) : 0
+                data.index === chatData?.length - 1 ? normalise(20) : 0
               }
             />
           )
@@ -245,7 +251,7 @@ function InsideaMessage(props) {
                       read: true,
                     },
                     error => {
-                      emiter({ error: error || null });
+                      emiter({error: error || null});
                     },
                   );
               }
@@ -401,7 +407,7 @@ function InsideaMessage(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
 
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -410,18 +416,18 @@ function InsideaMessage(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}> */}
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <InsideMessegeHeader
           firstitemtext={false}
           imageone={
             constants.profile_picture_base_url +
-            props.userProfileResp.profile_image
+            props.userProfileResp?.profile_image
           }
           imagesecond={
             constants.profile_picture_base_url +
-            props.chatList[index].profile_image
+            props?.chatList[index]?.profile_image
           }
-          title={props.chatList[index].username}
+          title={props.chatList[index]?.username}
           thirditemtext={false}
           imagetwoheight={25}
           imagetwowidth={25}
@@ -463,7 +469,7 @@ function InsideaMessage(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
-              transform: [{ scaleX: -1 }],
+              transform: [{scaleX: -1}],
             }}
             resizeMode="contain"
           />
@@ -520,7 +526,7 @@ function InsideaMessage(props) {
             backgroundColor: Colors.white,
             borderWidth: normalise(0.5),
             shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
+            shadowOffset: {width: 0, height: 4},
             shadowOpacity: 0.5,
             shadowRadius: 9,
             elevation: 11,
@@ -535,12 +541,12 @@ function InsideaMessage(props) {
                 {
                   _id:
                     props.searchedChatData[0].receiver_id ===
-                      props.userProfileResp._id
-                      ? props.searchedChatData[0].sender_id
-                      : props.searchedChatData[0].receiver_id,
-                  username: props.chatList[index].username,
-                  full_name: props.chatList[index].full_name,
-                  profile_image: props.chatList[index].profile_image,
+                    props.userProfileResp?._id
+                      ? props.searchedChatData[0]?.sender_id
+                      : props.searchedChatData[0]?.receiver_id,
+                  username: props.chatList[index]?.username,
+                  full_name: props.chatList[index]?.full_name,
+                  profile_image: props.chatList[index]?.profile_image,
                 },
               ],
               index: index,

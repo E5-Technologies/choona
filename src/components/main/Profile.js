@@ -530,6 +530,8 @@ const Profile = props => {
     );
   };
 
+
+  console.log(props.userProfileResp,'profdfdjskf')
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
