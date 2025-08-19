@@ -406,12 +406,11 @@ function InsideaMessage(props) {
     }
   };
 
+  console.log(props.searchedChatData, 'fdjkfhdjfhk')
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <Loader visible={props.status === CHAT_LOAD_REQUEST} />
-
-      <StatusBar backgroundColor={Colors.darkerblack} />
-
+      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       {/* <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
@@ -448,7 +447,7 @@ function InsideaMessage(props) {
               width: '100%',
               backgroundColor: Colors.fadeblack,
               borderRadius: normalise(8),
-              marginTop: normalise(20),
+              marginTop: normalise(10),
               padding: normalise(10),
               color: Colors.white,
               paddingLeft: normalise(30),
@@ -540,7 +539,7 @@ function InsideaMessage(props) {
               users: [
                 {
                   _id:
-                    props.searchedChatData[0].receiver_id ===
+                    props.searchedChatData[0]?.receiver_id ===
                     props.userProfileResp?._id
                       ? props.searchedChatData[0]?.sender_id
                       : props.searchedChatData[0]?.receiver_id,

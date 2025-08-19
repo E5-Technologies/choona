@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {connect} from 'react-redux';
 import {
   SafeAreaView,
   View,
@@ -16,7 +16,7 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import moment from 'moment';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
@@ -27,7 +27,7 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import normalise from '../../utils/helpers/Dimens';
 import normaliseNew from '../../utils/helpers/DimensNew';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import { updateMessageCommentRequest } from '../../action/MessageAction';
+import {updateMessageCommentRequest} from '../../action/MessageAction';
 import {
   COMMENT_ON_POST_REQUEST,
   COMMENT_ON_POST_SUCCESS,
@@ -36,7 +36,7 @@ import {
   FOLLOWER_LIST_SUCCESS,
   FOLLOWER_LIST_REQUEST,
 } from '../../action/TypeConstants';
-import { commentOnPostReq, followingListReq } from '../../action/UserAction';
+import {commentOnPostReq, followingListReq} from '../../action/UserAction';
 
 import CommentList from '../main/ListCells/CommentList';
 
@@ -57,7 +57,7 @@ function HomeItemComments(props) {
   const [showmention, setShowMention] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [id] = useState(props.route.params.id);
-  const [Selection, setSelection] = useState({ start: -1, end: -1 });
+  const [Selection, setSelection] = useState({start: -1, end: -1});
   //   const [image] = useState(props.route.params.image);
   //   const [time] = useState(props.route.params.time);
   //   const [username] = useState(props.route.params.username);
@@ -101,7 +101,7 @@ function HomeItemComments(props) {
         time={moment(data.item.createdAt).from()}
         onPressImage={() => {
           if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', { fromAct: false });
+            props.navigation.navigate('Profile', {fromAct: false});
           } else {
             props.navigation.navigate('OthersProfile', {
               id: data.item.user_id,
@@ -159,7 +159,7 @@ function HomeItemComments(props) {
     let data = comments;
     let Comment = comments.length;
 
-    const { navigation, route } = props;
+    const {navigation, route} = props;
     route.params.onSelect(data, Comment);
     navigation.goBack();
   };
@@ -167,7 +167,7 @@ function HomeItemComments(props) {
   const _onBackHandlerPress = () => {
     console.log('count' + JSON.stringify(DataBack).length);
     let data = DataBack;
-    const { navigation, route } = props;
+    const {navigation, route} = props;
     route.params.onSelect(data, data.length);
     navigation.goBack();
     return true;
@@ -205,7 +205,7 @@ function HomeItemComments(props) {
   parts = parts.map(text => {
     if (/^@/.test(text)) {
       return (
-        <Text key={text} style={{ color: 'red' }}>
+        <Text key={text} style={{color: 'red'}}>
           {text}
         </Text>
       );
@@ -217,7 +217,7 @@ function HomeItemComments(props) {
   return (
     <View style={styles.container}>
       <MyStatusBar />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -305,10 +305,10 @@ function HomeItemComments(props) {
             <FlatList
               data={followingList}
               keyboardShouldPersistTaps="always"
-              renderItem={({ item, index }) => {
+              renderItem={({item, index}) => {
                 return (
                   <TouchableOpacity
-                    style={{ flexDirection: 'row', paddingTop: '3%' }}
+                    style={{flexDirection: 'row', paddingTop: '3%'}}
                     onPress={() => {
                       alert(JSON.stringify(Selection));
                       let lastIndex = commentText.lastIndexOf('@');
@@ -504,8 +504,8 @@ function HomeItemComments(props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.darkerblack },
-  safeContainer: { flex: 1 },
+  container: {flex: 1, backgroundColor: Colors.darkerblack},
+  safeContainer: {flex: 1},
   commentHeader: {
     backgroundColor: Colors.darkerblack,
     paddingLeft: normaliseNew(16),
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.fadeblack,
     paddingBottom: normaliseNew(12),
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.5,
     shadowRadius: 8,
     elevation: 11,
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
-  commentHeaderAvatarButton: { justifyContent: 'center' },
+  commentHeaderAvatarButton: {justifyContent: 'center'},
   commentHeaderAvatar: {
     borderRadius: normaliseNew(4),
     height: normaliseNew(64),

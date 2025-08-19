@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 
 import ImagePath from '../assests/ImagePath';
@@ -19,7 +19,10 @@ function InsideMessegeHeader(props) {
     <View
       style={[
         HeaderStyles.headerContainer,
-        { justifyContent: 'flex-start', alignItems: 'center' },
+        {
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+        },
       ]}>
       {props.firstitemtext ? (
         <TouchableOpacity
@@ -30,9 +33,9 @@ function InsideMessegeHeader(props) {
           <Text style={HeaderStyles.headerItemText}>{props.textone}</Text>
         </TouchableOpacity>
       ) : (
-        <>
+        <View style={{flex: 1, flexDirection: 'row'}}>
           <TouchableOpacity
-            style={{ left: normalise(16) }}
+            style={{left: normalise(16)}}
             onPress={() => {
               onPressFirstItem();
             }}>
@@ -42,13 +45,14 @@ function InsideMessegeHeader(props) {
               resizeMode="contain"
             />
           </TouchableOpacity>
+
           <TouchableOpacity
             style={HeaderStyles.messageAvatars}
             onPress={() => {
               onPressFirstItem();
             }}>
             <Image
-              source={{ uri: props.imageone }}
+              source={{uri: props.imageone}}
               style={{
                 // borderWidth: normalise(1),
                 borderColor: Colors.darkerblack,
@@ -59,7 +63,7 @@ function InsideMessegeHeader(props) {
               resizeMode="contain"
             />
             <Image
-              source={{ uri: props.imagesecond }}
+              source={{uri: props.imagesecond}}
               style={{
                 // borderWidth: normalise(1),
                 borderColor: Colors.darkerblack,
@@ -70,9 +74,13 @@ function InsideMessegeHeader(props) {
               }}
               resizeMode="contain"
             />
-            <Text style={HeaderStyles.messageText}>{props.title}</Text>
+            <View style={{flex: 1, marginRight: normalise(65)}}>
+              <Text style={HeaderStyles.messageText} numberOfLines={1}>
+                {props.title}
+              </Text>
+            </View>
           </TouchableOpacity>
-        </>
+        </View>
       )}
     </View>
   );
