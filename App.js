@@ -428,9 +428,7 @@ const App = () => {
             }}
           />
 
-          <Tab.Screen
-            // name="Notification"
-            // component={Notification}
+          {/* <Tab.Screen
             name="HomeScreen"
             component={Home}
             initialParams={{activeTab: 1}}
@@ -462,52 +460,16 @@ const App = () => {
                     }
                     resizeMode="contain"
                   />
-                  {/* {!_.isEmpty(UserReducer.userProfileResp) ? (
-                    UserReducer.userProfileResp.isActivity ? (
-                      <View
-                        style={{
-                          position: 'absolute',
-                          right: normalise(-2),
-                          top:
-                            Platform.OS === 'android'
-                              ? normalise(8)
-                              : normalise(-2),
-                          backgroundColor: Colors.red,
-                          borderRadius: normalize(8),
-                          height: 10,
-                          width: 10,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      />
-                    ) : null
-                  ) : null} */}
                 </View>
               ),
               tabBarLabel: '',
-              // tabBarButton: props => {
-              //   const navigation = useNavigation();
-              //   return (
-              //     <TouchableOpacity
-              //       onPress={() => {
-              //         navigation
-              //           .getParent()
-              //           ?.navigate('Home', {activeTab: 1});
-              //       }}
-              //       {...props}
-              //       activeOpacity={0.7}>
-              //       {props.children}
-              //     </TouchableOpacity>
-              //   );
-              // },
             }}
             listeners={({navigation}) => ({
               tabPress: e => {
-                // e.preventDefault();
                 navigation.navigate('Home', {activeTab: 1});
               },
             })}
-          />
+          /> */}
 
           {/* <Tab.Screen
             name="Inbox"

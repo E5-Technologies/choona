@@ -1546,7 +1546,7 @@ function MySessionDetailScreen(props) {
   const positionRef = useRef(null);
   const playerAcceptedSongsRef = useRef([]);
   const {song: currentPlayinSongData} = useCurrentSong();
-  // console.log(currentPlayinSongData, 'thi isi ssong');
+  console.log(sessionReduxData?.startSessionLoading, 'thiisissong');
   //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   // useEffect(() => {
@@ -2189,7 +2189,11 @@ function MySessionDetailScreen(props) {
         }
       />
       <LinearGradient
-        colors={['#0E402C', '#101119', '#360455']}
+        colors={
+          islive
+            ? ['#101119', '#101119', '#101119']
+            : ['#0E402C', '#101119', '#360455']
+        }
         style={{flex: 1}}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 1}}>
@@ -2338,7 +2342,7 @@ function MySessionDetailScreen(props) {
                           //   playerState?.state == 'none') && {opacity: 1},
                           !iscurrentPlaying && islive && {opacity: 0.4},
                         ]}>
-                        {iscurrentPlaying && (
+                        {/* {iscurrentPlaying ? (
                           <TouchableOpacity
                             disabled={iscurrentPlaying ? false : true}
                             // onPress={handlePlayPauseViaButton}
@@ -2359,23 +2363,55 @@ function MySessionDetailScreen(props) {
                               resizeMode="contain"
                             />
                           </TouchableOpacity>
-                        )}
-                        <Image
-                          source={{uri: item?.song_image}}
-                          style={styles.songListItemImage}
-                          resizeMode="cover"
-                        />
-                        <View style={styles.listItemHeaderSongText}>
-                          <Text
-                            style={styles.songlistItemHeaderSongTextTitle}
-                            numberOfLines={1}>
-                            {item?.song_name}
-                          </Text>
-                          <Text
-                            style={styles.songlistItemHeaderSongTextArtist}
-                            numberOfLines={1}>
-                            {item?.artist_name}
-                          </Text>
+                        ) : (
+                          <View style={styles.playButtonStyle}></View>
+                        )} */}
+
+                        {islive ? (
+                          iscurrentPlaying ? (
+                            <TouchableOpacity
+                              disabled={!iscurrentPlaying}
+                              // onPress={handlePlayPauseViaButton}
+                              style={styles.playButtonStyle}>
+                              <Image
+                                // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
+                                source={
+                                  (appleFullSongPlaying ||
+                                    playerState?.state === 'playing') &&
+                                  iscurrentPlaying
+                                    ? ImagePath.pause
+                                    : ImagePath.play
+                                }
+                                style={{
+                                  height: normalise(25),
+                                  width: normalise(25),
+                                }}
+                                resizeMode="contain"
+                              />
+                            </TouchableOpacity>
+                          ) : (
+                            <View style={styles.playButtonStyle}></View>
+                          )
+                        ) : null}
+
+                        <View style={{flexDirection: 'row'}}>
+                          <Image
+                            source={{uri: item?.song_image}}
+                            style={styles.songListItemImage}
+                            resizeMode="cover"
+                          />
+                          <View style={styles.listItemHeaderSongText}>
+                            <Text
+                              style={styles.songlistItemHeaderSongTextTitle}
+                              numberOfLines={1}>
+                              {item?.song_name}
+                            </Text>
+                            <Text
+                              style={styles.songlistItemHeaderSongTextArtist}
+                              numberOfLines={1}>
+                              {item?.artist_name}
+                            </Text>
+                          </View>
                         </View>
                       </View>
                     );
@@ -2385,65 +2421,71 @@ function MySessionDetailScreen(props) {
                 />
               </View>
             </View>
-            {currentListners?.length > 0 && islive && (
-              <View style={styles.listenersContainer}>
-                <View style={styles.listenersTextWrapper}>
-                  <Text
-                    style={[
-                      styles.listItemHeaderSongTextTitle,
-                      {marginTop: normalise(5), fontSize: normalise(12)},
-                    ]}
-                    numberOfLines={2}>
-                    LISTENERS
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    styles.bottomLineStyle,
-                    {
-                      width: width / 3.8,
-                      marginBottom: normalise(8),
-                      marginTop: normalise(0),
-                    },
-                  ]}></View>
-                <ScrollView style={{flex: 1}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      flexWrap: 'wrap',
-                    }}>
-                    {currentListners?.map((item, index) => {
-                      return (
-                        <View
-                          style={[
-                            styles.joineeIitemWrapper,
-                            // index == 0 &&
-                            //   currentListners?.length > 1 && {
-                            //     marginLeft: normalise(40),
-                            //   },
-                            // index == 3 && {marginRight: normalise(40)},
-                          ]}>
-                          <Image
-                            source={
-                              item?.profile_image
-                                ? {
-                                    uri:
-                                      constants.profile_picture_base_url +
-                                      item?.profile_image,
-                                  }
-                                : ImagePath.userPlaceholder
-                            }
-                            style={[styles.songListItemImage]}
-                            resizeMode="cover"
-                          />
-                        </View>
-                      );
-                    })}
+            {islive ? (
+              currentListners?.length > 0 ? (
+                <View style={styles.listenersContainer}>
+                  <View style={styles.listenersTextWrapper}>
+                    <Text
+                      style={[
+                        styles.listItemHeaderSongTextTitle,
+                        {marginTop: normalise(5), fontSize: normalise(12)},
+                      ]}
+                      numberOfLines={2}>
+                      LISTENERS
+                    </Text>
                   </View>
-                </ScrollView>
-              </View>
-            )}
+                  <View
+                    style={[
+                      styles.bottomLineStyle,
+                      {
+                        width: width / 3.8,
+                        marginBottom: normalise(8),
+                        marginTop: normalise(0),
+                      },
+                    ]}></View>
+                  <ScrollView style={{flex: 1}}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        flexWrap: 'wrap',
+                      }}>
+                      {currentListners?.map((item, index) => {
+                        return (
+                          <View
+                            style={[
+                              styles.joineeIitemWrapper,
+                              // index == 0 &&
+                              //   currentListners?.length > 1 && {
+                              //     marginLeft: normalise(40),
+                              //   },
+                              // index == 3 && {marginRight: normalise(40)},
+                            ]}>
+                            <Image
+                              source={
+                                item?.profile_image
+                                  ? {
+                                      uri:
+                                        constants.profile_picture_base_url +
+                                        item?.profile_image,
+                                    }
+                                  : ImagePath.userPlaceholder
+                              }
+                              style={[styles.songListItemImage]}
+                              resizeMode="cover"
+                            />
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                </View>
+              ) : (
+                <View>
+                  <Text style={styles.noJoineeText}>No listeners available</Text>
+                </View>
+              )
+            ) : null}
           </View>
           {!props.route.params.isforEdit && (
             <TrackProgress
@@ -2683,6 +2725,13 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
   },
+  noJoineeText: {
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normalise(12),
+    textAlign: 'center',
+    marginTop: normalise(20),
+  }
 });
 
 export default MySessionDetailScreen;
