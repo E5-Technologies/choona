@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import normalise from '../utils/helpers/Dimens';
 import PropTypes from 'prop-types';
 
@@ -28,6 +28,7 @@ function HeaderComponent(props) {
     <View
       style={[
         HeaderStyles.headerContainer,
+        styles.headerStyle,
         props.hideBorderBottom && {borderBottomWidth: 0},
       ]}>
       {/* Left */}
@@ -56,7 +57,7 @@ function HeaderComponent(props) {
         </TouchableOpacity>
       )}
       {/* Middle */}
-      <Text style={HeaderStyles.headerText}>{props.title}</Text>
+      <Text style={[HeaderStyles.headerText, props.titleStyle]}>{props.title}</Text>
       {/* Right */}
       {props.thirditemtext ? (
         <TouchableOpacity
@@ -87,6 +88,12 @@ function HeaderComponent(props) {
 }
 
 export default HeaderComponent;
+
+const styles= StyleSheet.create({
+  headerStyle:{
+     borderBottomWidth:1
+  }
+})
 
 HeaderComponent.propTypes = {
   firstitemtext: PropTypes.bool,

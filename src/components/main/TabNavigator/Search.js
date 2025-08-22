@@ -935,7 +935,7 @@ const Search = props => {
   //VIEW
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
 
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
 

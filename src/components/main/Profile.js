@@ -530,14 +530,13 @@ const Profile = props => {
     );
   };
 
-
-  console.log(props.userProfileResp,'profdfdjskf')
+  console.log(props.userProfileResp, 'profdfdjskf');
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
       <SafeAreaView style={{flex: 1}}>
-        <View style={HeaderStyles.headerContainer}>
+        <View style={[HeaderStyles.headerContainer, {borderBottomWidth: 1}]}>
           <View style={HeaderStyles.leftItem}>
             <TouchableOpacity
               style={{marginRight: normalise(10)}}

@@ -12,9 +12,11 @@ import {
   Image,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import Colors from '../../assests/Colors';
@@ -69,6 +71,8 @@ function SessionDetail(props) {
   const touchable = useRef();
   const [showPopover, setShowPopover] = useState(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
+  const [currentListners, setCurrentListeners] = useState([]);
+  const {width, height} = useWindowDimensions();
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -82,6 +86,8 @@ function SessionDetail(props) {
   const sessionDataForJoineeAfterJoin =
     sessionReduxData.CurrentSessionJoineeInfo?.data;
 
+  console.log(sessionDetailReduxdata, 'thshfdfhffsfdh');
+
   const currentEmitedSongStatus = useRef({
     hostId: null,
     startAudioMixing: null,
@@ -92,7 +98,7 @@ function SessionDetail(props) {
     pausedAt: null,
   });
 
-  console.log(sessionDetailReduxdata, 'thi is the session id>>');
+  // console.log(sessionDetailReduxdata, 'thi is the session id>>');
 
   const {
     progress,
@@ -261,13 +267,11 @@ function SessionDetail(props) {
   }, [props?.route?.params?.sessionId]);
 
   useEffect(() => {
-    // if (sessionReduxData?.hasLeftSession) {
-    //     // Alert.alert(sessionReduxData?.hasLeftSession?.toString())
-    //     // props.navigation.goBack()
-    // }
     if (sessionDetailReduxdata?.users) {
       const isUserExist = checkUserExistence();
-      // Alert.alert(isUserExist.toString())
+    }
+    if (sessionDetailReduxdata?.watch_users?.length > 0) {
+      setCurrentListeners(sessionDetailReduxdata?.watch_users);
     }
   }, [sessionDetailReduxdata]);
 
@@ -292,6 +296,10 @@ function SessionDetail(props) {
           }
           socketService.on('session_play_status', handleStatusUpdate);
           socketService.on('session_ended_status', handleListerUserStatus);
+          socketService.on('session_users_status', data => {
+            console.log('Got session_users_status in this file:', data);
+            handleListerJoineeStatus?.(data);
+          });
           // }
         } catch (err) {
           console.error('Socket setup error:', err);
@@ -360,7 +368,20 @@ function SessionDetail(props) {
     }
   }, [sessionDetailReduxdata]);
 
+  useEffect(() => {
+    if (!sessionDetailReduxdata?.isLive) {
+      setCurrentListeners([]);
+    }
+  }, [sessionDetailReduxdata?.isLive]);
+
   //helperss***********************************************************************************
+
+  const handleListerJoineeStatus = res => {
+    if (res && res?.message) {
+      toast('Error', res?.message);
+    }
+    setCurrentListeners(res?.users);
+  };
 
   const handleListerUserStatus = res => {
     if (res?.isLive == false) {
@@ -606,6 +627,8 @@ function SessionDetail(props) {
               ? () => null
               : handleJoinLeaveSession
           }
+          hideBorderBottom={false}
+          titleStyle={{fontFamily: 'ProximaNova-Semibold'}}
         />
         <View style={{flex: 1}}>
           <View style={{flex: 2.5}}>
@@ -667,22 +690,47 @@ function SessionDetail(props) {
                         //     ?.startAudioMixing && {opacity: 1},
                         isPlayingCurrent && {opacity: 1},
                       ]}>
-                      <TouchableOpacity
-                        disabled={true}
-                        onPress={() => {}}
-                        style={styles.playButtonStyle}>
-                        <Image
-                          // source={playVisible ? ImagePath.play : ImagePath.pause}
-                          source={
-                            isPlayingCurrent &&
-                            currentEmitedSongStatus?.current?.startAudioMixing
-                              ? ImagePath.pause
-                              : ImagePath.play
-                          }
-                          style={{height: normalise(25), width: normalise(25)}}
-                          resizeMode="contain"
-                        />
-                      </TouchableOpacity>
+                      {sessionDetailReduxdata?.isLive ? (
+                        isPlayingCurrent ? (
+                          <TouchableOpacity
+                            disabled={true}
+                            onPress={() => {}}
+                            style={styles.playButtonStyle}>
+                            <Image
+                              // source={playVisible ? ImagePath.play : ImagePath.pause}
+                              source={
+                                isPlayingCurrent &&
+                                currentEmitedSongStatus?.current
+                                  ?.startAudioMixing
+                                  ? ImagePath.pause
+                                  : ImagePath.play
+                              }
+                              style={{
+                                height: normalise(25),
+                                width: normalise(25),
+                              }}
+                              resizeMode="contain"
+                            />
+                          </TouchableOpacity>
+                        ) : (
+                          <View style={styles.playButtonStyle}></View>
+                        )
+                      ) : index === 0 ? (
+                        <TouchableOpacity
+                          disabled={true}
+                          style={styles.playButtonStyle}>
+                          <Image
+                            source={ImagePath.playCenter}
+                            style={{
+                              height: normalise(14),
+                              width: normalise(14),
+                            }}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacity>
+                      ) : (
+                        <View style={styles.playButtonStyle}></View>
+                      )}
                       <Image
                         source={{uri: item?.song_image}}
                         style={styles.songListItemImage}
@@ -708,14 +756,76 @@ function SessionDetail(props) {
               />
             </View>
           </View>
+          <View style={styles.listenersContainer}>
+            <View style={styles.listenersTextWrapper}>
+              <Text
+                style={[
+                  styles.listItemHeaderSongTextTitle,
+                  {marginTop: normalise(5), fontSize: normalise(12)},
+                ]}
+                numberOfLines={2}>
+                LISTENERS
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.bottomLineStyle,
+                {
+                  width: width / 3.8,
+                  marginBottom: normalise(8),
+                  marginTop: normalise(0),
+                },
+              ]}></View>
+            <ScrollView style={{flex: 1}}>
+              {currentListners?.length > 0 ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                  }}>
+                  {currentListners?.map((item, index) => {
+                    return (
+                      <View style={[styles.joineeIitemWrapper]}>
+                        <Image
+                          source={
+                            item?.profile_image
+                              ? {
+                                  uri:
+                                    constants.profile_picture_base_url +
+                                    item?.profile_image,
+                                }
+                              : ImagePath.userPlaceholder
+                          }
+                          style={[styles.songListItemImage]}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    );
+                  })}
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={styles.noJoineeText}>
+                    No listeners available
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          </View>
         </View>
-        <TrackProgress
+        {/* <TrackProgress
           setModalVisible={() => null}
           modalVisible={false}
           duration={appleFullSongDuration}
           position={progress}
           isShow={false}
-        />
+        /> */}
         <Popover
           from={touchable}
           isVisible={showPopover}
@@ -844,8 +954,8 @@ const styles = StyleSheet.create({
   },
 
   playButtonStyle: {
-    width: normalise(40),
-    height: normalise(40),
+    width: normalise(45),
+    height: normalise(45),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -877,6 +987,13 @@ const styles = StyleSheet.create({
     borderEndWidth: 1,
     borderRightColor: Colors.meta,
     width: '50%',
+  },
+  noJoineeText: {
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Regular',
+    fontSize: normalise(12),
+    textAlign: 'center',
+    marginTop: '20%',
   },
 });
 

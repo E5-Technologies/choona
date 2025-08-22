@@ -2421,71 +2421,84 @@ function MySessionDetailScreen(props) {
                 />
               </View>
             </View>
-            {islive ? (
-              currentListners?.length > 0 ? (
-                <View style={styles.listenersContainer}>
-                  <View style={styles.listenersTextWrapper}>
-                    <Text
-                      style={[
-                        styles.listItemHeaderSongTextTitle,
-                        {marginTop: normalise(5), fontSize: normalise(12)},
-                      ]}
-                      numberOfLines={2}>
-                      LISTENERS
+            {/* {islive ? (
+              currentListners?.length > 0 ? ( */}
+            <View style={styles.listenersContainer}>
+              <View style={styles.listenersTextWrapper}>
+                <Text
+                  style={[
+                    styles.listItemHeaderSongTextTitle,
+                    {marginTop: normalise(5), fontSize: normalise(12)},
+                  ]}
+                  numberOfLines={2}>
+                  LISTENERS
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.bottomLineStyle,
+                  {
+                    width: width / 3.8,
+                    marginBottom: normalise(8),
+                    marginTop: normalise(0),
+                  },
+                ]}></View>
+              <ScrollView style={{flex: 1}}>
+                {currentListners?.length > 0 ? (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      flexWrap: 'wrap',
+                    }}>
+                    {currentListners?.map((item, index) => {
+                      return (
+                        <View
+                          style={[
+                            styles.joineeIitemWrapper,
+                            // index == 0 &&
+                            //   currentListners?.length > 1 && {
+                            //     marginLeft: normalise(40),
+                            //   },
+                            // index == 3 && {marginRight: normalise(40)},
+                          ]}>
+                          <Image
+                            source={
+                              item?.profile_image
+                                ? {
+                                    uri:
+                                      constants.profile_picture_base_url +
+                                      item?.profile_image,
+                                  }
+                                : ImagePath.userPlaceholder
+                            }
+                            style={[styles.songListItemImage]}
+                            resizeMode="cover"
+                          />
+                        </View>
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={styles.noJoineeText}>
+                      No listeners available
                     </Text>
                   </View>
-                  <View
-                    style={[
-                      styles.bottomLineStyle,
-                      {
-                        width: width / 3.8,
-                        marginBottom: normalise(8),
-                        marginTop: normalise(0),
-                      },
-                    ]}></View>
-                  <ScrollView style={{flex: 1}}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap',
-                      }}>
-                      {currentListners?.map((item, index) => {
-                        return (
-                          <View
-                            style={[
-                              styles.joineeIitemWrapper,
-                              // index == 0 &&
-                              //   currentListners?.length > 1 && {
-                              //     marginLeft: normalise(40),
-                              //   },
-                              // index == 3 && {marginRight: normalise(40)},
-                            ]}>
-                            <Image
-                              source={
-                                item?.profile_image
-                                  ? {
-                                      uri:
-                                        constants.profile_picture_base_url +
-                                        item?.profile_image,
-                                    }
-                                  : ImagePath.userPlaceholder
-                              }
-                              style={[styles.songListItemImage]}
-                              resizeMode="cover"
-                            />
-                          </View>
-                        );
-                      })}
-                    </View>
-                  </ScrollView>
-                </View>
-              ) : (
+                )}
+              </ScrollView>
+            </View>
+            {/* ) : (
                 <View>
                   <Text style={styles.noJoineeText}>No listeners available</Text>
                 </View>
               )
-            ) : null}
+            ) : null} */}
           </View>
           {!props.route.params.isforEdit && (
             <TrackProgress
@@ -2730,8 +2743,8 @@ const styles = StyleSheet.create({
     fontFamily: 'ProximaNova-Regular',
     fontSize: normalise(12),
     textAlign: 'center',
-    marginTop: normalise(20),
-  }
+    marginTop: '20%',
+  },
 });
 
 export default MySessionDetailScreen;

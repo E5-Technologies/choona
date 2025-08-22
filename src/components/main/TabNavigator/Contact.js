@@ -252,7 +252,7 @@ const Contact = props => {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
       <Loader visible={bool} />
       <SafeAreaView style={{ flex: 1 }}>
@@ -260,8 +260,8 @@ const Contact = props => {
           title={'SAVED SONGS'}
           thirditemtext={true}
           texttwo={''}
-          firstitemtext={false}
-          imageone={ImagePath.backicon}
+          // firstitemtext={false}
+          // imageone={ImagePath.backicon}
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}

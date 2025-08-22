@@ -1427,7 +1427,6 @@ const Home = props => {
       console.log('empty');
     }
   }
-  const insets = useSafeAreaInsets();
   return (
     <View
       style={{
@@ -1437,10 +1436,10 @@ const Home = props => {
       {/* {Platform.OS == 'android' && (
         <StatusBar backgroundColor={Colors.darkerblack} />
       )} */}
-      <StatusBar
+      {/* <StatusBar
         barStyle="light-content" // 👈 Makes iOS status bar text white
         backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
-      />
+      /> */}
       {/* <SafeAreaView style={{flex: 1, position: 'relative'}}> */}
       <Timer
         onFinish={() => {
@@ -1992,8 +1991,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalise(50),
     borderBottomColor: Colors.fadeblack,
     borderBottomWidth: normalise(1),
-    width:"100%",
-    justifyContent:'center'
+    width: '100%',
+    justifyContent: 'center',
   },
   tabBarButtonStyle: {
     width: '50%',

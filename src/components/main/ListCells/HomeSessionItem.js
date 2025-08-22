@@ -41,6 +41,13 @@ const HomeSessionItem = ({
         )
       }>
       <View style={styles.listItemHeaderSongDetails}>
+        {item?.isLive && (
+          <Image
+            source={ImagePath.liveImage}
+            style={styles.liveImageStyle}
+            resizeMode="contain"
+          />
+        )}
         <View style={styles.nameWrapper}>
           <Text
             style={[
@@ -235,4 +242,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   listItemHeaderPlay: {height: normalise(24), width: normalise(24)},
+  liveImageStyle: {
+    width: 100,
+    height: 35,
+    aspectRatio: 16 / 9,
+    position: 'absolute',
+    top: -35,
+  },
 });
