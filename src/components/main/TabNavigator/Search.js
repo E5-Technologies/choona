@@ -89,6 +89,9 @@ const Search = props => {
   const [songData, setSongData] = useState([]); // user search data...ignore the naming
   const [searchPostData, setSearchPostData] = useState([]); //search post data
   const [top50, setTop50] = useState([]); //top 50 data
+  const [topSongSearchData, setTopSongSearchData] = useState([]);
+
+  console.log(top50[0], 'sfhdfdsfdhfjkdhdfhfds');
 
   console.log(JSON.stringify(searchPostData[0]), 'dhfdshfdjfhdsfhk');
 
@@ -247,7 +250,25 @@ const Search = props => {
     }
   }
 
+  useEffect(() => {
+    let topSongSearchResult = filteredSongs;
+    setTopSongSearchData(topSongSearchResult);
+  }, [genreSearchText]);
+
   // RENDER FUNCTION FLATLIST
+
+  const filteredSongs = top50?.filter(item => {
+    const name = item?.attributes?.name?.toLowerCase() || '';
+    const artist = item?.attributes?.artistName?.toLowerCase() || '';
+    const album = item?.attributes?.albumName?.toLowerCase() || '';
+
+    const query = genreSearchText?.toLowerCase() ?? '';
+
+    return (
+      name.includes(query) || artist.includes(query) || album.includes(query)
+    );
+  });
+
   function renderUserData(data) {
     return (
       <ActivityListItem
@@ -759,7 +780,7 @@ const Search = props => {
       }
     } else {
       let search = _.filter(props.top50SongsResponse, item => {
-        return item._id.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+        return item?._id?.toLowerCase()?.indexOf(text?.toLowerCase()) !== -1;
       });
       // alert("search"+JSON.stringify(search))
       setTop50(search);
@@ -936,17 +957,11 @@ const Search = props => {
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
-
       <Loader visible={props.status === USER_SEARCH_REQUEST} />
-
       <Loader visible={props.postStatus === SEARCH_POST_REQUEST} />
-
       <Loader visible={props.top50SongsStatus === TOP_50_SONGS_REQUEST} />
-
       <Loader visible={contactsLoading} />
-
       <Loader visible={bool} />
-
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
@@ -970,7 +985,7 @@ const Search = props => {
             }}>
             <TouchableOpacity
               style={{
-                width: '33%',
+                width: '50%',
                 height: normalise(40),
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1007,7 +1022,7 @@ const Search = props => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                width: '33%',
+                width: '50%',
                 height: normalise(40),
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1039,7 +1054,7 @@ const Search = props => {
                 />
               ) : null}
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 width: '33%',
                 height: normalise(40),
@@ -1074,9 +1089,9 @@ const Search = props => {
                   resizeMode="contain"
                 />
               ) : null}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          {usersSearch || songSearch ? (
+          {usersSearch || songSearch || genreSearch ? (
             <View
               style={{
                 width: '100%',
@@ -1098,14 +1113,15 @@ const Search = props => {
                 }}
                 keyboardAppearance="dark"
                 autoCorrect={false}
-                value={usersSearch ? usersSearchText : songSearchText}
+                value={usersSearch ? usersSearchText : genreSearchText}
                 placeholder={usersSearch ? 'Search Users' : 'Search Songs'}
                 placeholderTextColor={Colors.darkgrey}
                 onChangeText={text => {
                   search(text);
                   usersSearch
                     ? setUsersSearchText(text)
-                    : setSongSearchText(text);
+                    : // : setSongSearchText(text);
+                      setGenreSearchText(text);
                 }}
               />
               <Image
@@ -1122,7 +1138,8 @@ const Search = props => {
                 resizeMode="contain"
               />
               {(usersSearch && usersSearchText) ||
-              (songSearch && songSearchText) ? (
+              // (songSearch && songSearchText) ? (
+              (genreSearch && genreSearchText) ? (
                 <TouchableOpacity
                   onPress={() => {
                     clearSearch();
@@ -1279,7 +1296,7 @@ const Search = props => {
             ) : (
               <>
                 <FlatList
-                  data={top50}
+                  data={topSongSearchData ? topSongSearchData : top50}
                   renderItem={renderGenreData}
                   keyExtractor={(item, index) => index.toString()}
                   numColumns={2}
