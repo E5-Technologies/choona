@@ -1,24 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
+  Dimensions,
   FlatList,
   Image,
+  Keyboard,
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
-  Keyboard,
-  TextInput,
-  Dimensions,
 } from 'react-native';
-import Colors from '../../assests/Colors';
-import normalise from '../../utils/helpers/Dimens';
-import StatusBar from '../../utils/MyStatusBar';
-import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
-import ImagePath from '../../assests/ImagePath';
-import TextInputField from '../../widgets/TextInputField';
 import {connect} from 'react-redux';
 import {createPostRequest} from '../../action/PostAction';
 import {
@@ -26,20 +19,24 @@ import {
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
 } from '../../action/TypeConstants';
-import {pausePlayerAction} from '../../saga/PlayerSaga';
-import Loader from '../../widgets/AuthLoader';
+import Colors from '../../assests/Colors';
+import ImagePath from '../../assests/ImagePath';
+import normalise from '../../utils/helpers/Dimens';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
+import StatusBar from '../../utils/MyStatusBar';
+import Loader from '../../widgets/AuthLoader';
+import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
 import GradientButton from '../common/GradientButton';
 
 let status;
 const deviceWidth = Dimensions.get('window').width;
 
 function CreatePlayList(props) {
-  const buttonLineWidth = deviceWidth * 0.80;
+  const buttonLineWidth = deviceWidth * 0.8;
   console.log(props.route?.params, 'these are params');
   const {songItem, previousPlaylistData} = props.route?.params;
-  console.log(songItem, 'this is props Item playlist');
+  console.log(songItem, previousPlaylistData, 'this is props Item playlist');
   const {width, height} = useWindowDimensions();
   const [playListArary, setPlayListArray] = useState([]);
   const [playListName, setPlayListName] = useState('');
@@ -68,22 +65,22 @@ function CreatePlayList(props) {
         song_uri:
           songItem.registerType === 'spotify'
             ? item.details.preview_url
-            : item.details.attributes.previews[0].url,
+            : item?.details?.attributes?.previews[0]?.url,
         original_song_uri:
           songItem.registerType === 'spotify'
             ? item.details.external_urls.spotify
-            : item.details.attributes.url,
+            : item?.details?.attributes?.url,
         song_name: item?.title,
         song_image: item?.image,
         artist_name: item?.title2,
         isrc_code:
           songItem.registerType === 'spotify'
             ? item.details.external_ids.isrc
-            : item.details.attributes.isrc,
+            : item?.details?.attributes?.isrc,
         album_name:
           songItem.registerType === 'spotify'
             ? item.details.album.name
-            : item.details.attributes.albumName,
+            : item?.details?.attributes?.albumName,
       };
     });
   };
@@ -161,7 +158,7 @@ function CreatePlayList(props) {
     let currentLength = playListArary?.length;
 
     const filteredArray = playListArary?.filter(
-      item => item.details.id !== itemId,
+      item => item?.details?.id !== itemId,
     );
     setPlayListArray(filteredArray);
     if (currentLength == 1) {
@@ -282,7 +279,10 @@ function CreatePlayList(props) {
             />
             <View style={styles.buttonWrapper}>
               <View
-                style={[styles.bottomLineStyle, {width: buttonLineWidth, marginBottom:11,   opacity: 0.3,}]}></View>
+                style={[
+                  styles.bottomLineStyle,
+                  {width: buttonLineWidth, marginBottom: 11, opacity: 0.3},
+                ]}></View>
               <GradientButton
                 title={'ADD SONG'}
                 containerStyle={{

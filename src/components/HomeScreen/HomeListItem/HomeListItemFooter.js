@@ -41,6 +41,7 @@ const HomeListItemFooter = ({
   singer,
   songUri,
   title,
+  songImage,
 }) => {
   const [actualNumLines, setActualNumLines] = useState(0);
   const [disabled, setDisabled] = useState(false);
@@ -83,11 +84,12 @@ const HomeListItemFooter = ({
         <View style={styles.listItemFooterInfo}>
           <Image
             source={
-              ImagePath
-                ? postType
-                  ? ImagePath.spotifyicon
-                  : ImagePath.apple_icon_round
-                : null
+              // ImagePath
+              //   ? postType
+              //     ? ImagePath.spotifyicon
+              //     : ImagePath.apple_icon_round
+              //   : null
+              {uri: songImage}
             }
             style={styles.listItemHeaderSongTypeIcon}
             resizeMode="contain"

@@ -70,6 +70,7 @@ import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
 import Reactions from '../../Reactions/Reactions';
 import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
 import ReportModal from '../../Posts/ReportModal';
+import MoreModal1 from '../../Posts/MoreModal1';
 
 let status;
 let postStatus;
@@ -89,11 +90,11 @@ const Search = props => {
   const [songData, setSongData] = useState([]); // user search data...ignore the naming
   const [searchPostData, setSearchPostData] = useState([]); //search post data
   const [top50, setTop50] = useState([]); //top 50 data
-  const [topSongSearchData, setTopSongSearchData] = useState([]);
+  const [topSongSearchData, setTopSongSearchData] = useState(null);
 
   console.log(top50[0], 'sfhdfdsfdhfjkdhdfhfds');
 
-  console.log(JSON.stringify(searchPostData[0]), 'dhfdshfdjfhdsfhk');
+  console.log(JSON.stringify(topSongSearchData?.[0]), 'dhfdshfdjfhdsfhk');
 
   const [positionInArray, setPositionInArray] = useState(0);
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -101,6 +102,7 @@ const Search = props => {
   const [visible, setVisible] = useState(false);
   const [modalReact, setModalReact] = useState('');
   const [reportModal, setReportModal] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
 
   const [typingTimeout, setTypingTimeout] = useState(0);
   // SEND SONG VARIABLES
@@ -576,7 +578,10 @@ const Search = props => {
         //     ptID: 0,
         //   });
         // }}
-      >
+        onPress={() => {
+          setPositionInArray(data.index);
+          setModalVisible1(true);
+        }}>
         <Image
           source={{
             // uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
@@ -1285,7 +1290,7 @@ const Search = props => {
             )
           ) : null}
           {genreSearch ? ( //Top Songs VIEW
-            top50.length === 0 ? (
+            top50?.length === 0 ? (
               !isKeyboardVisible && (
                 <EmptyComponent
                   image={ImagePath.emptyPost}
@@ -1296,7 +1301,9 @@ const Search = props => {
             ) : (
               <>
                 <FlatList
-                  data={topSongSearchData ? topSongSearchData : top50}
+                  data={
+                    topSongSearchData?.length > 0 ? topSongSearchData : top50
+                  }
                   renderItem={renderGenreData}
                   keyExtractor={(item, index) => index.toString()}
                   numColumns={2}
@@ -1353,6 +1360,21 @@ const Search = props => {
               </Text>
             </View>
           </Modal>
+
+          {modalVisible1 && (
+            <MoreModal1
+              setBool={setBool}
+              bottomSheetRef={bottomSheetRef}
+              openInAppleORSpotify={openInAppleORSpotify}
+              index={positionInArray}
+              setIndex={setPositionInArray}
+              navigation={props.navigation}
+              postData={top50}
+              show={modalVisible1}
+              setShow={setModalVisible1}
+              registerType={props.registerType}
+            />
+          )}
         </SafeAreaView>
       </KeyboardAvoidingView>
     </View>

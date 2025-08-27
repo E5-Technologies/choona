@@ -120,7 +120,8 @@ const ImagePath = {
   hamburger:require('./images/hamburger.png'),
   headPhoneImage:require('./images/Headphones.png'),
   liveImage:require('./images/live-stream.png'),
-  playCenter:require("./images/playCenter.png")
+  playCenter:require("./images/playCenter.png"),
+  choonaPlay:require("./images/choona_play.png")
 };
 
 export default ImagePath;

@@ -195,6 +195,7 @@ function HomeItemList(props) {
         singer={props.singer}
         songUri={props.songUri}
         title={props.title}
+        songImage={props.image[0].song_image}
       />
     </View>
   );
