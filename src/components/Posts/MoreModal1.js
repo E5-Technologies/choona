@@ -70,22 +70,23 @@ const MoreModal1 = ({
         song_image:
           page === 'insideMessage'
             ? postData[index].image
-            : postData[index].song_image,
+            : postData[index].attributes?.artwork?.url?.replace(
+                '{w}x{h}',
+                '500x500',
+              ),
         artist_name: postData[index].attributes.artistName,
         album_name: postData[index].attributes.albumName,
-        post_id: postData[index]._id,
+        post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
         chat_id:
-          page === 'insideMessage' || chatId ? postData[index].key : null,
-        type: page === 'insideMessage' ? 'chat' : type,
-        isrc_code: postData[index].isrc_code,
-        original_song_uri: postData[index].original_song_uri,
-        original_reg_type:
-          page === 'insideMessage' || page === 'player'
-            ? postData[index].original_reg_type
-            : postData[index].userDetails.register_type,
+          page === 'insideMessage' || chatId ? postData[index]?.key : null,
+        type: page === 'insideMessage' ? 'chat' : postData[index].type,
+        isrc_code: postData[index].attributes.isrc,
+        original_song_uri: postData[index].attributes.url,
+        original_reg_type: registerType,
+        apple_song_id: postData[index]?.id,
       };
+      console.log(saveSongObject, 'fdkfjhsdfjdkf');
       saveSongReq(saveSongObject);
-      setShow(!show);
     }
   };
 
@@ -197,7 +198,7 @@ const MoreModal1 = ({
             style={[styles.modalButton]}
             onPress={() => {
               setShow(false);
-              //   saveUnsaveAction();
+              saveUnsaveAction();
             }}>
             <Image
               source={ImagePath ? ImagePath.boxicon : null}
@@ -212,14 +213,28 @@ const MoreModal1 = ({
             style={[styles.modalButton]}
             onPress={() => {
               setShow(false);
+              if (bottomSheetRef) {
+                bottomSheetRef.open();
+              }
 
-              //   if (bottomSheetRef) {
-              //     bottomSheetRef.open();
-              //   }
-              //   navigation.navigate('PlayerScreenSelectUser', {
-              //     item: postData[index ? index : 0],
-              //     page: page,
-              //   });
+              let sendSongObject = {
+                song_image: postData[index].attributes?.artwork?.url?.replace(
+                  '{w}x{h}',
+                  '500x500',
+                ),
+                preview_url: postData[index].attributes.previews[0].url,
+                song_name: postData[index].attributes.name,
+                artist_name: postData[index].attributes.artistName,
+                album_name: postData[index]?.attributes?.albumName,
+                item: postData[index || 0],
+                registerType: registerType,
+                isrc_code: postData[index]?.attributes?.isrc,
+                apple_song_id: postData[index]?.id,
+              };
+              navigation.navigate('PlayerScreenSelectUser', {
+                item: sendSongObject,
+                page: page,
+              });
             }}>
             <Image
               source={ImagePath ? ImagePath.sendicon : null}

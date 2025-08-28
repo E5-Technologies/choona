@@ -27,7 +27,6 @@ export async function putApi(url, payload, header) {
   });
 }
 
-
 export async function getSpotifyApi(url, header) {
   //  console.log('URL: ', `${url}`);
   //  console.log("header",header)
@@ -54,6 +53,7 @@ export async function postSpotifyApi(url, payload, header) {
 }
 
 export async function postApi(url, payload, header) {
+  console.log(header.accesstoken, 'thisistoken');
   console.log('URL: ', `${constants.BASE_URL}/${url}`);
 
   return await axios.post(`${constants.BASE_URL}/${url}`, payload, {

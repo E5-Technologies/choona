@@ -92,7 +92,7 @@ const Search = props => {
   const [top50, setTop50] = useState([]); //top 50 data
   const [topSongSearchData, setTopSongSearchData] = useState(null);
 
-  console.log(top50[0], 'sfhdfdsfdhfjkdhdfhfds');
+  console.log(JSON.stringify(top50[0]), 'sfhdfdsfdhfjkdhdfhfds');
 
   console.log(JSON.stringify(topSongSearchData?.[0]), 'dhfdshfdjfhdsfhk');
 

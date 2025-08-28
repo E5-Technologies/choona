@@ -70,7 +70,18 @@ const Profile = props => {
   const [profilePosts, setProfilePosts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  console.log(profilePosts, 'profilepposr');
 
+  const [allSongs, setAllSongs] = useState([]);
+
+  useEffect(() => {
+    if (profilePosts?.data) {
+      const songs = profilePosts.data.flatMap(obj => obj?.songs || []);
+      setAllSongs(songs);
+    }
+  }, [profilePosts]);
+
+  console.log(allSongs, 'sdhjsfhdsjhfkd');
   const onEndReached = async () => {
     setPageId(pageId + 1);
     const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
@@ -93,6 +104,7 @@ const Profile = props => {
         'x-access-token': token,
       },
     });
+    console.log(response?.data?.data, 'theseAreProfilePost');
     if (response) {
       setIsLoading(false);
       setProfilePosts(response.data.data);
@@ -217,8 +229,9 @@ const Profile = props => {
   };
 
   function renderProfileData(data) {
+    console.log(JSON.stringify(data), 'thisisactuladata');
     let array = [];
-    array.push(data.item);
+    array.push(data?.item);
     return (
       <TouchableOpacity
         onPress={() => {
@@ -231,16 +244,16 @@ const Profile = props => {
         style={{
           margin: 0,
           marginBottom:
-            data.index === profilePosts.length - 1
-              ? normalise(30)
-              : normalise(0),
+            data.index === allSongs?.length - 1 ? normalise(30) : normalise(0),
         }}>
         <Image
           source={{
             uri:
               props.userProfileResp?.register_type === 'spotify'
-                ? data.item.song_image
-                : data.item.song_image,
+                ? data?.item?.songs?.[0]?.song_image
+                : data?.item?.songs?.[0]?.song_image,
+            //   data?.item?.song_image
+            // : data?.item?.song_image,
           }}
           style={{
             width: Math.floor(Dimensions.get('window').width / 2),
@@ -632,9 +645,9 @@ const Profile = props => {
           />
         ) : (
           <FlatList
-            data={profilePosts}
+            data={profilePosts?.data}
             renderItem={renderProfileData}
-            keyExtractor={item => item._id}
+            keyExtractor={item => item?._id}
             showsVerticalScrollIndicator={false}
             numColumns={2}
             onEndReached={() => {

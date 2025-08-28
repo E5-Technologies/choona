@@ -16,6 +16,8 @@ import HomeListItemHeader from '../../HomeScreen/HomeListItem/HomeListItemHeader
 import HomeListItemFooter from '../../HomeScreen/HomeListItem/HomeListItemFooter';
 
 function HomeItemList(props) {
+
+  console.log(props?.image, 'fdshkjdfhdsjskf')
   const [numberOfLines, setNumberOfLines] = useState(3);
   const [viewMore, setViewMore] = useState(false);
   const {width, height} = useWindowDimensions();
@@ -128,7 +130,7 @@ function HomeItemList(props) {
               aspectRatio: 1,
             },
           ]}>
-          {props.image?.slice(0, 4)?.map((item, index) => {
+          {props?.image?.slice(0, 4)?.map((item, index) => {
             return (
               // <TouchableOpacity
               //   style={styles.bannerImageStyle}
@@ -144,9 +146,9 @@ function HomeItemList(props) {
               // </TouchableOpacity>
             );
           })}
-          {props.image?.length > 4 && (
+          {props?.image?.length > 4 && (
             <View style={styles.moreTextWrapper}>
-              <Text style={styles.moreText}>+{props.image?.length - 4}</Text>
+              <Text style={styles.moreText}>+{props?.image?.length - 4}</Text>
             </View>
           )}
         </View>
@@ -195,7 +197,7 @@ function HomeItemList(props) {
         singer={props.singer}
         songUri={props.songUri}
         title={props.title}
-        songImage={props.image[0].song_image}
+        songImage={props?.image[0]?.song_image}
       />
     </View>
   );

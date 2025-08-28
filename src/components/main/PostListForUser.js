@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Linking,
   Modal,
   Platform,
+  Alert,
 } from 'react-native';
 import Loader from '../../widgets/AuthLoader';
 import normalise from '../../utils/helpers/Dimens';
@@ -19,7 +20,7 @@ import MusicPlayerBar from '../../widgets/MusicPlayerBar';
 
 import _ from 'lodash';
 import HomeItemList from '../../components/main/ListCells/HomeItemList';
-import EmojiSelector, { Categories } from 'react-native-emoji-selector';
+import EmojiSelector, {Categories} from 'react-native-emoji-selector';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -39,26 +40,37 @@ import {
   DELETE_POST_FAILURE,
   DUMMY_ACTION_SUCCESS,
 } from '../../action/TypeConstants';
-import { getSpotifyToken } from '../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../utils/helpers/AppleDevToken';
+import {getSpotifyToken} from '../../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../../utils/helpers/AppleDevToken';
 import {
   getProfileRequest,
   homePageReq,
   reactionOnPostRequest,
   userFollowUnfollowRequest,
   getUsersFromHome,
+  dummyRequest,
 } from '../../action/UserAction';
-import { saveSongRequest } from '../../action/SongAction';
-import { deletePostReq } from '../../action/PostAction';
-import { connect } from 'react-redux';
+import {saveSongRefReq, saveSongRequest} from '../../action/SongAction';
+import {deletePostReq} from '../../action/PostAction';
+import {connect} from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import axios from 'axios';
 
-import { useScrollToTop } from '@react-navigation/native';
+import {useScrollToTop} from '@react-navigation/native';
 import MoreModal from '../Posts/MoreModal';
 import Reactions from '../Reactions/Reactions';
-import { ReactionsContext } from '../Reactions/UseReactions/ReactionsContext';
+import {ReactionsContext} from '../Reactions/UseReactions/ReactionsContext';
+import {AlarmType} from '@notifee/react-native';
+import {AppleMusicContext} from '../../context/AppleMusicContext';
+import {extractSongIdFromUrl} from '../../utils/helpers/CommonFunctions';
+import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
+import {
+  Player,
+  useCurrentSong,
+  useIsPlaying,
+} from '@lomray/react-native-apple-music';
+import MusicPlayer from '../../widgets/MusicPlayer';
 
 let status = '';
 let songStatus = '';
@@ -75,6 +87,11 @@ function PostListForUser(props) {
   const [totalReact, setTotalReact] = useState([]);
   const [posts, setPosts] = useState(props.route.params.posts);
 
+  const {
+    haveAppleMusicSubscription,
+    // isPlaying
+  } = useContext(AppleMusicContext);
+
   // console.log("prosts"+JSON.stringify(props.route.params.posts));
 
   const ref = React.useRef(null);
@@ -82,6 +99,14 @@ function PostListForUser(props) {
   let changePlayer = false;
 
   useScrollToTop(ref);
+
+  const {
+    onAuth,
+    setPlaybackQueue,
+    onToggle,
+    resetPlaybackQueue,
+    checkPlaybackState,
+  } = usePlayFullAppleMusic();
 
   useEffect(() => {
     let newarray = [];
@@ -446,7 +471,7 @@ function PostListForUser(props) {
     return `${reactId}##${postId}`;
   };
 
-  const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+  const {hitReact: newHitReact, isPending} = useContext(ReactionsContext);
 
   // function hitReact(reactId, postId) {
   //   let reactionObject = {
@@ -502,38 +527,131 @@ function PostListForUser(props) {
     };
 
     return (
+      // <HomeItemList
+      //   id={data.item._id}
+      //   onReactionPress={newHitReact}
+      //   myReactionsPending={reactionPendingMap}
+      //   myReactions={reactionMap}
+      //   // image={data.item.song_image}
+      //   picture={data.item.userDetails?.profile_image}
+      //   name={data.item.userDetails?.username}
+      //   comment_count={data?.item?.comment_count ? data?.item?.comment_count : 0}
+      //   reaction_count={data?.item?.reaction_count ? data?.item?.reaction_count : 0}
+      //   reactions={{
+      //     fire_count: data.item.fire_count,
+      //     love_count: data.item.love_count,
+      //     dancer_count: data.item.dancer_count,
+      //     man_dancing_count: data.item.man_dancing_count,
+      //     face_count: data.item.face_count,
+      //     thumbsup_count: data.item.thumbsup_count,
+      //   }}
+      //   content={data.item.post_content}
+      //   navi={props}
+      //   time={data.item.createdAt}
+      //   title={data.item.song_name}
+      //   singer={data.item.artist_name}
+      //   songUri={data.item.song_uri}
+      //   modalVisible={modal1Visible}
+      //   postType={data.item.social_type === 'spotify'}
+      //   onPressImage={() => {
+      //     if (props.userProfileResp._id === data.item.user_id) {
+      //       props.navigation.navigate('Profile', { fromAct: false });
+      //     } else {
+      //       props.navigation.navigate('OthersProfile', {
+      //         id: data.item.user_id,
+      //       });
+      //     }
+      //   }}
+      //   onAddReaction={() => {
+      //     hitreact1(modal1Visible);
+      //   }}
+      //   onPressMusicbox={() => {
+      //     props.navigation.navigate('Player', {
+      //       comments: [],
+      //       song_title: data.item.song_name,
+      //       album_name: data.item.album_name,
+      //       song_pic: data.item.song_image,
+      //       username: data.item.userDetails.username,
+      //       profile_pic: data.item.userDetails.profile_image,
+      //       time: data.item.time,
+      //       title: data.item.title,
+      //       uri: data.item.song_uri,
+      //       reactions: data.item.reaction,
+      //       id: data.item._id,
+      //       artist: data.item.artist_name,
+      //       changePlayer: changePlayer,
+      //       originalUri:
+      //         data.item.original_song_uri !== ''
+      //           ? data.item.original_song_uri
+      //           : undefined,
+      //       registerType: data.item.userDetails.register_type,
+      //       isrc: data.item.isrc_code,
+      //       details: data.item,
+      //     });
+      //   }}
+      //   onPressReactionbox={() => {
+      //     props.navigation.navigate('HomeItemReactions', {
+      //       reactions: data.item.reaction,
+      //       post_id: data.item._id,
+      //       onSelectReaction: (ID, reaction, reactionList) =>
+      //         _onReaction(ID, reaction, reactionList),
+      //     });
+      //   }}
+      //   onPressCommentbox={() => {
+      //     props.navigation.push('HomeItemComments', {
+      //       index: data.index,
+      //       comment: data.item.comment,
+      //       image: data.item.song_image,
+      //       username: data.item.userDetails.username,
+      //       userComment: data.item.post_content,
+      //       time: data.item.createdAt,
+      //       id: data.item._id,
+      //       onSelect: (ID, comment) => _onSelectBack(ID, comment),
+      //     });
+      //   }}
+      //   onPressSecondImage={() => {
+      //     setPositionInArray(data.index);
+      //     setModalVisible(true);
+      //   }}
+      //   marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+      // />
+
       <HomeItemList
-        id={data.item._id}
-        onReactionPress={newHitReact}
-        myReactionsPending={reactionPendingMap}
-        myReactions={reactionMap}
-        image={data.item.song_image}
-        picture={data.item.userDetails.profile_image}
-        name={data.item.userDetails.username}
-        comment_count={data.item.comment_count ? data.item.comment_count : 0}
-        reaction_count={data.item.reaction_count ? data.item.reaction_count : 0}
+        // image={data?.item?.songs[0]?.song_image}
+        image={data?.item?.songs}
+        id={data.item?._id}
+        picture={data?.item?.userDetails?.profile_image}
+        name={data?.item?.userDetails?.username}
+        comment_count={data?.item?.comment_count ? data.item.comment_count : 0}
+        reaction_count={
+          data?.item?.reaction_count ? data.item.reaction_count : 0
+        }
         reactions={{
-          fire_count: data.item.fire_count,
-          love_count: data.item.love_count,
-          dancer_count: data.item.dancer_count,
-          man_dancing_count: data.item.man_dancing_count,
-          face_count: data.item.face_count,
-          thumbsup_count: data.item.thumbsup_count,
+          fire_count: data?.item?.fire_count,
+          love_count: data?.item?.love_count,
+          dancer_count: data?.item?.dancer_count,
+          man_dancing_count: data?.item?.man_dancing_count,
+          face_count: data?.item?.face_count,
+          thumbsup_count: data?.item?.thumbsup_count,
         }}
-        content={data.item.post_content}
+        myReactions={reactionMap}
+        myReactionsPending={reactionPendingMap}
         navi={props}
-        time={data.item.createdAt}
-        title={data.item.song_name}
-        singer={data.item.artist_name}
-        songUri={data.item.song_uri}
+        content={data?.item?.post_content}
+        time={data?.item?.createdAt}
+        title={data?.item?.songs[0]?.song_name}
+        singer={data?.item?.songs[0]?.artist_name}
+        songUri={data?.item?.songs[0]?.song_uri}
         modalVisible={modal1Visible}
-        postType={data.item.social_type === 'spotify'}
+        postType={data?.item?.social_type === 'spotify'}
+        // postType={data?.item?.social_type}
+        onReactionPress={newHitReact}
         onPressImage={() => {
-          if (props.userProfileResp._id === data.item.user_id) {
-            props.navigation.navigate('Profile', { fromAct: false });
+          if (props.userProfileResp._id === data?.item?.user_id) {
+            props.navigation.navigate('Profile', {fromAct: false});
           } else {
             props.navigation.navigate('OthersProfile', {
-              id: data.item.user_id,
+              id: data?.item?.user_id,
             });
           }
         }}
@@ -541,46 +659,28 @@ function PostListForUser(props) {
           hitreact1(modal1Visible);
         }}
         onPressMusicbox={() => {
-          props.navigation.navigate('Player', {
-            comments: [],
-            song_title: data.item.song_name,
-            album_name: data.item.album_name,
-            song_pic: data.item.song_image,
-            username: data.item.userDetails.username,
-            profile_pic: data.item.userDetails.profile_image,
-            time: data.item.time,
-            title: data.item.title,
-            uri: data.item.song_uri,
-            reactions: data.item.reaction,
-            id: data.item._id,
-            artist: data.item.artist_name,
-            changePlayer: changePlayer,
-            originalUri:
-              data.item.original_song_uri !== ''
-                ? data.item.original_song_uri
-                : undefined,
-            registerType: data.item.userDetails.register_type,
-            isrc: data.item.isrc_code,
-            details: data.item,
-          });
+          return;
+          playSong(data);
+          setVisibleMiniPlayer(true);
         }}
         onPressReactionbox={() => {
           props.navigation.navigate('HomeItemReactions', {
-            reactions: data.item.reaction,
-            post_id: data.item._id,
-            onSelectReaction: (ID, reaction, reactionList) =>
-              _onReaction(ID, reaction, reactionList),
+            reactionCount: data?.item?.reaction_count
+              ? data?.item?.reaction_count
+              : 0,
+            post_id: data?.item?._id,
+            onSelectReaction: (ID, reaction) => _onReaction(ID, reaction),
           });
         }}
         onPressCommentbox={() => {
-          props.navigation.push('HomeItemComments', {
+          props.navigation.navigate('HomeItemComments', {
             index: data.index,
             comment: data.item.comment,
-            image: data.item.song_image,
+            image: data.item.songs[0]?.song_image,
             username: data.item.userDetails.username,
             userComment: data.item.post_content,
             time: data.item.createdAt,
-            id: data.item._id,
+            id: data?.item?._id,
             onSelect: (ID, comment) => _onSelectBack(ID, comment),
           });
         }}
@@ -589,8 +689,21 @@ function PostListForUser(props) {
           setModalVisible(true);
         }}
         marginBottom={data.index === posts.length - 1 ? normalise(60) : 0}
+        // play={
+        //   currentSongData?.id == props.playingSongRef.apple_song_id &&
+        //   isPlaying &&
+        //   props.playingSongRef.id == data.item?._id
+        //     ? true
+        //     : _.isEmpty(postArray)
+        //     ? false
+        //     : posts.length === postArray.length
+        //     ? postArray[data.index].playing
+        //     : false
+        // }
+        // // postArray[data.index].playing
+        onPlaylistImagePress={songIndex => playSong(data, songIndex)}
+        // playingSongRef={props.playingSongRef}
       />
-      // </TouchableOpacity>
     );
   }
 
@@ -682,8 +795,213 @@ function PostListForUser(props) {
     }
   };
 
+  const playSong = (data, songIndex = null) => {
+    const selectedSongIndex = songIndex ?? 0;
+    console.log(selectedSongIndex, 'hey this is index');
+    console.log(JSON.stringify(data?.item?.social_type), 'its lay song data');
+    if (
+      haveAppleMusicSubscription &&
+      data?.item?.social_type == 'apple' &&
+      Platform.OS == 'ios' &&
+      props.registerType == 'apple'
+    ) {
+      console.log(haveAppleMusicSubscription, 'this is>>');
+      // Alert.alert('yes have subscrition');
+      let songId = extractSongIdFromUrl(
+        data?.item?.songs[selectedSongIndex]?.original_song_uri,
+      );
+
+      let saveSongResObj = {};
+      (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
+        // (saveSongResObj.apple_song_id = data.item.songs[selectedSongIndex]?.apple_song_id),
+        (saveSongResObj.apple_song_id = songId),
+        (saveSongResObj.song_name =
+          data.item.songs[selectedSongIndex]?.song_name),
+        (saveSongResObj.album_name =
+          data.item.songs[selectedSongIndex]?.album_name),
+        (saveSongResObj.song_pic =
+          data.item.songs[selectedSongIndex]?.song_image),
+        (saveSongResObj.username = data.item.userDetails.username),
+        (saveSongResObj.profile_pic = data.item.userDetails.profile_image),
+        (saveSongResObj.commentData = data.item.comment);
+      saveSongResObj.reactionData = data.item.reaction;
+      (saveSongResObj.id = data.item?._id),
+        (saveSongResObj.artist =
+          data.item.songs[selectedSongIndex]?.artist_name),
+        (saveSongResObj.changePlayer = changePlayer);
+      (saveSongResObj.originalUri =
+        data.item.original_song_uri !== ''
+          ? data.item.original_song_uri
+          : undefined),
+        (saveSongResObj.isrc = data.item.songs[selectedSongIndex]?.isrc_code),
+        (saveSongResObj.regType = data.item.userDetails.register_type),
+        (saveSongResObj.details = data.item),
+        (saveSongResObj.showPlaylist = true),
+        (saveSongResObj.comingFromMessage = undefined);
+
+      props.saveSongRefReq(saveSongResObj);
+      props.dummyRequest();
+      if (currentSongData?.id != songId) {
+        console.log(songId?.toString(), songId, '><');
+        setPlaybackQueue(songId);
+        setTimeout(() => {
+          Player.play();
+          // playAppleSong()
+        }, 500);
+      } else {
+        setTimeout(() => {
+          onToggle();
+        }, 500);
+      }
+    } else {
+      if (props.playingSongRef === '') {
+        // Alert.alert('empty')
+        MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
+          .then(track => {
+            let saveSongResObj = {};
+            (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
+              (saveSongResObj.song_name =
+                data.item.songs[selectedSongIndex]?.song_name),
+              (saveSongResObj.album_name =
+                data.item.songs[selectedSongIndex]?.album_name),
+              (saveSongResObj.song_pic =
+                data.item.songs[selectedSongIndex]?.song_image),
+              (saveSongResObj.username = data.item.userDetails.username),
+              (saveSongResObj.profile_pic =
+                data.item.userDetails.profile_image),
+              (saveSongResObj.commentData = data.item.comment);
+            saveSongResObj.reactionData = data.item.reaction;
+            (saveSongResObj.id = data.item?._id),
+              (saveSongResObj.artist =
+                data.item.songs[selectedSongIndex]?.artist_name),
+              (saveSongResObj.changePlayer = changePlayer);
+            (saveSongResObj.originalUri =
+              data.item.original_song_uri !== ''
+                ? data.item.original_song_uri
+                : undefined),
+              (saveSongResObj.isrc =
+                data.item.songs[selectedSongIndex]?.isrc_code),
+              (saveSongResObj.regType = data.item.userDetails.register_type),
+              (saveSongResObj.details = data.item),
+              (saveSongResObj.showPlaylist = true),
+              (saveSongResObj.comingFromMessage = undefined);
+
+            props.saveSongRefReq(saveSongResObj);
+            props.dummyRequest();
+          })
+          .catch(err => {
+            console.log('Error while playing music..' + JSON.stringify(err));
+          });
+      } else {
+        if (
+          global.playerReference !== null &&
+          global.playerReference?._filename
+        ) {
+          console.log(global.playerReference, 'its global pre');
+          if (
+            global.playerReference._filename ===
+            data?.item?.songs[selectedSongIndex]?.song_uri
+          ) {
+            if (global.playerReference.isPlaying()) {
+              global.playerReference.pause();
+
+              setTimeout(() => {
+                findPlayingSong(posts);
+              }, 500);
+            } else {
+              global.playerReference.play(success => {
+                if (success) {
+                } else {
+                }
+              });
+
+              setTimeout(() => {
+                findPlayingSong(posts);
+              }, 500);
+            }
+          } else {
+            global.playerReference.release();
+            global.playerReference = null;
+            MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
+              .then(track => {
+                let saveSongResObj = {};
+                (saveSongResObj.uri =
+                  data.item.songs[selectedSongIndex]?.song_uri),
+                  (saveSongResObj.song_name =
+                    data.item.songs[selectedSongIndex]?.song_name),
+                  (saveSongResObj.album_name =
+                    data.item.songs[selectedSongIndex]?.album_name),
+                  (saveSongResObj.song_pic =
+                    data.item.songs[selectedSongIndex]?.song_image),
+                  (saveSongResObj.username = data.item.userDetails.username),
+                  (saveSongResObj.profile_pic =
+                    data.item.userDetails.profile_image),
+                  (saveSongResObj.commentData = data.item.comment);
+                saveSongResObj.reactionData = data.item.reaction;
+                (saveSongResObj.id = data.item?._id),
+                  (saveSongResObj.artist =
+                    data.item.songs[selectedSongIndex]?.artist_name),
+                  (saveSongResObj.changePlayer = changePlayer);
+                (saveSongResObj.originalUri =
+                  data.item.songs[selectedSongIndex]?.original_song_uri !== ''
+                    ? data.item.songs[selectedSongIndex]?.original_song_uri
+                    : undefined),
+                  (saveSongResObj.isrc =
+                    data.item.songs[selectedSongIndex]?.isrc_code),
+                  (saveSongResObj.regType =
+                    data.item.userDetails.register_type),
+                  (saveSongResObj.details = data.item),
+                  (saveSongResObj.showPlaylist = true),
+                  (saveSongResObj.comingFromMessage = undefined);
+
+                props.saveSongRefReq(saveSongResObj);
+                props.dummyRequest();
+              })
+              .catch(err => {});
+          }
+        } else {
+          MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
+            .then(track => {
+              let saveSongResObj = {};
+              (saveSongResObj.uri =
+                data.item.songs[selectedSongIndex]?.song_uri),
+                (saveSongResObj.song_name =
+                  data.item.songs[selectedSongIndex]?.song_name),
+                (saveSongResObj.album_name =
+                  data.item.songs[selectedSongIndex]?.album_name),
+                (saveSongResObj.song_pic =
+                  data.item.songs[selectedSongIndex]?.song_image),
+                (saveSongResObj.username = data.item.userDetails.username),
+                (saveSongResObj.profile_pic =
+                  data.item.userDetails.profile_image),
+                (saveSongResObj.commentData = data.item.comment);
+              saveSongResObj.reactionData = data.item.reaction;
+              (saveSongResObj.id = data.item?._id),
+                (saveSongResObj.artist =
+                  data.item.songs[selectedSongIndex]?.artist_name),
+                (saveSongResObj.changePlayer = changePlayer);
+              (saveSongResObj.originalUri =
+                data.item.songs[selectedSongIndex]?.original_song_uri !== ''
+                  ? data.item.songs[selectedSongIndex]?.original_song_uri
+                  : undefined),
+                (saveSongResObj.isrc =
+                  data.item.songs[selectedSongIndex]?.isrc_code),
+                (saveSongResObj.regType = data.item.userDetails.register_type),
+                (saveSongResObj.details = data.item),
+                (saveSongResObj.showPlaylist = true),
+                (saveSongResObj.comingFromMessage = undefined);
+
+              props.saveSongRefReq(saveSongResObj);
+              props.dummyRequest();
+            })
+            .catch(err => {});
+        }
+      }
+    }
+  };
+
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={bool} />
       <HeaderComponent
@@ -698,8 +1016,7 @@ function PostListForUser(props) {
       />
 
       {_.isEmpty(posts) ? (
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Image
             source={ImagePath.noposts}
             style={{
@@ -721,7 +1038,7 @@ function PostListForUser(props) {
           </Text>
         </View>
       ) : (
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <FlatList
             // style={{ marginTop: normalise(10) }}
             data={posts}
@@ -942,6 +1259,12 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
+    },
+    saveSongRefReq: object => {
+      dispatch(saveSongRefReq(object));
+    },
+    dummyRequest: () => {
+      dispatch(dummyRequest());
     },
   };
 };
