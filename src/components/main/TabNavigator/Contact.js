@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -14,7 +14,7 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from '../ListCells/SavedSongsListItem';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import StatusBar from '../../../utils/MyStatusBar';
 import {
   SAVED_SONGS_LIST_REQUEST,
@@ -30,13 +30,13 @@ import {
 } from '../../../action/SongAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import _ from 'lodash';
-import { getUsersFromHome } from '../../../action/UserAction';
-import { getSongFromisrc } from '../../../action/PlayerAction';
-import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
+import {getUsersFromHome} from '../../../action/UserAction';
+import {getSongFromisrc} from '../../../action/PlayerAction';
+import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
+import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 
 import EmptyComponent from '../../Empty/EmptyComponent';
@@ -251,11 +251,11 @@ const Contact = props => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
       <Loader visible={bool} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           title={'SAVED SONGS'}
           thirditemtext={true}

@@ -76,7 +76,7 @@ const MoreModal1 = ({
               ),
         artist_name: postData[index].attributes.artistName,
         album_name: postData[index].attributes.albumName,
-        post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
+        // post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
         chat_id:
           page === 'insideMessage' || chatId ? postData[index]?.key : null,
         type: page === 'insideMessage' ? 'chat' : postData[index].type,

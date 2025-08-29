@@ -9,6 +9,7 @@ import {
   Modal,
   Platform,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import Loader from '../../widgets/AuthLoader';
 import normalise from '../../utils/helpers/Dimens';
@@ -491,6 +492,7 @@ function PostListForUser(props) {
   /** ------------ */
 
   function renderItem(data) {
+    console.log(JSON.stringify(data?.item), 'tisidfdfsdf');
     /** REACTION - ADDITION */
     const reactionMap = {
       thumbsUp: data.item.fireReactionIds
@@ -659,9 +661,27 @@ function PostListForUser(props) {
           hitreact1(modal1Visible);
         }}
         onPressMusicbox={() => {
-          return;
-          playSong(data);
-          setVisibleMiniPlayer(true);
+          props.navigation.navigate('Player', {
+            comments: [],
+            song_title: data.item.songs[0]?.song_name,
+            album_name: data.item.songs[0]?.album_name,
+            song_pic: data.item.songs[0]?.song_image,
+            username: data.item.userDetails.username,
+            profile_pic: data.item.userDetails.profile_image,
+            // time: data.item.time,
+            // title: data.item.title,
+            uri: data?.item?.songs[0]?.song_uri,
+            // reactions: data.item.reaction,
+            // id: data.item._id,
+            id: data.item?.songs[0]?.id,
+            artist: data?.item?.songs[0]?.artist_name,
+            changePlayer: false,
+            originalUri: data.item.songs[0].original_song_uri,
+            registerType: data.item.userDetails.register_type,
+            isrc: data.item.songs[0].isrc_code,
+            details: data.item?.songs[0],
+            pple_song_id: data?.item?.songs[0]?.apple_song_id,
+          });
         }}
         onPressReactionbox={() => {
           props.navigation.navigate('HomeItemReactions', {
@@ -796,6 +816,7 @@ function PostListForUser(props) {
   };
 
   const playSong = (data, songIndex = null) => {
+    Alert.alert('hkdjfh');
     const selectedSongIndex = songIndex ?? 0;
     console.log(selectedSongIndex, 'hey this is index');
     console.log(JSON.stringify(data?.item?.social_type), 'its lay song data');
@@ -855,7 +876,7 @@ function PostListForUser(props) {
       }
     } else {
       if (props.playingSongRef === '') {
-        // Alert.alert('empty')
+        Alert.alert('empty');
         MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
           .then(track => {
             let saveSongResObj = {};
@@ -1002,170 +1023,175 @@ function PostListForUser(props) {
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
-      <StatusBar backgroundColor={Colors.darkerblack} />
+      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       <Loader visible={bool} />
-      <HeaderComponent
-        firstitemtext={false}
-        imageone={ImagePath.backicon}
-        title={props.route.params.profile_name}
-        thirditemtext={true}
-        texttwo={''}
-        onPressFirstItem={() => {
-          props.navigation.goBack();
-        }}
-      />
+      <SafeAreaView style={{flex: 1}}>
+        <HeaderComponent
+          firstitemtext={false}
+          imageone={ImagePath.backicon}
+          title={props.route.params.profile_name}
+          thirditemtext={true}
+          texttwo={''}
+          onPressFirstItem={() => {
+            props.navigation.goBack();
+          }}
+        />
 
-      {_.isEmpty(posts) ? (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Image
-            source={ImagePath.noposts}
-            style={{
-              height: normalise(150),
-              width: normalise(150),
-              marginTop: '28%',
-            }}
-            resizeMode="contain"
-          />
-          <Text
-            style={{
-              marginBottom: '20%',
-              marginTop: normalise(10),
-              color: Colors.white,
-              fontSize: normalise(14),
-              fontWeight: 'bold',
-            }}>
-            NO POSTS YET
-          </Text>
-        </View>
-      ) : (
-        <View style={{flex: 1}}>
-          <FlatList
-            // style={{ marginTop: normalise(10) }}
-            data={posts}
-            renderItem={renderItem}
-            initialScrollIndex={props.route.params.index}
-            getItemLayout={(data, index) => ({
-              length: 250,
-              offset: normalise(385) * index,
-              index,
-            })}
-            onScrollToIndexFailed={val => {
-              // console.log(val);
-            }}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => {
-              index.toString();
-            }}
-            ref={ref}
-          />
-
-          {props.status === DUMMY_ACTION_SUCCESS ? (
-            <MusicPlayerBar
-              onPress={() => {
-                props.navigation.navigate('Player', {
-                  comments: [],
-                  song_title: props.playingSongRef.song_name,
-                  album_name: props.playingSongRef.album_name,
-                  song_pic: props.playingSongRef.song_pic,
-                  username: props.playingSongRef.username,
-                  profile_pic: props.playingSongRef.profile_pic,
-                  uri: props.playingSongRef.uri,
-                  reactions: props.playingSongRef.reactionData,
-                  id: props.playingSongRef.id,
-                  artist: props.playingSongRef.artist,
-                  changePlayer: props.playingSongRef.changePlayer,
-                  originalUri: props.playingSongRef.originalUri,
-                  isrc: props.playingSongRef.isrc,
-                  registerType: props.playingSongRef.regType,
-                  details: props.playingSongRef.details,
-                  showPlaylist: props.playingSongRef.showPlaylist,
-                  comingFromMessage: props.playingSongRef.comingFromMessage,
-                });
-              }}
-              onPressPlayOrPause={() => {
-                setTimeout(() => {
-                  findPlayingSong(props.postData);
-                }, 500);
-              }}
-            />
-          ) : null}
-
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={visible}
-            onRequestClose={() => {
-              //Alert.alert("Modal has been closed.");
-            }}>
-            <View
+        {_.isEmpty(posts) ? (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Image
+              source={ImagePath.noposts}
               style={{
-                flex: 1,
-                backgroundColor: '#000000',
-                opacity: 0.9,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize:
-                    Platform.OS === 'android' ? normalise(70) : normalise(100),
-                }}>
-                {modalReact}
-              </Text>
-            </View>
-          </Modal>
-
-          {modalVisible && (
-            <MoreModal
-              setBool={setBool}
-              bottomSheetRef={bottomSheetRef}
-              index={positionInArray}
-              setIndex={setPositionInArray}
-              navigation={props.navigation}
-              openInAppleORSpotify={openInAppleORSpotify}
-              postData={posts}
-              show={modalVisible}
-              setShow={setModalVisible}
+                height: normalise(150),
+                width: normalise(150),
+                marginTop: '28%',
+              }}
+              resizeMode="contain"
             />
-          )}
-        </View>
-      )}
+            <Text
+              style={{
+                marginBottom: '20%',
+                marginTop: normalise(10),
+                color: Colors.white,
+                fontSize: normalise(14),
+                fontWeight: 'bold',
+              }}>
+              NO POSTS YET
+            </Text>
+          </View>
+        ) : (
+          <View style={{flex: 1}}>
+            <FlatList
+              // style={{ marginTop: normalise(10) }}
+              data={posts}
+              renderItem={renderItem}
+              initialScrollIndex={props.route.params.index}
+              getItemLayout={(data, index) => ({
+                length: 250,
+                offset: normalise(385) * index,
+                index,
+              })}
+              onScrollToIndexFailed={val => {
+                // console.log(val);
+              }}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => {
+                index.toString();
+              }}
+              ref={ref}
+            />
 
-      {modal1Visible === true ? (
-        <View
-          style={{
-            position: 'absolute',
-            margin: 20,
-            height: normalise(280),
-            width: '92%',
-            alignSelf: 'center',
-            marginHorizontal: normalise(15),
-            backgroundColor: Colors.white,
-            borderRadius: 20,
-            padding: 35,
-            bottom: 50,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}>
-          <EmojiSelector
-            category={Categories.history}
-            showHistory={true}
-            onEmojiSelected={emoji => {
-              setVisible(true);
-              setModalReact(emoji);
-              setTimeout(() => {
-                setVisible(false);
-              }, 2000);
-            }}
-          />
-        </View>
-      ) : null}
+            {props.status === DUMMY_ACTION_SUCCESS ? (
+              <MusicPlayerBar
+                onPress={() => {
+                  props.navigation.navigate('Player', {
+                    comments: [],
+                    song_title: props.playingSongRef.song_name,
+                    album_name: props.playingSongRef.album_name,
+                    song_pic: props.playingSongRef.song_pic,
+                    username: props.playingSongRef.username,
+                    profile_pic: props.playingSongRef.profile_pic,
+                    uri: props.playingSongRef.uri,
+                    reactions: props.playingSongRef.reactionData,
+                    id: props.playingSongRef.id,
+                    artist: props.playingSongRef.artist,
+                    changePlayer: props.playingSongRef.changePlayer,
+                    originalUri: props.playingSongRef.originalUri,
+                    isrc: props.playingSongRef.isrc,
+                    registerType: props.playingSongRef.regType,
+                    details: props.playingSongRef.details,
+                    showPlaylist: props.playingSongRef.showPlaylist,
+                    comingFromMessage: props.playingSongRef.comingFromMessage,
+                  });
+                }}
+                onPressPlayOrPause={() => {
+                  setTimeout(() => {
+                    findPlayingSong(props.postData);
+                  }, 500);
+                }}
+              />
+            ) : null}
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => {
+                //Alert.alert("Modal has been closed.");
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: '#000000',
+                  opacity: 0.9,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize:
+                      Platform.OS === 'android'
+                        ? normalise(70)
+                        : normalise(100),
+                  }}>
+                  {modalReact}
+                </Text>
+              </View>
+            </Modal>
+
+            {modalVisible && (
+              <MoreModal
+                setBool={setBool}
+                bottomSheetRef={bottomSheetRef}
+                index={positionInArray}
+                setIndex={setPositionInArray}
+                navigation={props.navigation}
+                openInAppleORSpotify={openInAppleORSpotify}
+                postData={posts}
+                show={modalVisible}
+                setShow={setModalVisible}
+              />
+            )}
+          </View>
+        )}
+
+        {modal1Visible === true ? (
+          <View
+            style={{
+              position: 'absolute',
+              margin: 20,
+              height: normalise(280),
+              width: '92%',
+              alignSelf: 'center',
+              marginHorizontal: normalise(15),
+              backgroundColor: Colors.white,
+              borderRadius: 20,
+              padding: 35,
+              bottom: 50,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}>
+            <EmojiSelector
+              category={Categories.history}
+              showHistory={true}
+              onEmojiSelected={emoji => {
+                setVisible(true);
+                setModalReact(emoji);
+                setTimeout(() => {
+                  setVisible(false);
+                }, 2000);
+              }}
+            />
+          </View>
+        ) : null}
+      </SafeAreaView>
     </View>
   );
 }
