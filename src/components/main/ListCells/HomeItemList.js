@@ -16,8 +16,6 @@ import HomeListItemHeader from '../../HomeScreen/HomeListItem/HomeListItemHeader
 import HomeListItemFooter from '../../HomeScreen/HomeListItem/HomeListItemFooter';
 
 function HomeItemList(props) {
-
-  console.log(props?.image, 'fdshkjdfhdsjskf')
   const [numberOfLines, setNumberOfLines] = useState(3);
   const [viewMore, setViewMore] = useState(false);
   const {width, height} = useWindowDimensions();

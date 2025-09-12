@@ -45,19 +45,23 @@ function HomeHeaderComponent(props) {
             top: normalise(1),
           }}>
           <TouchableOpacity
-            style={{
-              left: normalise(0),
-              position: 'absolute',
-              height: normalise(42),
-              width: normalise(42),
-              top: normalise(0),
-              paddingTop: normalise(8),
-              paddingLeft: normalise(8),
-            }}
+            style={[
+              {
+                left: normalise(0),
+                position: 'absolute',
+                height: normalise(42),
+                width: normalise(42),
+                top: normalise(0),
+                paddingTop: normalise(8),
+                paddingLeft: normalise(8),
+              },
+              props.imageOneWrapperStyle,
+            ]}
             onPress={() => {
               onPressFirstItem();
             }}>
             <Image
+              resizeMode="contain"
               source={props && props.imageone ? props.imageone : null}
               style={[
                 {
@@ -66,7 +70,6 @@ function HomeHeaderComponent(props) {
                 },
                 props.imageOneStyle,
               ]}
-              resizeMode="contain"
             />
 
             {/* <Avatar image={props.imageone} height={22} width={22} imageStyle={props.imageOneStyle}/> */}
@@ -75,12 +78,43 @@ function HomeHeaderComponent(props) {
       )}
       {/* Middle */}
       {!props.middleImageReq ? (
-        <Text style={HeaderStyles.headerText}>{props.title}</Text>
+        <View stye={{flexDriction: 'row'}}>
+          <Image
+            style={{width: 60, height: 60}}
+            source={ImagePath.choonaLogo}
+            resizeMode={'contain'}
+          />
+          <Text style={HeaderStyles.headerText}>{props.title}</Text>
+        </View>
       ) : props.onIconPress ? (
         <TouchableOpacity
           onPress={() => {
             onPressLogo();
+          }}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
+          <View
+            style={{
+              borderRadius: 15,
+              overflow: 'hidden',
+              width: 50,
+              height: 50,
+              marginRight: normalise(7),
+            }}>
+            <Image
+              style={{
+                width: '150%',
+                height: '150%',
+                marginLeft: -12.5,
+                marginTop: -12.5,
+              }}
+              source={ImagePath.choonaLogo}
+              resizeMode="cover"
+            />
+          </View>
           <Image
             style={HeaderStyles.logo}
             source={ImagePath ? ImagePath.home_icon_choona : null}
@@ -88,11 +122,18 @@ function HomeHeaderComponent(props) {
           />
         </TouchableOpacity>
       ) : (
-        <Image
-          style={HeaderStyles.logo}
-          source={ImagePath ? ImagePath.home_icon_choona : null}
-          resizeMode={'contain'}
-        />
+        <View stye={{flexDriction: 'row'}}>
+          <Image
+            style={{width: 60, height: 60}}
+            source={ImagePath.choonaLogo}
+            resizeMode={'contain'}
+          />
+          <Image
+            style={HeaderStyles.logo}
+            source={ImagePath ? ImagePath.home_icon_choona : null}
+            resizeMode={'contain'}
+          />
+        </View>
       )}
       {/* Right */}
       <TouchableOpacity

@@ -84,6 +84,7 @@ export function* searchSongsForPostAction(action) {
         )}&limit=20&types=songs`,
         spotifyHeader,
       );
+      console.log(response, 'skjfdsfhjmjhsfjdsfh')
       yield put({
         type: SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
         data: response.data.results.songs.data,

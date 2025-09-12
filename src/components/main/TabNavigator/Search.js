@@ -1,101 +1,97 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {
-  SafeAreaView,
-  View,
-  Text,
-  Image,
-  Platform,
   Dimensions,
-  TextInput,
-  TouchableOpacity,
+  Image,
   Keyboard,
-  Modal,
   KeyboardAvoidingView,
   Linking,
+  Modal,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
-import {useIsFocused} from '@react-navigation/native';
-
-// import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
-
-import normalise from '../../../utils/helpers/Dimens';
-import Colors from '../../../assests/Colors';
-import StatusBar from '../../../utils/MyStatusBar';
-import HeaderComponent from '../../../widgets/HeaderComponent';
-import ImagePath from '../../../assests/ImagePath';
-import {FlatList} from 'react-native-gesture-handler';
-import ActivityListItem from '../ListCells/ActivityListItem';
-import HomeItemList from '../ListCells/HomeItemList';
+import axios from 'axios';
 import _ from 'lodash';
+import Contacts from 'react-native-contacts';
+import {FlatList} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import {
-  USER_SEARCH_REQUEST,
-  USER_SEARCH_SUCCESS,
-  USER_SEARCH_FAILURE,
-  USER_FOLLOW_UNFOLLOW_REQUEST,
-  USER_FOLLOW_UNFOLLOW_SUCCESS,
-  USER_FOLLOW_UNFOLLOW_FAILURE,
-  SEARCH_POST_REQUEST,
-  SEARCH_POST_SUCCESS,
-  SEARCH_POST_FAILURE,
-  TOP_50_SONGS_REQUEST,
-  TOP_50_SONGS_SUCCESS,
-  TOP_50_SONGS_FAILURE,
+  deletePostReq,
+  seachSongsForPostRequest,
+  searchPostReq,
+} from '../../../action/PostAction';
+import {
+  getTop50SongsRequest,
+  saveSongRequest,
+} from '../../../action/SongAction';
+import {
+  GET_USER_FROM_HOME_FAILURE,
   GET_USER_FROM_HOME_REQUEST,
   GET_USER_FROM_HOME_SUCCESS,
-  GET_USER_FROM_HOME_FAILURE,
+  SEARCH_POST_FAILURE,
+  SEARCH_POST_REQUEST,
+  SEARCH_POST_SUCCESS,
+  SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
+  SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
+  SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+  TOP_50_SONGS_FAILURE,
+  TOP_50_SONGS_REQUEST,
+  TOP_50_SONGS_SUCCESS,
+  USER_FOLLOW_UNFOLLOW_FAILURE,
+  USER_FOLLOW_UNFOLLOW_REQUEST,
+  USER_FOLLOW_UNFOLLOW_SUCCESS,
+  USER_SEARCH_FAILURE,
+  USER_SEARCH_REQUEST,
+  USER_SEARCH_SUCCESS,
 } from '../../../action/TypeConstants';
 import {
-  userSearchRequest,
-  userFollowUnfollowRequest,
+  getUsersFromHome,
   reactionOnPostRequest,
+  userFollowUnfollowRequest,
+  userSearchRequest,
 } from '../../../action/UserAction';
-import {
-  saveSongRequest,
-  getTop50SongsRequest,
-} from '../../../action/SongAction';
-import {searchPostReq} from '../../../action/PostAction';
-import {deletePostReq} from '../../../action/PostAction';
-import Loader from '../../../widgets/AuthLoader';
-import toast from '../../../utils/helpers/ShowErrorAlert';
+import Colors from '../../../assests/Colors';
+import ImagePath from '../../../assests/ImagePath';
+import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
 import constants from '../../../utils/helpers/constants';
+import normalise from '../../../utils/helpers/Dimens';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
-import {getUsersFromHome} from '../../../action/UserAction';
-import Contacts from 'react-native-contacts';
+import toast from '../../../utils/helpers/ShowErrorAlert';
+import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
+import Loader from '../../../widgets/AuthLoader';
+import HeaderComponent from '../../../widgets/HeaderComponent';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
-import axios from 'axios';
-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
-import Reactions from '../../Reactions/Reactions';
-import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
-import ReportModal from '../../Posts/ReportModal';
 import MoreModal1 from '../../Posts/MoreModal1';
+import ReportModal from '../../Posts/ReportModal';
+import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
+import ActivityListItem from '../ListCells/ActivityListItem';
+import HomeItemList from '../ListCells/HomeItemList';
 
 let status;
 let postStatus;
 let top50Status;
 let userstatus;
+let post = false;
 
 const Search = props => {
   const [usersSearch, setUsersSearch] = useState(false);
   const [genreSearch, setGenreSearch] = useState(true);
   const [songSearch, setSongSearch] = useState(false);
-
   const [usersSearchText, setUsersSearchText] = useState('');
   const [genreSearchText, setGenreSearchText] = useState('');
   const [songSearchText, setSongSearchText] = useState('');
   const [bool, setBool] = useState(false);
-
   const [songData, setSongData] = useState([]); // user search data...ignore the naming
   const [searchPostData, setSearchPostData] = useState([]); //search post data
   const [top50, setTop50] = useState([]); //top 50 data
-  const [topSongSearchData, setTopSongSearchData] = useState(null);
-
-  console.log(JSON.stringify(top50[0]), 'sfhdfdsfdhfjkdhdfhfds');
-
-  console.log(JSON.stringify(topSongSearchData?.[0]), 'dhfdshfdjfhdsfhk');
-
+  const [topSongSearchData, setTopSongSearchData] = useState([]);
   const [positionInArray, setPositionInArray] = useState(0);
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -130,10 +126,33 @@ const Search = props => {
     }
   }
 
+  useEffect(() => {
+    if (genreSearchText?.trim()) {
+      setTopSongSearchData(props.searchResponse);
+    } else {
+      setTopSongSearchData([]);
+    }
+  }, [props.searchResponse, genreSearchText]);
+
   const react = ['🔥', '😍', '💃', '🕺', '🤤', '👍'];
 
   if (status === '' || status !== props.status) {
     switch (props.status) {
+      case SEARCH_SONG_REQUEST_FOR_POST_REQUEST:
+        status = props.status;
+        break;
+
+      // case SEARCH_SONG_REQUEST_FOR_POST_SUCCESS:
+      //   status = props.status;
+      //   console.log(props.searchResponse, 'fdhfdhfh1');
+      //   setTopSongSearchData(props.searchResponse);
+      //   break;
+
+      case SEARCH_SONG_REQUEST_FOR_POST_FAILURE:
+        status = props.status;
+        toast('Error', 'Something Went Wong, Please Try Again');
+        break;
+
       case USER_SEARCH_REQUEST:
         status = props.status;
         break;
@@ -252,24 +271,24 @@ const Search = props => {
     }
   }
 
-  useEffect(() => {
-    let topSongSearchResult = filteredSongs;
-    setTopSongSearchData(topSongSearchResult);
-  }, [genreSearchText]);
+  // useEffect(() => {
+  //   let topSongSearchResult = filteredSongs;
+  //   setTopSongSearchData(topSongSearchResult);
+  // }, [genreSearchText]);
 
   // RENDER FUNCTION FLATLIST
 
-  const filteredSongs = top50?.filter(item => {
-    const name = item?.attributes?.name?.toLowerCase() || '';
-    const artist = item?.attributes?.artistName?.toLowerCase() || '';
-    const album = item?.attributes?.albumName?.toLowerCase() || '';
+  // const filteredSongs = top50?.filter(item => {
+  //   const name = item?.attributes?.name?.toLowerCase() || '';
+  //   const artist = item?.attributes?.artistName?.toLowerCase() || '';
+  //   const album = item?.attributes?.albumName?.toLowerCase() || '';
 
-    const query = genreSearchText?.toLowerCase() ?? '';
+  //   const query = genreSearchText?.toLowerCase() ?? '';
 
-    return (
-      name.includes(query) || artist.includes(query) || album.includes(query)
-    );
-  });
+  //   return (
+  //     name.includes(query) || artist.includes(query) || album.includes(query)
+  //   );
+  // });
 
   function renderUserData(data) {
     return (
@@ -564,14 +583,13 @@ const Search = props => {
   }
 
   function renderGenreData(data) {
-    // console.log(JSON.stringify(data?.item), 'jjjhjk');
     return (
       <TouchableOpacity
-        style={
-          {
-            //   margin: normalise(4),
-          }
-        }
+        style={{
+          width: '48%',
+          borderRadius: normalise(12),
+          overflow: 'hidden',
+        }}
         // onPress={() => {
         //   props.navigation.navigate('GenreSongClicked', {
         //     data: data.item._id,
@@ -595,11 +613,20 @@ const Search = props => {
                   ),
           }}
           style={{
-            width: Math.floor(Dimensions.get('window').width / 2),
-            height: Math.floor(Dimensions.get('window').width / 2),
+            width: '100%',
+            aspectRatio: 1,
+            borderRadius: normalise(12),
           }}
           resizeMode="cover"
         />
+        <View style={styles.bottomDescriptionBoxStyle}>
+          <Text style={styles.albumNameStyle} numberOfLines={1}>
+            {data?.item?.attributes?.albumName}
+          </Text>
+          <Text style={styles.musicTypeStyle} numberOfLines={1}>
+            Apple Music {data?.item?.attributes?.genreNames[0]}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -958,6 +985,25 @@ const Search = props => {
     }
   };
 
+  const handleGenereText = text => {
+    console.log(text, 'dfhk');
+    setGenreSearchText(text);
+    if (usersSearch) {
+      setUsersSearchText(text);
+    } else {
+      if (text?.length >= 1) {
+        isInternetConnected()
+          .then(() => {
+            console.log('HIHIHIHIHI');
+            props.searchSongReq(text, post);
+          })
+          .catch(() => {
+            toast('Error', 'Please Connect To Internet');
+          });
+      }
+      // setGenreSearchText(text);
+    }
+  };
   //VIEW
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
@@ -1121,13 +1167,7 @@ const Search = props => {
                 value={usersSearch ? usersSearchText : genreSearchText}
                 placeholder={usersSearch ? 'Search Users' : 'Search Songs'}
                 placeholderTextColor={Colors.darkgrey}
-                onChangeText={text => {
-                  search(text);
-                  usersSearch
-                    ? setUsersSearchText(text)
-                    : // : setSongSearchText(text);
-                      setGenreSearchText(text);
-                }}
+                onChangeText={text => handleGenereText(text)}
               />
               <Image
                 source={ImagePath.searchicongrey}
@@ -1308,6 +1348,13 @@ const Search = props => {
                   keyExtractor={(item, index) => index.toString()}
                   numColumns={2}
                   showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 8,
+                  }}
+                  columnWrapperStyle={{
+                    justifyContent: 'space-between',
+                    marginBottom: 12,
+                  }}
                 />
                 {/* <View
                   style={{
@@ -1381,6 +1428,25 @@ const Search = props => {
   );
 };
 
+const styles = StyleSheet.create({
+  albumNameStyle: {
+    fontSize: normalise(12),
+    color: Colors.white,
+    fontFamily: 'ProximaNova-SemiBold',
+    marginTop: normalise(5),
+    marginBottom: normalise(2),
+  },
+  musicTypeStyle: {
+    fontSize: normalise(10),
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Regular',
+    marginBottom: normalise(4),
+  },
+  bottomDescriptionBoxStyle: {
+    marginHorizontal: normalise(5),
+  },
+});
+
 const mapStateToProps = state => {
   return {
     status: state.UserReducer.status,
@@ -1396,6 +1462,7 @@ const mapStateToProps = state => {
     userstatus: state.UserReducer.status,
     userSearchFromHome: state.UserReducer.userSearchFromHome,
     registerType: state.TokenReducer.registerType,
+    searchResponse: state.PostReducer.chooseSongToSend,
   };
 };
 
@@ -1431,6 +1498,9 @@ const mapDispatchToProps = dispatch => {
 
     getusersFromHome: payload => {
       dispatch(getUsersFromHome(payload));
+    },
+    searchSongReq: (text, post) => {
+      dispatch(seachSongsForPostRequest(text, post));
     },
   };
 };

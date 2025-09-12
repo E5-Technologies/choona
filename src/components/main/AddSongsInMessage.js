@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -17,26 +17,26 @@ import HeaderComponent from '../../widgets/HeaderComponent';
 import SavedSongsListItem from './ListCells/SavedSongsListItem';
 import StatusBar from '../../utils/MyStatusBar';
 import _ from 'lodash';
-import { seachSongsForPostRequest } from '../../action/PostAction';
+import {seachSongsForPostRequest} from '../../action/PostAction';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
   SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 } from '../../action/TypeConstants';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 
-import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
-import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
+import {useRecentlyPlayed} from '../../utils/helpers/RecentlyPlayed';
+import {RecentlyPlayedHeader} from '../Headers/RecentlyPlayedHeader';
 
 let status;
 
 function AddSongsInMessage(props) {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
-  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+  const {recentlyPlayed, loading, refetch} = useRecentlyPlayed(
     props.registerType,
   );
 
@@ -129,9 +129,9 @@ function AddSongsInMessage(props) {
                 props.registerType === 'spotify'
                   ? data.item.album.images[0].url
                   : data.item.attributes.artwork.url.replace(
-                    '{w}x{h}',
-                    '300x300',
-                  ),
+                      '{w}x{h}',
+                      '300x300',
+                    ),
               original_song_uri:
                 props.registerType === 'spotify'
                   ? data.item.external_urls.spotify
@@ -163,9 +163,9 @@ function AddSongsInMessage(props) {
               props.registerType === 'spotify'
                 ? data.item.album.images[0].url
                 : data.item.attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '300x300',
-                ),
+                    '{w}x{h}',
+                    '300x300',
+                  ),
             username: '',
             profile_pic: '',
             originalUri:
@@ -192,10 +192,10 @@ function AddSongsInMessage(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       <StatusBar backgroundColor={Colors.darkerblack} />
       <Loader visible={props.status === SEARCH_SONG_REQUEST_FOR_POST_REQUEST} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <HeaderComponent
           firstitemtext={false}
           imageone={ImagePath.backicon}
@@ -210,7 +210,7 @@ function AddSongsInMessage(props) {
           hideBorderBottom={true}
         />
         {/* Search Bar */}
-        <View style={{ paddingHorizontal: normalise(12) }}>
+        <View style={{paddingHorizontal: normalise(12)}}>
           <TextInput
             autoCorrect={false}
             style={{
@@ -247,7 +247,7 @@ function AddSongsInMessage(props) {
               width: normalise(15),
               bottom: normalise(25),
               paddingLeft: normalise(30),
-              transform: [{ scaleX: -1 }],
+              transform: [{scaleX: -1}],
             }}
             resizeMode="contain"
           />

@@ -121,7 +121,8 @@ const ImagePath = {
   headPhoneImage:require('./images/Headphones.png'),
   liveImage:require('./images/live-stream.png'),
   playCenter:require("./images/playCenter.png"),
-  choonaPlay:require("./images/choona_play.png")
+  choonaPlay:require("./images/choona_play.png"),
+  choonaLogo:require("./images/choonaIcon.png")
 };
 
 export default ImagePath;

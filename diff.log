@@ -1,1978 +1,465 @@
-diff --git a/diff.log b/diff.log
-index f72981c..59d02f6 100644
---- a/diff.log
-+++ b/diff.log
-@@ -1,320 +1,962 @@
--diff --git a/App.js b/App.js
--index a9c3a4b..2c558f3 100644
----- a/App.js
--+++ b/App.js
--@@ -428,9 +428,7 @@ const App = () => {
--             }}
--           />
-- 
---          <Tab.Screen
---            // name="Notification"
---            // component={Notification}
--+          {/* <Tab.Screen
--             name="HomeScreen"
--             component={Home}
--             initialParams={{activeTab: 1}}
--@@ -462,52 +460,16 @@ const App = () => {
--                     }
--                     resizeMode="contain"
--                   />
---                  {/* {!_.isEmpty(UserReducer.userProfileResp) ? (
---                    UserReducer.userProfileResp.isActivity ? (
---                      <View
---                        style={{
---                          position: 'absolute',
---                          right: normalise(-2),
---                          top:
---                            Platform.OS === 'android'
---                              ? normalise(8)
---                              : normalise(-2),
---                          backgroundColor: Colors.red,
---                          borderRadius: normalize(8),
---                          height: 10,
---                          width: 10,
---                          justifyContent: 'center',
---                          alignItems: 'center',
---                        }}
---                      />
---                    ) : null
---                  ) : null} */}
--                 </View>
--               ),
--               tabBarLabel: '',
---              // tabBarButton: props => {
---              //   const navigation = useNavigation();
---              //   return (
---              //     <TouchableOpacity
---              //       onPress={() => {
---              //         navigation
---              //           .getParent()
---              //           ?.navigate('Home', {activeTab: 1});
---              //       }}
---              //       {...props}
---              //       activeOpacity={0.7}>
---              //       {props.children}
---              //     </TouchableOpacity>
---              //   );
---              // },
--             }}
--             listeners={({navigation}) => ({
--               tabPress: e => {
---                // e.preventDefault();
--                 navigation.navigate('Home', {activeTab: 1});
--               },
--             })}
---          />
--+          /> */}
-- 
--           {/* <Tab.Screen
--             name="Inbox"
-+diff --git a/diff.log b/diff.log
-+index e69de29..f72981c 100644
-+--- a/diff.log
-++++ b/diff.log
-+@@ -0,0 +1,320 @@
-++diff --git a/App.js b/App.js
-++index a9c3a4b..2c558f3 100644
-++--- a/App.js
-+++++ b/App.js
-++@@ -428,9 +428,7 @@ const App = () => {
-++             }}
-++           />
-++ 
-++-          <Tab.Screen
-++-            // name="Notification"
-++-            // component={Notification}
-+++          {/* <Tab.Screen
-++             name="HomeScreen"
-++             component={Home}
-++             initialParams={{activeTab: 1}}
-++@@ -462,52 +460,16 @@ const App = () => {
-++                     }
-++                     resizeMode="contain"
-++                   />
-++-                  {/* {!_.isEmpty(UserReducer.userProfileResp) ? (
-++-                    UserReducer.userProfileResp.isActivity ? (
-++-                      <View
-++-                        style={{
-++-                          position: 'absolute',
-++-                          right: normalise(-2),
-++-                          top:
-++-                            Platform.OS === 'android'
-++-                              ? normalise(8)
-++-                              : normalise(-2),
-++-                          backgroundColor: Colors.red,
-++-                          borderRadius: normalize(8),
-++-                          height: 10,
-++-                          width: 10,
-++-                          justifyContent: 'center',
-++-                          alignItems: 'center',
-++-                        }}
-++-                      />
-++-                    ) : null
-++-                  ) : null} */}
-++                 </View>
-++               ),
-++               tabBarLabel: '',
-++-              // tabBarButton: props => {
-++-              //   const navigation = useNavigation();
-++-              //   return (
-++-              //     <TouchableOpacity
-++-              //       onPress={() => {
-++-              //         navigation
-++-              //           .getParent()
-++-              //           ?.navigate('Home', {activeTab: 1});
-++-              //       }}
-++-              //       {...props}
-++-              //       activeOpacity={0.7}>
-++-              //       {props.children}
-++-              //     </TouchableOpacity>
-++-              //   );
-++-              // },
-++             }}
-++             listeners={({navigation}) => ({
-++               tabPress: e => {
-++-                // e.preventDefault();
-++                 navigation.navigate('Home', {activeTab: 1});
-++               },
-++             })}
-++-          />
-+++          /> */}
-++ 
-++           {/* <Tab.Screen
-++             name="Inbox"
-++diff --git a/src/components/main/MySessionDetailScreen.js b/src/components/main/MySessionDetailScreen.js
-++index 37f54f5..19d7321 100644
-++--- a/src/components/main/MySessionDetailScreen.js
-+++++ b/src/components/main/MySessionDetailScreen.js
-++@@ -1546,7 +1546,7 @@ function MySessionDetailScreen(props) {
-++   const positionRef = useRef(null);
-++   const playerAcceptedSongsRef = useRef([]);
-++   const {song: currentPlayinSongData} = useCurrentSong();
-++-  // console.log(currentPlayinSongData, 'thi isi ssong');
-+++  console.log(sessionReduxData?.startSessionLoading, 'thiisissong');
-++   //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++ 
-++   // useEffect(() => {
-++@@ -2189,7 +2189,11 @@ function MySessionDetailScreen(props) {
-++         }
-++       />
-++       <LinearGradient
-++-        colors={['#0E402C', '#101119', '#360455']}
-+++        colors={
-+++          islive
-+++            ? ['#101119', '#101119', '#101119']
-+++            : ['#0E402C', '#101119', '#360455']
-+++        }
-++         style={{flex: 1}}
-++         start={{x: 0, y: 0}}
-++         end={{x: 1, y: 1}}>
-++@@ -2338,7 +2342,7 @@ function MySessionDetailScreen(props) {
-++                           //   playerState?.state == 'none') && {opacity: 1},
-++                           !iscurrentPlaying && islive && {opacity: 0.4},
-++                         ]}>
-++-                        {iscurrentPlaying && (
-+++                        {/* {iscurrentPlaying ? (
-++                           <TouchableOpacity
-++                             disabled={iscurrentPlaying ? false : true}
-++                             // onPress={handlePlayPauseViaButton}
-++@@ -2359,23 +2363,55 @@ function MySessionDetailScreen(props) {
-++                               resizeMode="contain"
-++                             />
-++                           </TouchableOpacity>
-++-                        )}
-++-                        <Image
-++-                          source={{uri: item?.song_image}}
-++-                          style={styles.songListItemImage}
-++-                          resizeMode="cover"
-++-                        />
-++-                        <View style={styles.listItemHeaderSongText}>
-++-                          <Text
-++-                            style={styles.songlistItemHeaderSongTextTitle}
-++-                            numberOfLines={1}>
-++-                            {item?.song_name}
-++-                          </Text>
-++-                          <Text
-++-                            style={styles.songlistItemHeaderSongTextArtist}
-++-                            numberOfLines={1}>
-++-                            {item?.artist_name}
-++-                          </Text>
-+++                        ) : (
-+++                          <View style={styles.playButtonStyle}></View>
-+++                        )} */}
-+++
-+++                        {islive ? (
-+++                          iscurrentPlaying ? (
-+++                            <TouchableOpacity
-+++                              disabled={!iscurrentPlaying}
-+++                              // onPress={handlePlayPauseViaButton}
-+++                              style={styles.playButtonStyle}>
-+++                              <Image
-+++                                // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
-+++                                source={
-+++                                  (appleFullSongPlaying ||
-+++                                    playerState?.state === 'playing') &&
-+++                                  iscurrentPlaying
-+++                                    ? ImagePath.pause
-+++                                    : ImagePath.play
-+++                                }
-+++                                style={{
-+++                                  height: normalise(25),
-+++                                  width: normalise(25),
-+++                                }}
-+++                                resizeMode="contain"
-+++                              />
-+++                            </TouchableOpacity>
-+++                          ) : (
-+++                            <View style={styles.playButtonStyle}></View>
-+++                          )
-+++                        ) : null}
-+++
-+++                        <View style={{flexDirection: 'row'}}>
-+++                          <Image
-+++                            source={{uri: item?.song_image}}
-+++                            style={styles.songListItemImage}
-+++                            resizeMode="cover"
-+++                          />
-+++                          <View style={styles.listItemHeaderSongText}>
-+++                            <Text
-+++                              style={styles.songlistItemHeaderSongTextTitle}
-+++                              numberOfLines={1}>
-+++                              {item?.song_name}
-+++                            </Text>
-+++                            <Text
-+++                              style={styles.songlistItemHeaderSongTextArtist}
-+++                              numberOfLines={1}>
-+++                              {item?.artist_name}
-+++                            </Text>
-+++                          </View>
-++                         </View>
-++                       </View>
-++                     );
-++@@ -2385,65 +2421,71 @@ function MySessionDetailScreen(props) {
-++                 />
-++               </View>
-++             </View>
-++-            {currentListners?.length > 0 && islive && (
-++-              <View style={styles.listenersContainer}>
-++-                <View style={styles.listenersTextWrapper}>
-++-                  <Text
-+++            {islive ? (
-+++              currentListners?.length > 0 ? (
-+++                <View style={styles.listenersContainer}>
-+++                  <View style={styles.listenersTextWrapper}>
-+++                    <Text
-+++                      style={[
-+++                        styles.listItemHeaderSongTextTitle,
-+++                        {marginTop: normalise(5), fontSize: normalise(12)},
-+++                      ]}
-+++                      numberOfLines={2}>
-+++                      LISTENERS
-+++                    </Text>
-+++                  </View>
-+++                  <View
-++                     style={[
-++-                      styles.listItemHeaderSongTextTitle,
-++-                      {marginTop: normalise(5), fontSize: normalise(12)},
-++-                    ]}
-++-                    numberOfLines={2}>
-++-                    LISTENERS
-++-                  </Text>
-+++                      styles.bottomLineStyle,
-+++                      {
-+++                        width: width / 3.8,
-+++                        marginBottom: normalise(8),
-+++                        marginTop: normalise(0),
-+++                      },
-+++                    ]}></View>
-+++                  <ScrollView style={{flex: 1}}>
-+++                    <View
-+++                      style={{
-+++                        flexDirection: 'row',
-+++                        justifyContent: 'center',
-+++                        flexWrap: 'wrap',
-+++                      }}>
-+++                      {currentListners?.map((item, index) => {
-+++                        return (
-+++                          <View
-+++                            style={[
-+++                              styles.joineeIitemWrapper,
-+++                              // index == 0 &&
-+++                              //   currentListners?.length > 1 && {
-+++                              //     marginLeft: normalise(40),
-+++                              //   },
-+++                              // index == 3 && {marginRight: normalise(40)},
-+++                            ]}>
-+++                            <Image
-+++                              source={
-+++                                item?.profile_image
-+++                                  ? {
-+++                                      uri:
-+++                                        constants.profile_picture_base_url +
-+++                                        item?.profile_image,
-+++                                    }
-+++                                  : ImagePath.userPlaceholder
-+++                              }
-+++                              style={[styles.songListItemImage]}
-+++                              resizeMode="cover"
-+++                            />
-+++                          </View>
-+++                        );
-+++                      })}
-+++                    </View>
-+++                  </ScrollView>
-++                 </View>
-++-                <View
-++-                  style={[
-++-                    styles.bottomLineStyle,
-++-                    {
-++-                      width: width / 3.8,
-++-                      marginBottom: normalise(8),
-++-                      marginTop: normalise(0),
-++-                    },
-++-                  ]}></View>
-++-                <ScrollView style={{flex: 1}}>
-++-                  <View
-++-                    style={{
-++-                      flexDirection: 'row',
-++-                      justifyContent: 'center',
-++-                      flexWrap: 'wrap',
-++-                    }}>
-++-                    {currentListners?.map((item, index) => {
-++-                      return (
-++-                        <View
-++-                          style={[
-++-                            styles.joineeIitemWrapper,
-++-                            // index == 0 &&
-++-                            //   currentListners?.length > 1 && {
-++-                            //     marginLeft: normalise(40),
-++-                            //   },
-++-                            // index == 3 && {marginRight: normalise(40)},
-++-                          ]}>
-++-                          <Image
-++-                            source={
-++-                              item?.profile_image
-++-                                ? {
-++-                                    uri:
-++-                                      constants.profile_picture_base_url +
-++-                                      item?.profile_image,
-++-                                  }
-++-                                : ImagePath.userPlaceholder
-++-                            }
-++-                            style={[styles.songListItemImage]}
-++-                            resizeMode="cover"
-++-                          />
-++-                        </View>
-++-                      );
-++-                    })}
-++-                  </View>
-++-                </ScrollView>
-++-              </View>
-++-            )}
-+++              ) : (
-+++                <View>
-+++                  <Text style={styles.noJoineeText}>No listeners available</Text>
-+++                </View>
-+++              )
-+++            ) : null}
-++           </View>
-++           {!props.route.params.isforEdit && (
-++             <TrackProgress
-++@@ -2683,6 +2725,13 @@ const styles = StyleSheet.create({
-++   modalText: {
-++     marginBottom: 15,
-++   },
-+++  noJoineeText: {
-+++    color: Colors.white,
-+++    fontFamily: 'ProximaNova-Regular',
-+++    fontSize: normalise(12),
-+++    textAlign: 'center',
-+++    marginTop: normalise(20),
-+++  }
-++ });
-++ 
-++ export default MySessionDetailScreen;
-+diff --git a/src/assests/ImagePath.js b/src/assests/ImagePath.js
-+index 2aa4078..c73693b 100644
-+--- a/src/assests/ImagePath.js
-++++ b/src/assests/ImagePath.js
-+@@ -118,7 +118,9 @@ const ImagePath = {
-+   editIcon: require('./images/edit.png'),
-+   searchIcon:require('./images/loupe.png'),
-+   hamburger:require('./images/hamburger.png'),
-+-  headPhoneImage:require('./images/Headphones.png')
-++  headPhoneImage:require('./images/Headphones.png'),
-++  liveImage:require('./images/live-stream.png'),
-++  playCenter:require("./images/playCenter.png")
-+ };
-+ 
-+ export default ImagePath;
-+diff --git a/src/assests/images/live-stream.png b/src/assests/images/live-stream.png
-+new file mode 100644
-+index 0000000..1176204
-+Binary files /dev/null and b/src/assests/images/live-stream.png differ
-+diff --git a/src/assests/images/playCenter.png b/src/assests/images/playCenter.png
-+new file mode 100644
-+index 0000000..55dd2af
-+Binary files /dev/null and b/src/assests/images/playCenter.png differ
-+diff --git a/src/components/main/CommonNotification/Components/TabComponent.js b/src/components/main/CommonNotification/Components/TabComponent.js
-+index 396dc94..2abb20a 100644
-+--- a/src/components/main/CommonNotification/Components/TabComponent.js
-++++ b/src/components/main/CommonNotification/Components/TabComponent.js
-+@@ -54,9 +54,11 @@ const styles = StyleSheet.create({
-+     flexDirection: 'row',
-+     justifyContent: 'space-between',
-+     height: normalise(40),
-+-    marginHorizontal: normalise(50),
-+-    // borderBottomColor: Colors.fadeblack,
-+-    // borderBottomWidth: 1,
-++    paddingHorizontal: normalise(50),
-++    borderBottomColor: Colors.fadeblack,
-++    borderBottomWidth: 1,
-++    width: '100%',
-++    justifyContent: 'center',
-+   },
-+   tabBarButtonStyle: {
-+     width: '50%',
-+diff --git a/src/components/main/ListCells/HomeSessionItem.js b/src/components/main/ListCells/HomeSessionItem.js
-+index ae5327a..2c999f7 100644
-+--- a/src/components/main/ListCells/HomeSessionItem.js
-++++ b/src/components/main/ListCells/HomeSessionItem.js
-+@@ -41,6 +41,13 @@ const HomeSessionItem = ({
-+         )
-+       }>
-+       <View style={styles.listItemHeaderSongDetails}>
-++        {item?.isLive && (
-++          <Image
-++            source={ImagePath.liveImage}
-++            style={styles.liveImageStyle}
-++            resizeMode="contain"
-++          />
-++        )}
-+         <View style={styles.nameWrapper}>
-+           <Text
-+             style={[
-+@@ -235,4 +242,11 @@ const styles = StyleSheet.create({
-+     opacity: 0.5,
-+   },
-+   listItemHeaderPlay: {height: normalise(24), width: normalise(24)},
-++  liveImageStyle: {
-++    width: 100,
-++    height: 35,
-++    aspectRatio: 16 / 9,
-++    position: 'absolute',
-++    top: -35,
-++  },
-+ });
- diff --git a/src/components/main/MySessionDetailScreen.js b/src/components/main/MySessionDetailScreen.js
--index 37f54f5..19d7321 100644
-+index 19d7321..90784c3 100644
- --- a/src/components/main/MySessionDetailScreen.js
- +++ b/src/components/main/MySessionDetailScreen.js
--@@ -1546,7 +1546,7 @@ function MySessionDetailScreen(props) {
--   const positionRef = useRef(null);
--   const playerAcceptedSongsRef = useRef([]);
--   const {song: currentPlayinSongData} = useCurrentSong();
---  // console.log(currentPlayinSongData, 'thi isi ssong');
--+  console.log(sessionReduxData?.startSessionLoading, 'thiisissong');
--   //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
-- 
--   // useEffect(() => {
--@@ -2189,7 +2189,11 @@ function MySessionDetailScreen(props) {
--         }
--       />
--       <LinearGradient
---        colors={['#0E402C', '#101119', '#360455']}
--+        colors={
--+          islive
--+            ? ['#101119', '#101119', '#101119']
--+            : ['#0E402C', '#101119', '#360455']
--+        }
--         style={{flex: 1}}
--         start={{x: 0, y: 0}}
--         end={{x: 1, y: 1}}>
--@@ -2338,7 +2342,7 @@ function MySessionDetailScreen(props) {
--                           //   playerState?.state == 'none') && {opacity: 1},
--                           !iscurrentPlaying && islive && {opacity: 0.4},
--                         ]}>
---                        {iscurrentPlaying && (
--+                        {/* {iscurrentPlaying ? (
--                           <TouchableOpacity
--                             disabled={iscurrentPlaying ? false : true}
--                             // onPress={handlePlayPauseViaButton}
--@@ -2359,23 +2363,55 @@ function MySessionDetailScreen(props) {
--                               resizeMode="contain"
--                             />
--                           </TouchableOpacity>
---                        )}
---                        <Image
---                          source={{uri: item?.song_image}}
---                          style={styles.songListItemImage}
---                          resizeMode="cover"
---                        />
---                        <View style={styles.listItemHeaderSongText}>
---                          <Text
---                            style={styles.songlistItemHeaderSongTextTitle}
---                            numberOfLines={1}>
---                            {item?.song_name}
---                          </Text>
---                          <Text
---                            style={styles.songlistItemHeaderSongTextArtist}
---                            numberOfLines={1}>
---                            {item?.artist_name}
---                          </Text>
--+                        ) : (
--+                          <View style={styles.playButtonStyle}></View>
--+                        )} */}
--+
--+                        {islive ? (
--+                          iscurrentPlaying ? (
--+                            <TouchableOpacity
--+                              disabled={!iscurrentPlaying}
--+                              // onPress={handlePlayPauseViaButton}
--+                              style={styles.playButtonStyle}>
--+                              <Image
--+                                // source={(isPlaying && iscurrentPlaying) ? ImagePath.pause : ImagePath.play}
--+                                source={
--+                                  (appleFullSongPlaying ||
--+                                    playerState?.state === 'playing') &&
--+                                  iscurrentPlaying
--+                                    ? ImagePath.pause
--+                                    : ImagePath.play
--+                                }
--+                                style={{
--+                                  height: normalise(25),
--+                                  width: normalise(25),
--+                                }}
--+                                resizeMode="contain"
--+                              />
--+                            </TouchableOpacity>
--+                          ) : (
--+                            <View style={styles.playButtonStyle}></View>
--+                          )
--+                        ) : null}
--+
--+                        <View style={{flexDirection: 'row'}}>
--+                          <Image
--+                            source={{uri: item?.song_image}}
--+                            style={styles.songListItemImage}
--+                            resizeMode="cover"
--+                          />
--+                          <View style={styles.listItemHeaderSongText}>
--+                            <Text
--+                              style={styles.songlistItemHeaderSongTextTitle}
--+                              numberOfLines={1}>
--+                              {item?.song_name}
--+                            </Text>
--+                            <Text
--+                              style={styles.songlistItemHeaderSongTextArtist}
--+                              numberOfLines={1}>
--+                              {item?.artist_name}
--+                            </Text>
--+                          </View>
--                         </View>
--                       </View>
--                     );
--@@ -2385,65 +2421,71 @@ function MySessionDetailScreen(props) {
-+@@ -2421,71 +2421,84 @@ function MySessionDetailScreen(props) {
-                  />
-                </View>
-              </View>
---            {currentListners?.length > 0 && islive && (
---              <View style={styles.listenersContainer}>
---                <View style={styles.listenersTextWrapper}>
---                  <Text
--+            {islive ? (
--+              currentListners?.length > 0 ? (
--+                <View style={styles.listenersContainer}>
--+                  <View style={styles.listenersTextWrapper}>
--+                    <Text
--+                      style={[
--+                        styles.listItemHeaderSongTextTitle,
--+                        {marginTop: normalise(5), fontSize: normalise(12)},
--+                      ]}
--+                      numberOfLines={2}>
--+                      LISTENERS
-+-            {islive ? (
-+-              currentListners?.length > 0 ? (
-+-                <View style={styles.listenersContainer}>
-+-                  <View style={styles.listenersTextWrapper}>
-+-                    <Text
-+-                      style={[
-+-                        styles.listItemHeaderSongTextTitle,
-+-                        {marginTop: normalise(5), fontSize: normalise(12)},
-+-                      ]}
-+-                      numberOfLines={2}>
-+-                      LISTENERS
-+-                    </Text>
-++            {/* {islive ? (
-++              currentListners?.length > 0 ? ( */}
-++            <View style={styles.listenersContainer}>
-++              <View style={styles.listenersTextWrapper}>
-++                <Text
-++                  style={[
-++                    styles.listItemHeaderSongTextTitle,
-++                    {marginTop: normalise(5), fontSize: normalise(12)},
-++                  ]}
-++                  numberOfLines={2}>
-++                  LISTENERS
-++                </Text>
-++              </View>
-++              <View
-++                style={[
-++                  styles.bottomLineStyle,
-++                  {
-++                    width: width / 3.8,
-++                    marginBottom: normalise(8),
-++                    marginTop: normalise(0),
-++                  },
-++                ]}></View>
-++              <ScrollView style={{flex: 1}}>
-++                {currentListners?.length > 0 ? (
-++                  <View
-++                    style={{
-++                      flexDirection: 'row',
-++                      justifyContent: 'center',
-++                      flexWrap: 'wrap',
-++                    }}>
-++                    {currentListners?.map((item, index) => {
-++                      return (
-++                        <View
-++                          style={[
-++                            styles.joineeIitemWrapper,
-++                            // index == 0 &&
-++                            //   currentListners?.length > 1 && {
-++                            //     marginLeft: normalise(40),
-++                            //   },
-++                            // index == 3 && {marginRight: normalise(40)},
-++                          ]}>
-++                          <Image
-++                            source={
-++                              item?.profile_image
-++                                ? {
-++                                    uri:
-++                                      constants.profile_picture_base_url +
-++                                      item?.profile_image,
-++                                  }
-++                                : ImagePath.userPlaceholder
-++                            }
-++                            style={[styles.songListItemImage]}
-++                            resizeMode="cover"
-++                          />
-++                        </View>
-++                      );
-++                    })}
-+                   </View>
-++                ) : (
-+                   <View
-+-                    style={[
-+-                      styles.bottomLineStyle,
-+-                      {
-+-                        width: width / 3.8,
-+-                        marginBottom: normalise(8),
-+-                        marginTop: normalise(0),
-+-                      },
-+-                    ]}></View>
-+-                  <ScrollView style={{flex: 1}}>
-+-                    <View
-+-                      style={{
-+-                        flexDirection: 'row',
-+-                        justifyContent: 'center',
-+-                        flexWrap: 'wrap',
-+-                      }}>
-+-                      {currentListners?.map((item, index) => {
-+-                        return (
-+-                          <View
-+-                            style={[
-+-                              styles.joineeIitemWrapper,
-+-                              // index == 0 &&
-+-                              //   currentListners?.length > 1 && {
-+-                              //     marginLeft: normalise(40),
-+-                              //   },
-+-                              // index == 3 && {marginRight: normalise(40)},
-+-                            ]}>
-+-                            <Image
-+-                              source={
-+-                                item?.profile_image
-+-                                  ? {
-+-                                      uri:
-+-                                        constants.profile_picture_base_url +
-+-                                        item?.profile_image,
-+-                                    }
-+-                                  : ImagePath.userPlaceholder
-+-                              }
-+-                              style={[styles.songListItemImage]}
-+-                              resizeMode="cover"
-+-                            />
-+-                          </View>
-+-                        );
-+-                      })}
-+-                    </View>
-+-                  </ScrollView>
-+-                </View>
-+-              ) : (
-++                    style={{
-++                      flex: 1,
-++                      justifyContent: 'center',
-++                      alignItems: 'center',
-++                    }}>
-++                    <Text style={styles.noJoineeText}>
-++                      No listeners available
- +                    </Text>
- +                  </View>
--+                  <View
--                     style={[
---                      styles.listItemHeaderSongTextTitle,
---                      {marginTop: normalise(5), fontSize: normalise(12)},
---                    ]}
---                    numberOfLines={2}>
---                    LISTENERS
---                  </Text>
--+                      styles.bottomLineStyle,
--+                      {
--+                        width: width / 3.8,
--+                        marginBottom: normalise(8),
--+                        marginTop: normalise(0),
--+                      },
--+                    ]}></View>
--+                  <ScrollView style={{flex: 1}}>
--+                    <View
--+                      style={{
--+                        flexDirection: 'row',
--+                        justifyContent: 'center',
--+                        flexWrap: 'wrap',
--+                      }}>
--+                      {currentListners?.map((item, index) => {
--+                        return (
--+                          <View
--+                            style={[
--+                              styles.joineeIitemWrapper,
--+                              // index == 0 &&
--+                              //   currentListners?.length > 1 && {
--+                              //     marginLeft: normalise(40),
--+                              //   },
--+                              // index == 3 && {marginRight: normalise(40)},
--+                            ]}>
-++                )}
-++              </ScrollView>
-++            </View>
-++            {/* ) : (
-+                 <View>
-+                   <Text style={styles.noJoineeText}>No listeners available</Text>
-+                 </View>
-+               )
-+-            ) : null}
-++            ) : null} */}
-+           </View>
-+           {!props.route.params.isforEdit && (
-+             <TrackProgress
-+@@ -2730,8 +2743,8 @@ const styles = StyleSheet.create({
-+     fontFamily: 'ProximaNova-Regular',
-+     fontSize: normalise(12),
-+     textAlign: 'center',
-+-    marginTop: normalise(20),
-+-  }
-++    marginTop: '20%',
-++  },
-+ });
-+ 
-+ export default MySessionDetailScreen;
-+diff --git a/src/components/main/Profile.js b/src/components/main/Profile.js
-+index a808cc9..090fd7e 100644
-+--- a/src/components/main/Profile.js
-++++ b/src/components/main/Profile.js
-+@@ -530,14 +530,13 @@ const Profile = props => {
-+     );
-+   };
-+ 
-+-
-+-  console.log(props.userProfileResp,'profdfdjskf')
-++  console.log(props.userProfileResp, 'profdfdjskf');
-+   return (
-+     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
-+-      <StatusBar backgroundColor={Colors.darkerblack} />
-++      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
-+       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
-+       <SafeAreaView style={{flex: 1}}>
-+-        <View style={HeaderStyles.headerContainer}>
-++        <View style={[HeaderStyles.headerContainer, {borderBottomWidth: 1}]}>
-+           <View style={HeaderStyles.leftItem}>
-+             <TouchableOpacity
-+               style={{marginRight: normalise(10)}}
-+diff --git a/src/components/main/SessionDetail.js b/src/components/main/SessionDetail.js
-+index 540457d..f2bbdf8 100644
-+--- a/src/components/main/SessionDetail.js
-++++ b/src/components/main/SessionDetail.js
-+@@ -12,9 +12,11 @@ import {
-+   Image,
-+   Platform,
-+   SafeAreaView,
-++  ScrollView,
-+   StyleSheet,
-+   Text,
-+   TouchableOpacity,
-++  useWindowDimensions,
-+   View,
-+ } from 'react-native';
-+ import Colors from '../../assests/Colors';
-+@@ -69,6 +71,8 @@ function SessionDetail(props) {
-+   const touchable = useRef();
-+   const [showPopover, setShowPopover] = useState(false);
-+   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
-++  const [currentListners, setCurrentListeners] = useState([]);
-++  const {width, height} = useWindowDimensions();
-+ 
-+   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
-+   const dispatch = useDispatch();
-+@@ -82,6 +86,8 @@ function SessionDetail(props) {
-+   const sessionDataForJoineeAfterJoin =
-+     sessionReduxData.CurrentSessionJoineeInfo?.data;
-+ 
-++  console.log(sessionDetailReduxdata, 'thshfdfhffsfdh');
-++
-+   const currentEmitedSongStatus = useRef({
-+     hostId: null,
-+     startAudioMixing: null,
-+@@ -92,7 +98,7 @@ function SessionDetail(props) {
-+     pausedAt: null,
-+   });
-+ 
-+-  console.log(sessionDetailReduxdata, 'thi is the session id>>');
-++  // console.log(sessionDetailReduxdata, 'thi is the session id>>');
-+ 
-+   const {
-+     progress,
-+@@ -261,13 +267,11 @@ function SessionDetail(props) {
-+   }, [props?.route?.params?.sessionId]);
-+ 
-+   useEffect(() => {
-+-    // if (sessionReduxData?.hasLeftSession) {
-+-    //     // Alert.alert(sessionReduxData?.hasLeftSession?.toString())
-+-    //     // props.navigation.goBack()
-+-    // }
-+     if (sessionDetailReduxdata?.users) {
-+       const isUserExist = checkUserExistence();
-+-      // Alert.alert(isUserExist.toString())
-++    }
-++    if (sessionDetailReduxdata?.watch_users?.length > 0) {
-++      setCurrentListeners(sessionDetailReduxdata?.watch_users);
-+     }
-+   }, [sessionDetailReduxdata]);
-+ 
-+@@ -292,6 +296,10 @@ function SessionDetail(props) {
-+           }
-+           socketService.on('session_play_status', handleStatusUpdate);
-+           socketService.on('session_ended_status', handleListerUserStatus);
-++          socketService.on('session_users_status', data => {
-++            console.log('Got session_users_status in this file:', data);
-++            handleListerJoineeStatus?.(data);
-++          });
-+           // }
-+         } catch (err) {
-+           console.error('Socket setup error:', err);
-+@@ -360,8 +368,21 @@ function SessionDetail(props) {
-+     }
-+   }, [sessionDetailReduxdata]);
-+ 
-++  useEffect(() => {
-++    if (!sessionDetailReduxdata?.isLive) {
-++      setCurrentListeners([]);
-++    }
-++  }, [sessionDetailReduxdata?.isLive]);
-++
-+   //helperss***********************************************************************************
-+ 
-++  const handleListerJoineeStatus = res => {
-++    if (res && res?.message) {
-++      toast('Error', res?.message);
-++    }
-++    setCurrentListeners(res?.users);
-++  };
-++
-+   const handleListerUserStatus = res => {
-+     if (res?.isLive == false) {
-+       dispatch({
-+@@ -606,6 +627,8 @@ function SessionDetail(props) {
-+               ? () => null
-+               : handleJoinLeaveSession
-+           }
-++          hideBorderBottom={false}
-++          titleStyle={{fontFamily: 'ProximaNova-Semibold'}}
-+         />
-+         <View style={{flex: 1}}>
-+           <View style={{flex: 2.5}}>
-+@@ -667,22 +690,47 @@ function SessionDetail(props) {
-+                         //     ?.startAudioMixing && {opacity: 1},
-+                         isPlayingCurrent && {opacity: 1},
-+                       ]}>
-+-                      <TouchableOpacity
-+-                        disabled={true}
-+-                        onPress={() => {}}
-+-                        style={styles.playButtonStyle}>
-+-                        <Image
-+-                          // source={playVisible ? ImagePath.play : ImagePath.pause}
-+-                          source={
-+-                            isPlayingCurrent &&
-+-                            currentEmitedSongStatus?.current?.startAudioMixing
-+-                              ? ImagePath.pause
-+-                              : ImagePath.play
-+-                          }
-+-                          style={{height: normalise(25), width: normalise(25)}}
-+-                          resizeMode="contain"
-+-                        />
-+-                      </TouchableOpacity>
-++                      {sessionDetailReduxdata?.isLive ? (
-++                        isPlayingCurrent ? (
-++                          <TouchableOpacity
-++                            disabled={true}
-++                            onPress={() => {}}
-++                            style={styles.playButtonStyle}>
- +                            <Image
-++                              // source={playVisible ? ImagePath.play : ImagePath.pause}
- +                              source={
--+                                item?.profile_image
--+                                  ? {
--+                                      uri:
--+                                        constants.profile_picture_base_url +
--+                                        item?.profile_image,
--+                                    }
--+                                  : ImagePath.userPlaceholder
-++                                isPlayingCurrent &&
-++                                currentEmitedSongStatus?.current
-++                                  ?.startAudioMixing
-++                                  ? ImagePath.pause
-++                                  : ImagePath.play
- +                              }
--+                              style={[styles.songListItemImage]}
--+                              resizeMode="cover"
-++                              style={{
-++                                height: normalise(25),
-++                                width: normalise(25),
-++                              }}
-++                              resizeMode="contain"
- +                            />
--+                          </View>
--+                        );
--+                      })}
--+                    </View>
--+                  </ScrollView>
--                 </View>
---                <View
---                  style={[
---                    styles.bottomLineStyle,
---                    {
---                      width: width / 3.8,
---                      marginBottom: normalise(8),
---                      marginTop: normalise(0),
---                    },
---                  ]}></View>
---                <ScrollView style={{flex: 1}}>
---                  <View
---                    style={{
---                      flexDirection: 'row',
---                      justifyContent: 'center',
---                      flexWrap: 'wrap',
---                    }}>
---                    {currentListners?.map((item, index) => {
---                      return (
---                        <View
---                          style={[
---                            styles.joineeIitemWrapper,
---                            // index == 0 &&
---                            //   currentListners?.length > 1 && {
---                            //     marginLeft: normalise(40),
---                            //   },
---                            // index == 3 && {marginRight: normalise(40)},
---                          ]}>
---                          <Image
---                            source={
---                              item?.profile_image
---                                ? {
---                                    uri:
---                                      constants.profile_picture_base_url +
---                                      item?.profile_image,
---                                  }
---                                : ImagePath.userPlaceholder
---                            }
---                            style={[styles.songListItemImage]}
---                            resizeMode="cover"
---                          />
---                        </View>
---                      );
---                    })}
---                  </View>
---                </ScrollView>
---              </View>
---            )}
-++                          </TouchableOpacity>
-++                        ) : (
-++                          <View style={styles.playButtonStyle}></View>
-++                        )
-++                      ) : index === 0 ? (
-++                        <TouchableOpacity
-++                          disabled={true}
-++                          style={styles.playButtonStyle}>
-++                          <Image
-++                            source={ImagePath.playCenter}
-++                            style={{
-++                              height: normalise(14),
-++                              width: normalise(14),
-++                            }}
-++                            resizeMode="contain"
-++                          />
-++                        </TouchableOpacity>
-++                      ) : (
-++                        <View style={styles.playButtonStyle}></View>
-++                      )}
-+                       <Image
-+                         source={{uri: item?.song_image}}
-+                         style={styles.songListItemImage}
-+@@ -708,14 +756,76 @@ function SessionDetail(props) {
-+               />
-+             </View>
-+           </View>
-++          <View style={styles.listenersContainer}>
-++            <View style={styles.listenersTextWrapper}>
-++              <Text
-++                style={[
-++                  styles.listItemHeaderSongTextTitle,
-++                  {marginTop: normalise(5), fontSize: normalise(12)},
-++                ]}
-++                numberOfLines={2}>
-++                LISTENERS
-++              </Text>
-++            </View>
-++            <View
-++              style={[
-++                styles.bottomLineStyle,
-++                {
-++                  width: width / 3.8,
-++                  marginBottom: normalise(8),
-++                  marginTop: normalise(0),
-++                },
-++              ]}></View>
-++            <ScrollView style={{flex: 1}}>
-++              {currentListners?.length > 0 ? (
-++                <View
-++                  style={{
-++                    flexDirection: 'row',
-++                    justifyContent: 'center',
-++                    flexWrap: 'wrap',
-++                  }}>
-++                  {currentListners?.map((item, index) => {
-++                    return (
-++                      <View style={[styles.joineeIitemWrapper]}>
-++                        <Image
-++                          source={
-++                            item?.profile_image
-++                              ? {
-++                                  uri:
-++                                    constants.profile_picture_base_url +
-++                                    item?.profile_image,
-++                                }
-++                              : ImagePath.userPlaceholder
-++                          }
-++                          style={[styles.songListItemImage]}
-++                          resizeMode="cover"
-++                        />
-++                      </View>
-++                    );
-++                  })}
-++                </View>
- +              ) : (
--+                <View>
--+                  <Text style={styles.noJoineeText}>No listeners available</Text>
-++                <View
-++                  style={{
-++                    flex: 1,
-++                    justifyContent: 'center',
-++                    alignItems: 'center',
-++                  }}>
-++                  <Text style={styles.noJoineeText}>
-++                    No listeners available
-++                  </Text>
- +                </View>
--+              )
--+            ) : null}
--           </View>
--           {!props.route.params.isforEdit && (
--             <TrackProgress
--@@ -2683,6 +2725,13 @@ const styles = StyleSheet.create({
--   modalText: {
--     marginBottom: 15,
-++              )}
-++            </ScrollView>
-++          </View>
-+         </View>
-+-        <TrackProgress
-++        {/* <TrackProgress
-+           setModalVisible={() => null}
-+           modalVisible={false}
-+           duration={appleFullSongDuration}
-+           position={progress}
-+           isShow={false}
-+-        />
-++        /> */}
-+         <Popover
-+           from={touchable}
-+           isVisible={showPopover}
-+@@ -844,8 +954,8 @@ const styles = StyleSheet.create({
-+   },
-+ 
-+   playButtonStyle: {
-+-    width: normalise(40),
-+-    height: normalise(40),
-++    width: normalise(45),
-++    height: normalise(45),
-+     justifyContent: 'center',
-+     alignItems: 'center',
-+   },
-+@@ -878,6 +988,13 @@ const styles = StyleSheet.create({
-+     borderRightColor: Colors.meta,
-+     width: '50%',
-    },
- +  noJoineeText: {
- +    color: Colors.white,
- +    fontFamily: 'ProximaNova-Regular',
- +    fontSize: normalise(12),
- +    textAlign: 'center',
--+    marginTop: normalise(20),
--+  }
-++    marginTop: '20%',
-++  },
-  });
-  
-- export default MySessionDetailScreen;
-+ export default SessionDetail;
-+diff --git a/src/components/main/TabNavigator/Contact.js b/src/components/main/TabNavigator/Contact.js
-+index 7bba0e7..46d5194 100644
-+--- a/src/components/main/TabNavigator/Contact.js
-++++ b/src/components/main/TabNavigator/Contact.js
-+@@ -252,7 +252,7 @@ const Contact = props => {
-+ 
-+   return (
-+     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-+-      <StatusBar backgroundColor={Colors.darkerblack} />
-++      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
-+       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
-+       <Loader visible={bool} />
-+       <SafeAreaView style={{ flex: 1 }}>
-+@@ -260,8 +260,8 @@ const Contact = props => {
-+           title={'SAVED SONGS'}
-+           thirditemtext={true}
-+           texttwo={''}
-+-          firstitemtext={false}
-+-          imageone={ImagePath.backicon}
-++          // firstitemtext={false}
-++          // imageone={ImagePath.backicon}
-+           onPressFirstItem={() => {
-+             props.navigation.goBack();
-+           }}
-+diff --git a/src/components/main/TabNavigator/Home.js b/src/components/main/TabNavigator/Home.js
-+index abe3839..45ab4b3 100644
-+--- a/src/components/main/TabNavigator/Home.js
-++++ b/src/components/main/TabNavigator/Home.js
-+@@ -1427,7 +1427,6 @@ const Home = props => {
-+       console.log('empty');
-+     }
-+   }
-+-  const insets = useSafeAreaInsets();
-+   return (
-+     <View
-+       style={{
-+@@ -1437,10 +1436,10 @@ const Home = props => {
-+       {/* {Platform.OS == 'android' && (
-+         <StatusBar backgroundColor={Colors.darkerblack} />
-+       )} */}
-+-      <StatusBar
-++      {/* <StatusBar
-+         barStyle="light-content" // 👈 Makes iOS status bar text white
-+         backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
-+-      />
-++      /> */}
-+       {/* <SafeAreaView style={{flex: 1, position: 'relative'}}> */}
-+       <Timer
-+         onFinish={() => {
-+@@ -1992,8 +1991,8 @@ const styles = StyleSheet.create({
-+     paddingHorizontal: normalise(50),
-+     borderBottomColor: Colors.fadeblack,
-+     borderBottomWidth: normalise(1),
-+-    width:"100%",
-+-    justifyContent:'center'
-++    width: '100%',
-++    justifyContent: 'center',
-+   },
-+   tabBarButtonStyle: {
-+     width: '50%',
-+diff --git a/src/components/main/TabNavigator/Search.js b/src/components/main/TabNavigator/Search.js
-+index 8442c97..49c960a 100644
-+--- a/src/components/main/TabNavigator/Search.js
-++++ b/src/components/main/TabNavigator/Search.js
-+@@ -935,7 +935,7 @@ const Search = props => {
-+   //VIEW
-+   return (
-+     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
-+-      <StatusBar backgroundColor={Colors.darkerblack} />
-++      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
-+ 
-+       <Loader visible={props.status === USER_SEARCH_REQUEST} />
-+ 
-+diff --git a/src/widgets/HeaderComponent.js b/src/widgets/HeaderComponent.js
-+index b11767d..d06d88e 100644
-+--- a/src/widgets/HeaderComponent.js
-++++ b/src/widgets/HeaderComponent.js
-+@@ -1,5 +1,5 @@
-+ import React, {useState} from 'react';
-+-import {View, Text, TouchableOpacity, Image} from 'react-native';
-++import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
-+ import normalise from '../utils/helpers/Dimens';
-+ import PropTypes from 'prop-types';
-+ 
-+@@ -28,6 +28,7 @@ function HeaderComponent(props) {
-+     <View
-+       style={[
-+         HeaderStyles.headerContainer,
-++        styles.headerStyle,
-+         props.hideBorderBottom && {borderBottomWidth: 0},
-+       ]}>
-+       {/* Left */}
-+@@ -56,7 +57,7 @@ function HeaderComponent(props) {
-+         </TouchableOpacity>
-+       )}
-+       {/* Middle */}
-+-      <Text style={HeaderStyles.headerText}>{props.title}</Text>
-++      <Text style={[HeaderStyles.headerText, props.titleStyle]}>{props.title}</Text>
-+       {/* Right */}
-+       {props.thirditemtext ? (
-+         <TouchableOpacity
-+@@ -88,6 +89,12 @@ function HeaderComponent(props) {
-+ 
-+ export default HeaderComponent;
-+ 
-++const styles= StyleSheet.create({
-++  headerStyle:{
-++     borderBottomWidth:1
-++  }
-++})
-++
-+ HeaderComponent.propTypes = {
-+   firstitemtext: PropTypes.bool,
-+   thirditemtext: PropTypes.bool,
-diff --git a/src/assests/ImagePath.js b/src/assests/ImagePath.js
-index c73693b..2429921 100644
---- a/src/assests/ImagePath.js
-+++ b/src/assests/ImagePath.js
-@@ -120,7 +120,8 @@ const ImagePath = {
-   hamburger:require('./images/hamburger.png'),
-   headPhoneImage:require('./images/Headphones.png'),
-   liveImage:require('./images/live-stream.png'),
--  playCenter:require("./images/playCenter.png")
-+  playCenter:require("./images/playCenter.png"),
-+  choonaPlay:require("./images/choona_play.png")
- };
- 
- export default ImagePath;
-diff --git a/src/assests/images/choona_play.png b/src/assests/images/choona_play.png
-new file mode 100644
-index 0000000..504b02f
-Binary files /dev/null and b/src/assests/images/choona_play.png differ
-diff --git a/src/components/HomeScreen/HomeListItem/HomeListItemFooter.js b/src/components/HomeScreen/HomeListItem/HomeListItemFooter.js
-index cef5eb1..f8c177b 100644
---- a/src/components/HomeScreen/HomeListItem/HomeListItemFooter.js
-+++ b/src/components/HomeScreen/HomeListItem/HomeListItemFooter.js
-@@ -41,6 +41,7 @@ const HomeListItemFooter = ({
-   singer,
-   songUri,
-   title,
-+  songImage,
- }) => {
-   const [actualNumLines, setActualNumLines] = useState(0);
-   const [disabled, setDisabled] = useState(false);
-@@ -83,11 +84,12 @@ const HomeListItemFooter = ({
-         <View style={styles.listItemFooterInfo}>
-           <Image
-             source={
--              ImagePath
--                ? postType
--                  ? ImagePath.spotifyicon
--                  : ImagePath.apple_icon_round
--                : null
-+              // ImagePath
-+              //   ? postType
-+              //     ? ImagePath.spotifyicon
-+              //     : ImagePath.apple_icon_round
-+              //   : null
-+              {uri: songImage}
-             }
-             style={styles.listItemHeaderSongTypeIcon}
-             resizeMode="contain"
 diff --git a/src/components/Posts/MoreModal1.js b/src/components/Posts/MoreModal1.js
-new file mode 100644
-index 0000000..51ee605
---- /dev/null
+index 57e644c..ec61104 100644
+--- a/src/components/Posts/MoreModal1.js
 +++ b/src/components/Posts/MoreModal1.js
-@@ -0,0 +1,367 @@
-+import React, {useEffect, useState} from 'react';
-+import {
-+  Image,
-+  ImageBackground,
-+  Modal,
-+  StyleSheet,
-+  Text,
-+  TouchableOpacity,
-+  View,
-+} from 'react-native';
-+import {connect} from 'react-redux';
-+import {deleteMessageRequest} from '../../action/MessageAction';
-+import {deletePostReq} from '../../action/PostAction';
-+import {saveSongRequest, unsaveSongRequest} from '../../action/SongAction';
-+import {
-+  othersProfileRequest,
-+  ReportRequest,
-+  userFollowUnfollowRequest,
-+} from '../../action/UserAction';
-+import Colors from '../../assests/Colors';
-+import ImagePath from '../../assests/ImagePath';
-+import normalise from '../../utils/helpers/Dimens';
-+import {SimpleOption} from '../common/SimpleOption';
-+
-+const MoreModal1 = ({
-+  setBool,
-+  bottomSheetRef,
-+  chatData,
-+  chatId,
-+  chatList,
-+  deleteMessageReq,
-+  delPostReq,
-+  followUnfollowReq,
-+  index,
-+  navigation,
-+  openInAppleORSpotify,
-+  setIndex,
-+  page,
-+  postData,
-+  registerType,
-+  saveSongReq,
-+  savedSong,
-+  show,
-+  setShow,
-+  type,
-+  unsaveSongReq,
-+  Report,
-+  userProfileResp,
-+  othersProfileresp,
-+  othersProfileReq,
-+  setReportModal,
-+}) => {
-+  const [isFollowing, setIsFollowing] = useState(false);
-+  useEffect(() => {
-+    if (othersProfileresp) {
-+      setIsFollowing(othersProfileresp.isFollowing);
-+    }
-+  }, [othersProfileresp]);
-+
-+  console.log(postData?.[0], 'thisispostdata');
-+
-+  const saveUnsaveAction = () => {
-+    if (page === 'savedSongs') {
-+      unsaveSongReq(savedSong[index]._id);
-+      setShow(!show);
-+    } else {
-+      let saveSongObject = {
-+        song_uri: postData[index].attributes.previews[0].url,
-+        song_name: postData[index].attributes.name,
-+        song_image:
-+          page === 'insideMessage'
-+            ? postData[index].image
-+            : postData[index].song_image,
-+        artist_name: postData[index].attributes.artistName,
-+        album_name: postData[index].attributes.albumName,
-+        post_id: postData[index]._id,
-+        chat_id:
-+          page === 'insideMessage' || chatId ? postData[index].key : null,
-+        type: page === 'insideMessage' ? 'chat' : type,
-+        isrc_code: postData[index].isrc_code,
-+        original_song_uri: postData[index].original_song_uri,
-+        original_reg_type:
-+          page === 'insideMessage' || page === 'player'
-+            ? postData[index].original_reg_type
-+            : postData[index].userDetails.register_type,
-+      };
-+      saveSongReq(saveSongObject);
-+      setShow(!show);
-+    }
-+  };
-+
-+  const followUnfollowAction = () => {
-+    setIsFollowing(!isFollowing);
-+    followUnfollowReq({
-+      follower_id: postData[index].userDetails._id,
-+    });
-+  };
-+
-+  const hanldePlaySong = item => {
-+    navigation.navigate('Player', {
-+      song_title: registerType === 'spotify' ? item.name : item.attributes.name,
-+      album_name:
-+        registerType === 'spotify'
-+          ? item.album.name
-+          : item.attributes.albumName,
-+      song_pic:
-+        registerType === 'spotify'
-+          ? item.album.images[0].url
-+          : item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
-+      username: '',
-+      profile_pic: '',
-+      originalUri:
-+        registerType === 'spotify'
-+          ? item.external_urls.spotify
-+          : item.attributes.url,
-+      uri:
-+        registerType === 'spotify'
-+          ? item.preview_url
-+          : item.attributes.previews[0].url,
-+      artist:
-+        registerType === 'spotify'
-+          ? singerList(item.artists)
-+          : item.attributes.artistName,
-+      changePlayer: true,
-+      registerType: registerType,
-+      changePlayer2: registerType === 'spotify' ? true : false,
-+      id: registerType === 'spotify' ? item.id : item.id,
-+      apple_song_id: registerType === 'spotify' ? item.id : item.id,
-+      showPlaylist: false,
-+    });
-+  };
-+
-+  const handleAddSong = (item, from) => {
-+    const songItem = {
-+      image:
-+        registerType === 'spotify'
-+          ? item.album.images[0].url
-+          : item.attributes.artwork.url.replace('{w}x{h}', '600x600'),
-+      title: registerType === 'spotify' ? item.name : item.attributes.name,
-+      title2:
-+        registerType === 'spotify'
-+          ? singerList(item.artists)
-+          : item.attributes.artistName,
-+      details: item,
-+      registerType: registerType,
-+    };
-+
-+    console.log(songItem, 'when sent song to session');
-+    // return;
-+
-+    switch (from || props?.route?.params?.from) {
-+      case 'CreatePost':
-+        navigation.navigate('CreatePost', songItem);
-+        break;
-+      case 'Playlist':
-+        navigation.navigate('CreatePlayList', {
-+          songItem,
-+          previousPlaylistData: [],
-+        });
-+        break;
-+      case 'AssembleSession':
-+        navigation.navigate('AssembleSession', {
-+          songItem,
-+          previousSessionData: [],
-+        });
-+        break;
-+      default:
-+        navigation.navigate('CreatePost', songItem);
-+        break;
-+    }
-+  };
-+
-+  return (
-+    <Modal
-+      animationType="fade"
-+      transparent={true}
-+      visible={show}
-+      presentationStyle={'overFullScreen'}>
-+      <ImageBackground
-+        source={ImagePath ? ImagePath.page_gradient : null}
-+        style={styles.centeredView}>
-+        <View style={styles.modalView}>
-+          <TouchableOpacity
-+            style={[styles.modalButton, {marginTop: 0}]}
-+            onPress={() => {
-+              setShow(false);
-+              hanldePlaySong(postData[index]);
-+            }}>
-+            <Image
-+              source={ImagePath ? ImagePath.choonaPlay : null}
-+              style={styles.modalButtonIcon}
-+              resizeMode="contain"
-+            />
-+            <Text style={styles.modalButtonText}>Play Song</Text>
-+          </TouchableOpacity>
-+          <TouchableOpacity
-+            style={[styles.modalButton]}
-+            onPress={() => {
-+              setShow(false);
-+              //   saveUnsaveAction();
-+            }}>
-+            <Image
-+              source={ImagePath ? ImagePath.boxicon : null}
-+              style={styles.modalButtonIcon}
-+              resizeMode="contain"
-+            />
-+            <Text style={styles.modalButtonText}>
-+              {page === 'savedSongs' ? 'Unsave' : 'Save'} Song
-+            </Text>
-+          </TouchableOpacity>
-+          <TouchableOpacity
-+            style={[styles.modalButton]}
-+            onPress={() => {
-+              setShow(false);
-+
-+              //   if (bottomSheetRef) {
-+              //     bottomSheetRef.open();
-+              //   }
-+              //   navigation.navigate('PlayerScreenSelectUser', {
-+              //     item: postData[index ? index : 0],
-+              //     page: page,
-+              //   });
-+            }}>
-+            <Image
-+              source={ImagePath ? ImagePath.sendicon : null}
-+              style={styles.modalButtonIcon}
-+              resizeMode="contain"
-+            />
-+            <Text style={styles.modalButtonText}>Send Song</Text>
-+          </TouchableOpacity>
-+
-+          <SimpleOption
-+            actionIcon={ImagePath.add_white}
-+            title="Post a Song"
-+            pressEvent={() => {
-+              setShow(!show);
-+              handleAddSong(postData[index], 'CreatePost');
-+            }}
-+          />
-+
-+          <SimpleOption
-+            actionIcon={ImagePath.add_white}
-+            title="Post a Playlist"
-+            pressEvent={() => {
-+              setShow(!show);
-+              handleAddSong(postData[index], 'Playlist');
-+            }}
-+          />
-+          <SimpleOption
-+            actionIcon={ImagePath.add_white}
-+            title="Create a Playlist"
-+            pressEvent={() => {
-+              setShow(!show);
-+              handleAddSong(postData[index], 'AssembleSession');
-+            }}
-+          />
-+          <TouchableOpacity
-+            onPress={() => {
-+              setShow(!show);
-+              if (page !== 'player') {
-+                setIndex(0);
-+              }
-+            }}
-+            style={styles.cancelButton}>
-+            <Text style={styles.cancelButtonText}>Cancel</Text>
-+          </TouchableOpacity>
-+        </View>
-+      </ImageBackground>
-+    </Modal>
-+  );
-+};
-+
-+const mapStateToProps = state => {
-+  return {
-+    chatList: state.MessageReducer.chatList,
-+    othersProfileresp: state.UserReducer.othersProfileresp,
-+    registerType: state.TokenReducer.registerType,
-+    savedSong: state.SongReducer.savedSongList,
-+    userProfileResp: state.UserReducer.userProfileResp,
-+  };
-+};
-+
-+const mapDispatchToProps = dispatch => {
-+  return {
-+    deleteMessageReq: payload => {
-+      dispatch(deleteMessageRequest(payload));
-+    },
-+    delPostReq: payload => {
-+      dispatch(deletePostReq(payload));
-+    },
-+    followUnfollowReq: payload => {
-+      dispatch(userFollowUnfollowRequest(payload));
-+    },
-+    othersProfileReq: id => {
-+      dispatch(othersProfileRequest(id));
-+    },
-+    saveSongReq: payload => {
-+      dispatch(saveSongRequest(payload));
-+    },
-+    unsaveSongReq: id => {
-+      dispatch(unsaveSongRequest(id));
-+    },
-+    Report: payload => {
-+      dispatch(ReportRequest(payload));
-+    },
-+  };
-+};
-+
-+export default connect(mapStateToProps, mapDispatchToProps)(MoreModal1);
-+
-+const styles = StyleSheet.create({
-+  centeredView: {
-+    flex: 1,
-+    justifyContent: 'flex-end',
-+    alignItems: 'center',
-+  },
-+  modalView: {
-+    bottom: 0,
-+    left: 0,
-+    right: 0,
-+    position: 'absolute',
-+    backgroundColor: Colors.darkerblack,
-+    borderTopLeftRadius: 24,
-+    borderTopRightRadius: 24,
-+    padding: 20,
-+    paddingTop: normalise(24),
-+    shadowColor: '#000',
-+    shadowOffset: {
-+      width: 0,
-+      height: 2,
-+    },
-+    shadowOpacity: 0.25,
-+    shadowRadius: 4,
-+    elevation: 5,
-+  },
-+  modalButton: {
-+    alignItems: 'center',
-+    flexDirection: 'row',
-+    marginTop: normalise(18),
-+  },
-+  modalButtonIcon: {
-+    height: normalise(18),
-+    width: normalise(18),
-+  },
-+  modalButtonText: {
-+    color: Colors.white,
-+    fontFamily: 'ProximaNova-Regular',
-+    fontSize: normalise(13),
-+    marginLeft: normalise(15),
-+  },
-+  cancelButton: {
-+    alignItems: 'center',
-+    backgroundColor: Colors.fadeblack,
-+    borderRadius: 6,
-+    height: normalise(40),
-+    justifyContent: 'center',
-+    marginBottom: normalise(20),
-+    marginTop: normalise(24),
-+    opacity: 10,
-+  },
-+  cancelButtonText: {
-+    color: Colors.white,
-+    fontFamily: 'ProximaNova-Bold',
-+    fontSize: normalise(12),
-+    textTransform: 'uppercase',
-+  },
-+});
-diff --git a/src/components/common/SimpleOption.js b/src/components/common/SimpleOption.js
-new file mode 100644
-index 0000000..6ec9ed8
---- /dev/null
-+++ b/src/components/common/SimpleOption.js
-@@ -0,0 +1,77 @@
-+import React from 'react';
-+import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
-+import Colors from '../../assests/Colors';
-+import normalise from '../../utils/helpers/Dimens';
-+
-+export const SimpleOption = ({actionIcon, title, mainStyle, pressEvent}) => {
-+  return (
-+    <TouchableOpacity
-+      style={[styles.modalButton, mainStyle]}
-+      onPress={() => pressEvent()}>
-+      <Image
-+        source={actionIcon ?? null}
-+        style={styles.modalButtonIcon}
-+        resizeMode="contain"
-+      />
-+      <Text style={styles.modalButtonText}>{title}</Text>
-+    </TouchableOpacity>
-+  );
-+};
-+
-+const styles = StyleSheet.create({
-+  centeredView: {
-+    flex: 1,
-+    justifyContent: 'flex-end',
-+    alignItems: 'center',
-+  },
-+  modalView: {
-+    bottom: 0,
-+    left: 0,
-+    right: 0,
-+    position: 'absolute',
-+    backgroundColor: Colors.darkerblack,
-+    borderTopLeftRadius: 24,
-+    borderTopRightRadius: 24,
-+    padding: 20,
-+    paddingTop: normalise(24),
-+    shadowColor: '#000',
-+    shadowOffset: {
-+      width: 0,
-+      height: 2,
-+    },
-+    shadowOpacity: 0.25,
-+    shadowRadius: 4,
-+    elevation: 5,
-+  },
-+  modalButton: {
-+    alignItems: 'center',
-+    flexDirection: 'row',
-+    marginTop: normalise(18),
-+  },
-+  modalButtonIcon: {
-+    height: normalise(18),
-+    width: normalise(18),
-+  },
-+  modalButtonText: {
-+    color: Colors.white,
-+    fontFamily: 'ProximaNova-Regular',
-+    fontSize: normalise(13),
-+    marginLeft: normalise(15),
-+  },
-+  cancelButton: {
-+    alignItems: 'center',
-+    backgroundColor: Colors.fadeblack,
-+    borderRadius: 6,
-+    height: normalise(40),
-+    justifyContent: 'center',
-+    marginBottom: normalise(20),
-+    marginTop: normalise(24),
-+    opacity: 10,
-+  },
-+  cancelButtonText: {
-+    color: Colors.white,
-+    fontFamily: 'ProximaNova-Bold',
-+    fontSize: normalise(12),
-+    textTransform: 'uppercase',
-+  },
-+});
-diff --git a/src/components/main/CreatePlayList.js b/src/components/main/CreatePlayList.js
-index cfe24b2..fc2bd72 100644
---- a/src/components/main/CreatePlayList.js
-+++ b/src/components/main/CreatePlayList.js
-@@ -1,24 +1,17 @@
- import React, {useEffect, useState} from 'react';
- import {
--  Alert,
-+  Dimensions,
-   FlatList,
-   Image,
-+  Keyboard,
-   SafeAreaView,
-   StyleSheet,
-   Text,
-+  TextInput,
-   TouchableOpacity,
-   useWindowDimensions,
-   View,
--  Keyboard,
--  TextInput,
--  Dimensions,
+@@ -76,7 +76,7 @@ const MoreModal1 = ({
+               ),
+         artist_name: postData[index].attributes.artistName,
+         album_name: postData[index].attributes.albumName,
+-        post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
++        // post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
+         chat_id:
+           page === 'insideMessage' || chatId ? postData[index]?.key : null,
+         type: page === 'insideMessage' ? 'chat' : postData[index].type,
+diff --git a/src/components/main/PostListForUser.js b/src/components/main/PostListForUser.js
+index 071b01f..5a8a7d6 100644
+--- a/src/components/main/PostListForUser.js
++++ b/src/components/main/PostListForUser.js
+@@ -9,6 +9,7 @@ import {
+   Modal,
+   Platform,
+   Alert,
++  SafeAreaView,
  } from 'react-native';
--import Colors from '../../assests/Colors';
--import normalise from '../../utils/helpers/Dimens';
--import StatusBar from '../../utils/MyStatusBar';
--import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
--import ImagePath from '../../assests/ImagePath';
--import TextInputField from '../../widgets/TextInputField';
- import {connect} from 'react-redux';
- import {createPostRequest} from '../../action/PostAction';
- import {
-@@ -26,20 +19,24 @@ import {
-   CREATE_POST_REQUEST,
-   CREATE_POST_SUCCESS,
- } from '../../action/TypeConstants';
--import {pausePlayerAction} from '../../saga/PlayerSaga';
--import Loader from '../../widgets/AuthLoader';
-+import Colors from '../../assests/Colors';
-+import ImagePath from '../../assests/ImagePath';
-+import normalise from '../../utils/helpers/Dimens';
- import isInternetConnected from '../../utils/helpers/NetInfo';
- import toast from '../../utils/helpers/ShowErrorAlert';
-+import StatusBar from '../../utils/MyStatusBar';
-+import Loader from '../../widgets/AuthLoader';
-+import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
- import GradientButton from '../common/GradientButton';
+ import Loader from '../../widgets/AuthLoader';
+ import normalise from '../../utils/helpers/Dimens';
+@@ -491,6 +492,7 @@ function PostListForUser(props) {
+   /** ------------ */
  
- let status;
- const deviceWidth = Dimensions.get('window').width;
- 
- function CreatePlayList(props) {
--  const buttonLineWidth = deviceWidth * 0.80;
-+  const buttonLineWidth = deviceWidth * 0.8;
-   console.log(props.route?.params, 'these are params');
-   const {songItem, previousPlaylistData} = props.route?.params;
--  console.log(songItem, 'this is props Item playlist');
-+  console.log(songItem, previousPlaylistData, 'this is props Item playlist');
-   const {width, height} = useWindowDimensions();
-   const [playListArary, setPlayListArray] = useState([]);
-   const [playListName, setPlayListName] = useState('');
-@@ -68,22 +65,22 @@ function CreatePlayList(props) {
-         song_uri:
-           songItem.registerType === 'spotify'
-             ? item.details.preview_url
--            : item.details.attributes.previews[0].url,
-+            : item?.details?.attributes?.previews[0]?.url,
-         original_song_uri:
-           songItem.registerType === 'spotify'
-             ? item.details.external_urls.spotify
--            : item.details.attributes.url,
-+            : item?.details?.attributes?.url,
-         song_name: item?.title,
-         song_image: item?.image,
-         artist_name: item?.title2,
-         isrc_code:
-           songItem.registerType === 'spotify'
-             ? item.details.external_ids.isrc
--            : item.details.attributes.isrc,
-+            : item?.details?.attributes?.isrc,
-         album_name:
-           songItem.registerType === 'spotify'
-             ? item.details.album.name
--            : item.details.attributes.albumName,
-+            : item?.details?.attributes?.albumName,
-       };
-     });
+   function renderItem(data) {
++    console.log(JSON.stringify(data?.item), 'tisidfdfsdf');
+     /** REACTION - ADDITION */
+     const reactionMap = {
+       thumbsUp: data.item.fireReactionIds
+@@ -659,9 +661,27 @@ function PostListForUser(props) {
+           hitreact1(modal1Visible);
+         }}
+         onPressMusicbox={() => {
+-          return;
+-          playSong(data);
+-          setVisibleMiniPlayer(true);
++          props.navigation.navigate('Player', {
++            comments: [],
++            song_title: data.item.songs[0]?.song_name,
++            album_name: data.item.songs[0]?.album_name,
++            song_pic: data.item.songs[0]?.song_image,
++            username: data.item.userDetails.username,
++            profile_pic: data.item.userDetails.profile_image,
++            // time: data.item.time,
++            // title: data.item.title,
++            uri: data?.item?.songs[0]?.song_uri,
++            // reactions: data.item.reaction,
++            // id: data.item._id,
++            id: data.item?.songs[0]?.id,
++            artist: data?.item?.songs[0]?.artist_name,
++            changePlayer: false,
++            originalUri: data.item.songs[0].original_song_uri,
++            registerType: data.item.userDetails.register_type,
++            isrc: data.item.songs[0].isrc_code,
++            details: data.item?.songs[0],
++            pple_song_id: data?.item?.songs[0]?.apple_song_id,
++          });
+         }}
+         onPressReactionbox={() => {
+           props.navigation.navigate('HomeItemReactions', {
+@@ -796,6 +816,7 @@ function PostListForUser(props) {
    };
-@@ -161,7 +158,7 @@ function CreatePlayList(props) {
-     let currentLength = playListArary?.length;
  
-     const filteredArray = playListArary?.filter(
--      item => item.details.id !== itemId,
-+      item => item?.details?.id !== itemId,
-     );
-     setPlayListArray(filteredArray);
-     if (currentLength == 1) {
-@@ -282,7 +279,10 @@ function CreatePlayList(props) {
+   const playSong = (data, songIndex = null) => {
++    Alert.alert('hkdjfh');
+     const selectedSongIndex = songIndex ?? 0;
+     console.log(selectedSongIndex, 'hey this is index');
+     console.log(JSON.stringify(data?.item?.social_type), 'its lay song data');
+@@ -855,7 +876,7 @@ function PostListForUser(props) {
+       }
+     } else {
+       if (props.playingSongRef === '') {
+-        // Alert.alert('empty')
++        Alert.alert('empty');
+         MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
+           .then(track => {
+             let saveSongResObj = {};
+@@ -1002,170 +1023,175 @@ function PostListForUser(props) {
+ 
+   return (
+     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+-      <StatusBar backgroundColor={Colors.darkerblack} />
++      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
+       <Loader visible={bool} />
+-      <HeaderComponent
+-        firstitemtext={false}
+-        imageone={ImagePath.backicon}
+-        title={props.route.params.profile_name}
+-        thirditemtext={true}
+-        texttwo={''}
+-        onPressFirstItem={() => {
+-          props.navigation.goBack();
+-        }}
+-      />
+-
+-      {_.isEmpty(posts) ? (
+-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+-          <Image
+-            source={ImagePath.noposts}
+-            style={{
+-              height: normalise(150),
+-              width: normalise(150),
+-              marginTop: '28%',
+-            }}
+-            resizeMode="contain"
+-          />
+-          <Text
+-            style={{
+-              marginBottom: '20%',
+-              marginTop: normalise(10),
+-              color: Colors.white,
+-              fontSize: normalise(14),
+-              fontWeight: 'bold',
+-            }}>
+-            NO POSTS YET
+-          </Text>
+-        </View>
+-      ) : (
+-        <View style={{flex: 1}}>
+-          <FlatList
+-            // style={{ marginTop: normalise(10) }}
+-            data={posts}
+-            renderItem={renderItem}
+-            initialScrollIndex={props.route.params.index}
+-            getItemLayout={(data, index) => ({
+-              length: 250,
+-              offset: normalise(385) * index,
+-              index,
+-            })}
+-            onScrollToIndexFailed={val => {
+-              // console.log(val);
+-            }}
+-            showsVerticalScrollIndicator={false}
+-            keyExtractor={(item, index) => {
+-              index.toString();
+-            }}
+-            ref={ref}
+-          />
+-
+-          {props.status === DUMMY_ACTION_SUCCESS ? (
+-            <MusicPlayerBar
+-              onPress={() => {
+-                props.navigation.navigate('Player', {
+-                  comments: [],
+-                  song_title: props.playingSongRef.song_name,
+-                  album_name: props.playingSongRef.album_name,
+-                  song_pic: props.playingSongRef.song_pic,
+-                  username: props.playingSongRef.username,
+-                  profile_pic: props.playingSongRef.profile_pic,
+-                  uri: props.playingSongRef.uri,
+-                  reactions: props.playingSongRef.reactionData,
+-                  id: props.playingSongRef.id,
+-                  artist: props.playingSongRef.artist,
+-                  changePlayer: props.playingSongRef.changePlayer,
+-                  originalUri: props.playingSongRef.originalUri,
+-                  isrc: props.playingSongRef.isrc,
+-                  registerType: props.playingSongRef.regType,
+-                  details: props.playingSongRef.details,
+-                  showPlaylist: props.playingSongRef.showPlaylist,
+-                  comingFromMessage: props.playingSongRef.comingFromMessage,
+-                });
+-              }}
+-              onPressPlayOrPause={() => {
+-                setTimeout(() => {
+-                  findPlayingSong(props.postData);
+-                }, 500);
++      <SafeAreaView style={{flex: 1}}>
++        <HeaderComponent
++          firstitemtext={false}
++          imageone={ImagePath.backicon}
++          title={props.route.params.profile_name}
++          thirditemtext={true}
++          texttwo={''}
++          onPressFirstItem={() => {
++            props.navigation.goBack();
++          }}
++        />
++
++        {_.isEmpty(posts) ? (
++          <View
++            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
++            <Image
++              source={ImagePath.noposts}
++              style={{
++                height: normalise(150),
++                width: normalise(150),
++                marginTop: '28%',
+               }}
++              resizeMode="contain"
              />
-             <View style={styles.buttonWrapper}>
-               <View
--                style={[styles.bottomLineStyle, {width: buttonLineWidth, marginBottom:11,   opacity: 0.3,}]}></View>
-+                style={[
-+                  styles.bottomLineStyle,
-+                  {width: buttonLineWidth, marginBottom: 11, opacity: 0.3},
-+                ]}></View>
-               <GradientButton
-                 title={'ADD SONG'}
-                 containerStyle={{
-diff --git a/src/components/main/ListCells/HomeItemList.js b/src/components/main/ListCells/HomeItemList.js
-index 2b6bdf1..300ff1d 100644
---- a/src/components/main/ListCells/HomeItemList.js
-+++ b/src/components/main/ListCells/HomeItemList.js
-@@ -195,6 +195,7 @@ function HomeItemList(props) {
-         singer={props.singer}
-         songUri={props.songUri}
-         title={props.title}
-+        songImage={props.image[0].song_image}
-       />
+-          ) : null}
+-
+-          <Modal
+-            animationType="fade"
+-            transparent={true}
+-            visible={visible}
+-            onRequestClose={() => {
+-              //Alert.alert("Modal has been closed.");
+-            }}>
+-            <View
++            <Text
+               style={{
+-                flex: 1,
+-                backgroundColor: '#000000',
+-                opacity: 0.9,
+-                justifyContent: 'center',
+-                alignItems: 'center',
++                marginBottom: '20%',
++                marginTop: normalise(10),
++                color: Colors.white,
++                fontSize: normalise(14),
++                fontWeight: 'bold',
+               }}>
+-              <Text
++              NO POSTS YET
++            </Text>
++          </View>
++        ) : (
++          <View style={{flex: 1}}>
++            <FlatList
++              // style={{ marginTop: normalise(10) }}
++              data={posts}
++              renderItem={renderItem}
++              initialScrollIndex={props.route.params.index}
++              getItemLayout={(data, index) => ({
++                length: 250,
++                offset: normalise(385) * index,
++                index,
++              })}
++              onScrollToIndexFailed={val => {
++                // console.log(val);
++              }}
++              showsVerticalScrollIndicator={false}
++              keyExtractor={(item, index) => {
++                index.toString();
++              }}
++              ref={ref}
++            />
++
++            {props.status === DUMMY_ACTION_SUCCESS ? (
++              <MusicPlayerBar
++                onPress={() => {
++                  props.navigation.navigate('Player', {
++                    comments: [],
++                    song_title: props.playingSongRef.song_name,
++                    album_name: props.playingSongRef.album_name,
++                    song_pic: props.playingSongRef.song_pic,
++                    username: props.playingSongRef.username,
++                    profile_pic: props.playingSongRef.profile_pic,
++                    uri: props.playingSongRef.uri,
++                    reactions: props.playingSongRef.reactionData,
++                    id: props.playingSongRef.id,
++                    artist: props.playingSongRef.artist,
++                    changePlayer: props.playingSongRef.changePlayer,
++                    originalUri: props.playingSongRef.originalUri,
++                    isrc: props.playingSongRef.isrc,
++                    registerType: props.playingSongRef.regType,
++                    details: props.playingSongRef.details,
++                    showPlaylist: props.playingSongRef.showPlaylist,
++                    comingFromMessage: props.playingSongRef.comingFromMessage,
++                  });
++                }}
++                onPressPlayOrPause={() => {
++                  setTimeout(() => {
++                    findPlayingSong(props.postData);
++                  }, 500);
++                }}
++              />
++            ) : null}
++
++            <Modal
++              animationType="fade"
++              transparent={true}
++              visible={visible}
++              onRequestClose={() => {
++                //Alert.alert("Modal has been closed.");
++              }}>
++              <View
+                 style={{
+-                  fontSize:
+-                    Platform.OS === 'android' ? normalise(70) : normalise(100),
++                  flex: 1,
++                  backgroundColor: '#000000',
++                  opacity: 0.9,
++                  justifyContent: 'center',
++                  alignItems: 'center',
+                 }}>
+-                {modalReact}
+-              </Text>
+-            </View>
+-          </Modal>
+-
+-          {modalVisible && (
+-            <MoreModal
+-              setBool={setBool}
+-              bottomSheetRef={bottomSheetRef}
+-              index={positionInArray}
+-              setIndex={setPositionInArray}
+-              navigation={props.navigation}
+-              openInAppleORSpotify={openInAppleORSpotify}
+-              postData={posts}
+-              show={modalVisible}
+-              setShow={setModalVisible}
++                <Text
++                  style={{
++                    fontSize:
++                      Platform.OS === 'android'
++                        ? normalise(70)
++                        : normalise(100),
++                  }}>
++                  {modalReact}
++                </Text>
++              </View>
++            </Modal>
++
++            {modalVisible && (
++              <MoreModal
++                setBool={setBool}
++                bottomSheetRef={bottomSheetRef}
++                index={positionInArray}
++                setIndex={setPositionInArray}
++                navigation={props.navigation}
++                openInAppleORSpotify={openInAppleORSpotify}
++                postData={posts}
++                show={modalVisible}
++                setShow={setModalVisible}
++              />
++            )}
++          </View>
++        )}
++
++        {modal1Visible === true ? (
++          <View
++            style={{
++              position: 'absolute',
++              margin: 20,
++              height: normalise(280),
++              width: '92%',
++              alignSelf: 'center',
++              marginHorizontal: normalise(15),
++              backgroundColor: Colors.white,
++              borderRadius: 20,
++              padding: 35,
++              bottom: 50,
++              shadowColor: '#000',
++              shadowOffset: {
++                width: 0,
++                height: 2,
++              },
++              shadowOpacity: 0.25,
++              shadowRadius: 3.84,
++              elevation: 5,
++            }}>
++            <EmojiSelector
++              category={Categories.history}
++              showHistory={true}
++              onEmojiSelected={emoji => {
++                setVisible(true);
++                setModalReact(emoji);
++                setTimeout(() => {
++                  setVisible(false);
++                }, 2000);
++              }}
+             />
+-          )}
+-        </View>
+-      )}
+-
+-      {modal1Visible === true ? (
+-        <View
+-          style={{
+-            position: 'absolute',
+-            margin: 20,
+-            height: normalise(280),
+-            width: '92%',
+-            alignSelf: 'center',
+-            marginHorizontal: normalise(15),
+-            backgroundColor: Colors.white,
+-            borderRadius: 20,
+-            padding: 35,
+-            bottom: 50,
+-            shadowColor: '#000',
+-            shadowOffset: {
+-              width: 0,
+-              height: 2,
+-            },
+-            shadowOpacity: 0.25,
+-            shadowRadius: 3.84,
+-            elevation: 5,
+-          }}>
+-          <EmojiSelector
+-            category={Categories.history}
+-            showHistory={true}
+-            onEmojiSelected={emoji => {
+-              setVisible(true);
+-              setModalReact(emoji);
+-              setTimeout(() => {
+-                setVisible(false);
+-              }, 2000);
+-            }}
+-          />
+-        </View>
+-      ) : null}
++          </View>
++        ) : null}
++      </SafeAreaView>
      </View>
    );
-diff --git a/src/components/main/TabNavigator/Search.js b/src/components/main/TabNavigator/Search.js
-index 6e6d2e8..682b5bc 100644
---- a/src/components/main/TabNavigator/Search.js
-+++ b/src/components/main/TabNavigator/Search.js
-@@ -70,6 +70,7 @@ import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
- import Reactions from '../../Reactions/Reactions';
- import {ReactionsContext} from '../../Reactions/UseReactions/ReactionsContext';
- import ReportModal from '../../Posts/ReportModal';
-+import MoreModal1 from '../../Posts/MoreModal1';
+ }
+diff --git a/src/components/main/TabNavigator/Contact.js b/src/components/main/TabNavigator/Contact.js
+index 46d5194..8c4f0c7 100644
+--- a/src/components/main/TabNavigator/Contact.js
++++ b/src/components/main/TabNavigator/Contact.js
+@@ -1,4 +1,4 @@
+-import React, { useEffect, useState } from 'react';
++import React, {useEffect, useState} from 'react';
+ import {
+   SafeAreaView,
+   View,
+@@ -14,7 +14,7 @@ import Colors from '../../../assests/Colors';
+ import ImagePath from '../../../assests/ImagePath';
+ import HeaderComponent from '../../../widgets/HeaderComponent';
+ import SavedSongsListItem from '../ListCells/SavedSongsListItem';
+-import { SwipeListView } from 'react-native-swipe-list-view';
++import {SwipeListView} from 'react-native-swipe-list-view';
+ import StatusBar from '../../../utils/MyStatusBar';
+ import {
+   SAVED_SONGS_LIST_REQUEST,
+@@ -30,13 +30,13 @@ import {
+ } from '../../../action/SongAction';
+ import Loader from '../../../widgets/AuthLoader';
+ import toast from '../../../utils/helpers/ShowErrorAlert';
+-import { connect } from 'react-redux';
++import {connect} from 'react-redux';
+ import isInternetConnected from '../../../utils/helpers/NetInfo';
+ import _ from 'lodash';
+-import { getUsersFromHome } from '../../../action/UserAction';
+-import { getSongFromisrc } from '../../../action/PlayerAction';
+-import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+-import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
++import {getUsersFromHome} from '../../../action/UserAction';
++import {getSongFromisrc} from '../../../action/PlayerAction';
++import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
++import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+ import axios from 'axios';
  
- let status;
- let postStatus;
-@@ -89,11 +90,11 @@ const Search = props => {
-   const [songData, setSongData] = useState([]); // user search data...ignore the naming
-   const [searchPostData, setSearchPostData] = useState([]); //search post data
-   const [top50, setTop50] = useState([]); //top 50 data
--  const [topSongSearchData, setTopSongSearchData] = useState([]);
-+  const [topSongSearchData, setTopSongSearchData] = useState(null);
+ import EmptyComponent from '../../Empty/EmptyComponent';
+@@ -251,11 +251,11 @@ const Contact = props => {
+   }
  
-   console.log(top50[0], 'sfhdfdsfdhfjkdhdfhfds');
- 
--  console.log(JSON.stringify(searchPostData[0]), 'dhfdshfdjfhdsfhk');
-+  console.log(JSON.stringify(topSongSearchData?.[0]), 'dhfdshfdjfhdsfhk');
- 
-   const [positionInArray, setPositionInArray] = useState(0);
-   const [modal1Visible, setModal1Visible] = useState(false);
-@@ -101,6 +102,7 @@ const Search = props => {
-   const [visible, setVisible] = useState(false);
-   const [modalReact, setModalReact] = useState('');
-   const [reportModal, setReportModal] = useState(false);
-+  const [modalVisible1, setModalVisible1] = useState(false);
- 
-   const [typingTimeout, setTypingTimeout] = useState(0);
-   // SEND SONG VARIABLES
-@@ -576,7 +578,10 @@ const Search = props => {
-         //     ptID: 0,
-         //   });
-         // }}
--      >
-+        onPress={() => {
-+          setPositionInArray(data.index);
-+          setModalVisible1(true);
-+        }}>
-         <Image
-           source={{
-             // uri: data.item.song_image.replace('100x100bb.jpg', '500x500bb.jpg'),
-@@ -1285,7 +1290,7 @@ const Search = props => {
-             )
-           ) : null}
-           {genreSearch ? ( //Top Songs VIEW
--            top50.length === 0 ? (
-+            top50?.length === 0 ? (
-               !isKeyboardVisible && (
-                 <EmptyComponent
-                   image={ImagePath.emptyPost}
-@@ -1296,7 +1301,9 @@ const Search = props => {
-             ) : (
-               <>
-                 <FlatList
--                  data={topSongSearchData ? topSongSearchData : top50}
-+                  data={
-+                    topSongSearchData?.length > 0 ? topSongSearchData : top50
-+                  }
-                   renderItem={renderGenreData}
-                   keyExtractor={(item, index) => index.toString()}
-                   numColumns={2}
-@@ -1353,6 +1360,21 @@ const Search = props => {
-               </Text>
-             </View>
-           </Modal>
-+
-+          {modalVisible1 && (
-+            <MoreModal1
-+              setBool={setBool}
-+              bottomSheetRef={bottomSheetRef}
-+              openInAppleORSpotify={openInAppleORSpotify}
-+              index={positionInArray}
-+              setIndex={setPositionInArray}
-+              navigation={props.navigation}
-+              postData={top50}
-+              show={modalVisible1}
-+              setShow={setModalVisible1}
-+              registerType={props.registerType}
-+            />
-+          )}
-         </SafeAreaView>
-       </KeyboardAvoidingView>
-     </View>
+   return (
+-    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
++    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
+       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
+       <Loader visible={bool} />
+-      <SafeAreaView style={{ flex: 1 }}>
++      <SafeAreaView style={{flex: 1}}>
+         <HeaderComponent
+           title={'SAVED SONGS'}
+           thirditemtext={true}

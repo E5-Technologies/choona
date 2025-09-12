@@ -1,23 +1,20 @@
 import React from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   Platform,
   SafeAreaView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {seachSongsForPostRequest} from '../../../action/PostAction';
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
+import useHandlePlatformSubscriptionAction from '../../../hooks/useHandlePlatformSubscriptionAction';
 import normalise from '../../../utils/helpers/Dimens';
 import StatusBar from '../../../utils/MyStatusBar';
 import HeaderComponent from '../../../widgets/HeaderComponent';
-import useHandlePlatformSubscriptionAction from '../../../hooks/useHandlePlatformSubscriptionAction';
 import GradientButton from '../../common/GradientButton';
 
 const {width} = Dimensions.get('window');
@@ -64,22 +61,6 @@ const Create = props => {
           style={{paddingHorizontal: normalise(20), marginTop: normalise(45)}}>
           {actionList?.map(item => {
             return (
-              // <TouchableOpacity
-              //   style={styles.nameWrapper}
-              //   onPress={() => item?.action()}>
-              //   <Image
-              //     source={ImagePath.addButton}
-              //     style={styles.imageStyle}
-              //     resizeMode="contain"
-              //   />
-              //   <View style={styles.featureName}>
-              //     <Text
-              //       style={styles.listItemHeaderSongTextTitle}
-              //       numberOfLines={2}>
-              //       {item?.title}
-              //     </Text>
-              //   </View>
-              // </TouchableOpacity>
               <GradientButton
                 title={item?.title}
                 containerStyle={{marginBottom: 25}}

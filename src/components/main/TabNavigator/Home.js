@@ -1454,7 +1454,7 @@ const Home = props => {
         <HomeHeaderComponent
           firstitemtext={activeTab == 1 ? false : true}
           marginTop={0}
-          imageone={ImagePath.searchicon}
+          imageone={activeTab == 1 && ImagePath.searchicon}
           staticFirstImage={false}
           imageoneheight={normalise(18)}
           imageonewidth={normalise(18)}
@@ -1487,6 +1487,8 @@ const Home = props => {
             props.navigation.navigate('CommonNotification');
           }}
           imageTwoStyle={{width: normalise(18)}}
+          imageOneStyle={activeTab == 0 && styles.logoStyle}
+          imageOneWrapperStyle={activeTab == 0 && styles.logoStyleWrapper}
         />
         <View style={styles.tabBarWrapperStyle}>
           <TouchableOpacity
@@ -2025,6 +2027,23 @@ const styles = StyleSheet.create({
     borderEndWidth: 1,
     borderRightColor: Colors.meta,
     width: '50%',
+  },
+  logoStyleWrapper: {
+    borderRadius: normalise(12),
+    height: normalise(24),
+    width: normalise(24),
+    overflow: 'hidden',
+    paddingTop: normalise(0),
+    paddingLeft: normalise(0),
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: normalise(5),
+    left: normalise(5),
+  },
+  logoStyle: {
+    width: normalise(40),
+    height: normalise(40),
+    resizeMode: 'cover',
   },
 });
 
