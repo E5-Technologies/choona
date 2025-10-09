@@ -74,7 +74,7 @@ const AddSong = props => {
   }
 
   const handleAddSong = item => {
-    console.log(props?.route?.params?.from, 'its from');
+    // console.log(item.item, 'itserererfrom');
     // return
     const songItem = {
       image:

@@ -56,6 +56,7 @@ function AddSong(props) {
   const [showmention, setShowMention] = useState(false);
   const [Selection, setSelection] = useState({start: 0, end: 0});
   const [commentsLoading, setCommentsLoading] = useState(false);
+  // console.log(props.route.params.details, 'fsdhjfdfjhfdsfhdf')
 
   useEffect(() => {
     if (props.route.params.registerType === 'spotify') {
@@ -92,7 +93,7 @@ function AddSong(props) {
         });
     }
   }, []);
-  console.log(props.route.params.details.id, 'its song id');
+  console.log(props.route.params.details, 'itssongid');
 
   // GET SPOTIFY SONG URL
   const callApi = async () => {
@@ -152,6 +153,9 @@ function AddSong(props) {
               props.route.params.registerType === 'spotify'
                 ? props.route.params.details.album.name
                 : props.route.params.details.attributes.albumName,
+
+            //  apple_song_id:
+            // songItem === 'spotify' ? item?.details?.id : item?.details?.id,
           },
         ],
       };

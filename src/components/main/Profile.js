@@ -229,7 +229,7 @@ const Profile = props => {
   };
 
   function renderProfileData(data) {
-    console.log(JSON.stringify(data), 'thisisactuladata');
+    // console.log(JSON.stringify(data?.item?.songs?.[0]), 'thisisactuladata');
     let array = [];
     array.push(data?.item);
     return (
@@ -245,6 +245,7 @@ const Profile = props => {
           margin: 0,
           marginBottom:
             data.index === allSongs?.length - 1 ? normalise(30) : normalise(0),
+          ...styles.imageItemBox,
         }}>
         <Image
           source={{
@@ -252,15 +253,19 @@ const Profile = props => {
               props.userProfileResp?.register_type === 'spotify'
                 ? data?.item?.songs?.[0]?.song_image
                 : data?.item?.songs?.[0]?.song_image,
-            //   data?.item?.song_image
-            // : data?.item?.song_image,
           }}
-          style={{
-            width: Math.floor(Dimensions.get('window').width / 2),
-            height: Math.floor(Dimensions.get('window').width / 2),
-          }}
+          style={styles.imageItemStyle}
           resizeMode="cover"
         />
+        <View style={styles.bottomDescriptionBoxStyle}>
+          <Text style={styles.albumNameStyle} numberOfLines={1}>
+            {data?.item?.attributes?.albumName}
+            {data?.item?.songs?.[0]?.album_name}
+          </Text>
+          <Text style={styles.musicTypeStyle} numberOfLines={1}>
+            Apple Music {data?.item?.songs?.[0]?.song_name}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -543,7 +548,6 @@ const Profile = props => {
     );
   };
 
-  console.log(props.userProfileResp, 'profdfdjskf');
   return (
     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
@@ -654,6 +658,14 @@ const Profile = props => {
               onEndReached();
             }}
             onEndReachedThreshold={1}
+            contentContainerStyle={{
+              paddingHorizontal: normalise(8),
+              marginTop: normalise(10),
+            }}
+            columnWrapperStyle={{
+              justifyContent: 'space-between',
+              marginBottom: 12,
+            }}
           />
         )}
         {renderModal()}
@@ -744,5 +756,31 @@ const styles = StyleSheet.create({
   },
   buttonContainerStyle: {
     marginBottom: 0,
+  },
+  imageItemBox: {
+    width: '48%',
+    borderRadius: normalise(12),
+    overflow: 'hidden',
+  },
+  imageItemStyle: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: normalise(12),
+  },
+  albumNameStyle: {
+    fontSize: normalise(12),
+    color: Colors.white,
+    fontFamily: 'ProximaNova-SemiBold',
+    marginTop: normalise(5),
+    marginBottom: normalise(2),
+  },
+  musicTypeStyle: {
+    fontSize: normalise(10),
+    color: Colors.white,
+    fontFamily: 'ProximaNova-Regular',
+    marginBottom: normalise(4),
+  },
+  bottomDescriptionBoxStyle: {
+    marginHorizontal: normalise(5),
   },
 });

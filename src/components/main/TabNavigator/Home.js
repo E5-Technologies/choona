@@ -1741,7 +1741,7 @@ const Home = props => {
             setIsShown={setIsShown}
           />
         )}
-        {/* {console.log(posts, 'these are post h songs')} */}
+        {/* {console.log(posts[0], 'these are post h songs')} */}
         {activeTab === 0 ? (
           _.isEmpty(posts) ? (
             <EmptyComponent
