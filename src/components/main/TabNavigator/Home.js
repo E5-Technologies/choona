@@ -1452,9 +1452,12 @@ const Home = props => {
       <Loader visible={props.sessionReducerData?.loading} />
       <SafeAreaView style={{flex: 1}}>
         <HomeHeaderComponent
-          firstitemtext={activeTab == 1 ? false : true}
+          // firstitemtext={activeTab == 1 ? false : true}
+          firstitemtext={false}
           marginTop={0}
-          imageone={activeTab == 1 && ImagePath.searchicon}
+          imageone={
+            activeTab == 1 ? ImagePath.searchicon : ImagePath.choonaLogo1
+          }
           staticFirstImage={false}
           imageoneheight={normalise(18)}
           imageonewidth={normalise(18)}
@@ -1476,7 +1479,7 @@ const Home = props => {
             });
           }}
           onPressFirstItem={() => {
-            props.navigation.navigate('SearchScreen');
+            activeTab == 1 && props.navigation.navigate('SearchScreen');
             // resetPlaybackQueue();
           }}
           onPressThirdItem={() => {
@@ -1487,7 +1490,16 @@ const Home = props => {
             props.navigation.navigate('CommonNotification');
           }}
           imageTwoStyle={{width: normalise(18)}}
-          imageOneStyle={activeTab == 0 && styles.logoStyle}
+          imageOneStyle={
+            activeTab == 0
+              ? styles.logoStyle
+              : {
+                  ...styles.logoStyle,
+                  width: normalise(20),
+                  height: normalise(20),
+                  marginTop: normalise(4),
+                }
+          }
           imageOneWrapperStyle={activeTab == 0 && styles.logoStyleWrapper}
         />
         <View style={styles.tabBarWrapperStyle}>
@@ -2032,17 +2044,17 @@ const styles = StyleSheet.create({
     borderRadius: normalise(12),
     height: normalise(24),
     width: normalise(24),
-    overflow: 'hidden',
+    // overflow: 'hidden',
     paddingTop: normalise(0),
     paddingLeft: normalise(0),
     justifyContent: 'center',
     alignItems: 'center',
-    top: normalise(5),
+    top: normalise(10),
     left: normalise(5),
   },
   logoStyle: {
-    width: normalise(40),
-    height: normalise(40),
+    width: normalise(30),
+    height: normalise(30),
     resizeMode: 'cover',
   },
 });

@@ -96,25 +96,24 @@ function HomeHeaderComponent(props) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <View
+          {/* <View
             style={{
               borderRadius: 15,
               overflow: 'hidden',
               width: 50,
               height: 50,
               marginRight: normalise(7),
-            }}>
-            <Image
-              style={{
-                width: '150%',
-                height: '150%',
-                marginLeft: -12.5,
-                marginTop: -12.5,
-              }}
-              source={ImagePath.choonaLogo}
-              resizeMode="cover"
-            />
-          </View>
+            }}> */}
+          {/* <Image
+            style={{
+              width: 50,
+              height: 50,
+              marginRight: normalise(7),
+            }}
+            source={ImagePath.choonaLogo1}
+            resizeMode="cover"
+          /> */}
+          {/* </View> */}
           <Image
             style={HeaderStyles.logo}
             source={ImagePath ? ImagePath.home_icon_choona : null}
@@ -123,11 +122,11 @@ function HomeHeaderComponent(props) {
         </TouchableOpacity>
       ) : (
         <View stye={{flexDriction: 'row'}}>
-          <Image
+          {/* <Image
             style={{width: 60, height: 60}}
             source={ImagePath.choonaLogo}
             resizeMode={'contain'}
-          />
+          /> */}
           <Image
             style={HeaderStyles.logo}
             source={ImagePath ? ImagePath.home_icon_choona : null}

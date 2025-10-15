@@ -116,13 +116,14 @@ const ImagePath = {
   // previousSong: require('./images/previous.png'),
   deleteIcon: require('./images/delete.png'),
   editIcon: require('./images/edit.png'),
-  searchIcon:require('./images/loupe.png'),
-  hamburger:require('./images/hamburger.png'),
-  headPhoneImage:require('./images/Headphones.png'),
-  liveImage:require('./images/live-stream.png'),
-  playCenter:require("./images/playCenter.png"),
-  choonaPlay:require("./images/choona_play.png"),
-  choonaLogo:require("./images/choonaIcon.png")
+  searchIcon: require('./images/loupe.png'),
+  hamburger: require('./images/hamburger.png'),
+  headPhoneImage: require('./images/Headphones.png'),
+  liveImage: require('./images/live-stream.png'),
+  playCenter: require('./images/playCenter.png'),
+  choonaPlay: require('./images/choona_play.png'),
+  choonaLogo: require('./images/choonaIcon.png'),
+  choonaLogo1: require('./images/logo1.png'),
 };
 
 export default ImagePath;
