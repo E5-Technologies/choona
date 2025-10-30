@@ -55,6 +55,7 @@ const initialState = {
   hasLeftSession: null,
   mySessionListData: {},
   searchSessionListData: {},
+  recentPostSession: {},
 };
 
 const SessionReducer = (state = initialState, action) => {
@@ -72,6 +73,7 @@ const SessionReducer = (state = initialState, action) => {
         status: action.type,
         loading: false,
         // deletePostResp: action.data,
+        recentPostSession: action.data,
       };
 
     case CREATE_SESSION_FAILURE:
@@ -86,6 +88,7 @@ const SessionReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.status,
+        recentPostSession: action.data,
       };
 
     // SESSION LIST HANDLING

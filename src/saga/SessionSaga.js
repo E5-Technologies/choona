@@ -59,9 +59,12 @@ export function* createSessionAction(action) {
       action.payload,
       header,
     );
-    console.log(response?.data, 'its response after api hit session post');
+    console.log(
+      response?.data?.data,
+      'its response after api hit session post',
+    );
 
-    yield put({type: CREATE_SESSION_SUCCESS, data: response.data});
+    yield put({type: CREATE_SESSION_SUCCESS, data: response?.data?.data});
   } catch (error) {
     console.log(error, 'simple error');
     console.log(JSON.stringify(error?.message, error?.status), 'simple error1');
@@ -79,7 +82,7 @@ export function* getSessionList(action) {
     accesstoken: items.token,
   };
 
-  console.log(header,'hisddfdhsfd')
+  console.log(header, 'hisddfdhsfd');
 
   try {
     const url = `session/list`;

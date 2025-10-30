@@ -52,7 +52,28 @@ function SessionLaunchScreen(props) {
   );
   const userTokenData = useSelector(state => state.TokenReducer);
   const sessionReduxData = useSelector(state => state.SessionReducer);
-  console.log(sessionSonglist, 'its session state list h ye');
+  const recentPostSession = useSelector(
+    state => state.SessionReducer?.recentPostSession,
+  );
+
+  console.log(recentPostSession, 'its session state list h ye111');
+
+  useEffect(() => {
+    if (recentPostSession?._id) {
+      props.navigation.navigate('bottomTab', {
+        screen: 'Home',
+        params: {activeTab: 1},
+      });
+
+      setTimeout(() => {
+        props.navigation.navigate('MySessionDetailScreen', {
+          sessionId: recentPostSession?._id,
+          autoPlay: true,
+        });
+      }, 300);
+    }
+    dispatch(crateSessionRequestStatusIdle({status: '', data: {}}));
+  }, [recentPostSession]);
 
   const handlePostSession = () => {
     const songListPayload = () => {
@@ -113,8 +134,16 @@ function SessionLaunchScreen(props) {
         case CREATE_SESSION_SUCCESS:
           setStatus(CREATE_SESSION_SUCCESS);
           // Navigate to Home or another screen on success
-          props.navigation.popToTop();
-          props.navigation.replace('bottomTab', {screen: 'Home'}); // Navigate to Home
+          // props.navigation.popToTop();
+          // props.navigation.replace('bottomTab', {screen: 'Home'}); // Navigate to Home
+
+          // As pre new requirment/feedback we need to redirect user to the session screen where session is hosted means songs play
+          // navigation.navigate(
+          //   userId == item?.own_user?._id
+          //     ? 'MySessionDetailScreen'
+          //     : 'SessionDetail',
+          //   {sessionId: item?._id},
+          // );
           dispatch(crateSessionRequestStatusIdle({status: ''}));
           break;
 

@@ -1492,6 +1492,8 @@ import {
 // let status;
 
 function MySessionDetailScreen(props) {
+  const {autoPlay} = props?.route?.params ?? {};
+  console.log(autoPlay, 'thisiUatplay11');
   let sendSong = false;
   // console.log(props?.route?.params, 'these are params')
   // const { currentSession } = props?.route?.params
@@ -1606,7 +1608,7 @@ function MySessionDetailScreen(props) {
     }
   }, []);
 
-  //// not try with when saparate the socket initalization
+  // not try with when saparate the socket initalization
   useEffect(() => {
     let isMounted = true;
     const initializeSocket = async () => {
@@ -1797,6 +1799,13 @@ function MySessionDetailScreen(props) {
     }
   }, [islive]);
 
+  useEffect(() => {
+    if (sessionDetailReduxdata?._id && autoPlay) {
+      props.navigation.setParams({autoPlay: false});
+      handleStartSession();
+    }
+  }, [sessionDetailReduxdata]);
+
   //helperss***********************************************************************************
 
   const handleNavigation = () => {
@@ -1851,21 +1860,27 @@ function MySessionDetailScreen(props) {
   }
 
   const handleStartSession = () => {
-    if (
-      sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
-      !checkIsAppleStatus
-    ) {
-      Alert.alert(
-        "You don't have apple music subscription, you can't host the session, Apple music subscription is required!",
-      );
-      return;
-    } else {
-      const requestObj = {
-        isLive: true,
-        sessionId: sessionDetailReduxdata?._id,
-      };
-      dispatch(startSessionRequest(requestObj));
-    }
+    isInternetConnected()
+      .then(() => {
+        if (
+          sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
+          !checkIsAppleStatus
+        ) {
+          Alert.alert(
+            "You don't have apple music subscription, you can't host the session, Apple music subscription is required!",
+          );
+          return;
+        } else {
+          const requestObj = {
+            isLive: true,
+            sessionId: sessionDetailReduxdata?._id,
+          };
+          dispatch(startSessionRequest(requestObj));
+        }
+      })
+      .catch(() => {
+        toast('Error', 'Please Connect To Internet');
+      });
   };
 
   const handleStopKillSession = () => {

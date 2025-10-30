@@ -1908,7 +1908,8 @@ const Home = props => {
           )
         ) : (
           <View style={{flex: 1}}>
-            {_.isEmpty(props.sessionListData?.data) ? (
+            {_.isEmpty(props.sessionListData?.data) &&
+            !props.sessionReducerData?.loading ? (
               <EmptyComponent
                 buttonPress={() => {
                   setContactsLoading(true);
@@ -1917,7 +1918,7 @@ const Home = props => {
                 buttonText={'Check for friends'}
                 image={ImagePath ? ImagePath.emptyPost : null}
                 text={'You don’t have any public or private sessions.'}
-                title={'No Session Found'}
+                title={'No Active Session Found'}
               />
             ) : (
               <FlatList
