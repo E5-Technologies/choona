@@ -33,6 +33,7 @@ const initialState = {
   getSongFromISRC: [],
   getUserPlayList: [],
   addSongToPlayListResponse: {},
+  liveSessionMinimized: false,
 };
 
 const PlayerReducer = (state = initialState, action) => {
@@ -115,6 +116,18 @@ const PlayerReducer = (state = initialState, action) => {
         ...state,
         status: action.type,
         error: action.error,
+      };
+
+    case 'SET_LIVE_SESSION_MINIMIZED':
+      return {
+        ...state,
+        liveSessionMinimized: true,
+      };
+
+    case 'CLEAR_LIVE_SESSION_MINIMIZED':
+      return {
+        ...state,
+        liveSessionMinimized: false,
       };
 
     case GET_SONG_FROM_ISRC_REQUEST:

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
@@ -9,6 +10,7 @@ import { connect } from 'react-redux';
 import Loader from './AuthLoader';
 
 function MusicPlayerBar(props) {
+  const navigation = useNavigation();
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
@@ -71,6 +73,23 @@ function MusicPlayerBar(props) {
   const onPress = () => {
     if (props.onPress) {
       props.onPress();
+    } else {
+      // default: navigate to Player with current playing song
+      if (props.playingSongRef && props.playingSongRef !== '') {
+        navigation.navigate('Player', {
+          uri: props.playingSongRef.uri || props.playingSongRef.originalUri,
+          song_title: props.playingSongRef.song_name,
+          album_name: props.playingSongRef.album_name,
+          artist: props.playingSongRef.artist,
+          song_pic: props.playingSongRef.song_pic,
+          username: props.playingSongRef.username,
+          profile_pic: props.playingSongRef.profile_pic,
+          isrc: props.playingSongRef.isrc,
+          details: props.playingSongRef.details,
+          id: props.playingSongRef.id,
+          changePlayer: false,
+        });
+      }
     }
   };
 
@@ -121,15 +140,38 @@ function MusicPlayerBar(props) {
               onPress={() => {
                 onPress();
               }}>
-              <Image
-                source={
-                  props?.playingSongRef?.song_pic
-                    ? { uri: props.playingSongRef.song_pic }
-                    : null
-                }
-                style={{ height: normalise(45), width: normalise(45) }}
-                resizeMode="contain"
-              />
+              <View>
+                <Image
+                  source={
+                    props?.playingSongRef?.song_pic
+                      ? { uri: props.playingSongRef.song_pic }
+                      : null
+                  }
+                  style={{ height: normalise(45), width: normalise(45) }}
+                  resizeMode="contain"
+                />
+                {props.liveSessionMinimized ? (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: -normalise(4),
+                      top: -normalise(6),
+                      backgroundColor: Colors.red,
+                      paddingHorizontal: normalise(6),
+                      paddingVertical: normalise(2),
+                      borderRadius: normalise(10),
+                    }}>
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        fontSize: normalise(8),
+                        fontFamily: 'ProximaNova-Semibold',
+                      }}>
+                      Live
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
             </TouchableOpacity>
             <View
               style={{
@@ -189,6 +231,7 @@ MusicPlayerBar.defaultProps = {
 const mapStateToProps = state => {
   return {
     playingSongRef: state.SongReducer.playingSongRef,
+    liveSessionMinimized: state.PlayerReducer.liveSessionMinimized,
   };
 };
 

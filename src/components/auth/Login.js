@@ -31,6 +31,7 @@ import appleAuth, {
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
 import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
+import toast from '../../utils/helpers/ShowErrorAlert';
 import OneSignal from 'react-native-onesignal';
 
 let user = null;
@@ -57,10 +58,10 @@ function SignUp(props) {
   // }, []);
 
   function spotifyLogin() {
-    console.log(1);
-    loginWithSpotify()
-      .then(value => {
-        console.log(2, !_.isEmpty(value));
+    setLoginType('Spotify');
+    (async () => {
+      try {
+        const value = await loginWithSpotify();
         if (!_.isEmpty(value)) {
           setUserDetails(value);
 
@@ -70,14 +71,16 @@ function SignUp(props) {
             deviceToken: token2,
             deviceType: Platform.OS,
           };
-          console.log({ payload });
 
           props.loginRequest(payload);
+        } else {
+          toast('Error', 'Spotify sign-in failed or was cancelled');
         }
-      })
-      .catch(error => {
+      } catch (error) {
         console.log(error);
-      });
+        toast('Error', 'Spotify sign-in failed');
+      }
+    })();
   }
 
   //ON APLLE BUTTON PRESS
@@ -126,6 +129,7 @@ function SignUp(props) {
         console.warn('User canceled Apple Sign in.');
       } else {
         console.error(error);
+        toast('Error', 'Apple sign-in failed');
       }
     }
   }

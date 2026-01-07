@@ -1,0 +1,69 @@
+name: Fastlane Beta Build and Upload
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_and_upload:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start SSH agent (for MATCH_GIT_SSH_KEY)
+        if: ${{ secrets.MATCH_GIT_SSH_KEY != '' }}
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.MATCH_GIT_SSH_KEY }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v3
+        with:
+          path: |
+            ios/Pods
+            ~/.cocoapods
+          key: ${{ runner.OS }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-pods-
+
+      - name: Prepare App Store Connect key
+        if: ${{ secrets.APP_STORE_CONNECT_KEY != '' }}
+        run: |
+          mkdir -p fastlane
+          echo "${{ secrets.APP_STORE_CONNECT_KEY }}" | base64 --decode > fastlane/AuthKey.p8
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Run Fastlane Beta (match + build + upload)
+        env:
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BRANCH: ${{ secrets.MATCH_GIT_BRANCH }}
+          MATCH_READONLY: ${{ secrets.MATCH_READONLY }}
+          APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          SCHEME: ${{ secrets.SCHEME }}
+          APP_STORE_CONNECT_KEY_PATH: fastlane/AuthKey.p8
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          bundle exec fastlane beta

@@ -6,6 +6,8 @@ import {
   GET_SONG_FROM_ISRC_REQUEST,
   GET_USER_PLAYLIST_REQUEST,
   ADD_SONG_TO_PLAYLIST_REQUEST,
+  SET_LIVE_SESSION_MINIMIZED,
+  CLEAR_LIVE_SESSION_MINIMIZED,
 } from './TypeConstants';
 
 export const getCurrentPlayerPostionAction = () => ({
@@ -49,4 +51,12 @@ export const addSongsToPlayListRequest = (
   payload,
   devToken,
   musicToken,
+});
+
+export const setLiveSessionMinimized = () => ({
+  type: SET_LIVE_SESSION_MINIMIZED,
+});
+
+export const clearLiveSessionMinimized = () => ({
+  type: CLEAR_LIVE_SESSION_MINIMIZED,
 });

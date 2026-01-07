@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Animated,
   ImageBackground,
   TextInput,
   KeyboardAvoidingView,
@@ -64,6 +65,8 @@ import {
   playerPauseRequest,
   playerSeekToRequest,
   getSongFromisrc,
+  setLiveSessionMinimized,
+  clearLiveSessionMinimized,
 } from '../../action/PlayerAction';
 import { updateMessageCommentRequest } from '../../action/MessageAction';
 import Loader from '../../widgets/AuthLoader';
@@ -151,6 +154,7 @@ function Player(props) {
   var bottomSheetRef;
   //Prithviraj's variables.
   const [firstTimePlay, setFirstTimePlay] = useState(true);
+  const minimizeAnim = React.useRef(new Animated.Value(1));
 
   // SEND SONG VARIABLES
   const [userClicked, setUserClicked] = useState(false);
@@ -173,6 +177,9 @@ function Player(props) {
   }
 
   useEffect(() => {
+    if (props.clearLiveSessionMinimized) {
+      props.clearLiveSessionMinimized();
+    }
     // const unsuscribe = props.navigation.addListener('focus', (payload) => {
 
     //     myVar = setInterval(() => {
@@ -1625,9 +1632,9 @@ function Player(props) {
                     alignItems: 'center',
                     marginLeft: normalise(10),
                   }}
-                  onPress={() => {
-                    props.navigation.goBack();
-                  }}>
+                    onPress={() => {
+                      props.navigation.goBack();
+                    }}>
                   <Image
                     source={ImagePath.backicon}
                     style={{
@@ -1638,6 +1645,38 @@ function Player(props) {
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      height: normalise(25),
+                      width: normalise(25),
+                      borderRadius: normalise(5),
+                      alignSelf: 'center',
+                      backgroundColor: Colors.black,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginLeft: normalise(10),
+                    }}
+                    onPress={() => {
+                      // animate then mark session minimized and go back
+                      Animated.timing(minimizeAnim.current, {
+                        toValue: 0.6,
+                        duration: 200,
+                        useNativeDriver: true,
+                      }).start(() => {
+                        props.setLiveSessionMinimized();
+                        props.navigation.goBack();
+                        minimizeAnim.current.setValue(1);
+                      });
+                    }}>
+                    <Image
+                      source={ImagePath.donw_arrow_solid}
+                      style={{
+                        height: normalise(15),
+                        width: normalise(15),
+                      }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
               </View>
             </View>
 
@@ -1657,14 +1696,13 @@ function Player(props) {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Image
+              <Animated.Image
                 source={{ uri: pic.replace('100x100bb.jpg', '500x500bb.jpg') }}
                 style={{
                   height: normalise(320),
                   width: normalise(320),
                   marginHorizontal: normalise(15),
-
-                  // borderRadius: normalise(15),
+                  transform: [{ scale: minimizeAnim.current }],
                 }}
                 resizeMode="cover"
               />
@@ -2306,6 +2344,12 @@ const mapDispatchToProps = dispatch => {
 
     createChatTokenRequest: payload => {
       dispatch(createChatTokenRequest(payload));
+    },
+    setLiveSessionMinimized: () => {
+      dispatch(setLiveSessionMinimized());
+    },
+    clearLiveSessionMinimized: () => {
+      dispatch(clearLiveSessionMinimized());
     },
   };
 };

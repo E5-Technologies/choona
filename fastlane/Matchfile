@@ -1,0 +1,17 @@
+# Fastlane Matchfile - minimal configuration
+# Uses environment variables so secrets are not committed.
+
+git_url(ENV['MATCH_GIT_URL'] || "")
+# Optional: branch in certs repo
+# git_branch(ENV['MATCH_GIT_BRANCH'] || 'main')
+
+type(ENV['MATCH_TYPE'] || 'appstore')
+app_identifier(ENV['APP_IDENTIFIER'] || 'com.yourcompany.choona')
+username(ENV['APPLE_ID'] || 'you@company.com')
+team_id(ENV['TEAM_ID'] || '')
+
+# storage mode - git
+storage_mode("git")
+
+# Set to true in CI to avoid interactive prompts
+readonly(ENV['MATCH_READONLY'] == 'true' ? true : false)

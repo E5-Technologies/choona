@@ -133,9 +133,12 @@ function Home(props) {
     if (state !== 'active') {
       if (global.playerReference !== null) {
         if (global.playerReference?.isPlaying()) {
-          global.playerReference.pause();
+          // don't auto-pause if user has minimized a live session
+          if (!props.liveSessionMinimized) {
+            global.playerReference.pause();
 
-          findPlayingSong(props.postData);
+            findPlayingSong(props.postData);
+          }
         }
       }
     }
@@ -1874,6 +1877,7 @@ const mapStateToProps = state => {
     songStatus: state.SongReducer.status,
     savedSongResponse: state.SongReducer.savedSongResponse,
     playingSongRef: state.SongReducer.playingSongRef,
+    liveSessionMinimized: state.PlayerReducer.liveSessionMinimized,
     chatList: state.MessageReducer.chatList,
     messageStatus: state.MessageReducer.status,
     postStatus: state.PostReducer.status,

@@ -1,0 +1,3 @@
+app_identifier(ENV['APP_IDENTIFIER'] || "com.yourcompany.choona") # Bundle identifier
+apple_id(ENV['APPLE_ID'] || "your@apple.id") # Your Apple ID
+team_id(ENV['TEAM_ID'] || "YOUR_TEAM_ID") # Your Developer Team ID

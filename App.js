@@ -63,6 +63,7 @@ import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
 import PlayerComment from './src/components/main/PlayerComment';
 import SingleSongClick from './src/components/main/SingleSongClick';
+import MusicPlayerBar from './src/widgets/MusicPlayerBar';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -144,6 +145,7 @@ const App = () => {
             style: {
               height: Platform.OS === 'android' ? normalise(45) : normalise(68),
               borderTopColor: Colors.fadeblack,
+              paddingBottom: normalise(45),
             },
           }}>
           <Tab.Screen
@@ -312,6 +314,7 @@ const App = () => {
             }}
           />
         </Tab.Navigator>
+        <MusicPlayerBar />
       </View>
     );
   };
