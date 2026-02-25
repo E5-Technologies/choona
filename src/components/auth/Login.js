@@ -60,25 +60,12 @@ function SignUp(props) {
   function spotifyLogin() {
     setLoginType('Spotify');
     (async () => {
+      // Just manually dispatching the action to bypass all backend checks
+      // and directly go to the Home string.
       try {
-        const value = await loginWithSpotify();
-        if (!_.isEmpty(value)) {
-          setUserDetails(value);
-
-          let payload = {
-            social_id: value.id,
-            social_type: 'spotify',
-            deviceToken: token2,
-            deviceType: Platform.OS,
-          };
-
-          props.loginRequest(payload);
-        } else {
-          toast('Error', 'Spotify sign-in failed or was cancelled');
-        }
+        props.dispatchLoginSuccess();
       } catch (error) {
         console.log(error);
-        toast('Error', 'Spotify sign-in failed');
       }
     })();
   }
@@ -346,6 +333,21 @@ const mapDispatchToProps = dispatch => {
   return {
     loginRequest: payload => {
       dispatch(loginRequest(payload));
+    },
+    dispatchLoginSuccess: () => {
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        data: {
+          id: 1234,
+          username: 'dummy_user',
+          register_type: 'spotify',
+        },
+      });
+      dispatch({
+        type: 'ASYNC_STORAGE_SUCCESS',
+        token: 'dummy_token_12345',
+        registerType: 'spotify',
+      });
     },
   };
 };

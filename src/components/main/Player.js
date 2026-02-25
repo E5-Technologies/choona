@@ -1632,9 +1632,9 @@ function Player(props) {
                     alignItems: 'center',
                     marginLeft: normalise(10),
                   }}
-                    onPress={() => {
-                      props.navigation.goBack();
-                    }}>
+                  onPress={() => {
+                    props.navigation.goBack();
+                  }}>
                   <Image
                     source={ImagePath.backicon}
                     style={{
@@ -1645,38 +1645,38 @@ function Player(props) {
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
-                  <TouchableOpacity
+                <TouchableOpacity
+                  style={{
+                    height: normalise(25),
+                    width: normalise(25),
+                    borderRadius: normalise(5),
+                    alignSelf: 'center',
+                    backgroundColor: Colors.black,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: normalise(10),
+                  }}
+                  onPress={() => {
+                    // animate then mark session minimized and go back
+                    Animated.timing(minimizeAnim.current, {
+                      toValue: 0.6,
+                      duration: 200,
+                      useNativeDriver: true,
+                    }).start(() => {
+                      props.setLiveSessionMinimized();
+                      props.navigation.goBack();
+                      minimizeAnim.current.setValue(1);
+                    });
+                  }}>
+                  <Image
+                    source={ImagePath.donw_arrow_solid}
                     style={{
-                      height: normalise(25),
-                      width: normalise(25),
-                      borderRadius: normalise(5),
-                      alignSelf: 'center',
-                      backgroundColor: Colors.black,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginLeft: normalise(10),
+                      height: normalise(15),
+                      width: normalise(15),
                     }}
-                    onPress={() => {
-                      // animate then mark session minimized and go back
-                      Animated.timing(minimizeAnim.current, {
-                        toValue: 0.6,
-                        duration: 200,
-                        useNativeDriver: true,
-                      }).start(() => {
-                        props.setLiveSessionMinimized();
-                        props.navigation.goBack();
-                        minimizeAnim.current.setValue(1);
-                      });
-                    }}>
-                    <Image
-                      source={ImagePath.donw_arrow_solid}
-                      style={{
-                        height: normalise(15),
-                        width: normalise(15),
-                      }}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 

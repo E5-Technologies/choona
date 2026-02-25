@@ -139,13 +139,21 @@ const App = () => {
         <Tab.Navigator
           initialRouteName={'Home'}
           tabBarOptions={{
-            activeBackgroundColor: Colors.darkerblack,
-            inactiveBackgroundColor: Colors.darkerblack,
+            activeBackgroundColor: 'rgba(0,0,0,0.8)',
+            inactiveBackgroundColor: 'rgba(0,0,0,0.8)',
+            showLabel: false,
             safeAreaInsets: { bottom: 0 },
             style: {
               height: Platform.OS === 'android' ? normalise(45) : normalise(68),
               borderTopColor: Colors.fadeblack,
-              paddingBottom: normalise(45),
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              paddingBottom: normalise(0),
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              elevation: 0,
+              borderTopWidth: 0,
             },
           }}>
           <Tab.Screen

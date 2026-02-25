@@ -13,6 +13,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Modal,
+  PermissionsAndroid,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
 
@@ -1205,47 +1206,78 @@ function Search(props) {
     );
   };
 
-  const getContacts = () => {
-    Contacts.getAll((err, contacts) => {
-      if (err) {
-        // console.log(err);
+  const getContacts = async () => {
+    try {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+          {
+            title: 'Contacts',
+            message: 'This app would like to view your contacts.',
+            buttonPositive: 'Accept',
+          },
+        );
+        if (granted !== PermissionsAndroid.PERMISSIONS.GRANTED) {
+          setContactsLoading(false);
+          toast(
+            'Permission Denied',
+            'Please enable contacts permission to find your friends.',
+          );
+          return;
+        }
       } else {
-        let contactsArray = contacts;
-        let finalArray = [];
-        setContactsLoading(false);
-        //// console.log(JSON.stringify(contacts));
-        contactsArray.map(item => {
-          item.phoneNumbers.map(item => {
-            let number = item.number.replace(/[- )(]/g, '');
-            let check = number.charAt(0);
-            let number1 = parseInt(number);
-            if (check === 0) {
-              finalArray.push(number1);
-            } else {
-              const converToString = number1.toString();
-              const myVar = number1.toString().substring(0, 2);
-              const threeDigitVar = number1.toString().substring(0, 3);
+        // iOS permissions check if needed, but react-native-contacts also handles it natively by returning permission denied error for iOS.
+        // The promise-based `Contacts.getAll()` handles throwing errors.
+      }
 
-              if (threeDigitVar === '440') {
-                let backToInt = converToString.replace(threeDigitVar, '0');
-                finalArray.push(backToInt);
-              } else {
-                if (myVar === '44' || myVar === '91') {
-                  let backToInt = converToString.replace(myVar, '0');
-                  finalArray.push(backToInt);
+      Contacts.getAll()
+        .then(contacts => {
+          let contactsArray = contacts;
+          let finalArray = [];
+          setContactsLoading(false);
+          //// console.log(JSON.stringify(contacts));
+          contactsArray.map(item => {
+            if (item.phoneNumbers && item.phoneNumbers.length > 0) {
+              item.phoneNumbers.map(item => {
+                let number = item.number.replace(/[- )(]/g, '');
+                let check = number.charAt(0);
+                let number1 = parseInt(number);
+                if (check === '0') {
+                  finalArray.push(number1);
                 } else {
-                  let updatednumber = `0${number1}`;
-                  finalArray.push(updatednumber);
+                  const converToString = number1.toString();
+                  const myVar = number1.toString().substring(0, 2);
+                  const threeDigitVar = number1.toString().substring(0, 3);
+
+                  if (threeDigitVar === '440') {
+                    let backToInt = converToString.replace(threeDigitVar, '0');
+                    finalArray.push(backToInt);
+                  } else {
+                    if (myVar === '44' || myVar === '91') {
+                      let backToInt = converToString.replace(myVar, '0');
+                      finalArray.push(backToInt);
+                    } else {
+                      let updatednumber = `0${number1}`;
+                      finalArray.push(updatednumber);
+                    }
+                  }
                 }
-              }
+              });
             }
           });
-        });
 
-        // console.log(finalArray);
-        props.navigation.navigate('UsersFromContacts', { data: finalArray });
-      }
-    });
+          // console.log(finalArray);
+          props.navigation.navigate('UsersFromContacts', { data: finalArray });
+        })
+        .catch(err => {
+          setContactsLoading(false);
+          // console.log(err);
+          toast('Error', 'Unable to fetch contacts or permission denied.');
+        });
+    } catch (err) {
+      setContactsLoading(false);
+      // console.warn(err);
+    }
   };
 
   //VIEW
