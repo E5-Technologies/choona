@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios --scheme \"ChoonaDev\" --configuration Debug",
-    "ios:prod": "react-native run-ios --scheme \"Choona\" --configuration Debug",
+    "ios": "react-native run-ios --scheme \"ChoonaDev\" --configuration Debug --simulator \"iPhone 17 Pro\"",
+    "ios:prod": "react-native run-ios --scheme \"Choona\" --configuration Debug --simulator \"iPhone 17 Pro\"",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",

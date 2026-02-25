@@ -277,7 +277,7 @@ const App = () => {
                           right: normalise(-2),
                           top: normalise(-2),
                           backgroundColor: Colors.red,
-                          borderRadius: normalize(8),
+                          borderRadius: normalise(8),
                           height: 10,
                           width: 10,
                           justifyContent: 'center',

@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '10.0'
+platform :ios, '13.0'
 
 target 'Choona' do
   config = use_native_modules!
@@ -17,13 +17,68 @@ target 'Choona' do
     # Pods for testing
   end
 
-  # Enables Flipper.
-  #
-  # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  use_flipper!({'Flipper' => '0.75.1', 'Flipper-Folly' => '2.5.3', 'Flipper-RSocket' => '1.3.1'})
-  
+  # Flipper disabled — incompatible with newer Xcode on Apple Silicon (Flipper-Glog armv7 build fails)
+  # use_flipper!({'Flipper' => '0.75.1', 'Flipper-Folly' => '2.5.3', 'Flipper-RSocket' => '1.3.1'})
+
   post_install do |installer|
     react_native_post_install(installer)
+
+    # Fix glog configure script for newer Xcode (iPhoneOS 26+ SDK, armv7 fails)
+    Dir[File.join(Dir.home, "Library/Caches/CocoaPods/Pods/External/glog/*")].each do |glog_dir|
+      missing_script = File.join(glog_dir, "missing")
+      if File.exist?(missing_script)
+        File.write(missing_script, "#!/bin/sh\nexit 0\n")
+        File.chmod(0755, missing_script)
+      end
+    end
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # PATCH 1: FirebaseMessaging v7.x uses OSAtomicCompareAndSwapPtrBarrier
+    # which has conflicting types in Xcode 26 / iOS 26 SDK.
+    # Replace with Clang built-in __sync_val_compare_and_swap.
+    # ─────────────────────────────────────────────────────────────────────────
+    firebase_protos_dir = File.join(__dir__, "Pods/FirebaseMessaging/FirebaseMessaging/Sources/Protos")
+    if Dir.exist?(firebase_protos_dir)
+      Dir.glob(File.join(firebase_protos_dir, "*.pbobjc.m")).each do |f|
+        content = File.read(f)
+        patched = content.gsub(
+          /if \(!OSAtomicCompareAndSwapPtrBarrier\(nil, (\w+), \(void \* volatile \*\)&(\w+)\)\)/,
+          'if (__sync_val_compare_and_swap(&\2, nil, \1) != nil)'
+        )
+        if content != patched
+          File.write(f, patched)
+          puts "Patched OSAtomic -> __sync_val_compare_and_swap in #{File.basename(f)}"
+        end
+      end
+    end
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # PATCH 2: Protobuf 3.29+ ships Swift extension files (GPBUnknownField+Additions.swift,
+    # GPBUnknownFields+Additions.swift) which embed Swift runtime symbols into
+    # libProtobuf.a, causing linker failures on Xcode 26 (Swift is OS-resident).
+    # Rename these files so Xcode doesn't compile them.
+    # ─────────────────────────────────────────────────────────────────────────
+    protobuf_objc_dir = File.join(__dir__, "Pods/Protobuf/objectivec")
+    if Dir.exist?(protobuf_objc_dir)
+      Dir.glob(File.join(protobuf_objc_dir, "*.swift")).each do |f|
+        bak = "#{f}.disabled"
+        File.rename(f, bak) unless File.exist?(bak)
+        puts "Disabled Swift file: #{File.basename(f)}"
+      end
+    end
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # iOS 26 SDK requires minimum deployment target 13.0
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+
+        # Fix: Suppress Clang 16+ -Werror warnings that break older pod sources
+        config.build_settings['OTHER_CFLAGS'] = '$(inherited) -Wno-strict-prototypes -Wno-error -Wno-deprecated-declarations'
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] = '$(inherited) -Wno-bitwise-instead-of-logical -Wno-error'
+
+        # Ensure Swift standard libraries are NOT embedded in pods (only in the main app)
+        config.build_settings['ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES'] = 'NO'
+      end
+    end
   end
 end

@@ -118,12 +118,12 @@ class AuthorizationManager: NSObject {
          This usage description should reflect what the application intends to use this access for.
          */
         
-        SKCloudServiceController.requestAuthorization { [weak self] (authorizationStatus) in
+        SKCloudServiceController.requestAuthorization { (authorizationStatus) in
             switch authorizationStatus {
             case .authorized:
-                self?.requestCloudServiceCapabilities()
+                self.requestCloudServiceCapabilities()
                 if let _ = SharedClass.shared.developerToken{
-                    self?.requestUserToken(developerToken: SharedClass.shared.developerToken!)
+                    self.requestUserToken(developerToken: SharedClass.shared.developerToken!)
                 }
             default:
                 break
@@ -156,21 +156,21 @@ class AuthorizationManager: NSObject {
     // MARK: `SKCloudServiceController` Related Methods
     
     func requestCloudServiceCapabilities() {
-        cloudServiceController.requestCapabilities(completionHandler: { [weak self] (cloudServiceCapability, error) in
+        cloudServiceController.requestCapabilities(completionHandler: { (cloudServiceCapability, error) in
             guard error == nil else {
                 fatalError("An error occurred when requesting capabilities: \(error!.localizedDescription)")
                 print(error?.localizedDescription)
                 //return
             }
             
-            self?.cloudServiceCapabilities = cloudServiceCapability
+            self.cloudServiceCapabilities = cloudServiceCapability
             
             NotificationCenter.default.post(name: AuthorizationManager.cloudServiceDidUpdateNotification, object: nil)
         })
     }
     
    /* func requestStorefrontCountryCode() {
-        let completionHandler: (String?, Error?) -> Void = { [weak self] (countryCode, error) in
+        let completionHandler: (String?, Error?) -> Void = { (countryCode, error) in
             guard error == nil else {
                 print("An error occurred when requesting storefront country code: \(error!.localizedDescription)")
                 return
@@ -181,7 +181,7 @@ class AuthorizationManager: NSObject {
                 return
             }
             
-            self?.cloudServiceStorefrontCountryCode = countryCode
+            self.cloudServiceStorefrontCountryCode = countryCode
             
             NotificationCenter.default.post(name: AuthorizationManager.cloudServiceDidUpdateNotification, object: nil)
         }
@@ -208,7 +208,7 @@ class AuthorizationManager: NSObject {
         
         if SKCloudServiceController.authorizationStatus() == .authorized {
             
-            let completionHandler: (String?, Error?) -> Void = { [weak self] (token, error) in
+            let completionHandler: (String?, Error?) -> Void = { (token, error) in
                 guard error == nil else {
                     print("An error occurred when requesting user token: \(error!.localizedDescription)")
                     return
@@ -219,7 +219,7 @@ class AuthorizationManager: NSObject {
                     return
                 }
                 
-                self?.userToken = token
+                self.userToken = token
                 
                 /// Store the Music User Token for future use in your application.
                 let userDefaults = UserDefaults.standard
@@ -227,8 +227,8 @@ class AuthorizationManager: NSObject {
                 userDefaults.set(token, forKey: AuthorizationManager.userTokenUserDefaultsKey)
                 userDefaults.synchronize()
                 
-                if self?.cloudServiceStorefrontCountryCode == "" {
-                  /*  self?.requestStorefrontCountryCode() */
+                if self.cloudServiceStorefrontCountryCode == "" {
+                  /*  self.requestStorefrontCountryCode() */
                 }
                 
                 NotificationCenter.default.post(name: AuthorizationManager.cloudServiceDidUpdateNotification, object: nil)
