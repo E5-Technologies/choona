@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -21,16 +21,16 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useDispatch, useSelector} from 'react-redux';
-import {getTokenRequest} from './src/action/index';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTokenRequest } from './src/action/index';
 import Colors from './src/assests/Colors';
 import ImagePath from './src/assests/ImagePath';
 import normalise from './src/utils/helpers/Dimens';
 
-import {getChatListRequest} from './src/action/MessageAction';
+import { getChatListRequest } from './src/action/MessageAction';
 
-import {getProfileRequest} from './src/action/UserAction';
+import { getProfileRequest } from './src/action/UserAction';
 
 import Splash from './src/components/SplashComponent/Splash';
 
@@ -65,7 +65,7 @@ import PostListForUser from './src/components/main/PostListForUser';
 import UsersFromContacts from './src/components/main/UsersFromContacts';
 import isInternetConnected from './src/utils/helpers/NetInfo';
 import AddToPlayListScreen from './src/components/main/AddToPlayListScreen';
-import {editProfileRequest} from './src/action/UserAction';
+import { editProfileRequest } from './src/action/UserAction';
 import _ from 'lodash';
 import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -90,10 +90,10 @@ import {
   AppleMusicContext,
   MusicPlayerProvider,
 } from './src/context/AppleMusicContext';
-import {usePlayFullAppleMusic} from './src/hooks/usePlayFullAppleMusic';
+import { usePlayFullAppleMusic } from './src/hooks/usePlayFullAppleMusic';
 import Avatar from './src/components/Avatar';
 import constants from './src/utils/helpers/constants';
-import {all} from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
 import ProfileTabNavigator from './src/navigation/ProfileTabNavigator';
 import SearchScreen from './src/components/main/SearchScreen';
 import CommonNotification from './src/components/main/CommonNotification/CommonNotification';
@@ -119,7 +119,7 @@ const App = () => {
   // console.log(TokenReducer, 'jkfhhhdkf');
   // const userProfile = useSelector(state => state.UserReducer.userProfileResp);
   const userProfile = null;
-  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+  const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =
     usePlayFullAppleMusic();
   // const {isPlaying} = useIsPlaying();
 
@@ -149,8 +149,8 @@ const App = () => {
       //   console.log('test');
       // } else
       if (AppState.currentState === 'active') {
-        getChatListRequest;
-        dispatch(getChatListRequest());
+        // getChatListRequest;
+        // dispatch(getChatListRequest());
         dispatch(getProfileRequest());
         console.log('zxcv', 'App is in active Mode.');
       }
@@ -249,23 +249,23 @@ const App = () => {
             },
             tabBarActiveBackgroundColor: Colors.darkerblack,
             tabBarInactiveBackgroundColor: Colors.darkerblack,
-            safeAreaInsets: {bottom: 0},
+            safeAreaInsets: { bottom: 0 },
           }}>
           <Tab.Screen
             name="Home"
             component={Home}
-            initialParams={{activeTab: 0}}
+            initialParams={{ activeTab: 0 }}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
+              tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                     marginTop: normalise(12),
@@ -282,10 +282,10 @@ const App = () => {
               ),
               tabBarLabel: '',
             }}
-            listeners={({navigation}) => ({
+            listeners={({ navigation }) => ({
               tabPress: e => {
                 // e.preventDefault();
-                navigation.navigate('Home', {activeTab: 0});
+                navigation.navigate('Home', { activeTab: 0 });
               },
             })}
           />
@@ -294,7 +294,7 @@ const App = () => {
             component={Search}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
+              tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
                     opacity: focused ? 1 : 0.5,
@@ -302,8 +302,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                     marginTop: normalise(12),
@@ -321,15 +321,15 @@ const App = () => {
             component={Create}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
+              tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
                     marginTop:
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(40),
                     width: normalise(40),
                     marginTop: normalise(12),
@@ -406,7 +406,7 @@ const App = () => {
             component={Contact}
             options={{
               headerShown: false,
-              tabBarIcon: ({focused}) => (
+              tabBarIcon: ({ focused }) => (
                 <Image
                   style={{
                     opacity: focused ? 1 : 0.5,
@@ -414,8 +414,8 @@ const App = () => {
                       Platform.OS === 'android'
                         ? normalise(10)
                         : Dimensions.get('window').height > 736
-                        ? normalise(0)
-                        : normalise(10),
+                          ? normalise(0)
+                          : normalise(10),
                     height: normalise(20),
                     width: normalise(20),
                     marginTop: normalise(12),
@@ -625,12 +625,12 @@ const App = () => {
             options={{
               headerShown: false,
               tabBarLabel: '',
-              tabBarIcon: ({focused}) => (
+              tabBarIcon: ({ focused }) => (
                 <Avatar
                   image={
                     UserReducer?.userProfileResp?.profile_image
                       ? constants.profile_picture_base_url +
-                        UserReducer?.userProfileResp?.profile_image
+                      UserReducer?.userProfileResp?.profile_image
                       : null
                   }
                   height={24}
@@ -672,10 +672,10 @@ const App = () => {
               // isPlaying
             }}>
             <NavigationContainer
-              onReady={() => RNBootSplash.hide({fade: true})}>
+              onReady={() => RNBootSplash.hide({ fade: true })}>
               {TokenReducer.token === null ? (
                 <Stack.Navigator
-                  screenOptions={{headerShown: false}}
+                  screenOptions={{ headerShown: false }}
                   initialRouteName={'Login'}>
                   <Stack.Screen name="Login" component={Login} />
                   <Stack.Screen name="SignUp" component={SignUp} />
@@ -684,11 +684,11 @@ const App = () => {
               ) : (
                 <Stack.Navigator
                   // initialRouteName="Profile"
-                  screenOptions={{headerShown: false}}
-                  options={({route}) => {
+                  screenOptions={{ headerShown: false }}
+                  options={({ route }) => {
                     const routeName = getFocusedRouteNameFromRoute(route);
                     if (routeName === 'Profile') {
-                      return {tabBarStyle: {display: 'none'}};
+                      return { tabBarStyle: { display: 'none' } };
                     }
                     return {};
                   }}>

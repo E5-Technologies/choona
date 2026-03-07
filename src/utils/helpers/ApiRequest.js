@@ -1,9 +1,15 @@
 import axios from 'axios';
 import constants from './constants';
+import '../../utils/axiosIntercepter';
 
 export async function getApi(url, header) {
   // console.log('URLaa: ', `${constants.BASE_URL}/${url}`);
   // console.log("header"+header.accesstoken)
+  // axios.interceptors.request.use(request => {
+  //   console.log("AXIOS REQUEST:", request);
+  //   return request;
+  // });
+
 
   return await axios.get(`${constants.BASE_URL}/${url}`, {
     headers: {
@@ -12,6 +18,8 @@ export async function getApi(url, header) {
       'x-access-token': header.accesstoken,
     },
   });
+
+
 }
 
 export async function putApi(url, payload, header) {

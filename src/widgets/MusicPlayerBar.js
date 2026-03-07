@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import propTypes from 'prop-types';
 import {
   View,
@@ -12,10 +12,10 @@ import {
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
 import ImagePath from '../assests/ImagePath';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Loader from './AuthLoader';
-import {usePlayFullAppleMusic} from '../hooks/usePlayFullAppleMusic';
-import {AppleMusicContext, useMusicPlayer} from '../context/AppleMusicContext';
+import { usePlayFullAppleMusic } from '../hooks/usePlayFullAppleMusic';
+import { AppleMusicContext, useMusicPlayer } from '../context/AppleMusicContext';
 import {
   useIsPlaying,
   useCurrentSong,
@@ -27,8 +27,8 @@ function MusicPlayerBar(props) {
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
   const [disabled, setDisabled] = useState(false);
-  const {isPlaying} = useIsPlaying();
-  const {song: currentSongData} = useCurrentSong();
+  const { isPlaying } = useIsPlaying();
+  const { song: currentSongData } = useCurrentSong();
 
   // const {
   //   onAuth,
@@ -48,7 +48,7 @@ function MusicPlayerBar(props) {
     // haveAppleMusicSubscription,
   } = usePlayFullAppleMusic();
 
-  const {progress, duration} = useMusicPlayer();
+  const { progress, duration } = useMusicPlayer();
   const percentage = duration > 0 ? (progress / duration) * 100 : 0;
 
   const {
@@ -207,9 +207,9 @@ function MusicPlayerBar(props) {
       }}>
       <Loader visible={bool} />
       {Platform.OS === 'ios' &&
-      props.playingSongRef?.regType == 'apple' &&
-      currentSongData?.id == props.playingSongRef?.apple_song_id &&
-      haveAppleMusicSubscription ? (
+        props.playingSongRef?.regType == 'apple' &&
+        currentSongData?.id == props.playingSongRef?.apple_song_id &&
+        haveAppleMusicSubscription ? (
         <View
           style={{
             height: normalise(2),
@@ -253,10 +253,10 @@ function MusicPlayerBar(props) {
               <Image
                 source={
                   props?.playingSongRef?.song_pic
-                    ? {uri: props.playingSongRef.song_pic}
+                    ? { uri: props.playingSongRef.song_pic }
                     : null
                 }
-                style={{height: normalise(45), width: normalise(45)}}
+                style={{ height: normalise(45), width: normalise(45) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -343,7 +343,7 @@ function MusicPlayerBar(props) {
                 source={
                   ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
                 }
-                style={{height: normalise(24), width: normalise(24)}}
+                style={{ height: normalise(24), width: normalise(24) }}
                 resizeMode={'contain'}
               />
             </TouchableOpacity>

@@ -1,4 +1,4 @@
-import {put, call, takeLatest, select} from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   CREATE_SESSION_REQUEST,
   CREATE_SESSION_SUCCESS,
@@ -30,14 +30,14 @@ import {
   GET_SESSION_LIST_SUCCESS_SEARCH,
   GET_SESSION_LIST_REQUEST_SEARCH,
 } from '../action/TypeConstants';
-import {postApi, getApi, putApi} from '../utils/helpers/ApiRequest';
-import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
-import {Alert} from 'react-native';
+import { postApi, getApi, putApi } from '../utils/helpers/ApiRequest';
+import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import { Alert } from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
-import {act} from 'react';
-import {mySessionListRequest} from '../action/SessionAction';
-import {ColorSpace} from 'react-native-agora';
+import { act } from 'react';
+import { mySessionListRequest } from '../action/SessionAction';
+import { ColorSpace } from 'react-native-agora';
 
 const getItems = state => state.TokenReducer;
 const getMySesssinoInfo = state => state.SessionReducer.mySessionListData;
@@ -64,11 +64,11 @@ export function* createSessionAction(action) {
       'its response after api hit session post',
     );
 
-    yield put({type: CREATE_SESSION_SUCCESS, data: response?.data?.data});
+    yield put({ type: CREATE_SESSION_SUCCESS, data: response?.data?.data });
   } catch (error) {
     console.log(error, 'simple error');
     console.log(JSON.stringify(error?.message, error?.status), 'simple error1');
-    yield put({type: CREATE_SESSION_FAILURE, data: error});
+    yield put({ type: CREATE_SESSION_FAILURE, data: error });
   }
 }
 
@@ -88,13 +88,14 @@ export function* getSessionList(action) {
     const url = `session/list`;
 
     const response = yield call(getApi, url, header);
+    console.log(response?.data, 'response in getSessionList saga');
     yield put({
       type: CREATE_SESSION_LIST_SUCCESS,
       data: response.data,
     });
   } catch (error) {
-    console.log(error?.message, 'Error in getSessionList saga');
-    yield put({type: CREATE_SESSION_LIST_FAILURE, data: error});
+    console.log(error, 'Error in getSessionList saga');
+    yield put({ type: CREATE_SESSION_LIST_FAILURE, data: error });
   }
 }
 
@@ -122,7 +123,7 @@ export function* getSessionListSearch(action) {
     });
   } catch (error) {
     console.log(error?.message, 'Error in getSessionList saga');
-    yield put({type: GET_SESSION_LIST_FAILURE_SEARCH, error: error});
+    yield put({ type: GET_SESSION_LIST_FAILURE_SEARCH, error: error });
   }
 }
 
@@ -143,16 +144,16 @@ export function* getSessionDetail(action) {
     );
     // console.log(response?.data, 'its response after api hit session LIST');
     if (response?.data?.status == 200) {
-      yield put({type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data});
+      yield put({ type: CREATE_SESSION_DETAIL_SUCCESS, data: response.data });
     } else {
-      yield put({type: CREATE_SESSION_DETAIL_FAILURE, error: response.data});
+      yield put({ type: CREATE_SESSION_DETAIL_FAILURE, error: response.data });
     }
   } catch (error) {
     console.log(
       JSON.stringify(error),
       'simple error1 in list get when get data of sesssion',
     );
-    yield put({type: CREATE_SESSION_DETAIL_FAILURE, error: error});
+    yield put({ type: CREATE_SESSION_DETAIL_FAILURE, error: error });
   }
 }
 
@@ -189,14 +190,14 @@ export function* startSessionOnce(action) {
     );
     console.log(response?.data, 'its response start session');
     if (response?.data?.status == 200) {
-      yield put({type: START_SESSION_SUCCESS, data: response?.data});
+      yield put({ type: START_SESSION_SUCCESS, data: response?.data });
     } else {
-      yield put({type: START_SESSION_FAILURE, error: error});
+      yield put({ type: START_SESSION_FAILURE, error: error });
     }
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
     toast('Error', 'Please Connect To Internet');
-    yield put({type: START_SESSION_FAILURE, error: error});
+    yield put({ type: START_SESSION_FAILURE, error: error });
   }
 }
 
@@ -219,7 +220,7 @@ export function* joinSessionRequest(action) {
     );
     console.log(JSON.stringify(response?.data), 'its response joinee Joined');
     if (response?.data?.status == 200) {
-      yield put({type: START_SESSION_JOINEE_SUCCESS, data: response?.data});
+      yield put({ type: START_SESSION_JOINEE_SUCCESS, data: response?.data });
     } else {
       // toast(response?.data?.message);
       // yield put({type: START_SESSION_JOINEE_STATUS_IDLE});
@@ -230,7 +231,7 @@ export function* joinSessionRequest(action) {
     }
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');
-    yield put({type: START_SESSION_JOINEE_FAILURE, error: error?.message});
+    yield put({ type: START_SESSION_JOINEE_FAILURE, error: error?.message });
   }
 }
 
@@ -251,10 +252,10 @@ export function* leftSessionRequest(action) {
       header,
     );
     console.log(response?.data, 'response when user Left the session');
-    yield put({type: START_SESSION_LEFT_SUCCESS, data: response.data});
+    yield put({ type: START_SESSION_LEFT_SUCCESS, data: response.data });
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'when user left error');
-    yield put({type: START_SESSION_LEFT_FAILURE, data: error});
+    yield put({ type: START_SESSION_LEFT_FAILURE, data: error });
   }
 }
 
@@ -283,7 +284,7 @@ export function* fetchMySessionListRequest(action) {
       const totalPages = response?.data?.totalPages ?? 1;
       const currentPageNo = response?.data?.page;
       if (currentPage == 1) {
-        yield put({type: My_SESSION_LIST_SUCCESS, data: response.data});
+        yield put({ type: My_SESSION_LIST_SUCCESS, data: response.data });
       } else {
         const modifiedData = {
           ...getMySesssinoInfoData,
@@ -293,14 +294,14 @@ export function* fetchMySessionListRequest(action) {
           status: response?.data?.status,
         };
         // console.log(modifiedData, 'its modfies data');
-        yield put({type: My_SESSION_LIST_SUCCESS, data: modifiedData});
+        yield put({ type: My_SESSION_LIST_SUCCESS, data: modifiedData });
       }
     } else {
-      yield put({type: My_SESSION_LIST_FAILURE, error: response.data});
+      yield put({ type: My_SESSION_LIST_FAILURE, error: response.data });
     }
   } catch (error) {
     // console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({type: My_SESSION_LIST_FAILURE, error: error});
+    yield put({ type: My_SESSION_LIST_FAILURE, error: error });
   }
 }
 
@@ -328,7 +329,7 @@ export function* mySessionDeleteRequestRequest(action) {
     });
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'simple error1 in list get');
-    yield put({type: My_SESSION_DELETE_FAILURE, error: error});
+    yield put({ type: My_SESSION_DELETE_FAILURE, error: error });
   }
 }
 

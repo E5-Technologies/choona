@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import env from 'react-native-config';
 import {
   Dimensions,
@@ -13,15 +13,15 @@ import normalise from '../../utils/helpers/Dimens';
 import ImagePath from '../../assests/ImagePath';
 import Colors from '../../assests/Colors';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {loginWithSpotify} from '../../utils/helpers/SpotifyLogin';
+import { loginWithSpotify } from '../../utils/helpers/SpotifyLogin';
 // import toast from '../../utils/helpers/ShowErrorAlert';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from '../../action/TypeConstants';
-import {loginRequest, signupRequest} from '../../action/UserAction';
-import {connect} from 'react-redux';
+import { loginRequest, signupRequest } from '../../action/UserAction';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import appleAuth, {
   AppleAuthError,
@@ -30,11 +30,11 @@ import appleAuth, {
   // AppleAuthCredentialState,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import {getDeviceToken} from '../../utils/helpers/FirebaseToken';
+import { getDeviceToken } from '../../utils/helpers/FirebaseToken';
 import OneSignal from 'react-native-onesignal';
 import axios from 'axios';
 import constants from '../../utils/helpers/constants';
-import {getMessaging} from '@react-native-firebase/messaging';
+import { getMessaging } from '@react-native-firebase/messaging';
 
 let user = null;
 let status = '';
@@ -80,7 +80,7 @@ function SignUp(props) {
             deviceToken: token2,
             deviceType: Platform.OS,
           };
-          console.log({payload}, 'lfjdfj');
+          console.log({ payload }, 'lfjdfj');
           props.loginRequest(payload);
         }
       })
@@ -92,7 +92,7 @@ function SignUp(props) {
   //ON APLLE BUTTON PRESS
   async function onAppleButtonPress() {
     setLoginType('Apple');
-    console.warn('Beginning Apple Authentication');
+    console.log('Beginning Apple Authentication');
     // start a login request
     try {
       const appleAuthRequestResponse = await appleAuth.performRequest({
@@ -108,6 +108,7 @@ function SignUp(props) {
       const {
         user: newUser,
         email,
+        fullName,
         identityToken,
         realUserStatus /* etc */,
       } = appleAuthRequestResponse;
@@ -118,18 +119,20 @@ function SignUp(props) {
       //   updateCredentialStateForUser(`Error: ${error.code}`),
       // );
 
+      console.log(user, email, identityToken, realUserStatus, "thisiStats")
       if (identityToken) {
         appleLoginWithOurServer(appleAuthRequestResponse);
         // console.log(nonce, identityToken);
       } else {
         // no token - failed sign-in?
+        console.log('noTokenFound')
       }
 
       if (realUserStatus === AppleAuthRealUserStatus.LIKELY_REAL) {
-        // console.log("I'm a real person!");
+        console.log("I'm a real person!");
       }
 
-      console.warn(`Apple Authentication Completed, ${user}, ${email}`);
+      console.log(`Apple Authentication Completed, ${user}, ${email}`);
     } catch (error) {
       if (error.code === AppleAuthError.CANCELED) {
         console.warn('User canceled Apple Sign in.');
@@ -168,7 +171,7 @@ function SignUp(props) {
 
   // API REQUEST
   function signInwithApple(appleData, token) {
-    console.log({appleData}, {token});
+    console.log({ appleData }, { token });
     // isInternetConnected().then(() => {
 
     var appleSignUpObject = {};
@@ -202,26 +205,26 @@ function SignUp(props) {
         status = props.status;
 
         if (props.error.status === 201) {
-          if (loginType === 'Apple') {
+          if (loginType === 'Apple' && userDetails?.fullName?.givenName) {
             let formdata = new FormData();
             formdata.append(
               'full_name',
-              `${userDetails.fullName.givenName} ${userDetails.fullName.familyName}`,
+              `${userDetails.fullName.givenName} ${userDetails.fullName.familyName || ''}`,
             );
             formdata.append('profile_image', '');
             formdata.append('phone', '');
             formdata.append('location', '');
-            formdata.append('email', userDetails.email);
+            formdata.append('email', userDetails.email || '');
             formdata.append('deviceToken', token2);
             formdata.append('deviceType', Platform.OS);
             formdata.append('social_id', userDetails.user);
             formdata.append('register_type', 'apple');
-            console.log(token2, 'thissdevicetoskdn');
+            console.log(formdata, 'thissdevicetoskdn');
             axios
               .post(
                 constants.BASE_URL + '/user/available',
                 {
-                  username: `${userDetails.fullName.givenName}${userDetails.fullName.familyName}`,
+                  username: `${userDetails.fullName.givenName}${userDetails.fullName.familyName || ''}`,
                 },
                 {
                   headers: {
@@ -234,15 +237,23 @@ function SignUp(props) {
                 if (res.data.status === 200) {
                   formdata.append(
                     'username',
-                    `${userDetails.fullName.givenName}${userDetails.fullName.familyName}`,
+                    `${userDetails.fullName.givenName}${userDetails.fullName.familyName || ''}`,
                   );
                   props.signUpRequest(formdata);
                 } else {
-                  formdata.append('username', userDetails.nonce);
+                  formdata.append('username', userDetails.nonce || userDetails.user);
                   props.signUpRequest(formdata);
                 }
+              })
+              .catch(err => {
+                console.log('Error checking username availability:', err);
+                props.navigation.navigate('SignUp', {
+                  userDetails: userDetails,
+                  loginType: loginType,
+                });
               });
           } else {
+            console.log('Navigating to SignUp manual flow');
             props.navigation.navigate('SignUp', {
               userDetails: userDetails,
               loginType: loginType,

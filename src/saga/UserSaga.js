@@ -1,4 +1,4 @@
-import {put, call, takeLatest, select} from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -92,8 +92,8 @@ import {
 } from '../utils/helpers/ApiRequest';
 import AsyncStorage from '@react-native-community/async-storage';
 import constants from '../utils/helpers/constants';
-import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
+import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
 import _ from 'lodash';
 
 const getItems = state => state.TokenReducer;
@@ -107,6 +107,7 @@ export function* loginAction(action) {
 
   try {
     const response = yield call(postApi, 'user/signin', action.payload, header);
+    console.log(response.data, 'itsresponseoflogin');
     if (response.data.status === 200) {
       yield call(
         AsyncStorage.setItem,
@@ -117,18 +118,19 @@ export function* loginAction(action) {
         }),
       );
 
-      yield put({type: USER_LOGIN_SUCCESS, data: response.data.data});
+      yield put({ type: USER_LOGIN_SUCCESS, data: response.data.data });
       yield put({
         type: ASYNC_STORAGE_SUCCESS,
         token: response.data.token,
         registerType: response.data.data.register_type,
-        isFirstTime:false
+        isFirstTime: false
       });
     } else {
-      yield put({type: USER_LOGIN_FAILURE, error: response.data});
+      yield put({ type: USER_LOGIN_FAILURE, error: response.data });
     }
   } catch (error) {
-    yield put({type: USER_LOGIN_FAILURE, error: error});
+    console.log(error, 'its error in login');
+    yield put({ type: USER_LOGIN_FAILURE, error: error });
   }
 }
 
@@ -139,10 +141,12 @@ export function* UserSignUpAction(action) {
       contenttype: 'multipart/formdata',
     };
 
+    console.log(action.payload, 'thisiSdata')
     const response = yield call(postApi, 'user/signup', action.payload, header);
+    console.log(response, 'thisiStheReponsefioSignUp')
 
     if (response.status === 201) {
-      yield put({type: USER_SIGNUP_FAILURE, error: response.data});
+      yield put({ type: USER_SIGNUP_FAILURE, error: response.data });
     } else {
       yield call(
         AsyncStorage.setItem,
@@ -153,22 +157,24 @@ export function* UserSignUpAction(action) {
         }),
       );
 
-      yield put({type: USER_SIGNUP_SUCCESS, data: response.data.data});
+      yield put({ type: USER_SIGNUP_SUCCESS, data: response.data.data });
       yield put({
         type: ASYNC_STORAGE_SUCCESS,
         token: response.data.token,
         registerType: response.data.data.register_type,
-        isFirstTime:true
+        isFirstTime: true
       });
     }
   } catch (error) {
-    yield put({type: USER_SIGNUP_FAILURE, error: error});
+    console.log(JSON.stringify(error), 'thisisSignUpError')
+    yield put({ type: USER_SIGNUP_FAILURE, error: error });
   }
 }
 
 export function* userProfileAction(action) {
   try {
     const items = yield select(getItems);
+    console.log(items.token, 'thisiSToken')
 
     const Header = {
       Accept: 'application/json',
@@ -177,9 +183,11 @@ export function* userProfileAction(action) {
     };
 
     const response = yield call(getApi, 'user/profile', Header);
-    yield put({type: USER_PROFILE_SUCCESS, data: response.data.data});
+    // console.log(response.data, 'its response of user profile');
+    yield put({ type: USER_PROFILE_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: USER_PROFILE_FAILURE, error: error});
+    console.log(JSON.stringify(error), 'thisisUserProfileError')
+    yield put({ type: USER_PROFILE_FAILURE, error: error });
   }
 }
 
@@ -201,12 +209,12 @@ export function* editProfileAction(action) {
     );
 
     if (response.status === 201) {
-      yield put({type: EDIT_PROFILE_FAILURE, error: response.data});
+      yield put({ type: EDIT_PROFILE_FAILURE, error: response.data });
     } else {
-      yield put({type: EDIT_PROFILE_SUCCESS, data: response.data.data});
+      yield put({ type: EDIT_PROFILE_SUCCESS, data: response.data.data });
     }
   } catch (error) {
-    yield put({type: EDIT_PROFILE_FAILURE, error: error});
+    yield put({ type: EDIT_PROFILE_FAILURE, error: error });
   }
 }
 
@@ -228,7 +236,7 @@ export function* userSearchAction(action) {
     });
     console.log(response?.data?.data, 'its data fetched user');
   } catch (error) {
-    yield put({type: USER_SEARCH_FAILURE, error: error});
+    yield put({ type: USER_SEARCH_FAILURE, error: error });
   }
 }
 
@@ -248,9 +256,9 @@ export function* userFollowOrUnfollowAction(action) {
       action.payload,
       Header,
     );
-    yield put({type: USER_FOLLOW_UNFOLLOW_SUCCESS, data: response.data.data});
+    yield put({ type: USER_FOLLOW_UNFOLLOW_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error});
+    yield put({ type: USER_FOLLOW_UNFOLLOW_FAILURE, error: error });
   }
 }
 
@@ -270,9 +278,9 @@ export function* userBlockAction(action) {
       action.payload,
       Header,
     );
-    yield put({type: USER_BLOCK_SUCCESS, data: response.data.data});
+    yield put({ type: USER_BLOCK_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: USER_BLOCK_FAILURE, error: error});
+    yield put({ type: USER_BLOCK_FAILURE, error: error });
   }
 }
 
@@ -292,9 +300,9 @@ export function* userUnBlockAction(action) {
       action.payload,
       Header,
     );
-    yield put({type: USER_UNBLOCK_SUCCESS, data: response.data.data});
+    yield put({ type: USER_UNBLOCK_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: USER_UNBLOCK_FAILURE, error: error});
+    yield put({ type: USER_UNBLOCK_FAILURE, error: error });
   }
 }
 
@@ -314,9 +322,9 @@ export function* userBlockListAction(action) {
       action.payload,
       Header,
     );
-    yield put({type: USER_BLOCKLIST_SUCCESS, data: response.data.data});
+    yield put({ type: USER_BLOCKLIST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: USER_BLOCKLIST_FAILURE, error: error});
+    yield put({ type: USER_BLOCKLIST_FAILURE, error: error });
   }
 }
 
@@ -331,9 +339,9 @@ export function* Report(action) {
 
     const response = yield call(postApi, 'user/report', action.payload, Header);
 
-    yield put({type: REPORT_SUCCESS, data: response.data.data});
+    yield put({ type: REPORT_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: REPORT_FAILURE, error: error});
+    yield put({ type: REPORT_FAILURE, error: error });
   }
 }
 
@@ -349,9 +357,9 @@ export function* othersProfileAction(action) {
 
     const response = yield call(getApi, `user/profile/${action.id}`, Header);
     // alert("response"+JSON.stringify(response))
-    yield put({type: OTHERS_PROFILE_SUCCESS, data: response.data.data});
+    yield put({ type: OTHERS_PROFILE_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: OTHERS_PROFILE_FAILURE, error: error});
+    yield put({ type: OTHERS_PROFILE_FAILURE, error: error });
   }
 }
 
@@ -378,7 +386,7 @@ export function* loadMoreAction(action) {
     });
     //yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
   } catch (error) {
-    yield put({type: HOME_PAGE_FAILURE, error: error});
+    yield put({ type: HOME_PAGE_FAILURE, error: error });
   }
 }
 
@@ -399,7 +407,7 @@ export function* homePageAction(action) {
     );
 
     const chatResponse = yield call(getApi, 'chat/list', Header);
-    yield put({type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data});
+    yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
 
     yield put({
       type: HOME_PAGE_SUCCESS,
@@ -409,7 +417,7 @@ export function* homePageAction(action) {
     });
     //yield put({ type: GET_CHAT_LIST_SUCCESS, data: chatResponse.data.data });
   } catch (error) {
-    yield put({type: HOME_PAGE_FAILURE, error: error});
+    yield put({ type: HOME_PAGE_FAILURE, error: error });
   }
 }
 
@@ -435,11 +443,11 @@ export function* commentOnPostAction(action) {
 
     // console.log(JSON.stringify(response));
 
-    yield put({type: COMMENT_ON_POST_SUCCESS, data: response.data.data});
+    yield put({ type: COMMENT_ON_POST_SUCCESS, data: response.data.data });
   } catch (error) {
     // console.log(JSON.stringify(error));
 
-    yield put({type: COMMENT_ON_POST_FAILURE, error: error});
+    yield put({ type: COMMENT_ON_POST_FAILURE, error: error });
   }
 }
 
@@ -455,17 +463,17 @@ export function* followerListAction(action) {
 
     if (action.usertype === 'user') {
       const response = yield call(getApi, 'follower/list', Header);
-      yield put({type: FOLLOWER_LIST_SUCCESS, data: response.data.data});
+      yield put({ type: FOLLOWER_LIST_SUCCESS, data: response.data.data });
     } else {
       const response = yield call(
         getApi,
         `follower/list?user_id=${action.id}`,
         Header,
       );
-      yield put({type: FOLLOWER_LIST_SUCCESS, data: response.data.data});
+      yield put({ type: FOLLOWER_LIST_SUCCESS, data: response.data.data });
     }
   } catch (error) {
-    yield put({type: FOLLOWER_LIST_FAILURE, error: error});
+    yield put({ type: FOLLOWER_LIST_FAILURE, error: error });
   }
 }
 
@@ -481,17 +489,17 @@ export function* followingListAction(action) {
 
     if (action.usertype === 'user') {
       const response = yield call(getApi, 'follower/following/list', Header);
-      yield put({type: FOLLOWING_LIST_SUCCESS, data: response.data.data});
+      yield put({ type: FOLLOWING_LIST_SUCCESS, data: response.data.data });
     } else {
       const response = yield call(
         getApi,
         `follower/following/list?user_id=${action.id}`,
         Header,
       );
-      yield put({type: FOLLOWING_LIST_SUCCESS, data: response.data.data});
+      yield put({ type: FOLLOWING_LIST_SUCCESS, data: response.data.data });
     }
   } catch (error) {
-    yield put({type: FOLLOWING_LIST_FAILURE, error: error});
+    yield put({ type: FOLLOWING_LIST_FAILURE, error: error });
   }
 }
 
@@ -511,9 +519,9 @@ export function* reactionOnPostAction(action) {
       action.payload,
       Header,
     );
-    yield put({type: REACTION_ON_POST_SUCCESS, data: response.data.data});
+    yield put({ type: REACTION_ON_POST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: REACTION_ON_POST_FAILURE, error: error});
+    yield put({ type: REACTION_ON_POST_FAILURE, error: error });
   }
 }
 
@@ -527,9 +535,9 @@ export function* activityListAction(action) {
     };
 
     const response = yield call(getApi, 'activity/list', Header);
-    yield put({type: ACTIVITY_LIST_SUCCESS, data: response.data.data});
+    yield put({ type: ACTIVITY_LIST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: ACTIVITY_LIST_FAILURE, error: error});
+    yield put({ type: ACTIVITY_LIST_FAILURE, error: error });
   }
 }
 
@@ -570,7 +578,7 @@ export function* featuredTrackSearchAction(action) {
       });
     }
   } catch (error) {
-    yield put({type: FEATURED_SONG_SEARCH_FAILURE, error: error});
+    yield put({ type: FEATURED_SONG_SEARCH_FAILURE, error: error });
   }
 }
 
@@ -587,10 +595,10 @@ export function* userLogoutAction(action) {
     yield call(AsyncStorage.removeItem, constants.CHOONACREDS);
     yield call(AsyncStorage.removeItem, constants.APPLE);
 
-    yield put({type: USER_LOGOUT_SUCCESS, data: response.data.data});
-    yield put({type: ASYNC_STORAGE_CLEAR, token: null, registerType: null});
+    yield put({ type: USER_LOGOUT_SUCCESS, data: response.data.data });
+    yield put({ type: ASYNC_STORAGE_CLEAR, token: null, registerType: null });
   } catch (error) {
-    yield put({type: USER_LOGOUT_FAILURE, error: error});
+    yield put({ type: USER_LOGOUT_FAILURE, error: error });
   }
 }
 
@@ -605,9 +613,9 @@ export function* getUsersFromHomeAction(action) {
     };
 
     const response = yield call(postApi, 'user/search', action.payload, Header);
-    yield put({type: GET_USER_FROM_HOME_SUCCESS, data: response.data.data});
+    yield put({ type: GET_USER_FROM_HOME_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: GET_USER_FROM_HOME_FAILURE, error: error});
+    yield put({ type: GET_USER_FROM_HOME_FAILURE, error: error });
   }
 }
 
@@ -643,7 +651,7 @@ export function* getCountryCodeAction(action) {
       data1: response.data.data,
     });
   } catch (error) {
-    yield put({type: COUNTRY_CODE_FAILURE, error: error});
+    yield put({ type: COUNTRY_CODE_FAILURE, error: error });
   }
 }
 
@@ -659,9 +667,9 @@ export function* getTop5FollowedUserAction(action) {
 
     const response = yield call(getApi, 'follower/top/list', Header);
     //  // console.log("THE CODE", res)
-    yield put({type: TOP_5_FOLLOWED_USER_SUCCESS, data: response.data.data});
+    yield put({ type: TOP_5_FOLLOWED_USER_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: TOP_5_FOLLOWED_USER_FAILURE, error: error});
+    yield put({ type: TOP_5_FOLLOWED_USER_FAILURE, error: error });
   }
 }
 
@@ -682,12 +690,12 @@ export function* getUsersFromContact(action) {
     });
   } catch (error) {
     console.log(error, 'hey its error');
-    yield put({type: GET_USERS_FROM_CONTACTS_FAILURE, error: error});
+    yield put({ type: GET_USERS_FROM_CONTACTS_FAILURE, error: error });
   }
 }
 
 export function* dummyRequestAction(action) {
-  yield put({type: DUMMY_ACTION_SUCCESS});
+  yield put({ type: DUMMY_ACTION_SUCCESS });
 }
 
 export function* followerSearchAction(action) {
@@ -699,7 +707,7 @@ export function* followerSearchAction(action) {
     );
   });
 
-  yield put({type: FOLLOWER_SEARCH_SUCCESS, data: result});
+  yield put({ type: FOLLOWER_SEARCH_SUCCESS, data: result });
 }
 
 export function* followingSearchAction(action) {
@@ -711,7 +719,7 @@ export function* followingSearchAction(action) {
     );
   });
 
-  yield put({type: FOLLOWING_SEARCH_SUCCESS, data: result});
+  yield put({ type: FOLLOWING_SEARCH_SUCCESS, data: result });
 }
 
 export function* sendInvitationToJoin(action) {
@@ -734,7 +742,7 @@ export function* sendInvitationToJoin(action) {
     );
     console.log(response?.data, 'its respomse after sned invitatio');
     if (response.status === 201) {
-      yield put({type: SEND_SESSION_INVITATION_FAILURE, error: response.data});
+      yield put({ type: SEND_SESSION_INVITATION_FAILURE, error: response.data });
     } else {
       yield put({
         type: SEND_SESSION_INVITATION_SUCCESS,
@@ -743,7 +751,7 @@ export function* sendInvitationToJoin(action) {
     }
   } catch (error) {
     console.log(JSON.stringify(error), 'its error h bro');
-    yield put({type: SEND_SESSION_INVITATION_FAILURE, error: error});
+    yield put({ type: SEND_SESSION_INVITATION_FAILURE, error: error });
   }
 }
 
