@@ -1,34 +1,31 @@
-import { Alert } from "react-native";
-
-// export function extractSongIdFromUrl(url) {
-//   try {
-//     // Handle case where URL might have additional parameters
-//     const parsedUrl = new URL(url);
-    
-//     // The song ID appears after "?i=" in the URL
-//     const songId = parsedUrl.searchParams.get('i');
-    
-//     // Alternative approach if the above doesn't work:
-//     // const match = url.match(/[?&]i=(\d+)/);
-//     // const songId = match ? match[1] : null;
-//     Alert.alert(songId.toString())
-//     return songId;
-//   } catch (error) {
-//     console.error('Error parsing Apple Music URL:', error);
-//     return null;
-//   }
-// }
-
-
-
 export function extractSongIdFromUrl(url) {
   try {
-    const parts = url.split('/');
+    if (!url || typeof url !== 'string') {
+      return null;
+    }
+
+    const trimmedUrl = url.trim();
+
+    // 1. Try to get the 'i' parameter (standard for specific songs in albums)
+    const match = trimmedUrl.match(/[?&]i=([0-9]+)/);
+    if (match && match[1]) {
+      return match[1];
+    }
+
+    // 2. Try to get the ID from the end of the URL
+    const parts = trimmedUrl.split('/');
     const lastPart = parts[parts.length - 1];
-    const id = lastPart.split('=')[1];
-    return id;
+
+    if (lastPart) {
+      const cleanId = lastPart.split(/[?#&]/)[0];
+      if (/^[0-9]+$/.test(cleanId)) {
+        return cleanId;
+      }
+    }
+
+    return null;
   } catch (error) {
-    console.error("Invalid URL format", error);
+    console.log('extractSongIdFromUrl: Error parsing URL:', url, error);
     return null;
   }
 }

@@ -6,10 +6,10 @@ import {
   useIsPlaying,
   CatalogSearchType,
 } from '@lomray/react-native-apple-music';
-import {Alert, Platform} from 'react-native';
+import { Alert, Platform } from 'react-native';
 import useSWR from 'swr';
 import toast from '../utils/helpers/ShowErrorAlert';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 export const usePlayFullAppleMusic = () => {
   // const {isPlaying} = useIsPlaying();
@@ -140,11 +140,17 @@ export const usePlayFullAppleMusic = () => {
   const onSkip = () => void Player.skipToNextEntry();
 
   async function setPlaybackQueue(itemId) {
-    console.log(itemId, 'its item id');
+    console.log('usePlayFullAppleMusic: setPlaybackQueue called with:', itemId);
     try {
-      await MusicKit.setPlaybackQueue(itemId, 'song');
+      if (!itemId) {
+        console.error('usePlayFullAppleMusic: itemId is empty');
+        return;
+      }
+      // The patched library uses setPlaybackQueueList instead of setPlaybackQueue
+      await MusicKit.setPlaybackQueueList([itemId.toString()], 'song');
+      console.log('usePlayFullAppleMusic: Successfully set playback queue for:', itemId);
     } catch (error) {
-      console.error('Setting playback queue:', error);
+      console.error('usePlayFullAppleMusic: Error setting playback queue:', error);
     }
   }
 
@@ -154,7 +160,7 @@ export const usePlayFullAppleMusic = () => {
       // await Player.stop();
 
       // Clear the queue (implementation may vary based on library version)
-      const res= await MusicKit.resetPlaybackQueue();
+      const res = await MusicKit.resetPlaybackQueue();
       console.log(res, 'its res>>>>>>>')
 
       // Alternative if the above doesn't work:

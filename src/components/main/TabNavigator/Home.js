@@ -814,9 +814,19 @@ const Home = props => {
     ) {
       console.log(haveAppleMusicSubscription, 'this is>>');
       // Alert.alert('yes have subscrition');
-      let songId = extractSongIdFromUrl(
+      const songId = extractSongIdFromUrl(
         data?.item?.songs[selectedSongIndex]?.original_song_uri,
       );
+      console.log('Apple Music Song ID:', songId, 'from URL:', data?.item?.songs[selectedSongIndex]?.original_song_uri);
+
+      // Temporary alert for debugging on device
+      // Alert.alert('Debug', `Extracted Song ID: ${songId}\nFrom URL: ${data?.item?.songs[selectedSongIndex]?.original_song_uri}`);
+
+      if (!songId) {
+        console.log('ERROR: Failed to extract Apple Music Song ID');
+        Alert.alert('Error', 'Failed to extract Apple Music Song ID from the provided URL.');
+        return;
+      }
 
       let saveSongResObj = {};
       (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
@@ -848,14 +858,13 @@ const Home = props => {
 
       props.saveSongRefReq(saveSongResObj);
       props.dummyRequest();
-      if (currentSongData?.id != songId) {
-        console.log(songId?.toString(), songId, '><');
-        await
-          setPlaybackQueue(songId);
+
+      if (currentSongData?.id !== songId) {
+        console.log('Setting playback queue for:', songId);
+        await setPlaybackQueue(songId);
         setTimeout(() => {
           Player.play();
-          console.log('playing');
-          // playAppleSong()
+          console.log('Called Player.play()');
         }, 500);
       } else {
         setTimeout(() => {
