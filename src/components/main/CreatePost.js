@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -17,7 +17,7 @@ import normalise from '../../utils/helpers/Dimens';
 import Colors from '../../assests/Colors';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
@@ -29,8 +29,8 @@ import {
   FOLLOWING_LIST_SUCCESS,
   FOLLOWING_LIST_FAILURE,
 } from '../../action/TypeConstants';
-import {createPostRequest} from '../../action/PostAction';
-import {followingListReq, followerListReq} from '../../action/UserAction';
+import { createPostRequest } from '../../action/PostAction';
+import { followingListReq, followerListReq } from '../../action/UserAction';
 
 import Loader from '../../widgets/AuthLoader';
 import toast from '../../utils/helpers/ShowErrorAlert';
@@ -54,7 +54,7 @@ function AddSong(props) {
 
   const [tagFriend, setTagFriend] = useState([]);
   const [showmention, setShowMention] = useState(false);
-  const [Selection, setSelection] = useState({start: 0, end: 0});
+  const [Selection, setSelection] = useState({ start: 0, end: 0 });
   const [commentsLoading, setCommentsLoading] = useState(false);
   // console.log(props.route.params.details, 'fsdhjfdfjhfdsfhdf')
 
@@ -98,8 +98,7 @@ function AddSong(props) {
   // GET SPOTIFY SONG URL
   const callApi = async () => {
     return await axios.get(
-      `${
-        constants.BASE_URL
+      `${constants.BASE_URL
       }/${`song/spotify/${props.route.params.details.id}`}`,
       {
         headers: {
@@ -160,7 +159,7 @@ function AddSong(props) {
         ],
       };
       console.log(payload, 'its playlod <<');
-      // return
+      return
       isInternetConnected()
         .then(async () => {
           // Alert.alert('incond');
@@ -184,7 +183,7 @@ function AddSong(props) {
 
       case CREATE_POST_SUCCESS:
         props.navigation.popToTop();
-        props.navigation.replace('bottomTab', {screen: 'Home'});
+        props.navigation.replace('bottomTab', { screen: 'Home' });
         status = props.status;
         break;
 
@@ -251,7 +250,7 @@ function AddSong(props) {
   parts = parts.map(text => {
     if (/^@/.test(text)) {
       return (
-        <Text key={text} style={{color: '#3DB2EB'}}>
+        <Text key={text} style={{ color: '#3DB2EB' }}>
           {text}
         </Text>
       );
@@ -264,7 +263,7 @@ function AddSong(props) {
   }, [bool]);
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       {/* <Loader visible={props.status === CREATE_POST_REQUEST} /> */}
 
       <StatusBar backgroundColor={Colors.darkerblack} />
@@ -272,7 +271,7 @@ function AddSong(props) {
         onPress={() => {
           Keyboard.dismiss();
         }}> */}
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={'CANCEL'}
@@ -379,7 +378,7 @@ function AddSong(props) {
             <Text>{parts}</Text>
           </TextInput>
 
-          <View style={{height: 300}}>
+          <View style={{ height: 300 }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -401,7 +400,7 @@ function AddSong(props) {
                 }}>
                 <TouchableOpacity>
                   <Image
-                    source={{uri: imgsource}}
+                    source={{ uri: imgsource }}
                     style={{
                       height: normalise(40),
                       width: normalise(40),
@@ -449,11 +448,11 @@ function AddSong(props) {
                   marginRight: '20%',
                   height:
                     followingList.length + followerList.length === 2 ||
-                    followingList.length + followerList.length === 1
+                      followingList.length + followerList.length === 1
                       ? Dimensions.get('window').height / 8
                       : followingList.length + followerList.length === 3
-                      ? Dimensions.get('window').height / 3
-                      : Dimensions.get('window').height / 3.5,
+                        ? Dimensions.get('window').height / 3
+                        : Dimensions.get('window').height / 3.5,
 
                   position: 'absolute',
                   top: 0,
@@ -464,10 +463,10 @@ function AddSong(props) {
                     return this[o.username] ? false : (this[o.username] = true);
                   }, {})}
                   keyboardShouldPersistTaps="always"
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     return (
                       <TouchableOpacity
-                        style={{flexDirection: 'row', paddingTop: '3%'}}
+                        style={{ flexDirection: 'row', paddingTop: '3%' }}
                         onPress={() => {
                           // setSelection({start:commentText.lastIndexOf("@"),end:Selection.end})
                           let newString = search.substr(
@@ -482,10 +481,10 @@ function AddSong(props) {
                           source={
                             item.profile_image
                               ? {
-                                  uri:
-                                    constants.profile_picture_base_url +
-                                    item.profile_image,
-                                }
+                                uri:
+                                  constants.profile_picture_base_url +
+                                  item.profile_image,
+                              }
                               : ImagePath.userPlaceholder
                           }
                           resizeMode="contain"
@@ -505,7 +504,7 @@ function AddSong(props) {
                             borderBottomColor: '#25262A',
                             justifyContent: 'center',
                           }}>
-                          <Text style={{fontSize: 14, color: 'white'}}>
+                          <Text style={{ fontSize: 14, color: 'white' }}>
                             {item.full_name}
                           </Text>
                           <Text

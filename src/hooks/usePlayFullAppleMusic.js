@@ -148,6 +148,7 @@ export const usePlayFullAppleMusic = () => {
       }
       // The patched library uses setPlaybackQueueList instead of setPlaybackQueue
       await MusicKit.setPlaybackQueueList([itemId.toString()], 'song');
+      // await MusicKit.setPlaybackQueue(itemId.toString(), 'song');
       console.log('usePlayFullAppleMusic: Successfully set playback queue for:', itemId);
     } catch (error) {
       console.error('usePlayFullAppleMusic: Error setting playback queue:', error);

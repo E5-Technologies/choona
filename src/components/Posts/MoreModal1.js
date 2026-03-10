@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ImageBackground,
@@ -8,10 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {deleteMessageRequest} from '../../action/MessageAction';
-import {deletePostReq} from '../../action/PostAction';
-import {saveSongRequest, unsaveSongRequest} from '../../action/SongAction';
+import { connect } from 'react-redux';
+import { deleteMessageRequest } from '../../action/MessageAction';
+import { deletePostReq } from '../../action/PostAction';
+import { saveSongRequest, unsaveSongRequest } from '../../action/SongAction';
 import {
   othersProfileRequest,
   ReportRequest,
@@ -20,7 +20,7 @@ import {
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
-import {SimpleOption} from '../common/SimpleOption';
+import { SimpleOption } from '../common/SimpleOption';
 
 const MoreModal1 = ({
   setBool,
@@ -57,7 +57,7 @@ const MoreModal1 = ({
     }
   }, [othersProfileresp]);
 
-  console.log(postData?.[0], 'thisispostdata');
+  console.log(postData?.[index], 'thisispostdata');
 
   const saveUnsaveAction = () => {
     if (page === 'savedSongs') {
@@ -71,9 +71,9 @@ const MoreModal1 = ({
           page === 'insideMessage'
             ? postData[index].image
             : postData[index].attributes?.artwork?.url?.replace(
-                '{w}x{h}',
-                '500x500',
-              ),
+              '{w}x{h}',
+              '500x500',
+            ),
         artist_name: postData[index].attributes.artistName,
         album_name: postData[index].attributes.albumName,
         // post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
@@ -98,7 +98,7 @@ const MoreModal1 = ({
   };
 
   const hanldePlaySong = item => {
-    navigation.navigate('Player', {
+    const payload = {
       song_title: registerType === 'spotify' ? item.name : item.attributes.name,
       album_name:
         registerType === 'spotify'
@@ -108,7 +108,7 @@ const MoreModal1 = ({
         registerType === 'spotify'
           ? item.album.images[0].url
           : item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
-      username: '',
+      username: registerType === 'spotify' ? '' : item?.attributes?.artistName,
       profile_pic: '',
       originalUri:
         registerType === 'spotify'
@@ -120,7 +120,7 @@ const MoreModal1 = ({
           : item.attributes.previews[0].url,
       artist:
         registerType === 'spotify'
-          ? singerList(item.artists)
+          ? item?.artists
           : item.attributes.artistName,
       changePlayer: true,
       registerType: registerType,
@@ -128,7 +128,9 @@ const MoreModal1 = ({
       id: registerType === 'spotify' ? item.id : item.id,
       apple_song_id: registerType === 'spotify' ? item.id : item.id,
       showPlaylist: false,
-    });
+    }
+
+    navigation.navigate('Player', payload);
   };
 
   const handleAddSong = (item, from) => {
@@ -182,7 +184,7 @@ const MoreModal1 = ({
         style={styles.centeredView}>
         <View style={styles.modalView}>
           <TouchableOpacity
-            style={[styles.modalButton, {marginTop: 0}]}
+            style={[styles.modalButton, { marginTop: 0 }]}
             onPress={() => {
               setShow(false);
               hanldePlaySong(postData[index]);

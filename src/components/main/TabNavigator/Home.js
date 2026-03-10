@@ -103,12 +103,10 @@ import {
   createSessionListRequest,
   fetchSessionListRequestStatusIdle,
 } from '../../../action/SessionAction';
-import { usePlayFullAppleMusic } from '../../../hooks/usePlayFullAppleMusic';
-import { extractSongIdFromUrl } from '../../../utils/helpers/CommonFunctions';
 import {
   AppleMusicContext,
-  useMusicPlayer,
 } from '../../../context/AppleMusicContext';
+import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
 import {
   Player,
   useCurrentSong,
@@ -136,10 +134,8 @@ const Home = props => {
   const [contactsLoading, setContactsLoading] = useState(false);
   const [bool, setBool] = useState(false);
   const [postArray, setPostArray] = useState([]);
-  const [timeoutVar, setTimeoutVar] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
-  const [visibleminiPlayer, setVisibleMiniPlayer] = useState(false);
   const [isShown, setIsShown] = useState(true);
 
   const [firstTimeModalShow, setFirstTimeModalShow] = useState(false);
@@ -159,17 +155,7 @@ const Home = props => {
   const [menuVisible, setMenuVisible] = useState(false);
   const TokenReducer = useSelector(state => state.TokenReducer);
 
-  const {
-    onAuth,
-    setPlaybackQueue,
-    onToggle,
-    resetPlaybackQueue,
-    checkPlaybackState,
-    // currentSongData,
-    // isPlaying,
-    //  isAuthorizeToAccessAppleMusic,
-    //   haveAppleMusicSubscription,
-  } = usePlayFullAppleMusic();
+  const { playSong } = useGlobalMusicPlayer();
 
   useEffect(() => {
     if (
@@ -181,7 +167,7 @@ const Home = props => {
     }
   }, [props.route.params?.activeTab]);
 
-  const { progress, duration } = useMusicPlayer();
+  // const { progress, duration } = useMusicPlayer();
 
   const optionListMenu = [
     {
@@ -210,9 +196,6 @@ const Home = props => {
   //   'this is subcription value',
   // );
 
-  // setTimeout(() => {
-  checkPlaybackState();
-  // }, 100);
 
   // useEffect(() => {
   //   if (Platform.OS == 'ios') {
@@ -450,7 +433,6 @@ const Home = props => {
       if (global.playerReference !== null) {
         if (global.playerReference?.isPlaying()) {
           global.playerReference.pause();
-          findPlayingSong(posts);
         }
       }
     }
@@ -564,7 +546,6 @@ const Home = props => {
 
       case HOME_PAGE_SUCCESS:
         status = props.status;
-        findPlayingSong(posts);
         props.getProfileReq();
         break;
 
@@ -610,7 +591,6 @@ const Home = props => {
 
       case DUMMY_ACTION_SUCCESS:
         status = props.status;
-        findPlayingSong(posts);
         break;
     }
   }
@@ -802,259 +782,14 @@ const Home = props => {
     });
   };
 
-  const playSong = async (data, songIndex = null) => {
-    const selectedSongIndex = songIndex ?? 0;
-    console.log(selectedSongIndex, 'hey this is index');
-    console.log(JSON.stringify(data?.item?.social_type), 'its lay song data');
-    if (
-      haveAppleMusicSubscription &&
-      data?.item?.social_type == 'apple' &&
-      Platform.OS == 'ios' &&
-      props.registerType == 'apple'
-    ) {
-      console.log(haveAppleMusicSubscription, 'this is>>');
-      // Alert.alert('yes have subscrition');
-      const songId = extractSongIdFromUrl(
-        data?.item?.songs[selectedSongIndex]?.original_song_uri,
-      );
-      console.log('Apple Music Song ID:', songId, 'from URL:', data?.item?.songs[selectedSongIndex]?.original_song_uri);
-
-      // Temporary alert for debugging on device
-      // Alert.alert('Debug', `Extracted Song ID: ${songId}\nFrom URL: ${data?.item?.songs[selectedSongIndex]?.original_song_uri}`);
-
-      if (!songId) {
-        console.log('ERROR: Failed to extract Apple Music Song ID');
-        Alert.alert('Error', 'Failed to extract Apple Music Song ID from the provided URL.');
-        return;
+  const fetchSongList = async () => {
+    try {
+      const response = await props.fetchSongListReq();
+      if (response?.status === 200) {
+        setPosts(response.data);
       }
-
-      let saveSongResObj = {};
-      (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
-        // (saveSongResObj.apple_song_id = data.item.songs[selectedSongIndex]?.apple_song_id),
-        (saveSongResObj.apple_song_id = songId),
-        (saveSongResObj.song_name =
-          data.item.songs[selectedSongIndex]?.song_name),
-        (saveSongResObj.album_name =
-          data.item.songs[selectedSongIndex]?.album_name),
-        (saveSongResObj.song_pic =
-          data.item.songs[selectedSongIndex]?.song_image),
-        (saveSongResObj.username = data.item.userDetails.username),
-        (saveSongResObj.profile_pic = data.item.userDetails.profile_image),
-        (saveSongResObj.commentData = data.item.comment);
-      saveSongResObj.reactionData = data.item.reaction;
-      (saveSongResObj.id = data.item?._id),
-        (saveSongResObj.artist =
-          data.item.songs[selectedSongIndex]?.artist_name),
-        (saveSongResObj.changePlayer = changePlayer);
-      (saveSongResObj.originalUri =
-        data.item.original_song_uri !== ''
-          ? data.item.original_song_uri
-          : undefined),
-        (saveSongResObj.isrc = data.item.songs[selectedSongIndex]?.isrc_code),
-        (saveSongResObj.regType = data.item.userDetails.register_type),
-        (saveSongResObj.details = data.item),
-        (saveSongResObj.showPlaylist = true),
-        (saveSongResObj.comingFromMessage = undefined);
-
-      props.saveSongRefReq(saveSongResObj);
-      props.dummyRequest();
-
-      if (currentSongData?.id !== songId) {
-        console.log('Setting playback queue for:', songId);
-        await setPlaybackQueue(songId);
-        setTimeout(() => {
-          Player.play();
-          console.log('Called Player.play()');
-        }, 500);
-      } else {
-        setTimeout(() => {
-          onToggle();
-        }, 500);
-      }
-    } else {
-      //     if (props.playingSongRef !== '') {
-      //     // Alert.alert('empty')
-      //     MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-      //       .then(track => {
-      //         let saveSongResObj = {};
-      //         (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
-      //           (saveSongResObj.song_name =
-      //             data.item.songs[selectedSongIndex]?.song_name),
-      //           (saveSongResObj.album_name =
-      //             data.item.songs[selectedSongIndex]?.album_name),
-      //           (saveSongResObj.song_pic =
-      //             data.item.songs[selectedSongIndex]?.song_image),
-      //           (saveSongResObj.username = data.item.userDetails.username),
-      //           (saveSongResObj.profile_pic =
-      //             data.item.userDetails.profile_image),
-      //           (saveSongResObj.commentData = data.item.comment);
-      //         saveSongResObj.reactionData = data.item.reaction;
-      //         (saveSongResObj.id = data.item?._id),
-      //           (saveSongResObj.artist =
-      //             data.item.songs[selectedSongIndex]?.artist_name),
-      //           (saveSongResObj.changePlayer = changePlayer);
-      //         (saveSongResObj.originalUri =
-      //           data.item.original_song_uri !== ''
-      //             ? data.item.original_song_uri
-      //             : undefined),
-      //           (saveSongResObj.isrc =
-      //             data.item.songs[selectedSongIndex]?.isrc_code),
-      //           (saveSongResObj.regType = data.item.userDetails.register_type),
-      //           (saveSongResObj.details = data.item),
-      //           (saveSongResObj.showPlaylist = true),
-      //           (saveSongResObj.comingFromMessage = undefined);
-
-      //         props.saveSongRefReq(saveSongResObj);
-      //         props.dummyRequest();
-      //       })
-      //       .catch(err => {
-      //         console.log('Error while playing music..' + JSON.stringify(err));
-      //       });
-      //   }
-      //  else
-      if (props.playingSongRef === '') {
-        // Alert.alert('empty')
-        MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-          .then(track => {
-            let saveSongResObj = {};
-            (saveSongResObj.uri = data.item.songs[selectedSongIndex]?.song_uri),
-              (saveSongResObj.song_name =
-                data.item.songs[selectedSongIndex]?.song_name),
-              (saveSongResObj.album_name =
-                data.item.songs[selectedSongIndex]?.album_name),
-              (saveSongResObj.song_pic =
-                data.item.songs[selectedSongIndex]?.song_image),
-              (saveSongResObj.username = data.item.userDetails.username),
-              (saveSongResObj.profile_pic =
-                data.item.userDetails.profile_image),
-              (saveSongResObj.commentData = data.item.comment);
-            saveSongResObj.reactionData = data.item.reaction;
-            (saveSongResObj.id = data.item?._id),
-              (saveSongResObj.artist =
-                data.item.songs[selectedSongIndex]?.artist_name),
-              (saveSongResObj.changePlayer = changePlayer);
-            (saveSongResObj.originalUri =
-              data.item.original_song_uri !== ''
-                ? data.item.original_song_uri
-                : undefined),
-              (saveSongResObj.isrc =
-                data.item.songs[selectedSongIndex]?.isrc_code),
-              (saveSongResObj.regType = data.item.userDetails.register_type),
-              (saveSongResObj.details = data.item),
-              (saveSongResObj.showPlaylist = true),
-              (saveSongResObj.comingFromMessage = undefined);
-
-            props.saveSongRefReq(saveSongResObj);
-            props.dummyRequest();
-          })
-          .catch(err => {
-            console.log('Error while playing music..' + JSON.stringify(err));
-          });
-      } else {
-        if (
-          global.playerReference !== null &&
-          global.playerReference?._filename
-        ) {
-          console.log(global.playerReference, 'its global pre');
-          if (
-            global.playerReference._filename ===
-            data?.item?.songs[selectedSongIndex]?.song_uri
-          ) {
-            if (global.playerReference.isPlaying()) {
-              global.playerReference.pause();
-
-              setTimeout(() => {
-                findPlayingSong(posts);
-              }, 500);
-            } else {
-              global.playerReference.play(success => {
-                if (success) {
-                } else {
-                }
-              });
-
-              setTimeout(() => {
-                findPlayingSong(posts);
-              }, 500);
-            }
-          } else {
-            global.playerReference.release();
-            global.playerReference = null;
-            MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-              .then(track => {
-                let saveSongResObj = {};
-                (saveSongResObj.uri =
-                  data.item.songs[selectedSongIndex]?.song_uri),
-                  (saveSongResObj.song_name =
-                    data.item.songs[selectedSongIndex]?.song_name),
-                  (saveSongResObj.album_name =
-                    data.item.songs[selectedSongIndex]?.album_name),
-                  (saveSongResObj.song_pic =
-                    data.item.songs[selectedSongIndex]?.song_image),
-                  (saveSongResObj.username = data.item.userDetails.username),
-                  (saveSongResObj.profile_pic =
-                    data.item.userDetails.profile_image),
-                  (saveSongResObj.commentData = data.item.comment);
-                saveSongResObj.reactionData = data.item.reaction;
-                (saveSongResObj.id = data.item?._id),
-                  (saveSongResObj.artist =
-                    data.item.songs[selectedSongIndex]?.artist_name),
-                  (saveSongResObj.changePlayer = changePlayer);
-                (saveSongResObj.originalUri =
-                  data.item.songs[selectedSongIndex]?.original_song_uri !== ''
-                    ? data.item.songs[selectedSongIndex]?.original_song_uri
-                    : undefined),
-                  (saveSongResObj.isrc =
-                    data.item.songs[selectedSongIndex]?.isrc_code),
-                  (saveSongResObj.regType =
-                    data.item.userDetails.register_type),
-                  (saveSongResObj.details = data.item),
-                  (saveSongResObj.showPlaylist = true),
-                  (saveSongResObj.comingFromMessage = undefined);
-
-                props.saveSongRefReq(saveSongResObj);
-                props.dummyRequest();
-              })
-              .catch(err => { });
-          }
-        } else {
-          MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-            .then(track => {
-              let saveSongResObj = {};
-              (saveSongResObj.uri =
-                data.item.songs[selectedSongIndex]?.song_uri),
-                (saveSongResObj.song_name =
-                  data.item.songs[selectedSongIndex]?.song_name),
-                (saveSongResObj.album_name =
-                  data.item.songs[selectedSongIndex]?.album_name),
-                (saveSongResObj.song_pic =
-                  data.item.songs[selectedSongIndex]?.song_image),
-                (saveSongResObj.username = data.item.userDetails.username),
-                (saveSongResObj.profile_pic =
-                  data.item.userDetails.profile_image),
-                (saveSongResObj.commentData = data.item.comment);
-              saveSongResObj.reactionData = data.item.reaction;
-              (saveSongResObj.id = data.item?._id),
-                (saveSongResObj.artist =
-                  data.item.songs[selectedSongIndex]?.artist_name),
-                (saveSongResObj.changePlayer = changePlayer);
-              (saveSongResObj.originalUri =
-                data.item.songs[selectedSongIndex]?.original_song_uri !== ''
-                  ? data.item.songs[selectedSongIndex]?.original_song_uri
-                  : undefined),
-                (saveSongResObj.isrc =
-                  data.item.songs[selectedSongIndex]?.isrc_code),
-                (saveSongResObj.regType = data.item.userDetails.register_type),
-                (saveSongResObj.details = data.item),
-                (saveSongResObj.showPlaylist = true),
-                (saveSongResObj.comingFromMessage = undefined);
-
-              props.saveSongRefReq(saveSongResObj);
-              props.dummyRequest();
-            })
-            .catch(err => { });
-        }
-      }
+    } catch (err) {
+      console.log('Error fetching song list:', err);
     }
   };
 
@@ -1187,7 +922,6 @@ const Home = props => {
               onPressMusicbox={() => {
                 if (!isFetching) {
                   playSong(data);
-                  setVisibleMiniPlayer(true);
                 }
               }}
               onPressReactionbox={() => {
@@ -1276,76 +1010,16 @@ const Home = props => {
   //     }
   //   }
 
-  // GET PLAYER PLAYING STATE FOR PAUSE/PLAY ICON IN FEED
-  function getPlayerState() {
-    let isPlaying = null;
-    if (
-      global.playerReference !== null &&
-      global.playerReference !== undefined
-    ) {
-      isPlaying = global.playerReference.isPlaying();
+  // Synchronize playback state with post array
+  useEffect(() => {
+    if (posts.length > 0) {
+      const updatedPosts = posts.map(post => ({
+        ...post,
+        playing: currentSongData?.id === post._id && isPlaying,
+      }));
+      setPostArray(updatedPosts);
     }
-    return isPlaying;
-  }
-
-  // FIND THE PLAYING SONG AND ADD THE PAUSE/PLAY ICON TO FEED
-  function findPlayingSong(postData) {
-    const res = getPlayerState();
-    // IF PLAYING
-    if (res === true && !props.playingSongRef.changePlayer) {
-      // console.log(props.playingSongRef, 'its post urli')
-      // const myindex = postData.findIndex(
-      //   obj => obj.song_uri === props.playingSongRef.uri,
-      // );
-      const myindex = postData.findIndex(
-        obj => obj._id === props.playingSongRef.id,
-      );
-      // console.log(myindex, 'its my index');
-      let array = [...postData];
-      let i;
-      for (i = 0; i < array?.length; i++) {
-        if (i === myindex) {
-          array[i].playing = true;
-          let duration = global.playerReference.getDuration();
-          global.playerReference.getCurrentTime(seconds => {
-            let timeout = (duration - seconds) * 1000;
-
-            clearTimeout(timeoutVar);
-            setTimeoutFunc(timeout);
-          });
-        } else {
-          array[i].playing = false;
-        }
-      }
-      setPostArray(array);
-    }
-    // NOT PLAYING
-    else {
-      // console.log(postData, 'its post data');
-      // console.log(postData,'its post data')
-
-      let array = [...postData];
-      let i;
-      if (array?.length > 0) {
-        for (i = 0; i < array?.length; i++) {
-          array[i].playing = false;
-        }
-      }
-
-      //  setVisibleMiniPlayer(false)
-      setPostArray(array);
-      // }
-    }
-  }
-
-  //SET TIMEOUT FOR PAUSE/PLAY ICON
-  function setTimeoutFunc(timeout) {
-    setTimeoutVar(
-      setTimeout(() => {
-        findPlayingSong(postArray);
-      }, timeout),
-    );
-  }
+  }, [posts, currentSongData, isPlaying]);
 
   // GET ISRC CODE
   const callApi = async () => {
@@ -1838,40 +1512,6 @@ const Home = props => {
                 </TouchableOpacity>
               ) : null}
 
-              {visibleminiPlayer === true ? (
-                <MusicPlayerBar
-                  onPress={() => {
-                    props.navigation.navigate('Player', {
-                      comments: [],
-                      song_title: props.playingSongRef.song_name,
-                      album_name: props.playingSongRef.album_name,
-                      song_pic: props.playingSongRef.song_pic,
-                      username: props.playingSongRef.username,
-                      profile_pic: props.playingSongRef.profile_pic,
-                      uri: props.playingSongRef.uri,
-                      reactions: props.playingSongRef.reactionData,
-                      id: props.playingSongRef.id,
-                      artist: props.playingSongRef.artist,
-                      changePlayer: props.playingSongRef.changePlayer,
-                      originalUri: props.playingSongRef.originalUri,
-                      isrc: props.playingSongRef.isrc,
-                      registerType: props.playingSongRef.regType,
-                      details: props.playingSongRef.details,
-                      showPlaylist: props.playingSongRef.showPlaylist,
-                      comingFromMessage: props.playingSongRef.comingFromMessage,
-                      apple_song_id: props.playingSongRef.apple_song_id,
-                    });
-                  }}
-                  onChangeSong={(data, songIndex) =>
-                    playSong({ item: data }, songIndex)
-                  }
-                  onPressPlayOrPause={() => {
-                    setTimeout(() => {
-                      findPlayingSong(posts);
-                    }, 500);
-                  }}
-                />
-              ) : null}
               <Modal
                 animationType="fade"
                 transparent={true}

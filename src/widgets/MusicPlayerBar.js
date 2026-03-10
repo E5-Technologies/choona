@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   Platform,
+  StyleSheet,
 } from 'react-native';
 
 import normalise from '../utils/helpers/Dimens';
@@ -128,21 +129,28 @@ function MusicPlayerBar(props) {
     }, 1000);
   }
 
-  const playOrPause = () => {
+  const playOrPause = async () => {
     if (
       haveAppleMusicSubscription &&
       Platform.OS == 'ios' &&
       props.playingSongRef?.regType == 'apple'
     ) {
       if (currentSongData?.id == props.playingSongRef?.apple_song_id) {
+        console.log('previousONsg', props.playingSongRef?.apple_song_id, currentSongData?.id)
         onToggle();
       } else {
-        setPlaybackQueue(props.playingSongRef?.apple_song_id);
+        console.log('newsong', props.playingSongRef?.apple_song_id, currentSongData?.id)
+
+        // Await setPlaybackQueue so that the song is fully queued BEFORE we hit play.
+        await setPlaybackQueue(props.playingSongRef?.apple_song_id);
+
+        // Once the queue promises completes, we can safely play.
         setTimeout(() => {
           Player.play();
         }, 500);
       }
     } else {
+      console.log('previousONsg11')
       const res = ref.isPlaying();
       if (res) {
         ref.pause();
@@ -194,38 +202,32 @@ function MusicPlayerBar(props) {
     }
   };
 
+  const dynamicStyle = React.useMemo(() => ({
+    position: props.position || 'absolute',
+    bottom: props.bottom !== undefined ? props.bottom : 0,
+  }), [props.position, props.bottom]);
+
   return props.playingSongRef !== '' ? (
     <View
-      // source={ImagePath.gradientbar}
-      style={{
-        width: '100%',
-        // height: normalise(45),
-        backgroundColor: Colors.fadeblack,
-        opacity: 0.9,
-        position: 'absolute',
-        bottom: 0,
-      }}>
+      style={[styles.container, dynamicStyle]}>
       <Loader visible={bool} />
       {Platform.OS === 'ios' &&
         props.playingSongRef?.regType == 'apple' &&
         currentSongData?.id == props.playingSongRef?.apple_song_id &&
         haveAppleMusicSubscription ? (
         <View
-          style={{
-            height: normalise(2),
+          style={[styles.progress, {
             width: `${percentage}%`,
-            alignSelf: 'flex-start',
-            backgroundColor: Colors.white,
-          }}
+          }]}
         />
       ) : (
         <View
-          style={{
-            height: normalise(2),
-            width: `${time * 3.4}%`,
-            alignSelf: 'flex-start',
-            backgroundColor: Colors.white,
-          }}
+          style={[
+            styles.progressSpotify,
+            {
+              width: `${time * 3.4}%`,
+            },
+          ]}
         />
       )}
 
@@ -381,6 +383,27 @@ function MusicPlayerBar(props) {
     </View>
   ) : null;
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    // height: normalise(45),
+    backgroundColor: Colors.fadeblack,
+    opacity: 0.9,
+  },
+  progress: {
+    height: normalise(2),
+    alignSelf: 'flex-start',
+    backgroundColor: Colors.white,
+  },
+  progressSpotify: {
+    height: normalise(2),
+    alignSelf: 'flex-start',
+    backgroundColor: Colors.white,
+  },
+
+})
 
 MusicPlayerBar.propTypes = {
   onPress: propTypes.func,
