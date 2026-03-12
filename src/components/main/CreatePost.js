@@ -56,7 +56,7 @@ function AddSong(props) {
   const [showmention, setShowMention] = useState(false);
   const [Selection, setSelection] = useState({ start: 0, end: 0 });
   const [commentsLoading, setCommentsLoading] = useState(false);
-  // console.log(props.route.params.details, 'fsdhjfdfjhfdsfhdf')
+  console.log(props.route.params.details, 'fsdhjfdfjhfdsfhdf')
 
   useEffect(() => {
     if (props.route.params.registerType === 'spotify') {
@@ -153,13 +153,15 @@ function AddSong(props) {
                 ? props.route.params.details.album.name
                 : props.route.params.details.attributes.albumName,
 
-            //  apple_song_id:
-            // songItem === 'spotify' ? item?.details?.id : item?.details?.id,
+            apple_song_id:
+              props.route.params.registerType === 'spotify' ? props.route.params?.details?.id : props.route.params.details?.id,
+            type: props.route.params.registerType === 'spotify' ? props.route.params?.details?.type : props.route.params?.details?.type,
+            original_reg_type: props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
           },
         ],
       };
       console.log(payload, 'its playlod <<');
-      return
+      // return
       isInternetConnected()
         .then(async () => {
           // Alert.alert('incond');
@@ -307,7 +309,7 @@ function AddSong(props) {
             }}
             keyboardAppearance="dark"
             scrollEnabled={false}
-            multiline={true}
+            // multiline={true}
             placeholder={'Add a caption...'}
             placeholderTextColor={Colors.darkgrey}
             onChangeText={text => {

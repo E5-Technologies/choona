@@ -17,6 +17,7 @@ export const useGlobalMusicPlayer = () => {
     const {
         setPlaybackQueue,
         onToggle,
+        isPlaying,
     } = usePlayFullAppleMusic();
 
     const {
@@ -26,6 +27,7 @@ export const useGlobalMusicPlayer = () => {
     const playSong = async (data, songIndex = null) => {
         const selectedSongIndex = songIndex ?? 0;
         const songItem = data?.item?.songs[selectedSongIndex];
+        // console.log(songItem, 'thisiSOngItem')
 
         if (!songItem) return;
 
@@ -36,7 +38,7 @@ export const useGlobalMusicPlayer = () => {
             Platform.OS === 'ios' &&
             registerType === 'apple'
         ) {
-            const songId = extractSongIdFromUrl(songItem?.original_song_uri);
+            const songId = songItem?.apple_song_id || extractSongIdFromUrl(songItem?.original_song_uri);
 
             if (!songId) {
                 console.log('ERROR: Failed to extract Apple Music Song ID');
@@ -114,5 +116,81 @@ export const useGlobalMusicPlayer = () => {
         }
     };
 
-    return { playSong };
+    const playGenericSong = async (payload) => {
+        if (!payload) return;
+
+        const songId = payload?.apple_song_id || extractSongIdFromUrl(payload?.originalUri);
+        // if (!songId) {
+        //     console.log('ERROR: Failed to extract Apple Music Song ID');
+        //     Alert.alert('Error', 'Failed to extract Apple Music Song ID from the provided URL.');
+        //     return;
+        // }
+
+        // Update Redux State
+        const songData = {
+            uri: payload.uri,
+            apple_song_id: songId,
+            song_name: payload.song_title,
+            album_name: payload.album_name,
+            song_pic: payload.song_pic,
+            username: payload.username,
+            profile_pic: payload.profile_pic,
+            commentData: payload.comments || [],
+            reactionData: payload.reactions || [],
+            id: payload.id,
+            artist: payload.artist,
+            originalUri: payload.originalUri || undefined,
+            isrc: payload.isrc,
+            regType: payload.registerType,
+            details: payload.details,
+            showPlaylist: payload.showPlaylist || false,
+        };
+
+        console.log(songData, 'songData')
+
+        // 1. Handle Apple Music Playback
+        if (
+            haveAppleMusicSubscription &&
+            payload.registerType === 'apple' &&
+            Platform.OS === 'ios' &&
+            registerType === 'apple'
+        ) {
+            dispatch(saveSongRefReq(songData));
+            dispatch(dummyRequest());
+            console.log('111songData12')
+            const genericSongId = payload.apple_song_id || payload.id;
+            if (playingSongRef?.apple_song_id !== genericSongId) {
+                console.log('111songData22')
+                await setPlaybackQueue(genericSongId);
+                setTimeout(() => {
+                    Player.play();
+                }, 500);
+            } else {
+                console.log('111songData33')
+                setTimeout(() => {
+                    onToggle();
+                }, 500);
+            }
+        }
+        // 2. Handle Preview/Generic Playback
+        else {
+            console.log('111songData')
+            // If there was an active Apple Music player, stop it
+            if (Platform.OS === 'ios') {
+                Player.pause();
+            }
+
+            MusicPlayer(payload.uri, true)
+                .then(() => {
+                    dispatch(saveSongRefReq(songData));
+                    dispatch(dummyRequest());
+                })
+                .catch(err => {
+                    console.log('Error while playing music..' + JSON.stringify(err));
+                });
+        }
+
+    };
+
+    return { playSong, playGenericSong, isPlaying, onToggle };
 };

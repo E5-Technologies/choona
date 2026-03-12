@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -14,7 +14,7 @@ import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import HeaderComponent from '../../../widgets/HeaderComponent';
 import SavedSongsListItem from '../ListCells/SavedSongsListItem';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import StatusBar from '../../../utils/MyStatusBar';
 import {
   SAVED_SONGS_LIST_REQUEST,
@@ -30,17 +30,19 @@ import {
 } from '../../../action/SongAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 import _ from 'lodash';
-import {getUsersFromHome} from '../../../action/UserAction';
-import {getSongFromisrc} from '../../../action/PlayerAction';
-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+import { getUsersFromHome } from '../../../action/UserAction';
+import { getSongFromisrc } from '../../../action/PlayerAction';
+import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
 import axios from 'axios';
 
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
+import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
+import { useIsPlaying } from '@lomray/react-native-apple-music';
 
 let status;
 
@@ -53,6 +55,10 @@ const Contact = props => {
   const [typingTimeout, setTypingTimeout] = useState(0);
   const [noEmpty, setNoEmpty] = useState(false);
   const [allSaveSong, setAllSaveSong] = useState([]);
+
+
+  const { playGenericSong } = useGlobalMusicPlayer();
+  const { isPlaying } = useIsPlaying();
 
   var bottomSheetRef;
 
@@ -117,7 +123,8 @@ const Contact = props => {
         title={data.item.song_name}
         singer={data.item.artist_name}
         onPressImage={() => {
-          props.navigation.navigate('Player', {
+          console.log(data?.item, 'sdhfjk')
+          const payload = {
             song_title: data.item.song_name,
             album_name: data.item.album_name,
             song_pic: data.item.song_image,
@@ -128,12 +135,39 @@ const Contact = props => {
             isrc: data.item.isrc_code,
             registerType: data.item.original_reg_type,
             originalUri: data.item.original_song_uri,
-          });
+          };
+          const payload1 = {
+            uri: data?.item?.song_uri,
+            apple_song_id: data?.item?.apple_song_id,
+            song_name: data?.item?.song_name,
+            album_name: data?.item?.album_name,
+            song_pic: data?.item?.song_image,
+            // username: data.item.userDetails?.username,
+            // profile_pic: data.item.userDetails?.profile_image,
+            // commentData: data.item.comment,
+            // reactionData: data.item.reaction,
+            id: data.item?._id,
+            artist: data?.item?.artist_name,
+            originalUri: data.item.original_song_uri || undefined,
+            isrc: data?.item?.isrc_code,
+            regType: data.item.original_reg_type,
+            details: data.item,
+            showPlaylist: true,
+            registerType: props.registerType,
+          };
+          console.log(payload1, 'payload1')
+          // return
+          playGenericSong(payload1);
         }}
         onPress={() => {
           setIndex(data.index);
           setModalVisible(true);
         }}
+        play={
+          (data.item.post_id === props.playingSongRef?.id ||
+            data.item.apple_song_id === props.playingSongRef?.apple_song_id) &&
+          isPlaying
+        }
       />
     );
   }
@@ -251,11 +285,11 @@ const Contact = props => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
       <Loader visible={bool} />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           title={'SAVED SONGS'}
           thirditemtext={true}

@@ -1,4 +1,4 @@
-import {put, call, takeLatest, select} from 'redux-saga/effects';
+import { put, call, takeLatest, select } from 'redux-saga/effects';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
@@ -22,9 +22,9 @@ import {
   getSpotifyApi,
   getAppleDevelopersToken,
 } from '../utils/helpers/ApiRequest';
-import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
-import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
-import {Alert} from 'react-native';
+import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
+import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
+import { Alert } from 'react-native';
 
 const getItems = state => state.TokenReducer;
 
@@ -92,7 +92,7 @@ export function* searchSongsForPostAction(action) {
       });
     }
   } catch (error) {
-    yield put({type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error});
+    yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error });
   }
 }
 
@@ -109,9 +109,9 @@ export function* createPostAction(action) {
     const response = yield call(postApi, 'post/store', action.payload, header);
     console.log(response?.data, 'its response after api hit');
 
-    yield put({type: CREATE_POST_SUCCESS, data: response.data});
+    yield put({ type: CREATE_POST_SUCCESS, data: response.data });
   } catch (error) {
-    yield put({type: CREATE_POST_FAILURE, data: error});
+    yield put({ type: CREATE_POST_FAILURE, data: error });
   }
 }
 
@@ -130,9 +130,9 @@ export function* deletePostAction(action) {
       `post/delete/${action.payload}`,
       Header,
     );
-    yield put({type: DELETE_POST_SUCCESS, data: response.data.data});
+    yield put({ type: DELETE_POST_SUCCESS, data: response.data.data });
   } catch (error) {
-    yield put({type: DELETE_POST_FAILURE, error: error});
+    yield put({ type: DELETE_POST_FAILURE, error: error });
   }
 }
 
@@ -149,7 +149,7 @@ export function* searchPostAction(action) {
       .replace('&', '&amp;')
       .replace(/ *\([^)]*\) */g, '');
 
-    console.log('api called' + `post/list?keyword=${encodeURI(text)}`);
+    // console.log('api called' + `post/list?keyword=${encodeURI(text)}`);
 
     if (action.flag) {
       const response = yield call(
@@ -171,7 +171,7 @@ export function* searchPostAction(action) {
         Header,
       );
 
-      console.log(response.data.data);
+      // console.log(response.data.data);
       // console.log('success' + JSON.stringify(response.data.data));
       yield put({
         type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,

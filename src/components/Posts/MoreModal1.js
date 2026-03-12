@@ -21,6 +21,7 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 import { SimpleOption } from '../common/SimpleOption';
+import { useGlobalMusicPlayer } from '../../hooks/useGlobalMusicPlayer';
 
 const MoreModal1 = ({
   setBool,
@@ -57,7 +58,9 @@ const MoreModal1 = ({
     }
   }, [othersProfileresp]);
 
-  console.log(postData?.[index], 'thisispostdata');
+  // console.log(postData?.[index], 'thisispostdata');
+
+  const { playGenericSong } = useGlobalMusicPlayer();
 
   const saveUnsaveAction = () => {
     if (page === 'savedSongs') {
@@ -128,9 +131,10 @@ const MoreModal1 = ({
       id: registerType === 'spotify' ? item.id : item.id,
       apple_song_id: registerType === 'spotify' ? item.id : item.id,
       showPlaylist: false,
+      details: item,
     }
 
-    navigation.navigate('Player', payload);
+    playGenericSong(payload);
   };
 
   const handleAddSong = (item, from) => {
@@ -196,7 +200,7 @@ const MoreModal1 = ({
             />
             <Text style={styles.modalButtonText}>Play Song</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.modalButton]}
             onPress={() => {
               setShow(false);
@@ -210,7 +214,7 @@ const MoreModal1 = ({
             <Text style={styles.modalButtonText}>
               {page === 'savedSongs' ? 'Unsave' : 'Save'} Song
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.modalButton]}
             onPress={() => {

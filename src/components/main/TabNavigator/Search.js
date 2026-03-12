@@ -69,10 +69,10 @@ import HeaderComponent from '../../../widgets/HeaderComponent';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import MoreModal from '../../Posts/MoreModal';
 import MoreModal1 from '../../Posts/MoreModal1';
-import ReportModal from '../../Posts/ReportModal';
 import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
 import ActivityListItem from '../ListCells/ActivityListItem';
 import HomeItemList from '../ListCells/HomeItemList';
+import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
 
 let status;
 let postStatus;
@@ -111,6 +111,8 @@ const Search = props => {
   var bottomSheetRef;
 
   const isFocused = useIsFocused();
+  const { playGenericSong } = useGlobalMusicPlayer();
+
 
   useEffect(() => {
     if (isFocused) {
@@ -526,7 +528,7 @@ const Search = props => {
           hitreact1(modal1Visible);
         }}
         onPressMusicbox={() => {
-          props.navigation.navigate('Player', {
+          const payload = {
             comments: [],
             song_title: data.item.song_name,
             album_name: data.item.album_name,
@@ -547,7 +549,8 @@ const Search = props => {
             registerType: data.item.userDetails.register_type,
             isrc: data.item.isrc_code,
             details: data.item,
-          });
+          };
+          playGenericSong(payload);
         }}
         onPressReactionbox={() => {
           props.navigation.navigate('HomeItemReactions', {

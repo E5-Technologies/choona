@@ -146,6 +146,9 @@ const Home = props => {
   const [posts, setPosts] = useState([]);
   const postsUrl = constants.BASE_URL + '/post/list?page=';
 
+
+  // console.log(JSON.stringify(posts[0]), 'thisisposts');
+
   const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
   const [activeTab, setActiveTab] = useState(0);
   const [sessionListStatus, setSessionListStatus] = useState('');
@@ -154,6 +157,8 @@ const Home = props => {
   const { song: currentSongData } = useCurrentSong();
   const [menuVisible, setMenuVisible] = useState(false);
   const TokenReducer = useSelector(state => state.TokenReducer);
+
+  console.log(isPlaying, 'thisiSplaying')
 
   const { playSong } = useGlobalMusicPlayer();
 
@@ -865,9 +870,9 @@ const Home = props => {
               image={data?.item?.songs}
               id={data.item?._id}
               play={
-                currentSongData?.id == props.playingSongRef.apple_song_id &&
-                  isPlaying &&
-                  props.playingSongRef.id == data.item?._id
+                (currentSongData?.id == props.playingSongRef.apple_song_id &&
+                  isPlaying ||
+                  (props.playingSongRef.id == data.item?._id))
                   ? true
                   : _.isEmpty(postArray)
                     ? false

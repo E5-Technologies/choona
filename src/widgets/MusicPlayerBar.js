@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Alert,
   Platform,
   StyleSheet,
 } from 'react-native';
@@ -31,31 +30,17 @@ function MusicPlayerBar(props) {
   const { isPlaying } = useIsPlaying();
   const { song: currentSongData } = useCurrentSong();
 
-  // const {
-  //   onAuth,
-  //   onToggle,
-  //   currentSongData,
-  //   isAuthorizeToAccessAppleMusic,
-  //   isPlaying,
-  //   haveAppleMusicSubscription,
-  // } = usePlayFullAppleMusic();
-
   const {
     onToggle,
     checkPlaybackState,
     setPlaybackQueue,
-    // isPlaying,
-    // isAuthorizeToAccessAppleMusic,
-    // haveAppleMusicSubscription,
   } = usePlayFullAppleMusic();
 
   const { progress, duration } = useMusicPlayer();
   const percentage = duration > 0 ? (progress / duration) * 100 : 0;
 
   const {
-    isAuthorizeToAccessAppleMusic,
     haveAppleMusicSubscription,
-    // isPlaying
   } = useContext(AppleMusicContext);
 
   useEffect(() => {
@@ -74,9 +59,6 @@ function MusicPlayerBar(props) {
       : null;
 
   const arrSongs = props.playingSongRef?.details?.songs;
-
-  // console.log(props.playingSongRef, 'this is the ref song info in bar')
-
   const currentSongIndex = arrSongs?.findIndex(
     item => item.isrc_code === props.playingSongRef?.isrc,
   );
@@ -93,6 +75,17 @@ function MusicPlayerBar(props) {
       setBool(false);
     }, 1000);
   }, []);
+
+  useEffect(() => {
+    if (
+      haveAppleMusicSubscription &&
+      Platform.OS === 'ios' &&
+      props.playingSongRef?.regType === 'apple' &&
+      currentSongData?.id === props.playingSongRef?.apple_song_id
+    ) {
+      setPlay(isPlaying);
+    }
+  }, [isPlaying, props.playingSongRef, currentSongData, haveAppleMusicSubscription]);
 
   function getPlatingState() {
     setTimeout(() => {
@@ -138,11 +131,14 @@ function MusicPlayerBar(props) {
       if (currentSongData?.id == props.playingSongRef?.apple_song_id) {
         console.log('previousONsg', props.playingSongRef?.apple_song_id, currentSongData?.id)
         onToggle();
+        setPlay(!play);
       } else {
         console.log('newsong', props.playingSongRef?.apple_song_id, currentSongData?.id)
 
+        setPlay(true);
         // Await setPlaybackQueue so that the song is fully queued BEFORE we hit play.
         await setPlaybackQueue(props.playingSongRef?.apple_song_id);
+
 
         // Once the queue promises completes, we can safely play.
         setTimeout(() => {
@@ -154,13 +150,16 @@ function MusicPlayerBar(props) {
       const res = ref.isPlaying();
       if (res) {
         ref.pause();
+        setPlay(false);
         // console.log('paused');
       } else {
         ref.play(success => {
           if (success) {
             // console.log('Playback End');
+            setPlay(false);
           }
         });
+        setPlay(true);
       }
     }
   };
@@ -388,7 +387,6 @@ function MusicPlayerBar(props) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    // height: normalise(45),
     backgroundColor: Colors.fadeblack,
     opacity: 0.9,
   },

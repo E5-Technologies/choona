@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -22,21 +22,22 @@ import SavedSongsListItem from './../ListCells/SavedSongsListItem';
 import Seperator from '../ListCells/Seperator';
 import _ from 'lodash';
 import StatusBar from '../../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
   SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
 } from '../../../action/TypeConstants';
-import {seachSongsForPostRequest} from '../../../action/PostAction';
+import { seachSongsForPostRequest } from '../../../action/PostAction';
 import Loader from '../../../widgets/AuthLoader';
 import toast from '../../../utils/helpers/ShowErrorAlert';
 import isInternetConnected from '../../../utils/helpers/NetInfo';
 
-import {useRecentlyPlayed} from '../../../utils/helpers/RecentlyPlayed';
-import {RecentlyPlayedHeader} from '../../Headers/RecentlyPlayedHeader';
-import {usePlayFullAppleMusic} from '../../../hooks/usePlayFullAppleMusic';
-import {useMusicPlayer} from '../../../context/AppleMusicContext';
+import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
+import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
+import { usePlayFullAppleMusic } from '../../../hooks/usePlayFullAppleMusic';
+import { useMusicPlayer } from '../../../context/AppleMusicContext';
+import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
 // import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
 let status;
@@ -45,12 +46,13 @@ const AddSong = props => {
   const inputRef = React.useRef(null);
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
-  const {recentlyPlayed, loading, refetch} = useRecentlyPlayed(
+  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
     props.registerType,
   );
 
-  const {resetPlaybackQueue, setPlaybackQueue} = usePlayFullAppleMusic();
-  const {resetProgress} = useMusicPlayer();
+  const { resetPlaybackQueue, setPlaybackQueue } = usePlayFullAppleMusic();
+  const { playGenericSong } = useGlobalMusicPlayer();
+  const { resetProgress } = useMusicPlayer();
 
   // console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
   let post = true;
@@ -200,10 +202,10 @@ const AddSong = props => {
         image2={ImagePath.addButtonSmall}
         onPressSecondImage={() => handleAddSong(item)}
         onPressImage={async () => {
-          await resetPlaybackQueue();
+          // await resetPlaybackQueue();
           resetProgress();
           setTimeout(() => {
-            props.navigation.navigate('Player', {
+            const payload = {
               song_title:
                 props.registerType === 'spotify'
                   ? item.item.name
@@ -216,10 +218,10 @@ const AddSong = props => {
                 props.registerType === 'spotify'
                   ? item.item.album.images[0].url
                   : item.item.attributes.artwork.url.replace(
-                      '{w}x{h}',
-                      '300x300',
-                    ),
-              username: '',
+                    '{w}x{h}',
+                    '300x300',
+                  ),
+              username: props.registerType === 'spotify' ? '' : item?.item?.attributes?.artistName,
               profile_pic: '',
               originalUri:
                 props.registerType === 'spotify'
@@ -241,7 +243,50 @@ const AddSong = props => {
               apple_song_id:
                 props.registerType === 'spotify' ? item.item.id : item.item.id,
               showPlaylist: false,
-            });
+              details: item.item,
+            }
+            // props.navigation.navigate('Player', {
+            //   song_title:
+            //     props.registerType === 'spotify'
+            //       ? item.item.name
+            //       : item.item.attributes.name,
+            //   album_name:
+            //     props.registerType === 'spotify'
+            //       ? item.item.album.name
+            //       : item.item.attributes.albumName,
+            //   song_pic:
+            //     props.registerType === 'spotify'
+            //       ? item.item.album.images[0].url
+            //       : item.item.attributes.artwork.url.replace(
+            //         '{w}x{h}',
+            //         '300x300',
+            //       ),
+            //   username: props.registerType === 'spotify' ? '' : item?.item?.attributes?.artistName,
+            //   profile_pic: '',
+            //   originalUri:
+            //     props.registerType === 'spotify'
+            //       ? item.item.external_urls.spotify
+            //       : item.item.attributes.url,
+            //   uri:
+            //     props.registerType === 'spotify'
+            //       ? item.item.preview_url
+            //       : item.item.attributes.previews[0].url,
+            //   artist:
+            //     props.registerType === 'spotify'
+            //       ? singerList(item.item.artists)
+            //       : item.item.attributes.artistName,
+            //   changePlayer: true,
+            //   registerType: props.registerType,
+            //   changePlayer2: props.registerType === 'spotify' ? true : false,
+            //   id:
+            //     props.registerType === 'spotify' ? item.item.id : item.item.id,
+            //   apple_song_id:
+            //     props.registerType === 'spotify' ? item.item.id : item.item.id,
+            //   showPlaylist: false,
+            //   details: item.item,
+            // });
+
+            playGenericSong(payload);
           }, 500);
         }}
       />
@@ -292,23 +337,9 @@ const AddSong = props => {
           }}
         />
         <View
-          style={{
-            width: '92%',
-            alignSelf: 'center',
-          }}>
+          style={styles.searchContainer}>
           <TextInput
-            style={{
-              height: normalise(35),
-              width: '100%',
-              // backgroundColor: Colors.fadeblack,
-              backgroundColor: Colors.fadeblack,
-              borderRadius: normalise(8),
-              marginTop: normalise(16),
-              padding: normalise(10),
-              color: Colors.white,
-              // fontSize:normalise(15),
-              paddingLeft: normalise(30),
-            }}
+            style={styles.searchInput}
             value={search}
             placeholder={'Search Spotify for a Song'}
             ref={inputRef}
@@ -336,13 +367,7 @@ const AddSong = props => {
           />
           <Image
             source={ImagePath.searchicongrey}
-            style={{
-              height: normalise(15),
-              width: normalise(15),
-              bottom: normalise(25),
-              paddingLeft: normalise(30),
-              transform: [{scaleX: -1}],
-            }}
+            style={styles.searchIcon}
             resizeMode="contain"
           />
           {search === '' || search === null ? null : (
@@ -351,23 +376,12 @@ const AddSong = props => {
                 setSearch('');
                 setData([]);
               }}
-              style={{
-                backgroundColor: Colors.darkerblack,
-                padding: 10,
-                paddingTop: 4,
-                paddingBottom: 4,
-                position: 'absolute',
-                right: 0,
-                borderRadius: 5,
+              style={[styles.clearButton, {
                 bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
-                marginRight: normalise(10),
-              }}>
+
+              }]}>
               <Text
-                style={{
-                  color: Colors.white,
-                  fontSize: normalise(10),
-                  fontWeight: 'bold',
-                }}>
+                style={styles.clearButtonText}>
                 CLEAR
               </Text>
             </TouchableOpacity>
@@ -383,52 +397,26 @@ const AddSong = props => {
             <KeyboardAvoidingView
               enabled={false}
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+              style={styles.emptyContainer}>
               <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+                style={styles.emptyContainer}>
                 <Image
                   source={ImagePath.searchicongrey}
-                  style={{height: normalise(35), width: normalise(35)}}
+                  style={styles.emptyIcon}
                   resizeMode="contain"
                 />
                 <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    marginTop: normalise(20),
-                    width: '60%',
-                    textAlign: 'center',
-                  }}>
+                  style={styles.emptyTextPrimary}>
                   Search for the song you want to{' '}
                 </Text>
                 <Text
-                  style={{
-                    color: Colors.white,
-                    fontSize: normalise(12),
-                    fontWeight: 'bold',
-                    width: '60%',
-                  }}>
+                  style={styles.emptyTextSecondary}>
                   share above.
                 </Text>
                 <Image
                   source={ImagePath.addPostIllus}
                   resizeMode="contain"
-                  style={{
-                    height: undefined,
-                    width: '100%',
-                    aspectRatio: 1125 / 712,
-                    position: 'absolute',
-                    bottom: -80,
-                  }}
+                  style={styles.illustration}
                 />
               </View>
             </KeyboardAvoidingView>
@@ -463,10 +451,6 @@ const AddSong = props => {
   );
 };
 
-const styles = StyleSheet.create({
-  containerView: {flex: 1, backgroundColor: Colors.darkerblack},
-  safeAreaContainer: {flex: 1},
-});
 
 const mapStateToProps = state => {
   return {
@@ -483,5 +467,92 @@ const mapDispatchToProps = dispatch => {
     },
   };
 };
+
+const styles = StyleSheet.create({
+  containerView: {
+    flex: 1,
+    backgroundColor: Colors.darkerblack,
+  },
+
+  safeAreaContainer: {
+    flex: 1,
+  },
+
+  searchContainer: {
+    width: '92%',
+    alignSelf: 'center',
+  },
+
+  searchInput: {
+    height: normalise(35),
+    width: '100%',
+    backgroundColor: Colors.fadeblack,
+    borderRadius: normalise(8),
+    marginTop: normalise(16),
+    padding: normalise(10),
+    color: Colors.white,
+    paddingLeft: normalise(30),
+  },
+
+  searchIcon: {
+    height: normalise(15),
+    width: normalise(15),
+    bottom: normalise(25),
+    paddingLeft: normalise(30),
+    transform: [{ scaleX: -1 }],
+  },
+
+  clearButton: {
+    backgroundColor: Colors.darkerblack,
+    padding: 10,
+    paddingTop: 4,
+    paddingBottom: 4,
+    position: 'absolute',
+    right: 0,
+    borderRadius: 5,
+    marginRight: normalise(10),
+  },
+
+  clearButtonText: {
+    color: Colors.white,
+    fontSize: normalise(10),
+    fontWeight: 'bold',
+  },
+
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  emptyIcon: {
+    height: normalise(35),
+    width: normalise(35),
+  },
+
+  emptyTextPrimary: {
+    color: Colors.white,
+    fontSize: normalise(12),
+    fontWeight: 'bold',
+    marginTop: normalise(20),
+    width: '60%',
+    textAlign: 'center',
+  },
+
+  emptyTextSecondary: {
+    color: Colors.white,
+    fontSize: normalise(12),
+    fontWeight: 'bold',
+    width: '60%',
+  },
+
+  illustration: {
+    height: undefined,
+    width: '100%',
+    aspectRatio: 1125 / 712,
+    position: 'absolute',
+    bottom: -80,
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddSong);

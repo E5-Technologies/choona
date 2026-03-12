@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -20,9 +20,9 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import _ from 'lodash';
 import StatusBar from '../../utils/MyStatusBar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import constants from '../../utils/helpers/constants';
-import {WebView} from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 import {
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
@@ -46,8 +46,8 @@ import ProfileHeaderFeatured from '../Profile/ProfileHeaderFeatured';
 import EmptyComponent from '../Empty/EmptyComponent';
 
 import HeaderStyles from '../../styles/header';
-import {CommonFullScreenModal} from '../common/CommonFullModal';
-import {SimpleAlert} from '../common/ConfirmModal';
+import { CommonFullScreenModal } from '../common/CommonFullModal';
+import { SimpleAlert } from '../common/ConfirmModal';
 
 let status = '';
 let postStatus = '';
@@ -70,7 +70,7 @@ const Profile = props => {
   const [profilePosts, setProfilePosts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  console.log(profilePosts, 'profilepposr');
+  // console.log(profilePosts, 'profilepposr');
 
   const [allSongs, setAllSongs] = useState([]);
 
@@ -81,7 +81,7 @@ const Profile = props => {
     }
   }, [profilePosts]);
 
-  console.log(allSongs, 'sdhjsfhdsjhfkd');
+  // console.log(allSongs, 'sdhjsfhdsjhfkd');
   const onEndReached = async () => {
     setPageId(pageId + 1);
     const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
@@ -303,7 +303,7 @@ const Profile = props => {
                 setModalVisible(!modalVisible);
                 props.navigation.navigate('MySessionScreen');
               }}
-              style={{marginTop: normalise(18)}}>
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -317,7 +317,7 @@ const Profile = props => {
               onPress={() => {
                 Linking.openURL('mailto:contact@choona.com');
               }}
-              style={{marginTop: normalise(18)}}>
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -332,7 +332,7 @@ const Profile = props => {
                 setModalVisible(!modalVisible);
                 setModalPrivacy(true);
               }}
-              style={{marginTop: normalise(18)}}>
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -347,7 +347,7 @@ const Profile = props => {
                 setModalVisible(!modalVisible);
                 setModaltandcs(true);
               }}
-              style={{marginTop: normalise(18)}}>
+              style={{ marginTop: normalise(18) }}>
               <Text
                 style={{
                   color: Colors.white,
@@ -358,7 +358,7 @@ const Profile = props => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{marginTop: normalise(18)}}
+              style={{ marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 setModaltandcs(true);
@@ -382,7 +382,7 @@ const Profile = props => {
                         </TouchableOpacity> */}
 
             <TouchableOpacity
-              style={{marginTop: normalise(18)}}
+              style={{ marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
                 props.logoutReq();
@@ -398,7 +398,7 @@ const Profile = props => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={{marginTop: normalise(18)}}
+              style={{ marginTop: normalise(18) }}
               onPress={() => {
                 setModalVisible(!modalVisible);
 
@@ -424,7 +424,7 @@ const Profile = props => {
                 fontFamily: 'ProximaNova-Semibold',
               }}>
               Version{' '}
-              <Text style={{fontSize: normalise(12)}}>
+              <Text style={{ fontSize: normalise(12) }}>
                 {DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})
               </Text>
             </Text>
@@ -472,21 +472,21 @@ const Profile = props => {
         onRequestClose={() => {
           setModalPrivacy(false);
         }}>
-        <View style={{flex: 1, backgroundColor: '#0D1E25'}}>
-          <View style={{marginTop: '10%'}}>
+        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
+          <View style={{ marginTop: '10%' }}>
             <TouchableOpacity
-              style={{marginLeft: normalise(15), top: normalise(-15)}}
+              style={{ marginLeft: normalise(15), top: normalise(-15) }}
               onPress={() => {
                 setModalPrivacy(false);
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{uri: 'https://www.choona.com/privacy'}} />
+          <WebView source={{ uri: 'https://www.choona.com/privacy' }} />
         </View>
       </Modal>
     );
@@ -502,21 +502,21 @@ const Profile = props => {
         onRequestClose={() => {
           setModaltandcs(false);
         }}>
-        <View style={{flex: 1, backgroundColor: '#0D1E25'}}>
-          <View style={{marginTop: '10%'}}>
+        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
+          <View style={{ marginTop: '10%' }}>
             <TouchableOpacity
-              style={{marginLeft: normalise(15), top: normalise(-15)}}
+              style={{ marginLeft: normalise(15), top: normalise(-15) }}
               onPress={() => {
                 setModaltandcs(false);
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
-          <WebView source={{uri: 'https://www.choona.com/terms'}} />
+          <WebView source={{ uri: 'https://www.choona.com/terms' }} />
         </View>
       </Modal>
     );
@@ -531,7 +531,7 @@ const Profile = props => {
           backgroundColor: '#00000080',
           backicon: 'green',
         }}
-        contentStyle={{justifyContent: 'flex-end', flex: 1 / 3.4}}>
+        contentStyle={{ justifyContent: 'flex-end', flex: 1 / 3.4 }}>
         <SimpleAlert
           title={'Are you sure you want to delete your account?'}
           onCancel={() => setShowConfirmModal(false)}
@@ -542,28 +542,28 @@ const Profile = props => {
           gradientButton={false}
           buttonLeftStyle={styles.buttonLeftStyle}
           buttonContainerStyle={styles.buttonContainerStyle}
-          style={{paddingVertical: 15, justifyContent: 'flex-start'}}
+          style={{ paddingVertical: 15, justifyContent: 'flex-start' }}
         />
       </CommonFullScreenModal>
     );
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
-      <SafeAreaView style={{flex: 1}}>
-        <View style={[HeaderStyles.headerContainer, {borderBottomWidth: 1}]}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={[HeaderStyles.headerContainer, { borderBottomWidth: 1 }]}>
           <View style={HeaderStyles.leftItem}>
             <TouchableOpacity
-              style={{marginRight: normalise(10)}}
+              style={{ marginRight: normalise(10) }}
               onPress={() => {
                 setTotalCount(0);
                 props.navigation.goBack();
               }}>
               <Image
                 source={ImagePath ? ImagePath.backicon : null}
-                style={{height: normalise(15), width: normalise(15)}}
+                style={{ height: normalise(15), width: normalise(15) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -579,13 +579,13 @@ const Profile = props => {
               },
             ]}>
             <TouchableOpacity
-              style={{marginRight: normalise(10)}}
+              style={{ marginRight: normalise(10) }}
               onPress={() => {
                 props.navigation.navigate('EditProfile');
               }}>
               <Image
                 source={ImagePath ? ImagePath.settings : null}
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -595,7 +595,7 @@ const Profile = props => {
               }}>
               <Image
                 source={ImagePath ? ImagePath.iconmenu : null}
-                style={{height: normalise(20), width: normalise(20)}}
+                style={{ height: normalise(20), width: normalise(20) }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -632,13 +632,13 @@ const Profile = props => {
             <ActivityIndicator
               color="#ffffff"
               size="large"
-              style={{marginTop: normalise(25)}}
+              style={{ marginTop: normalise(25) }}
             />
           </View>
         ) : _.isEmpty(profilePosts) && !nonempty ? (
           <EmptyComponent
             buttonPress={() =>
-              props.navigation.replace('bottomTab', {screen: 'Add'})
+              props.navigation.replace('bottomTab', { screen: 'Add' })
             }
             buttonText={'Add your first post'}
             image={ImagePath ? ImagePath.emptyPost : null}

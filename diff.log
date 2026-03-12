@@ -1,423 +1,737 @@
 diff --git a/src/components/Posts/MoreModal1.js b/src/components/Posts/MoreModal1.js
-index 57e644c..ec61104 100644
+index 4458784..a61ef51 100644
 --- a/src/components/Posts/MoreModal1.js
 +++ b/src/components/Posts/MoreModal1.js
-@@ -76,7 +76,7 @@ const MoreModal1 = ({
-               ),
-         artist_name: postData[index].attributes.artistName,
-         album_name: postData[index].attributes.albumName,
--        post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
-+        // post_id: postData[index]?._id || postData[index]?.id, //(song id not post id) this id adde here  becasue this song is not related to the post , are only individual song, from top song(not contain post id)
-         chat_id:
-           page === 'insideMessage' || chatId ? postData[index]?.key : null,
-         type: page === 'insideMessage' ? 'chat' : postData[index].type,
-diff --git a/src/components/main/PostListForUser.js b/src/components/main/PostListForUser.js
-index 071b01f..5a8a7d6 100644
---- a/src/components/main/PostListForUser.js
-+++ b/src/components/main/PostListForUser.js
-@@ -9,6 +9,7 @@ import {
-   Modal,
-   Platform,
-   Alert,
-+  SafeAreaView,
- } from 'react-native';
- import Loader from '../../widgets/AuthLoader';
+@@ -21,6 +21,7 @@ import Colors from '../../assests/Colors';
+ import ImagePath from '../../assests/ImagePath';
  import normalise from '../../utils/helpers/Dimens';
-@@ -491,6 +492,7 @@ function PostListForUser(props) {
-   /** ------------ */
+ import { SimpleOption } from '../common/SimpleOption';
++import { useGlobalMusicPlayer } from '../../hooks/useGlobalMusicPlayer';
  
-   function renderItem(data) {
-+    console.log(JSON.stringify(data?.item), 'tisidfdfsdf');
-     /** REACTION - ADDITION */
-     const reactionMap = {
-       thumbsUp: data.item.fireReactionIds
-@@ -659,9 +661,27 @@ function PostListForUser(props) {
-           hitreact1(modal1Visible);
-         }}
-         onPressMusicbox={() => {
--          return;
--          playSong(data);
--          setVisibleMiniPlayer(true);
-+          props.navigation.navigate('Player', {
-+            comments: [],
-+            song_title: data.item.songs[0]?.song_name,
-+            album_name: data.item.songs[0]?.album_name,
-+            song_pic: data.item.songs[0]?.song_image,
-+            username: data.item.userDetails.username,
-+            profile_pic: data.item.userDetails.profile_image,
-+            // time: data.item.time,
-+            // title: data.item.title,
-+            uri: data?.item?.songs[0]?.song_uri,
-+            // reactions: data.item.reaction,
-+            // id: data.item._id,
-+            id: data.item?.songs[0]?.id,
-+            artist: data?.item?.songs[0]?.artist_name,
-+            changePlayer: false,
-+            originalUri: data.item.songs[0].original_song_uri,
-+            registerType: data.item.userDetails.register_type,
-+            isrc: data.item.songs[0].isrc_code,
-+            details: data.item?.songs[0],
-+            pple_song_id: data?.item?.songs[0]?.apple_song_id,
-+          });
-         }}
-         onPressReactionbox={() => {
-           props.navigation.navigate('HomeItemReactions', {
-@@ -796,6 +816,7 @@ function PostListForUser(props) {
+ const MoreModal1 = ({
+   setBool,
+@@ -57,7 +58,9 @@ const MoreModal1 = ({
+     }
+   }, [othersProfileresp]);
+ 
+-  console.log(postData?.[index], 'thisispostdata');
++  // console.log(postData?.[index], 'thisispostdata');
++
++  const { playGenericSong } = useGlobalMusicPlayer();
+ 
+   const saveUnsaveAction = () => {
+     if (page === 'savedSongs') {
+@@ -128,9 +131,10 @@ const MoreModal1 = ({
+       id: registerType === 'spotify' ? item.id : item.id,
+       apple_song_id: registerType === 'spotify' ? item.id : item.id,
+       showPlaylist: false,
++      details: item,
+     }
+ 
+-    navigation.navigate('Player', payload);
++    playGenericSong(payload);
    };
  
-   const playSong = (data, songIndex = null) => {
-+    Alert.alert('hkdjfh');
-     const selectedSongIndex = songIndex ?? 0;
-     console.log(selectedSongIndex, 'hey this is index');
-     console.log(JSON.stringify(data?.item?.social_type), 'its lay song data');
-@@ -855,7 +876,7 @@ function PostListForUser(props) {
-       }
-     } else {
-       if (props.playingSongRef === '') {
--        // Alert.alert('empty')
-+        Alert.alert('empty');
-         MusicPlayer(data.item.songs[selectedSongIndex]?.song_uri, true)
-           .then(track => {
-             let saveSongResObj = {};
-@@ -1002,170 +1023,175 @@ function PostListForUser(props) {
+   const handleAddSong = (item, from) => {
+diff --git a/src/components/main/CreatePost.js b/src/components/main/CreatePost.js
+index eca630a..daa3454 100644
+--- a/src/components/main/CreatePost.js
++++ b/src/components/main/CreatePost.js
+@@ -56,7 +56,7 @@ function AddSong(props) {
+   const [showmention, setShowMention] = useState(false);
+   const [Selection, setSelection] = useState({ start: 0, end: 0 });
+   const [commentsLoading, setCommentsLoading] = useState(false);
+-  // console.log(props.route.params.details, 'fsdhjfdfjhfdsfhdf')
++  console.log(props.route.params.details, 'fsdhjfdfjhfdsfhdf')
+ 
+   useEffect(() => {
+     if (props.route.params.registerType === 'spotify') {
+@@ -153,13 +153,15 @@ function AddSong(props) {
+                 ? props.route.params.details.album.name
+                 : props.route.params.details.attributes.albumName,
+ 
+-            //  apple_song_id:
+-            // songItem === 'spotify' ? item?.details?.id : item?.details?.id,
++            apple_song_id:
++              props.route.params.registerType === 'spotify' ? props.route.params?.details?.id : props.route.params.details?.id,
++            type: props.route.params.registerType === 'spotify' ? props.route.params?.details?.type : props.route.params?.details?.type,
++            original_reg_type: props.route.params.registerType === 'spotify' ? 'spotify' : 'apple',
+           },
+         ],
+       };
+       console.log(payload, 'its playlod <<');
+-      return
++      // return
+       isInternetConnected()
+         .then(async () => {
+           // Alert.alert('incond');
+@@ -307,7 +309,7 @@ function AddSong(props) {
+             }}
+             keyboardAppearance="dark"
+             scrollEnabled={false}
+-            multiline={true}
++            // multiline={true}
+             placeholder={'Add a caption...'}
+             placeholderTextColor={Colors.darkgrey}
+             onChangeText={text => {
+diff --git a/src/components/main/ListCells/SavedSongsListItem.js b/src/components/main/ListCells/SavedSongsListItem.js
+index 71dce5f..11cfba8 100644
+--- a/src/components/main/ListCells/SavedSongsListItem.js
++++ b/src/components/main/ListCells/SavedSongsListItem.js
+@@ -326,7 +326,7 @@ function SavedSongListItem(props) {
+             style={{
+               flexDirection: 'row',
+             }}>
+-            {props.playIcon !== false && (
++            {/* {props.playIcon !== false && (
+               <TouchableOpacity
+                 onPress={() => {
+                   onPressImage();
+@@ -340,7 +340,7 @@ function SavedSongListItem(props) {
+                   resizeMode="contain"
+                 />
+               </TouchableOpacity>
+-            )}
++            )} */}
+             {props.hideThreeDots ? null : (
+               <TouchableOpacity
+                 style={{
+diff --git a/src/components/main/Profile.js b/src/components/main/Profile.js
+index a89db60..e46dbe7 100644
+--- a/src/components/main/Profile.js
++++ b/src/components/main/Profile.js
+@@ -1,4 +1,4 @@
+-import React, {useCallback, useEffect, useState} from 'react';
++import React, { useCallback, useEffect, useState } from 'react';
+ import {
+   ActivityIndicator,
+   SafeAreaView,
+@@ -20,9 +20,9 @@ import Colors from '../../assests/Colors';
+ import ImagePath from '../../assests/ImagePath';
+ import _ from 'lodash';
+ import StatusBar from '../../utils/MyStatusBar';
+-import {connect} from 'react-redux';
++import { connect } from 'react-redux';
+ import constants from '../../utils/helpers/constants';
+-import {WebView} from 'react-native-webview';
++import { WebView } from 'react-native-webview';
+ import {
+   USER_PROFILE_REQUEST,
+   USER_PROFILE_SUCCESS,
+@@ -46,8 +46,8 @@ import ProfileHeaderFeatured from '../Profile/ProfileHeaderFeatured';
+ import EmptyComponent from '../Empty/EmptyComponent';
+ 
+ import HeaderStyles from '../../styles/header';
+-import {CommonFullScreenModal} from '../common/CommonFullModal';
+-import {SimpleAlert} from '../common/ConfirmModal';
++import { CommonFullScreenModal } from '../common/CommonFullModal';
++import { SimpleAlert } from '../common/ConfirmModal';
+ 
+ let status = '';
+ let postStatus = '';
+@@ -70,7 +70,7 @@ const Profile = props => {
+   const [profilePosts, setProfilePosts] = useState([]);
+   const [totalCount, setTotalCount] = useState(0);
+   const [showConfirmModal, setShowConfirmModal] = useState(false);
+-  console.log(profilePosts, 'profilepposr');
++  // console.log(profilePosts, 'profilepposr');
+ 
+   const [allSongs, setAllSongs] = useState([]);
+ 
+@@ -81,7 +81,7 @@ const Profile = props => {
+     }
+   }, [profilePosts]);
+ 
+-  console.log(allSongs, 'sdhjsfhdsjhfkd');
++  // console.log(allSongs, 'sdhjsfhdsjhfkd');
+   const onEndReached = async () => {
+     setPageId(pageId + 1);
+     const response = await axios.get(`${postsUrl}?page=${pageId + 1}`, {
+@@ -303,7 +303,7 @@ const Profile = props => {
+                 setModalVisible(!modalVisible);
+                 props.navigation.navigate('MySessionScreen');
+               }}
+-              style={{marginTop: normalise(18)}}>
++              style={{ marginTop: normalise(18) }}>
+               <Text
+                 style={{
+                   color: Colors.white,
+@@ -317,7 +317,7 @@ const Profile = props => {
+               onPress={() => {
+                 Linking.openURL('mailto:contact@choona.com');
+               }}
+-              style={{marginTop: normalise(18)}}>
++              style={{ marginTop: normalise(18) }}>
+               <Text
+                 style={{
+                   color: Colors.white,
+@@ -332,7 +332,7 @@ const Profile = props => {
+                 setModalVisible(!modalVisible);
+                 setModalPrivacy(true);
+               }}
+-              style={{marginTop: normalise(18)}}>
++              style={{ marginTop: normalise(18) }}>
+               <Text
+                 style={{
+                   color: Colors.white,
+@@ -347,7 +347,7 @@ const Profile = props => {
+                 setModalVisible(!modalVisible);
+                 setModaltandcs(true);
+               }}
+-              style={{marginTop: normalise(18)}}>
++              style={{ marginTop: normalise(18) }}>
+               <Text
+                 style={{
+                   color: Colors.white,
+@@ -358,7 +358,7 @@ const Profile = props => {
+               </Text>
+             </TouchableOpacity>
+             <TouchableOpacity
+-              style={{marginTop: normalise(18)}}
++              style={{ marginTop: normalise(18) }}
+               onPress={() => {
+                 setModalVisible(!modalVisible);
+                 setModaltandcs(true);
+@@ -382,7 +382,7 @@ const Profile = props => {
+                         </TouchableOpacity> */}
+ 
+             <TouchableOpacity
+-              style={{marginTop: normalise(18)}}
++              style={{ marginTop: normalise(18) }}
+               onPress={() => {
+                 setModalVisible(!modalVisible);
+                 props.logoutReq();
+@@ -398,7 +398,7 @@ const Profile = props => {
+             </TouchableOpacity>
+ 
+             <TouchableOpacity
+-              style={{marginTop: normalise(18)}}
++              style={{ marginTop: normalise(18) }}
+               onPress={() => {
+                 setModalVisible(!modalVisible);
+ 
+@@ -424,7 +424,7 @@ const Profile = props => {
+                 fontFamily: 'ProximaNova-Semibold',
+               }}>
+               Version{' '}
+-              <Text style={{fontSize: normalise(12)}}>
++              <Text style={{ fontSize: normalise(12) }}>
+                 {DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()})
+               </Text>
+             </Text>
+@@ -472,21 +472,21 @@ const Profile = props => {
+         onRequestClose={() => {
+           setModalPrivacy(false);
+         }}>
+-        <View style={{flex: 1, backgroundColor: '#0D1E25'}}>
+-          <View style={{marginTop: '10%'}}>
++        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
++          <View style={{ marginTop: '10%' }}>
+             <TouchableOpacity
+-              style={{marginLeft: normalise(15), top: normalise(-15)}}
++              style={{ marginLeft: normalise(15), top: normalise(-15) }}
+               onPress={() => {
+                 setModalPrivacy(false);
+               }}>
+               <Image
+                 source={ImagePath ? ImagePath.backicon : null}
+-                style={{height: normalise(15), width: normalise(15)}}
++                style={{ height: normalise(15), width: normalise(15) }}
+                 resizeMode="contain"
+               />
+             </TouchableOpacity>
+           </View>
+-          <WebView source={{uri: 'https://www.choona.com/privacy'}} />
++          <WebView source={{ uri: 'https://www.choona.com/privacy' }} />
+         </View>
+       </Modal>
+     );
+@@ -502,21 +502,21 @@ const Profile = props => {
+         onRequestClose={() => {
+           setModaltandcs(false);
+         }}>
+-        <View style={{flex: 1, backgroundColor: '#0D1E25'}}>
+-          <View style={{marginTop: '10%'}}>
++        <View style={{ flex: 1, backgroundColor: '#0D1E25' }}>
++          <View style={{ marginTop: '10%' }}>
+             <TouchableOpacity
+-              style={{marginLeft: normalise(15), top: normalise(-15)}}
++              style={{ marginLeft: normalise(15), top: normalise(-15) }}
+               onPress={() => {
+                 setModaltandcs(false);
+               }}>
+               <Image
+                 source={ImagePath ? ImagePath.backicon : null}
+-                style={{height: normalise(15), width: normalise(15)}}
++                style={{ height: normalise(15), width: normalise(15) }}
+                 resizeMode="contain"
+               />
+             </TouchableOpacity>
+           </View>
+-          <WebView source={{uri: 'https://www.choona.com/terms'}} />
++          <WebView source={{ uri: 'https://www.choona.com/terms' }} />
+         </View>
+       </Modal>
+     );
+@@ -531,7 +531,7 @@ const Profile = props => {
+           backgroundColor: '#00000080',
+           backicon: 'green',
+         }}
+-        contentStyle={{justifyContent: 'flex-end', flex: 1 / 3.4}}>
++        contentStyle={{ justifyContent: 'flex-end', flex: 1 / 3.4 }}>
+         <SimpleAlert
+           title={'Are you sure you want to delete your account?'}
+           onCancel={() => setShowConfirmModal(false)}
+@@ -542,28 +542,28 @@ const Profile = props => {
+           gradientButton={false}
+           buttonLeftStyle={styles.buttonLeftStyle}
+           buttonContainerStyle={styles.buttonContainerStyle}
+-          style={{paddingVertical: 15, justifyContent: 'flex-start'}}
++          style={{ paddingVertical: 15, justifyContent: 'flex-start' }}
+         />
+       </CommonFullScreenModal>
+     );
+   };
  
    return (
-     <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
--      <StatusBar backgroundColor={Colors.darkerblack} />
-+      {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
-       <Loader visible={bool} />
--      <HeaderComponent
--        firstitemtext={false}
--        imageone={ImagePath.backicon}
--        title={props.route.params.profile_name}
--        thirditemtext={true}
--        texttwo={''}
--        onPressFirstItem={() => {
--          props.navigation.goBack();
--        }}
--      />
--
--      {_.isEmpty(posts) ? (
--        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
--          <Image
--            source={ImagePath.noposts}
--            style={{
--              height: normalise(150),
--              width: normalise(150),
--              marginTop: '28%',
--            }}
--            resizeMode="contain"
--          />
--          <Text
--            style={{
--              marginBottom: '20%',
--              marginTop: normalise(10),
--              color: Colors.white,
--              fontSize: normalise(14),
--              fontWeight: 'bold',
--            }}>
--            NO POSTS YET
--          </Text>
--        </View>
--      ) : (
--        <View style={{flex: 1}}>
--          <FlatList
--            // style={{ marginTop: normalise(10) }}
--            data={posts}
--            renderItem={renderItem}
--            initialScrollIndex={props.route.params.index}
--            getItemLayout={(data, index) => ({
--              length: 250,
--              offset: normalise(385) * index,
--              index,
--            })}
--            onScrollToIndexFailed={val => {
--              // console.log(val);
--            }}
--            showsVerticalScrollIndicator={false}
--            keyExtractor={(item, index) => {
--              index.toString();
--            }}
--            ref={ref}
--          />
--
--          {props.status === DUMMY_ACTION_SUCCESS ? (
--            <MusicPlayerBar
--              onPress={() => {
--                props.navigation.navigate('Player', {
--                  comments: [],
--                  song_title: props.playingSongRef.song_name,
--                  album_name: props.playingSongRef.album_name,
--                  song_pic: props.playingSongRef.song_pic,
--                  username: props.playingSongRef.username,
--                  profile_pic: props.playingSongRef.profile_pic,
--                  uri: props.playingSongRef.uri,
--                  reactions: props.playingSongRef.reactionData,
--                  id: props.playingSongRef.id,
--                  artist: props.playingSongRef.artist,
--                  changePlayer: props.playingSongRef.changePlayer,
--                  originalUri: props.playingSongRef.originalUri,
--                  isrc: props.playingSongRef.isrc,
--                  registerType: props.playingSongRef.regType,
--                  details: props.playingSongRef.details,
--                  showPlaylist: props.playingSongRef.showPlaylist,
--                  comingFromMessage: props.playingSongRef.comingFromMessage,
--                });
--              }}
--              onPressPlayOrPause={() => {
--                setTimeout(() => {
--                  findPlayingSong(props.postData);
--                }, 500);
-+      <SafeAreaView style={{flex: 1}}>
-+        <HeaderComponent
-+          firstitemtext={false}
-+          imageone={ImagePath.backicon}
-+          title={props.route.params.profile_name}
-+          thirditemtext={true}
-+          texttwo={''}
-+          onPressFirstItem={() => {
-+            props.navigation.goBack();
-+          }}
-+        />
-+
-+        {_.isEmpty(posts) ? (
-+          <View
-+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-+            <Image
-+              source={ImagePath.noposts}
-+              style={{
-+                height: normalise(150),
-+                width: normalise(150),
-+                marginTop: '28%',
-               }}
-+              resizeMode="contain"
-             />
--          ) : null}
--
--          <Modal
--            animationType="fade"
--            transparent={true}
--            visible={visible}
--            onRequestClose={() => {
--              //Alert.alert("Modal has been closed.");
--            }}>
--            <View
-+            <Text
-               style={{
--                flex: 1,
--                backgroundColor: '#000000',
--                opacity: 0.9,
--                justifyContent: 'center',
--                alignItems: 'center',
-+                marginBottom: '20%',
-+                marginTop: normalise(10),
-+                color: Colors.white,
-+                fontSize: normalise(14),
-+                fontWeight: 'bold',
+-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
++    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
+       {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
+       {/* <Loader visible={props.status === USER_PROFILE_REQUEST} /> */}
+-      <SafeAreaView style={{flex: 1}}>
+-        <View style={[HeaderStyles.headerContainer, {borderBottomWidth: 1}]}>
++      <SafeAreaView style={{ flex: 1 }}>
++        <View style={[HeaderStyles.headerContainer, { borderBottomWidth: 1 }]}>
+           <View style={HeaderStyles.leftItem}>
+             <TouchableOpacity
+-              style={{marginRight: normalise(10)}}
++              style={{ marginRight: normalise(10) }}
+               onPress={() => {
+                 setTotalCount(0);
+                 props.navigation.goBack();
                }}>
--              <Text
-+              NO POSTS YET
-+            </Text>
-+          </View>
-+        ) : (
-+          <View style={{flex: 1}}>
-+            <FlatList
-+              // style={{ marginTop: normalise(10) }}
-+              data={posts}
-+              renderItem={renderItem}
-+              initialScrollIndex={props.route.params.index}
-+              getItemLayout={(data, index) => ({
-+                length: 250,
-+                offset: normalise(385) * index,
-+                index,
-+              })}
-+              onScrollToIndexFailed={val => {
-+                // console.log(val);
-+              }}
-+              showsVerticalScrollIndicator={false}
-+              keyExtractor={(item, index) => {
-+                index.toString();
-+              }}
-+              ref={ref}
-+            />
-+
-+            {props.status === DUMMY_ACTION_SUCCESS ? (
-+              <MusicPlayerBar
-+                onPress={() => {
-+                  props.navigation.navigate('Player', {
-+                    comments: [],
-+                    song_title: props.playingSongRef.song_name,
-+                    album_name: props.playingSongRef.album_name,
-+                    song_pic: props.playingSongRef.song_pic,
-+                    username: props.playingSongRef.username,
-+                    profile_pic: props.playingSongRef.profile_pic,
-+                    uri: props.playingSongRef.uri,
-+                    reactions: props.playingSongRef.reactionData,
-+                    id: props.playingSongRef.id,
-+                    artist: props.playingSongRef.artist,
-+                    changePlayer: props.playingSongRef.changePlayer,
-+                    originalUri: props.playingSongRef.originalUri,
-+                    isrc: props.playingSongRef.isrc,
-+                    registerType: props.playingSongRef.regType,
-+                    details: props.playingSongRef.details,
-+                    showPlaylist: props.playingSongRef.showPlaylist,
-+                    comingFromMessage: props.playingSongRef.comingFromMessage,
-+                  });
-+                }}
-+                onPressPlayOrPause={() => {
-+                  setTimeout(() => {
-+                    findPlayingSong(props.postData);
-+                  }, 500);
-+                }}
-+              />
-+            ) : null}
-+
-+            <Modal
-+              animationType="fade"
-+              transparent={true}
-+              visible={visible}
-+              onRequestClose={() => {
-+                //Alert.alert("Modal has been closed.");
-+              }}>
-+              <View
-                 style={{
--                  fontSize:
--                    Platform.OS === 'android' ? normalise(70) : normalise(100),
-+                  flex: 1,
-+                  backgroundColor: '#000000',
-+                  opacity: 0.9,
-+                  justifyContent: 'center',
-+                  alignItems: 'center',
-                 }}>
--                {modalReact}
--              </Text>
--            </View>
--          </Modal>
--
--          {modalVisible && (
--            <MoreModal
--              setBool={setBool}
--              bottomSheetRef={bottomSheetRef}
--              index={positionInArray}
--              setIndex={setPositionInArray}
--              navigation={props.navigation}
--              openInAppleORSpotify={openInAppleORSpotify}
--              postData={posts}
--              show={modalVisible}
--              setShow={setModalVisible}
-+                <Text
-+                  style={{
-+                    fontSize:
-+                      Platform.OS === 'android'
-+                        ? normalise(70)
-+                        : normalise(100),
-+                  }}>
-+                  {modalReact}
-+                </Text>
-+              </View>
-+            </Modal>
-+
-+            {modalVisible && (
-+              <MoreModal
-+                setBool={setBool}
-+                bottomSheetRef={bottomSheetRef}
-+                index={positionInArray}
-+                setIndex={setPositionInArray}
-+                navigation={props.navigation}
-+                openInAppleORSpotify={openInAppleORSpotify}
-+                postData={posts}
-+                show={modalVisible}
-+                setShow={setModalVisible}
-+              />
-+            )}
-+          </View>
-+        )}
-+
-+        {modal1Visible === true ? (
-+          <View
-+            style={{
-+              position: 'absolute',
-+              margin: 20,
-+              height: normalise(280),
-+              width: '92%',
-+              alignSelf: 'center',
-+              marginHorizontal: normalise(15),
-+              backgroundColor: Colors.white,
-+              borderRadius: 20,
-+              padding: 35,
-+              bottom: 50,
-+              shadowColor: '#000',
-+              shadowOffset: {
-+                width: 0,
-+                height: 2,
-+              },
-+              shadowOpacity: 0.25,
-+              shadowRadius: 3.84,
-+              elevation: 5,
-+            }}>
-+            <EmojiSelector
-+              category={Categories.history}
-+              showHistory={true}
-+              onEmojiSelected={emoji => {
-+                setVisible(true);
-+                setModalReact(emoji);
-+                setTimeout(() => {
-+                  setVisible(false);
-+                }, 2000);
-+              }}
+               <Image
+                 source={ImagePath ? ImagePath.backicon : null}
+-                style={{height: normalise(15), width: normalise(15)}}
++                style={{ height: normalise(15), width: normalise(15) }}
+                 resizeMode="contain"
+               />
+             </TouchableOpacity>
+@@ -579,13 +579,13 @@ const Profile = props => {
+               },
+             ]}>
+             <TouchableOpacity
+-              style={{marginRight: normalise(10)}}
++              style={{ marginRight: normalise(10) }}
+               onPress={() => {
+                 props.navigation.navigate('EditProfile');
+               }}>
+               <Image
+                 source={ImagePath ? ImagePath.settings : null}
+-                style={{height: normalise(20), width: normalise(20)}}
++                style={{ height: normalise(20), width: normalise(20) }}
+                 resizeMode="contain"
+               />
+             </TouchableOpacity>
+@@ -595,7 +595,7 @@ const Profile = props => {
+               }}>
+               <Image
+                 source={ImagePath ? ImagePath.iconmenu : null}
+-                style={{height: normalise(20), width: normalise(20)}}
++                style={{ height: normalise(20), width: normalise(20) }}
+                 resizeMode="contain"
+               />
+             </TouchableOpacity>
+@@ -632,13 +632,13 @@ const Profile = props => {
+             <ActivityIndicator
+               color="#ffffff"
+               size="large"
+-              style={{marginTop: normalise(25)}}
++              style={{ marginTop: normalise(25) }}
              />
--          )}
--        </View>
--      )}
--
--      {modal1Visible === true ? (
--        <View
+           </View>
+         ) : _.isEmpty(profilePosts) && !nonempty ? (
+           <EmptyComponent
+             buttonPress={() =>
+-              props.navigation.replace('bottomTab', {screen: 'Add'})
++              props.navigation.replace('bottomTab', { screen: 'Add' })
+             }
+             buttonText={'Add your first post'}
+             image={ImagePath ? ImagePath.emptyPost : null}
+diff --git a/src/components/main/TabNavigator/Add.js b/src/components/main/TabNavigator/Add.js
+index 23a7c46..e582b0d 100644
+--- a/src/components/main/TabNavigator/Add.js
++++ b/src/components/main/TabNavigator/Add.js
+@@ -1,4 +1,4 @@
+-import React, {useState} from 'react';
++import React, { useState } from 'react';
+ import {
+   SafeAreaView,
+   View,
+@@ -22,21 +22,22 @@ import SavedSongsListItem from './../ListCells/SavedSongsListItem';
+ import Seperator from '../ListCells/Seperator';
+ import _ from 'lodash';
+ import StatusBar from '../../../utils/MyStatusBar';
+-import {connect} from 'react-redux';
++import { connect } from 'react-redux';
+ import {
+   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
+   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+   SEARCH_SONG_REQUEST_FOR_POST_FAILURE,
+ } from '../../../action/TypeConstants';
+-import {seachSongsForPostRequest} from '../../../action/PostAction';
++import { seachSongsForPostRequest } from '../../../action/PostAction';
+ import Loader from '../../../widgets/AuthLoader';
+ import toast from '../../../utils/helpers/ShowErrorAlert';
+ import isInternetConnected from '../../../utils/helpers/NetInfo';
+ 
+-import {useRecentlyPlayed} from '../../../utils/helpers/RecentlyPlayed';
+-import {RecentlyPlayedHeader} from '../../Headers/RecentlyPlayedHeader';
+-import {usePlayFullAppleMusic} from '../../../hooks/usePlayFullAppleMusic';
+-import {useMusicPlayer} from '../../../context/AppleMusicContext';
++import { useRecentlyPlayed } from '../../../utils/helpers/RecentlyPlayed';
++import { RecentlyPlayedHeader } from '../../Headers/RecentlyPlayedHeader';
++import { usePlayFullAppleMusic } from '../../../hooks/usePlayFullAppleMusic';
++import { useMusicPlayer } from '../../../context/AppleMusicContext';
++import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
+ // import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+ 
+ let status;
+@@ -45,12 +46,13 @@ const AddSong = props => {
+   const inputRef = React.useRef(null);
+   const [search, setSearch] = useState(null);
+   const [data, setData] = useState([]);
+-  const {recentlyPlayed, loading, refetch} = useRecentlyPlayed(
++  const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
+     props.registerType,
+   );
+ 
+-  const {resetPlaybackQueue, setPlaybackQueue} = usePlayFullAppleMusic();
+-  const {resetProgress} = useMusicPlayer();
++  const { resetPlaybackQueue, setPlaybackQueue } = usePlayFullAppleMusic();
++  const { playGenericSong } = useGlobalMusicPlayer();
++  const { resetProgress } = useMusicPlayer();
+ 
+   // console.log(JSON.stringify(recentlyPlayed[0]), 'thhhhh');
+   let post = true;
+@@ -200,10 +202,10 @@ const AddSong = props => {
+         image2={ImagePath.addButtonSmall}
+         onPressSecondImage={() => handleAddSong(item)}
+         onPressImage={async () => {
+-          await resetPlaybackQueue();
++          // await resetPlaybackQueue();
+           resetProgress();
+           setTimeout(() => {
+-            props.navigation.navigate('Player', {
++            const payload = {
+               song_title:
+                 props.registerType === 'spotify'
+                   ? item.item.name
+@@ -216,10 +218,10 @@ const AddSong = props => {
+                 props.registerType === 'spotify'
+                   ? item.item.album.images[0].url
+                   : item.item.attributes.artwork.url.replace(
+-                      '{w}x{h}',
+-                      '300x300',
+-                    ),
+-              username: '',
++                    '{w}x{h}',
++                    '300x300',
++                  ),
++              username: props.registerType === 'spotify' ? '' : item?.item?.attributes?.artistName,
+               profile_pic: '',
+               originalUri:
+                 props.registerType === 'spotify'
+@@ -241,7 +243,50 @@ const AddSong = props => {
+               apple_song_id:
+                 props.registerType === 'spotify' ? item.item.id : item.item.id,
+               showPlaylist: false,
+-            });
++              details: item.item,
++            }
++            // props.navigation.navigate('Player', {
++            //   song_title:
++            //     props.registerType === 'spotify'
++            //       ? item.item.name
++            //       : item.item.attributes.name,
++            //   album_name:
++            //     props.registerType === 'spotify'
++            //       ? item.item.album.name
++            //       : item.item.attributes.albumName,
++            //   song_pic:
++            //     props.registerType === 'spotify'
++            //       ? item.item.album.images[0].url
++            //       : item.item.attributes.artwork.url.replace(
++            //         '{w}x{h}',
++            //         '300x300',
++            //       ),
++            //   username: props.registerType === 'spotify' ? '' : item?.item?.attributes?.artistName,
++            //   profile_pic: '',
++            //   originalUri:
++            //     props.registerType === 'spotify'
++            //       ? item.item.external_urls.spotify
++            //       : item.item.attributes.url,
++            //   uri:
++            //     props.registerType === 'spotify'
++            //       ? item.item.preview_url
++            //       : item.item.attributes.previews[0].url,
++            //   artist:
++            //     props.registerType === 'spotify'
++            //       ? singerList(item.item.artists)
++            //       : item.item.attributes.artistName,
++            //   changePlayer: true,
++            //   registerType: props.registerType,
++            //   changePlayer2: props.registerType === 'spotify' ? true : false,
++            //   id:
++            //     props.registerType === 'spotify' ? item.item.id : item.item.id,
++            //   apple_song_id:
++            //     props.registerType === 'spotify' ? item.item.id : item.item.id,
++            //   showPlaylist: false,
++            //   details: item.item,
++            // });
++
++            playGenericSong(payload);
+           }, 500);
+         }}
+       />
+@@ -292,23 +337,9 @@ const AddSong = props => {
+           }}
+         />
+         <View
 -          style={{
--            position: 'absolute',
--            margin: 20,
--            height: normalise(280),
 -            width: '92%',
 -            alignSelf: 'center',
--            marginHorizontal: normalise(15),
--            backgroundColor: Colors.white,
--            borderRadius: 20,
--            padding: 35,
--            bottom: 50,
--            shadowColor: '#000',
--            shadowOffset: {
--              width: 0,
--              height: 2,
--            },
--            shadowOpacity: 0.25,
--            shadowRadius: 3.84,
--            elevation: 5,
 -          }}>
--          <EmojiSelector
--            category={Categories.history}
--            showHistory={true}
--            onEmojiSelected={emoji => {
--              setVisible(true);
--              setModalReact(emoji);
--              setTimeout(() => {
--                setVisible(false);
--              }, 2000);
++          style={styles.searchContainer}>
+           <TextInput
+-            style={{
+-              height: normalise(35),
+-              width: '100%',
+-              // backgroundColor: Colors.fadeblack,
+-              backgroundColor: Colors.fadeblack,
+-              borderRadius: normalise(8),
+-              marginTop: normalise(16),
+-              padding: normalise(10),
+-              color: Colors.white,
+-              // fontSize:normalise(15),
+-              paddingLeft: normalise(30),
 -            }}
--          />
--        </View>
--      ) : null}
-+          </View>
-+        ) : null}
-+      </SafeAreaView>
-     </View>
++            style={styles.searchInput}
+             value={search}
+             placeholder={'Search Spotify for a Song'}
+             ref={inputRef}
+@@ -336,13 +367,7 @@ const AddSong = props => {
+           />
+           <Image
+             source={ImagePath.searchicongrey}
+-            style={{
+-              height: normalise(15),
+-              width: normalise(15),
+-              bottom: normalise(25),
+-              paddingLeft: normalise(30),
+-              transform: [{scaleX: -1}],
+-            }}
++            style={styles.searchIcon}
+             resizeMode="contain"
+           />
+           {search === '' || search === null ? null : (
+@@ -351,23 +376,12 @@ const AddSong = props => {
+                 setSearch('');
+                 setData([]);
+               }}
+-              style={{
+-                backgroundColor: Colors.darkerblack,
+-                padding: 10,
+-                paddingTop: 4,
+-                paddingBottom: 4,
+-                position: 'absolute',
+-                right: 0,
+-                borderRadius: 5,
++              style={[styles.clearButton, {
+                 bottom: Platform.OS === 'ios' ? normalise(24) : normalise(23),
+-                marginRight: normalise(10),
+-              }}>
++
++              }]}>
+               <Text
+-                style={{
+-                  color: Colors.white,
+-                  fontSize: normalise(10),
+-                  fontWeight: 'bold',
+-                }}>
++                style={styles.clearButtonText}>
+                 CLEAR
+               </Text>
+             </TouchableOpacity>
+@@ -383,52 +397,26 @@ const AddSong = props => {
+             <KeyboardAvoidingView
+               enabled={false}
+               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+-              style={{
+-                flex: 1,
+-                justifyContent: 'center',
+-                alignItems: 'center',
+-              }}>
++              style={styles.emptyContainer}>
+               <View
+-                style={{
+-                  flex: 1,
+-                  justifyContent: 'center',
+-                  alignItems: 'center',
+-                }}>
++                style={styles.emptyContainer}>
+                 <Image
+                   source={ImagePath.searchicongrey}
+-                  style={{height: normalise(35), width: normalise(35)}}
++                  style={styles.emptyIcon}
+                   resizeMode="contain"
+                 />
+                 <Text
+-                  style={{
+-                    color: Colors.white,
+-                    fontSize: normalise(12),
+-                    fontWeight: 'bold',
+-                    marginTop: normalise(20),
+-                    width: '60%',
+-                    textAlign: 'center',
+-                  }}>
++                  style={styles.emptyTextPrimary}>
+                   Search for the song you want to{' '}
+                 </Text>
+                 <Text
+-                  style={{
+-                    color: Colors.white,
+-                    fontSize: normalise(12),
+-                    fontWeight: 'bold',
+-                    width: '60%',
+-                  }}>
++                  style={styles.emptyTextSecondary}>
+                   share above.
+                 </Text>
+                 <Image
+                   source={ImagePath.addPostIllus}
+                   resizeMode="contain"
+-                  style={{
+-                    height: undefined,
+-                    width: '100%',
+-                    aspectRatio: 1125 / 712,
+-                    position: 'absolute',
+-                    bottom: -80,
+-                  }}
++                  style={styles.illustration}
+                 />
+               </View>
+             </KeyboardAvoidingView>
+@@ -463,10 +451,6 @@ const AddSong = props => {
    );
- }
+ };
+ 
+-const styles = StyleSheet.create({
+-  containerView: {flex: 1, backgroundColor: Colors.darkerblack},
+-  safeAreaContainer: {flex: 1},
+-});
+ 
+ const mapStateToProps = state => {
+   return {
+@@ -484,4 +468,91 @@ const mapDispatchToProps = dispatch => {
+   };
+ };
+ 
++const styles = StyleSheet.create({
++  containerView: {
++    flex: 1,
++    backgroundColor: Colors.darkerblack,
++  },
++
++  safeAreaContainer: {
++    flex: 1,
++  },
++
++  searchContainer: {
++    width: '92%',
++    alignSelf: 'center',
++  },
++
++  searchInput: {
++    height: normalise(35),
++    width: '100%',
++    backgroundColor: Colors.fadeblack,
++    borderRadius: normalise(8),
++    marginTop: normalise(16),
++    padding: normalise(10),
++    color: Colors.white,
++    paddingLeft: normalise(30),
++  },
++
++  searchIcon: {
++    height: normalise(15),
++    width: normalise(15),
++    bottom: normalise(25),
++    paddingLeft: normalise(30),
++    transform: [{ scaleX: -1 }],
++  },
++
++  clearButton: {
++    backgroundColor: Colors.darkerblack,
++    padding: 10,
++    paddingTop: 4,
++    paddingBottom: 4,
++    position: 'absolute',
++    right: 0,
++    borderRadius: 5,
++    marginRight: normalise(10),
++  },
++
++  clearButtonText: {
++    color: Colors.white,
++    fontSize: normalise(10),
++    fontWeight: 'bold',
++  },
++
++  emptyContainer: {
++    flex: 1,
++    justifyContent: 'center',
++    alignItems: 'center',
++  },
++
++  emptyIcon: {
++    height: normalise(35),
++    width: normalise(35),
++  },
++
++  emptyTextPrimary: {
++    color: Colors.white,
++    fontSize: normalise(12),
++    fontWeight: 'bold',
++    marginTop: normalise(20),
++    width: '60%',
++    textAlign: 'center',
++  },
++
++  emptyTextSecondary: {
++    color: Colors.white,
++    fontSize: normalise(12),
++    fontWeight: 'bold',
++    width: '60%',
++  },
++
++  illustration: {
++    height: undefined,
++    width: '100%',
++    aspectRatio: 1125 / 712,
++    position: 'absolute',
++    bottom: -80,
++  },
++});
++
+ export default connect(mapStateToProps, mapDispatchToProps)(AddSong);
 diff --git a/src/components/main/TabNavigator/Contact.js b/src/components/main/TabNavigator/Contact.js
-index 46d5194..8c4f0c7 100644
+index 8c4f0c7..803f6b6 100644
 --- a/src/components/main/TabNavigator/Contact.js
 +++ b/src/components/main/TabNavigator/Contact.js
 @@ -1,4 +1,4 @@
--import React, { useEffect, useState } from 'react';
-+import React, {useEffect, useState} from 'react';
+-import React, {useEffect, useState} from 'react';
++import React, { useEffect, useState } from 'react';
  import {
    SafeAreaView,
    View,
@@ -425,41 +739,437 @@ index 46d5194..8c4f0c7 100644
  import ImagePath from '../../../assests/ImagePath';
  import HeaderComponent from '../../../widgets/HeaderComponent';
  import SavedSongsListItem from '../ListCells/SavedSongsListItem';
--import { SwipeListView } from 'react-native-swipe-list-view';
-+import {SwipeListView} from 'react-native-swipe-list-view';
+-import {SwipeListView} from 'react-native-swipe-list-view';
++import { SwipeListView } from 'react-native-swipe-list-view';
  import StatusBar from '../../../utils/MyStatusBar';
  import {
    SAVED_SONGS_LIST_REQUEST,
-@@ -30,13 +30,13 @@ import {
+@@ -30,17 +30,18 @@ import {
  } from '../../../action/SongAction';
  import Loader from '../../../widgets/AuthLoader';
  import toast from '../../../utils/helpers/ShowErrorAlert';
--import { connect } from 'react-redux';
-+import {connect} from 'react-redux';
+-import {connect} from 'react-redux';
++import { connect } from 'react-redux';
  import isInternetConnected from '../../../utils/helpers/NetInfo';
  import _ from 'lodash';
--import { getUsersFromHome } from '../../../action/UserAction';
--import { getSongFromisrc } from '../../../action/PlayerAction';
--import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
--import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
-+import {getUsersFromHome} from '../../../action/UserAction';
-+import {getSongFromisrc} from '../../../action/PlayerAction';
-+import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
-+import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
+-import {getUsersFromHome} from '../../../action/UserAction';
+-import {getSongFromisrc} from '../../../action/PlayerAction';
+-import {getSpotifyToken} from '../../../utils/helpers/SpotifyLogin';
+-import {getAppleDevToken} from '../../../utils/helpers/AppleDevToken';
++import { getUsersFromHome } from '../../../action/UserAction';
++import { getSongFromisrc } from '../../../action/PlayerAction';
++import { getSpotifyToken } from '../../../utils/helpers/SpotifyLogin';
++import { getAppleDevToken } from '../../../utils/helpers/AppleDevToken';
  import axios from 'axios';
  
  import EmptyComponent from '../../Empty/EmptyComponent';
-@@ -251,11 +251,11 @@ const Contact = props => {
+ import MoreModal from '../../Posts/MoreModal';
++import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
+ 
+ let status;
+ 
+@@ -54,6 +55,8 @@ const Contact = props => {
+   const [noEmpty, setNoEmpty] = useState(false);
+   const [allSaveSong, setAllSaveSong] = useState([]);
+ 
++  const { playGenericSong } = useGlobalMusicPlayer();
++
+   var bottomSheetRef;
+ 
+   useEffect(() => {
+@@ -117,7 +120,8 @@ const Contact = props => {
+         title={data.item.song_name}
+         singer={data.item.artist_name}
+         onPressImage={() => {
+-          props.navigation.navigate('Player', {
++          console.log(data?.item, 'sdhfjk')
++          const payload = {
+             song_title: data.item.song_name,
+             album_name: data.item.album_name,
+             song_pic: data.item.song_image,
+@@ -128,7 +132,28 @@ const Contact = props => {
+             isrc: data.item.isrc_code,
+             registerType: data.item.original_reg_type,
+             originalUri: data.item.original_song_uri,
+-          });
++          };
++          const payload1 = {
++            uri: data?.item?.song_uri,
++            apple_song_id: data?.item?.apple_song_id,
++            song_name: data?.item?.song_name,
++            album_name: data?.item?.album_name,
++            song_pic: data?.item?.song_image,
++            // username: data.item.userDetails?.username,
++            // profile_pic: data.item.userDetails?.profile_image,
++            // commentData: data.item.comment,
++            // reactionData: data.item.reaction,
++            id: data.item?._id,
++            artist: data?.item?.artist_name,
++            originalUri: data.item.original_song_uri || undefined,
++            isrc: data?.item?.isrc_code,
++            regType: data.item.original_reg_type,
++            details: data.item,
++            showPlaylist: true,
++          };
++          console.log(payload1, 'payload1')
++          return
++          playGenericSong(payload1);
+         }}
+         onPress={() => {
+           setIndex(data.index);
+@@ -251,11 +276,11 @@ const Contact = props => {
    }
  
    return (
--    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
-+    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
++    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
        {/* <StatusBar backgroundColor={Colors.darkerblack} /> */}
        <Loader visible={props.status === SAVED_SONGS_LIST_REQUEST} />
        <Loader visible={bool} />
--      <SafeAreaView style={{ flex: 1 }}>
-+      <SafeAreaView style={{flex: 1}}>
+-      <SafeAreaView style={{flex: 1}}>
++      <SafeAreaView style={{ flex: 1 }}>
          <HeaderComponent
            title={'SAVED SONGS'}
            thirditemtext={true}
+diff --git a/src/components/main/TabNavigator/Home.js b/src/components/main/TabNavigator/Home.js
+index 049c2c0..fd67302 100644
+--- a/src/components/main/TabNavigator/Home.js
++++ b/src/components/main/TabNavigator/Home.js
+@@ -146,6 +146,9 @@ const Home = props => {
+   const [posts, setPosts] = useState([]);
+   const postsUrl = constants.BASE_URL + '/post/list?page=';
+ 
++
++  console.log(JSON.stringify(posts[0]), 'thisisposts');
++
+   const { hitReact: newHitReact, isPending } = useContext(ReactionsContext);
+   const [activeTab, setActiveTab] = useState(0);
+   const [sessionListStatus, setSessionListStatus] = useState('');
+diff --git a/src/components/main/TabNavigator/Search.js b/src/components/main/TabNavigator/Search.js
+index b645d41..30390af 100644
+--- a/src/components/main/TabNavigator/Search.js
++++ b/src/components/main/TabNavigator/Search.js
+@@ -69,10 +69,10 @@ import HeaderComponent from '../../../widgets/HeaderComponent';
+ import EmptyComponent from '../../Empty/EmptyComponent';
+ import MoreModal from '../../Posts/MoreModal';
+ import MoreModal1 from '../../Posts/MoreModal1';
+-import ReportModal from '../../Posts/ReportModal';
+ import { ReactionsContext } from '../../Reactions/UseReactions/ReactionsContext';
+ import ActivityListItem from '../ListCells/ActivityListItem';
+ import HomeItemList from '../ListCells/HomeItemList';
++import { useGlobalMusicPlayer } from '../../../hooks/useGlobalMusicPlayer';
+ 
+ let status;
+ let postStatus;
+@@ -111,6 +111,8 @@ const Search = props => {
+   var bottomSheetRef;
+ 
+   const isFocused = useIsFocused();
++  const { playGenericSong } = useGlobalMusicPlayer();
++
+ 
+   useEffect(() => {
+     if (isFocused) {
+@@ -526,7 +528,7 @@ const Search = props => {
+           hitreact1(modal1Visible);
+         }}
+         onPressMusicbox={() => {
+-          props.navigation.navigate('Player', {
++          const payload = {
+             comments: [],
+             song_title: data.item.song_name,
+             album_name: data.item.album_name,
+@@ -547,7 +549,8 @@ const Search = props => {
+             registerType: data.item.userDetails.register_type,
+             isrc: data.item.isrc_code,
+             details: data.item,
+-          });
++          };
++          playGenericSong(payload);
+         }}
+         onPressReactionbox={() => {
+           props.navigation.navigate('HomeItemReactions', {
+diff --git a/src/hooks/useGlobalMusicPlayer.js b/src/hooks/useGlobalMusicPlayer.js
+index 2514b25..975fac9 100644
+--- a/src/hooks/useGlobalMusicPlayer.js
++++ b/src/hooks/useGlobalMusicPlayer.js
+@@ -26,6 +26,7 @@ export const useGlobalMusicPlayer = () => {
+     const playSong = async (data, songIndex = null) => {
+         const selectedSongIndex = songIndex ?? 0;
+         const songItem = data?.item?.songs[selectedSongIndex];
++        // console.log(songItem, 'thisiSOngItem')
+ 
+         if (!songItem) return;
+ 
+@@ -36,7 +37,7 @@ export const useGlobalMusicPlayer = () => {
+             Platform.OS === 'ios' &&
+             registerType === 'apple'
+         ) {
+-            const songId = extractSongIdFromUrl(songItem?.original_song_uri);
++            const songId = songItem?.apple_song_id || extractSongIdFromUrl(songItem?.original_song_uri);
+ 
+             if (!songId) {
+                 console.log('ERROR: Failed to extract Apple Music Song ID');
+@@ -114,5 +115,74 @@ export const useGlobalMusicPlayer = () => {
+         }
+     };
+ 
+-    return { playSong };
++    const playGenericSong = async (payload) => {
++        if (!payload) return;
++
++        // Update Redux State
++        const songData = {
++            uri: payload.uri,
++            apple_song_id: payload.apple_song_id || payload.id,
++            song_name: payload.song_title,
++            album_name: payload.album_name,
++            song_pic: payload.song_pic,
++            username: payload.username,
++            profile_pic: payload.profile_pic,
++            commentData: payload.comments || [],
++            reactionData: payload.reactions || [],
++            id: payload.id,
++            artist: payload.artist,
++            originalUri: payload.originalUri || undefined,
++            isrc: payload.isrc,
++            regType: payload.registerType,
++            details: payload.details,
++            showPlaylist: payload.showPlaylist || false,
++        };
++
++        console.log(songData, 'songData')
++
++        // 1. Handle Apple Music Playback
++        if (
++            haveAppleMusicSubscription &&
++            payload.registerType === 'apple' &&
++            Platform.OS === 'ios' &&
++            registerType === 'apple'
++        ) {
++            dispatch(saveSongRefReq(songData));
++            dispatch(dummyRequest());
++            console.log('111songData12')
++            const songId = payload.apple_song_id || payload.id;
++            if (playingSongRef?.apple_song_id !== songId) {
++                console.log('111songData22')
++                await setPlaybackQueue(songId);
++                setTimeout(() => {
++                    Player.play();
++                }, 500);
++            } else {
++                console.log('111songData33')
++                setTimeout(() => {
++                    onToggle();
++                }, 500);
++            }
++        }
++        // 2. Handle Preview/Generic Playback
++        else {
++            console.log('111songData')
++            // If there was an active Apple Music player, stop it
++            if (Platform.OS === 'ios') {
++                Player.pause();
++            }
++
++            MusicPlayer(payload.uri, true)
++                .then(() => {
++                    dispatch(saveSongRefReq(songData));
++                    dispatch(dummyRequest());
++                })
++                .catch(err => {
++                    console.log('Error while playing music..' + JSON.stringify(err));
++                });
++        }
++
++    };
++
++    return { playSong, playGenericSong };
+ };
+diff --git a/src/saga/PostSaga.js b/src/saga/PostSaga.js
+index 308d76b..438dd75 100644
+--- a/src/saga/PostSaga.js
++++ b/src/saga/PostSaga.js
+@@ -1,4 +1,4 @@
+-import {put, call, takeLatest, select} from 'redux-saga/effects';
++import { put, call, takeLatest, select } from 'redux-saga/effects';
+ import {
+   SEARCH_SONG_REQUEST_FOR_POST_REQUEST,
+   SEARCH_SONG_REQUEST_FOR_POST_SUCCESS,
+@@ -22,9 +22,9 @@ import {
+   getSpotifyApi,
+   getAppleDevelopersToken,
+ } from '../utils/helpers/ApiRequest';
+-import {getSpotifyToken} from '../utils/helpers/SpotifyLogin';
+-import {getAppleDevToken} from '../utils/helpers/AppleDevToken';
+-import {Alert} from 'react-native';
++import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
++import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
++import { Alert } from 'react-native';
+ 
+ const getItems = state => state.TokenReducer;
+ 
+@@ -92,7 +92,7 @@ export function* searchSongsForPostAction(action) {
+       });
+     }
+   } catch (error) {
+-    yield put({type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error});
++    yield put({ type: SEARCH_SONG_REQUEST_FOR_POST_FAILURE, error: error });
+   }
+ }
+ 
+@@ -109,9 +109,9 @@ export function* createPostAction(action) {
+     const response = yield call(postApi, 'post/store', action.payload, header);
+     console.log(response?.data, 'its response after api hit');
+ 
+-    yield put({type: CREATE_POST_SUCCESS, data: response.data});
++    yield put({ type: CREATE_POST_SUCCESS, data: response.data });
+   } catch (error) {
+-    yield put({type: CREATE_POST_FAILURE, data: error});
++    yield put({ type: CREATE_POST_FAILURE, data: error });
+   }
+ }
+ 
+@@ -130,9 +130,9 @@ export function* deletePostAction(action) {
+       `post/delete/${action.payload}`,
+       Header,
+     );
+-    yield put({type: DELETE_POST_SUCCESS, data: response.data.data});
++    yield put({ type: DELETE_POST_SUCCESS, data: response.data.data });
+   } catch (error) {
+-    yield put({type: DELETE_POST_FAILURE, error: error});
++    yield put({ type: DELETE_POST_FAILURE, error: error });
+   }
+ }
+ 
+@@ -149,7 +149,7 @@ export function* searchPostAction(action) {
+       .replace('&', '&amp;')
+       .replace(/ *\([^)]*\) */g, '');
+ 
+-    console.log('api called' + `post/list?keyword=${encodeURI(text)}`);
++    // console.log('api called' + `post/list?keyword=${encodeURI(text)}`);
+ 
+     if (action.flag) {
+       const response = yield call(
+@@ -171,7 +171,7 @@ export function* searchPostAction(action) {
+         Header,
+       );
+ 
+-      console.log(response.data.data);
++      // console.log(response.data.data);
+       // console.log('success' + JSON.stringify(response.data.data));
+       yield put({
+         type: action.flag ? SEARCH_POST_SUCCESS : GET_POST_FROM_TOP_50_SUCCESS,
+diff --git a/src/widgets/MusicPlayerBar.js b/src/widgets/MusicPlayerBar.js
+index 2f3098e..eac6d7e 100644
+--- a/src/widgets/MusicPlayerBar.js
++++ b/src/widgets/MusicPlayerBar.js
+@@ -5,7 +5,6 @@ import {
+   Text,
+   TouchableOpacity,
+   Image,
+-  Alert,
+   Platform,
+   StyleSheet,
+ } from 'react-native';
+@@ -31,31 +30,17 @@ function MusicPlayerBar(props) {
+   const { isPlaying } = useIsPlaying();
+   const { song: currentSongData } = useCurrentSong();
+ 
+-  // const {
+-  //   onAuth,
+-  //   onToggle,
+-  //   currentSongData,
+-  //   isAuthorizeToAccessAppleMusic,
+-  //   isPlaying,
+-  //   haveAppleMusicSubscription,
+-  // } = usePlayFullAppleMusic();
+-
+   const {
+     onToggle,
+     checkPlaybackState,
+     setPlaybackQueue,
+-    // isPlaying,
+-    // isAuthorizeToAccessAppleMusic,
+-    // haveAppleMusicSubscription,
+   } = usePlayFullAppleMusic();
+ 
+   const { progress, duration } = useMusicPlayer();
+   const percentage = duration > 0 ? (progress / duration) * 100 : 0;
+ 
+   const {
+-    isAuthorizeToAccessAppleMusic,
+     haveAppleMusicSubscription,
+-    // isPlaying
+   } = useContext(AppleMusicContext);
+ 
+   useEffect(() => {
+@@ -74,9 +59,6 @@ function MusicPlayerBar(props) {
+       : null;
+ 
+   const arrSongs = props.playingSongRef?.details?.songs;
+-
+-  // console.log(props.playingSongRef, 'this is the ref song info in bar')
+-
+   const currentSongIndex = arrSongs?.findIndex(
+     item => item.isrc_code === props.playingSongRef?.isrc,
+   );
+@@ -94,6 +76,17 @@ function MusicPlayerBar(props) {
+     }, 1000);
+   }, []);
+ 
++  useEffect(() => {
++    if (
++      haveAppleMusicSubscription &&
++      Platform.OS === 'ios' &&
++      props.playingSongRef?.regType === 'apple' &&
++      currentSongData?.id === props.playingSongRef?.apple_song_id
++    ) {
++      setPlay(isPlaying);
++    }
++  }, [isPlaying, props.playingSongRef, currentSongData, haveAppleMusicSubscription]);
++
+   function getPlatingState() {
+     setTimeout(() => {
+       // console.log(
+@@ -138,12 +131,15 @@ function MusicPlayerBar(props) {
+       if (currentSongData?.id == props.playingSongRef?.apple_song_id) {
+         console.log('previousONsg', props.playingSongRef?.apple_song_id, currentSongData?.id)
+         onToggle();
++        setPlay(!play);
+       } else {
+         console.log('newsong', props.playingSongRef?.apple_song_id, currentSongData?.id)
+ 
++        setPlay(true);
+         // Await setPlaybackQueue so that the song is fully queued BEFORE we hit play.
+         await setPlaybackQueue(props.playingSongRef?.apple_song_id);
+ 
++
+         // Once the queue promises completes, we can safely play.
+         setTimeout(() => {
+           Player.play();
+@@ -154,13 +150,16 @@ function MusicPlayerBar(props) {
+       const res = ref.isPlaying();
+       if (res) {
+         ref.pause();
++        setPlay(false);
+         // console.log('paused');
+       } else {
+         ref.play(success => {
+           if (success) {
+             // console.log('Playback End');
++            setPlay(false);
+           }
+         });
++        setPlay(true);
+       }
+     }
+   };
+@@ -388,7 +387,6 @@ function MusicPlayerBar(props) {
+ const styles = StyleSheet.create({
+   container: {
+     width: '100%',
+-    // height: normalise(45),
+     backgroundColor: Colors.fadeblack,
+     opacity: 0.9,
+   },
