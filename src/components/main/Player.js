@@ -27,10 +27,9 @@ import StatusBar from '../../utils/MyStatusBar';
 import { commentOnPostReq, dummyRequest } from '../../action/UserAction';
 
 import { fetchCommentsOnPost } from '../../helpers/post';
-
 import Sound from 'react-native-sound';
 import toast from '../../utils/helpers/ShowErrorAlert';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 
 import {
@@ -79,6 +78,10 @@ let playerStatus;
 function Player(props) {
   // PLAYER
   // console.log(JSON.stringify(props.route.params), 'theese are xong props');
+  const sessionDetailReduxdata = useSelector(state => state.SessionReducer.sessionDetailData?.data);
+  const islive = sessionDetailReduxdata?.isLive;
+  const isHost = islive && props.userProfileResp?._id === sessionDetailReduxdata?.own_user?._id;
+
   const [appleMusicPlayerLoader, setAppleMusicPlayerLoader] = useState(false);
   const [playVisible, setPlayVisible] = useState(false);
   const [uri, setUri] = useState(props.route.params.uri);
@@ -908,7 +911,7 @@ function Player(props) {
                     />
                   </TouchableOpacity> */}
                   <TouchableOpacity
-                    disabled={disabled}
+                    disabled={disabled || isHost}
                     onPress={
                       () => handleSongPlayFullPreview()
                       //   {

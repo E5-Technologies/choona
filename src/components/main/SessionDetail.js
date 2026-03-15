@@ -24,7 +24,7 @@ import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import {
   clearSessionDetail,
@@ -60,9 +60,9 @@ import {
   useCurrentSong,
   useIsPlaying,
 } from '@lomray/react-native-apple-music';
-import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
-import {TrackProgress} from '../common/Progress';
-import {useFocusEffect} from '@react-navigation/native';
+import { usePlayFullAppleMusic } from '../../hooks/usePlayFullAppleMusic';
+import { TrackProgress } from '../common/Progress';
+import { useFocusEffect } from '@react-navigation/native';
 
 function SessionDetail(props) {
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -72,7 +72,7 @@ function SessionDetail(props) {
   const [showPopover, setShowPopover] = useState(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
   const [currentListners, setCurrentListeners] = useState([]);
-  const {width, height} = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -86,7 +86,7 @@ function SessionDetail(props) {
   const sessionDataForJoineeAfterJoin =
     sessionReduxData.CurrentSessionJoineeInfo?.data;
 
-  console.log(sessionDetailReduxdata, 'thshfdfhffsfdh');
+  // console.log(sessionDetailReduxdata, 'thshfdfhffsfdh');
 
   const currentEmitedSongStatus = useRef({
     hostId: null,
@@ -106,11 +106,11 @@ function SessionDetail(props) {
     resetProgress,
   } = useMusicPlayer();
 
-  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+  const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =
     useContext(AppleMusicContext);
-  const {isPlaying: appleFullSongPlaying} = useIsPlaying();
-  const {song: currentSongData} = useCurrentSong();
-  const {onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue} =
+  const { isPlaying: appleFullSongPlaying } = useIsPlaying();
+  const { song: currentSongData } = useCurrentSong();
+  const { onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue } =
     usePlayFullAppleMusic();
 
   const handleAddTrack = async () => {
@@ -387,7 +387,7 @@ function SessionDetail(props) {
     if (res?.isLive == false) {
       dispatch({
         type: START_SESSION_JOINEE_STOP_HOST,
-        data: {data: {...res}},
+        data: { data: { ...res } },
       });
       // toast(
       //   'Success',
@@ -416,7 +416,7 @@ function SessionDetail(props) {
     };
     setTimeout(() => {
       toast('Success', `${messageText}`);
-      dispatch(startSessionJoinRequestStatusIdle({status: '', error: {}}));
+      dispatch(startSessionJoinRequestStatusIdle({ status: '', error: {} }));
       props.navigation.goBack();
     }, 800);
   };
@@ -435,11 +435,11 @@ function SessionDetail(props) {
           toast(
             'Error',
             sessionReduxData?.error?.message ??
-              'Something Went Wrong, Please Try Again',
+            'Something Went Wrong, Please Try Again',
           );
           setTimeout(() => {
             dispatch(
-              startSessionJoinRequestStatusIdle({status: '', error: {}}),
+              startSessionJoinRequestStatusIdle({ status: '', error: {} }),
             );
           }, 300);
           break;
@@ -473,11 +473,11 @@ function SessionDetail(props) {
           handleSessionLeftOverCancel(
             CREATE_SESSION_DETAIL_FAILURE,
             sessionReduxData?.error?.message ??
-              'Something Went Wrong, Please Try Again',
+            'Something Went Wrong, Please Try Again',
           );
           setTimeout(() => {
             dispatch(
-              startSessionJoinRequestStatusIdle({status: '', error: {}}),
+              startSessionJoinRequestStatusIdle({ status: '', error: {} }),
             );
           }, 300);
           break;
@@ -523,29 +523,30 @@ function SessionDetail(props) {
   });
 
   const handleJoinLeaveSession = () => {
-    if (
-      sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
-      !checkIsAppleStatus
-    ) {
-      Alert.alert(
-        "You don't have apple music subscription, To join the session Apple music subscription is required!",
-      );
-      return;
+    // if (
+    //   sessionDetailReduxdata?.sessionRegisterType === 'apple' &&
+    //   !checkIsAppleStatus
+    // ) {
+    //   Alert.alert(
+    //     "You don't have apple music subscription, To join the session Apple music subscription is required!",
+    //   );
+    //   return;
+    // } 
+    // else {
+    const requestObj = {
+      id:
+        props.route.params.fromScreen == 'notificionScreen'
+          ? props.route.params?.sessionId
+          : sessionDetailReduxdata?._id,
+      user_id: userProfileResp?._id,
+    };
+    console.log(requestObj, 'thi is  the request object');
+    if (sessionDetailReduxdata?.isLive && checkUserExistence()) {
+      dispatch(startSessionLeftRequest(requestObj));
     } else {
-      const requestObj = {
-        id:
-          props.route.params.fromScreen == 'notificionScreen'
-            ? props.route.params?.sessionId
-            : sessionDetailReduxdata?._id,
-        user_id: userProfileResp?._id,
-      };
-      console.log(requestObj, 'thi is  the request object');
-      if (sessionDetailReduxdata?.isLive && checkUserExistence()) {
-        dispatch(startSessionLeftRequest(requestObj));
-      } else {
-        dispatch(startSessionJoinRequest(requestObj));
-      }
+      dispatch(startSessionJoinRequest(requestObj));
     }
+    // }
   };
 
   // TO CHECK THAT USER APPLE STATUS
@@ -573,14 +574,14 @@ function SessionDetail(props) {
   }, [progress, currentState]);
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader
         visible={sessionReduxData?.loading || sessionReduxData?.isRequestLoader}
       />
       {Platform.OS == 'android' && (
         <StatusBar backgroundColor={Colors.darkerblack} />
       )}
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={
             sessionDetailReduxdata?.isLive && checkUserExistence()
@@ -610,7 +611,7 @@ function SessionDetail(props) {
           }
           imagetwo={
             sessionDetailReduxdata?.isPrivate ||
-            (sessionDetailReduxdata?.isLive && checkUserExistence())
+              (sessionDetailReduxdata?.isLive && checkUserExistence())
               ? null
               : ImagePath.addButtonSmall
           }
@@ -618,20 +619,20 @@ function SessionDetail(props) {
           onPressFirstItem={() => {
             sessionDetailReduxdata?.isLive && checkUserExistence()
               ? // handleJoinLeaveSession()
-                setShowPopover(true)
+              setShowPopover(true)
               : props.navigation.goBack();
           }}
           onPressThirdItem={
             sessionDetailReduxdata?.isPrivate ||
-            (sessionDetailReduxdata?.isLive && checkUserExistence())
+              (sessionDetailReduxdata?.isLive && checkUserExistence())
               ? () => null
               : handleJoinLeaveSession
           }
           hideBorderBottom={false}
-          titleStyle={{fontFamily: 'ProximaNova-Semibold'}}
+          titleStyle={{ fontFamily: 'ProximaNova-Semibold' }}
         />
-        <View style={{flex: 1}}>
-          <View style={{flex: 2.5}}>
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 2.5 }}>
             <View style={styles.listItemHeaderSongDetails}>
               <View style={styles.nameWrapper}>
                 <Text
@@ -652,10 +653,10 @@ function SessionDetail(props) {
                 source={
                   sessionDetailReduxdata?.own_user?.profile_image
                     ? {
-                        uri:
-                          constants.profile_picture_base_url +
-                          sessionDetailReduxdata?.own_user?.profile_image,
-                      }
+                      uri:
+                        constants.profile_picture_base_url +
+                        sessionDetailReduxdata?.own_user?.profile_image,
+                    }
                     : ImagePath.userPlaceholder
                 }
                 style={styles.listItemHeaderSongTypeIcon}
@@ -673,12 +674,12 @@ function SessionDetail(props) {
                 numberOfLines={1}>
                 NOW PLAYING
               </Text>
-              <View style={[styles.bottomLineStyle, {width: '35%'}]}></View>
+              <View style={[styles.bottomLineStyle, { width: '35%' }]}></View>
             </View>
             <View style={styles.playListItemContainer}>
               <FlatList
                 data={sessionDetailReduxdata?.session_songs}
-                renderItem={({item, index}) => {
+                renderItem={({ item, index }) => {
                   let isPlayingCurrent =
                     currentEmitedSongStatus?.current?.playIndex == index;
                   return (
@@ -688,20 +689,20 @@ function SessionDetail(props) {
                         // isPlayingCurrent &&
                         //   currentEmitedSongStatus?.current
                         //     ?.startAudioMixing && {opacity: 1},
-                        isPlayingCurrent && {opacity: 1},
+                        isPlayingCurrent && { opacity: 1 },
                       ]}>
                       {sessionDetailReduxdata?.isLive ? (
                         isPlayingCurrent ? (
                           <TouchableOpacity
                             disabled={true}
-                            onPress={() => {}}
+                            onPress={() => { }}
                             style={styles.playButtonStyle}>
                             <Image
                               // source={playVisible ? ImagePath.play : ImagePath.pause}
                               source={
                                 isPlayingCurrent &&
-                                currentEmitedSongStatus?.current
-                                  ?.startAudioMixing
+                                  currentEmitedSongStatus?.current
+                                    ?.startAudioMixing
                                   ? ImagePath.pause
                                   : ImagePath.play
                               }
@@ -732,7 +733,7 @@ function SessionDetail(props) {
                         <View style={styles.playButtonStyle}></View>
                       )}
                       <Image
-                        source={{uri: item?.song_image}}
+                        source={{ uri: item?.song_image }}
                         style={styles.songListItemImage}
                         resizeMode="cover"
                       />
@@ -761,7 +762,7 @@ function SessionDetail(props) {
               <Text
                 style={[
                   styles.listItemHeaderSongTextTitle,
-                  {marginTop: normalise(5), fontSize: normalise(12)},
+                  { marginTop: normalise(5), fontSize: normalise(12) },
                 ]}
                 numberOfLines={2}>
                 LISTENERS
@@ -776,7 +777,7 @@ function SessionDetail(props) {
                   marginTop: normalise(0),
                 },
               ]}></View>
-            <ScrollView style={{flex: 1}}>
+            <ScrollView style={{ flex: 1 }}>
               {currentListners?.length > 0 ? (
                 <View
                   style={{
@@ -791,10 +792,10 @@ function SessionDetail(props) {
                           source={
                             item?.profile_image
                               ? {
-                                  uri:
-                                    constants.profile_picture_base_url +
-                                    item?.profile_image,
-                                }
+                                uri:
+                                  constants.profile_picture_base_url +
+                                  item?.profile_image,
+                              }
                               : ImagePath.userPlaceholder
                           }
                           style={[styles.songListItemImage]}
@@ -831,7 +832,7 @@ function SessionDetail(props) {
           isVisible={showPopover}
           onRequestClose={() => setShowPopover(false)}>
           <View style={{}}>
-            <Text style={[styles.confrimationText, {width: '100%'}]}>
+            <Text style={[styles.confrimationText, { width: '100%' }]}>
               Are you sure, do you want to leave this session!
             </Text>
             <View

@@ -25,6 +25,8 @@ import {
 function MusicPlayerBar(props) {
   const sessionDetailReduxdata = useSelector(state => state.SessionReducer.sessionDetailData?.data);
   const islive = sessionDetailReduxdata?.isLive;
+  const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
+  const isHost = islive && userProfileResp?._id === sessionDetailReduxdata?.own_user?._id;
 
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
@@ -335,7 +337,7 @@ function MusicPlayerBar(props) {
             }}>
             {arrSongs?.length > 1 && (
               <TouchableOpacity
-                disabled={disabled}
+                disabled={disabled || isHost}
                 onPress={() => {
                   setDisabled(true);
                   changeSong('previous');
@@ -362,7 +364,7 @@ function MusicPlayerBar(props) {
             )}
 
             <TouchableOpacity
-              disabled={disabled}
+              disabled={disabled || isHost}
               onPress={() => {
                 setDisabled(true);
                 playOrPause();
@@ -387,7 +389,7 @@ function MusicPlayerBar(props) {
             </TouchableOpacity>
             {arrSongs?.length > 1 && (
               <TouchableOpacity
-                disabled={disabled}
+                disabled={disabled || isHost}
                 onPress={() => {
                   setDisabled(true);
                   changeSong('next');

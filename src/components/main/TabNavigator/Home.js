@@ -1020,7 +1020,7 @@ const Home = props => {
     if (posts.length > 0) {
       const updatedPosts = posts.map(post => ({
         ...post,
-        playing: currentSongData?.id === post._id && isPlaying,
+        playing: currentSongData?.id === post?._id && isPlaying,
       }));
       setPostArray(updatedPosts);
     }

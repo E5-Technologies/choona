@@ -19,7 +19,7 @@ export const useSessionHosting = () => {
     const { song: currentPlayinSongData } = useCurrentSong();
 
     const isLive = sessionDetailReduxdata?.isLive ?? false;
-    const isHost = userProfileResp?._id === sessionDetailReduxdata?.user_id;
+    const isHost = userProfileResp?._id === sessionDetailReduxdata?.own_user?._id;
     const sessionId = sessionDetailReduxdata?._id;
 
     const positionRef = useRef(0);
@@ -84,7 +84,7 @@ export const useSessionHosting = () => {
                     ? appleFullSongPlaying
                     : playerState?.state === 'playing';
 
-                // console.log('📡 Emitting Global Sync:', emitObjData.playIndex, emitObjData.currentTime);
+                console.log('📡 Emitting Global Sync Payload:', JSON.stringify(emitObjData, null, 2));
                 socketService.emit('session_play_status', emitObjData);
             }, 1000);
         }
@@ -96,7 +96,7 @@ export const useSessionHosting = () => {
             }
         };
     }, [
-        userProfileResp?._id,
+        userProfileResp,
         isLive,
         isHost,
         sessionId,
@@ -105,6 +105,7 @@ export const useSessionHosting = () => {
         playerState?.state,
         isAppleActive,
         sessionDetailReduxdata?.session_songs,
+        sessionReduxData?.sessionDetailData,
     ]);
 
     return {
