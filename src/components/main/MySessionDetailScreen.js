@@ -1745,11 +1745,13 @@ function MySessionDetailScreen(props) {
       if (checkIsAppleStatus) {
         if (!sessionDetailReduxdata?.isLive) {
           // Alert.alert('reset');
-          resetPlaybackQueue();
-          setCurrentTrack(null); // addded later when handling apple full music player
-          resetProgress();
-          // Clear global miniplayer
-          dispatch(saveSongRefReq(''));
+          (async () => {
+            await resetPlaybackQueue();
+            setCurrentTrack(null); // addded later when handling apple full music player
+            resetProgress();
+            // Clear global miniplayer
+            dispatch(saveSongRefReq(''));
+          })();
         }
       } else {
         if (!sessionDetailReduxdata?.isLive) {

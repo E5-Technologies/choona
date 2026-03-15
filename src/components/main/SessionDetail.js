@@ -449,8 +449,10 @@ function SessionDetail(props) {
             'Session left succssfully',
           );
           if (checkIsAppleStatus) {
-            resetPlaybackQueue();
-            resetProgress();
+            (async () => {
+              await resetPlaybackQueue();
+              resetProgress();
+            })();
           }
           // if (props.route.params?.fromScreen) {
           //   props.navigation.setParams({
@@ -464,8 +466,10 @@ function SessionDetail(props) {
             'Session has been closed by the host',
           );
           if (checkIsAppleStatus) {
-            resetPlaybackQueue();
-            resetProgress();
+            (async () => {
+              await resetPlaybackQueue();
+              resetProgress();
+            })();
           }
           break;
 

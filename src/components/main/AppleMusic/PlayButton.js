@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -6,10 +6,10 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import {Player} from '@lomray/react-native-apple-music';
+import { Player } from '@lomray/react-native-apple-music';
 import ImagePath from '../../../assests/ImagePath';
 
-const PlayButton = ({songId, size = 40, color = '#000'}) => {
+const PlayButton = ({ songId, size = 40, color = '#000' }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -51,7 +51,7 @@ const PlayButton = ({songId, size = 40, color = '#000'}) => {
     setIsLoading(true);
     try {
       if (isPlaying) {
-        await Player.stop();
+        await Player.pause();
       } else {
         console.log('Playingf');
         await Player.playSong(songId);
@@ -67,7 +67,7 @@ const PlayButton = ({songId, size = 40, color = '#000'}) => {
   return (
     <TouchableOpacity
       onPress={togglePlayback}
-      style={[styles.button, {width: size, height: size}]}
+      style={[styles.button, { width: size, height: size }]}
       disabled={isLoading}>
       {isLoading ? (
         <ActivityIndicator size="small" color={color} />
@@ -79,7 +79,7 @@ const PlayButton = ({songId, size = 40, color = '#000'}) => {
         // />
         <Image
           source={isPlaying ? ImagePath.play : ImagePath.pause}
-          style={{height: 20, width: 20}}
+          style={{ height: 20, width: 20 }}
           resizeMode="contain"
         />
       )}

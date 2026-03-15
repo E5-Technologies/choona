@@ -2,12 +2,9 @@ import {
   Auth,
   MusicKit,
   Player,
-  useCurrentSong,
-  useIsPlaying,
   CatalogSearchType,
 } from '@lomray/react-native-apple-music';
-import { Alert, Platform, Linking } from 'react-native';
-import useSWR from 'swr';
+import { Alert, Platform } from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -140,17 +137,24 @@ export const usePlayFullAppleMusic = () => {
 
   const resetPlaybackQueue = useCallback(async () => {
     try {
-      // Stop current playback
-      // await Player.stop();
+      // Attempt to pause playback first to clear native state
+      try {
+        await Player.pause();
+      } catch (pauseError) {
+        // Silently skip if already paused or idle
+        console.log('Apple Music Player.pause (soft catch):', pauseError?.message);
+      }
 
-      // Clear the queue (implementation may vary based on library version)
+      // Clear the queue
       const res = await MusicKit.resetPlaybackQueue();
-      console.log(res, 'its res>>>>>>>')
-
-      // Alternative if the above doesn't work:
-      // await Player.reset();
+      console.log('Apple Music Queue Reset result:', res);
     } catch (error) {
-      console.log('Error resetting queue:', error);
+      // Gracefully handle "context not found" errors which are expected when idle
+      if (error?.message?.includes('Playback context not found')) {
+        console.log('Apple Music Queue Reset: Context already idle/cleared.');
+      } else {
+        console.log('Error resetting queue:', error);
+      }
     }
   }, []);
 
