@@ -6,10 +6,10 @@ import {
   useIsPlaying,
   CatalogSearchType,
 } from '@lomray/react-native-apple-music';
-import { Alert, Platform } from 'react-native';
+import { Alert, Platform, Linking } from 'react-native';
 import useSWR from 'swr';
 import toast from '../utils/helpers/ShowErrorAlert';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const usePlayFullAppleMusic = () => {
   // const {isPlaying} = useIsPlaying();
@@ -57,7 +57,7 @@ export const usePlayFullAppleMusic = () => {
   //     });
   // };
 
-  const onAuth = async () => {
+  const onAuth = useCallback(async () => {
     try {
       const status = await Auth.authorize();
       // Alert.alert('Authorization Status', `Status: ${status}`);
@@ -72,9 +72,9 @@ export const usePlayFullAppleMusic = () => {
       console.error('Authorization error:', error);
       toast('Error', 'Failed to access Apple Music');
     }
-  };
+  }, []);
 
-  const onCheckSubs = async () => {
+  const onCheckSubs = useCallback(async () => {
     try {
       const subscriptionInfo = await Auth.checkSubscription();
       console.log('Subscription Info:', subscriptionInfo);
@@ -86,24 +86,8 @@ export const usePlayFullAppleMusic = () => {
         setHaveAppleMusicSubscription(true);
         // return true;
       }
-      // else if (subscriptionInfo.isMusicCatalogSubscriptionEligible) {
-      //   // User is eligible but not currently subscribed
-      //   Alert.alert(
-      //     'Subscription Required',
-      //     'You need to activate your Apple Music subscription to play full songs',
-      //     [
-      //       { text: 'Cancel' },
-      //       { text: 'Subscribe', onPress: () => Linking.openURL('https://music.apple.com') }
-      //     ]
-      //   );
-      //   return false;
-      // }
       else {
         // User is not eligible (might be in unsupported region)
-        // Alert.alert(
-        //   'Not Available',
-        //   'Apple Music subscription is not available for your account',
-        // );
         setHaveAppleMusicSubscription(false);
         // return false;
       }
@@ -112,34 +96,33 @@ export const usePlayFullAppleMusic = () => {
       Alert.alert('Error', 'Could not verify Apple Music subscription status');
       // return false;
     }
-  };
+  }, []);
 
   // const onToggle = () => void Player.togglePlayerState();
-  const onToggle = async () => {
+  const onToggle = useCallback(async () => {
     try {
       await Player.togglePlayerState();
     } catch (error) {
       console.log(error, 'its errro while playing');
     }
-  };
+  }, []);
 
-  const onFetch = () => {
+  const onFetch = useCallback(() => {
     MusicKit.catalogSearch('Taylor Swift', [CatalogSearchType.SONGS], {
       limit: 1,
       offset: 0,
     })
       .then(results => {
         // console.log('Search Results:', results);
-        setSongList(results?.songs[0]);
       })
       .catch(error => {
         console.error('Failed to perform catalog search:', error);
       });
-  };
+  }, []);
 
-  const onSkip = () => void Player.skipToNextEntry();
+  const onSkip = useCallback(() => void Player.skipToNextEntry(), []);
 
-  async function setPlaybackQueue(itemId) {
+  const setPlaybackQueue = useCallback(async (itemId) => {
     console.log('usePlayFullAppleMusic: setPlaybackQueue called with:', itemId);
     try {
       if (!itemId) {
@@ -153,9 +136,9 @@ export const usePlayFullAppleMusic = () => {
     } catch (error) {
       console.error('usePlayFullAppleMusic: Error setting playback queue:', error);
     }
-  }
+  }, []);
 
-  async function resetPlaybackQueue() {
+  const resetPlaybackQueue = useCallback(async () => {
     try {
       // Stop current playback
       // await Player.stop();
@@ -169,24 +152,11 @@ export const usePlayFullAppleMusic = () => {
     } catch (error) {
       console.log('Error resetting queue:', error);
     }
-  }
+  }, []);
 
-  const checkPlaybackState = async () => {
+  const checkPlaybackState = useCallback(async () => {
     try {
       const state = await Player.getCurrentState();
-      // console.log(state, 'its statieof bpback');
-
-      // console.log('Current Playback State:', {
-      //   isPlaying: state.isPlaying,
-      //   currentSong: state.nowPlayingItem?.title || 'None',
-      //   songId: state.nowPlayingItem?.id || 'None',
-      //   playbackRate: state.playbackRate,
-      //   position: state.position,
-      //   duration: state.duration,
-      //   repeatMode: state.repeatMode,
-      //   shuffleMode: state.shuffleMode,
-      // });
-
       return state;
     } catch (error) {
       console.error('Error getting playback state:', {
@@ -202,7 +172,7 @@ export const usePlayFullAppleMusic = () => {
 
       throw error; // Re-throw if you want calling code to handle it
     }
-  };
+  }, []);
 
   // // Usage example:
   // const handleCheckState = async () => {

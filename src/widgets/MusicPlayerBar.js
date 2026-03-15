@@ -12,7 +12,7 @@ import {
 import normalise from '../utils/helpers/Dimens';
 import Colors from '../assests/Colors';
 import ImagePath from '../assests/ImagePath';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import Loader from './AuthLoader';
 import { usePlayFullAppleMusic } from '../hooks/usePlayFullAppleMusic';
 import { AppleMusicContext, useMusicPlayer } from '../context/AppleMusicContext';
@@ -23,6 +23,9 @@ import {
 } from '@lomray/react-native-apple-music';
 
 function MusicPlayerBar(props) {
+  const sessionDetailReduxdata = useSelector(state => state.SessionReducer.sessionDetailData?.data);
+  const islive = sessionDetailReduxdata?.isLive;
+
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
   const [time, setTime] = useState(0);
@@ -105,8 +108,8 @@ function MusicPlayerBar(props) {
         // Alert.alert('spotify')
         console.log('spotify');
         if (ref !== null && ref !== undefined) {
-          const isPlaying = ref.isPlaying();
-          setPlay(isPlaying);
+          const isActuallyPlaying = ref.isPlaying();
+          setPlay(isActuallyPlaying);
         }
       }
     }, 1000);
@@ -206,7 +209,19 @@ function MusicPlayerBar(props) {
     bottom: props.bottom !== undefined ? props.bottom : 0,
   }), [props.position, props.bottom]);
 
-  return props.playingSongRef !== '' ? (
+  const currentSessionSong = useSelector(state => state.SessionReducer.currentSessionSong?.data);
+  const showPlayer = props.playingSongRef !== '' || islive;
+
+  // Fallback metadata for live session if playingSongRef is empty
+  const activeSong = props.playingSongRef !== '' ? props.playingSongRef : (islive ? {
+    song_name: currentSessionSong?.song_name || currentSongData?.title || 'Session Live',
+    artist: currentSessionSong?.artist_name || currentSongData?.artist || 'Broadcasting',
+    song_pic: currentSessionSong?.song_image || currentSongData?.artwork || sessionDetailReduxdata?.session_image,
+    regType: 'apple', // Default to apple for session context
+    apple_song_id: currentSessionSong?.apple_song_id || currentSongData?.id,
+  } : null);
+
+  return showPlayer ? (
     <View
       style={[styles.container, dynamicStyle]}>
       <Loader visible={bool} />
@@ -247,14 +262,36 @@ function MusicPlayerBar(props) {
               flexDirection: 'row',
               flex: 1,
             }}>
+            {islive && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: normalise(-8),
+                  left: normalise(0),
+                  backgroundColor: Colors.red,
+                  paddingHorizontal: normalise(4),
+                  paddingVertical: normalise(1),
+                  borderRadius: normalise(4),
+                  zIndex: 10,
+                }}>
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontSize: normalise(7),
+                    fontWeight: 'bold',
+                  }}>
+                  LIVE
+                </Text>
+              </View>
+            )}
             <TouchableOpacity
               onPress={() => {
                 onPress();
               }}>
               <Image
                 source={
-                  props?.playingSongRef?.song_pic
-                    ? { uri: props.playingSongRef.song_pic }
+                  activeSong?.song_pic || activeSong?.song_image
+                    ? { uri: activeSong.song_pic || activeSong.song_image }
                     : null
                 }
                 style={{ height: normalise(45), width: normalise(45) }}
@@ -275,7 +312,7 @@ function MusicPlayerBar(props) {
                   // width: '100%',
                 }}
                 numberOfLines={2}>
-                {props.playingSongRef.song_name}
+                {activeSong?.song_name}
               </Text>
               <Text
                 style={{
@@ -285,7 +322,7 @@ function MusicPlayerBar(props) {
                   // width: '100%',
                 }}
                 numberOfLines={1}>
-                {props.playingSongRef.artist}
+                {activeSong?.artist}
               </Text>
             </View>
           </View>

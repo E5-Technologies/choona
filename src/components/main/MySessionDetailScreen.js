@@ -1422,7 +1422,6 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  Linking,
   Modal,
   Platform,
   SafeAreaView,
@@ -1439,7 +1438,7 @@ import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 import StatusBar from '../../utils/MyStatusBar';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import constants from '../../utils/helpers/constants';
 import Loader from '../../widgets/AuthLoader';
 import isInternetConnected from '../../utils/helpers/NetInfo';
@@ -1449,9 +1448,14 @@ import {
   getSessionDetailRequest,
   startSessionRequest,
 } from '../../action/SessionAction';
+import { saveSongRefReq } from '../../action/SongAction';
+import {
+  sendSessionInvitationToUser,
+  sendSessionInvitationToUserIdleStatus,
+  userSearchRequest,
+} from '../../action/UserAction';
 import socketService from '../../utils/socket/socketService';
-import useTrackPlayer, {addTracks} from '../../hooks/useTrackPlayer';
-import TrackPlayerComponent from '../common/TrackPlayerComponent';
+import useTrackPlayer, { addTracks } from '../../hooks/useTrackPlayer';
 import TrackPlayer, {
   Event,
   useTrackPlayerEvents,
@@ -1459,25 +1463,17 @@ import TrackPlayer, {
   useProgress,
   State,
 } from 'react-native-track-player';
-import {TrackProgress} from '../common/Progress';
-import {hitSlop} from '../../widgets/HeaderComponent';
+import { TrackProgress } from '../common/Progress';
+import { hitSlop } from '../../widgets/HeaderComponent';
 import Popover from 'react-native-popover-view';
 import ActivityListItem from './ListCells/ActivityListItem';
 import Seperator from './ListCells/Seperator';
 import EmptyComponent from '../Empty/EmptyComponent';
 import {
-  sendSessionInvitationToUser,
-  sendSessionInvitationToUserIdleStatus,
-  userSearchRequest,
-} from '../../action/UserAction';
-import {
-  START_SESSION_JOINEE_FAILURE,
-  START_SESSION_JOINEE_REQUEST,
   SEND_SESSION_INVITATION_FAILURE,
   SEND_SESSION_INVITATION_SUCCESS,
-  START_SESSION_SUCCESS,
 } from '../../action/TypeConstants';
-import {usePlayFullAppleMusic} from '../../hooks/usePlayFullAppleMusic';
+import { usePlayFullAppleMusic } from '../../hooks/usePlayFullAppleMusic';
 import {
   AppleMusicContext,
   useMusicPlayer,
@@ -1492,32 +1488,31 @@ import {
 // let status;
 
 function MySessionDetailScreen(props) {
-  const {autoPlay} = props?.route?.params ?? {};
+  const { autoPlay } = props?.route?.params ?? {};
   console.log(autoPlay, 'thisiUatplay11');
   let sendSong = false;
   // console.log(props?.route?.params, 'these are params')
   // const { currentSession } = props?.route?.params
   // console.log(currentSession, 'its current sessionI')
-  const {width, height} = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const [islive, setIsLive] = useState(false);
-  const [currentPlayingSong, setCurrentPlayingSong] = useState(null);
   const [showPopover, setShowPopover] = useState(false);
   const [userDataList, setUserDataList] = useState([]);
   const [usersSearchText, setUsersSearchText] = useState('');
   const [seletedUserToInvite, setSelectedUserToInvite] = useState([]);
   const [status, setStatus] = useState('');
-  const {isPlaying: appleFullSongPlaying} = useIsPlaying();
+  const { isPlaying: appleFullSongPlaying } = useIsPlaying();
   console.log(appleFullSongPlaying, 'this is my current song>>>>>>');
-  const {playTrack, pauseTrack} = useTrackPlayer();
+  const { playTrack, pauseTrack } = useTrackPlayer();
 
-  const {isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription} =
+  const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =
     useContext(AppleMusicContext);
 
-  const {onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue} =
+  const { onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue } =
     usePlayFullAppleMusic();
 
+  const autoPlayHandledRef = useRef(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
-  const [listenSessionStart, setListenSessionStart] = useState(null);
   const [currentListners, setCurrentListeners] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -1533,21 +1528,19 @@ function MySessionDetailScreen(props) {
   const userTokenData = useSelector(state => state.TokenReducer);
   const sessionReduxData = useSelector(state => state.SessionReducer);
   const sessionDetailReduxdata = sessionReduxData?.sessionDetailData?.data;
-  const currentSessionLiveInfo = sessionReduxData?.currentSessionSong?.data;
   const userReduxData = useSelector(state => state.UserReducer);
   const userSearchList = useSelector(state => state.UserReducer.userSearch);
   const userInviteLoader = useSelector(state => state.UserReducer.inviteLoader);
 
-  //TRACK PLAYER DURATION ADN PROGRESS HANDLING FOR APPLE AND APPLE PREVIEW
   const {
     progress,
     duration: appleFullSongDuration,
     resetProgress,
   } = useMusicPlayer();
-  const {position, duration} = useProgress(200);
+  const { position, duration } = useProgress(200);
   const positionRef = useRef(null);
   const playerAcceptedSongsRef = useRef([]);
-  const {song: currentPlayinSongData} = useCurrentSong();
+  const { song: currentPlayinSongData } = useCurrentSong();
   console.log(sessionReduxData?.startSessionLoading, 'thiisissong');
   //USEEFFECT HOOKS++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1573,15 +1566,38 @@ function MySessionDetailScreen(props) {
       islive
     ) {
       let currentSongId = currentPlayinSongData?.id;
-      let playingSongIndex = playerAcceptedSongsRef.current.findIndex(
-        item => item == currentSongId,
-      );
-      // console.log(playingSongIndex, 'its playing song index');
+      let playingSongIndex = playerAcceptedSongsRef.current.findIndex(item => {
+        if (typeof item === 'string') {
+          return item == currentSongId;
+        } else {
+          return item?.id == currentSongId || item?.apple_song_id == currentSongId;
+        }
+      });
+
       if (playingSongIndex != currentTrack) {
         setCurrentTrack(playingSongIndex);
       }
+
+      // Sync with global miniplayer
+      const songItem = sessionDetailReduxdata?.session_songs[playingSongIndex];
+      if (songItem) {
+        const songData = {
+          uri: songItem?.song_uri,
+          apple_song_id: songItem?.apple_song_id,
+          song_name: songItem?.song_name,
+          album_name: songItem?.album_name,
+          song_pic: songItem?.song_image,
+          id: sessionDetailReduxdata?._id,
+          artist: songItem?.artist_name,
+          regType: 'apple',
+          details: sessionDetailReduxdata,
+          showPlaylist: true,
+        };
+        dispatch(saveSongRefReq(songData));
+        // dispatch(dummyRequest()); // Removed to prevent loop/excessive renders
+      }
     }
-  }, [currentPlayinSongData]);
+  }, [currentPlayinSongData, currentTrack, islive, sessionDetailReduxdata, dispatch, checkIsAppleStatus]);
 
   useEffect(() => {
     setUserDataList(userSearchList);
@@ -1593,7 +1609,7 @@ function MySessionDetailScreen(props) {
     } else {
       positionRef.current = position; //FOR APPLE/SPOTIFY PREVIEW
     }
-  }, [position, progress]);
+  }, [position, progress, checkIsAppleStatus]);
 
   useEffect(() => {
     if (!checkIsAppleStatus) {
@@ -1606,100 +1622,58 @@ function MySessionDetailScreen(props) {
       //     TrackPlayer.destroy();
       // };
     }
-  }, []);
+  }, [checkIsAppleStatus]);
 
-  // not try with when saparate the socket initalization
+  // Socket initialization is now handled globally in App.js via useSessionHosting
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const initializeSocket = async () => {
+  //     try {
+  //       await socketService.initializeSocket(userTokenData?.token);
+  //     } catch (error) {
+  //       console.error('Socket initialization error:', error);
+  //     }
+  //   };
+  //
+  //   if (userTokenData?.token) {
+  //     initializeSocket();
+  //   }
+  //
+  //   return () => {
+  //     isMounted = false;
+  //     socketService.disconnect(); // Disconnect on component unmount or token change
+  //   };
+  // }, [userTokenData?.token]);
+
+  // Session status interval is now handled globally in App.js via useSessionHosting
   useEffect(() => {
-    let isMounted = true;
-    const initializeSocket = async () => {
+    // Setup listeners (keeping local listeners for UI on this screen)
+    const setupListeners = () => {
       try {
-        await socketService.initializeSocket(userTokenData?.token);
-      } catch (error) {
-        console.error('Socket initialization error:', error);
-      }
-    };
-
-    if (userTokenData?.token) {
-      initializeSocket();
-    }
-
-    return () => {
-      isMounted = false;
-      socketService.disconnect(); // Disconnect on component unmount or token change
-    };
-  }, [userTokenData?.token]);
-
-  // Lets emit the other event when session is live and depends stop, start , position and playing state
-  useEffect(() => {
-    let intervalId;
-    let isMounted = true;
-    const handleStartSession = sessionData => {
-      if (!isMounted) return;
-      setListenSessionStart(sessionData);
-    };
-
-    // Setup listeners and interval
-    const setupListenersAndInterval = () => {
-      try {
-        // Add event listeners
-        // socketService.on('start_session', handleStartSession);
         socketService.on('session_users_status', handleListerUserStatus);
-
-        // Start interval if live
-        if (islive && isMounted) {
-          intervalId = setInterval(() => {
-            const emitObjData = {
-              hostId: userProfileResp?._id,
-              // startAudioMixing: playerState?.state === 'playing' ?? false,
-              playIndex: currentTrack ?? -1,
-              playLoading: false,
-              currentTime: positionRef.current,
-              startedAt: Date.now(),
-              pausedAt: null,
-              sessionId: sessionDetailReduxdata?._id,
-            };
-
-            emitObjData.startAudioMixing = checkIsAppleStatus
-              ? appleFullSongPlaying
-              : playerState?.state === 'playing'
-              ? true
-              : false;
-            // console.log(emitObjData, 'this is the emit data');
-            socketService.emit('session_play_status', emitObjData);
-          }, 1000);
-        }
       } catch (error) {
         console.error('Error setting up listeners:', error);
       }
     };
 
-    setupListenersAndInterval();
+    setupListeners();
     // Cleanup on unmount or dependency change
     return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-      // socketService.off('start_session', handleStartSession);
       socketService.off('session_users_status', handleListerUserStatus);
     };
-  }, [
-    islive,
-    playerState?.state,
-    currentTrack,
-    appleFullSongPlaying,
-    // position,
-  ]);
+  }, [handleListerUserStatus]);
 
   useEffect(() => {
     isInternetConnected()
       .then(() => {
         dispatch(
-          getSessionDetailRequest({sessionId: props?.route?.params?.sessionId}),
+          getSessionDetailRequest({ sessionId: props?.route?.params?.sessionId }),
         );
       })
       .catch(() => {
         toast('Error', 'Please Connect To Internet');
       });
-  }, []);
+  }, [dispatch, props?.route?.params?.sessionId]);
 
   // TO CHECK THAT USER APPLE STATUS
   const checkIsAppleStatus = useMemo(() => {
@@ -1766,7 +1740,7 @@ function MySessionDetailScreen(props) {
   ]);
 
   useEffect(() => {
-    if (sessionReduxData?.currentSessionSong && sessionDetailReduxdata) {
+    if (sessionDetailReduxdata?._id) {
       setIsLive(sessionDetailReduxdata?.isLive);
       if (checkIsAppleStatus) {
         if (!sessionDetailReduxdata?.isLive) {
@@ -1774,15 +1748,19 @@ function MySessionDetailScreen(props) {
           resetPlaybackQueue();
           setCurrentTrack(null); // addded later when handling apple full music player
           resetProgress();
+          // Clear global miniplayer
+          dispatch(saveSongRefReq(''));
         }
       } else {
         if (!sessionDetailReduxdata?.isLive) {
           // Alert.alert('Reset')
           TrackPlayer.reset();
+          // Clear global miniplayer
+          dispatch(saveSongRefReq(''));
         }
       }
     }
-  }, [sessionDetailReduxdata?.isLive]);
+  }, [sessionDetailReduxdata?._id, sessionDetailReduxdata?.isLive, checkIsAppleStatus, dispatch, resetPlaybackQueue, resetProgress]);
 
   useEffect(() => {
     if (
@@ -1800,15 +1778,16 @@ function MySessionDetailScreen(props) {
   }, [islive]);
 
   useEffect(() => {
-    if (sessionDetailReduxdata?._id && autoPlay) {
-      props.navigation.setParams({autoPlay: false});
+    if (sessionDetailReduxdata?._id && autoPlay && !autoPlayHandledRef.current) {
+      autoPlayHandledRef.current = true;
+      props.navigation.setParams({ autoPlay: false });
       handleStartSession();
     }
-  }, [sessionDetailReduxdata]);
+  }, [sessionDetailReduxdata?._id, autoPlay, handleStartSession, props.navigation]);
 
   //helperss***********************************************************************************
 
-  const handleNavigation = () => {
+  const handleNavigation = useCallback(() => {
     if (status === '' || status !== userReduxData.status) {
       switch (userReduxData.status) {
         case SEND_SESSION_INVITATION_FAILURE:
@@ -1816,11 +1795,11 @@ function MySessionDetailScreen(props) {
           toast(
             'Error',
             userReduxData?.error?.message ??
-              'Something Went Wrong, Please Try Again',
+            'Something Went Wrong, Please Try Again',
           );
           setTimeout(() => {
             dispatch(
-              sendSessionInvitationToUserIdleStatus({status: '', error: {}}),
+              sendSessionInvitationToUserIdleStatus({ status: '', error: {} }),
             );
           }, 300);
           break;
@@ -1833,7 +1812,7 @@ function MySessionDetailScreen(props) {
           setTimeout(() => {
             toast('Success', 'Invitation sent successfully');
             dispatch(
-              sendSessionInvitationToUserIdleStatus({status: '', error: {}}),
+              sendSessionInvitationToUserIdleStatus({ status: '', error: {} }),
             );
           }, 300);
           break;
@@ -1842,24 +1821,24 @@ function MySessionDetailScreen(props) {
           break;
       }
     }
-  };
+  }, [status, userReduxData.status, userReduxData?.error?.message, modalVisible, dispatch]);
 
-  const handleListerUserStatus = res => {
+  const handleListerUserStatus = useCallback(res => {
     if (res && res?.message) {
       toast('Error', res?.message);
     }
     setCurrentListeners(res?.users);
-  };
+  }, []);
 
-  function format(seconds) {
+  const format = useCallback((seconds) => {
     let mins = parseInt(seconds / 60)
       .toString()
       .padStart(2, '0');
     let secs = (Math.trunc(seconds) % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
-  }
+  }, []);
 
-  const handleStartSession = () => {
+  const handleStartSession = useCallback(() => {
     isInternetConnected()
       .then(() => {
         if (
@@ -1881,23 +1860,23 @@ function MySessionDetailScreen(props) {
       .catch(() => {
         toast('Error', 'Please Connect To Internet');
       });
-  };
+  }, [dispatch, sessionDetailReduxdata?._id, sessionDetailReduxdata?.sessionRegisterType, checkIsAppleStatus]);
 
-  const handleStopKillSession = () => {
+  const handleStopKillSession = useCallback(() => {
     const requestObj = {
       isLive: false,
       sessionId: sessionDetailReduxdata?._id,
     };
     dispatch(startSessionRequest(requestObj));
-  };
+  }, [dispatch, sessionDetailReduxdata?._id]);
 
-  const handleUpdateSession = () => {
+  const handleUpdateSession = useCallback(() => {
     const requestObj = {
       isPrivate: !sessionDetailReduxdata?.isPrivate,
       sessionId: sessionDetailReduxdata?._id,
     };
     dispatch(startSessionRequest(requestObj));
-  };
+  }, [dispatch, sessionDetailReduxdata?._id, sessionDetailReduxdata?.isPrivate]);
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.state == State.nextTrack) {
@@ -1942,7 +1921,7 @@ function MySessionDetailScreen(props) {
       isInternetConnected()
         .then(() => {
           // disableduserSearchReq({keyword: text}, sendSong);
-          dispatch(userSearchRequest({keyword: text}, sendSong));
+          dispatch(userSearchRequest({ keyword: text }, sendSong));
         })
         .catch(() => {
           toast('Error', 'Please Connect To Internet');
@@ -1960,33 +1939,25 @@ function MySessionDetailScreen(props) {
     }
   };
 
-  const handleSendInvitation = () => {
+  const handleSendInvitation = useCallback(() => {
     const objectRequest = {
       id: sessionDetailReduxdata?._id,
       invited_users: seletedUserToInvite,
     };
-    // console.log(objectRequest, 'dfdfdf>>');
-    // return;
     dispatch(sendSessionInvitationToUser(objectRequest));
-  };
+  }, [sessionDetailReduxdata?._id, seletedUserToInvite, dispatch]);
 
-  const changeTrack = () => {
+  const changeTrack = useCallback(() => {
     const songs = playerAcceptedSongsRef.current;
-    console.log(currentTrack, songs?.length - 1, 'thi is texting ');
-    console.log(currentTrack < songs?.length - 1, 'its vlue');
     if (currentTrack < songs?.length - 1) {
-      console.log('next track>>>');
       let nextTrack = currentTrack + 1;
-      // resetProgress();
       setPlaybackQueue(songs[nextTrack]);
       setCurrentTrack(nextTrack);
-      console.log('next track>>>1', nextTrack);
       setTimeout(() => {
         Player.play();
-        // Alert.alert('play');
       }, 500);
     }
-  };
+  }, [currentTrack, setPlaybackQueue, setCurrentTrack]);
 
   //components *************************************************************
 
@@ -2064,7 +2035,7 @@ function MySessionDetailScreen(props) {
                   bottom: normalise(10),
                   paddingLeft: normalise(35),
                   marginHorizontal: normalise(12),
-                  transform: [{scaleX: -1}],
+                  transform: [{ scaleX: -1 }],
                 }}
                 resizeMode="contain"
               />
@@ -2105,7 +2076,7 @@ function MySessionDetailScreen(props) {
                 title={'Search Users to Send Invitation'}
               />
             ) : (
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 {/* {console.log(userDataList, 'this list of usered>>>>>>>>>')} */}
                 <FlatList
                   style={{
@@ -2151,7 +2122,7 @@ function MySessionDetailScreen(props) {
     );
   };
 
-  function renderUserData({item}) {
+  function renderUserData({ item }) {
     const isAlreadyExist = seletedUserToInvite.includes(item?._id);
     return (
       <ActivityListItem
@@ -2195,7 +2166,7 @@ function MySessionDetailScreen(props) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader
         visible={
           sessionReduxData?.loading ||
@@ -2209,38 +2180,33 @@ function MySessionDetailScreen(props) {
             ? ['#101119', '#101119', '#101119']
             : ['#0E402C', '#101119', '#360455']
         }
-        style={{flex: 1}}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}>
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}>
         {Platform.OS === 'android' && (
           <StatusBar backgroundColor={Colors.darkerblack} />
         )}
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <View style={styles.headerStyle}>
             <Popover
               isVisible={showPopover}
               onRequestClose={() => setShowPopover(false)}
               from={
                 <TouchableOpacity
-                  onPress={() =>
-                    islive ? setShowPopover(true) : props.navigation.goBack()
-                  }
-                  // onPress={() =>
-                  //   islive ? handleStopKillSession() : props.navigation.goBack()
-                  // }
+                  onPress={() => props.navigation.goBack()}
                   hitSlop={hitSlop}>
                   <Image
-                    source={islive ? ImagePath.greycross : ImagePath.backicon}
+                    source={ImagePath.backicon}
                     style={{
                       width: normalise(16),
-                      height: islive ? normalise(17) : normalise(14),
+                      height: normalise(14),
                     }}
                     resizeMode="contain"
                   />
                 </TouchableOpacity>
               }>
               <View style={{}}>
-                <Text style={[styles.confrimationText, {width: '100%'}]}>
+                <Text style={[styles.confrimationText, { width: '100%' }]}>
                   Are you sure, do you want to close this session!
                 </Text>
                 <View
@@ -2270,13 +2236,13 @@ function MySessionDetailScreen(props) {
 
             {!islive && !props.route.params.isforEdit && (
               <TouchableOpacity
-                style={[{alignItems: 'center', flexDirection: 'row'}]}
+                style={[{ alignItems: 'center', flexDirection: 'row' }]}
                 onPress={handleStartSession}
                 hitSlop={hitSlop}>
                 <Text
                   style={[
                     styles.listItemHeaderSongTextTitle,
-                    {marginBottom: normalise(0), fontSize: normalise(9)},
+                    { marginBottom: normalise(0), fontSize: normalise(9) },
                   ]}
                   numberOfLines={2}>
                   START{'\n'}SESSION
@@ -2288,9 +2254,30 @@ function MySessionDetailScreen(props) {
                 />
               </TouchableOpacity>
             )}
+
+            {islive && (
+              <TouchableOpacity
+                style={[{ alignItems: 'center', flexDirection: 'row' }]}
+                onPress={() => setShowPopover(true)}
+                hitSlop={hitSlop}>
+                <Text
+                  style={[
+                    styles.listItemHeaderSongTextTitle,
+                    { marginBottom: normalise(0), fontSize: normalise(9), color: Colors.red },
+                  ]}
+                  numberOfLines={2}>
+                  STOP{'\n'}SESSION
+                </Text>
+                <Image
+                  source={ImagePath.greycross}
+                  style={[styles.startSessionIcon, { tintColor: Colors.red }]}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            )}
           </View>
-          <View style={{flex: 1}}>
-            <View style={{flex: 2}}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 2 }}>
               <View style={styles.listItemHeaderSongDetails}>
                 <Text style={styles.hostedText} numberOfLines={1}>
                   Hosted by
@@ -2299,7 +2286,7 @@ function MySessionDetailScreen(props) {
                   <Text
                     style={[
                       styles.listItemHeaderSongTextTitle,
-                      {textTransform: 'uppercase', marginBottom: normalise(0)},
+                      { textTransform: 'uppercase', marginBottom: normalise(0) },
                     ]}
                     numberOfLines={1}>
                     {userProfileResp?.username}
@@ -2314,10 +2301,10 @@ function MySessionDetailScreen(props) {
                   source={
                     userProfileResp?.profile_image
                       ? {
-                          uri:
-                            constants.profile_picture_base_url +
-                            userProfileResp?.profile_image,
-                        }
+                        uri:
+                          constants.profile_picture_base_url +
+                          userProfileResp?.profile_image,
+                      }
                       : ImagePath.userPlaceholder
                   }
                   style={styles.listItemHeaderSongTypeIcon}
@@ -2326,7 +2313,7 @@ function MySessionDetailScreen(props) {
                 <Text
                   style={[
                     styles.listItemHeaderSongTextTitle,
-                    {marginTop: normalise(10), marginBottom: 0},
+                    { marginTop: normalise(10), marginBottom: 0 },
                   ]}
                   numberOfLines={1}>
                   NOW PLAYING
@@ -2334,13 +2321,13 @@ function MySessionDetailScreen(props) {
                 <View
                   style={[
                     styles.bottomLineStyle,
-                    {width: width / 3, marginTop: normalise(6)},
+                    { width: width / 3, marginTop: normalise(6) },
                   ]}></View>
               </View>
               <View style={[styles.playListItemContainer]}>
                 <FlatList
                   data={sessionDetailReduxdata?.session_songs}
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     // console.log(item, 'thi is the item', currentPlayingSong);
                     // const iscurrentPlaying = currentTrack == index;
                     // const iscurrentPlaying =
@@ -2355,7 +2342,7 @@ function MySessionDetailScreen(props) {
                           styles.itemWrapper,
                           // (iscurrentPlaying ||
                           //   playerState?.state == 'none') && {opacity: 1},
-                          !iscurrentPlaying && islive && {opacity: 0.4},
+                          !iscurrentPlaying && islive && { opacity: 0.4 },
                         ]}>
                         {/* {iscurrentPlaying ? (
                           <TouchableOpacity
@@ -2393,7 +2380,7 @@ function MySessionDetailScreen(props) {
                                 source={
                                   (appleFullSongPlaying ||
                                     playerState?.state === 'playing') &&
-                                  iscurrentPlaying
+                                    iscurrentPlaying
                                     ? ImagePath.pause
                                     : ImagePath.play
                                 }
@@ -2409,9 +2396,9 @@ function MySessionDetailScreen(props) {
                           )
                         ) : null}
 
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{ flexDirection: 'row' }}>
                           <Image
-                            source={{uri: item?.song_image}}
+                            source={{ uri: item?.song_image }}
                             style={styles.songListItemImage}
                             resizeMode="cover"
                           />
@@ -2443,7 +2430,7 @@ function MySessionDetailScreen(props) {
                 <Text
                   style={[
                     styles.listItemHeaderSongTextTitle,
-                    {marginTop: normalise(5), fontSize: normalise(12)},
+                    { marginTop: normalise(5), fontSize: normalise(12) },
                   ]}
                   numberOfLines={2}>
                   LISTENERS
@@ -2458,7 +2445,7 @@ function MySessionDetailScreen(props) {
                     marginTop: normalise(0),
                   },
                 ]}></View>
-              <ScrollView style={{flex: 1}}>
+              <ScrollView style={{ flex: 1 }}>
                 {currentListners?.length > 0 ? (
                   <View
                     style={{
@@ -2481,10 +2468,10 @@ function MySessionDetailScreen(props) {
                             source={
                               item?.profile_image
                                 ? {
-                                    uri:
-                                      constants.profile_picture_base_url +
-                                      item?.profile_image,
-                                  }
+                                  uri:
+                                    constants.profile_picture_base_url +
+                                    item?.profile_image,
+                                }
                                 : ImagePath.userPlaceholder
                             }
                             style={[styles.songListItemImage]}
@@ -2519,9 +2506,9 @@ function MySessionDetailScreen(props) {
             <TrackProgress
               setModalVisible={() => setModalVisible(!modalVisible)}
               modalVisible={modalVisible}
-              duration={appleFullSongDuration}
+              duration={checkIsAppleStatus ? appleFullSongDuration : duration}
               position={progress}
-              isShow={sessionDetailReduxdata?.isPrivate ? true : false}
+              isShow={sessionDetailReduxdata?._id ? true : false}
             />
           )}
           {props.route.params.isforEdit && (
@@ -2551,7 +2538,7 @@ function MySessionDetailScreen(props) {
                       ? ImagePath.toggleOn
                       : ImagePath.toggleOff
                   }
-                  style={{width: 45}}
+                  style={{ width: 45 }}
                   resizeMode="contain"
                 />
               </TouchableOpacity>

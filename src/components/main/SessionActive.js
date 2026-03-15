@@ -153,7 +153,7 @@ function SessionActive(props) {
                                 </Text>
                                 <View style={styles.nameWrapper}>
                                     <Text style={[styles.listItemHeaderSongTextTitle, { textTransform: 'uppercase', }]}
-                                     numberOfLines={2}>
+                                        numberOfLines={2}>
                                         @Ankush009
                                     </Text>
                                     <Image

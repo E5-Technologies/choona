@@ -87,6 +87,7 @@ import {
   MusicPlayerProvider,
 } from './src/context/AppleMusicContext';
 import { usePlayFullAppleMusic } from './src/hooks/usePlayFullAppleMusic';
+import { useSessionHosting } from './src/hooks/useSessionHosting';
 import {
   requestUserPermission,
   setupNotificationChannels,
@@ -349,6 +350,11 @@ const BottomTab = () => {
   );
 };
 
+const SessionManager = () => {
+  useSessionHosting();
+  return null;
+};
+
 const App = () => {
   const dispatch = useDispatch();
   const TokenReducer = useSelector(state => state.TokenReducer);
@@ -448,6 +454,7 @@ const App = () => {
               haveAppleMusicSubscription,
               // isPlaying
             }}>
+            <SessionManager />
             <NavigationContainer
               onReady={() => RNBootSplash.hide({ fade: true })}>
               {TokenReducer.token === null ? (

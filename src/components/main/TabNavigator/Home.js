@@ -870,9 +870,9 @@ const Home = props => {
               image={data?.item?.songs}
               id={data.item?._id}
               play={
-                (currentSongData?.id == props.playingSongRef.apple_song_id &&
-                  isPlaying ||
-                  (props.playingSongRef.id == data.item?._id))
+                currentSongData?.id == props.playingSongRef.apple_song_id &&
+                  isPlaying &&
+                  props.playingSongRef.id == data.item?._id
                   ? true
                   : _.isEmpty(postArray)
                     ? false
