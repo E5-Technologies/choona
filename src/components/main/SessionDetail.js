@@ -280,7 +280,7 @@ function SessionDetail(props) {
     () => {
       let socketInitialized = false;
       const handleStatusUpdate = status => {
-        console.log('Received update:', status);
+        console.log('📡 [Joinee] Received Session Sync Payload:', JSON.stringify(status, null, 2));
         // update state
         currentEmitedSongStatus.current = status;
         setCurrentStatus(status);

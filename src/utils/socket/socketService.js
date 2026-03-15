@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_SERVER_URL = 'https://staging-api.choona.itechnolabs.tech'; // Replace with your server
+// const SOCKET_SERVER_URL = 'https://staging-api.choona.itechnolabs.tech'; // Replace with your server
+const SOCKET_SERVER_URL = 'https://api-choona.itechnolabs.tech'; // Replace with your server
 
 class SocketService {
   constructor() {
