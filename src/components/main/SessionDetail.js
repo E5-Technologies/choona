@@ -27,7 +27,7 @@ import ImagePath from '../../assests/ImagePath';
 import { useSelector, useDispatch } from 'react-redux';
 import isInternetConnected from '../../utils/helpers/NetInfo';
 import {
-  clearSessionDetail,
+  //   clearSessionDetail,
   getSessionDetailRequest,
   startSessionJoinRequest,
   startSessionJoinRequestStatusIdle,
@@ -36,14 +36,9 @@ import {
 import Loader from '../../widgets/AuthLoader';
 import constants from '../../utils/helpers/constants';
 import socketService from '../../utils/socket/socketService';
-import TrackPlayer, {
-  Event,
-  State,
-  useTrackPlayerEvents,
-} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
 import {
   CREATE_SESSION_DETAIL_FAILURE,
-  CREATE_SESSION_DETAIL_SUCCESS,
   START_SESSION_JOINEE_FAILURE,
   START_SESSION_JOINEE_STOP_HOST,
   START_SESSION_LEFT_SUCCESS,
@@ -57,22 +52,18 @@ import {
 import {
   MusicKit,
   Player,
-  useCurrentSong,
-  useIsPlaying,
 } from '@lomray/react-native-apple-music';
 import { usePlayFullAppleMusic } from '../../hooks/usePlayFullAppleMusic';
-import { TrackProgress } from '../common/Progress';
+import { useSessionHosting } from '../../hooks/useSessionHosting';
 import { useFocusEffect } from '@react-navigation/native';
 
 function SessionDetail(props) {
-  const [currentTrack, setCurrentTrack] = useState(0);
-  const [currentState, setCurrentStatus] = useState(null);
   const [status, setStatus] = useState('');
   const touchable = useRef();
   const [showPopover, setShowPopover] = useState(false);
   const [playerAcceptedSongs, setPlayerAcceptedSongs] = useState([]);
   const [currentListners, setCurrentListeners] = useState([]);
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   // Redux state ++++++++++++++++++++++++++++++++++++++++++++
   const dispatch = useDispatch();
@@ -83,34 +74,32 @@ function SessionDetail(props) {
   const sessionReduxData = useSelector(state => state.SessionReducer);
   const sessionDetailReduxdata =
     sessionReduxData?.sessionDetailData?.data ?? {};
-  const sessionDataForJoineeAfterJoin =
-    sessionReduxData.CurrentSessionJoineeInfo?.data;
 
   // console.log(sessionDetailReduxdata, 'thshfdfhffsfdh');
 
-  const currentEmitedSongStatus = useRef({
-    hostId: null,
-    startAudioMixing: null,
-    playIndex: null,
-    playLoading: null,
-    currentTime: null,
-    startedAt: null,
-    pausedAt: null,
-  });
 
   // console.log(sessionDetailReduxdata, 'thi is the session id>>');
 
   const {
     progress,
-    duration: appleFullSongDuration,
     resetProgress,
   } = useMusicPlayer();
 
   const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =
     useContext(AppleMusicContext);
-  const { isPlaying: appleFullSongPlaying } = useIsPlaying();
-  const { song: currentSongData } = useCurrentSong();
-  const { onToggle, checkPlaybackState, setPlaybackQueue, resetPlaybackQueue } =
+  const { isLive, isHost, isJoinee, currentSyncStatus } = useSessionHosting();
+  const currentState = currentSyncStatus;
+
+  const handleListerUserStatus = useCallback(res => {
+    if (res?.isLive === false) {
+      dispatch({
+        type: START_SESSION_JOINEE_STOP_HOST,
+        data: { data: { ...res } },
+      });
+    }
+  }, [dispatch]);
+
+  const { setPlaybackQueue, resetPlaybackQueue } =
     usePlayFullAppleMusic();
 
   const handleAddTrack = async () => {
@@ -182,7 +171,7 @@ function SessionDetail(props) {
     React.useCallback(() => {
       // This will run when the screen is focused
       return () => {
-        dispatch(clearSessionDetail());
+        // dispatch(clearSessionDetail());
       };
     }, []),
   );
@@ -203,6 +192,8 @@ function SessionDetail(props) {
   const previousIndexRef = useRef(null);
 
   useEffect(() => {
+    if (!isJoinee) return; // Only process local logic for host (joinee is handled by hook)
+
     if (
       currentState?.playIndex !== undefined &&
       currentState?.playIndex !== null &&
@@ -219,14 +210,14 @@ function SessionDetail(props) {
       // Update the ref with the new value
       previousIndexRef.current = currentState.playIndex;
     }
-    if (currentEmitedSongStatus?.current?.startAudioMixing == false) {
+    if (currentState?.startAudioMixing == false) {
       if (checkIsAppleStatus) {
         Player.pause();
       } else {
         TrackPlayer.stop();
       }
     }
-    if (currentEmitedSongStatus?.current?.startAudioMixing == true) {
+    if (currentState?.startAudioMixing == true) {
       if (checkIsAppleStatus) {
         Player.play();
       } else {
@@ -234,11 +225,7 @@ function SessionDetail(props) {
       }
     }
     checkProgressGap();
-    // console.log(
-    //   currentEmitedSongStatus?.current?.startAudioMixing,
-    //   'its audio mising',
-    // );
-  }, [currentState]);
+  }, [currentState, isJoinee]);
 
   useEffect(() => {
     if (props?.route?.params?.sessionId) {
@@ -268,7 +255,7 @@ function SessionDetail(props) {
 
   useEffect(() => {
     if (sessionDetailReduxdata?.users) {
-      const isUserExist = checkUserExistence();
+      checkUserExistence();
     }
     if (sessionDetailReduxdata?.watch_users?.length > 0) {
       setCurrentListeners(sessionDetailReduxdata?.watch_users);
@@ -278,52 +265,32 @@ function SessionDetail(props) {
   // TO CONNECT WITH SOCKET
   useEffect(
     () => {
-      let socketInitialized = false;
-      const handleStatusUpdate = status => {
-        console.log('📡 [Joinee] Received Session Sync Payload:', JSON.stringify(status, null, 2));
-        // update state
-        currentEmitedSongStatus.current = status;
-        setCurrentStatus(status);
-      };
 
       const setupSocket = async () => {
         try {
           // Only initialize if not  connected
           if (!socketService.isConnected() && userTokenData?.token) {
             await socketService.initializeSocket(userTokenData?.token);
-            socketInitialized = true;
             console.log('Socket connected on listern side');
           }
-          socketService.on('session_play_status', handleStatusUpdate);
           socketService.on('session_ended_status', handleListerUserStatus);
           socketService.on('session_users_status', data => {
             console.log('Got session_users_status in this file:', data);
-            handleListerJoineeStatus?.(data);
+            setCurrentListeners(data);
           });
-          // }
-        } catch (err) {
-          console.error('Socket setup error:', err);
+        } catch (error) {
+          console.error('Socket setup error:', error);
         }
       };
 
       setupSocket();
-
       return () => {
-        // Clean up listener
-        // socketService.off('session_play_status', handleStatusUpdate);
-        // socketService.emit('leave_session_room', {
-        //     sessionId: sessionDetailReduxdata?._id
-        // });
-        // if (socketInitialized) {
-        //     socketService.disconnect();
-        // }
+        socketService.off('session_ended_status', handleListerUserStatus);
+        socketService.off('session_users_status');
       };
     },
 
-    [
-      // sessionDetailReduxdata?._id,
-      // userTokenData?.token
-    ],
+    [userTokenData?.token, sessionDetailReduxdata?._id, handleListerUserStatus],
   );
 
   useEffect(() => {
@@ -334,7 +301,7 @@ function SessionDetail(props) {
 
   useEffect(() => {
     if (
-      props.route.params.fromScreen == 'notificionScreen' &&
+      props.route.params.fromScreen === 'notificionScreen' &&
       Object.keys(sessionDetailReduxdata).length > 0
     ) {
       // setTimeout(() => {
@@ -376,26 +343,7 @@ function SessionDetail(props) {
 
   //helperss***********************************************************************************
 
-  const handleListerJoineeStatus = res => {
-    if (res && res?.message) {
-      toast('Error', res?.message);
-    }
-    setCurrentListeners(res?.users);
-  };
 
-  const handleListerUserStatus = res => {
-    if (res?.isLive == false) {
-      dispatch({
-        type: START_SESSION_JOINEE_STOP_HOST,
-        data: { data: { ...res } },
-      });
-      // toast(
-      //   'Success',
-      //   'Session has been stopped by the host',
-      //   ToastAndroid.SHORT,
-      // );
-    }
-  };
 
   const handleSessionLeftOverCancel = (type, messageText) => {
     setStatus(type);
@@ -405,15 +353,15 @@ function SessionDetail(props) {
     } else {
       TrackPlayer.reset();
     }
-    currentEmitedSongStatus.current = {
-      hostId: null,
-      startAudioMixing: null,
-      playIndex: null,
-      playLoading: null,
-      currentTime: null,
-      startedAt: null,
-      pausedAt: null,
-    };
+    // currentEmitedSongStatus.current = {
+    //   hostId: null,
+    //   startAudioMixing: null,
+    //   playIndex: null,
+    //   playLoading: null,
+    //   currentTime: null,
+    //   startedAt: null,
+    //   pausedAt: null,
+    // };
     setTimeout(() => {
       toast('Success', `${messageText}`);
       dispatch(startSessionJoinRequestStatusIdle({ status: '', error: {} }));
@@ -513,18 +461,10 @@ function SessionDetail(props) {
       return sessionDetailReduxdata?.users?.some(
         user => user._id === userProfileResp?._id,
       );
-    } else {
-      false;
     }
-  }, [sessionDetailReduxdata?.users]);
+    return false;
+  }, [sessionDetailReduxdata?.users, userProfileResp?._id]);
 
-  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-    if (event.state == State.nextTrack) {
-      let index = await TrackPlayer.getCurrentTrack();
-      setCurrentTrack(index);
-    } else {
-    }
-  });
 
   const handleJoinLeaveSession = () => {
     // if (
@@ -577,58 +517,65 @@ function SessionDetail(props) {
     }
   }, [progress, currentState]);
 
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <Loader
         visible={sessionReduxData?.loading || sessionReduxData?.isRequestLoader}
       />
-      {Platform.OS == 'android' && (
+      {Platform.OS === 'android' && (
         <StatusBar backgroundColor={Colors.darkerblack} />
       )}
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={
-            sessionDetailReduxdata?.isLive && checkUserExistence()
+            isHost
               ? false
               : true
           }
           textone={
-            sessionDetailReduxdata?.isLive && checkUserExistence()
+            isHost
               ? null
               : 'BACK'
           }
           imageone={
-            sessionDetailReduxdata?.isLive && checkUserExistence()
+            isHost
               ? ImagePath.crossIcon
               : null
           }
           imageOneRef={
-            sessionDetailReduxdata?.isLive && checkUserExistence()
+            isHost
               ? touchable
               : null
           }
           title={'SESSIONS'}
           thirditemtext={
-            sessionDetailReduxdata?.isLive && checkUserExistence()
+            sessionDetailReduxdata?.isLive || checkUserExistence()
               ? true
               : false
           }
+          texttwo={
+            checkUserExistence()
+              ? 'LEAVE'
+              : !isHost && sessionDetailReduxdata?.isLive
+                ? 'JOIN'
+                : ''
+          }
           imagetwo={
             sessionDetailReduxdata?.isPrivate ||
-              (sessionDetailReduxdata?.isLive && checkUserExistence())
+              (sessionDetailReduxdata?.isLive && checkUserExistence()) ||
+              (!isHost && sessionDetailReduxdata?.isLive)
               ? null
               : ImagePath.addButtonSmall
           }
           imagetwoStyle={styles.imageTwoStyle}
           onPressFirstItem={() => {
-            sessionDetailReduxdata?.isLive && checkUserExistence()
-              ? // handleJoinLeaveSession()
-              setShowPopover(true)
+            isHost
+              ? setShowPopover(true)
               : props.navigation.goBack();
           }}
           onPressThirdItem={
-            sessionDetailReduxdata?.isPrivate ||
-              (sessionDetailReduxdata?.isLive && checkUserExistence())
+            sessionDetailReduxdata?.isPrivate
               ? () => null
               : handleJoinLeaveSession
           }
@@ -683,9 +630,10 @@ function SessionDetail(props) {
             <View style={styles.playListItemContainer}>
               <FlatList
                 data={sessionDetailReduxdata?.session_songs}
+                extraData={currentState}
                 renderItem={({ item, index }) => {
                   let isPlayingCurrent =
-                    currentEmitedSongStatus?.current?.playIndex == index;
+                    currentState?.playIndex === index;
                   return (
                     <View
                       style={[
@@ -705,8 +653,7 @@ function SessionDetail(props) {
                               // source={playVisible ? ImagePath.play : ImagePath.pause}
                               source={
                                 isPlayingCurrent &&
-                                  currentEmitedSongStatus?.current
-                                    ?.startAudioMixing
+                                  currentState?.startAudioMixing
                                   ? ImagePath.pause
                                   : ImagePath.play
                               }
@@ -912,7 +859,6 @@ const styles = StyleSheet.create({
   },
 
   listItemHeaderSongTypeIcon: {
-    borderRadius: normalise(10),
     height: normalise(80),
     width: normalise(80),
     borderRadius: normalise(80),

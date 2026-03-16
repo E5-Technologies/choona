@@ -41,22 +41,30 @@ class SocketService {
   };
 
   emit(event, data = {}) {
-    if (!this.socket) return;
+    if (!this.socket) {
+      return;
+    }
     this.socket.emit(event, data);
   }
 
   on(event, callback) {
-    if (!this.socket) return;
+    if (!this.socket) {
+      return;
+    }
     this.socket.on(event, callback);
   }
 
-  off(event) {
-    if (!this.socket) return;
-    this.socket.off(event);
+  off(event, callback) {
+    if (!this.socket) {
+      return;
+    }
+    this.socket.off(event, callback);
   }
 
   disconnect() {
-    if (!this.socket) return;
+    if (!this.socket) {
+      return;
+    }
     this.socket.disconnect();
     console.log('🔌 Socket disconnected');
   }

@@ -80,7 +80,13 @@ function Player(props) {
   // console.log(JSON.stringify(props.route.params), 'theese are xong props');
   const sessionDetailReduxdata = useSelector(state => state.SessionReducer.sessionDetailData?.data);
   const islive = sessionDetailReduxdata?.isLive;
-  const isHost = islive && props.userProfileResp?._id === sessionDetailReduxdata?.own_user?._id;
+
+  const isInSession = React.useMemo(() => {
+    if (!islive || !sessionDetailReduxdata?.users) return false;
+    return sessionDetailReduxdata.users.some(
+      user => user._id === props.userProfileResp?._id
+    );
+  }, [islive, sessionDetailReduxdata?.users, props.userProfileResp?._id]);
 
   const [appleMusicPlayerLoader, setAppleMusicPlayerLoader] = useState(false);
   const [playVisible, setPlayVisible] = useState(false);
@@ -911,7 +917,7 @@ function Player(props) {
                     />
                   </TouchableOpacity> */}
                   <TouchableOpacity
-                    disabled={disabled || isHost}
+                    disabled={disabled || isInSession}
                     onPress={
                       () => handleSongPlayFullPreview()
                       //   {
