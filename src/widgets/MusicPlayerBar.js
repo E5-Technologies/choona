@@ -16,6 +16,7 @@ import { connect, useSelector } from 'react-redux';
 import Loader from './AuthLoader';
 import { usePlayFullAppleMusic } from '../hooks/usePlayFullAppleMusic';
 import { AppleMusicContext, useMusicPlayer } from '../context/AppleMusicContext';
+import { useSessionHosting } from '../hooks/useSessionHosting';
 import {
   useIsPlaying,
   useCurrentSong,
@@ -26,7 +27,6 @@ function MusicPlayerBar(props) {
   const sessionDetailReduxdata = useSelector(state => state.SessionReducer.sessionDetailData?.data);
   const islive = sessionDetailReduxdata?.isLive;
   const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
-  const isHost = islive && userProfileResp?._id === sessionDetailReduxdata?.own_user?._id;
 
   const isInSession = React.useMemo(() => {
     if (!islive || !sessionDetailReduxdata?.users) return false;
@@ -54,6 +54,8 @@ function MusicPlayerBar(props) {
   const {
     haveAppleMusicSubscription,
   } = useContext(AppleMusicContext);
+
+  const { isHost: isSessionHost, currentSyncStatus } = useSessionHosting({ enablePlaybackSync: false });
 
   useEffect(() => {
     const handleProgress = async () => {
@@ -221,22 +223,42 @@ function MusicPlayerBar(props) {
   const currentSessionSong = useSelector(state => state.SessionReducer.currentSessionSong?.data);
   const showPlayer = props.playingSongRef !== '' || islive;
 
-  // Fallback metadata for live session if playingSongRef is empty
-  const activeSong = props.playingSongRef !== '' ? props.playingSongRef : (islive ? {
-    song_name: currentSessionSong?.song_name || currentSongData?.title || 'Session Live',
-    artist: currentSessionSong?.artist_name || currentSongData?.artist || 'Broadcasting',
-    song_pic: currentSessionSong?.song_image || currentSongData?.artwork || sessionDetailReduxdata?.session_image,
-    regType: 'apple', // Default to apple for session context
-    apple_song_id: currentSessionSong?.apple_song_id || currentSongData?.id,
-  } : null);
+  // Derive target song from session synchronization if live
+  const activeSong = React.useMemo(() => {
+    if (props.playingSongRef !== '') {
+      return props.playingSongRef;
+    }
+    if (islive) {
+      const songs = sessionDetailReduxdata?.session_songs || [];
+      const currentIndex = currentSyncStatus?.playIndex;
+      if (currentIndex !== null && currentIndex !== undefined && currentIndex >= 0 && currentIndex < songs.length) {
+        const target = songs[currentIndex];
+        return {
+          song_name: target.song_name,
+          artist: target.artist_name,
+          song_pic: target.song_image,
+          regType: 'apple',
+          apple_song_id: target.apple_song_id,
+        };
+      }
+      return {
+        song_name: currentSessionSong?.song_name || currentSongData?.title || 'Session Live',
+        artist: currentSessionSong?.artist_name || currentSongData?.artist || 'Broadcasting',
+        song_pic: currentSessionSong?.song_image || currentSongData?.artwork || sessionDetailReduxdata?.session_image,
+        regType: 'apple',
+        apple_song_id: currentSessionSong?.apple_song_id || currentSongData?.id,
+      };
+    }
+    return null;
+  }, [props.playingSongRef, islive, currentSyncStatus, sessionDetailReduxdata, currentSessionSong, currentSongData]);
 
   return showPlayer ? (
     <View
       style={[styles.container, dynamicStyle]}>
       <Loader visible={bool} />
       {Platform.OS === 'ios' &&
-        props.playingSongRef?.regType == 'apple' &&
-        currentSongData?.id == props.playingSongRef?.apple_song_id &&
+        activeSong?.regType === 'apple' &&
+        (currentSongData?.id === activeSong?.apple_song_id || currentSongData?.id === activeSong?.id) &&
         haveAppleMusicSubscription ? (
         <View
           style={[styles.progress, {
@@ -371,7 +393,7 @@ function MusicPlayerBar(props) {
             )}
 
             <TouchableOpacity
-              disabled={disabled || isHost}
+              disabled={disabled || (islive && !isSessionHost)}
               onPress={() => {
                 setDisabled(true);
                 playOrPause();
@@ -416,7 +438,7 @@ function MusicPlayerBar(props) {
                     height: normalise(16),
                     width: normalise(16),
                     tintColor:
-                      currentSongIndex >= totalSongs - 1 ? 'grey' : '#fff',
+                      currentSongIndex === totalSongs - 1 ? 'grey' : '#fff',
                   }}
                   resizeMode={'contain'}
                 />

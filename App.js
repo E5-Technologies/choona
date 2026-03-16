@@ -351,7 +351,7 @@ const BottomTab = () => {
 };
 
 const SessionManager = () => {
-  useSessionHosting();
+  useSessionHosting({ enablePlaybackSync: true });
   return null;
 };
 

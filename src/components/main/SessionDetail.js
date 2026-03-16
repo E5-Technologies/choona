@@ -87,7 +87,7 @@ function SessionDetail(props) {
 
   const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =
     useContext(AppleMusicContext);
-  const { isLive, isHost, isJoinee, currentSyncStatus } = useSessionHosting();
+  const { isHost, isJoinee, currentSyncStatus } = useSessionHosting({ enablePlaybackSync: false });
   const currentState = currentSyncStatus;
 
   const handleListerUserStatus = useCallback(res => {
@@ -102,17 +102,17 @@ function SessionDetail(props) {
   const { setPlaybackQueue, resetPlaybackQueue } =
     usePlayFullAppleMusic();
 
-  const handleAddTrack = async () => {
+  const handleAddTrack = async (forcedIndex = null) => {
     try {
+      const songs = sessionDetailReduxdata?.session_songs || [];
+      const currentIndex = forcedIndex !== null ? forcedIndex : currentState?.playIndex;
+
       if (
-        !currentState ||
-        currentState.playIndex === null ||
-        currentState.playIndex === undefined
+        currentIndex === null ||
+        currentIndex === undefined
       ) {
         return;
       }
-      const songs = sessionDetailReduxdata?.session_songs || [];
-      const currentIndex = currentState.playIndex;
       // Check if index is valid
       if (currentIndex >= songs?.length || currentIndex < 0) {
         console.error('Invalid play index:', currentIndex);
@@ -124,20 +124,19 @@ function SessionDetail(props) {
           return songs.map(item => item?.apple_song_id ?? '');
         };
         const newArray = getTrackRelatedSong();
-        console.log(newArray, 'this is song arrau');
         setPlayerAcceptedSongs(newArray);
         await resetPlaybackQueue();
-        resetProgress(); // ADDED TO RESET THE TIME TO 0
+        resetProgress();
+
         await setPlaybackQueue(songs[currentIndex]?.apple_song_id);
-        // Control playback state
-        // MusicKit.setPlaybackQueueList(newArray ?? [], 'song');
-        if (currentState.startAudioMixing) {
+
+        // For host, selecting a track should always start playback
+        if (isHost || currentState?.startAudioMixing) {
           Player.play();
         } else {
           Player.pause();
         }
       } else {
-        // Clear previous tracks and stop playback
         await TrackPlayer.reset();
         const track = {
           id: songs[currentIndex]._id,
@@ -146,19 +145,15 @@ function SessionDetail(props) {
           artist: songs[currentIndex].artist_name,
           artwork: songs[currentIndex].song_image,
         };
-        console.log('Adding new track:', track);
-        // Add and prepare the new track
         await TrackPlayer.add([track]);
-        // Seek to the correct position if available
-        if (currentState.currentTime) {
+
+        if (currentState?.currentTime) {
           await TrackPlayer.seekTo(currentState.currentTime);
         }
-        // Control playback state
-        if (currentState.startAudioMixing) {
-          // Alert.alert('play');
+
+        if (isHost || currentState?.startAudioMixing) {
           await TrackPlayer.play();
         } else {
-          // Alert.alert('pause');
           await TrackPlayer.pause();
         }
       }
@@ -181,51 +176,13 @@ function SessionDetail(props) {
       async function setupPlayer() {
         await TrackPlayer.setupPlayer();
       }
-
       setupPlayer();
-      // Cleanup the player on unmount
-      // return () => {
-      //     TrackPlayer.destroy();
-      // };
     }
-  }, []);
-  const previousIndexRef = useRef(null);
+  }, [checkIsAppleStatus]);
 
   useEffect(() => {
-    if (!isJoinee) return; // Only process local logic for host (joinee is handled by hook)
-
-    if (
-      currentState?.playIndex !== undefined &&
-      currentState?.playIndex !== null &&
-      currentState?.playIndex !== previousIndexRef.current
-    ) {
-      console.log(
-        'Index changed from',
-        // previousIndexRef.current,
-        'to',
-        // currentState.playIndex,
-        currentState?.startAudioMixing,
-      );
-      handleAddTrack();
-      // Update the ref with the new value
-      previousIndexRef.current = currentState.playIndex;
-    }
-    if (currentState?.startAudioMixing == false) {
-      if (checkIsAppleStatus) {
-        Player.pause();
-      } else {
-        TrackPlayer.stop();
-      }
-    }
-    if (currentState?.startAudioMixing == true) {
-      if (checkIsAppleStatus) {
-        Player.play();
-      } else {
-        TrackPlayer.play();
-      }
-    }
     checkProgressGap();
-  }, [currentState, isJoinee]);
+  }, [currentState, isJoinee, isHost, checkProgressGap]);
 
   useEffect(() => {
     if (props?.route?.params?.sessionId) {
@@ -650,13 +607,25 @@ function SessionDetail(props) {
                             onPress={() => { }}
                             style={styles.playButtonStyle}>
                             <Image
-                              // source={playVisible ? ImagePath.play : ImagePath.pause}
                               source={
                                 isPlayingCurrent &&
                                   currentState?.startAudioMixing
                                   ? ImagePath.pause
                                   : ImagePath.play
                               }
+                              style={{
+                                height: normalise(25),
+                                width: normalise(25),
+                              }}
+                              resizeMode="contain"
+                            />
+                          </TouchableOpacity>
+                        ) : isHost ? (
+                          <TouchableOpacity
+                            onPress={() => handleAddTrack(index)}
+                            style={styles.playButtonStyle}>
+                            <Image
+                              source={ImagePath.play}
                               style={{
                                 height: normalise(25),
                                 width: normalise(25),

@@ -6,8 +6,10 @@ import { useIsPlaying, useCurrentSong, Player } from '@lomray/react-native-apple
 import { useMusicPlayer } from '../context/AppleMusicContext';
 import { usePlaybackState, useProgress } from 'react-native-track-player';
 import TrackPlayer from 'react-native-track-player';
+import { usePlayFullAppleMusic } from './usePlayFullAppleMusic';
 
-export const useSessionHosting = () => {
+export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
+    const { enablePlaybackSync } = config;
     const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
     const userTokenData = useSelector(state => state.TokenReducer);
     const sessionReduxData = useSelector(state => state.SessionReducer);
@@ -15,7 +17,13 @@ export const useSessionHosting = () => {
 
     const { isPlaying: appleFullSongPlaying } = useIsPlaying();
     const playerState = usePlaybackState();
-    const { progress, setPlaybackQueue, resetPlaybackQueue } = useMusicPlayer();
+    const { progress } = useMusicPlayer();
+    const {
+        setPlaybackQueue,
+        resetPlaybackQueue,
+        haveAppleMusicSubscription,
+        isAuthorizeToAccessAppleMusic,
+    } = usePlayFullAppleMusic();
     const { position } = useProgress(200);
     const { song: currentPlayinSongData } = useCurrentSong();
 
@@ -24,9 +32,11 @@ export const useSessionHosting = () => {
     const sessionId = sessionDetailReduxdata?._id;
 
     const isJoinee = useMemo(() => {
-        if (!isLive || isHost || !sessionDetailReduxdata?.users) return false;
+        if (!isLive || isHost || !sessionDetailReduxdata?.users) {
+            return false;
+        }
         return sessionDetailReduxdata.users.some(
-            user => user._id === userProfileResp?._id
+            user => user._id === userProfileResp?._id,
         );
     }, [isLive, isHost, sessionDetailReduxdata?.users, userProfileResp?._id]);
 
@@ -38,8 +48,11 @@ export const useSessionHosting = () => {
     const isAppleRegisterType = userTokenData?.registerType === 'apple';
 
     const isAppleActive = useMemo(() => {
-        return Platform.OS === 'ios' && isAppleRegisterType;
-    }, [isAppleRegisterType]);
+        return Platform.OS === 'ios' &&
+            isAppleRegisterType &&
+            haveAppleMusicSubscription &&
+            isAuthorizeToAccessAppleMusic;
+    }, [isAppleRegisterType, haveAppleMusicSubscription, isAuthorizeToAccessAppleMusic]);
 
     useEffect(() => {
         if (isAppleActive) {
@@ -48,6 +61,23 @@ export const useSessionHosting = () => {
             positionRef.current = position;
         }
     }, [position, progress, isAppleActive]);
+
+    // Setup TrackPlayer if not already setup
+    useEffect(() => {
+        if (!isAppleActive) {
+            const setup = async () => {
+                try {
+                    // setupPlayer is safe to call multiple times in some versions, 
+                    // but we should catch if it's already setup
+                    await TrackPlayer.setupPlayer();
+                    console.log('✅ [Sync Hook] TrackPlayer setup successfully');
+                } catch (e) {
+                    // console.log('ℹ️ [Sync Hook] TrackPlayer already setup or error:', e.message);
+                }
+            };
+            setup();
+        }
+    }, [isAppleActive]);
 
     // Socket initialization
     useEffect(() => {
@@ -60,7 +90,7 @@ export const useSessionHosting = () => {
 
     // PROACTIVE RESET when joining a session
     useEffect(() => {
-        if (isJoinee && sessionId) {
+        if (enablePlaybackSync && isJoinee && sessionId) {
             console.log('🎵 [Joinee Sync] Proactively resetting local music for session:', sessionId);
             const initialReset = async () => {
                 try {
@@ -75,19 +105,35 @@ export const useSessionHosting = () => {
             };
             initialReset();
         }
-    }, [isJoinee, sessionId, isAppleActive, resetPlaybackQueue]);
+    }, [isJoinee, sessionId, isAppleActive, resetPlaybackQueue, enablePlaybackSync]);
 
-    // JOINEE SYNC LOGIC
+    // 1. STATE-ONLY SYNC: Always update currentSyncStatus if in session
     useEffect(() => {
-        if (!isJoinee || !sessionId) {
-            lastSyncedIndex.current = -1;
+        if (!sessionId || (!isJoinee && !isHost)) {
             return;
         }
 
-        const handleStatusUpdate = async (status) => {
+        const handleStatusUpdate = (status) => {
+            console.log('📬 [Sync Hook] Received status update:', status.playIndex);
+            setCurrentSyncStatus(status);
+        };
+
+        socketService.on('session_play_status', handleStatusUpdate);
+        return () => {
+            socketService.off('session_play_status', handleStatusUpdate);
+        };
+    }, [sessionId, isJoinee, isHost]);
+
+    // 2. PLAYBACK SYNC: Only for Joinees with enablePlaybackSync = true
+    useEffect(() => {
+        if (!enablePlaybackSync || !isJoinee || !sessionId || !currentSyncStatus) {
+            return;
+        }
+
+        const syncPlayback = async () => {
             try {
                 const songs = sessionDetailReduxdata?.session_songs || [];
-                setCurrentSyncStatus(status);
+                const status = currentSyncStatus;
                 const currentIndex = status.playIndex;
 
                 if (currentIndex === -1 || currentIndex === null || currentIndex === undefined) {
@@ -101,8 +147,17 @@ export const useSessionHosting = () => {
 
                 if (isAppleActive) {
                     // Apple Music Sync
+                    // Ensure TrackPlayer is STOPPED when switching to Apple Music
+                    try {
+                        const tpState = await TrackPlayer.getState();
+                        if (tpState === 'playing' || tpState === 3) { // 3 is State.Playing
+                            console.log('🛑 [Joinee Sync] Stopping TrackPlayer because Apple Music is active');
+                            await TrackPlayer.reset();
+                        }
+                    } catch (e) { }
+
                     if (lastSyncedIndex.current !== currentIndex) {
-                        console.log('🔄 [Joinee Sync] Changing Apple Music track to index:', currentIndex);
+                        console.log('🔄 [Joinee Sync] Switching Apple Music track to:', targetSong.apple_song_id, 'at index:', currentIndex);
                         await resetPlaybackQueue();
                         await setPlaybackQueue(targetSong.apple_song_id);
                         lastSyncedIndex.current = currentIndex;
@@ -110,22 +165,29 @@ export const useSessionHosting = () => {
 
                     // Sync Play/Pause
                     if (status.startAudioMixing && !appleFullSongPlaying) {
+                        console.log('▶️ [Joinee Sync] Apple Music Play');
                         Player.play();
                     } else if (!status.startAudioMixing && appleFullSongPlaying) {
+                        console.log('⏸️ [Joinee Sync] Apple Music Pause');
                         Player.pause();
-                    }
-
-                    // Sync seeking if significantly different (diff > 5s)
-                    const timeDiff = Math.abs((progress || 0) - (status.currentTime || 0));
-                    if (timeDiff > 5 && status.startAudioMixing) {
-                        // MusicKit.seekToTime(status.currentTime); // If available, else just rely on play state
                     }
                 } else {
                     // TrackPlayer (Preview/Spotify) Sync
-                    const isTrackPlayerPlaying = playerState?.state === 'playing';
+                    console.log('📻 [Joinee Sync] TrackPlayer Branch Active. Preview URL:', targetSong.song_uri);
+                    // Ensure Apple Music is STOPPED when switching to TrackPlayer
+                    if (appleFullSongPlaying) {
+                        console.log('🛑 [Joinee Sync] Stopping Apple Music because TrackPlayer is active');
+                        try {
+                            await Player.pause();
+                        } catch (e) { }
+                    }
+
+                    const tpState = playerState?.state ?? playerState;
+                    const isTrackPlayerPlaying = tpState === 'playing' || tpState === 3;
+                    console.log('📊 [Joinee Sync] TrackPlayer State:', tpState, 'isPlaying:', isTrackPlayerPlaying);
 
                     if (lastSyncedIndex.current !== currentIndex) {
-                        console.log('🔄 [Joinee Sync] Changing TrackPlayer track to index:', currentIndex);
+                        console.log('🔄 [Joinee Sync] Switching TrackPlayer track to preview:', targetSong.song_uri, 'at index:', currentIndex);
                         await TrackPlayer.reset();
                         const track = {
                             id: targetSong._id,
@@ -134,8 +196,10 @@ export const useSessionHosting = () => {
                             artist: targetSong.artist_name,
                             artwork: targetSong.song_image,
                         };
+                        console.log('🎵 [Joinee Sync] Adding track to TrackPlayer:', track.title);
                         await TrackPlayer.add([track]);
                         if (status.currentTime) {
+                            console.log('🕒 [Joinee Sync] Seeking TrackPlayer to:', status.currentTime);
                             await TrackPlayer.seekTo(status.currentTime);
                         }
                         lastSyncedIndex.current = currentIndex;
@@ -143,8 +207,10 @@ export const useSessionHosting = () => {
 
                     // Sync Play/Pause
                     if (status.startAudioMixing && !isTrackPlayerPlaying) {
+                        console.log('▶️ [Joinee Sync] TrackPlayer Play');
                         await TrackPlayer.play();
                     } else if (!status.startAudioMixing && isTrackPlayerPlaying) {
+                        console.log('⏸️ [Joinee Sync] TrackPlayer Pause');
                         await TrackPlayer.pause();
                     }
 
@@ -159,18 +225,16 @@ export const useSessionHosting = () => {
             }
         };
 
-        socketService.on('session_play_status', handleStatusUpdate);
-        return () => {
-            socketService.off('session_play_status', handleStatusUpdate);
-        };
+        syncPlayback();
     }, [
+        currentSyncStatus,
+        enablePlaybackSync,
         isJoinee,
         sessionId,
         isAppleActive,
         sessionDetailReduxdata?.session_songs,
         appleFullSongPlaying,
-        playerState?.state,
-        progress,
+        playerState,
         position,
         resetPlaybackQueue,
         setPlaybackQueue,
@@ -181,7 +245,7 @@ export const useSessionHosting = () => {
         let intervalId;
 
         if (isLive && isHost && sessionId) {
-            console.log('🚀 Starting global session sync for session:', sessionId);
+            console.log('🚀 [Sync Hook] Starting Host Emission for session:', sessionId);
 
             intervalId = setInterval(() => {
                 let currentTrackIndex = -1;
@@ -205,7 +269,7 @@ export const useSessionHosting = () => {
                     ? appleFullSongPlaying
                     : playerState?.state === 'playing';
 
-                console.log('📡 Emitting Global Sync Payload:', JSON.stringify(emitObjData, null, 2));
+                // console.log('📡 [Sync Hook] Emitting Payload:', JSON.stringify(emitObjData, null, 2));
                 socketService.emit('session_play_status', emitObjData);
                 setCurrentSyncStatus(emitObjData);
             }, 1000);
@@ -213,7 +277,7 @@ export const useSessionHosting = () => {
 
         return () => {
             if (intervalId) {
-                console.log('🛑 Stopping global session sync');
+                console.log('🛑 [Sync Hook] Stopping Host Emission');
                 clearInterval(intervalId);
             }
         };
@@ -236,6 +300,7 @@ export const useSessionHosting = () => {
         isJoinee,
         sessionId,
         sessionDetailReduxdata,
-        currentSyncStatus
+        currentSyncStatus,
+        isAppleActive, // Exposed for UI debugging
     };
 };
