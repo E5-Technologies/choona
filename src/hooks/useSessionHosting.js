@@ -43,6 +43,7 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
     const positionRef = useRef(0);
     const [currentSyncStatus, setCurrentSyncStatus] = useState(null);
     const lastSyncedIndex = useRef(-1);
+    const hostTrackPlayerIndexRef = useRef(-1);
 
     // Determine if we are using Apple Music or Preview/Spotify
     const isAppleRegisterType = userTokenData?.registerType === 'apple';
@@ -240,6 +241,34 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
         setPlaybackQueue,
     ]);
 
+    useEffect(() => {
+        if (!isHost || isAppleActive || !isLive) {
+            return;
+        }
+
+        const updateIndex = async () => {
+            try {
+                const idx = await TrackPlayer.getCurrentTrack();
+                if (idx !== null && idx !== undefined) {
+                    const track = await TrackPlayer.getTrack(idx);
+                    if (track?.id && sessionDetailReduxdata?.session_songs) {
+                        const indexInSongs = sessionDetailReduxdata.session_songs.findIndex(
+                            s => s._id === track.id
+                        );
+                        if (indexInSongs !== -1) {
+                            hostTrackPlayerIndexRef.current = indexInSongs;
+                        }
+                    }
+                }
+            } catch (e) {
+                // console.log('❌ [Host Sync] Error updating track index:', e);
+            }
+        };
+
+        const interval = setInterval(updateIndex, 1000);
+        return () => clearInterval(interval);
+    }, [isHost, isAppleActive, isLive, sessionDetailReduxdata?.session_songs]);
+
     // Session status interval (Emitting only if live and host)
     useEffect(() => {
         let intervalId;
@@ -249,11 +278,21 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
 
             intervalId = setInterval(() => {
                 let currentTrackIndex = -1;
-                if (currentPlayinSongData?.id && sessionDetailReduxdata?.session_songs) {
-                    currentTrackIndex = sessionDetailReduxdata.session_songs.findIndex(
-                        item => item.apple_song_id === currentPlayinSongData.id || item._id === currentPlayinSongData.id
-                    );
+                const songs = sessionDetailReduxdata?.session_songs || [];
+
+                if (isAppleActive) {
+                    if (currentPlayinSongData?.id) {
+                        currentTrackIndex = songs.findIndex(
+                            item => item.apple_song_id === currentPlayinSongData.id || item._id === currentPlayinSongData.id
+                        );
+                    }
+                } else {
+                    currentTrackIndex = hostTrackPlayerIndexRef.current;
                 }
+
+                const tpState = playerState?.state ?? playerState;
+                const isTrackPlayerPlaying = tpState === 'playing' || tpState === 3;
+                const isPlaying = isAppleActive ? appleFullSongPlaying : isTrackPlayerPlaying;
 
                 const emitObjData = {
                     hostId: userProfileResp?._id,
@@ -263,13 +302,10 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
                     startedAt: Date.now(),
                     pausedAt: null,
                     sessionId: sessionId,
+                    startAudioMixing: isPlaying,
                 };
 
-                emitObjData.startAudioMixing = isAppleActive
-                    ? appleFullSongPlaying
-                    : playerState?.state === 'playing';
-
-                // console.log('📡 [Sync Hook] Emitting Payload:', JSON.stringify(emitObjData, null, 2));
+                // console.log('📡 [Sync Hook] Emitting Payload:', { index: currentTrackIndex, playing: isPlaying, time: positionRef.current });
                 socketService.emit('session_play_status', emitObjData);
                 setCurrentSyncStatus(emitObjData);
             }, 1000);
@@ -288,7 +324,7 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
         sessionId,
         currentPlayinSongData,
         appleFullSongPlaying,
-        playerState?.state,
+        playerState,
         isAppleActive,
         sessionDetailReduxdata?.session_songs,
         sessionReduxData?.sessionDetailData,
