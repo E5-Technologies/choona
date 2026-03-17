@@ -213,11 +213,6 @@ function MusicPlayerBar(props) {
       props?.onChangeSong(props.playingSongRef?.details, nextIndex);
   };
 
-  const onPress = () => {
-    if (props.onPress) {
-      props.onPress();
-    }
-  };
 
   const onPressPlayOrPause = () => {
     if (props.onPressPlayOrPause) {
@@ -248,6 +243,11 @@ function MusicPlayerBar(props) {
           song_pic: target.song_image,
           regType: 'apple',
           apple_song_id: target.apple_song_id,
+          isrc: target.isrc_code,
+          isSessionSong: true,
+          details: {
+            songs: songs,
+          },
         };
       }
       // Fallback for live
@@ -257,8 +257,14 @@ function MusicPlayerBar(props) {
         song_pic: currentSessionSong?.song_image || currentSongData?.artwork || sessionDetailReduxdata?.session_image,
         regType: 'apple',
         apple_song_id: currentSessionSong?.apple_song_id || currentSongData?.id,
+        isrc: currentSessionSong?.isrc_code || currentSongData?.isrc,
+        isSessionSong: true,
+        details: {
+          songs: songs,
+        },
       };
     }
+
 
     // Default to playingSongRef if not live
     if (props.playingSongRef !== '') {
@@ -296,8 +302,9 @@ function MusicPlayerBar(props) {
 
       <TouchableOpacity
         onPress={() => {
-          onPress();
+          props.onPress(activeSong);
         }}>
+
         <View
           style={{
             width: '100%',
@@ -335,8 +342,9 @@ function MusicPlayerBar(props) {
             )}
             <TouchableOpacity
               onPress={() => {
-                onPress();
+                props.onPress(activeSong);
               }}>
+
               <Image
                 source={
                   activeSong?.song_pic || activeSong?.song_image
@@ -411,7 +419,8 @@ function MusicPlayerBar(props) {
             )}
 
             <TouchableOpacity
-              disabled={disabled || (islive && !isSessionHost)}
+              disabled={disabled || islive}
+
 
               onPress={() => {
                 setDisabled(true);
@@ -429,8 +438,17 @@ function MusicPlayerBar(props) {
               }}>
               <Image
                 source={
-                  ImagePath ? (play ? ImagePath.pause : ImagePath.play) : null
+                  islive && currentSyncStatus
+                    ? currentSyncStatus.startAudioMixing
+                      ? ImagePath.pause
+                      : ImagePath.play
+                    : ImagePath
+                      ? play
+                        ? ImagePath.pause
+                        : ImagePath.play
+                      : null
                 }
+
                 style={{ height: normalise(24), width: normalise(24) }}
                 resizeMode={'contain'}
               />
@@ -496,9 +514,10 @@ MusicPlayerBar.propTypes = {
 };
 
 MusicPlayerBar.defaultProps = {
-  onPress: null,
-  onPressPlayOrPause: null,
+  onPress: () => { },
+  onPressPlayOrPause: () => { },
 };
+
 
 
 

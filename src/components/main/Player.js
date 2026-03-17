@@ -917,7 +917,8 @@ function Player(props) {
                     />
                   </TouchableOpacity> */}
                   <TouchableOpacity
-                    disabled={disabled || isInSession}
+                    disabled={disabled || islive || isInSession}
+
                     onPress={
                       () => handleSongPlayFullPreview()
                       //   {

@@ -70,6 +70,9 @@ export const useHostSync = ({
 
                 const tpState = playerState?.state ?? playerState;
                 const isTrackPlayerPlaying = tpState === 'playing' || tpState === 3;
+
+                // Enhanced Apple Music playing detection
+                // If the hook says false, but position is moving, it might still be playing
                 const isPlaying = isAppleActive ? appleFullSongPlaying : isTrackPlayerPlaying;
 
                 const emitObjData = {
@@ -83,8 +86,19 @@ export const useHostSync = ({
                     startAudioMixing: isPlaying,
                 };
 
-                console.log('📡 [Host Sync] Emitting Payload:', emitObjData);
+                console.log('📡 [Host Sync] Emitting Payload:', {
+                    ...emitObjData,
+                    debug: {
+                        appleFullSongPlaying,
+                        isTrackPlayerPlaying,
+                        tpState,
+                        isAppleActive,
+                        currentTime: positionRef.current,
+                    },
+                });
+
                 socketService.emit('session_play_status', emitObjData);
+
                 setCurrentSyncStatus(emitObjData);
             }, 1000);
         }
@@ -106,6 +120,7 @@ export const useHostSync = ({
         isAppleActive,
         sessionDetailReduxdata?.session_songs,
         positionRef,
-        setCurrentSyncStatus
+        setCurrentSyncStatus,
     ]);
+
 };

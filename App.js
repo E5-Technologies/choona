@@ -134,11 +134,11 @@ const BottomTab = () => {
           <View style={{ backgroundColor: 'transparent' }}>
             <MusicPlayerBar
               position="relative"
-              onPress={() => {
-                const song = playingSongRef;
+              onPress={(barActiveSong) => {
+                const song = barActiveSong || playingSongRef;
                 if (song) {
                   navigation.navigate('Player', {
-                    comments: [],
+                    comments: song.commentData || [],
                     song_title: song.song_name,
                     album_name: song.album_name,
                     song_pic: song.song_pic,
@@ -160,6 +160,7 @@ const BottomTab = () => {
                 }
               }}
             />
+
             <BottomTabBar {...props} />
           </View>
         )}
