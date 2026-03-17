@@ -1,4 +1,4 @@
-import { put, call, takeLatest, select } from 'redux-saga/effects';
+import { put, call, takeLatest, select, delay } from 'redux-saga/effects';
 import {
   CREATE_SESSION_REQUEST,
   CREATE_SESSION_SUCCESS,
@@ -29,15 +29,11 @@ import {
   GET_SESSION_LIST_FAILURE_SEARCH,
   GET_SESSION_LIST_SUCCESS_SEARCH,
   GET_SESSION_LIST_REQUEST_SEARCH,
+  SAVE_SONG_REFERENCE_REQUEST,
+  CLEAR_SESSION_DETAIL,
 } from '../action/TypeConstants';
 import { postApi, getApi, putApi } from '../utils/helpers/ApiRequest';
-import { getSpotifyToken } from '../utils/helpers/SpotifyLogin';
-import { getAppleDevToken } from '../utils/helpers/AppleDevToken';
-import { Alert } from 'react-native';
 import toast from '../utils/helpers/ShowErrorAlert';
-import { act } from 'react';
-import { mySessionListRequest } from '../action/SessionAction';
-import { ColorSpace } from 'react-native-agora';
 
 const getItems = state => state.TokenReducer;
 const getMySesssinoInfo = state => state.SessionReducer.mySessionListData;
@@ -188,11 +184,29 @@ export function* startSessionOnce(action) {
       objectData,
       header,
     );
-    console.log(response?.data, 'its response start session');
     if (response?.data?.status == 200) {
       yield put({ type: START_SESSION_SUCCESS, data: response?.data });
+
+      // IF SESSION IS STOPPED (isLive: false), REFRESH LISTS AND CLEAR MINIPLAYER
+      if (action.payload.isLive === false) {
+        console.log('📡 [Session Saga] Session stopped successfully. Clearing details...');
+
+        // Explicitly clear session detail state
+        yield put({ type: CLEAR_SESSION_DETAIL });
+
+        // Small delay to ensure backend has propagated the update before we fetch the list
+        yield delay(1000);
+
+        console.log('📡 [Session Saga] Delayed list refresh triggered.');
+        // Refresh session lists
+        yield put({ type: CREATE_SESSION_LIST_REQUEST });
+        yield put({ type: My_SESSION_LIST_REQUEST });
+
+        // Clear global miniplayer
+        yield put({ type: SAVE_SONG_REFERENCE_REQUEST, object: '' });
+      }
     } else {
-      yield put({ type: START_SESSION_FAILURE, error: error });
+      yield put({ type: START_SESSION_FAILURE, error: response?.data });
     }
   } catch (error) {
     console.log(JSON.stringify(error), 'simple error1 in list get');

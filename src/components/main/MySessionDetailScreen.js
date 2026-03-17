@@ -1749,16 +1749,12 @@ function MySessionDetailScreen(props) {
             await resetPlaybackQueue();
             setCurrentTrack(null); // addded later when handling apple full music player
             resetProgress();
-            // Clear global miniplayer
-            dispatch(saveSongRefReq(''));
           })();
         }
       } else {
         if (!sessionDetailReduxdata?.isLive) {
           // Alert.alert('Reset')
           TrackPlayer.reset();
-          // Clear global miniplayer
-          dispatch(saveSongRefReq(''));
         }
       }
     }
@@ -1778,6 +1774,19 @@ function MySessionDetailScreen(props) {
       setCurrentListeners([]);
     }
   }, [islive]);
+
+  // AUTO-NAVIGATION: Go back when session is stopped or cleared
+  useEffect(() => {
+    // If the session was previously live (based on our local islive state)
+    // and now the redux data shows it's not live, OR the redux data is gone entirely (CLEAR_SESSION_DETAIL)
+    const sessionNoLongerExists = !sessionDetailReduxdata || !sessionDetailReduxdata._id;
+    const sessionStopped = sessionDetailReduxdata && sessionDetailReduxdata.isLive === false;
+
+    if (islive && (sessionNoLongerExists || sessionStopped)) {
+      console.log('📡 [Session Detail] Session stopped or cleared. Automatically leaving screen...');
+      props.navigation.goBack();
+    }
+  }, [islive, sessionDetailReduxdata, props.navigation]);
 
   useEffect(() => {
     if (sessionDetailReduxdata?._id && autoPlay && !autoPlayHandledRef.current) {
@@ -1888,11 +1897,7 @@ function MySessionDetailScreen(props) {
     }
   });
 
-  useTrackPlayerEvents([Event.PlaybackQueueEnded], async event => {
-    // console.log('✅ Playback finished for the last track');
-    TrackPlayer.reset();
-    handleStopKillSession();
-  });
+
 
   // const listenLastTrackEnd = () => {
   //   if (currentTrack && playerState?.state != 'none') {

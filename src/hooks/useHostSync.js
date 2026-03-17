@@ -1,6 +1,10 @@
-import { useEffect, useRef } from 'react';
-import TrackPlayer from 'react-native-track-player';
+import { useEffect, useRef, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { Player } from '@lomray/react-native-apple-music';
+import TrackPlayer, { Event, useTrackPlayerEvents } from 'react-native-track-player';
 import socketService from '../utils/socket/socketService';
+import { startSessionRequest } from '../action/SessionAction';
+
 
 export const useHostSync = ({
     isHost,
@@ -15,16 +19,101 @@ export const useHostSync = ({
     positionRef,
     setCurrentSyncStatus,
 }) => {
-
+    const dispatch = useDispatch();
     const hostTrackPlayerIndexRef = useRef(-1);
+    const lastTrackIndexRef = useRef(-1);
+    const isStoppingRef = useRef(false);
+
+    const handleStopKillSession = useCallback(() => {
+        if (!sessionId || isStoppingRef.current) {
+            return;
+        }
+
+        isStoppingRef.current = true;
+        console.log('📡 [Host Sync] Automatic session closure triggered. Stopping emissions.');
+        const requestObj = {
+            isLive: false,
+            sessionId: sessionId,
+        };
+        dispatch(startSessionRequest(requestObj));
+    }, [dispatch, sessionId]);
+
+    // Reset isStoppingRef when session changes or goes live again
+    useEffect(() => {
+        if (isLive) {
+            isStoppingRef.current = false;
+        }
+    }, [isLive, sessionId]);
+
+    // Apple Music end-of-queue detection
+    useEffect(() => {
+        if (!isHost || !isLive || !isAppleActive) {
+            return;
+        }
+
+        const playbackListener = Player.addListener(
+            'onPlaybackStateChange',
+            state => {
+                const duration = state?.currentSong?.duration;
+                const time = state?.playbackTime;
+
+                // Enhanced completion detection: if paused near the end
+                const isNearEnd = duration > 0 && Math.abs(duration - time) < 2.0;
+                const isCompleted = state.playbackStatus === 'paused' && isNearEnd;
+
+                console.log('🔍 [Host Sync] Apple Playback Detection:', {
+                    playbackStatus: state.playbackStatus,
+                    duration,
+                    time,
+                    isNearEnd,
+                    isCompleted,
+                    currentSongId: currentPlayinSongData?.id,
+                });
+
+                if (isCompleted) {
+                    const songs = sessionDetailReduxdata?.session_songs || [];
+                    const appleId = currentPlayinSongData?.id;
+                    const currentTrackIndex = appleId ? songs.findIndex(
+                        item => item.apple_song_id === appleId || item._id === appleId
+                    ) : -1;
+
+                    console.log('🔍 [Host Sync] Apple Completion Check:', {
+                        currentTrackIndex,
+                        songsCount: songs.length,
+                        isLastTrack: (currentTrackIndex !== -1 && currentTrackIndex === songs.length - 1),
+                    });
+
+                    if (currentTrackIndex !== -1 && currentTrackIndex === songs.length - 1) {
+                        handleStopKillSession();
+                    }
+                }
+            }
+        );
+
+        return () => {
+            playbackListener.remove();
+        };
+    }, [isHost, isLive, isAppleActive, sessionDetailReduxdata?.session_songs, currentPlayinSongData, handleStopKillSession]);
+
+    // TrackPlayer end-of-queue detection
+    useTrackPlayerEvents([Event.PlaybackQueueEnded], async event => {
+        if (isHost && isLive && !isAppleActive) {
+            console.log('✅ [Host Sync] TrackPlayer PlaybackQueueEnded');
+            handleStopKillSession();
+        }
+    });
 
     // Track index update for non-Apple (TrackPlayer)
+
     useEffect(() => {
         if (!isHost || isAppleActive || !isLive) {
             return;
         }
 
         const updateIndex = async () => {
+            if (isStoppingRef.current) {
+                return;
+            }
             try {
                 const idx = await TrackPlayer.getCurrentTrack();
                 if (idx !== null && idx !== undefined) {
@@ -55,6 +144,10 @@ export const useHostSync = ({
             console.log('🚀 [Host Sync] Starting Host Emission for session:', sessionId);
 
             intervalId = setInterval(() => {
+                if (isStoppingRef.current) {
+                    return;
+                }
+
                 let currentTrackIndex = -1;
                 const songs = sessionDetailReduxdata?.session_songs || [];
 
@@ -70,10 +163,18 @@ export const useHostSync = ({
 
                 const tpState = playerState?.state ?? playerState;
                 const isTrackPlayerPlaying = tpState === 'playing' || tpState === 3;
-
-                // Enhanced Apple Music playing detection
-                // If the hook says false, but position is moving, it might still be playing
                 const isPlaying = isAppleActive ? appleFullSongPlaying : isTrackPlayerPlaying;
+
+                // TRANSITION-BASED CLOSURE DETECTION (Apple Music / Loopback Fix)
+                // If it jumps from the last song to the first song, it means the queue ended.
+                if (lastTrackIndexRef.current !== -1 &&
+                    lastTrackIndexRef.current === songs.length - 1 &&
+                    currentTrackIndex === 0 &&
+                    songs.length > 1) {
+                    console.log('📡 [Host Sync] Detected jump from last track to first track. Closing session.');
+                    handleStopKillSession();
+                    return;
+                }
 
                 const emitObjData = {
                     hostId: userProfileResp?._id,
@@ -88,18 +189,15 @@ export const useHostSync = ({
 
                 console.log('📡 [Host Sync] Emitting Payload:', {
                     ...emitObjData,
-                    debug: {
-                        appleFullSongPlaying,
-                        isTrackPlayerPlaying,
-                        tpState,
-                        isAppleActive,
-                        currentTime: positionRef.current,
-                    },
+                    isStopping: isStoppingRef.current,
                 });
 
                 socketService.emit('session_play_status', emitObjData);
 
                 setCurrentSyncStatus(emitObjData);
+
+                // Always update last track index at the end of successful calculation
+                lastTrackIndexRef.current = currentTrackIndex;
             }, 1000);
         }
 
@@ -121,6 +219,7 @@ export const useHostSync = ({
         sessionDetailReduxdata?.session_songs,
         positionRef,
         setCurrentSyncStatus,
+        handleStopKillSession,
     ]);
 
 };
