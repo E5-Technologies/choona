@@ -74,7 +74,7 @@ export const usePlayFullAppleMusic = () => {
   const onCheckSubs = useCallback(async () => {
     try {
       const subscriptionInfo = await Auth.checkSubscription();
-      console.log('Subscription Info:', subscriptionInfo);
+      // console.log('Subscription Info:', subscriptionInfo);
 
       // Key checks for active subscription
       if (subscriptionInfo.canPlayCatalogContent) {

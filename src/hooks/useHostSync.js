@@ -187,10 +187,10 @@ export const useHostSync = ({
                     startAudioMixing: isPlaying,
                 };
 
-                // console.log('📡 [Host Sync] Emitting Payload:', {
-                //     ...emitObjData,
-                //     isStopping: isStoppingRef.current,
-                // });
+                console.log('📡 [Host Sync] Emitting Payload:', {
+                    ...emitObjData,
+                    isStopping: isStoppingRef.current,
+                });
 
                 socketService.emit('session_play_status', emitObjData);
 

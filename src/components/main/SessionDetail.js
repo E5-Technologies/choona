@@ -91,6 +91,8 @@ function SessionDetail(props) {
   const currentState = currentSyncStatus;
 
   const handleListerUserStatus = useCallback(res => {
+
+    console.log('✅ [Joinee Sync] Success: Received data from Host:>>>>>', res);
     if (res?.isLive === false) {
       dispatch({
         type: START_SESSION_JOINEE_STOP_HOST,

@@ -158,7 +158,6 @@ const Home = props => {
   const [menuVisible, setMenuVisible] = useState(false);
   const TokenReducer = useSelector(state => state.TokenReducer);
 
-  console.log(isPlaying, 'thisiSplaying')
 
   const { playSong } = useGlobalMusicPlayer();
 
@@ -338,7 +337,7 @@ const Home = props => {
 
   useEffect(() => {
     if (newPosts) {
-      console.log(newPosts, 'this is new post');
+      // console.log(newPosts, 'this is new post');
       var merged = [].concat.apply(
         [],
         newPosts.pages.map(page => page?.data),

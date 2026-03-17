@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -18,7 +18,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import Contacts from 'react-native-contacts';
-import {connect, useDispatch} from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import {
   deleteConversationRequest,
   getChatListRequest,
@@ -52,7 +52,7 @@ import Avatar from '../../Avatar';
 import EmptyComponent from '../../Empty/EmptyComponent';
 import InboxListItem from '../ListCells/InboxItemList';
 import Seperator from '../ListCells/Seperator';
-import {TabComponent} from './Components/TabComponent';
+import { TabComponent } from './Components/TabComponent';
 import Loader from '../../../widgets/AuthLoader';
 let status;
 const activityUrl = constants.BASE_URL + '/activity/list';
@@ -89,10 +89,10 @@ const CommonNotification = props => {
   });
 
   if (today.length > 0) {
-    sections.push({title: 'TODAY', data: today});
+    sections.push({ title: 'TODAY', data: today });
   }
   if (previous.length > 0) {
-    sections.push({title: 'PREVIOUSLY', data: previous});
+    sections.push({ title: 'PREVIOUSLY', data: previous });
   }
 
   //Effects******************************
@@ -286,12 +286,12 @@ const CommonNotification = props => {
         });
 
         // console.log(finalArray);
-        props.navigation.navigate('UsersFromContacts', {data: finalArray});
+        props.navigation.navigate('UsersFromContacts', { data: finalArray });
       }
     });
   };
 
-  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 50;
 
     return (
@@ -304,7 +304,7 @@ const CommonNotification = props => {
   const getActivities = async (pageId = 1) => {
     try {
       setIsLoading(true);
-      console.log(props.header.token, 'thisistoken');
+      // console.log(props.header.token, 'thisistoken');
       const response = await axios.get(`${activityUrl}?page=${pageId}`, {
         headers: {
           Accept: 'application/json',
@@ -380,7 +380,7 @@ const CommonNotification = props => {
       item: {
         profile_image: 'user1.jpg',
         username: 'Alice',
-        message: [{text: 'Hi!'}, {text: 'Are you coming to the party?'}],
+        message: [{ text: 'Hi!' }, { text: 'Are you coming to the party?' }],
         user_id: 111,
         receiver_id: 222,
         read: true,
@@ -392,7 +392,7 @@ const CommonNotification = props => {
       item: {
         profile_image: 'user2.jpg',
         username: 'Bob',
-        message: [{text: 'Meeting at 3pm'}],
+        message: [{ text: 'Meeting at 3pm' }],
         user_id: 333,
         receiver_id: 222,
         read: false,
@@ -403,8 +403,8 @@ const CommonNotification = props => {
   ];
   //Components**********************************
 
-  function renderInboxItem({item,index}) {
-    console.log(item,'heyiem')
+  function renderInboxItem({ item, index }) {
+    console.log(item, 'heyiem')
     return (
       <InboxListItem
         image={constants?.profile_picture_base_url + item?.profile_image}
@@ -418,14 +418,14 @@ const CommonNotification = props => {
             : item?.read
         }
         onPress={() =>
-          props.navigation.navigate('InsideaMessage', {index: index})
+          props.navigation.navigate('InsideaMessage', { index: index })
         }
         onPressImage={() => {
-          props.navigation.navigate('OthersProfile', {id: item?.user_id});
+          props.navigation.navigate('OthersProfile', { id: item?.user_id });
         }}
         onPressDelete={() =>
           Alert.alert('Do you want to delete this conversation?', '', [
-            {text: 'No'},
+            { text: 'No' },
 
             {
               text: 'Delete',
@@ -459,7 +459,7 @@ const CommonNotification = props => {
                 null;
                 // onPressImage();
               }}
-              style={{marginRight: normaliseNew(8)}}>
+              style={{ marginRight: normaliseNew(8) }}>
               <Avatar
                 image={
                   image !== 'https://api.choona.co/uploads/user/thumb/'
@@ -471,7 +471,7 @@ const CommonNotification = props => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}
+              style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
               disabled={touchableOpacityDisabled}
               onPress={() => null}>
               <Text style={styles.detailsText} numberOfLines={2}>
@@ -484,7 +484,7 @@ const CommonNotification = props => {
             {showButton && (
               <View>
                 <TouchableOpacity
-                  style={[styles.followButton, {backgroundColor: Colors.white}]}
+                  style={[styles.followButton, { backgroundColor: Colors.white }]}
                   onPress={() =>
                     props.navigation.navigate('SessionDetail', {
                       sessionId: session_id,
@@ -495,7 +495,7 @@ const CommonNotification = props => {
               <Text style={[styles.followButtonText, {}]}>FOLLOW</Text>
             ) : ( */}
                   <Text
-                    style={[styles.followButtonText, {color: Colors.black}]}>
+                    style={[styles.followButtonText, { color: Colors.black }]}>
                     JOIN
                   </Text>
                   {/* )} */}
@@ -510,7 +510,7 @@ const CommonNotification = props => {
 
   const inboxComponent = useCallback(() => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         {mesageList?.length == 0 ? (
           <EmptyComponent
             buttonPress={() => {
@@ -542,7 +542,7 @@ const CommonNotification = props => {
 
   const notificationComponent = useCallback(() => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         {notifications?.length === 0 ? (
           <EmptyComponent
             buttonPress={() => {
@@ -574,12 +574,12 @@ const CommonNotification = props => {
                 }}
               />
             }
-            renderSectionHeader={({section: {title}}) => (
+            renderSectionHeader={({ section: { title } }) => (
               <View style={styles.activityHeader}>
                 <Text style={styles.activityHeaderText}>{title}</Text>
               </View>
             )}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               const activity_type = item?.activity_type;
               const content =
                 item.post_id !== null ? (
@@ -631,7 +631,7 @@ const CommonNotification = props => {
         barStyle="light-content"
         backgroundColor={Platform.OS === 'android' ? '#000' : undefined}
       />
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
         <HeaderComponent
           firstitemtext={false}
           title={'NOTIFICATION'}
@@ -641,7 +641,7 @@ const CommonNotification = props => {
           onPressFirstItem={() => {
             props.navigation.goBack();
           }}
-          imageOneStyle={{width: 20, height: 20}}
+          imageOneStyle={{ width: 20, height: 20 }}
           thirditemtext={activeTab == 0 ? false : true}
           imagetwo={ImagePath ? ImagePath.newmessage : null}
           imagetwoheight={20}
@@ -651,7 +651,7 @@ const CommonNotification = props => {
           }}
         />
         <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {activeTab === 0 ? inboxComponent() : notificationComponent()}
         </View>
       </SafeAreaView>
@@ -689,8 +689,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 
-  container: {flex: 1, backgroundColor: Colors.darkerblack},
-  emptyWrapper: {flex: 1, alignItems: 'center'},
+  container: { flex: 1, backgroundColor: Colors.darkerblack },
+  emptyWrapper: { flex: 1, alignItems: 'center' },
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -715,7 +715,7 @@ const styles = StyleSheet.create({
     marginTop: normaliseNew(30),
     width: 2 * normaliseNew(110),
   },
-  activityContainer: {flex: 1},
+  activityContainer: { flex: 1 },
   activityHeader: {
     flexDirection: 'row',
     width: '100%',

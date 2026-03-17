@@ -42,14 +42,14 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
         );
     }, [isLive, isHost, sessionDetailReduxdata?.users, userProfileResp?._id]);
 
-    console.log('🔍 [Sync Hook Role]', {
-        role: isHost ? 'HOST' : (isJoinee ? 'JOINEE' : 'VIEWER'),
-        isLive,
-        sessionId,
-        userCount: sessionDetailReduxdata?.users?.length,
-        myId: userProfileResp?._id,
-        hostId: sessionDetailReduxdata?.own_user?._id,
-    });
+    // console.log('🔍 [Sync Hook Role]', {
+    //     role: isHost ? 'HOST' : (isJoinee ? 'JOINEE' : 'VIEWER'),
+    //     isLive,
+    //     sessionId,
+    //     userCount: sessionDetailReduxdata?.users?.length,
+    //     myId: userProfileResp?._id,
+    //     hostId: sessionDetailReduxdata?.own_user?._id,
+    // });
 
 
     const positionRef = useRef(0);

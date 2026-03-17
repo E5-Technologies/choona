@@ -174,7 +174,7 @@ export function* UserSignUpAction(action) {
 export function* userProfileAction(action) {
   try {
     const items = yield select(getItems);
-    console.log(items.token, 'thisiSToken')
+    // console.log(items.token, 'thisiSToken')
 
     const Header = {
       Accept: 'application/json',

@@ -104,7 +104,7 @@ const Profile = props => {
         'x-access-token': token,
       },
     });
-    console.log(response?.data?.data, 'theseAreProfilePost');
+    // console.log(response?.data?.data, 'theseAreProfilePost');
     if (response) {
       setIsLoading(false);
       setProfilePosts(response.data.data);
