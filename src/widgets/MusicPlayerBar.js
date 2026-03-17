@@ -29,11 +29,14 @@ function MusicPlayerBar(props) {
   const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
 
   const isInSession = React.useMemo(() => {
-    if (!islive || !sessionDetailReduxdata?.users) return false;
+    if (!islive || !sessionDetailReduxdata?.users) {
+      return false;
+    }
     return sessionDetailReduxdata.users.some(
-      user => user._id === userProfileResp?._id
+      user => user._id === userProfileResp?._id,
     );
   }, [islive, sessionDetailReduxdata?.users, userProfileResp?._id]);
+
 
   const [play, setPlay] = useState(false);
   const [bool, setBool] = useState(true);
@@ -65,7 +68,8 @@ function MusicPlayerBar(props) {
     setTime(() => {
       handleProgress();
     }, 1000);
-  }, []);
+  }, [checkPlaybackState]);
+
 
   const ref =
     global.playerReference !== null && global.playerReference !== undefined
@@ -88,7 +92,8 @@ function MusicPlayerBar(props) {
     setTimeout(() => {
       setBool(false);
     }, 1000);
-  }, []);
+  }, [getPlatingState, getPlayingPosition]);
+
 
   useEffect(() => {
     if (
@@ -101,7 +106,7 @@ function MusicPlayerBar(props) {
     }
   }, [isPlaying, props.playingSongRef, currentSongData, haveAppleMusicSubscription]);
 
-  function getPlatingState() {
+  const getPlatingState = React.useCallback(() => {
     setTimeout(() => {
       // console.log(
       //   haveAppleMusicSubscription.toString(),
@@ -109,9 +114,9 @@ function MusicPlayerBar(props) {
       // );
       if (
         haveAppleMusicSubscription &&
-        Platform.OS == 'ios' &&
-        props.playingSongRef?.regType == 'apple' &&
-        currentSongData?.id == props.playingSongRef?.apple_song_id
+        Platform.OS === 'ios' &&
+        props.playingSongRef?.regType === 'apple' &&
+        currentSongData?.id === props.playingSongRef?.apple_song_id
       ) {
         // Alert.alert(isPlaying.toString())
         setPlay(isPlaying);
@@ -124,9 +129,9 @@ function MusicPlayerBar(props) {
         }
       }
     }, 1000);
-  }
+  }, [haveAppleMusicSubscription, props.playingSongRef, currentSongData, isPlaying, ref]);
 
-  function getPlayingPosition() {
+  const getPlayingPosition = React.useCallback(() => {
     setTimeout(() => {
       if (ref !== null && ref !== undefined) {
         ref.getCurrentTime(seconds => {
@@ -134,24 +139,27 @@ function MusicPlayerBar(props) {
         });
       }
     }, 1000);
-  }
+  }, [ref]);
+
+
 
   const playOrPause = async () => {
     if (
       haveAppleMusicSubscription &&
-      Platform.OS == 'ios' &&
-      props.playingSongRef?.regType == 'apple'
+      Platform.OS === 'ios' &&
+      props.playingSongRef?.regType === 'apple'
     ) {
-      if (currentSongData?.id == props.playingSongRef?.apple_song_id) {
-        console.log('previousONsg', props.playingSongRef?.apple_song_id, currentSongData?.id)
+      if (currentSongData?.id === props.playingSongRef?.apple_song_id) {
+        console.log('previousONsg', props.playingSongRef?.apple_song_id, currentSongData?.id);
         onToggle();
         setPlay(!play);
       } else {
-        console.log('newsong', props.playingSongRef?.apple_song_id, currentSongData?.id)
+        console.log('newsong', props.playingSongRef?.apple_song_id, currentSongData?.id);
 
         setPlay(true);
         // Await setPlaybackQueue so that the song is fully queued BEFORE we hit play.
         await setPlaybackQueue(props.playingSongRef?.apple_song_id);
+
 
 
         // Once the queue promises completes, we can safely play.
@@ -160,7 +168,7 @@ function MusicPlayerBar(props) {
         }, 500);
       }
     } else {
-      console.log('previousONsg11')
+      console.log('previousONsg11');
       const res = ref.isPlaying();
       if (res) {
         ref.pause();
@@ -178,6 +186,7 @@ function MusicPlayerBar(props) {
     }
   };
 
+
   const changeSong = (type = 'next') => {
     if (currentSongIndex < 0) {
       return;
@@ -185,19 +194,20 @@ function MusicPlayerBar(props) {
 
     let nextIndex = currentSongIndex;
 
-    if (type == 'next') {
+    if (type === 'next') {
       if (currentSongIndex + 1 >= totalSongs) {
         return;
       }
       nextIndex = currentSongIndex + 1;
     }
 
-    if (type == 'previous') {
+    if (type === 'previous') {
       if (currentSongIndex - 1 < 0) {
         return;
       }
       nextIndex = currentSongIndex - 1;
     }
+
 
     props?.onChangeSong &&
       props?.onChangeSong(props.playingSongRef?.details, nextIndex);
@@ -225,12 +235,11 @@ function MusicPlayerBar(props) {
 
   // Derive target song from session synchronization if live
   const activeSong = React.useMemo(() => {
-    if (props.playingSongRef !== '') {
-      return props.playingSongRef;
-    }
+    // If live, prioritize session sync data
     if (islive) {
       const songs = sessionDetailReduxdata?.session_songs || [];
       const currentIndex = currentSyncStatus?.playIndex;
+
       if (currentIndex !== null && currentIndex !== undefined && currentIndex >= 0 && currentIndex < songs.length) {
         const target = songs[currentIndex];
         return {
@@ -241,6 +250,7 @@ function MusicPlayerBar(props) {
           apple_song_id: target.apple_song_id,
         };
       }
+      // Fallback for live
       return {
         song_name: currentSessionSong?.song_name || currentSongData?.title || 'Session Live',
         artist: currentSessionSong?.artist_name || currentSongData?.artist || 'Broadcasting',
@@ -249,8 +259,16 @@ function MusicPlayerBar(props) {
         apple_song_id: currentSessionSong?.apple_song_id || currentSongData?.id,
       };
     }
+
+    // Default to playingSongRef if not live
+    if (props.playingSongRef !== '') {
+      return props.playingSongRef;
+    }
+
     return null;
   }, [props.playingSongRef, islive, currentSyncStatus, sessionDetailReduxdata, currentSessionSong, currentSongData]);
+
+
 
   return showPlayer ? (
     <View
@@ -394,6 +412,7 @@ function MusicPlayerBar(props) {
 
             <TouchableOpacity
               disabled={disabled || (islive && !isSessionHost)}
+
               onPress={() => {
                 setDisabled(true);
                 playOrPause();
@@ -480,6 +499,8 @@ MusicPlayerBar.defaultProps = {
   onPress: null,
   onPressPlayOrPause: null,
 };
+
+
 
 const mapStateToProps = state => {
   return {
