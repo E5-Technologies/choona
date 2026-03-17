@@ -1489,7 +1489,6 @@ import {
 
 function MySessionDetailScreen(props) {
   const { autoPlay } = props?.route?.params ?? {};
-  console.log(autoPlay, 'thisiUatplay11');
   let sendSong = false;
   // console.log(props?.route?.params, 'these are params')
   // const { currentSession } = props?.route?.params
@@ -1502,7 +1501,6 @@ function MySessionDetailScreen(props) {
   const [seletedUserToInvite, setSelectedUserToInvite] = useState([]);
   const [status, setStatus] = useState('');
   const { isPlaying: appleFullSongPlaying } = useIsPlaying();
-  console.log(appleFullSongPlaying, 'this is my current song>>>>>>');
   const { playTrack, pauseTrack } = useTrackPlayer();
 
   const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =

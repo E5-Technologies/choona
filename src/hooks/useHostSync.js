@@ -30,7 +30,7 @@ export const useHostSync = ({
         }
 
         isStoppingRef.current = true;
-        console.log('📡 [Host Sync] Automatic session closure triggered. Stopping emissions.');
+        // console.log('📡 [Host Sync] Automatic session closure triggered. Stopping emissions.');
         const requestObj = {
             isLive: false,
             sessionId: sessionId,
@@ -61,14 +61,14 @@ export const useHostSync = ({
                 const isNearEnd = duration > 0 && Math.abs(duration - time) < 2.0;
                 const isCompleted = state.playbackStatus === 'paused' && isNearEnd;
 
-                console.log('🔍 [Host Sync] Apple Playback Detection:', {
-                    playbackStatus: state.playbackStatus,
-                    duration,
-                    time,
-                    isNearEnd,
-                    isCompleted,
-                    currentSongId: currentPlayinSongData?.id,
-                });
+                // console.log('🔍 [Host Sync] Apple Playback Detection:', {
+                //     playbackStatus: state.playbackStatus,
+                //     duration,
+                //     time,
+                //     isNearEnd,
+                //     isCompleted,
+                //     currentSongId: currentPlayinSongData?.id,
+                // });
 
                 if (isCompleted) {
                     const songs = sessionDetailReduxdata?.session_songs || [];
@@ -77,11 +77,11 @@ export const useHostSync = ({
                         item => item.apple_song_id === appleId || item._id === appleId
                     ) : -1;
 
-                    console.log('🔍 [Host Sync] Apple Completion Check:', {
-                        currentTrackIndex,
-                        songsCount: songs.length,
-                        isLastTrack: (currentTrackIndex !== -1 && currentTrackIndex === songs.length - 1),
-                    });
+                    // console.log('🔍 [Host Sync] Apple Completion Check:', {
+                    //     currentTrackIndex,
+                    //     songsCount: songs.length,
+                    //     isLastTrack: (currentTrackIndex !== -1 && currentTrackIndex === songs.length - 1),
+                    // });
 
                     if (currentTrackIndex !== -1 && currentTrackIndex === songs.length - 1) {
                         handleStopKillSession();
@@ -98,7 +98,7 @@ export const useHostSync = ({
     // TrackPlayer end-of-queue detection
     useTrackPlayerEvents([Event.PlaybackQueueEnded], async event => {
         if (isHost && isLive && !isAppleActive) {
-            console.log('✅ [Host Sync] TrackPlayer PlaybackQueueEnded');
+            // console.log('✅ [Host Sync] TrackPlayer PlaybackQueueEnded');
             handleStopKillSession();
         }
     });
@@ -141,7 +141,7 @@ export const useHostSync = ({
         let intervalId;
 
         if (isLive && isHost && sessionId) {
-            console.log('🚀 [Host Sync] Starting Host Emission for session:', sessionId);
+            // console.log('🚀 [Host Sync] Starting Host Emission for session:', sessionId);
 
             intervalId = setInterval(() => {
                 if (isStoppingRef.current) {
@@ -171,7 +171,7 @@ export const useHostSync = ({
                     lastTrackIndexRef.current === songs.length - 1 &&
                     currentTrackIndex === 0 &&
                     songs.length > 1) {
-                    console.log('📡 [Host Sync] Detected jump from last track to first track. Closing session.');
+                    // console.log('📡 [Host Sync] Detected jump from last track to first track. Closing session.');
                     handleStopKillSession();
                     return;
                 }
@@ -187,10 +187,10 @@ export const useHostSync = ({
                     startAudioMixing: isPlaying,
                 };
 
-                console.log('📡 [Host Sync] Emitting Payload:', {
-                    ...emitObjData,
-                    isStopping: isStoppingRef.current,
-                });
+                // console.log('📡 [Host Sync] Emitting Payload:', {
+                //     ...emitObjData,
+                //     isStopping: isStoppingRef.current,
+                // });
 
                 socketService.emit('session_play_status', emitObjData);
 
