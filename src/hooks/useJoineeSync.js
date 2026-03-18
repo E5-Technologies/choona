@@ -16,136 +16,113 @@ export const useJoineeSync = ({
     setPlaybackQueue
 }) => {
     const lastSyncedIndex = useRef(-1);
+    const syncingTrackRef = useRef(false);
 
-    // PROACTIVE RESET when joining a session
-    useEffect(() => {
-        if (enablePlaybackSync && isJoinee && sessionId) {
-            console.log('🎵 [Joinee Sync] Proactively resetting local music for session:', sessionId);
-            const initialReset = async () => {
-                try {
-                    if (isAppleActive) {
-                        await resetPlaybackQueue();
-                    } else {
-                        await TrackPlayer.reset();
-                    }
-                } catch (error) {
-                    console.error('❌ [Joinee Sync] Error during initial reset:', error);
-                }
-            };
-            initialReset();
-        }
-    }, [isJoinee, sessionId, isAppleActive, resetPlaybackQueue, enablePlaybackSync]);
-
-    // PLAYBACK SYNC: Only for Joinees with enablePlaybackSync = true
+    // 1. TRACK SYNC: Handles track switching (reset/add/setQueue)
+    // Only depends on the current track index and session data.
     useEffect(() => {
         if (!enablePlaybackSync || !isJoinee || !sessionId || !currentSyncStatus) {
             return;
         }
 
-        const syncPlayback = async () => {
+        const songs = sessionDetailReduxdata?.session_songs || [];
+        const currentIndex = currentSyncStatus.playIndex;
+
+        if (currentIndex === -1 || currentIndex === null || currentIndex === undefined || currentIndex >= songs.length) {
+            return;
+        }
+        if (lastSyncedIndex.current === currentIndex || syncingTrackRef.current) {
+            return;
+        }
+
+        const syncTrack = async () => {
+            syncingTrackRef.current = true;
             try {
-                const songs = sessionDetailReduxdata?.session_songs || [];
-                const status = currentSyncStatus;
-                const currentIndex = status.playIndex;
-
-                if (currentIndex === -1 || currentIndex === null || currentIndex === undefined) {
-                    return;
-                }
-                if (currentIndex >= songs.length) {
-                    return;
-                }
-
                 const targetSong = songs[currentIndex];
-
                 if (isAppleActive) {
-                    // Apple Music Sync
-                    try {
-                        const tpState = await TrackPlayer.getState();
-                        if (tpState === 'playing' || tpState === 3) { // 3 is State.Playing
-                            console.log('🛑 [Joinee Sync] Stopping TrackPlayer because Apple Music is active');
-                            await TrackPlayer.reset();
-                        }
-                    } catch (e) { }
-
-                    if (lastSyncedIndex.current !== currentIndex) {
-                        console.log('🔄 [Joinee Sync] Switching Apple Music track to:', targetSong.apple_song_id || targetSong._id, 'at index:', currentIndex);
-                        await resetPlaybackQueue();
-                        await setPlaybackQueue(targetSong.apple_song_id || targetSong._id);
-                        lastSyncedIndex.current = currentIndex;
-                    }
-
-                    // Sync Play/Pause
-                    if (status.startAudioMixing && !appleFullSongPlaying) {
-                        console.log('▶️ [Joinee Sync] Apple Music Play');
-                        Player.play();
-                    } else if (!status.startAudioMixing && appleFullSongPlaying) {
-                        console.log('⏸️ [Joinee Sync] Apple Music Pause');
-                        Player.pause();
-                    }
+                    console.log('🔄 [Joinee Sync] Switching Apple Music track to:', targetSong.apple_song_id || targetSong._id);
+                    await resetPlaybackQueue();
+                    await setPlaybackQueue(targetSong.apple_song_id || targetSong._id);
                 } else {
-                    // TrackPlayer (Preview/Spotify) Sync
-                    console.log('📻 [Joinee Sync] TrackPlayer Branch Active. Preview URL:', targetSong.song_uri);
-                    if (appleFullSongPlaying) {
-                        console.log('🛑 [Joinee Sync] Stopping Apple Music because TrackPlayer is active');
-                        try {
-                            await Player.pause();
-                        } catch (e) { }
-                    }
+                    console.log('🔄 [Joinee Sync] Switching TrackPlayer track to preview:', targetSong.song_uri);
+                    await TrackPlayer.reset();
+                    await TrackPlayer.add([{
+                        id: targetSong._id,
+                        url: targetSong.song_uri,
+                        title: targetSong.song_name,
+                        artist: targetSong.artist_name,
+                        artwork: targetSong.song_image,
+                    }]);
+                }
+                lastSyncedIndex.current = currentIndex;
+            } catch (error) {
+                console.error('❌ [Joinee Sync] Track sync error:', error);
+            } finally {
+                syncingTrackRef.current = false;
+            }
+        };
 
-                    const tpState = playerState?.state ?? playerState;
-                    const isTrackPlayerPlaying = tpState === 'playing' || tpState === 3;
+        syncTrack();
+    }, [
+        currentSyncStatus?.playIndex,
+        sessionId,
+        isAppleActive,
+        sessionDetailReduxdata?.session_songs,
+        enablePlaybackSync,
+        isJoinee,
+        resetPlaybackQueue,
+        setPlaybackQueue,
+    ]);
 
-                    if (lastSyncedIndex.current !== currentIndex) {
-                        console.log('🔄 [Joinee Sync] Switching TrackPlayer track to preview:', targetSong.song_uri, 'at index:', currentIndex);
-                        await TrackPlayer.reset();
-                        const track = {
-                            id: targetSong._id,
-                            url: targetSong.song_uri,
-                            title: targetSong.song_name,
-                            artist: targetSong.artist_name,
-                            artwork: targetSong.song_image,
-                        };
-                        console.log('🎵 [Joinee Sync] Adding track to TrackPlayer:', track.title);
-                        await TrackPlayer.add([track]);
-                        if (status.currentTime) {
-                            console.log('🕒 [Joinee Sync] Seeking TrackPlayer to:', status.currentTime);
-                            await TrackPlayer.seekTo(status.currentTime);
-                        }
-                        lastSyncedIndex.current = currentIndex;
-                    }
+    // 2. PLAYBACK & SEEKING: Handles play/pause and time sync
+    // Depends on position and status updates.
+    useEffect(() => {
+        if (!enablePlaybackSync || !isJoinee || !sessionId || !currentSyncStatus || syncingTrackRef.current) {
+            return;
+        }
+        if (lastSyncedIndex.current === -1) {
+            return; // Wait for track sync
+        }
 
-                    // Sync Play/Pause
-                    if (status.startAudioMixing && !isTrackPlayerPlaying) {
-                        console.log('▶️ [Joinee Sync] TrackPlayer Play');
-                        await TrackPlayer.play();
-                    } else if (!status.startAudioMixing && isTrackPlayerPlaying) {
-                        console.log('⏸️ [Joinee Sync] TrackPlayer Pause');
-                        await TrackPlayer.pause();
-                    }
+        const syncPlayback = async () => {
+            const status = currentSyncStatus;
 
-                    // Sync seeking
+            if (isAppleActive) {
+                if (status.startAudioMixing && !appleFullSongPlaying) {
+                    Player.play();
+                } else if (!status.startAudioMixing && appleFullSongPlaying) {
+                    Player.pause();
+                }
+            } else {
+                const tpState = playerState?.state ?? playerState;
+                const isTrackPlayerPlaying = tpState === 'playing' || tpState === 3;
+
+                // Play/Pause sync
+                if (status.startAudioMixing && !isTrackPlayerPlaying) {
+                    await TrackPlayer.play();
+                } else if (!status.startAudioMixing && isTrackPlayerPlaying) {
+                    await TrackPlayer.pause();
+                }
+
+                // Seeking sync (only if playing to avoid stutter during load)
+                if (status.startAudioMixing) {
                     const timeDiff = Math.abs((position || 0) - (status.currentTime || 0));
-                    if (timeDiff > 3 && status.startAudioMixing) {
+                    if (timeDiff > 3) {
                         await TrackPlayer.seekTo(status.currentTime);
                     }
                 }
-            } catch (error) {
-                console.error('❌ [Joinee Sync] Error syncing playback:', error);
             }
         };
 
         syncPlayback();
     }, [
         currentSyncStatus,
-        enablePlaybackSync,
-        isJoinee,
-        sessionId,
-        isAppleActive,
-        sessionDetailReduxdata?.session_songs,
         appleFullSongPlaying,
         playerState,
         position,
-        resetPlaybackQueue,
-        setPlaybackQueue,
+        isAppleActive,
+        enablePlaybackSync,
+        isJoinee,
+        sessionId,
     ]);
 };

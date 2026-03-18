@@ -34,13 +34,24 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
     const sessionId = sessionDetailReduxdata?._id;
 
     const isJoinee = useMemo(() => {
-        if (!isLive || isHost || !sessionDetailReduxdata?.users) {
+        if (!isLive || isHost) {
             return false;
         }
-        return sessionDetailReduxdata.users.some(
-            user => user._id === userProfileResp?._id,
-        );
+        // If users list is available, check it
+        if (sessionDetailReduxdata?.users && sessionDetailReduxdata.users.length > 0) {
+            const exists = sessionDetailReduxdata.users.some(
+                user => (user?._id || user) === userProfileResp?._id,
+            );
+            if (exists) {
+                return true;
+            }
+        }
+
+        // No fallback, strictly check user list
+        return false;
     }, [isLive, isHost, sessionDetailReduxdata?.users, userProfileResp?._id]);
+    // console.log(sessionDetailReduxdata?.users, 'itsjoinee', isJoinee)
+    // console.log(userProfileResp, 'ididhjfd')
 
     // console.log('🔍 [Sync Hook Role]', {
     //     role: isHost ? 'HOST' : (isJoinee ? 'JOINEE' : 'VIEWER'),
@@ -54,6 +65,7 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
 
     const positionRef = useRef(0);
     const [currentSyncStatus, setCurrentSyncStatus] = useState(null);
+    const [isSocketReady, setIsSocketReady] = useState(socketService.isConnected());
 
     // Determine if we are using Apple Music or Preview/Spotify
     const isAppleRegisterType = userTokenData?.registerType === 'apple';
@@ -90,34 +102,70 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
     // Socket initialization
     useEffect(() => {
         if (userTokenData?.token) {
-            socketService.initializeSocket(userTokenData.token).catch(err => {
-                console.error('Socket initialization error in useSessionHosting:', err);
-            });
+            socketService.initializeSocket(userTokenData.token)
+                .then(() => {
+                    console.log('🔌 [Sync Hook] Socket initialized successfully');
+                    setIsSocketReady(true);
+                })
+                .catch(err => {
+                    console.error('❌ [Sync Hook] Socket initialization error in useSessionHosting:', err);
+                });
         }
     }, [userTokenData?.token]);
 
     // Handle incoming status updates
     useEffect(() => {
-        if (!sessionId || (!isJoinee && !isHost)) {
+        if (!sessionId || !isSocketReady) {
+            console.log('🔌 [Sync Hook] Postponing listener attachment:', {
+                hasSessionId: !!sessionId,
+                isSocketReady
+            });
             return;
         }
 
+        const socket = socketService.socket;
+        if (!socket) {
+            return;
+        }
+
+        // Emit JOIN event (Server requirement for room broadcast)
+        socketService.emit('join_session', { sessionId: sessionId });
+
         const handleStatusUpdate = (status) => {
+            const receivedSessionId = status?.sessionId || status?.session_id;
+            const receivedHostId = status?.hostId || status?.host_id;
+            const currentHostId = sessionDetailReduxdata?.own_user?._id;
+
+            // Filter by sessionId or fallback to hostId (HostId is more reliable on this server)
+            if (receivedSessionId) {
+                if (receivedSessionId !== sessionId) {
+                    return;
+                }
+            } else if (receivedHostId && currentHostId) {
+                if (receivedHostId !== currentHostId) {
+                    return;
+                }
+            }
+
             if (isJoinee) {
-                console.log('✅ [Joinee Sync] Success: Received data from Host:', status);
-            } else if (isHost) {
-                console.log('📡 [Host Sync] Received own data back from server (Loopback):', status.playIndex);
-            } else {
-                console.log('📬 [Viewer Sync] Received host status update:', status.playIndex);
+                console.log('✅ [Joinee Sync] Sync data received from Host:', status.playIndex);
             }
             setCurrentSyncStatus(status);
         };
 
+        const handleUsersUpdate = (data) => {
+            // Updated users list (handled internally)
+        };
+
         socketService.on('session_play_status', handleStatusUpdate);
+        socketService.on('session_users_status', handleUsersUpdate);
+
         return () => {
             socketService.off('session_play_status', handleStatusUpdate);
+            socketService.off('session_users_status', handleUsersUpdate);
         };
-    }, [sessionId, isJoinee, isHost]);
+    }, [sessionId, isJoinee, isHost, isSocketReady, isLive, sessionDetailReduxdata, userProfileResp]);
+
 
     // Role-specific hooks
     useHostSync({

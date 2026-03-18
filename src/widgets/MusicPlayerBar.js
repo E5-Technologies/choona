@@ -58,7 +58,7 @@ function MusicPlayerBar(props) {
     haveAppleMusicSubscription,
   } = useContext(AppleMusicContext);
 
-  const { isHost: isSessionHost, currentSyncStatus } = useSessionHosting({ enablePlaybackSync: false });
+  const { isHost: isSessionHost, currentSyncStatus } = useSessionHosting({ enablePlaybackSync: true });
 
   useEffect(() => {
     const handleProgress = async () => {
@@ -226,7 +226,7 @@ function MusicPlayerBar(props) {
   }), [props.position, props.bottom]);
 
   const currentSessionSong = useSelector(state => state.SessionReducer.currentSessionSong?.data);
-  const showPlayer = props.playingSongRef !== '' || islive;
+  const showPlayer = props.playingSongRef !== '' || (islive && (isSessionHost || isInSession));
 
   // Derive target song from session synchronization if live
   const activeSong = React.useMemo(() => {

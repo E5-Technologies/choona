@@ -267,6 +267,10 @@ export function* leftSessionRequest(action) {
     );
     console.log(response?.data, 'response when user Left the session');
     yield put({ type: START_SESSION_LEFT_SUCCESS, data: response.data });
+
+    // Clear session state and miniplayer for the joinee
+    yield put({ type: CLEAR_SESSION_DETAIL });
+    yield put({ type: SAVE_SONG_REFERENCE_REQUEST, object: '' });
   } catch (error) {
     console.log(JSON.stringify(error?.message), 'when user left error');
     yield put({ type: START_SESSION_LEFT_FAILURE, data: error });

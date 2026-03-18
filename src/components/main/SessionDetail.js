@@ -87,8 +87,27 @@ function SessionDetail(props) {
 
   const { isAuthorizeToAccessAppleMusic, haveAppleMusicSubscription } =
     useContext(AppleMusicContext);
-  const { isHost, isJoinee, currentSyncStatus } = useSessionHosting({ enablePlaybackSync: false });
+  const { isHost, isJoinee, currentSyncStatus } = useSessionHosting({ enablePlaybackSync: true });
   const currentState = currentSyncStatus;
+
+  const activeSong = useMemo(() => {
+    const songs = sessionDetailReduxdata?.session_songs || [];
+    const currentIndex = currentState?.playIndex;
+    if (currentIndex !== null && currentIndex !== undefined && currentIndex >= 0 && currentIndex < songs.length) {
+      return songs[currentIndex];
+    }
+    return null;
+  }, [currentState, sessionDetailReduxdata?.session_songs]);
+
+  useEffect(() => {
+    if (currentState) {
+      console.log('📡 [SessionDetail Sync] Current State Received:', {
+        playIndex: currentState.playIndex,
+        isPlaying: currentState.startAudioMixing,
+        currentTime: currentState.currentTime,
+      });
+    }
+  }, [currentState]);
 
   const handleListerUserStatus = useCallback(res => {
 
@@ -561,16 +580,21 @@ function SessionDetail(props) {
               </View>
               <Image
                 source={
-                  sessionDetailReduxdata?.own_user?.profile_image
-                    ? {
-                      uri:
-                        constants.profile_picture_base_url +
-                        sessionDetailReduxdata?.own_user?.profile_image,
-                    }
-                    : ImagePath.userPlaceholder
+                  activeSong?.song_image
+                    ? { uri: activeSong.song_image }
+                    : sessionDetailReduxdata?.own_user?.profile_image
+                      ? {
+                        uri:
+                          constants.profile_picture_base_url +
+                          sessionDetailReduxdata?.own_user?.profile_image,
+                      }
+                      : ImagePath.userPlaceholder
                 }
-                style={styles.listItemHeaderSongTypeIcon}
-                resizeMode="contain"
+                style={[
+                  styles.listItemHeaderSongTypeIcon,
+                  activeSong && { borderRadius: normalise(8) }
+                ]}
+                resizeMode="cover"
               />
               <Text
                 style={[
@@ -579,10 +603,11 @@ function SessionDetail(props) {
                     marginTop: normalise(8),
                     fontFamily: 'ProximaNova-Bold',
                     fontWeight: '400',
+                    textAlign: 'center',
                   },
                 ]}
-                numberOfLines={1}>
-                NOW PLAYING
+                numberOfLines={2}>
+                {activeSong ? `${activeSong.song_name}\n${activeSong.artist_name}` : 'NOW PLAYING'}
               </Text>
               <View style={[styles.bottomLineStyle, { width: '35%' }]}></View>
             </View>

@@ -123,6 +123,7 @@ let songStatus = '';
 let postStatus = '';
 
 const Home = props => {
+  const { createSessionListReq, navigation } = props;
   const dispatch = useDispatch();
   const token = props.header.token;
   const [modalVisible, setModalVisible] = useState(false);
@@ -135,6 +136,7 @@ const Home = props => {
   const [bool, setBool] = useState(false);
   const [postArray, setPostArray] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [refreshingSession, setRefreshingSession] = useState(false)
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   const [isShown, setIsShown] = useState(true);
 
@@ -380,12 +382,15 @@ const Home = props => {
   // console.log(props.sessionListData, "this is session data>>")
 
   React.useEffect(() => {
-    const subscribe = props.navigation.addListener('focus', () => {
+    const subscribe = navigation.addListener('focus', () => {
       refetch();
+      if (activeTab === 1) {
+        createSessionListReq();
+      }
     });
 
     return subscribe;
-  }, [props.navigation, refetch]);
+  }, [navigation, refetch, activeTab, createSessionListReq]);
 
   useEffect(() => {
     handleNavigation();
@@ -468,7 +473,7 @@ const Home = props => {
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
     updateToken(props.SuccessToken);
-    const unsuscribe = props.navigation.addListener('focus', payload => {
+    const unsuscribe = navigation.addListener('focus', payload => {
       isInternetConnected()
         .then(() => {
           props.getProfileReq();
@@ -508,6 +513,12 @@ const Home = props => {
       viewPosition: 0,
     });
   };
+
+  const onRefreshSession = React.useCallback(() => {
+    setRefreshingSession(true);
+    props.createSessionListReq();
+    wait(1000).then(() => setRefreshingSession(false));
+  }, []);
 
   if (status === '' || props.status !== status) {
     switch (props.status) {
@@ -753,11 +764,11 @@ const Home = props => {
         let contactsArray = contacts;
         let finalArray = [];
         setContactsLoading(false);
-        contactsArray.map((item, index) => {
-          item.phoneNumbers.map((item, index) => {
-            let number = item.number.replace(/[- )(]/g, '');
+        contactsArray.map((contact, contactIndex) => {
+          contact.phoneNumbers.map((phone, phoneIndex) => {
+            let number = phone.number.replace(/[- )(]/g, '');
             let check = number.charAt(0);
-            let number1 = parseInt(number);
+            let number1 = parseInt(number, 10);
             if (check === 0) {
               finalArray.push(number1);
             } else {
@@ -1588,20 +1599,20 @@ const Home = props => {
                   );
                 }}
                 showsVerticalScrollIndicator={false}
-              // keyExtractor={item => item._id}
-              // ref={flatlistRef}
-              // onEndReached={() => fetchNextPage()}
-              // onEndReachedThreshold={2}
-              // refreshControl={
-              //   <RefreshControl
-              //     refreshing={refreshing}
-              //     onRefresh={onRefresh}
-              //     colors={[Colors.black]}
-              //     progressBackgroundColor={Colors.white}
-              //     title={'Refreshing...'}
-              //     titleColor={Colors.white}
-              //   />
-              // }
+                // keyExtractor={item => item._id}
+                // ref={flatlistRef}
+                // onEndReached={() => fetchNextPage()}
+                // onEndReachedThreshold={2}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshingSession}
+                    onRefresh={onRefreshSession}
+                    colors={[Colors.black]}
+                    progressBackgroundColor={Colors.white}
+                    title={'Refreshing...'}
+                    titleColor={Colors.white}
+                  />
+                }
               />
             )}
           </View>

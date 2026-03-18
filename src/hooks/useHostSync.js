@@ -171,7 +171,7 @@ export const useHostSync = ({
                     lastTrackIndexRef.current === songs.length - 1 &&
                     currentTrackIndex === 0 &&
                     songs.length > 1) {
-                    // console.log('📡 [Host Sync] Detected jump from last track to first track. Closing session.');
+                    console.log('📡 [Host Sync] Detected jump from last track to first track. Closing session.');
                     handleStopKillSession();
                     return;
                 }

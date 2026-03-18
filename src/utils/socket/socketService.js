@@ -9,35 +9,44 @@ class SocketService {
   }
 
   initializeSocket = async (userId) => {
-
     if (this.socket && this.socket.connected) {
       console.log('⚠️ Socket already connected');
       return Promise.resolve(this.socket);
     }
 
-    return new Promise((resolve, reject) => {
+    if (this.initPromise) {
+      console.log('⏳ Socket initialization already in progress...');
+      return this.initPromise;
+    }
+
+    this.initPromise = new Promise((resolve, reject) => {
       try {
+        console.log('🔌 Initializing socket with URL:', SOCKET_SERVER_URL);
         this.socket = io(SOCKET_SERVER_URL, {
-          transports: ['websocket'], // Important for React Native
+          transports: ['websocket'],
           jsonp: false,
-          extraHeaders: {
-            token: userId,
-          },
+          extraHeaders: { token: userId },
         });
 
         this.socket.on('connect', () => {
-          console.log('✅ Socket connected');
+          console.log('✅ Socket connected successfully, ID:', this.socket.id);
+          this.initPromise = null;
           resolve(this.socket);
         });
 
         this.socket.on('connect_error', (err) => {
           console.error('❌ Socket connection error:', err);
+          this.initPromise = null;
           reject(err);
         });
       } catch (error) {
-        reject(error, 'its error');
+        console.log('❌ Socket Service error:', error);
+        this.initPromise = null;
+        reject(error);
       }
     });
+
+    return this.initPromise;
   };
 
   emit(event, data = {}) {
