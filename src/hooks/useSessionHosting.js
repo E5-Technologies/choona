@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Platform } from 'react-native';
 import socketService from '../utils/socket/socketService';
 import { useIsPlaying, useCurrentSong } from '@lomray/react-native-apple-music';
@@ -12,6 +12,7 @@ import { useJoineeSync } from './useJoineeSync';
 
 export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
     const { enablePlaybackSync } = config;
+    const dispatch = useDispatch();
     const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
     const userTokenData = useSelector(state => state.TokenReducer);
     const sessionReduxData = useSelector(state => state.SessionReducer);
@@ -157,14 +158,27 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
             // Updated users list (handled internally)
         };
 
+        const handleSessionEnded = (data) => {
+            if (isJoinee) {
+                console.log('📡 [Sync Hook] Session ended by host:', data);
+                // Dispatch action to update Redux (hides miniplayer and triggers stop)
+                dispatch({
+                    type: 'START_SESSION_JOINEE_STOP_HOST',
+                    data: { data: { ...data, isLive: false } },
+                });
+            }
+        };
+
         socketService.on('session_play_status', handleStatusUpdate);
         socketService.on('session_users_status', handleUsersUpdate);
+        socketService.on('session_ended_status', handleSessionEnded);
 
         return () => {
             socketService.off('session_play_status', handleStatusUpdate);
             socketService.off('session_users_status', handleUsersUpdate);
+            socketService.off('session_ended_status', handleSessionEnded);
         };
-    }, [sessionId, isJoinee, isHost, isSocketReady, isLive, sessionDetailReduxdata, userProfileResp]);
+    }, [sessionId, isJoinee, isHost, isSocketReady, isLive, sessionDetailReduxdata, userProfileResp, dispatch]);
 
 
     // Role-specific hooks
@@ -194,7 +208,8 @@ export const useSessionHosting = (config = { enablePlaybackSync: false }) => {
         playerState,
         position,
         resetPlaybackQueue,
-        setPlaybackQueue
+        setPlaybackQueue,
+        isLive,
     });
 
     return {

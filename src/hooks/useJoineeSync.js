@@ -13,7 +13,8 @@ export const useJoineeSync = ({
     playerState,
     position,
     resetPlaybackQueue,
-    setPlaybackQueue
+    setPlaybackQueue,
+    isLive
 }) => {
     const lastSyncedIndex = useRef(-1);
     const syncingTrackRef = useRef(false);
@@ -72,6 +73,7 @@ export const useJoineeSync = ({
         isJoinee,
         resetPlaybackQueue,
         setPlaybackQueue,
+        currentSyncStatus,
     ]);
 
     // 2. PLAYBACK & SEEKING: Handles play/pause and time sync
@@ -125,4 +127,24 @@ export const useJoineeSync = ({
         isJoinee,
         sessionId,
     ]);
+
+    // 3. SESSION TERMINATION: Stop music when session is no longer live
+    useEffect(() => {
+        if (!isLive && lastSyncedIndex.current !== -1) {
+            console.log('🛑 [Joinee Sync] Stopping music because session is no longer live');
+            const stopMusic = async () => {
+                try {
+                    if (isAppleActive) {
+                        await resetPlaybackQueue();
+                    } else {
+                        await TrackPlayer.reset();
+                    }
+                    lastSyncedIndex.current = -1;
+                } catch (error) {
+                    console.error('❌ [Joinee Sync] Error stopping music on session end:', error);
+                }
+            };
+            stopMusic();
+        }
+    }, [isLive, isAppleActive, resetPlaybackQueue]);
 };
