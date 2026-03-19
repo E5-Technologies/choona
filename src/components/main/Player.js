@@ -99,8 +99,8 @@ function Player(props) {
   const [artist, setArtist] = useState(props.route.params.artist);
   const [pic, setPic] = useState(props.route.params.song_pic);
 
-  const [username, setUsername] = useState(props.route.params.username);
-  const [profilePic, setprofilePic] = useState(props.route.params.profile_pic);
+  const [username, setUsername] = useState(props.route.params.username || "");
+  const [profilePic, setprofilePic] = useState(props.route.params.profile_pic || "");
   const [isrc, setisrc] = useState(props.route.params.isrc);
   const [details, setDetails] = useState(props.route.params.details);
   const [receiverId, setReceiverId] = useState(props.route.params.receiver_id);
@@ -692,74 +692,84 @@ function Player(props) {
                   justifyContent: changePlayer ? 'flex-end' : 'space-between',
                 }}>
                 {changePlayer ? null : (
+
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Pressable
-                      onPress={() => {
-                        if (
-                          props.userProfileResp._id ===
-                          props.route.params.details.userDetails._id
-                        ) {
-                          props.navigation.navigate('Profile', {
-                            fromAct: false,
-                          });
-                        } else {
-                          props.navigation.navigate('OthersProfile', {
-                            id: props.route.params.details.userDetails._id,
-                          });
-                        }
-                      }}>
-                      <Avatar
-                        image={
-                          profilePic
-                            ? constants.profile_picture_base_url + profilePic
-                            : null
-                        }
-                        height={24}
-                        width={24}
-                      />
-                    </Pressable>
-                    <View
-                      style={{
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        marginLeft: normalise(10),
-                      }}>
-                      <Text
-                        style={{
-                          color: Colors.meta,
-                          fontSize: normalise(8),
-                          fontFamily: 'ProximaNova-Bold',
-                        }}
-                        numberOfLines={1}>
-                        POSTED BY
-                      </Text>
-                      <Pressable
-                        onPress={() => {
-                          if (
-                            props.userProfileResp._id ===
-                            props.route.params.details.userDetails._id
-                          ) {
-                            props.navigation.navigate('Profile', {
-                              fromAct: false,
-                            });
-                          } else {
-                            props.navigation.navigate('OthersProfile', {
-                              id: props.route.params.details.userDetails._id,
-                            });
-                          }
-                        }}>
-                        <Text
+                    {username && profilePic &&
+                      <>
+                        <Pressable
+                        // onPress={() => {
+                        //   if (
+                        //     props.userProfileResp._id ===
+                        //     props?.route?.params?.details?.userDetails?._id
+                        //   ) {
+                        //     props.navigation.navigate('Profile', {
+                        //       fromAct: false,
+                        //     });
+                        //   } else {
+                        //     props.navigation.navigate('OthersProfile', {
+                        //       id: props?.route?.params?.details?.userDetails?._id,
+                        //     });
+                        //   }
+                        // }}
+                        >
+
+                          <Avatar
+                            image={
+                              profilePic
+                                ? constants?.profile_picture_base_url + profilePic
+                                : null
+                            }
+                            height={24}
+                            width={24}
+                          />
+                        </Pressable>
+                        <View
                           style={{
-                            color: Colors.white,
-                            fontSize: normalise(11),
-                            fontFamily: 'ProximaNova-Semibold',
-                            textTransform: 'lowercase',
-                          }}
-                          numberOfLines={1}>
-                          {username}
-                        </Text>
-                      </Pressable>
-                    </View>
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            marginLeft: normalise(10),
+                          }}>
+                          <Text
+                            style={{
+                              color: Colors.meta,
+                              fontSize: normalise(8),
+                              fontFamily: 'ProximaNova-Bold',
+                            }}
+                            numberOfLines={1}>
+                            POSTED BY
+                          </Text>
+                          <Pressable
+                          // onPress={() => {
+                          //   if (
+                          //     props.userProfileResp._id ===
+                          //     props?.route?.params?.details?.userDetails?._id
+                          //   ) {
+                          //     props.navigation.navigate('Profile', {
+                          //       fromAct: false,
+                          //     });
+                          //   }
+                          //   else {
+                          //     props.navigation.navigate('OthersProfile', {
+                          //       id: props.route.params.details.userDetails._id,
+                          //     });
+
+                          //   }
+                          // }}
+                          >
+                            <Text
+                              style={{
+                                color: Colors.white,
+                                fontSize: normalise(11),
+                                fontFamily: 'ProximaNova-Semibold',
+                                textTransform: 'lowercase',
+                              }}
+                              numberOfLines={1}>
+                              {username}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </>
+                    }
                   </View>
                 )}
                 <View style={{ flexDirection: 'row' }}>

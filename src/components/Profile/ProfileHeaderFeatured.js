@@ -6,14 +6,21 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import _ from 'lodash';
+import { useSelector } from 'react-redux';
 
 import Colors from '../../assests/Colors';
 import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
+import { useGlobalMusicPlayer } from '../../hooks/useGlobalMusicPlayer';
 
 const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
+  const sessionDetailData = useSelector(state => state.SessionReducer.sessionDetailData?.data);
+  const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
+  const { playGenericSong } = useGlobalMusicPlayer();
+
   return (
     <ImageBackground
       source={ImagePath.gradientbar}
@@ -54,7 +61,37 @@ const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
         <View style={styles.profileHeaderFeaturedContainer}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Player', {
+              const isLive = sessionDetailData?.isLive ?? false;
+              const isHost = userProfileResp?._id === sessionDetailData?.own_user?._id;
+              let isJoinee = false;
+
+              if (isLive && !isHost && sessionDetailData?.users?.length > 0) {
+                isJoinee = sessionDetailData.users.some(
+                  u => (u?._id || u) === userProfileResp?._id,
+                );
+              }
+
+              if (isLive && (isHost || isJoinee)) {
+                console.log('skdhfhkk');
+                Alert.alert('You cannot play another song while in a live session.');
+                return;
+              }
+              // navigation.navigate('Player', {
+              //   song_title: JSON.parse(profile.feature_song)[0].song_name,
+              //   album_name: JSON.parse(profile.feature_song)[0].album_name,
+              //   song_pic: JSON.parse(profile.feature_song)[0].song_pic,
+              //   uri: JSON.parse(profile.feature_song)[0].song_uri,
+              //   artist: JSON.parse(profile.feature_song)[0].artist_name,
+              //   changePlayer: true,
+              //   originalUri: JSON.parse(profile.feature_song)[0].hasOwnProperty(
+              //     'original_song_uri',
+              //   )
+              //     ? JSON.parse(profile.feature_song)[0].original_song_uri
+              //     : undefined,
+              //   registerType: profile.register_type,
+              //   isrc: JSON.parse(profile.feature_song)[0].isrc_code,
+              // });
+              playGenericSong({
                 song_title: JSON.parse(profile.feature_song)[0].song_name,
                 album_name: JSON.parse(profile.feature_song)[0].album_name,
                 song_pic: JSON.parse(profile.feature_song)[0].song_pic,
@@ -68,6 +105,11 @@ const ProfileHeaderFeatured = ({ navigation, profile, user }) => {
                   : undefined,
                 registerType: profile.register_type,
                 isrc: JSON.parse(profile.feature_song)[0].isrc_code,
+                details: JSON.parse(profile.feature_song)?.[0]?.details,
+                id: JSON.parse(profile.feature_song)?.[0]?.id,
+                apple_song_id: JSON.parse(profile.feature_song)?.[0]?.apple_song_id,
+                showPlaylist: false,
+                username: JSON.parse(profile.feature_song)[0].artist_name,
               });
             }}>
             <Image

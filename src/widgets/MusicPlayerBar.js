@@ -369,7 +369,7 @@ function MusicPlayerBar(props) {
                   // width: '100%',
                 }}
                 numberOfLines={2}>
-                {activeSong?.song_name}
+                {activeSong?.song_name || activeSong?.song_title}
               </Text>
               <Text
                 style={{

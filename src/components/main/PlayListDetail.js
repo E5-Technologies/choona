@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -16,44 +16,47 @@ import StatusBar from '../../utils/MyStatusBar';
 import HeaderComponent from '../../widgets/HeaderComponent';
 import ImagePath from '../../assests/ImagePath';
 import TextInputField from '../../widgets/TextInputField';
-import {connect} from 'react-redux';
-import {createPostRequest} from '../../action/PostAction';
+import { connect } from 'react-redux';
+import { createPostRequest } from '../../action/PostAction';
 import {
   CREATE_POST_FAILURE,
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
 } from '../../action/TypeConstants';
-import {pausePlayerAction} from '../../saga/PlayerSaga';
+import { pausePlayerAction } from '../../saga/PlayerSaga';
 import MusicPlayerBar from '../../widgets/MusicPlayerBar';
 import MusicPlayer from '../../widgets/MusicPlayer';
-import {saveSongRequest, saveSongRefReq} from '../../../action/SongAction';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { saveSongRequest, saveSongRefReq } from '../../../action/SongAction';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useGlobalMusicPlayer } from '../../hooks/useGlobalMusicPlayer';
 
 let status;
 
 function PlayListDetail(props) {
-  console.log(props.route?.params, 'these are params');
-  const {playSong, postArray} = props.route?.params;
+  const { playSong } = useGlobalMusicPlayer();
   const [playVisible, setPlayVisible] = useState(false);
   //   const {songItem, previousPlaylistData} = props.route?.params;
   const [selectedItem, setItem] = useState({});
-  const {width, height} = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const [playListArary, setPlayListArray] = useState(
     props.route?.params?.songsList?.item?.songs ?? [],
   );
+
+  console.log(playListArary, "dlghfdjhgkh"
+
+  )
   const [playListName, setPlayListName] = useState('');
   const [visibleminiPlayer, setVisibleMiniPlayer] = useState(true);
   const [timeoutVar, setTimeoutVar] = useState(0);
-  // const [postArray, setPostArray] = useState([]);
   const [bool, setBool] = useState(false);
 
-  console.log('postArray h ye', postArray);
-  const {top, bottom} = useSafeAreaInsets();
+  console.log('postArray h ye', props.route?.params?.songsList);
+  const { top, bottom } = useSafeAreaInsets();
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={'BACK'}
@@ -63,7 +66,7 @@ function PlayListDetail(props) {
           }}
         />
 
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {playListArary && (
             <View style={styles.topContainerStyle}>
               <Text style={styles.mainTitleStyle} numberOfLines={1}>
@@ -80,7 +83,7 @@ function PlayListDetail(props) {
                 {playListArary?.map(item => {
                   return (
                     <Image
-                      source={{uri: item?.song_image}}
+                      source={{ uri: item?.song_image }}
                       style={styles.bannerImageStyle}
                       resizeMode="cover"
                     />
@@ -105,13 +108,12 @@ function PlayListDetail(props) {
           <View style={styles.playListItemContainer}>
             <FlatList
               data={playListArary}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return (
                   <TouchableOpacity
                     style={styles.itemWrapper}
                     onPress={() => {
                       setItem(item);
-                      // props.route?.params?.playSong
                       playSong(props.route?.params?.songsList, index);
                       setVisibleMiniPlayer(true);
 
@@ -147,7 +149,7 @@ function PlayListDetail(props) {
                                             />
                                         </TouchableOpacity> */}
                     <Image
-                      source={{uri: item?.song_image}}
+                      source={{ uri: item?.song_image }}
                       style={styles.songListItemImage}
                       resizeMode="contain"
                     />
@@ -173,7 +175,7 @@ function PlayListDetail(props) {
         </View>
 
         {visibleminiPlayer === true ? (
-          <View style={{marginBottom: bottom - 50}}>
+          <View style={{ marginBottom: bottom - 50 }}>
             <MusicPlayerBar
               //   onPress={() => {
               //     props.navigation.navigate('Player', {
@@ -198,13 +200,13 @@ function PlayListDetail(props) {
               //   }}
               // onPress={() => null}
               onChangeSong={(data, songIndex) =>
-                playSong({item: data}, songIndex)
+                playSong({ item: data }, songIndex)
               }
-              // onPressPlayOrPause={() => {
-              //     setTimeout(() => {
-              //         findPlayingSong(posts);
-              //     }, 500);
-              // }}
+            // onPressPlayOrPause={() => {
+            //     setTimeout(() => {
+            //         findPlayingSong(posts);
+            //     }, 500);
+            // }}
             />
           </View>
         ) : null}

@@ -10,6 +10,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 import Seperator from './ListCells/Seperator';
 import normalise from '../../utils/helpers/Dimens';
@@ -40,10 +41,12 @@ import constants from '../../utils/helpers/constants';
 
 import { useRecentlyPlayed } from '../../utils/helpers/RecentlyPlayed';
 import { RecentlyPlayedHeader } from '../Headers/RecentlyPlayedHeader';
+import { useGlobalMusicPlayer } from '../../hooks/useGlobalMusicPlayer';
 
 let status;
 
 function FeaturedTrack(props) {
+  const { playGenericSong } = useGlobalMusicPlayer();
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
   const { recentlyPlayed, loading, refetch } = useRecentlyPlayed(
@@ -166,7 +169,7 @@ function FeaturedTrack(props) {
             props.registerType === 'spotify' ? song.name : song.attributes.name,
           song_uri:
             props.registerType === 'spotify'
-              ? suc
+              ? song.preview_url
               : song.attributes.previews[0].url,
           album_name:
             props.registerType === 'spotify'
@@ -190,6 +193,10 @@ function FeaturedTrack(props) {
             props.registerType === 'spotify'
               ? song.external_ids.isrc
               : song.attributes.isrc,
+          id: props.registerType === 'spotify' ? song.id : song.id,
+          apple_song_id: props.registerType === 'spotify' ? song.id : song.id,
+          showPlaylist: false,
+          details: song,
         },
       ];
       formdata.append('feature_song', JSON.stringify(array));
@@ -231,42 +238,59 @@ function FeaturedTrack(props) {
           setFeaturedSong(data.item);
         }}
         onPressImage={() => {
-          props.navigation.navigate('Player', {
-            song_title:
-              props.registerType === 'spotify'
-                ? data.item.name
-                : data.item.attributes.name,
+          const isLive = props.sessionDetailData?.isLive ?? false;
+          const isHost = props.userProfileResp?._id === props.sessionDetailData?.own_user?._id;
+          let isJoinee = false;
+
+          if (isLive && !isHost && props.sessionDetailData?.users?.length > 0) {
+            isJoinee = props.sessionDetailData.users.some(
+              u => (u?._id || u) === props.userProfileResp?._id,
+            );
+          }
+
+          if (isLive && (isHost || isJoinee)) {
+            console.log('skdhfhkk');
+            Alert.alert('You cannot play another song while in a live session.');
+            return;
+          }
+
+          const item = data.item;
+          const payload = {
+            song_title: props.registerType === 'spotify' ? item.name : item.attributes.name,
             album_name:
               props.registerType === 'spotify'
-                ? data.item.album.name
-                : data.item.attributes.albumName,
+                ? item.album.name
+                : item.attributes.albumName,
             song_pic:
               props.registerType === 'spotify'
-                ? data.item.album.images[0].url
-                : data.item.attributes.artwork.url.replace(
-                  '{w}x{h}',
-                  '600x600',
-                ),
-            username: '',
+                ? item.album.images.length > 1
+                  ? item.album.images[0].url
+                  : 'qwe' // matching line 211 logic
+                : item.attributes.artwork.url.replace('{w}x{h}', '300x300'),
+            username: props.registerType === 'spotify' ? '' : item?.attributes?.artistName,
             profile_pic: '',
             originalUri:
               props.registerType === 'spotify'
-                ? data.item.external_urls.spotify
-                : data.item.attributes.url,
+                ? item.external_urls.spotify
+                : item.attributes.url,
             uri:
               props.registerType === 'spotify'
-                ? data.item.preview_url
-                : data.item.attributes.previews[0].url,
+                ? item.preview_url
+                : item.attributes.previews[0].url,
             artist:
               props.registerType === 'spotify'
-                ? singerList(data.item.artists)
-                : data.item.attributes.artistName,
+                ? item?.artists
+                : item.attributes.artistName,
             changePlayer: true,
             registerType: props.registerType,
             changePlayer2: props.registerType === 'spotify' ? true : false,
-            id: props.registerType === 'spotify' ? data.item.id : null,
+            id: props.registerType === 'spotify' ? item.id : item.id,
+            apple_song_id: props.registerType === 'spotify' ? item.id : item.id,
             showPlaylist: false,
-          });
+            details: item,
+          };
+
+          playGenericSong(payload);
         }}
       />
     );
@@ -394,6 +418,8 @@ const mapStateToProps = state => {
     status: state.UserReducer.status,
     featuredTrackResp: state.UserReducer.featuredSongSearchResp,
     registerType: state.TokenReducer.registerType,
+    sessionDetailData: state.SessionReducer.sessionDetailData?.data,
+    userProfileResp: state.UserReducer.userProfileResp,
   };
 };
 

@@ -870,7 +870,6 @@ const Home = props => {
               if (data?.item?.songs?.length > 1) {
                 props.navigation.navigate('PlayListDetail', {
                   songsList: data,
-                  playSong: playSong,
                   postArray: postArray,
                 });
               }

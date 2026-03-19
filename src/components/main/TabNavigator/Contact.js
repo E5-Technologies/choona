@@ -4,9 +4,9 @@ import {
   View,
   Linking,
   Text,
-  TouchableOpacity,
   TextInput,
   Image,
+  Alert,
 } from 'react-native';
 import Seperator from '../ListCells/Seperator';
 import normalise from '../../../utils/helpers/Dimens';
@@ -57,7 +57,7 @@ const Contact = props => {
   const [allSaveSong, setAllSaveSong] = useState([]);
 
 
-  const { playGenericSong } = useGlobalMusicPlayer();
+  const { playGenericSong, playSong } = useGlobalMusicPlayer();
   const { isPlaying } = useIsPlaying();
 
   var bottomSheetRef;
@@ -123,29 +123,42 @@ const Contact = props => {
         title={data.item.song_name}
         singer={data.item.artist_name}
         onPressImage={() => {
-          console.log(data?.item, 'sdhfjk')
-          const payload = {
-            song_title: data.item.song_name,
-            album_name: data.item.album_name,
-            song_pic: data.item.song_image,
-            uri: data.item.song_uri,
-            id: data.item.post_id,
-            artist: data.item.artist_name,
-            changePlayer: true,
-            isrc: data.item.isrc_code,
-            registerType: data.item.original_reg_type,
-            originalUri: data.item.original_song_uri,
-          };
+          const isLive = props.sessionDetailData?.isLive ?? false;
+          const isHost = props.userProfileResp?._id === props.sessionDetailData?.own_user?._id;
+          let isJoinee = false;
+
+          if (isLive && !isHost && props.sessionDetailData?.users?.length > 0) {
+            isJoinee = props.sessionDetailData.users.some(
+              user => (user?._id || user) === props.userProfileResp?._id,
+            );
+          }
+
+          if (isLive && (isHost || isJoinee)) {
+            console.log('skdhfhkk');
+            Alert.alert('You cannot play another song while in a live session.');
+            return;
+          }
+
+          // console.log(data?.item, 'sdhfjk')
+          // if (data?.item?.post_id) {
+          //   const formattedData = {
+          //     item: {
+          //       ...data.item,
+          //       _id: data.item.post_id,
+          //       social_type: data.item.social_type || (data.item.original_reg_type === 'spotify' ? 'spotify' : 'apple'),
+          //       userDetails: data.item.userDetails || {},
+          //       songs: [data.item]
+          //     }
+          //   };
+          //   playSong(formattedData);
+          // } else {
           const payload1 = {
             uri: data?.item?.song_uri,
             apple_song_id: data?.item?.apple_song_id,
             song_name: data?.item?.song_name,
+            song_title: data?.item?.song_name,
             album_name: data?.item?.album_name,
             song_pic: data?.item?.song_image,
-            // username: data.item.userDetails?.username,
-            // profile_pic: data.item.userDetails?.profile_image,
-            // commentData: data.item.comment,
-            // reactionData: data.item.reaction,
             id: data.item?._id,
             artist: data?.item?.artist_name,
             originalUri: data.item.original_song_uri || undefined,
@@ -156,9 +169,10 @@ const Contact = props => {
             registerType: props.registerType,
           };
           console.log(payload1, 'payload1')
-          // return
           playGenericSong(payload1);
-        }}
+        }
+          // }
+        }
         onPress={() => {
           setIndex(data.index);
           setModalVisible(true);
@@ -419,6 +433,7 @@ const mapStateToProps = state => {
     messageStatus: state.MessageReducer.status,
     registerType: state.TokenReducer.registerType,
     isrcResp: state.PlayerReducer.getSongFromISRC,
+    sessionDetailData: state.SessionReducer.sessionDetailData?.data,
   };
 };
 

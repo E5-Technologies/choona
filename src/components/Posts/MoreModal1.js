@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Image,
   ImageBackground,
   Modal,
@@ -22,6 +23,8 @@ import ImagePath from '../../assests/ImagePath';
 import normalise from '../../utils/helpers/Dimens';
 import { SimpleOption } from '../common/SimpleOption';
 import { useGlobalMusicPlayer } from '../../hooks/useGlobalMusicPlayer';
+import toast from '../../utils/helpers/ShowErrorAlert';
+import SimpleToast from 'react-native-simple-toast';
 
 const MoreModal1 = ({
   setBool,
@@ -50,6 +53,7 @@ const MoreModal1 = ({
   othersProfileresp,
   othersProfileReq,
   setReportModal,
+  sessionDetailData,
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   useEffect(() => {
@@ -101,6 +105,22 @@ const MoreModal1 = ({
   };
 
   const hanldePlaySong = item => {
+    const isLive = sessionDetailData?.isLive ?? false;
+    const isHost = userProfileResp?._id === sessionDetailData?.own_user?._id;
+    let isJoinee = false;
+
+    if (isLive && !isHost && sessionDetailData?.users?.length > 0) {
+      isJoinee = sessionDetailData.users.some(
+        user => (user?._id || user) === userProfileResp?._id,
+      );
+    }
+
+    if (isLive && (isHost || isJoinee)) {
+      console.log('skdhfhkk')
+      Alert.alert('You cannot play another song while in a live session.');
+      return;
+    }
+
     const payload = {
       song_title: registerType === 'spotify' ? item.name : item.attributes.name,
       album_name:
@@ -298,6 +318,7 @@ const mapStateToProps = state => {
     registerType: state.TokenReducer.registerType,
     savedSong: state.SongReducer.savedSongList,
     userProfileResp: state.UserReducer.userProfileResp,
+    sessionDetailData: state.SessionReducer.sessionDetailData?.data,
   };
 };
 

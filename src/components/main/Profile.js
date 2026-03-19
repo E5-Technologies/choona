@@ -235,6 +235,21 @@ const Profile = props => {
     return (
       <TouchableOpacity
         onPress={() => {
+          const isLive = props.sessionDetailData?.isLive ?? false;
+          const isHost = props.userProfileResp?._id === props.sessionDetailData?.own_user?._id;
+          let isJoinee = false;
+
+          if (isLive && !isHost && props.sessionDetailData?.users?.length > 0) {
+            isJoinee = props.sessionDetailData.users.some(
+              user => (user?._id || user) === props.userProfileResp?._id,
+            );
+          }
+
+          if (isLive && (isHost || isJoinee)) {
+            Alert.alert('You cannot play another song while in a live session.');
+            return;
+          }
+
           props.navigation.navigate('PostListForUser', {
             profile_name: props.userProfileResp?.full_name,
             posts: array,
@@ -684,6 +699,7 @@ const mapStateToProps = state => {
     userProfileResp: state.UserReducer.userProfileResp,
     countryCode: state.UserReducer.countryCodeOject,
     header: state.TokenReducer,
+    sessionDetailData: state.SessionReducer.sessionDetailData?.data,
   };
 };
 

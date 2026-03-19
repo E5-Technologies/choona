@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -13,7 +13,8 @@ import {
 import Colors from '../../../assests/Colors';
 import ImagePath from '../../../assests/ImagePath';
 import normalise from '../../../utils/helpers/Dimens';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import constants from '../../../utils/helpers/constants';
 
 const HomeSessionItem = ({
@@ -27,19 +28,41 @@ const HomeSessionItem = ({
   verified = true,
   userId,
 }) => {
-  // console.log(JSON.stringify(item), 'its session item');
   const navigation = useNavigation();
+  const sessionDetailData = useSelector(state => state.SessionReducer.sessionDetailData?.data);
+  const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
+
+  const handlePressSession = () => {
+    const isLive = sessionDetailData?.isLive ?? false;
+    const isHost = userProfileResp?._id === sessionDetailData?.own_user?._id;
+    let isJoinee = false;
+
+    if (isLive && !isHost && sessionDetailData?.users?.length > 0) {
+      isJoinee = sessionDetailData.users.some(
+        user => (user?._id || user) === userProfileResp?._id,
+      );
+    }
+
+    if (isLive && (isHost || isJoinee)) {
+      if (item?._id !== sessionDetailData?._id) {
+        console.log('skdhfhkk');
+        Alert.alert('You cannot play another song while in a live session.');
+        return;
+      }
+    }
+
+    navigation.navigate(
+      userId == item?.own_user?._id
+        ? 'MySessionDetailScreen'
+        : 'SessionDetail',
+      { sessionId: item?._id },
+    );
+  };
+
   return (
     <Pressable
       style={styles.listItemHeaderContainer}
-      onPress={() =>
-        navigation.navigate(
-          userId == item?.own_user?._id
-            ? 'MySessionDetailScreen'
-            : 'SessionDetail',
-          {sessionId: item?._id},
-        )
-      }>
+      onPress={handlePressSession}>
       <View style={styles.listItemHeaderSongDetails}>
         {item?.isLive && (
           <Image
@@ -73,10 +96,10 @@ const HomeSessionItem = ({
           source={
             item?.own_user?.profile_image
               ? {
-                  uri:
-                    constants.profile_picture_base_url +
-                    item?.own_user?.profile_image,
-                }
+                uri:
+                  constants.profile_picture_base_url +
+                  item?.own_user?.profile_image,
+              }
               : ImagePath.userPlaceholder
           }
           style={styles.listItemHeaderSongTypeIcon}
@@ -85,7 +108,7 @@ const HomeSessionItem = ({
         <Text
           style={[
             styles.listItemHeaderSongTextTitle,
-            {fontSize: normalise(11), marginTop: 10},
+            { fontSize: normalise(11), marginTop: 10 },
           ]}
           numberOfLines={2}>
           {item?.isPrivate ? 'Private' : 'Public'}
@@ -94,7 +117,7 @@ const HomeSessionItem = ({
       <View style={styles.songlistWrapperBox}>
         <FlatList
           data={item?.session_songs?.slice(0, 4) ?? []}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
               <View
                 style={{
@@ -103,7 +126,7 @@ const HomeSessionItem = ({
                   flex: 1,
                 }}>
                 <Image
-                  source={{uri: item?.song_image}}
+                  source={{ uri: item?.song_image }}
                   style={styles.songListItemImage}
                   resizeMode="contain"
                 />
@@ -181,7 +204,6 @@ const styles = StyleSheet.create({
     marginRight: normalise(5),
   },
   listItemHeaderSongTypeIcon: {
-    borderRadius: normalise(10),
     height: normalise(70),
     width: normalise(70),
     borderRadius: normalise(80),
@@ -241,7 +263,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     opacity: 0.5,
   },
-  listItemHeaderPlay: {height: normalise(24), width: normalise(24)},
+  listItemHeaderPlay: { height: normalise(24), width: normalise(24) },
   liveImageStyle: {
     width: 100,
     height: 35,

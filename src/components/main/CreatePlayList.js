@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -12,8 +12,8 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {createPostRequest} from '../../action/PostAction';
+import { connect } from 'react-redux';
+import { createPostRequest } from '../../action/PostAction';
 import {
   CREATE_POST_FAILURE,
   CREATE_POST_REQUEST,
@@ -26,7 +26,7 @@ import isInternetConnected from '../../utils/helpers/NetInfo';
 import toast from '../../utils/helpers/ShowErrorAlert';
 import StatusBar from '../../utils/MyStatusBar';
 import Loader from '../../widgets/AuthLoader';
-import HeaderComponent, {hitSlop} from '../../widgets/HeaderComponent';
+import HeaderComponent, { hitSlop } from '../../widgets/HeaderComponent';
 import GradientButton from '../common/GradientButton';
 
 let status;
@@ -35,21 +35,21 @@ const deviceWidth = Dimensions.get('window').width;
 function CreatePlayList(props) {
   const buttonLineWidth = deviceWidth * 0.8;
   console.log(props.route?.params, 'these are params');
-  const {songItem, previousPlaylistData} = props.route?.params;
+  const { songItem, previousPlaylistData } = props.route?.params;
   console.log(songItem, previousPlaylistData, 'this is props Item playlist');
-  const {width, height} = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const [playListArary, setPlayListArray] = useState([]);
   const [playListName, setPlayListName] = useState('');
   const [bool, setBool] = useState(false);
   const imagArray = [
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
-    {url: 'https://picsum.photos/200/300'},
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
+    { url: 'https://picsum.photos/200/300' },
   ];
 
   useEffect(() => {
@@ -81,6 +81,10 @@ function CreatePlayList(props) {
           songItem.registerType === 'spotify'
             ? item.details.album.name
             : item?.details?.attributes?.albumName,
+        apple_song_id:
+          songItem.registerType === 'spotify' ? item.details?.id : item?.details?.id,
+        type: songItem.registerType === 'spotify' ? item?.details?.type : item?.details?.type,
+        original_reg_type: songItem.registerType,
       };
     });
   };
@@ -143,7 +147,7 @@ function CreatePlayList(props) {
 
       case CREATE_POST_SUCCESS:
         props.navigation.popToTop();
-        props.navigation.replace('bottomTab', {screen: 'Home'});
+        props.navigation.replace('bottomTab', { screen: 'Home' });
         status = props.status;
         break;
 
@@ -170,9 +174,9 @@ function CreatePlayList(props) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.darkerblack}}>
+    <View style={{ flex: 1, backgroundColor: Colors.darkerblack }}>
       <StatusBar backgroundColor={Colors.darkerblack} />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent
           firstitemtext={true}
           textone={'CANCEL'}
@@ -187,7 +191,7 @@ function CreatePlayList(props) {
           }}
         />
 
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {playListArary && (
             <View style={styles.topContainerStyle}>
               <TextInput
@@ -224,7 +228,7 @@ function CreatePlayList(props) {
                 {playListArary?.map(item => {
                   return (
                     <Image
-                      source={{uri: item?.image}}
+                      source={{ uri: item?.image }}
                       style={styles.bannerImageStyle}
                       resizeMode="cover"
                     />
@@ -232,17 +236,17 @@ function CreatePlayList(props) {
                 })}
               </View>
               <View
-                style={[styles.bottomLineStyle, {width: width / 2.4}]}></View>
+                style={[styles.bottomLineStyle, { width: width / 2.4 }]}></View>
             </View>
           )}
           <View style={styles.playListItemContainer}>
             <FlatList
               data={playListArary}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 return (
                   <View style={styles.itemWrapper}>
                     <Image
-                      source={{uri: item?.image}}
+                      source={{ uri: item?.image }}
                       style={styles.songListItemImage}
                       resizeMode="contain"
                     />
@@ -261,7 +265,7 @@ function CreatePlayList(props) {
                     <TouchableOpacity
                       onPress={() => handleRemoveItemtoList(item?.details?.id)}
                       hitSlop={hitSlop}
-                      style={{alignSelf: 'center', marginLeft: 15}}>
+                      style={{ alignSelf: 'center', marginLeft: 15 }}>
                       <Image
                         source={ImagePath.greycross}
                         style={{
@@ -281,7 +285,7 @@ function CreatePlayList(props) {
               <View
                 style={[
                   styles.bottomLineStyle,
-                  {width: buttonLineWidth, marginBottom: 11, opacity: 0.3},
+                  { width: buttonLineWidth, marginBottom: 11, opacity: 0.3 },
                 ]}></View>
               <GradientButton
                 title={'ADD SONG'}
@@ -304,7 +308,7 @@ function CreatePlayList(props) {
                 showRightIcon={true}
                 onPress={createPost}
                 rightIconStyle={{
-                  transform: [{rotate: '180deg'}],
+                  transform: [{ rotate: '180deg' }],
                   width: 16,
                   height: 16,
                 }}

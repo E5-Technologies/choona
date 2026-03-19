@@ -8,11 +8,14 @@ import { saveSongRefReq } from '../action/SongAction';
 import { dummyRequest } from '../action/UserAction';
 import { useContext } from 'react';
 import { AppleMusicContext } from '../context/AppleMusicContext';
+import toast from '../utils/helpers/ShowErrorAlert';
 
 export const useGlobalMusicPlayer = () => {
     const dispatch = useDispatch();
     const playingSongRef = useSelector(state => state.SongReducer.playingSongRef);
     const registerType = useSelector(state => state.TokenReducer.registerType);
+    const sessionDetailData = useSelector(state => state.SessionReducer.sessionDetailData?.data);
+    const userProfileResp = useSelector(state => state.UserReducer.userProfileResp);
 
     const {
         setPlaybackQueue,
@@ -21,15 +24,40 @@ export const useGlobalMusicPlayer = () => {
     } = usePlayFullAppleMusic();
 
     const {
-        haveAppleMusicSubscription
+        haveAppleMusicSubscription,
     } = useContext(AppleMusicContext);
 
+    const checkActiveSession = () => {
+        const isLive = sessionDetailData?.isLive ?? false;
+        const isHost = userProfileResp?._id === sessionDetailData?.own_user?._id;
+        let isJoinee = false;
+
+        if (isLive && !isHost && sessionDetailData?.users?.length > 0) {
+            isJoinee = sessionDetailData.users.some(
+                user => (user?._id || user) === userProfileResp?._id,
+            );
+        }
+
+        if (isLive && (isHost || isJoinee)) {
+
+            toast('Alert', 'You cannot play another song while in a live session.');
+            return true;
+        }
+        return false;
+    };
+
     const playSong = async (data, songIndex = null) => {
+        if (checkActiveSession()) {
+            return;
+        }
+
         const selectedSongIndex = songIndex ?? 0;
         const songItem = data?.item?.songs[selectedSongIndex];
         // console.log(songItem, 'thisiSOngItem')
 
-        if (!songItem) return;
+        if (!songItem) {
+            return;
+        }
 
         // 1. Handle Apple Music Playback
         if (
@@ -117,7 +145,12 @@ export const useGlobalMusicPlayer = () => {
     };
 
     const playGenericSong = async (payload) => {
-        if (!payload) return;
+        if (checkActiveSession()) {
+            return;
+        }
+        if (!payload) {
+            return;
+        }
 
         const songId = payload?.apple_song_id || extractSongIdFromUrl(payload?.originalUri);
         // if (!songId) {
@@ -157,16 +190,16 @@ export const useGlobalMusicPlayer = () => {
         ) {
             dispatch(saveSongRefReq(songData));
             dispatch(dummyRequest());
-            console.log('111songData12')
+            console.log('111songData12');
             const genericSongId = payload.apple_song_id || payload.id;
             if (playingSongRef?.apple_song_id !== genericSongId) {
-                console.log('111songData22')
+                console.log('111songData22');
                 await setPlaybackQueue(genericSongId);
                 setTimeout(() => {
                     Player.play();
                 }, 500);
             } else {
-                console.log('111songData33')
+                console.log('111songData33');
                 setTimeout(() => {
                     onToggle();
                 }, 500);
@@ -174,7 +207,7 @@ export const useGlobalMusicPlayer = () => {
         }
         // 2. Handle Preview/Generic Playback
         else {
-            console.log('111songData')
+            console.log('111songData');
             // If there was an active Apple Music player, stop it
             if (Platform.OS === 'ios') {
                 Player.pause();
